@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>MixS {{ mixs_standard }} Samples for Order {{ order.id }}</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>Sample ID</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for sample in samples %}
+    <tr>
+      <td>{{ sample.id }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<a href="{% url 'order_list' %}">Back to Order List</a>
+{% endblock %}

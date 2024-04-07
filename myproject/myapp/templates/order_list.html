@@ -1,0 +1,31 @@
+<h2>Order List</h2>
+
+{% if orders %}
+    <table>
+        <thead>
+            <tr>
+                <th>Order ID</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for order in orders %}
+                <tr>
+                    <td>{{ order.id }}</td>
+                    <td>
+                        <a href="{% url 'order_view' order.id %}">Edit</a>
+                        <a href="{% url 'delete_order' order.id %}">Delete</a>
+                        <a href="{% url 'samples_view' order.id %}">Edit Samples</a>
+                        {% for mixs_standard in order.mixs_standards %}
+                        <a href="{% url 'mixs_view' order.id mixs_standard %}">Edit MixS {{ mixs_standard }}</a>
+                        {% endfor %}
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% else %}
+    <p>No orders found.</p>
+{% endif %}
+
+<a href="{% url 'order_view' %}">Request Order</a>

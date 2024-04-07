@@ -1,0 +1,100 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Add and update Samples
+{% endblock title %}
+
+{% block content %}
+<h1>Update Samples</h1>
+
+<button onclick="addNewRow()">Add New Row</button>
+
+<div id="handsontable-container"></div>
+
+<button onclick="saveSampleData()">Save Samples</button>
+<a href="{% url 'order_list' %}">Back to Order Overview</a>
+
+<script src="https://cdn.jsdelivr.net/npm/handsontable/dist/handsontable.full.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/handsontable/dist/handsontable.full.min.css">
+
+<script>
+var hotElement = document.querySelector('#handsontable-container');
+var hotSettings = {
+  data: {{ samples|safe }},
+  columns: [
+    { title: 'Sample Name', data: 'sample_name', readOnly: true },
+    { title: 'MIxS Metadata Standard', data: 'mixs_metadata_standard', type: 'dropdown', source: {{ mixs_metadata_standards|safe }} },
+    { title: 'Concentration', data: 'concentration' },
+    { title: 'Volume', data: 'volume' },
+    { title: 'Ratio 260/280', data: 'ratio_260_280' },
+    { title: 'Ratio 260/230', data: 'ratio_260_230' },
+    { title: 'Comments', data: 'comments' },
+  ],
+  minSpareRows: 0,
+  rowHeaders: true,
+  contextMenu: true,
+  licenseKey: 'non-commercial-and-evaluation',
+};
+var hot = new Handsontable(hotElement, hotSettings);
+
+function addNewRow() {
+  var newRow = ['', '']; // Adjust based on number of columns
+  
+  var selectedRow = hot.getSelected();
+  if (selectedRow && selectedRow.length > 0) {
+    var rowIndex = selectedRow[0][0];
+    hot.alter('insert_row_above', rowIndex, 1, newRow);
+  } else {
+    hot.alter('insert_row_above', hot.countRows(), 1, newRow);
+  }
+}
+
+function saveSampleData() {
+    var sampleData = hot.getData().map(function(row, index) {
+        return {
+            index: index + 1,
+            sample_name: "Sample " + (index + 1),
+            mixs_metadata_standard: row[1], // Get the selected MIxS Metadata Standard
+            concentration: row[2],
+            volume: row[3],
+            ratio_260_280: row[4],
+            ratio_260_230: row[5],
+            comments: row[6]
+        };
+    }).filter(function(sample) {
+        return sample.concentration !== null && sample.concentration !== undefined;
+    });
+
+    sampleData = sampleData.map(function(sample) {
+        return {
+            index: sample.index,
+            sample_name: sample.sample_name,
+            mixs_metadata_standard: sample.mixs_metadata_standard,
+            concentration: sample.concentration.trim(),
+            volume: sample.volume.trim(),
+            ratio_260_280: sample.ratio_260_280.trim(),
+            ratio_260_230: sample.ratio_260_230.trim(),
+            comments: sample.comments.trim()
+        };
+    });
+
+    console.log('Sending sample data:', sampleData);
+
+    fetch("{% url 'samples_view' order.id %}", {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'X-CSRFToken': '{{ csrf_token }}'
+        },
+        body: 'sample_data=' + JSON.stringify(sampleData)
+    })
+    .then(function(response) {
+        console.log('Sample data saved successfully');
+    })
+    .catch(function(error) {
+        console.error('Error saving sample data:', error);
+    });
+}
+</script>
+
+{% endblock content %}
