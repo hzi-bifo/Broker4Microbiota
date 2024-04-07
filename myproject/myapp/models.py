@@ -1,6 +1,21 @@
 from django.db import models
 from django.contrib.auth.models import User
 from .mixs_metadata_standards import MIXS_METADATA_STANDARDS
+from phonenumber_field.modelfields import PhoneNumberField
+
+
+LIBRARY_CHOICES = [
+    ('choice1', 'Choice 1'),
+    ('choice2', 'Choice 2'),
+    ('other', 'Other'),
+]
+
+ISOLATION_METHOD_CHOICES = [
+    ('method1', 'Method 1'), 
+    ('method2', 'Method 2'),
+    ('other', 'Other'),
+]
+
 
 class Order(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -9,19 +24,19 @@ class Order(models.Model):
     ag_and_hzi = models.CharField(max_length=100, null=True, blank=True)
     date = models.DateField(null=True, blank=True)
     quote_no = models.CharField(max_length=100, null=True, blank=True)
-    contact_phone = models.CharField(max_length=20, null=True, blank=True)
+    contact_phone = PhoneNumberField(null=True, blank=True)
     email = models.EmailField(null=True, blank=True)
     data_delivery = models.CharField(max_length=100, null=True, blank=True)
     signature = models.CharField(max_length=100, null=True, blank=True)
     experiment_title = models.CharField(max_length=100, null=True, blank=True)
     dna = models.CharField(max_length=20, null=True, blank=True)
     rna = models.CharField(max_length=20, null=True, blank=True)
-    library = models.CharField(max_length=20, null=True, blank=True)
+    library = models.CharField(max_length=20, choices=LIBRARY_CHOICES, null=True, blank=True)
     method = models.CharField(max_length=100, null=True, blank=True)
     buffer = models.CharField(max_length=100, null=True, blank=True)
     organism = models.CharField(max_length=100, null=True, blank=True)
     isolated_from = models.CharField(max_length=100, null=True, blank=True)
-    isolation_method = models.CharField(max_length=100, null=True, blank=True)
+    isolation_method = models.CharField(max_length=100, choices=ISOLATION_METHOD_CHOICES, null=True, blank=True)
 
     def __str__(self):
         return f"Order by {self.user.username}"

@@ -1,31 +1,58 @@
-<h2>Order List</h2>
+{% extends 'base.html' %}
 
-{% if orders %}
-    <table>
-        <thead>
+{% block title %}
+Order List
+{% endblock title %}
+
+{% block content %}
+<section class="section">
+  <div class="container">
+    <h2 class="title has-text-centered">Order List</h2>
+    <p class="has-text-centered">
+      Each order is associated with one or multiple samples. The MIxS standard for each sample can be defined in the "Samples" column. The corresponding MIxS standard questionnaires will appear in the "Metadata" column.
+    </p>
+    {% if orders %}
+      <div class="table-container">
+        <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
+          <thead>
             <tr>
-                <th>Order ID</th>
-                <th>Actions</th>
+              <th>Order ID</th>
+              <th>Order Actions</th>
+              <th>Samples</th>
+              <th>Metadata</th>
             </tr>
-        </thead>
-        <tbody>
+          </thead>
+          <tbody>
             {% for order in orders %}
-                <tr>
-                    <td>{{ order.id }}</td>
-                    <td>
-                        <a href="{% url 'order_view' order.id %}">Edit</a>
-                        <a href="{% url 'delete_order' order.id %}">Delete</a>
-                        <a href="{% url 'samples_view' order.id %}">Edit Samples</a>
-                        {% for mixs_standard in order.mixs_standards %}
-                        <a href="{% url 'mixs_view' order.id mixs_standard %}">Edit MixS {{ mixs_standard }}</a>
-                        {% endfor %}
-                    </td>
-                </tr>
+              <tr>
+                <td>{{ order.id }}</td>
+                <td>
+                  <div class="buttons">
+                    <a href="{% url 'order_edit' order_id=order.id %}" class="button is-small is-info">Edit</a>
+                    <a href="{% url 'delete_order' order.id %}" class="button is-small is-danger">Delete</a>
+                  </div>
+                </td>
+                <td>
+                  <a href="{% url 'samples_view' order.id %}" class="button is-small is-primary">Edit Samples</a>
+                </td>
+                <td>
+                  <div class="buttons">
+                    {% for mixs_standard in order.mixs_standards %}
+                      <a href="{% url 'mixs_view' order.id mixs_standard %}" class="button is-small is-link">{{ mixs_standard }}</a>
+                    {% endfor %}
+                  </div>
+                </td>
+              </tr>
             {% endfor %}
-        </tbody>
-    </table>
-{% else %}
-    <p>No orders found.</p>
-{% endif %}
-
-<a href="{% url 'order_view' %}">Request Order</a>
+          </tbody>
+        </table>
+      </div>
+    {% else %}
+      <p class="has-text-centered">No orders found.</p>
+    {% endif %}
+    <div class="has-text-centered mt-4">
+      <a href="{% url 'order_create' %}" class="button is-primary">Request new order</a>
+    </div>
+  </div>
+</section>
+{% endblock content %}

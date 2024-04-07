@@ -1,7 +1,10 @@
 {% extends 'base.html' %}
 
+{% block title %}
+MixS {{ mixs_standard }} Samples for Order {{ order.id }}
+{% endblock title %}
+
 {% block content %}
-<h2>MixS {{ mixs_standard }} Samples for Order {{ order.id }}</h2>
 
 <table>
   <thead>
@@ -19,4 +22,4 @@
 </table>
 
 <a href="{% url 'order_list' %}">Back to Order List</a>
-{% endblock %}
+{% endblock content%}

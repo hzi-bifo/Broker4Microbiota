@@ -5,14 +5,22 @@ Add and update Samples
 {% endblock title %}
 
 {% block content %}
-<h1>Update Samples</h1>
+<section class="section">
+    <div class="container">
+      <h2 class="title has-text-centered">Update Samples</h2>
+      <div class="has-text-centered mb-4">
+        <button class="button is-primary" onclick="addNewRow()">Add New Row</button>
+      </div>
 
-<button onclick="addNewRow()">Add New Row</button>
+      <div id="handsontable-container"></div>
 
-<div id="handsontable-container"></div>
-
-<button onclick="saveSampleData()">Save Samples</button>
-<a href="{% url 'order_list' %}">Back to Order Overview</a>
+      <div class="has-text-centered mt-4">
+        <button class="button is-success" onclick="saveSampleData()">Save Samples</button>
+        <a href="{% url 'order_list' %}" class="button is-link">Back to Order Overview</a>
+      </div>
+    </div>
+  </section>
+  
 
 <script src="https://cdn.jsdelivr.net/npm/handsontable/dist/handsontable.full.min.js"></script>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/handsontable/dist/handsontable.full.min.css">
@@ -30,7 +38,7 @@ var hotSettings = {
     { title: 'Ratio 260/230', data: 'ratio_260_230' },
     { title: 'Comments', data: 'comments' },
   ],
-  minSpareRows: 0,
+  minSpareRows: 1,
   rowHeaders: true,
   contextMenu: true,
   licenseKey: 'non-commercial-and-evaluation',

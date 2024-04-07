@@ -13,6 +13,10 @@ from django import forms
 from django.http import JsonResponse
 import json
 from .mixs_metadata_standards import MIXS_METADATA_STANDARDS
+import logging
+
+
+logger = logging.getLogger(__name__)
 
 
 def login_view(request):
@@ -43,20 +47,21 @@ class OrderListView(ListView):
 
 def order_view(request, order_id=None):
     if request.user.is_authenticated:
-        if order_id:
-            order = get_object_or_404(Order, pk=order_id, user=request.user)
-        else:
-            order = Order(user=request.user)
-
         if request.method == 'POST':
-            form = OrderForm(request.POST, instance=order)
+            form = OrderForm(request.POST)
             if form.is_valid():
-                order = form.save(commit=False)
-                order.user = request.user
+                # Process the form data and save the order
+                # You can access the form data using form.cleaned_data
+                # For example:
+                # name = form.cleaned_data['name']
+                # billing_address = form.cleaned_data['billing_address']
+                # ag_and_hzi = form.cleaned_data['ag_and_hzi']
+                # Create a new Order instance and save it
+                order = Order(user=request.user)
                 order.save()
                 return redirect('order_list')
         else:
-            form = OrderForm(instance=order)
+            form = OrderForm()
 
         return render(request, 'order_form.html', {'form': form})
     else:
@@ -142,3 +147,35 @@ def mixs_view(request, order_id, mixs_standard):
     order = get_object_or_404(Order, pk=order_id)
     samples = order.sample_set.filter(mixs_metadata_standard=mixs_standard)
     return render(request, 'mixs_view.html', {'order': order, 'mixs_standard': mixs_standard, 'samples': samples})
+
+def order_list_view(request):
+    orders = Order.objects.filter(user=request.user)
+    return render(request, 'order_list.html', {'orders': orders, 'user': request.user})
+
+def order_view(request, order_id=None):
+    if request.user.is_authenticated:
+        if order_id:
+            order = get_object_or_404(Order, pk=order_id, user=request.user)
+            form = OrderForm(instance=order)
+        else:
+            form = OrderForm()
+
+        if request.method == 'POST':
+            if order_id:
+                form = OrderForm(request.POST, instance=order)
+            else:
+                form = OrderForm(request.POST)
+
+            if form.is_valid():
+                order = form.save(commit=False)
+                order.user = request.user
+                order.save()
+                return redirect('order_list')
+
+        return render(request, 'order_form.html', {'form': form})
+    else:
+        return redirect('login')
+
+def home(request):
+    # Add any necessary logic for the home page
+    return render(request, 'home.html')

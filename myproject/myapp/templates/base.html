@@ -2,18 +2,55 @@
 
 <!doctype html>
 <html lang="en">
-
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>{% block title %}{% endblock title %}</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">
+
+    <title>{% block title %}{% endblock %}</title>
   </head>
-
   <body>
-    <p>
-     
-    </p>
-    {% block content %}{% endblock content %}
-  </body>
+    <header class="navbar is-light">
+      <div class="navbar-brand">
+        <a class="navbar-item">
+          <img src="{% static 'images/logo.png' %}" alt="Logo" width="40" height="40">
+        </a>
+      </div>
+      <div class="navbar-menu">
+        <div class="navbar-start">
+          <h1 class="navbar-item title">Sequencing Order Application</h1>
+        </div>
+        <div class="navbar-end">
+          {% if user.is_authenticated %}
+            <div class="navbar-item">
+              <div class="buttons">
+                <span class="button is-static">Welcome, {{ user.username }}!</span>
+                <a href="{% url 'logout' %}" class="button is-danger">Logout</a>
+              </div>
+            </div>
+          {% else %}
+            <div class="navbar-item">
+              <div class="buttons">
+                <a href="{% url 'login' %}" class="button is-primary">Login</a>
+              </div>
+            </div>
+          {% endif %}
+        </div>
+      </div>
+    </header>
 
+    <main class="section">
+      <div class="container">
+        {% block content %}{% endblock %}
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="content has-text-centered">
+        <p>This application is developed by the Helmholtz Centre for Infection Research to facilitate sequencing order requests and metadata collection according to the MIxS standards.</p>
+        <p>&copy; {% now "Y" %} Helmholtz Centre for Infection Research. All rights reserved.</p>
+      </div>
+    </footer>
+  </body>
 </html>
