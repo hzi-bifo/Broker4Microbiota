@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from .mixs_metadata_standards import MIXS_METADATA_STANDARDS
 from phonenumber_field.modelfields import PhoneNumberField
+from django.db.models import JSONField
 
 
 LIBRARY_CHOICES = [
@@ -51,6 +52,8 @@ class Sample(models.Model):
     comments = models.TextField(null=True, blank=True)
     internal_id = models.DateTimeField(auto_now_add=True)
     mixs_metadata_standard = models.CharField(max_length=100, choices=MIXS_METADATA_STANDARDS, null=True, blank=True)
+    mixs_metadata = JSONField(null=True, blank=True)
 
     def __str__(self):
         return self.sample_name or ''
+

@@ -1,5 +1,9 @@
 from django import forms
 from .models import Order, Sample
+from django.conf import settings
+import os
+import xml.etree.ElementTree as ET
+
 
 class OrderForm(forms.ModelForm):
     class Meta:
@@ -27,3 +31,30 @@ class SampleForm(forms.ModelForm):
     class Meta:
         model = Sample
         exclude = ['order']
+
+
+class SampleMetadataForm(forms.Form):
+    def __init__(self, *args, **kwargs):
+        mixs_metadata_standard = kwargs.pop('mixs_metadata_standard', None)
+        super().__init__(*args, **kwargs)
+
+        if mixs_metadata_standard:
+            xml_file = os.path.join(settings.BASE_DIR, 'static', 'xml', f'{mixs_metadata_standard}.xml')
+            tree = ET.parse(xml_file)
+            root = tree.getroot()
+
+            for field in root.findall('.//FIELD'):
+                label = field.find('LABEL').text
+                name = field.find('NAME').text
+                description = field.find('DESCRIPTION').text
+                field_type = field.find('FIELD_TYPE')
+                mandatory = field.find('MANDATORY').text
+                multiplicity = field.find('MULTIPLICITY').text
+
+                if field_type.find('TEXT_FIELD') is not None:
+                    self.fields[name] = forms.CharField(
+                        label=label,
+                        required=mandatory == 'mandatory',
+                        help_text=description,
+                        widget=forms.TextInput(attrs={'class': 'form-control'})
+                    )
