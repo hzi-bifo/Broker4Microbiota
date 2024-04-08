@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Login
+{% endblock title %}
+
+{% block content %}
+<section class="section">
+  <div class="container">
+    <div class="columns is-centered">
+      <div class="column is-half">
+        <h2 class="title has-text-centered">Login</h2>
+        <p class="subtitle has-text-centered">Please log in to access the sequencing order application and submit your requests.</p>
+        <form method="post" class="box">
+          {% csrf_token %}
+          <div class="field">
+            <label class="label">{{ form.username.label }}</label>
+            <div class="control">
+              {{ form.username }}
+            </div>
+          </div>
+          <div class="field">
+            <label class="label">{{ form.password.label }}</label>
+            <div class="control">
+              {{ form.password }}
+            </div>
+          </div>
+          <div class="field">
+            <div class="control">
+              <button type="submit" class="button is-primary is-fullwidth">Login</button>
+            </div>
+          </div>
+        </form>
+        <p class="has-text-centered">Don't have an account? <a href="{% url 'register' %}">Register here</a>.</p>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock content %}

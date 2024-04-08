@@ -1,0 +1,16 @@
+MIXS_METADATA_STANDARDS = [
+    ('Air', 'Air'),
+    ('HostAssociated', 'Host Associated'),
+    ('HumanAssociated', 'Human Associated'),
+    ('HumanGut', 'Human Gut'),
+    ('HumanOral', 'Human Oral'),
+    ('HumanSkin', 'Human Skin'),
+    ('HumanVaginal', 'Human Vaginal'),
+    ('MicrobialMatBiofilm', 'Microbial Mat Biofilm'),
+    ('MiscellaneousNaturalOrArtificialEnvironment', 'Miscellaneous Natural or Artificial Environment'),
+    ('PlantAssociated', 'Plant Associated'),
+    ('Sediment', 'Sediment'),
+    ('Soil', 'Soil'),
+    ('WastewaterSludge', 'Wastewater Sludge'),
+    ('Water', 'Water'),
+]

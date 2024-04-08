@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+
+{% block title %}
+MixS {{ mixs_standard }} Samples for Order {{ order.id }}
+{% endblock title %}
+
+{% block content %}
+<section class="section">
+    <div class="container">
+        <h2 class="title has-text-centered">Update MixS Metadata</h2>
+
+        <div id="handsontable-container"></div>
+
+        <div class="has-text-centered mt-4">
+            <button class="button is-success" onclick="saveMixsMetadata()">Save Metadata</button>
+            <a href="{% url 'order_list' %}" class="button is-link">Back to Order Overview</a>
+        </div>
+    </div>
+</section>
+
+<script src="https://cdn.jsdelivr.net/npm/handsontable/dist/handsontable.full.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/handsontable/dist/handsontable.full.min.css">
+
+<script>
+    var hotElement = document.querySelector('#handsontable-container');
+    var hotSettings = {
+      data: [
+          {% for sample in samples %}
+              {
+                  id: {{ sample.id }},
+                  {% for key, value in sample.mixs_metadata.items %}
+                      '{{ key }}': '{{ value|default:"" }}',
+                  {% endfor %}
+              },
+          {% endfor %}
+      ],
+      columns: [
+          { title: 'Sample ID', data: 'id', readOnly: true },
+          {% for field in form %}
+              { title: '{{ field.label }}', data: '{{ field.name }}' },
+          {% endfor %}
+      ],
+      rowHeaders: true,
+      licenseKey: 'non-commercial-and-evaluation',
+    };
+    var hot = new Handsontable(hotElement, hotSettings);
+
+    function saveMixsMetadata() {
+        var mixsMetadata = hot.getData().map(function(row) {
+            var sampleId = row[0];
+            var metadata = {};
+            {% for field in form %}
+            metadata['{{ field.name }}'] = row[{{ forloop.counter }}];
+            {% endfor %}
+            return {
+                sample_id: sampleId,
+                metadata: metadata
+            };
+        });
+
+        console.log('Sending MixS metadata:', mixsMetadata);
+
+        fetch("{% url 'mixs_view' order.id mixs_standard %}", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': '{{ csrf_token }}'
+            },
+            body: JSON.stringify(mixsMetadata)
+        })
+        .then(function(response) {
+            console.log('MixS metadata saved successfully');
+        })
+        .catch(function(error) {
+            console.error('Error saving MixS metadata:', error);
+        });
+    }
+</script>
+{% endblock content %}
