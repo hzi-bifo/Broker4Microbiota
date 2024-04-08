@@ -1,14 +1,68 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CHECKLIST_SET>
-<CHECKLIST accession="ERC000012" checklistType="Sample">
+<CHECKLIST accession="ERC000022" checklistType="Sample">
     <IDENTIFIERS>
-        <PRIMARY_ID>ERC000012</PRIMARY_ID>
+        <PRIMARY_ID>ERC000022</PRIMARY_ID>
     </IDENTIFIERS>
     <DESCRIPTOR>
-        <LABEL>GSC MIxS air</LABEL>
-        <NAME>GSC MIxS air</NAME>
+        <LABEL>GSC MIxS soil</LABEL>
+        <NAME>GSC MIxS soil</NAME>
         <DESCRIPTION>Genomic Standards Consortium package extension for reporting of measurements and observations obtained from the environment where the sample was obtained. By choosing the environmental package, a selection of fields can be made from a relevant subsets of the GSC terms.</DESCRIPTION>
         <AUTHORITY>ENA</AUTHORITY>
+        <FIELD_GROUP restrictionType="Any number or none of the fields">
+            <NAME>geography</NAME>
+            <FIELD>
+                <LABEL>slope gradient</LABEL>
+                <NAME>slope gradient</NAME>
+                <DESCRIPTION>commonly called slope. The angle between ground surface and a horizontal line (in percent). This is the direction that overland water would flow. This measure is usually taken with a hand level meter or clinometer.</DESCRIPTION>
+                <UNITS>
+                    <UNIT>%</UNIT>
+                </UNITS>
+                <FIELD_TYPE>
+                    <TEXT_FIELD>
+                        <REGEX_VALUE>(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?</REGEX_VALUE>
+                    </TEXT_FIELD>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>multiple</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>slope aspect</LABEL>
+                <NAME>slope aspect</NAME>
+                <DESCRIPTION>the direction a slope faces. While looking down a slope use a compass to record the direction you are facing (direction or degrees); e.g., NW or 315°. This measure provides an indication of sun and wind exposure that will influence soil temperature and evapotranspiration.</DESCRIPTION>
+                <FIELD_TYPE>
+                    <TEXT_FIELD/>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>multiple</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>profile position</LABEL>
+                <NAME>profile position</NAME>
+                <DESCRIPTION>cross-sectional position in the hillslope where sample was collected.sample area position in relation to surrounding areas</DESCRIPTION>
+                <FIELD_TYPE>
+                    <TEXT_CHOICE_FIELD>
+                        <TEXT_VALUE>
+                            <VALUE>backslope</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>footslope</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>shoulder</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>summit</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>toeslope</VALUE>
+                        </TEXT_VALUE>
+                    </TEXT_CHOICE_FIELD>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>multiple</MULTIPLICITY>
+            </FIELD>
+        </FIELD_GROUP>
         <FIELD_GROUP restrictionType="Any number or none of the fields">
             <NAME>non-sample terms</NAME>
             <FIELD>
@@ -311,6 +365,16 @@
                 <MULTIPLICITY>multiple</MULTIPLICITY>
             </FIELD>
             <FIELD>
+                <LABEL>pooling of DNA extracts (if done)</LABEL>
+                <NAME>pooling of DNA extracts (if done)</NAME>
+                <DESCRIPTION>were multiple DNA extractions mixed? how many?</DESCRIPTION>
+                <FIELD_TYPE>
+                    <TEXT_FIELD/>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>multiple</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
                 <LABEL>negative control type</LABEL>
                 <NAME>negative control type</NAME>
                 <DESCRIPTION>The substance or equipment used as a negative control in an investigation</DESCRIPTION>
@@ -360,7 +424,7 @@
                         <REGEX_VALUE>(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?</REGEX_VALUE>
                     </TEXT_FIELD>
                 </FIELD_TYPE>
-                <MANDATORY>mandatory</MANDATORY>
+                <MANDATORY>optional</MANDATORY>
                 <MULTIPLICITY>multiple</MULTIPLICITY>
             </FIELD>
             <FIELD>
@@ -1276,6 +1340,22 @@
                 <MULTIPLICITY>multiple</MULTIPLICITY>
             </FIELD>
             <FIELD>
+                <LABEL>depth</LABEL>
+                <SYNONYM>geographic location (depth)</SYNONYM>
+                <NAME>depth</NAME>
+                <DESCRIPTION>The vertical distance below local surface, e.g. for sediment or soil samples depth is measured from sediment or soil surface, respectively. Depth can be reported as an interval for subsurface samples.</DESCRIPTION>
+                <UNITS>
+                    <UNIT>m</UNIT>
+                </UNITS>
+                <FIELD_TYPE>
+                    <TEXT_FIELD>
+                        <REGEX_VALUE>(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?</REGEX_VALUE>
+                    </TEXT_FIELD>
+                </FIELD_TYPE>
+                <MANDATORY>mandatory</MANDATORY>
+                <MULTIPLICITY>multiple</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
                 <LABEL>broad-scale environmental context</LABEL>
                 <SYNONYM>environment (biome)</SYNONYM>
                 <NAME>broad-scale environmental context</NAME>
@@ -1321,46 +1401,7 @@
                         <REGEX_VALUE>[+-]?(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?</REGEX_VALUE>
                     </TEXT_FIELD>
                 </FIELD_TYPE>
-                <MANDATORY>optional</MANDATORY>
-                <MULTIPLICITY>multiple</MULTIPLICITY>
-            </FIELD>
-        </FIELD_GROUP>
-        <FIELD_GROUP restrictionType="Any number or none of the fields">
-            <NAME>internal environment</NAME>
-            <FIELD>
-                <LABEL>ventilation rate</LABEL>
-                <NAME>ventilation rate</NAME>
-                <DESCRIPTION>ventilation rate of the system in the sampled premises</DESCRIPTION>
-                <UNITS>
-                    <UNIT>L/sec</UNIT>
-                    <UNIT>m3/min</UNIT>
-                </UNITS>
-                <FIELD_TYPE>
-                    <TEXT_FIELD>
-                        <REGEX_VALUE>(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?</REGEX_VALUE>
-                    </TEXT_FIELD>
-                </FIELD_TYPE>
-                <MANDATORY>optional</MANDATORY>
-                <MULTIPLICITY>multiple</MULTIPLICITY>
-            </FIELD>
-            <FIELD>
-                <LABEL>ventilation type</LABEL>
-                <NAME>ventilation type</NAME>
-                <DESCRIPTION>The intentional movement of air from outside a building to the inside through forced or natural movement of air</DESCRIPTION>
-                <FIELD_TYPE>
-                    <TEXT_CHOICE_FIELD>
-                        <TEXT_VALUE>
-                            <VALUE>forced ventilation</VALUE>
-                        </TEXT_VALUE>
-                        <TEXT_VALUE>
-                            <VALUE>mechanical ventilation</VALUE>
-                        </TEXT_VALUE>
-                        <TEXT_VALUE>
-                            <VALUE>natural ventilation</VALUE>
-                        </TEXT_VALUE>
-                    </TEXT_CHOICE_FIELD>
-                </FIELD_TYPE>
-                <MANDATORY>optional</MANDATORY>
+                <MANDATORY>mandatory</MANDATORY>
                 <MULTIPLICITY>multiple</MULTIPLICITY>
             </FIELD>
         </FIELD_GROUP>
@@ -1426,26 +1467,9 @@
                 <MULTIPLICITY>multiple</MULTIPLICITY>
             </FIELD>
             <FIELD>
-                <LABEL>oxygenation status of sample</LABEL>
-                <NAME>oxygenation status of sample</NAME>
-                <DESCRIPTION>oxygenation status of sample</DESCRIPTION>
-                <FIELD_TYPE>
-                    <TEXT_CHOICE_FIELD>
-                        <TEXT_VALUE>
-                            <VALUE>aerobic</VALUE>
-                        </TEXT_VALUE>
-                        <TEXT_VALUE>
-                            <VALUE>anaerobic</VALUE>
-                        </TEXT_VALUE>
-                    </TEXT_CHOICE_FIELD>
-                </FIELD_TYPE>
-                <MANDATORY>optional</MANDATORY>
-                <MULTIPLICITY>multiple</MULTIPLICITY>
-            </FIELD>
-            <FIELD>
-                <LABEL>organism count</LABEL>
-                <NAME>organism count</NAME>
-                <DESCRIPTION>Total cell count of any organism (or group of organisms) per gram, volume or area of sample, should include name of organism followed by count. The method that was used for the enumeration (e.g. qPCR, atp, mpn, etc.) Should also be provided. (example: total prokaryotes; 3.5e7 cells per ml; qpcr)</DESCRIPTION>
+                <LABEL>composite design/sieving (if any)</LABEL>
+                <NAME>composite design/sieving (if any)</NAME>
+                <DESCRIPTION>collection design of pooled samples and/or sieve size and amount of sample sieved</DESCRIPTION>
                 <FIELD_TYPE>
                     <TEXT_FIELD/>
                 </FIELD_TYPE>
@@ -1453,15 +1477,11 @@
                 <MULTIPLICITY>multiple</MULTIPLICITY>
             </FIELD>
             <FIELD>
-                <LABEL>sample storage duration</LABEL>
-                <NAME>sample storage duration</NAME>
-                <DESCRIPTION>duration for which sample was stored</DESCRIPTION>
+                <LABEL>sample weight for DNA extraction</LABEL>
+                <NAME>sample weight for DNA extraction</NAME>
+                <DESCRIPTION>weight (g) of soil processed</DESCRIPTION>
                 <UNITS>
-                    <UNIT>days</UNIT>
-                    <UNIT>hours</UNIT>
-                    <UNIT>months</UNIT>
-                    <UNIT>weeks</UNIT>
-                    <UNIT>years</UNIT>
+                    <UNIT>g</UNIT>
                 </UNITS>
                 <FIELD_TYPE>
                     <TEXT_FIELD>
@@ -1472,24 +1492,34 @@
                 <MULTIPLICITY>multiple</MULTIPLICITY>
             </FIELD>
             <FIELD>
-                <LABEL>sample storage temperature</LABEL>
-                <NAME>sample storage temperature</NAME>
-                <DESCRIPTION>temperature at which sample was stored, e.g. -80</DESCRIPTION>
+                <LABEL>storage conditions (fresh/frozen/other)</LABEL>
+                <NAME>storage conditions (fresh/frozen/other)</NAME>
+                <DESCRIPTION>explain how and for how long the soil sample was stored before DNA extraction.</DESCRIPTION>
+                <FIELD_TYPE>
+                    <TEXT_FIELD/>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>multiple</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>microbial biomass</LABEL>
+                <NAME>microbial biomass</NAME>
+                <DESCRIPTION>the part of the organic matter in the soil that constitutes living microorganisms smaller than 5-10 µm. IF you keep this, you would need to have correction factors used for conversion to the final units, which should be mg C (or N)/kg soil).</DESCRIPTION>
                 <UNITS>
-                    <UNIT>°C</UNIT>
+                    <UNIT>g/kg</UNIT>
                 </UNITS>
                 <FIELD_TYPE>
                     <TEXT_FIELD>
-                        <REGEX_VALUE>[+-]?(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?</REGEX_VALUE>
+                        <REGEX_VALUE>(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?</REGEX_VALUE>
                     </TEXT_FIELD>
                 </FIELD_TYPE>
                 <MANDATORY>optional</MANDATORY>
                 <MULTIPLICITY>multiple</MULTIPLICITY>
             </FIELD>
             <FIELD>
-                <LABEL>sample storage location</LABEL>
-                <NAME>sample storage location</NAME>
-                <DESCRIPTION>location at which sample was stored, usually name of a specific freezer/room</DESCRIPTION>
+                <LABEL>microbial biomass method</LABEL>
+                <NAME>microbial biomass method</NAME>
+                <DESCRIPTION>reference or method used in determining microbial biomass</DESCRIPTION>
                 <FIELD_TYPE>
                     <TEXT_FIELD/>
                 </FIELD_TYPE>
@@ -1515,6 +1545,65 @@
                 </FIELD_TYPE>
                 <MANDATORY>optional</MANDATORY>
                 <MULTIPLICITY>single</MULTIPLICITY>
+            </FIELD>
+        </FIELD_GROUP>
+        <FIELD_GROUP restrictionType="Any number or none of the fields">
+            <NAME>unusual properties</NAME>
+            <FIELD>
+                <LABEL>salinity method</LABEL>
+                <SYNONYM>extreme_unusual_properties/salinity method</SYNONYM>
+                <NAME>salinity method</NAME>
+                <DESCRIPTION>reference or method used in determining salinity</DESCRIPTION>
+                <FIELD_TYPE>
+                    <TEXT_FIELD/>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>multiple</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>extreme_unusual_properties/heavy metals</LABEL>
+                <NAME>extreme_unusual_properties/heavy metals</NAME>
+                <DESCRIPTION>heavy metals present and concentrations of any drug used by subject and the frequency of usage; can include multiple heavy metals and concentrations</DESCRIPTION>
+                <FIELD_TYPE>
+                    <TEXT_FIELD/>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>multiple</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>extreme_unusual_properties/heavy metals method</LABEL>
+                <NAME>extreme_unusual_properties/heavy metals method</NAME>
+                <DESCRIPTION>reference or method used in determining heavy metals</DESCRIPTION>
+                <FIELD_TYPE>
+                    <TEXT_FIELD/>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>multiple</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>extreme_unusual_properties/Al saturation</LABEL>
+                <NAME>extreme_unusual_properties/Al saturation</NAME>
+                <DESCRIPTION>aluminum saturation (esp. for tropical soils)</DESCRIPTION>
+                <UNITS>
+                    <UNIT>%</UNIT>
+                </UNITS>
+                <FIELD_TYPE>
+                    <TEXT_FIELD>
+                        <REGEX_VALUE>(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?</REGEX_VALUE>
+                    </TEXT_FIELD>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>multiple</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>extreme_unusual_properties/Al saturation method</LABEL>
+                <NAME>extreme_unusual_properties/Al saturation method</NAME>
+                <DESCRIPTION>reference or method used in determining Al saturation</DESCRIPTION>
+                <FIELD_TYPE>
+                    <TEXT_FIELD/>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>multiple</MULTIPLICITY>
             </FIELD>
         </FIELD_GROUP>
         <FIELD_GROUP restrictionType="Any number or none of the fields">
@@ -1546,50 +1635,44 @@
             </FIELD>
         </FIELD_GROUP>
         <FIELD_GROUP restrictionType="Any number or none of the fields">
+            <NAME>link</NAME>
+            <FIELD>
+                <LABEL>link to climate information</LABEL>
+                <NAME>link to climate information</NAME>
+                <DESCRIPTION>link to climate resource</DESCRIPTION>
+                <FIELD_TYPE>
+                    <TEXT_FIELD/>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>multiple</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>link to classification information</LABEL>
+                <NAME>link to classification information</NAME>
+                <DESCRIPTION>link to digitized soil maps or other soil classification information</DESCRIPTION>
+                <FIELD_TYPE>
+                    <TEXT_FIELD/>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>multiple</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>links to additional analysis</LABEL>
+                <NAME>links to additional analysis</NAME>
+                <DESCRIPTION>link to additional analysis results performed on the sample</DESCRIPTION>
+                <FIELD_TYPE>
+                    <TEXT_FIELD/>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>multiple</MULTIPLICITY>
+            </FIELD>
+        </FIELD_GROUP>
+        <FIELD_GROUP restrictionType="Any number or none of the fields">
             <NAME>local environment conditions</NAME>
             <FIELD>
-                <LABEL>barometric pressure</LABEL>
-                <NAME>barometric pressure</NAME>
-                <DESCRIPTION>force per unit area exerted against a surface by the weight of air above that surface</DESCRIPTION>
-                <UNITS>
-                    <UNIT>Torr</UNIT>
-                    <UNIT>in. Hg</UNIT>
-                    <UNIT>millibar(hPa)</UNIT>
-                    <UNIT>mm Hg</UNIT>
-                </UNITS>
-                <FIELD_TYPE>
-                    <TEXT_FIELD>
-                        <REGEX_VALUE>(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?</REGEX_VALUE>
-                    </TEXT_FIELD>
-                </FIELD_TYPE>
-                <MANDATORY>optional</MANDATORY>
-                <MULTIPLICITY>multiple</MULTIPLICITY>
-            </FIELD>
-            <FIELD>
-                <LABEL>humidity</LABEL>
-                <NAME>humidity</NAME>
-                <DESCRIPTION>amount of water vapour in the air, at the time of sampling</DESCRIPTION>
-                <UNITS>
-                    <UNIT>%</UNIT>
-                    <UNIT>g/m3</UNIT>
-                </UNITS>
-                <FIELD_TYPE>
-                    <TEXT_FIELD>
-                        <REGEX_VALUE>(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?</REGEX_VALUE>
-                    </TEXT_FIELD>
-                </FIELD_TYPE>
-                <MANDATORY>optional</MANDATORY>
-                <MULTIPLICITY>multiple</MULTIPLICITY>
-            </FIELD>
-            <FIELD>
-                <LABEL>pollutants</LABEL>
-                <NAME>pollutants</NAME>
-                <DESCRIPTION>pollutant types and, amount or concentrations measured at the time of sampling; can report multiple pollutants by entering numeric values preceded by name of pollutant</DESCRIPTION>
-                <UNITS>
-                    <UNIT>M/L</UNIT>
-                    <UNIT>g</UNIT>
-                    <UNIT>mg/L</UNIT>
-                </UNITS>
+                <LABEL>current land use</LABEL>
+                <NAME>current land use</NAME>
+                <DESCRIPTION>present state of sample site</DESCRIPTION>
                 <FIELD_TYPE>
                     <TEXT_FIELD/>
                 </FIELD_TYPE>
@@ -1597,24 +1680,9 @@
                 <MULTIPLICITY>multiple</MULTIPLICITY>
             </FIELD>
             <FIELD>
-                <LABEL>solar irradiance</LABEL>
-                <NAME>solar irradiance</NAME>
-                <DESCRIPTION>the amount of solar energy that arrives at a specific area of a surface during a specific time interval</DESCRIPTION>
-                <UNITS>
-                    <UNIT>W/m2</UNIT>
-                </UNITS>
-                <FIELD_TYPE>
-                    <TEXT_FIELD>
-                        <REGEX_VALUE>(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?</REGEX_VALUE>
-                    </TEXT_FIELD>
-                </FIELD_TYPE>
-                <MANDATORY>optional</MANDATORY>
-                <MULTIPLICITY>multiple</MULTIPLICITY>
-            </FIELD>
-            <FIELD>
-                <LABEL>wind direction</LABEL>
-                <NAME>wind direction</NAME>
-                <DESCRIPTION>wind direction is the direction from which a wind originates</DESCRIPTION>
+                <LABEL>current vegetation</LABEL>
+                <NAME>current vegetation</NAME>
+                <DESCRIPTION>vegetation classification from one or more standard classification systems, or agricultural crop</DESCRIPTION>
                 <FIELD_TYPE>
                     <TEXT_FIELD/>
                 </FIELD_TYPE>
@@ -1622,17 +1690,261 @@
                 <MULTIPLICITY>multiple</MULTIPLICITY>
             </FIELD>
             <FIELD>
-                <LABEL>wind speed</LABEL>
-                <NAME>wind speed</NAME>
-                <DESCRIPTION>speed of wind measured at the time of sampling</DESCRIPTION>
+                <LABEL>current vegetation method</LABEL>
+                <NAME>current vegetation method</NAME>
+                <DESCRIPTION>reference or method used in vegetation classification</DESCRIPTION>
+                <FIELD_TYPE>
+                    <TEXT_FIELD/>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>multiple</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>soil horizon</LABEL>
+                <SYNONYM>horizon</SYNONYM>
+                <NAME>soil horizon</NAME>
+                <DESCRIPTION>specific layer in the land area which measures parallel to the soil surface and possesses physical characteristics which differ from the layers above and beneath</DESCRIPTION>
+                <FIELD_TYPE>
+                    <TEXT_CHOICE_FIELD>
+                        <TEXT_VALUE>
+                            <VALUE>A horizon</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>B horizon</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>C horizon</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>E horizon</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>O horizon</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Permafrost</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>R layer</VALUE>
+                        </TEXT_VALUE>
+                    </TEXT_CHOICE_FIELD>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>multiple</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>soil horizon method</LABEL>
+                <SYNONYM>horizon method</SYNONYM>
+                <NAME>soil horizon method</NAME>
+                <DESCRIPTION>reference or method used in determining the horizon</DESCRIPTION>
+                <FIELD_TYPE>
+                    <TEXT_FIELD/>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>multiple</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>mean annual and seasonal temperature</LABEL>
+                <NAME>mean annual and seasonal temperature</NAME>
+                <DESCRIPTION>mean annual and seasonal temperature (ºC)</DESCRIPTION>
                 <UNITS>
-                    <UNIT>km/h</UNIT>
-                    <UNIT>m/s</UNIT>
+                    <UNIT>ºC</UNIT>
+                </UNITS>
+                <FIELD_TYPE>
+                    <TEXT_FIELD>
+                        <REGEX_VALUE>[+-]?(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?</REGEX_VALUE>
+                    </TEXT_FIELD>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>multiple</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>mean annual and seasonal precipitation</LABEL>
+                <NAME>mean annual and seasonal precipitation</NAME>
+                <DESCRIPTION>mean annual and seasonal precipitation (mm)</DESCRIPTION>
+                <UNITS>
+                    <UNIT>mm</UNIT>
                 </UNITS>
                 <FIELD_TYPE>
                     <TEXT_FIELD>
                         <REGEX_VALUE>(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?</REGEX_VALUE>
                     </TEXT_FIELD>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>multiple</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>soil_taxonomic/FAO classification</LABEL>
+                <NAME>soil_taxonomic/FAO classification</NAME>
+                <DESCRIPTION>soil classification from the FAO World Reference Database for Soil Resources</DESCRIPTION>
+                <FIELD_TYPE>
+                    <TEXT_FIELD/>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>multiple</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>soil_taxonomic/local classification</LABEL>
+                <NAME>soil_taxonomic/local classification</NAME>
+                <DESCRIPTION>soil classification based on local soil classification system</DESCRIPTION>
+                <FIELD_TYPE>
+                    <TEXT_FIELD/>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>multiple</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>soil_taxonomic/local classification method</LABEL>
+                <NAME>soil_taxonomic/local classification method</NAME>
+                <DESCRIPTION>reference or method used in determining the local soil classification</DESCRIPTION>
+                <FIELD_TYPE>
+                    <TEXT_FIELD/>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>multiple</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>soil type</LABEL>
+                <NAME>soil type</NAME>
+                <DESCRIPTION>Description of the soil type or classification. This field accepts terms under soil (http://purl.obolibrary.org/obo/ENVO_00001998). Multiple terms can be separated by pipes.</DESCRIPTION>
+                <FIELD_TYPE>
+                    <TEXT_CHOICE_FIELD>
+                        <TEXT_VALUE>
+                            <VALUE>Acrisol</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Albeluvisol</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Alisol</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Andosol</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Anthrosol</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Arenosol</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Calcisol</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Cambisol</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Chernozem</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Cryosol</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Durisol</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Ferralsol</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Fluvisol</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Gleysol</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Gypsisol</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Histosol</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Kastanozem</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Leptosol</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Lixisol</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Luvisol</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Nitisol</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Phaeozem</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Planosol</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Plinthosol</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Podzol</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Regosol</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Solonchak</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Solonetz</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Stagnosol</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Technosol</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Umbrisol</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Vertisol</VALUE>
+                        </TEXT_VALUE>
+                    </TEXT_CHOICE_FIELD>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>multiple</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>soil type method</LABEL>
+                <NAME>soil type method</NAME>
+                <DESCRIPTION>reference or method used in determining soil series name or other lower-level classification</DESCRIPTION>
+                <FIELD_TYPE>
+                    <TEXT_FIELD/>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>multiple</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>drainage classification</LABEL>
+                <NAME>drainage classification</NAME>
+                <DESCRIPTION>drainage classification from a standard system such as the USDA system</DESCRIPTION>
+                <FIELD_TYPE>
+                    <TEXT_CHOICE_FIELD>
+                        <TEXT_VALUE>
+                            <VALUE>excessively drained</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>moderately well</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>poorly</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>somewhat poorly</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>very poorly</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>well</VALUE>
+                        </TEXT_VALUE>
+                    </TEXT_CHOICE_FIELD>
                 </FIELD_TYPE>
                 <MANDATORY>optional</MANDATORY>
                 <MULTIPLICITY>multiple</MULTIPLICITY>
@@ -1650,16 +1962,140 @@
                     </TEXT_FIELD>
                 </FIELD_TYPE>
                 <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>single</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>soil texture measurement</LABEL>
+                <SYNONYM>texture</SYNONYM>
+                <NAME>soil texture measurement</NAME>
+                <DESCRIPTION>the relative proportion of different grain sizes of mineral particles in a soil, as described using a standard system; express as % sand (50 um to 2 mm), silt (2 um to 50 um), and clay (&lt;2 um) with textural name (e.g., silty clay loam) optional.</DESCRIPTION>
+                <UNITS>
+                    <UNIT>% sand/silt/clay</UNIT>
+                </UNITS>
+                <FIELD_TYPE>
+                    <TEXT_FIELD/>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>multiple</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>soil texture method</LABEL>
+                <SYNONYM>texture method</SYNONYM>
+                <NAME>soil texture method</NAME>
+                <DESCRIPTION>reference or method used in determining soil texture</DESCRIPTION>
+                <FIELD_TYPE>
+                    <TEXT_FIELD/>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>multiple</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>pH</LABEL>
+                <NAME>pH</NAME>
+                <DESCRIPTION>pH measurement</DESCRIPTION>
+                <FIELD_TYPE>
+                    <TEXT_FIELD>
+                        <REGEX_VALUE>(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?</REGEX_VALUE>
+                    </TEXT_FIELD>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>multiple</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>pH method</LABEL>
+                <NAME>pH method</NAME>
+                <DESCRIPTION>reference or method used in determining pH</DESCRIPTION>
+                <FIELD_TYPE>
+                    <TEXT_FIELD/>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
                 <MULTIPLICITY>multiple</MULTIPLICITY>
             </FIELD>
         </FIELD_GROUP>
         <FIELD_GROUP restrictionType="Any number or none of the fields">
             <NAME>concentration measurement</NAME>
             <FIELD>
-                <LABEL>carbon dioxide</LABEL>
-                <NAME>carbon dioxide</NAME>
-                <DESCRIPTION>carbon dioxide (gas) amount or concentration at the time of sampling</DESCRIPTION>
+                <LABEL>water content method</LABEL>
+                <NAME>water content method</NAME>
+                <DESCRIPTION>reference or method used in determining the water content of soil</DESCRIPTION>
+                <FIELD_TYPE>
+                    <TEXT_FIELD/>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>multiple</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>total organic C method</LABEL>
+                <NAME>total organic C method</NAME>
+                <DESCRIPTION>reference or method used in determining total organic C</DESCRIPTION>
+                <FIELD_TYPE>
+                    <TEXT_FIELD/>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>multiple</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>total nitrogen method</LABEL>
+                <NAME>total nitrogen method</NAME>
+                <DESCRIPTION>reference or method used in determining the total nitrogen</DESCRIPTION>
+                <FIELD_TYPE>
+                    <TEXT_FIELD/>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>multiple</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>organic matter</LABEL>
+                <NAME>organic matter</NAME>
+                <DESCRIPTION>concentration of organic matter</DESCRIPTION>
                 <UNITS>
+                    <UNIT>µg/L</UNIT>
+                </UNITS>
+                <FIELD_TYPE>
+                    <TEXT_FIELD>
+                        <REGEX_VALUE>(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?</REGEX_VALUE>
+                    </TEXT_FIELD>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>single</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>total organic carbon</LABEL>
+                <NAME>total organic carbon</NAME>
+                <DESCRIPTION>Definition for soil: total organic C content of the soil units of g C/kg soil. Definition otherwise: total organic carbon content</DESCRIPTION>
+                <UNITS>
+                    <UNIT>g/kg</UNIT>
+                </UNITS>
+                <FIELD_TYPE>
+                    <TEXT_FIELD>
+                        <REGEX_VALUE>(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?</REGEX_VALUE>
+                    </TEXT_FIELD>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>multiple</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>water content</LABEL>
+                <NAME>water content</NAME>
+                <DESCRIPTION>water content measurement</DESCRIPTION>
+                <UNITS>
+                    <UNIT>cm3/cm3</UNIT>
+                    <UNIT>g/g</UNIT>
+                </UNITS>
+                <FIELD_TYPE>
+                    <TEXT_FIELD>
+                        <REGEX_VALUE>(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?</REGEX_VALUE>
+                    </TEXT_FIELD>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>multiple</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>total nitrogen</LABEL>
+                <NAME>total nitrogen</NAME>
+                <DESCRIPTION>total nitrogen content of the sample</DESCRIPTION>
+                <UNITS>
+                    <UNIT>µg/L</UNIT>
                     <UNIT>µmol/L</UNIT>
                 </UNITS>
                 <FIELD_TYPE>
@@ -1670,61 +2106,13 @@
                 <MANDATORY>optional</MANDATORY>
                 <MULTIPLICITY>multiple</MULTIPLICITY>
             </FIELD>
+        </FIELD_GROUP>
+        <FIELD_GROUP restrictionType="Any number or none of the fields">
+            <NAME>local environment history</NAME>
             <FIELD>
-                <LABEL>carbon monoxide</LABEL>
-                <NAME>carbon monoxide</NAME>
-                <DESCRIPTION>carbon monoxide (gas) amount or concentration at the time of sampling</DESCRIPTION>
-                <UNITS>
-                    <UNIT>µM/L</UNIT>
-                </UNITS>
-                <FIELD_TYPE>
-                    <TEXT_FIELD>
-                        <REGEX_VALUE>(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?</REGEX_VALUE>
-                    </TEXT_FIELD>
-                </FIELD_TYPE>
-                <MANDATORY>optional</MANDATORY>
-                <MULTIPLICITY>multiple</MULTIPLICITY>
-            </FIELD>
-            <FIELD>
-                <LABEL>oxygen</LABEL>
-                <NAME>oxygen</NAME>
-                <DESCRIPTION>oxygen (gas) amount or concentration at the time of sampling</DESCRIPTION>
-                <UNITS>
-                    <UNIT>mg/L</UNIT>
-                    <UNIT>parts/million</UNIT>
-                </UNITS>
-                <FIELD_TYPE>
-                    <TEXT_FIELD>
-                        <REGEX_VALUE>(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?</REGEX_VALUE>
-                    </TEXT_FIELD>
-                </FIELD_TYPE>
-                <MANDATORY>optional</MANDATORY>
-                <MULTIPLICITY>multiple</MULTIPLICITY>
-            </FIELD>
-            <FIELD>
-                <LABEL>air particulate matter concentration</LABEL>
-                <SYNONYM>respirable particulate matter</SYNONYM>
-                <NAME>air particulate matter concentration</NAME>
-                <DESCRIPTION>Concentration of substances that remain suspended in the air, and comprise mixtures of organic and inorganic substances (PM10 and PM2.5); can report multiple PM&apos;s by entering numeric values preceded by name of PM</DESCRIPTION>
-                <UNITS>
-                    <UNIT>µg/m3</UNIT>
-                </UNITS>
-                <FIELD_TYPE>
-                    <TEXT_FIELD>
-                        <REGEX_VALUE>(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?</REGEX_VALUE>
-                    </TEXT_FIELD>
-                </FIELD_TYPE>
-                <MANDATORY>optional</MANDATORY>
-                <MULTIPLICITY>multiple</MULTIPLICITY>
-            </FIELD>
-            <FIELD>
-                <LABEL>volatile organic compounds</LABEL>
-                <NAME>volatile organic compounds</NAME>
-                <DESCRIPTION>concentration of carbon-based chemicals that easily evaporate at room temperature; can report multiple volatile organic compounds by entering numeric values preceded by name of compound</DESCRIPTION>
-                <UNITS>
-                    <UNIT>parts/million</UNIT>
-                    <UNIT>µg/m3</UNIT>
-                </UNITS>
+                <LABEL>history/previous land use</LABEL>
+                <NAME>history/previous land use</NAME>
+                <DESCRIPTION>previous land use and dates</DESCRIPTION>
                 <FIELD_TYPE>
                     <TEXT_FIELD/>
                 </FIELD_TYPE>
@@ -1732,33 +2120,99 @@
                 <MULTIPLICITY>multiple</MULTIPLICITY>
             </FIELD>
             <FIELD>
-                <LABEL>methane</LABEL>
-                <NAME>methane</NAME>
-                <DESCRIPTION>methane (gas) amount or concentration at the time of sampling</DESCRIPTION>
-                <UNITS>
-                    <UNIT>µM/L</UNIT>
-                </UNITS>
+                <LABEL>history/previous land use method</LABEL>
+                <NAME>history/previous land use method</NAME>
+                <DESCRIPTION>reference or method used in determining previous land use and dates</DESCRIPTION>
                 <FIELD_TYPE>
-                    <TEXT_FIELD>
-                        <REGEX_VALUE>(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?</REGEX_VALUE>
-                    </TEXT_FIELD>
+                    <TEXT_FIELD/>
                 </FIELD_TYPE>
                 <MANDATORY>optional</MANDATORY>
                 <MULTIPLICITY>multiple</MULTIPLICITY>
             </FIELD>
             <FIELD>
-                <LABEL>salinity</LABEL>
-                <SYNONYM>extreme_unusual_properties/salinity</SYNONYM>
-                <SYNONYM>sample salinity</SYNONYM>
-                <NAME>salinity</NAME>
-                <DESCRIPTION>The total concentration of all dissolved salts in a liquid or solid sample. While salinity can be measured by a complete chemical analysis, this method is difficult and time consuming. More often, it is instead derived from the conductivity measurement. This is known as practical salinity. These derivations compare the specific conductance of the sample to a salinity standard such as seawater.</DESCRIPTION>
-                <UNITS>
-                    <UNIT>psu</UNIT>
-                </UNITS>
+                <LABEL>history/crop rotation</LABEL>
+                <NAME>history/crop rotation</NAME>
+                <DESCRIPTION>whether or not crop is rotated, and if yes, rotation schedule</DESCRIPTION>
                 <FIELD_TYPE>
-                    <TEXT_FIELD>
-                        <REGEX_VALUE>(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?</REGEX_VALUE>
-                    </TEXT_FIELD>
+                    <TEXT_FIELD/>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>multiple</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>history/agrochemical additions</LABEL>
+                <NAME>history/agrochemical additions</NAME>
+                <DESCRIPTION>addition of fertilizers, pesticides, etc. - amount and time of applications</DESCRIPTION>
+                <FIELD_TYPE>
+                    <TEXT_FIELD/>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>multiple</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>history/tillage</LABEL>
+                <NAME>history/tillage</NAME>
+                <DESCRIPTION>note method(s) used for tilling</DESCRIPTION>
+                <FIELD_TYPE>
+                    <TEXT_CHOICE_FIELD>
+                        <TEXT_VALUE>
+                            <VALUE>chisel</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>cutting disc</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>disc plough</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>drill</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>mouldboard</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>ridge till</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>strip tillage</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>tined</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>zonal tillage</VALUE>
+                        </TEXT_VALUE>
+                    </TEXT_CHOICE_FIELD>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>multiple</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>history/fire</LABEL>
+                <NAME>history/fire</NAME>
+                <DESCRIPTION>historical and/or physical evidence of fire</DESCRIPTION>
+                <FIELD_TYPE>
+                    <TEXT_FIELD/>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>multiple</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>history/flooding</LABEL>
+                <NAME>history/flooding</NAME>
+                <DESCRIPTION>historical and/or physical evidence of flooding</DESCRIPTION>
+                <FIELD_TYPE>
+                    <TEXT_FIELD/>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>multiple</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>history/extreme events</LABEL>
+                <NAME>history/extreme events</NAME>
+                <DESCRIPTION>unusual physical events that may have affected microbial populations</DESCRIPTION>
+                <FIELD_TYPE>
+                    <TEXT_FIELD/>
                 </FIELD_TYPE>
                 <MANDATORY>optional</MANDATORY>
                 <MULTIPLICITY>multiple</MULTIPLICITY>
@@ -1958,16 +2412,6 @@
         </FIELD_GROUP>
         <FIELD_GROUP restrictionType="Any number or none of the fields">
             <NAME>local environment conditions imposed</NAME>
-            <FIELD>
-                <LABEL>chemical administration</LABEL>
-                <NAME>chemical administration</NAME>
-                <DESCRIPTION>list of chemical compounds administered to the host or site where sampling occurred, and when (e.g. antibiotics, N fertilizer, air filter); can include multiple compounds. For Chemical Entities of Biological Interest ontology (CHEBI) (v111), please see http://purl.bioontology.org/ontology/CHEBI</DESCRIPTION>
-                <FIELD_TYPE>
-                    <TEXT_FIELD/>
-                </FIELD_TYPE>
-                <MANDATORY>optional</MANDATORY>
-                <MULTIPLICITY>multiple</MULTIPLICITY>
-            </FIELD>
             <FIELD>
                 <LABEL>perturbation</LABEL>
                 <NAME>perturbation</NAME>

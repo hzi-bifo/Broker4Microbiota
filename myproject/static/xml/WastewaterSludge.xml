@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CHECKLIST_SET>
-<CHECKLIST accession="ERC000012" checklistType="Sample">
+<CHECKLIST accession="ERC000023" checklistType="Sample">
     <IDENTIFIERS>
-        <PRIMARY_ID>ERC000012</PRIMARY_ID>
+        <PRIMARY_ID>ERC000023</PRIMARY_ID>
     </IDENTIFIERS>
     <DESCRIPTOR>
-        <LABEL>GSC MIxS air</LABEL>
-        <NAME>GSC MIxS air</NAME>
+        <LABEL>GSC MIxS wastewater sludge</LABEL>
+        <NAME>GSC MIxS wastewater sludge</NAME>
         <DESCRIPTION>Genomic Standards Consortium package extension for reporting of measurements and observations obtained from the environment where the sample was obtained. By choosing the environmental package, a selection of fields can be made from a relevant subsets of the GSC terms.</DESCRIPTION>
         <AUTHORITY>ENA</AUTHORITY>
         <FIELD_GROUP restrictionType="Any number or none of the fields">
@@ -342,22 +342,6 @@
                 <FIELD_TYPE>
                     <TEXT_FIELD>
                         <REGEX_VALUE>(^[12][0-9]{3}(-(0[1-9]|1[0-2])(-(0[1-9]|[12][0-9]|3[01])(T[0-9]{2}:[0-9]{2}(:[0-9]{2})?Z?([+-][0-9]{1,2})?)?)?)?(/[0-9]{4}(-[0-9]{2}(-[0-9]{2}(T[0-9]{2}:[0-9]{2}(:[0-9]{2})?Z?([+-][0-9]{1,2})?)?)?)?)?$)|(^not collected$)|(^not provided$)|(^restricted access$)|(^missing: control sample$)|(^missing: sample group$)|(^missing: synthetic construct$)|(^missing: lab stock$)|(^missing: third party data$)|(^missing: data agreement established pre-2023$)|(^missing: endangered species$)|(^missing: human-identifiable$)</REGEX_VALUE>
-                    </TEXT_FIELD>
-                </FIELD_TYPE>
-                <MANDATORY>mandatory</MANDATORY>
-                <MULTIPLICITY>multiple</MULTIPLICITY>
-            </FIELD>
-            <FIELD>
-                <LABEL>altitude</LABEL>
-                <SYNONYM>geographic location (altitude)</SYNONYM>
-                <NAME>altitude</NAME>
-                <DESCRIPTION>The altitude of the sample is the vertical distance between Earth&apos;s surface above Sea Level and the sampled position in the air.</DESCRIPTION>
-                <UNITS>
-                    <UNIT>m</UNIT>
-                </UNITS>
-                <FIELD_TYPE>
-                    <TEXT_FIELD>
-                        <REGEX_VALUE>(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?</REGEX_VALUE>
                     </TEXT_FIELD>
                 </FIELD_TYPE>
                 <MANDATORY>mandatory</MANDATORY>
@@ -1276,6 +1260,22 @@
                 <MULTIPLICITY>multiple</MULTIPLICITY>
             </FIELD>
             <FIELD>
+                <LABEL>depth</LABEL>
+                <SYNONYM>geographic location (depth)</SYNONYM>
+                <NAME>depth</NAME>
+                <DESCRIPTION>The vertical distance below local surface, e.g. for sediment or soil samples depth is measured from sediment or soil surface, respectively. Depth can be reported as an interval for subsurface samples.</DESCRIPTION>
+                <UNITS>
+                    <UNIT>m</UNIT>
+                </UNITS>
+                <FIELD_TYPE>
+                    <TEXT_FIELD>
+                        <REGEX_VALUE>(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?</REGEX_VALUE>
+                    </TEXT_FIELD>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>multiple</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
                 <LABEL>broad-scale environmental context</LABEL>
                 <SYNONYM>environment (biome)</SYNONYM>
                 <NAME>broad-scale environmental context</NAME>
@@ -1306,61 +1306,6 @@
                     <TEXT_FIELD/>
                 </FIELD_TYPE>
                 <MANDATORY>mandatory</MANDATORY>
-                <MULTIPLICITY>multiple</MULTIPLICITY>
-            </FIELD>
-            <FIELD>
-                <LABEL>elevation</LABEL>
-                <SYNONYM>geographic location (elevation)</SYNONYM>
-                <NAME>elevation</NAME>
-                <DESCRIPTION>The elevation of the sampling site as measured by the vertical distance from mean sea level.</DESCRIPTION>
-                <UNITS>
-                    <UNIT>m</UNIT>
-                </UNITS>
-                <FIELD_TYPE>
-                    <TEXT_FIELD>
-                        <REGEX_VALUE>[+-]?(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?</REGEX_VALUE>
-                    </TEXT_FIELD>
-                </FIELD_TYPE>
-                <MANDATORY>optional</MANDATORY>
-                <MULTIPLICITY>multiple</MULTIPLICITY>
-            </FIELD>
-        </FIELD_GROUP>
-        <FIELD_GROUP restrictionType="Any number or none of the fields">
-            <NAME>internal environment</NAME>
-            <FIELD>
-                <LABEL>ventilation rate</LABEL>
-                <NAME>ventilation rate</NAME>
-                <DESCRIPTION>ventilation rate of the system in the sampled premises</DESCRIPTION>
-                <UNITS>
-                    <UNIT>L/sec</UNIT>
-                    <UNIT>m3/min</UNIT>
-                </UNITS>
-                <FIELD_TYPE>
-                    <TEXT_FIELD>
-                        <REGEX_VALUE>(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?</REGEX_VALUE>
-                    </TEXT_FIELD>
-                </FIELD_TYPE>
-                <MANDATORY>optional</MANDATORY>
-                <MULTIPLICITY>multiple</MULTIPLICITY>
-            </FIELD>
-            <FIELD>
-                <LABEL>ventilation type</LABEL>
-                <NAME>ventilation type</NAME>
-                <DESCRIPTION>The intentional movement of air from outside a building to the inside through forced or natural movement of air</DESCRIPTION>
-                <FIELD_TYPE>
-                    <TEXT_CHOICE_FIELD>
-                        <TEXT_VALUE>
-                            <VALUE>forced ventilation</VALUE>
-                        </TEXT_VALUE>
-                        <TEXT_VALUE>
-                            <VALUE>mechanical ventilation</VALUE>
-                        </TEXT_VALUE>
-                        <TEXT_VALUE>
-                            <VALUE>natural ventilation</VALUE>
-                        </TEXT_VALUE>
-                    </TEXT_CHOICE_FIELD>
-                </FIELD_TYPE>
-                <MANDATORY>optional</MANDATORY>
                 <MULTIPLICITY>multiple</MULTIPLICITY>
             </FIELD>
         </FIELD_GROUP>
@@ -1518,6 +1463,107 @@
             </FIELD>
         </FIELD_GROUP>
         <FIELD_GROUP restrictionType="Any number or none of the fields">
+            <NAME>bioreactor</NAME>
+            <FIELD>
+                <LABEL>biochemical oxygen demand</LABEL>
+                <NAME>biochemical oxygen demand</NAME>
+                <DESCRIPTION>a measure of the relative oxygen-depletion effect of a waste contaminant</DESCRIPTION>
+                <UNITS>
+                    <UNIT>mg/L (over 5 days at 20C)</UNIT>
+                </UNITS>
+                <FIELD_TYPE>
+                    <TEXT_FIELD>
+                        <REGEX_VALUE>(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?</REGEX_VALUE>
+                    </TEXT_FIELD>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>multiple</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>chemical oxygen demand</LABEL>
+                <NAME>chemical oxygen demand</NAME>
+                <DESCRIPTION>a measure of the relative oxygen-depletion effect of a waste contaminant</DESCRIPTION>
+                <UNITS>
+                    <UNIT>mg/L (over 5 days at 20C)</UNIT>
+                </UNITS>
+                <FIELD_TYPE>
+                    <TEXT_FIELD>
+                        <REGEX_VALUE>(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?</REGEX_VALUE>
+                    </TEXT_FIELD>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>multiple</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>pre-treatment</LABEL>
+                <NAME>pre-treatment</NAME>
+                <DESCRIPTION>the process of pre-treatment removes materials that can be easily collected from the raw wastewater</DESCRIPTION>
+                <FIELD_TYPE>
+                    <TEXT_FIELD/>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>multiple</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>primary treatment</LABEL>
+                <NAME>primary treatment</NAME>
+                <DESCRIPTION>the process to produce both a generally homogeneous liquid capable of being treated biologically and a sludge that can be separately treated or processed</DESCRIPTION>
+                <FIELD_TYPE>
+                    <TEXT_FIELD/>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>multiple</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>reactor type</LABEL>
+                <NAME>reactor type</NAME>
+                <DESCRIPTION>anaerobic digesters can be designed and engineered to operate using a number of different process configurations, as batch or continuous, mesophilic, high solid or low solid, and single stage or multistage</DESCRIPTION>
+                <FIELD_TYPE>
+                    <TEXT_FIELD/>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>multiple</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>secondary treatment</LABEL>
+                <NAME>secondary treatment</NAME>
+                <DESCRIPTION>the process for substantially degrading the biological content of the sewage</DESCRIPTION>
+                <FIELD_TYPE>
+                    <TEXT_FIELD/>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>multiple</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>sludge retention time</LABEL>
+                <NAME>sludge retention time</NAME>
+                <DESCRIPTION>the time activated sludge remains in reactor</DESCRIPTION>
+                <UNITS>
+                    <UNIT>days</UNIT>
+                    <UNIT>hours</UNIT>
+                    <UNIT>minutes</UNIT>
+                    <UNIT>weeks</UNIT>
+                </UNITS>
+                <FIELD_TYPE>
+                    <TEXT_FIELD>
+                        <REGEX_VALUE>(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?</REGEX_VALUE>
+                    </TEXT_FIELD>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>multiple</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>tertiary treatment</LABEL>
+                <NAME>tertiary treatment</NAME>
+                <DESCRIPTION>the process providing a final treatment stage to raise the effluent quality before it is discharged to the receiving environment</DESCRIPTION>
+                <FIELD_TYPE>
+                    <TEXT_FIELD/>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>multiple</MULTIPLICITY>
+            </FIELD>
+        </FIELD_GROUP>
+        <FIELD_GROUP restrictionType="Any number or none of the fields">
             <NAME>host disorder</NAME>
             <FIELD>
                 <LABEL>host disease status</LABEL>
@@ -1548,14 +1594,11 @@
         <FIELD_GROUP restrictionType="Any number or none of the fields">
             <NAME>local environment conditions</NAME>
             <FIELD>
-                <LABEL>barometric pressure</LABEL>
-                <NAME>barometric pressure</NAME>
-                <DESCRIPTION>force per unit area exerted against a surface by the weight of air above that surface</DESCRIPTION>
+                <LABEL>alkalinity</LABEL>
+                <NAME>alkalinity</NAME>
+                <DESCRIPTION>alkalinity, the ability of a solution to neutralize acids to the equivalence point of carbonate or bicarbonate</DESCRIPTION>
                 <UNITS>
-                    <UNIT>Torr</UNIT>
-                    <UNIT>in. Hg</UNIT>
-                    <UNIT>millibar(hPa)</UNIT>
-                    <UNIT>mm Hg</UNIT>
+                    <UNIT>mEq/L</UNIT>
                 </UNITS>
                 <FIELD_TYPE>
                     <TEXT_FIELD>
@@ -1566,12 +1609,11 @@
                 <MULTIPLICITY>multiple</MULTIPLICITY>
             </FIELD>
             <FIELD>
-                <LABEL>humidity</LABEL>
-                <NAME>humidity</NAME>
-                <DESCRIPTION>amount of water vapour in the air, at the time of sampling</DESCRIPTION>
+                <LABEL>industrial effluent percent</LABEL>
+                <NAME>industrial effluent percent</NAME>
+                <DESCRIPTION>percentage of industrial effluents received by wastewater treatment plant</DESCRIPTION>
                 <UNITS>
                     <UNIT>%</UNIT>
-                    <UNIT>g/m3</UNIT>
                 </UNITS>
                 <FIELD_TYPE>
                     <TEXT_FIELD>
@@ -1582,14 +1624,9 @@
                 <MULTIPLICITY>multiple</MULTIPLICITY>
             </FIELD>
             <FIELD>
-                <LABEL>pollutants</LABEL>
-                <NAME>pollutants</NAME>
-                <DESCRIPTION>pollutant types and, amount or concentrations measured at the time of sampling; can report multiple pollutants by entering numeric values preceded by name of pollutant</DESCRIPTION>
-                <UNITS>
-                    <UNIT>M/L</UNIT>
-                    <UNIT>g</UNIT>
-                    <UNIT>mg/L</UNIT>
-                </UNITS>
+                <LABEL>sewage type</LABEL>
+                <NAME>sewage type</NAME>
+                <DESCRIPTION>Type of sewage based on origin: wastewater treatment plant (municipal or industrial), open sewer line, river, stream, stagnant pool, or other.</DESCRIPTION>
                 <FIELD_TYPE>
                     <TEXT_FIELD/>
                 </FIELD_TYPE>
@@ -1597,42 +1634,11 @@
                 <MULTIPLICITY>multiple</MULTIPLICITY>
             </FIELD>
             <FIELD>
-                <LABEL>solar irradiance</LABEL>
-                <NAME>solar irradiance</NAME>
-                <DESCRIPTION>the amount of solar energy that arrives at a specific area of a surface during a specific time interval</DESCRIPTION>
-                <UNITS>
-                    <UNIT>W/m2</UNIT>
-                </UNITS>
-                <FIELD_TYPE>
-                    <TEXT_FIELD>
-                        <REGEX_VALUE>(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?</REGEX_VALUE>
-                    </TEXT_FIELD>
-                </FIELD_TYPE>
-                <MANDATORY>optional</MANDATORY>
-                <MULTIPLICITY>multiple</MULTIPLICITY>
-            </FIELD>
-            <FIELD>
-                <LABEL>wind direction</LABEL>
-                <NAME>wind direction</NAME>
-                <DESCRIPTION>wind direction is the direction from which a wind originates</DESCRIPTION>
+                <LABEL>wastewater type</LABEL>
+                <NAME>wastewater type</NAME>
+                <DESCRIPTION>the origin of wastewater such as human waste, rainfall, storm drains, etc.</DESCRIPTION>
                 <FIELD_TYPE>
                     <TEXT_FIELD/>
-                </FIELD_TYPE>
-                <MANDATORY>optional</MANDATORY>
-                <MULTIPLICITY>multiple</MULTIPLICITY>
-            </FIELD>
-            <FIELD>
-                <LABEL>wind speed</LABEL>
-                <NAME>wind speed</NAME>
-                <DESCRIPTION>speed of wind measured at the time of sampling</DESCRIPTION>
-                <UNITS>
-                    <UNIT>km/h</UNIT>
-                    <UNIT>m/s</UNIT>
-                </UNITS>
-                <FIELD_TYPE>
-                    <TEXT_FIELD>
-                        <REGEX_VALUE>(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?</REGEX_VALUE>
-                    </TEXT_FIELD>
                 </FIELD_TYPE>
                 <MANDATORY>optional</MANDATORY>
                 <MULTIPLICITY>multiple</MULTIPLICITY>
@@ -1652,13 +1658,57 @@
                 <MANDATORY>optional</MANDATORY>
                 <MULTIPLICITY>multiple</MULTIPLICITY>
             </FIELD>
+            <FIELD>
+                <LABEL>pH</LABEL>
+                <NAME>pH</NAME>
+                <DESCRIPTION>pH measurement</DESCRIPTION>
+                <FIELD_TYPE>
+                    <TEXT_FIELD>
+                        <REGEX_VALUE>(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?</REGEX_VALUE>
+                    </TEXT_FIELD>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>multiple</MULTIPLICITY>
+            </FIELD>
         </FIELD_GROUP>
         <FIELD_GROUP restrictionType="Any number or none of the fields">
             <NAME>concentration measurement</NAME>
             <FIELD>
-                <LABEL>carbon dioxide</LABEL>
-                <NAME>carbon dioxide</NAME>
-                <DESCRIPTION>carbon dioxide (gas) amount or concentration at the time of sampling</DESCRIPTION>
+                <LABEL>efficiency percent</LABEL>
+                <NAME>efficiency percent</NAME>
+                <DESCRIPTION>percentage of volatile solids removed from the anaerobic digestor</DESCRIPTION>
+                <UNITS>
+                    <UNIT>%</UNIT>
+                </UNITS>
+                <FIELD_TYPE>
+                    <TEXT_FIELD>
+                        <REGEX_VALUE>(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?</REGEX_VALUE>
+                    </TEXT_FIELD>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>multiple</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>emulsions</LABEL>
+                <NAME>emulsions</NAME>
+                <DESCRIPTION>amount or concentration of substances such as paints, adhesives, mayonnaise, hair colorants, emulsified oils, etc.; can include multiple emulsion types</DESCRIPTION>
+                <UNITS>
+                    <UNIT>g/L</UNIT>
+                    <UNIT>ng/L</UNIT>
+                    <UNIT>µg/L</UNIT>
+                </UNITS>
+                <FIELD_TYPE>
+                    <TEXT_FIELD>
+                        <REGEX_VALUE>(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?</REGEX_VALUE>
+                    </TEXT_FIELD>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>multiple</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>gaseous substances</LABEL>
+                <NAME>gaseous substances</NAME>
+                <DESCRIPTION>amount or concentration of substances such as hydrogen sulfide, carbon dioxide, methane, etc.; can include multiple substances</DESCRIPTION>
                 <UNITS>
                     <UNIT>µmol/L</UNIT>
                 </UNITS>
@@ -1671,26 +1721,43 @@
                 <MULTIPLICITY>multiple</MULTIPLICITY>
             </FIELD>
             <FIELD>
-                <LABEL>carbon monoxide</LABEL>
-                <NAME>carbon monoxide</NAME>
-                <DESCRIPTION>carbon monoxide (gas) amount or concentration at the time of sampling</DESCRIPTION>
-                <UNITS>
-                    <UNIT>µM/L</UNIT>
-                </UNITS>
-                <FIELD_TYPE>
-                    <TEXT_FIELD>
-                        <REGEX_VALUE>(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?</REGEX_VALUE>
-                    </TEXT_FIELD>
-                </FIELD_TYPE>
-                <MANDATORY>optional</MANDATORY>
-                <MULTIPLICITY>multiple</MULTIPLICITY>
-            </FIELD>
-            <FIELD>
-                <LABEL>oxygen</LABEL>
-                <NAME>oxygen</NAME>
-                <DESCRIPTION>oxygen (gas) amount or concentration at the time of sampling</DESCRIPTION>
+                <LABEL>inorganic particles</LABEL>
+                <NAME>inorganic particles</NAME>
+                <DESCRIPTION>concentration of particles such as sand, grit, metal particles, ceramics, etc.; can include multiple particles</DESCRIPTION>
                 <UNITS>
                     <UNIT>mg/L</UNIT>
+                    <UNIT>mol/L</UNIT>
+                </UNITS>
+                <FIELD_TYPE>
+                    <TEXT_FIELD>
+                        <REGEX_VALUE>(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?</REGEX_VALUE>
+                    </TEXT_FIELD>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>multiple</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>organic particles</LABEL>
+                <NAME>organic particles</NAME>
+                <DESCRIPTION>concentration of particles such as faeces, hairs, food, vomit, paper fibers, plant material, humus, etc.</DESCRIPTION>
+                <UNITS>
+                    <UNIT>g/L</UNIT>
+                </UNITS>
+                <FIELD_TYPE>
+                    <TEXT_FIELD>
+                        <REGEX_VALUE>(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?</REGEX_VALUE>
+                    </TEXT_FIELD>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>multiple</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>soluble inorganic material</LABEL>
+                <NAME>soluble inorganic material</NAME>
+                <DESCRIPTION>concentration of substances such as ammonia, road-salt, sea-salt, cyanide, hydrogen sulfide, thiocyanates, thiosulfates, etc.</DESCRIPTION>
+                <UNITS>
+                    <UNIT>g/L</UNIT>
+                    <UNIT>mol/L</UNIT>
                     <UNIT>parts/million</UNIT>
                 </UNITS>
                 <FIELD_TYPE>
@@ -1702,12 +1769,13 @@
                 <MULTIPLICITY>multiple</MULTIPLICITY>
             </FIELD>
             <FIELD>
-                <LABEL>air particulate matter concentration</LABEL>
-                <SYNONYM>respirable particulate matter</SYNONYM>
-                <NAME>air particulate matter concentration</NAME>
-                <DESCRIPTION>Concentration of substances that remain suspended in the air, and comprise mixtures of organic and inorganic substances (PM10 and PM2.5); can report multiple PM&apos;s by entering numeric values preceded by name of PM</DESCRIPTION>
+                <LABEL>soluble organic material</LABEL>
+                <NAME>soluble organic material</NAME>
+                <DESCRIPTION>concentration of substances such as urea, fruit sugars, soluble proteins, drugs, pharmaceuticals, etc.</DESCRIPTION>
                 <UNITS>
-                    <UNIT>µg/m3</UNIT>
+                    <UNIT>g/L</UNIT>
+                    <UNIT>mol/L</UNIT>
+                    <UNIT>parts/million</UNIT>
                 </UNITS>
                 <FIELD_TYPE>
                     <TEXT_FIELD>
@@ -1718,25 +1786,59 @@
                 <MULTIPLICITY>multiple</MULTIPLICITY>
             </FIELD>
             <FIELD>
-                <LABEL>volatile organic compounds</LABEL>
-                <NAME>volatile organic compounds</NAME>
-                <DESCRIPTION>concentration of carbon-based chemicals that easily evaporate at room temperature; can report multiple volatile organic compounds by entering numeric values preceded by name of compound</DESCRIPTION>
+                <LABEL>suspended solids</LABEL>
+                <NAME>suspended solids</NAME>
+                <DESCRIPTION>concentration of substances including a wide variety of material, such as silt, decaying plant and animal matter, etc,; can include multiple substances</DESCRIPTION>
                 <UNITS>
+                    <UNIT>g/L</UNIT>
+                    <UNIT>mol/L</UNIT>
                     <UNIT>parts/million</UNIT>
-                    <UNIT>µg/m3</UNIT>
                 </UNITS>
                 <FIELD_TYPE>
-                    <TEXT_FIELD/>
+                    <TEXT_FIELD>
+                        <REGEX_VALUE>(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?</REGEX_VALUE>
+                    </TEXT_FIELD>
                 </FIELD_TYPE>
                 <MANDATORY>optional</MANDATORY>
                 <MULTIPLICITY>multiple</MULTIPLICITY>
             </FIELD>
             <FIELD>
-                <LABEL>methane</LABEL>
-                <NAME>methane</NAME>
-                <DESCRIPTION>methane (gas) amount or concentration at the time of sampling</DESCRIPTION>
+                <LABEL>total phosphate</LABEL>
+                <NAME>total phosphate</NAME>
+                <DESCRIPTION>total amount or concentration of phosphate</DESCRIPTION>
                 <UNITS>
-                    <UNIT>µM/L</UNIT>
+                    <UNIT>µg/L</UNIT>
+                    <UNIT>µmol/L</UNIT>
+                </UNITS>
+                <FIELD_TYPE>
+                    <TEXT_FIELD>
+                        <REGEX_VALUE>(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?</REGEX_VALUE>
+                    </TEXT_FIELD>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>multiple</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>nitrate</LABEL>
+                <NAME>nitrate</NAME>
+                <DESCRIPTION>concentration of nitrate</DESCRIPTION>
+                <UNITS>
+                    <UNIT>µmol/L</UNIT>
+                </UNITS>
+                <FIELD_TYPE>
+                    <TEXT_FIELD>
+                        <REGEX_VALUE>(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?</REGEX_VALUE>
+                    </TEXT_FIELD>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>multiple</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>phosphate</LABEL>
+                <NAME>phosphate</NAME>
+                <DESCRIPTION>concentration of phosphate</DESCRIPTION>
+                <UNITS>
+                    <UNIT>µmol/L</UNIT>
                 </UNITS>
                 <FIELD_TYPE>
                     <TEXT_FIELD>
@@ -1754,6 +1856,38 @@
                 <DESCRIPTION>The total concentration of all dissolved salts in a liquid or solid sample. While salinity can be measured by a complete chemical analysis, this method is difficult and time consuming. More often, it is instead derived from the conductivity measurement. This is known as practical salinity. These derivations compare the specific conductance of the sample to a salinity standard such as seawater.</DESCRIPTION>
                 <UNITS>
                     <UNIT>psu</UNIT>
+                </UNITS>
+                <FIELD_TYPE>
+                    <TEXT_FIELD>
+                        <REGEX_VALUE>(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?</REGEX_VALUE>
+                    </TEXT_FIELD>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>multiple</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>sodium</LABEL>
+                <NAME>sodium</NAME>
+                <DESCRIPTION>sodium concentration</DESCRIPTION>
+                <UNITS>
+                    <UNIT>parts/million</UNIT>
+                    <UNIT>µmol/L</UNIT>
+                </UNITS>
+                <FIELD_TYPE>
+                    <TEXT_FIELD>
+                        <REGEX_VALUE>(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?</REGEX_VALUE>
+                    </TEXT_FIELD>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>multiple</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>total nitrogen</LABEL>
+                <NAME>total nitrogen</NAME>
+                <DESCRIPTION>total nitrogen content of the sample</DESCRIPTION>
+                <UNITS>
+                    <UNIT>µg/L</UNIT>
+                    <UNIT>µmol/L</UNIT>
                 </UNITS>
                 <FIELD_TYPE>
                     <TEXT_FIELD>

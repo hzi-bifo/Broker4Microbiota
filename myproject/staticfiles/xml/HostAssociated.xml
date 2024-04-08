@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CHECKLIST_SET>
-<CHECKLIST accession="ERC000012" checklistType="Sample">
+<CHECKLIST accession="ERC000013" checklistType="Sample">
     <IDENTIFIERS>
-        <PRIMARY_ID>ERC000012</PRIMARY_ID>
+        <PRIMARY_ID>ERC000013</PRIMARY_ID>
     </IDENTIFIERS>
     <DESCRIPTOR>
-        <LABEL>GSC MIxS air</LABEL>
-        <NAME>GSC MIxS air</NAME>
+        <LABEL>GSC MIxS host associated</LABEL>
+        <NAME>GSC MIxS host associated</NAME>
         <DESCRIPTION>Genomic Standards Consortium package extension for reporting of measurements and observations obtained from the environment where the sample was obtained. By choosing the environmental package, a selection of fields can be made from a relevant subsets of the GSC terms.</DESCRIPTION>
         <AUTHORITY>ENA</AUTHORITY>
         <FIELD_GROUP restrictionType="Any number or none of the fields">
@@ -360,7 +360,7 @@
                         <REGEX_VALUE>(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?</REGEX_VALUE>
                     </TEXT_FIELD>
                 </FIELD_TYPE>
-                <MANDATORY>mandatory</MANDATORY>
+                <MANDATORY>optional</MANDATORY>
                 <MULTIPLICITY>multiple</MULTIPLICITY>
             </FIELD>
             <FIELD>
@@ -1276,6 +1276,22 @@
                 <MULTIPLICITY>multiple</MULTIPLICITY>
             </FIELD>
             <FIELD>
+                <LABEL>depth</LABEL>
+                <SYNONYM>geographic location (depth)</SYNONYM>
+                <NAME>depth</NAME>
+                <DESCRIPTION>The vertical distance below local surface, e.g. for sediment or soil samples depth is measured from sediment or soil surface, respectively. Depth can be reported as an interval for subsurface samples.</DESCRIPTION>
+                <UNITS>
+                    <UNIT>m</UNIT>
+                </UNITS>
+                <FIELD_TYPE>
+                    <TEXT_FIELD>
+                        <REGEX_VALUE>(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?</REGEX_VALUE>
+                    </TEXT_FIELD>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>multiple</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
                 <LABEL>broad-scale environmental context</LABEL>
                 <SYNONYM>environment (biome)</SYNONYM>
                 <NAME>broad-scale environmental context</NAME>
@@ -1320,45 +1336,6 @@
                     <TEXT_FIELD>
                         <REGEX_VALUE>[+-]?(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?</REGEX_VALUE>
                     </TEXT_FIELD>
-                </FIELD_TYPE>
-                <MANDATORY>optional</MANDATORY>
-                <MULTIPLICITY>multiple</MULTIPLICITY>
-            </FIELD>
-        </FIELD_GROUP>
-        <FIELD_GROUP restrictionType="Any number or none of the fields">
-            <NAME>internal environment</NAME>
-            <FIELD>
-                <LABEL>ventilation rate</LABEL>
-                <NAME>ventilation rate</NAME>
-                <DESCRIPTION>ventilation rate of the system in the sampled premises</DESCRIPTION>
-                <UNITS>
-                    <UNIT>L/sec</UNIT>
-                    <UNIT>m3/min</UNIT>
-                </UNITS>
-                <FIELD_TYPE>
-                    <TEXT_FIELD>
-                        <REGEX_VALUE>(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?</REGEX_VALUE>
-                    </TEXT_FIELD>
-                </FIELD_TYPE>
-                <MANDATORY>optional</MANDATORY>
-                <MULTIPLICITY>multiple</MULTIPLICITY>
-            </FIELD>
-            <FIELD>
-                <LABEL>ventilation type</LABEL>
-                <NAME>ventilation type</NAME>
-                <DESCRIPTION>The intentional movement of air from outside a building to the inside through forced or natural movement of air</DESCRIPTION>
-                <FIELD_TYPE>
-                    <TEXT_CHOICE_FIELD>
-                        <TEXT_VALUE>
-                            <VALUE>forced ventilation</VALUE>
-                        </TEXT_VALUE>
-                        <TEXT_VALUE>
-                            <VALUE>mechanical ventilation</VALUE>
-                        </TEXT_VALUE>
-                        <TEXT_VALUE>
-                            <VALUE>natural ventilation</VALUE>
-                        </TEXT_VALUE>
-                    </TEXT_CHOICE_FIELD>
                 </FIELD_TYPE>
                 <MANDATORY>optional</MANDATORY>
                 <MULTIPLICITY>multiple</MULTIPLICITY>
@@ -1416,6 +1393,33 @@
                     <UNIT>kg</UNIT>
                     <UNIT>m2</UNIT>
                     <UNIT>m3</UNIT>
+                </UNITS>
+                <FIELD_TYPE>
+                    <TEXT_FIELD>
+                        <REGEX_VALUE>(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?</REGEX_VALUE>
+                    </TEXT_FIELD>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>multiple</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>host body product</LABEL>
+                <NAME>host body product</NAME>
+                <DESCRIPTION>substance produced by the body, e.g. stool, mucus, where the sample was obtained from. For Foundational Model of Anatomy Ontology (FMA) (v 3.1) terms, please see http://purl.bioontology.org/ontology/FMA</DESCRIPTION>
+                <FIELD_TYPE>
+                    <TEXT_FIELD/>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>multiple</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>host dry mass</LABEL>
+                <NAME>host dry mass</NAME>
+                <DESCRIPTION>measurement of dry mass</DESCRIPTION>
+                <UNITS>
+                    <UNIT>g</UNIT>
+                    <UNIT>kg</UNIT>
+                    <UNIT>mg</UNIT>
                 </UNITS>
                 <FIELD_TYPE>
                     <TEXT_FIELD>
@@ -1496,26 +1500,6 @@
                 <MANDATORY>optional</MANDATORY>
                 <MULTIPLICITY>multiple</MULTIPLICITY>
             </FIELD>
-            <FIELD>
-                <LABEL>sample collection device</LABEL>
-                <NAME>sample collection device</NAME>
-                <DESCRIPTION>The device used to collect an environmental sample. It is recommended to use terms listed under environmental sampling device (http://purl.obolibrary.org/obo/ENVO) and/or terms listed under specimen collection device (http://purl.obolibrary.org/obo/GENEPIO_0002094).</DESCRIPTION>
-                <FIELD_TYPE>
-                    <TEXT_FIELD/>
-                </FIELD_TYPE>
-                <MANDATORY>optional</MANDATORY>
-                <MULTIPLICITY>single</MULTIPLICITY>
-            </FIELD>
-            <FIELD>
-                <LABEL>sample collection method</LABEL>
-                <NAME>sample collection method</NAME>
-                <DESCRIPTION>The method employed for collecting the sample. Can be provided in the form of a PMID, DOI, url or text.</DESCRIPTION>
-                <FIELD_TYPE>
-                    <TEXT_FIELD/>
-                </FIELD_TYPE>
-                <MANDATORY>optional</MANDATORY>
-                <MULTIPLICITY>single</MULTIPLICITY>
-            </FIELD>
         </FIELD_GROUP>
         <FIELD_GROUP restrictionType="Any number or none of the fields">
             <NAME>host disorder</NAME>
@@ -1534,6 +1518,268 @@
         <FIELD_GROUP restrictionType="Any number or none of the fields">
             <NAME>host description</NAME>
             <FIELD>
+                <LABEL>host common name</LABEL>
+                <NAME>host common name</NAME>
+                <DESCRIPTION>common name of the host, e.g. human</DESCRIPTION>
+                <FIELD_TYPE>
+                    <TEXT_FIELD/>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>multiple</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>host subject id</LABEL>
+                <NAME>host subject id</NAME>
+                <DESCRIPTION>a unique identifier by which each subject can be referred to, de-identified, e.g. #131</DESCRIPTION>
+                <FIELD_TYPE>
+                    <TEXT_FIELD/>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>multiple</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>host age</LABEL>
+                <NAME>host age</NAME>
+                <DESCRIPTION>age of host at the time of sampling; relevant scale depends on species and study, e.g. could be seconds for amoebae or centuries for trees</DESCRIPTION>
+                <UNITS>
+                    <UNIT>centuries</UNIT>
+                    <UNIT>days</UNIT>
+                    <UNIT>decades</UNIT>
+                    <UNIT>hours</UNIT>
+                    <UNIT>minutes</UNIT>
+                    <UNIT>months</UNIT>
+                    <UNIT>seconds</UNIT>
+                    <UNIT>weeks</UNIT>
+                    <UNIT>years</UNIT>
+                </UNITS>
+                <FIELD_TYPE>
+                    <TEXT_FIELD>
+                        <REGEX_VALUE>(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?</REGEX_VALUE>
+                    </TEXT_FIELD>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>multiple</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>host taxid</LABEL>
+                <NAME>host taxid</NAME>
+                <DESCRIPTION>NCBI taxon id of the host, e.g. 9606</DESCRIPTION>
+                <FIELD_TYPE>
+                    <TEXT_FIELD>
+                        <REGEX_VALUE>[+-]?[0-9]+</REGEX_VALUE>
+                    </TEXT_FIELD>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>multiple</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>host body habitat</LABEL>
+                <NAME>host body habitat</NAME>
+                <DESCRIPTION>original body habitat where the sample was obtained from</DESCRIPTION>
+                <FIELD_TYPE>
+                    <TEXT_FIELD/>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>multiple</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>host body site</LABEL>
+                <NAME>host body site</NAME>
+                <DESCRIPTION>name of body site where the sample was obtained from, such as a specific organ or tissue (tongue, lung etc...). For Foundational Model of Anatomy Ontology (FMA) (v 3.1) terms, please see http://purl.bioontology.org/ontology/FMA</DESCRIPTION>
+                <FIELD_TYPE>
+                    <TEXT_FIELD/>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>multiple</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>host life stage</LABEL>
+                <NAME>host life stage</NAME>
+                <DESCRIPTION>description of life stage of host</DESCRIPTION>
+                <FIELD_TYPE>
+                    <TEXT_FIELD/>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>multiple</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>host height</LABEL>
+                <NAME>host height</NAME>
+                <DESCRIPTION>the height of subject</DESCRIPTION>
+                <UNITS>
+                    <UNIT>cm</UNIT>
+                    <UNIT>m</UNIT>
+                    <UNIT>mm</UNIT>
+                </UNITS>
+                <FIELD_TYPE>
+                    <TEXT_FIELD>
+                        <REGEX_VALUE>(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?</REGEX_VALUE>
+                    </TEXT_FIELD>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>multiple</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>host length</LABEL>
+                <NAME>host length</NAME>
+                <DESCRIPTION>the length of subject</DESCRIPTION>
+                <UNITS>
+                    <UNIT>cm</UNIT>
+                    <UNIT>m</UNIT>
+                    <UNIT>mm</UNIT>
+                </UNITS>
+                <FIELD_TYPE>
+                    <TEXT_FIELD>
+                        <REGEX_VALUE>(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?</REGEX_VALUE>
+                    </TEXT_FIELD>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>multiple</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>host growth conditions</LABEL>
+                <NAME>host growth conditions</NAME>
+                <DESCRIPTION>literature reference giving growth conditions of the host</DESCRIPTION>
+                <FIELD_TYPE>
+                    <TEXT_FIELD/>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>multiple</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>host substrate</LABEL>
+                <NAME>host substrate</NAME>
+                <DESCRIPTION>the growth substrate of the host</DESCRIPTION>
+                <FIELD_TYPE>
+                    <TEXT_FIELD/>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>multiple</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>host total mass</LABEL>
+                <NAME>host total mass</NAME>
+                <DESCRIPTION>total mass of the host at collection, the unit depends on host</DESCRIPTION>
+                <UNITS>
+                    <UNIT>g</UNIT>
+                    <UNIT>kg</UNIT>
+                </UNITS>
+                <FIELD_TYPE>
+                    <TEXT_FIELD>
+                        <REGEX_VALUE>(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?</REGEX_VALUE>
+                    </TEXT_FIELD>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>multiple</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>host phenotype</LABEL>
+                <NAME>host phenotype</NAME>
+                <DESCRIPTION>phenotype of host. For Phenotypic quality Ontology (PATO) (v 2013-10-28) terms, please see http://purl.bioontology.org/ontology/PATO</DESCRIPTION>
+                <FIELD_TYPE>
+                    <TEXT_FIELD/>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>multiple</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>host body temperature</LABEL>
+                <NAME>host body temperature</NAME>
+                <DESCRIPTION>core body temperature of the host when sample was collected</DESCRIPTION>
+                <UNITS>
+                    <UNIT>ºC</UNIT>
+                </UNITS>
+                <FIELD_TYPE>
+                    <TEXT_FIELD>
+                        <REGEX_VALUE>[+-]?(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?</REGEX_VALUE>
+                    </TEXT_FIELD>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>multiple</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>host color</LABEL>
+                <NAME>host color</NAME>
+                <DESCRIPTION>the color of host</DESCRIPTION>
+                <FIELD_TYPE>
+                    <TEXT_FIELD/>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>multiple</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>host shape</LABEL>
+                <NAME>host shape</NAME>
+                <DESCRIPTION>morphological shape of host</DESCRIPTION>
+                <FIELD_TYPE>
+                    <TEXT_FIELD/>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>multiple</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>host sex</LABEL>
+                <NAME>host sex</NAME>
+                <DESCRIPTION>Gender or sex of the host.</DESCRIPTION>
+                <FIELD_TYPE>
+                    <TEXT_CHOICE_FIELD>
+                        <TEXT_VALUE>
+                            <VALUE>female</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>hermaphrodite</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>male</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>missing: control sample</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>missing: data agreement established pre-2023</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>missing: endangered species</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>missing: human-identifiable</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>missing: lab stock</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>missing: sample group</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>missing: synthetic construct</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>missing: third party data</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>neuter</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>not applicable</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>not collected</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>not provided</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>other</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>restricted access</VALUE>
+                        </TEXT_VALUE>
+                    </TEXT_CHOICE_FIELD>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>multiple</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
                 <LABEL>host scientific name</LABEL>
                 <SYNONYM>specific host</SYNONYM>
                 <NAME>host scientific name</NAME>
@@ -1544,99 +1790,19 @@
                 <MANDATORY>optional</MANDATORY>
                 <MULTIPLICITY>multiple</MULTIPLICITY>
             </FIELD>
+            <FIELD>
+                <LABEL>host subspecific genetic lineage</LABEL>
+                <NAME>host subspecific genetic lineage</NAME>
+                <DESCRIPTION>Information about the genetic distinctness of the host organism below the subspecies level e.g., serovar, serotype, biotype, ecotype, variety, cultivar, or any relevant genetic typing schemes like Group I plasmid. Subspecies should not be recorded in this term, but in the NCBI taxonomy. Supply both the lineage name and the lineage rank separated by a colon, e.g., biovar:abc123.</DESCRIPTION>
+                <FIELD_TYPE>
+                    <TEXT_FIELD/>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>single</MULTIPLICITY>
+            </FIELD>
         </FIELD_GROUP>
         <FIELD_GROUP restrictionType="Any number or none of the fields">
             <NAME>local environment conditions</NAME>
-            <FIELD>
-                <LABEL>barometric pressure</LABEL>
-                <NAME>barometric pressure</NAME>
-                <DESCRIPTION>force per unit area exerted against a surface by the weight of air above that surface</DESCRIPTION>
-                <UNITS>
-                    <UNIT>Torr</UNIT>
-                    <UNIT>in. Hg</UNIT>
-                    <UNIT>millibar(hPa)</UNIT>
-                    <UNIT>mm Hg</UNIT>
-                </UNITS>
-                <FIELD_TYPE>
-                    <TEXT_FIELD>
-                        <REGEX_VALUE>(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?</REGEX_VALUE>
-                    </TEXT_FIELD>
-                </FIELD_TYPE>
-                <MANDATORY>optional</MANDATORY>
-                <MULTIPLICITY>multiple</MULTIPLICITY>
-            </FIELD>
-            <FIELD>
-                <LABEL>humidity</LABEL>
-                <NAME>humidity</NAME>
-                <DESCRIPTION>amount of water vapour in the air, at the time of sampling</DESCRIPTION>
-                <UNITS>
-                    <UNIT>%</UNIT>
-                    <UNIT>g/m3</UNIT>
-                </UNITS>
-                <FIELD_TYPE>
-                    <TEXT_FIELD>
-                        <REGEX_VALUE>(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?</REGEX_VALUE>
-                    </TEXT_FIELD>
-                </FIELD_TYPE>
-                <MANDATORY>optional</MANDATORY>
-                <MULTIPLICITY>multiple</MULTIPLICITY>
-            </FIELD>
-            <FIELD>
-                <LABEL>pollutants</LABEL>
-                <NAME>pollutants</NAME>
-                <DESCRIPTION>pollutant types and, amount or concentrations measured at the time of sampling; can report multiple pollutants by entering numeric values preceded by name of pollutant</DESCRIPTION>
-                <UNITS>
-                    <UNIT>M/L</UNIT>
-                    <UNIT>g</UNIT>
-                    <UNIT>mg/L</UNIT>
-                </UNITS>
-                <FIELD_TYPE>
-                    <TEXT_FIELD/>
-                </FIELD_TYPE>
-                <MANDATORY>optional</MANDATORY>
-                <MULTIPLICITY>multiple</MULTIPLICITY>
-            </FIELD>
-            <FIELD>
-                <LABEL>solar irradiance</LABEL>
-                <NAME>solar irradiance</NAME>
-                <DESCRIPTION>the amount of solar energy that arrives at a specific area of a surface during a specific time interval</DESCRIPTION>
-                <UNITS>
-                    <UNIT>W/m2</UNIT>
-                </UNITS>
-                <FIELD_TYPE>
-                    <TEXT_FIELD>
-                        <REGEX_VALUE>(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?</REGEX_VALUE>
-                    </TEXT_FIELD>
-                </FIELD_TYPE>
-                <MANDATORY>optional</MANDATORY>
-                <MULTIPLICITY>multiple</MULTIPLICITY>
-            </FIELD>
-            <FIELD>
-                <LABEL>wind direction</LABEL>
-                <NAME>wind direction</NAME>
-                <DESCRIPTION>wind direction is the direction from which a wind originates</DESCRIPTION>
-                <FIELD_TYPE>
-                    <TEXT_FIELD/>
-                </FIELD_TYPE>
-                <MANDATORY>optional</MANDATORY>
-                <MULTIPLICITY>multiple</MULTIPLICITY>
-            </FIELD>
-            <FIELD>
-                <LABEL>wind speed</LABEL>
-                <NAME>wind speed</NAME>
-                <DESCRIPTION>speed of wind measured at the time of sampling</DESCRIPTION>
-                <UNITS>
-                    <UNIT>km/h</UNIT>
-                    <UNIT>m/s</UNIT>
-                </UNITS>
-                <FIELD_TYPE>
-                    <TEXT_FIELD>
-                        <REGEX_VALUE>(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?</REGEX_VALUE>
-                    </TEXT_FIELD>
-                </FIELD_TYPE>
-                <MANDATORY>optional</MANDATORY>
-                <MULTIPLICITY>multiple</MULTIPLICITY>
-            </FIELD>
             <FIELD>
                 <LABEL>temperature</LABEL>
                 <NAME>temperature</NAME>
@@ -1656,97 +1822,6 @@
         <FIELD_GROUP restrictionType="Any number or none of the fields">
             <NAME>concentration measurement</NAME>
             <FIELD>
-                <LABEL>carbon dioxide</LABEL>
-                <NAME>carbon dioxide</NAME>
-                <DESCRIPTION>carbon dioxide (gas) amount or concentration at the time of sampling</DESCRIPTION>
-                <UNITS>
-                    <UNIT>µmol/L</UNIT>
-                </UNITS>
-                <FIELD_TYPE>
-                    <TEXT_FIELD>
-                        <REGEX_VALUE>(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?</REGEX_VALUE>
-                    </TEXT_FIELD>
-                </FIELD_TYPE>
-                <MANDATORY>optional</MANDATORY>
-                <MULTIPLICITY>multiple</MULTIPLICITY>
-            </FIELD>
-            <FIELD>
-                <LABEL>carbon monoxide</LABEL>
-                <NAME>carbon monoxide</NAME>
-                <DESCRIPTION>carbon monoxide (gas) amount or concentration at the time of sampling</DESCRIPTION>
-                <UNITS>
-                    <UNIT>µM/L</UNIT>
-                </UNITS>
-                <FIELD_TYPE>
-                    <TEXT_FIELD>
-                        <REGEX_VALUE>(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?</REGEX_VALUE>
-                    </TEXT_FIELD>
-                </FIELD_TYPE>
-                <MANDATORY>optional</MANDATORY>
-                <MULTIPLICITY>multiple</MULTIPLICITY>
-            </FIELD>
-            <FIELD>
-                <LABEL>oxygen</LABEL>
-                <NAME>oxygen</NAME>
-                <DESCRIPTION>oxygen (gas) amount or concentration at the time of sampling</DESCRIPTION>
-                <UNITS>
-                    <UNIT>mg/L</UNIT>
-                    <UNIT>parts/million</UNIT>
-                </UNITS>
-                <FIELD_TYPE>
-                    <TEXT_FIELD>
-                        <REGEX_VALUE>(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?</REGEX_VALUE>
-                    </TEXT_FIELD>
-                </FIELD_TYPE>
-                <MANDATORY>optional</MANDATORY>
-                <MULTIPLICITY>multiple</MULTIPLICITY>
-            </FIELD>
-            <FIELD>
-                <LABEL>air particulate matter concentration</LABEL>
-                <SYNONYM>respirable particulate matter</SYNONYM>
-                <NAME>air particulate matter concentration</NAME>
-                <DESCRIPTION>Concentration of substances that remain suspended in the air, and comprise mixtures of organic and inorganic substances (PM10 and PM2.5); can report multiple PM&apos;s by entering numeric values preceded by name of PM</DESCRIPTION>
-                <UNITS>
-                    <UNIT>µg/m3</UNIT>
-                </UNITS>
-                <FIELD_TYPE>
-                    <TEXT_FIELD>
-                        <REGEX_VALUE>(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?</REGEX_VALUE>
-                    </TEXT_FIELD>
-                </FIELD_TYPE>
-                <MANDATORY>optional</MANDATORY>
-                <MULTIPLICITY>multiple</MULTIPLICITY>
-            </FIELD>
-            <FIELD>
-                <LABEL>volatile organic compounds</LABEL>
-                <NAME>volatile organic compounds</NAME>
-                <DESCRIPTION>concentration of carbon-based chemicals that easily evaporate at room temperature; can report multiple volatile organic compounds by entering numeric values preceded by name of compound</DESCRIPTION>
-                <UNITS>
-                    <UNIT>parts/million</UNIT>
-                    <UNIT>µg/m3</UNIT>
-                </UNITS>
-                <FIELD_TYPE>
-                    <TEXT_FIELD/>
-                </FIELD_TYPE>
-                <MANDATORY>optional</MANDATORY>
-                <MULTIPLICITY>multiple</MULTIPLICITY>
-            </FIELD>
-            <FIELD>
-                <LABEL>methane</LABEL>
-                <NAME>methane</NAME>
-                <DESCRIPTION>methane (gas) amount or concentration at the time of sampling</DESCRIPTION>
-                <UNITS>
-                    <UNIT>µM/L</UNIT>
-                </UNITS>
-                <FIELD_TYPE>
-                    <TEXT_FIELD>
-                        <REGEX_VALUE>(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?</REGEX_VALUE>
-                    </TEXT_FIELD>
-                </FIELD_TYPE>
-                <MANDATORY>optional</MANDATORY>
-                <MULTIPLICITY>multiple</MULTIPLICITY>
-            </FIELD>
-            <FIELD>
                 <LABEL>salinity</LABEL>
                 <SYNONYM>extreme_unusual_properties/salinity</SYNONYM>
                 <SYNONYM>sample salinity</SYNONYM>
@@ -1759,6 +1834,89 @@
                     <TEXT_FIELD>
                         <REGEX_VALUE>(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?</REGEX_VALUE>
                     </TEXT_FIELD>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>multiple</MULTIPLICITY>
+            </FIELD>
+        </FIELD_GROUP>
+        <FIELD_GROUP restrictionType="Any number or none of the fields">
+            <NAME>host details</NAME>
+            <FIELD>
+                <LABEL>host blood pressure diastolic</LABEL>
+                <NAME>host blood pressure diastolic</NAME>
+                <DESCRIPTION>resting diastolic blood pressure, measured as mm mercury</DESCRIPTION>
+                <UNITS>
+                    <UNIT>mm Hg</UNIT>
+                </UNITS>
+                <FIELD_TYPE>
+                    <TEXT_FIELD>
+                        <REGEX_VALUE>(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?</REGEX_VALUE>
+                    </TEXT_FIELD>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>multiple</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>host blood pressure systolic</LABEL>
+                <NAME>host blood pressure systolic</NAME>
+                <DESCRIPTION>resting systolic blood pressure, measured as mm mercury</DESCRIPTION>
+                <UNITS>
+                    <UNIT>mm Hg</UNIT>
+                </UNITS>
+                <FIELD_TYPE>
+                    <TEXT_FIELD>
+                        <REGEX_VALUE>(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?</REGEX_VALUE>
+                    </TEXT_FIELD>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>multiple</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>host diet</LABEL>
+                <NAME>host diet</NAME>
+                <DESCRIPTION>type of diet depending on the host, for animals omnivore, herbivore etc., for humans high-fat, Mediterranean etc.; can include multiple diet types</DESCRIPTION>
+                <FIELD_TYPE>
+                    <TEXT_FIELD/>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>multiple</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>host last meal</LABEL>
+                <NAME>host last meal</NAME>
+                <DESCRIPTION>content of last meal and time since feeding; can include multiple values</DESCRIPTION>
+                <FIELD_TYPE>
+                    <TEXT_FIELD/>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>multiple</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>host family relationship</LABEL>
+                <NAME>host family relationship</NAME>
+                <DESCRIPTION>relationships to other hosts in the same study; can include multiple relationships</DESCRIPTION>
+                <FIELD_TYPE>
+                    <TEXT_FIELD/>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>multiple</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>host genotype</LABEL>
+                <NAME>host genotype</NAME>
+                <DESCRIPTION>observed genotype</DESCRIPTION>
+                <FIELD_TYPE>
+                    <TEXT_FIELD/>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>multiple</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>gravidity</LABEL>
+                <NAME>gravidity</NAME>
+                <DESCRIPTION>Whether or not the subject is gravid. If so, report date due or date post-conception and specify which of these two dates is being reported.</DESCRIPTION>
+                <FIELD_TYPE>
+                    <TEXT_FIELD/>
                 </FIELD_TYPE>
                 <MANDATORY>optional</MANDATORY>
                 <MULTIPLICITY>multiple</MULTIPLICITY>

@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CHECKLIST_SET>
-<CHECKLIST accession="ERC000012" checklistType="Sample">
+<CHECKLIST accession="ERC000020" checklistType="Sample">
     <IDENTIFIERS>
-        <PRIMARY_ID>ERC000012</PRIMARY_ID>
+        <PRIMARY_ID>ERC000020</PRIMARY_ID>
     </IDENTIFIERS>
     <DESCRIPTOR>
-        <LABEL>GSC MIxS air</LABEL>
-        <NAME>GSC MIxS air</NAME>
+        <LABEL>GSC MIxS plant associated</LABEL>
+        <NAME>GSC MIxS plant associated</NAME>
         <DESCRIPTION>Genomic Standards Consortium package extension for reporting of measurements and observations obtained from the environment where the sample was obtained. By choosing the environmental package, a selection of fields can be made from a relevant subsets of the GSC terms.</DESCRIPTION>
         <AUTHORITY>ENA</AUTHORITY>
         <FIELD_GROUP restrictionType="Any number or none of the fields">
@@ -360,7 +360,7 @@
                         <REGEX_VALUE>(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?</REGEX_VALUE>
                     </TEXT_FIELD>
                 </FIELD_TYPE>
-                <MANDATORY>mandatory</MANDATORY>
+                <MANDATORY>optional</MANDATORY>
                 <MULTIPLICITY>multiple</MULTIPLICITY>
             </FIELD>
             <FIELD>
@@ -1276,6 +1276,22 @@
                 <MULTIPLICITY>multiple</MULTIPLICITY>
             </FIELD>
             <FIELD>
+                <LABEL>depth</LABEL>
+                <SYNONYM>geographic location (depth)</SYNONYM>
+                <NAME>depth</NAME>
+                <DESCRIPTION>The vertical distance below local surface, e.g. for sediment or soil samples depth is measured from sediment or soil surface, respectively. Depth can be reported as an interval for subsurface samples.</DESCRIPTION>
+                <UNITS>
+                    <UNIT>m</UNIT>
+                </UNITS>
+                <FIELD_TYPE>
+                    <TEXT_FIELD>
+                        <REGEX_VALUE>(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?</REGEX_VALUE>
+                    </TEXT_FIELD>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>multiple</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
                 <LABEL>broad-scale environmental context</LABEL>
                 <SYNONYM>environment (biome)</SYNONYM>
                 <NAME>broad-scale environmental context</NAME>
@@ -1320,45 +1336,6 @@
                     <TEXT_FIELD>
                         <REGEX_VALUE>[+-]?(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?</REGEX_VALUE>
                     </TEXT_FIELD>
-                </FIELD_TYPE>
-                <MANDATORY>optional</MANDATORY>
-                <MULTIPLICITY>multiple</MULTIPLICITY>
-            </FIELD>
-        </FIELD_GROUP>
-        <FIELD_GROUP restrictionType="Any number or none of the fields">
-            <NAME>internal environment</NAME>
-            <FIELD>
-                <LABEL>ventilation rate</LABEL>
-                <NAME>ventilation rate</NAME>
-                <DESCRIPTION>ventilation rate of the system in the sampled premises</DESCRIPTION>
-                <UNITS>
-                    <UNIT>L/sec</UNIT>
-                    <UNIT>m3/min</UNIT>
-                </UNITS>
-                <FIELD_TYPE>
-                    <TEXT_FIELD>
-                        <REGEX_VALUE>(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?</REGEX_VALUE>
-                    </TEXT_FIELD>
-                </FIELD_TYPE>
-                <MANDATORY>optional</MANDATORY>
-                <MULTIPLICITY>multiple</MULTIPLICITY>
-            </FIELD>
-            <FIELD>
-                <LABEL>ventilation type</LABEL>
-                <NAME>ventilation type</NAME>
-                <DESCRIPTION>The intentional movement of air from outside a building to the inside through forced or natural movement of air</DESCRIPTION>
-                <FIELD_TYPE>
-                    <TEXT_CHOICE_FIELD>
-                        <TEXT_VALUE>
-                            <VALUE>forced ventilation</VALUE>
-                        </TEXT_VALUE>
-                        <TEXT_VALUE>
-                            <VALUE>mechanical ventilation</VALUE>
-                        </TEXT_VALUE>
-                        <TEXT_VALUE>
-                            <VALUE>natural ventilation</VALUE>
-                        </TEXT_VALUE>
-                    </TEXT_CHOICE_FIELD>
                 </FIELD_TYPE>
                 <MANDATORY>optional</MANDATORY>
                 <MULTIPLICITY>multiple</MULTIPLICITY>
@@ -1426,6 +1403,23 @@
                 <MULTIPLICITY>multiple</MULTIPLICITY>
             </FIELD>
             <FIELD>
+                <LABEL>host dry mass</LABEL>
+                <NAME>host dry mass</NAME>
+                <DESCRIPTION>measurement of dry mass</DESCRIPTION>
+                <UNITS>
+                    <UNIT>g</UNIT>
+                    <UNIT>kg</UNIT>
+                    <UNIT>mg</UNIT>
+                </UNITS>
+                <FIELD_TYPE>
+                    <TEXT_FIELD>
+                        <REGEX_VALUE>(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?</REGEX_VALUE>
+                    </TEXT_FIELD>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>multiple</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
                 <LABEL>oxygenation status of sample</LABEL>
                 <NAME>oxygenation status of sample</NAME>
                 <DESCRIPTION>oxygenation status of sample</DESCRIPTION>
@@ -1438,6 +1432,16 @@
                             <VALUE>anaerobic</VALUE>
                         </TEXT_VALUE>
                     </TEXT_CHOICE_FIELD>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>multiple</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>plant product</LABEL>
+                <NAME>plant product</NAME>
+                <DESCRIPTION>substance produced by the plant, where the sample was obtained from</DESCRIPTION>
+                <FIELD_TYPE>
+                    <TEXT_FIELD/>
                 </FIELD_TYPE>
                 <MANDATORY>optional</MANDATORY>
                 <MULTIPLICITY>multiple</MULTIPLICITY>
@@ -1481,6 +1485,23 @@
                 <FIELD_TYPE>
                     <TEXT_FIELD>
                         <REGEX_VALUE>[+-]?(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?</REGEX_VALUE>
+                    </TEXT_FIELD>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>multiple</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>host wet mass</LABEL>
+                <NAME>host wet mass</NAME>
+                <DESCRIPTION>measurement of wet mass</DESCRIPTION>
+                <UNITS>
+                    <UNIT>g</UNIT>
+                    <UNIT>kg</UNIT>
+                    <UNIT>mg</UNIT>
+                </UNITS>
+                <FIELD_TYPE>
+                    <TEXT_FIELD>
+                        <REGEX_VALUE>(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?</REGEX_VALUE>
                     </TEXT_FIELD>
                 </FIELD_TYPE>
                 <MANDATORY>optional</MANDATORY>
@@ -1534,62 +1555,147 @@
         <FIELD_GROUP restrictionType="Any number or none of the fields">
             <NAME>host description</NAME>
             <FIELD>
-                <LABEL>host scientific name</LABEL>
-                <SYNONYM>specific host</SYNONYM>
-                <NAME>host scientific name</NAME>
-                <DESCRIPTION>Scientific name of the natural (as opposed to laboratory) host to the organism from which sample was obtained.</DESCRIPTION>
+                <LABEL>host common name</LABEL>
+                <NAME>host common name</NAME>
+                <DESCRIPTION>common name of the host, e.g. human</DESCRIPTION>
                 <FIELD_TYPE>
                     <TEXT_FIELD/>
                 </FIELD_TYPE>
                 <MANDATORY>optional</MANDATORY>
                 <MULTIPLICITY>multiple</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>host age</LABEL>
+                <NAME>host age</NAME>
+                <DESCRIPTION>age of host at the time of sampling; relevant scale depends on species and study, e.g. could be seconds for amoebae or centuries for trees</DESCRIPTION>
+                <UNITS>
+                    <UNIT>centuries</UNIT>
+                    <UNIT>days</UNIT>
+                    <UNIT>decades</UNIT>
+                    <UNIT>hours</UNIT>
+                    <UNIT>minutes</UNIT>
+                    <UNIT>months</UNIT>
+                    <UNIT>seconds</UNIT>
+                    <UNIT>weeks</UNIT>
+                    <UNIT>years</UNIT>
+                </UNITS>
+                <FIELD_TYPE>
+                    <TEXT_FIELD>
+                        <REGEX_VALUE>(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?</REGEX_VALUE>
+                    </TEXT_FIELD>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>multiple</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>host taxid</LABEL>
+                <NAME>host taxid</NAME>
+                <DESCRIPTION>NCBI taxon id of the host, e.g. 9606</DESCRIPTION>
+                <FIELD_TYPE>
+                    <TEXT_FIELD>
+                        <REGEX_VALUE>[+-]?[0-9]+</REGEX_VALUE>
+                    </TEXT_FIELD>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>multiple</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>host life stage</LABEL>
+                <NAME>host life stage</NAME>
+                <DESCRIPTION>description of life stage of host</DESCRIPTION>
+                <FIELD_TYPE>
+                    <TEXT_FIELD/>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>multiple</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>host height</LABEL>
+                <NAME>host height</NAME>
+                <DESCRIPTION>the height of subject</DESCRIPTION>
+                <UNITS>
+                    <UNIT>cm</UNIT>
+                    <UNIT>m</UNIT>
+                    <UNIT>mm</UNIT>
+                </UNITS>
+                <FIELD_TYPE>
+                    <TEXT_FIELD>
+                        <REGEX_VALUE>(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?</REGEX_VALUE>
+                    </TEXT_FIELD>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>multiple</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>host length</LABEL>
+                <NAME>host length</NAME>
+                <DESCRIPTION>the length of subject</DESCRIPTION>
+                <UNITS>
+                    <UNIT>cm</UNIT>
+                    <UNIT>m</UNIT>
+                    <UNIT>mm</UNIT>
+                </UNITS>
+                <FIELD_TYPE>
+                    <TEXT_FIELD>
+                        <REGEX_VALUE>(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?</REGEX_VALUE>
+                    </TEXT_FIELD>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>multiple</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>plant body site</LABEL>
+                <NAME>plant body site</NAME>
+                <DESCRIPTION>name of body site that the sample was obtained from. For Plant Ontology (PO) (v 20) terms, see http://purl.bioontology.org/ontology/PO</DESCRIPTION>
+                <FIELD_TYPE>
+                    <TEXT_FIELD/>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>multiple</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>host total mass</LABEL>
+                <NAME>host total mass</NAME>
+                <DESCRIPTION>total mass of the host at collection, the unit depends on host</DESCRIPTION>
+                <UNITS>
+                    <UNIT>g</UNIT>
+                    <UNIT>kg</UNIT>
+                </UNITS>
+                <FIELD_TYPE>
+                    <TEXT_FIELD>
+                        <REGEX_VALUE>(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?</REGEX_VALUE>
+                    </TEXT_FIELD>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>multiple</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>host phenotype</LABEL>
+                <NAME>host phenotype</NAME>
+                <DESCRIPTION>phenotype of host. For Phenotypic quality Ontology (PATO) (v 2013-10-28) terms, please see http://purl.bioontology.org/ontology/PATO</DESCRIPTION>
+                <FIELD_TYPE>
+                    <TEXT_FIELD/>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>multiple</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>host subspecific genetic lineage</LABEL>
+                <NAME>host subspecific genetic lineage</NAME>
+                <DESCRIPTION>Information about the genetic distinctness of the host organism below the subspecies level e.g., serovar, serotype, biotype, ecotype, variety, cultivar, or any relevant genetic typing schemes like Group I plasmid. Subspecies should not be recorded in this term, but in the NCBI taxonomy. Supply both the lineage name and the lineage rank separated by a colon, e.g., biovar:abc123.</DESCRIPTION>
+                <FIELD_TYPE>
+                    <TEXT_FIELD/>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>single</MULTIPLICITY>
             </FIELD>
         </FIELD_GROUP>
         <FIELD_GROUP restrictionType="Any number or none of the fields">
             <NAME>local environment conditions</NAME>
             <FIELD>
-                <LABEL>barometric pressure</LABEL>
-                <NAME>barometric pressure</NAME>
-                <DESCRIPTION>force per unit area exerted against a surface by the weight of air above that surface</DESCRIPTION>
-                <UNITS>
-                    <UNIT>Torr</UNIT>
-                    <UNIT>in. Hg</UNIT>
-                    <UNIT>millibar(hPa)</UNIT>
-                    <UNIT>mm Hg</UNIT>
-                </UNITS>
-                <FIELD_TYPE>
-                    <TEXT_FIELD>
-                        <REGEX_VALUE>(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?</REGEX_VALUE>
-                    </TEXT_FIELD>
-                </FIELD_TYPE>
-                <MANDATORY>optional</MANDATORY>
-                <MULTIPLICITY>multiple</MULTIPLICITY>
-            </FIELD>
-            <FIELD>
-                <LABEL>humidity</LABEL>
-                <NAME>humidity</NAME>
-                <DESCRIPTION>amount of water vapour in the air, at the time of sampling</DESCRIPTION>
-                <UNITS>
-                    <UNIT>%</UNIT>
-                    <UNIT>g/m3</UNIT>
-                </UNITS>
-                <FIELD_TYPE>
-                    <TEXT_FIELD>
-                        <REGEX_VALUE>(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?</REGEX_VALUE>
-                    </TEXT_FIELD>
-                </FIELD_TYPE>
-                <MANDATORY>optional</MANDATORY>
-                <MULTIPLICITY>multiple</MULTIPLICITY>
-            </FIELD>
-            <FIELD>
-                <LABEL>pollutants</LABEL>
-                <NAME>pollutants</NAME>
-                <DESCRIPTION>pollutant types and, amount or concentrations measured at the time of sampling; can report multiple pollutants by entering numeric values preceded by name of pollutant</DESCRIPTION>
-                <UNITS>
-                    <UNIT>M/L</UNIT>
-                    <UNIT>g</UNIT>
-                    <UNIT>mg/L</UNIT>
-                </UNITS>
+                <LABEL>climate environment</LABEL>
+                <NAME>climate environment</NAME>
+                <DESCRIPTION>treatment involving an exposure to a particular climate; can include multiple climates</DESCRIPTION>
                 <FIELD_TYPE>
                     <TEXT_FIELD/>
                 </FIELD_TYPE>
@@ -1597,24 +1703,9 @@
                 <MULTIPLICITY>multiple</MULTIPLICITY>
             </FIELD>
             <FIELD>
-                <LABEL>solar irradiance</LABEL>
-                <NAME>solar irradiance</NAME>
-                <DESCRIPTION>the amount of solar energy that arrives at a specific area of a surface during a specific time interval</DESCRIPTION>
-                <UNITS>
-                    <UNIT>W/m2</UNIT>
-                </UNITS>
-                <FIELD_TYPE>
-                    <TEXT_FIELD>
-                        <REGEX_VALUE>(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?</REGEX_VALUE>
-                    </TEXT_FIELD>
-                </FIELD_TYPE>
-                <MANDATORY>optional</MANDATORY>
-                <MULTIPLICITY>multiple</MULTIPLICITY>
-            </FIELD>
-            <FIELD>
-                <LABEL>wind direction</LABEL>
-                <NAME>wind direction</NAME>
-                <DESCRIPTION>wind direction is the direction from which a wind originates</DESCRIPTION>
+                <LABEL>gaseous environment</LABEL>
+                <NAME>gaseous environment</NAME>
+                <DESCRIPTION>use of conditions with differing gaseous environments; should include the name of gaseous compound, amount administered, treatment duration, interval and total experimental duration; can include multiple gaseous environment regimens</DESCRIPTION>
                 <FIELD_TYPE>
                     <TEXT_FIELD/>
                 </FIELD_TYPE>
@@ -1622,17 +1713,11 @@
                 <MULTIPLICITY>multiple</MULTIPLICITY>
             </FIELD>
             <FIELD>
-                <LABEL>wind speed</LABEL>
-                <NAME>wind speed</NAME>
-                <DESCRIPTION>speed of wind measured at the time of sampling</DESCRIPTION>
-                <UNITS>
-                    <UNIT>km/h</UNIT>
-                    <UNIT>m/s</UNIT>
-                </UNITS>
+                <LABEL>seasonal environment</LABEL>
+                <NAME>seasonal environment</NAME>
+                <DESCRIPTION>treatment involving an exposure to a particular season (e.g. winter, summer, rabi, rainy etc.)</DESCRIPTION>
                 <FIELD_TYPE>
-                    <TEXT_FIELD>
-                        <REGEX_VALUE>(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?</REGEX_VALUE>
-                    </TEXT_FIELD>
+                    <TEXT_FIELD/>
                 </FIELD_TYPE>
                 <MANDATORY>optional</MANDATORY>
                 <MULTIPLICITY>multiple</MULTIPLICITY>
@@ -1656,97 +1741,6 @@
         <FIELD_GROUP restrictionType="Any number or none of the fields">
             <NAME>concentration measurement</NAME>
             <FIELD>
-                <LABEL>carbon dioxide</LABEL>
-                <NAME>carbon dioxide</NAME>
-                <DESCRIPTION>carbon dioxide (gas) amount or concentration at the time of sampling</DESCRIPTION>
-                <UNITS>
-                    <UNIT>µmol/L</UNIT>
-                </UNITS>
-                <FIELD_TYPE>
-                    <TEXT_FIELD>
-                        <REGEX_VALUE>(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?</REGEX_VALUE>
-                    </TEXT_FIELD>
-                </FIELD_TYPE>
-                <MANDATORY>optional</MANDATORY>
-                <MULTIPLICITY>multiple</MULTIPLICITY>
-            </FIELD>
-            <FIELD>
-                <LABEL>carbon monoxide</LABEL>
-                <NAME>carbon monoxide</NAME>
-                <DESCRIPTION>carbon monoxide (gas) amount or concentration at the time of sampling</DESCRIPTION>
-                <UNITS>
-                    <UNIT>µM/L</UNIT>
-                </UNITS>
-                <FIELD_TYPE>
-                    <TEXT_FIELD>
-                        <REGEX_VALUE>(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?</REGEX_VALUE>
-                    </TEXT_FIELD>
-                </FIELD_TYPE>
-                <MANDATORY>optional</MANDATORY>
-                <MULTIPLICITY>multiple</MULTIPLICITY>
-            </FIELD>
-            <FIELD>
-                <LABEL>oxygen</LABEL>
-                <NAME>oxygen</NAME>
-                <DESCRIPTION>oxygen (gas) amount or concentration at the time of sampling</DESCRIPTION>
-                <UNITS>
-                    <UNIT>mg/L</UNIT>
-                    <UNIT>parts/million</UNIT>
-                </UNITS>
-                <FIELD_TYPE>
-                    <TEXT_FIELD>
-                        <REGEX_VALUE>(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?</REGEX_VALUE>
-                    </TEXT_FIELD>
-                </FIELD_TYPE>
-                <MANDATORY>optional</MANDATORY>
-                <MULTIPLICITY>multiple</MULTIPLICITY>
-            </FIELD>
-            <FIELD>
-                <LABEL>air particulate matter concentration</LABEL>
-                <SYNONYM>respirable particulate matter</SYNONYM>
-                <NAME>air particulate matter concentration</NAME>
-                <DESCRIPTION>Concentration of substances that remain suspended in the air, and comprise mixtures of organic and inorganic substances (PM10 and PM2.5); can report multiple PM&apos;s by entering numeric values preceded by name of PM</DESCRIPTION>
-                <UNITS>
-                    <UNIT>µg/m3</UNIT>
-                </UNITS>
-                <FIELD_TYPE>
-                    <TEXT_FIELD>
-                        <REGEX_VALUE>(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?</REGEX_VALUE>
-                    </TEXT_FIELD>
-                </FIELD_TYPE>
-                <MANDATORY>optional</MANDATORY>
-                <MULTIPLICITY>multiple</MULTIPLICITY>
-            </FIELD>
-            <FIELD>
-                <LABEL>volatile organic compounds</LABEL>
-                <NAME>volatile organic compounds</NAME>
-                <DESCRIPTION>concentration of carbon-based chemicals that easily evaporate at room temperature; can report multiple volatile organic compounds by entering numeric values preceded by name of compound</DESCRIPTION>
-                <UNITS>
-                    <UNIT>parts/million</UNIT>
-                    <UNIT>µg/m3</UNIT>
-                </UNITS>
-                <FIELD_TYPE>
-                    <TEXT_FIELD/>
-                </FIELD_TYPE>
-                <MANDATORY>optional</MANDATORY>
-                <MULTIPLICITY>multiple</MULTIPLICITY>
-            </FIELD>
-            <FIELD>
-                <LABEL>methane</LABEL>
-                <NAME>methane</NAME>
-                <DESCRIPTION>methane (gas) amount or concentration at the time of sampling</DESCRIPTION>
-                <UNITS>
-                    <UNIT>µM/L</UNIT>
-                </UNITS>
-                <FIELD_TYPE>
-                    <TEXT_FIELD>
-                        <REGEX_VALUE>(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?</REGEX_VALUE>
-                    </TEXT_FIELD>
-                </FIELD_TYPE>
-                <MANDATORY>optional</MANDATORY>
-                <MULTIPLICITY>multiple</MULTIPLICITY>
-            </FIELD>
-            <FIELD>
                 <LABEL>salinity</LABEL>
                 <SYNONYM>extreme_unusual_properties/salinity</SYNONYM>
                 <SYNONYM>sample salinity</SYNONYM>
@@ -1759,6 +1753,19 @@
                     <TEXT_FIELD>
                         <REGEX_VALUE>(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?</REGEX_VALUE>
                     </TEXT_FIELD>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>multiple</MULTIPLICITY>
+            </FIELD>
+        </FIELD_GROUP>
+        <FIELD_GROUP restrictionType="Any number or none of the fields">
+            <NAME>host details</NAME>
+            <FIELD>
+                <LABEL>host genotype</LABEL>
+                <NAME>host genotype</NAME>
+                <DESCRIPTION>observed genotype</DESCRIPTION>
+                <FIELD_TYPE>
+                    <TEXT_FIELD/>
                 </FIELD_TYPE>
                 <MANDATORY>optional</MANDATORY>
                 <MULTIPLICITY>multiple</MULTIPLICITY>
@@ -1958,6 +1965,226 @@
         </FIELD_GROUP>
         <FIELD_GROUP restrictionType="Any number or none of the fields">
             <NAME>local environment conditions imposed</NAME>
+            <FIELD>
+                <LABEL>air temperature regimen</LABEL>
+                <NAME>air temperature regimen</NAME>
+                <DESCRIPTION>information about treatment involving an exposure to varying temperatures; should include the temperature, treatment duration, interval and total experimental duration; can include different temperature regimens</DESCRIPTION>
+                <FIELD_TYPE>
+                    <TEXT_FIELD/>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>multiple</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>antibiotic regimen</LABEL>
+                <NAME>antibiotic regimen</NAME>
+                <DESCRIPTION>information about treatment involving antibiotic administration; should include the name of antibiotic, amount administered, treatment duration, interval and total experimental duration; can include multiple antibiotic regimens</DESCRIPTION>
+                <FIELD_TYPE>
+                    <TEXT_FIELD/>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>multiple</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>chemical mutagen</LABEL>
+                <NAME>chemical mutagen</NAME>
+                <DESCRIPTION>treatment involving use of mutagens; should include the name of mutagen, amount administered, treatment duration, interval and total experimental duration; can include multiple mutagen regimens</DESCRIPTION>
+                <FIELD_TYPE>
+                    <TEXT_FIELD/>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>multiple</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>fertilizer regimen</LABEL>
+                <NAME>fertilizer regimen</NAME>
+                <DESCRIPTION>information about treatment involving the use of fertilizers; should include the name fertilizer, amount administered, treatment duration, interval and total experimental duration; can include multiple fertilizer regimens</DESCRIPTION>
+                <FIELD_TYPE>
+                    <TEXT_FIELD/>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>multiple</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>fungicide regimen</LABEL>
+                <NAME>fungicide regimen</NAME>
+                <DESCRIPTION>information about treatment involving use of fungicides; should include the name of fungicide, amount administered, treatment duration, interval and total experimental duration; can include multiple fungicide regimens</DESCRIPTION>
+                <FIELD_TYPE>
+                    <TEXT_FIELD/>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>multiple</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>gravity</LABEL>
+                <NAME>gravity</NAME>
+                <DESCRIPTION>information about treatment involving use of gravity factor to study various types of responses in presence, absence or modified levels of gravity; can include multiple treatments</DESCRIPTION>
+                <FIELD_TYPE>
+                    <TEXT_FIELD/>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>multiple</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>growth hormone regimen</LABEL>
+                <NAME>growth hormone regimen</NAME>
+                <DESCRIPTION>information about treatment involving use of growth hormones; should include the name of growth hormone, amount administered, treatment duration, interval and total experimental duration; can include multiple growth hormone regimens</DESCRIPTION>
+                <FIELD_TYPE>
+                    <TEXT_FIELD/>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>multiple</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>growth media</LABEL>
+                <NAME>growth media</NAME>
+                <DESCRIPTION>information about growth media for growing the plants or tissue cultured samples</DESCRIPTION>
+                <FIELD_TYPE>
+                    <TEXT_FIELD/>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>multiple</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>herbicide regimen</LABEL>
+                <NAME>herbicide regimen</NAME>
+                <DESCRIPTION>information about treatment involving use of herbicides; information about treatment involving use of growth hormones; should include the name of herbicide, amount administered, treatment duration, interval and total experimental duration; can include multiple regimens</DESCRIPTION>
+                <FIELD_TYPE>
+                    <TEXT_FIELD/>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>multiple</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>humidity regimen</LABEL>
+                <NAME>humidity regimen</NAME>
+                <DESCRIPTION>information about treatment involving an exposure to varying degree of humidity; information about treatment involving use of growth hormones; should include amount of humidity administered, treatment duration, interval and total experimental duration; can include multiple regimens</DESCRIPTION>
+                <FIELD_TYPE>
+                    <TEXT_FIELD/>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>multiple</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>mineral nutrient regimen</LABEL>
+                <NAME>mineral nutrient regimen</NAME>
+                <DESCRIPTION>information about treatment involving the use of mineral supplements; should include the name of mineral nutrient, amount administered, treatment duration, interval and total experimental duration; can include multiple mineral nutrient regimens</DESCRIPTION>
+                <FIELD_TYPE>
+                    <TEXT_FIELD/>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>multiple</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>non-mineral nutrient regimen</LABEL>
+                <NAME>non-mineral nutrient regimen</NAME>
+                <DESCRIPTION>information about treatment involving the exposure of plant to non-mineral nutrient such as oxygen, hydrogen or carbon; should include the name of non-mineral nutrient, amount administered, treatment duration, interval and total experimental duration; can include multiple non-mineral nutrient regimens</DESCRIPTION>
+                <FIELD_TYPE>
+                    <TEXT_FIELD/>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>multiple</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>pesticide regimen</LABEL>
+                <NAME>pesticide regimen</NAME>
+                <DESCRIPTION>information about treatment involving use of insecticides; should include the name of pesticide, amount administered, treatment duration, interval and total experimental duration; can include multiple pesticide regimens</DESCRIPTION>
+                <FIELD_TYPE>
+                    <TEXT_FIELD/>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>multiple</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>pH regimen</LABEL>
+                <NAME>pH regimen</NAME>
+                <DESCRIPTION>information about treatment involving exposure of plants to varying levels of pH of the growth media; can include multiple regimen</DESCRIPTION>
+                <FIELD_TYPE>
+                    <TEXT_FIELD/>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>multiple</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>radiation regimen</LABEL>
+                <NAME>radiation regimen</NAME>
+                <DESCRIPTION>information about treatment involving exposure of plant or a plant part to a particular radiation regimen; should include the radiation type, amount or intensity administered, treatment duration, interval and total experimental duration; can include multiple radiation regimens</DESCRIPTION>
+                <FIELD_TYPE>
+                    <TEXT_FIELD/>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>multiple</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>rainfall regimen</LABEL>
+                <NAME>rainfall regimen</NAME>
+                <DESCRIPTION>information about treatment involving an exposure to a given amount of rainfall; can include multiple regimens</DESCRIPTION>
+                <FIELD_TYPE>
+                    <TEXT_FIELD/>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>multiple</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>salt regimen</LABEL>
+                <NAME>salt regimen</NAME>
+                <DESCRIPTION>information about treatment involving use of salts as supplement to liquid and soil growth media; should include the name of salt, amount administered, treatment duration, interval and total experimental duration; can include multiple salt regimens</DESCRIPTION>
+                <FIELD_TYPE>
+                    <TEXT_FIELD/>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>multiple</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>standing water regimen</LABEL>
+                <NAME>standing water regimen</NAME>
+                <DESCRIPTION>treatment involving an exposure to standing water during a plant&apos;s life span, types can be flood water or standing water; can include multiple regimens</DESCRIPTION>
+                <FIELD_TYPE>
+                    <TEXT_FIELD/>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>multiple</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>tissue culture growth media</LABEL>
+                <NAME>tissue culture growth media</NAME>
+                <DESCRIPTION>description of plant tissue culture growth media used</DESCRIPTION>
+                <FIELD_TYPE>
+                    <TEXT_FIELD/>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>multiple</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>watering regimen</LABEL>
+                <NAME>watering regimen</NAME>
+                <DESCRIPTION>information about treatment involving an exposure to watering frequencies; can include multiple regimens</DESCRIPTION>
+                <FIELD_TYPE>
+                    <TEXT_FIELD/>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>multiple</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>water temperature regimen</LABEL>
+                <NAME>water temperature regimen</NAME>
+                <DESCRIPTION>information about treatment involving an exposure to water with varying degree of temperature; can include multiple regimens</DESCRIPTION>
+                <FIELD_TYPE>
+                    <TEXT_FIELD/>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>multiple</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>mechanical damage</LABEL>
+                <NAME>mechanical damage</NAME>
+                <DESCRIPTION>information about any mechanical damage exerted on the plant; can include multiple damages and sites</DESCRIPTION>
+                <FIELD_TYPE>
+                    <TEXT_FIELD/>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>multiple</MULTIPLICITY>
+            </FIELD>
             <FIELD>
                 <LABEL>chemical administration</LABEL>
                 <NAME>chemical administration</NAME>
