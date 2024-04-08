@@ -65,3 +65,30 @@ python manage.py migrate
 
 The application comes with 14 MIxS Sample Checklists that are downloaded from https://www.ebi.ac.uk/ena/browser/checklists. These are stored and can be changed and updated under `staticfiles/xml/EnviornmentID.xml`. These IDs should match `MIXS_METADATA_STANDARDS` defined in `mixs_metadata_standards.py`. After the .xml files are changed, run `python manage.py collectstatic` to update the static files. 
 
+## Application Screenshots
+
+Below are some screenshots that display the key functionalities of the application, including user registration/login, order creation, associating samples to an order, and associating samples to MIxS standards.
+
+### User Registration/Login
+
+![User Registration/Login](screenshots/image1.png)
+
+This screenshot shows the user registration and login page, allowing users to access the application.
+
+### Order Creation
+
+![Order Creation](screenshots/image2.png)
+
+Here, you can see the interface for creating a new sequencing order.
+
+### Sample Association
+
+![Sample Association](screenshots/image3.png)
+
+This screenshot displays how a user can associate samples with a specific order.
+
+### Associating MIxS Standards
+
+![Associating MIxS Standards](screenshots/image3.png)
+
+This image shows the functionality for associating samples with specific MIxS standards.
