@@ -75,20 +75,26 @@ Below are some screenshots that display the key functionalities of the applicati
 
 This screenshot shows the user registration and login page, allowing users to access the application.
 
-### Order Creation
+### Order Overview
 
 ![Order Creation](screenshots/image2.png)
+
+Here, you can see the interface for listing all orders associated with the user.
+
+### Order Creation
+
+![Order Creation](screenshots/image3.png)
 
 Here, you can see the interface for creating a new sequencing order.
 
 ### Sample Association
 
-![Sample Association](screenshots/image3.png)
+![Sample Association](screenshots/image4.png)
 
 This screenshot displays how a user can associate samples with a specific order.
 
 ### Associating MIxS Standards
 
-![Associating MIxS Standards](screenshots/image3.png)
+![Associating MIxS Standards](screenshots/image5.png)
 
 This image shows the functionality for associating samples with specific MIxS standards.
