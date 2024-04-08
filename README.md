@@ -2,15 +2,55 @@
 
 This is a Django App for collection and storage of sequenicing orders for the sequencing facility. After registration/login the user can define orders, associate samples to a order and associate samples to  MIxS Sample Checklists.
 
-# Installation
+## About The Project
 
-Start the application
+This project, "Establishing data broker functionalities at HZI for optimizing omics data submissions to public repositories," is funded by HZI through the NFDI4Microbiota Strategy Funds in 2023. The initiative aims to enhance the submission process of omics data to public repositories, making it more efficient and streamlined.
 
+![NFDI4Microbiota Logo](https://avatars.githubusercontent.com/u/97964957?s=200&v=4)
+
+## Funding
+
+This project is supported by the NFDI4Microbiota Strategy Funds, granted by the Helmholtz Centre for Infection Research (HZI) to facilitate the development of data broker functionalities for optimizing omics data submissions to public repositories.
+
+
+## Installation
+
+This project is developed with Django. To set up and run the project locally, follow these steps:
+
+### Prerequisites
+
+- Python (3.8 or newer)
+- pip (Python package installer)
+
+### Setting Up a Virtual Environment
+
+It's recommended to use a virtual environment for Python projects. This keeps dependencies required by different projects separate. To create a virtual environment, run:
+
+
+```bash
+python3 -m venv myenv
+source myenv/bin/activate
 ```
+
+### Installing Dependencies
+
+```bash
+pip install Django
+```
+
+### Running the Project
+
+Navigate to the project directory and run:
+
+
+```bash
 python manage.py runserver
 ```
 
-# Configuration 
+This will start the Django development server, and you should be able to access the project at `http://127.0.0.1:8000/`.
+
+
+## Configuration 
 
 ## Changes on the Order form
 
@@ -21,7 +61,7 @@ python manage.py makemigrations
 python manage.py migrate
 ```
 
-## Configuration of MIxS Sample Checklists
+### Configuration of MIxS Sample Checklists
 
 The application comes with 14 MIxS Sample Checklists that are downloaded from https://www.ebi.ac.uk/ena/browser/checklists. These are stored and can be changed and updated under `staticfiles/xml/EnviornmentID.xml`. These IDs should match `MIXS_METADATA_STANDARDS` defined in `mixs_metadata_standards.py`. After the .xml files are changed, run `python manage.py collectstatic` to update the static files. 
 
