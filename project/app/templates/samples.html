@@ -77,18 +77,18 @@ function saveSampleData() {
     });
 
     sampleData = sampleData.map(function(sample) {
-        return {
-            index: sample.index,
-            sample_id: sample.sample_id,
-            mixs_metadata_standard: sample.mixs_metadata_standard,
-            concentration: sample.concentration.trim(),
-            volume: sample.volume.trim(),
-            ratio_260_280: sample.ratio_260_280.trim(),
-            ratio_260_230: sample.ratio_260_230.trim(),
-            comments: sample.comments.trim(),
-            status: sample.status,
-        };
-    });
+    return {
+      index: sample.index,
+      sample_id: sample.sample_id,
+      mixs_metadata_standard: sample.mixs_metadata_standard,
+      concentration: sample.concentration ? sample.concentration.trim() : '',
+      volume: sample.volume ? sample.volume.trim() : '',
+      ratio_260_280: sample.ratio_260_280 ? sample.ratio_260_280.trim() : '',
+      ratio_260_230: sample.ratio_260_230 ? sample.ratio_260_230.trim() : '',
+      comments: sample.comments ? sample.comments.trim() : '',
+      status: sample.status,
+    };
+  });
 
     console.log('Sending sample data:', sampleData);
 
