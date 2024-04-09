@@ -4,7 +4,6 @@ from .mixs_metadata_standards import MIXS_METADATA_STANDARDS
 from phonenumber_field.modelfields import PhoneNumberField
 from django.db.models import JSONField
 
-
 LIBRARY_CHOICES = [
     ('choice1', 'Choice 1'),
     ('choice2', 'Choice 2'),
@@ -17,6 +16,12 @@ ISOLATION_METHOD_CHOICES = [
     ('other', 'Other'),
 ]
 
+STATUS_CHOICES = [
+    ('in_preparation', 'In Preparation'),
+    ('sequencing', 'Sequencing'),
+    ('finished', 'Finished'),
+    ('uploaded_to_ENA', 'Uploaded to ENA'),
+]
 
 class Order(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -53,6 +58,9 @@ class Sample(models.Model):
     internal_id = models.DateTimeField(auto_now_add=True)
     mixs_metadata_standard = models.CharField(max_length=100, choices=MIXS_METADATA_STANDARDS, null=True, blank=True)
     mixs_metadata = JSONField(null=True, blank=True)
+    filename_forward = models.CharField(max_length=255, null=True, blank=True, verbose_name="Filename (Forward, R1)")
+    filename_reverse = models.CharField(max_length=255, null=True, blank=True, verbose_name="Filename (Reverse, R2)")
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, null=True, blank=True, verbose_name="Status")
 
     def __str__(self):
         return self.sample_name or ''

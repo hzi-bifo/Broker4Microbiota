@@ -20,7 +20,6 @@ from django.http import JsonResponse
 from .models import Order, Sample
 from .forms import SampleMetadataForm
 
-
 logger = logging.getLogger(__name__)
 
 def login_view(request):
@@ -108,8 +107,9 @@ def samples_view(request, order_id):
             ratio_260_230 = sample_info.get('ratio_260_230')
             comments = sample_info.get('comments')
             mixs_metadata_standard = sample_info.get('mixs_metadata_standard', '')
+            status = sample_info.get('status', '')
 
-            print(f"Processing sample {index} with concentration {concentration}, volume {volume}, ratio_260_280 {ratio_260_280}, ratio_260_230 {ratio_260_230}, comments {comments}, mixs_metadata_standard {mixs_metadata_standard}")
+            print(f"Processing sample {index} with concentration {concentration}, volume {volume}, ratio_260_280 {ratio_260_280}, ratio_260_230 {ratio_260_230}, comments {comments}, mixs_metadata_standard {mixs_metadata_standard}, status {status}")
 
             sample = Sample(
                 order=order,
@@ -119,12 +119,17 @@ def samples_view(request, order_id):
                 ratio_260_280=ratio_260_280,
                 ratio_260_230=ratio_260_230,
                 comments=comments,
-                mixs_metadata_standard=mixs_metadata_standard
+                mixs_metadata_standard=mixs_metadata_standard,
+                status=status
+                
             )
+            if status:
+                sample.status = status  # Set the status field only if it's not an empty string
+
             sample.save()
+            
 
         return JsonResponse({'success': True})
-
 
     samples = order.sample_set.all().order_by('sample_name')
     print(f"Retrieved samples: {list(samples)}")
@@ -137,7 +142,8 @@ def samples_view(request, order_id):
             'volume': sample.volume or '',
             'ratio_260_280': sample.ratio_260_280 or '',
             'ratio_260_230': sample.ratio_260_230 or '',
-            'comments': sample.comments or ''
+            'comments': sample.comments or '',
+            'status': sample.get_status_display() or ''
         }
         for index, sample in enumerate(samples, start=1)
     ]
