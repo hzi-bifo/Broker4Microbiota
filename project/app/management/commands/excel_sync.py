@@ -60,14 +60,14 @@ def import_from_excel(file_path):
                       isolation_method=row[18])
         order.save()
 
-    # Read data from the "Samples" sheet
     samples_sheet = workbook["Samples"]
     samples_rows = list(samples_sheet.iter_rows(min_row=2, values_only=True))
 
     for row in samples_rows:
-        order = Order.objects.get(user__username=row[0])
-        sample = Sample(order=order, sample_name=row[1], concentration=row[2], volume=row[3],
-                        ratio_260_280=row[4], ratio_260_230=row[5], comments=row[6],
-                        internal_id=timezone.make_aware(row[7]),  # Restore timezone information
-                        mixs_metadata_standard=row[8], mixs_metadata=json.loads(row[9]))
-        sample.save()
+        orders = Order.objects.filter(user__username=row[0])
+        for order in orders:
+            sample = Sample(order=order, sample_name=row[1], concentration=row[2], volume=row[3],
+                            ratio_260_280=row[4], ratio_260_230=row[5], comments=row[6],
+                            internal_id=timezone.make_aware(row[7]),
+                            mixs_metadata_standard=row[8], mixs_metadata=json.loads(row[9]))
+            sample.save()
