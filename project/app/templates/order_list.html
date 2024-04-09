@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load mixs_filters %}
 
 {% block title %}
 Order List
@@ -39,7 +40,9 @@ Order List
                   <div class="buttons">
                     {% for mixs_standard in order.mixs_standards %}
                       {% if mixs_standard %}
-                        <a href="{% url 'mixs_view' order.id mixs_standard %}" class="button is-small is-link">{{ mixs_standard }}</a>
+                        {% with mixs_standard_display=mixs_standard|get_mixs_standard_display %}
+                          <a href="{% url 'mixs_view' order.id mixs_standard %}" class="button is-small is-link">{{ mixs_standard_display }}</a>
+                        {% endwith %}
                       {% endif %}
                     {% endfor %}
                   </div>

@@ -38,7 +38,8 @@ class OrderListView(ListView):
     def get_queryset(self):
         orders = Order.objects.filter(user=self.request.user)
         for order in orders:
-            order.mixs_standards = order.sample_set.values_list('mixs_metadata_standard', flat=True).distinct()
+            mixs_standards = order.sample_set.values_list('mixs_metadata_standard', flat=True).distinct()
+            order.mixs_standards = [item[0] for item in MIXS_METADATA_STANDARDS if item[1] in mixs_standards]
         return orders
 
 def order_view(request, order_id=None):
@@ -154,17 +155,21 @@ def mixs_view(request, order_id, mixs_standard):
     print(f"Received request for order_id: {order_id} with mixs_standard: {mixs_standard}")
     order = Order.objects.get(id=order_id)
     
-    # Convert the mixs_standard to the format without whitespaces
-    # Find the tuple in MIXS_METADATA_STANDARDS where the second element matches mixs_standard
-    # and use the first element of that tuple as the mixs_metadata_standard
-    mixs_metadata_standard = next((item[0] for item in MIXS_METADATA_STANDARDS if item[1] == mixs_standard), None)
+    # Find the tuple in MIXS_METADATA_STANDARDS where the first element matches mixs_standard
+    mixs_metadata_standard = next((item[0] for item in MIXS_METADATA_STANDARDS if item[0] == mixs_standard), None)
+    print(f"Mixs metadata standard: {mixs_metadata_standard}")
+
     if not mixs_metadata_standard:
         return JsonResponse({'error': 'Invalid MIXS metadata standard'}, status=400)
-    
-    # Filter the samples based on the order and mixs_metadata_standard
-    samples = Sample.objects.filter(order=order, mixs_metadata_standard=mixs_metadata_standard)
-    print(f"Found {samples.count()} samples for order_id: {order_id}")
+  
+    # Convert the mixs_standard to the format with spaces for display purposes
+    mixs_standard_display = next((item[1] for item in MIXS_METADATA_STANDARDS if item[0] == mixs_standard), mixs_standard)
+    print(f"Mixs standard display: {mixs_standard_display}")
 
+    # Filter the samples based on the order and mixs_metadata_standard
+    samples = Sample.objects.filter(order=order, mixs_metadata_standard=mixs_standard_display)
+    print(f"Found {samples.count()} samples for order_id: {order_id}")
+    
     if request.method == 'POST':
         try:
             mixs_metadata = json.loads(request.body)
@@ -189,18 +194,19 @@ def mixs_view(request, order_id, mixs_standard):
     else:
         initial_data = []
         for sample in samples:
-            initial_data.append({
+            sample_data = {
                 'id': sample.id,
-                'mixs_metadata': sample.mixs_metadata or {}
-            })
+            }
+            if sample.mixs_metadata:
+                sample_data['mixs_metadata'] = sample.mixs_metadata
+            initial_data.append(sample_data)
         print(f"Preparing initial data for form: {initial_data}")
         form = SampleMetadataForm(mixs_metadata_standard=mixs_metadata_standard, initial=initial_data)
-
     context = {
         'order': order,
         'samples': samples,
         'form': form,
-        'mixs_standard': mixs_standard, 
+        'mixs_standard': mixs_standard_display, 
     }
     return render(request, 'mixs_view.html', context)
     
