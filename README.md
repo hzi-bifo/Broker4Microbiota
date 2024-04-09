@@ -65,6 +65,20 @@ python manage.py migrate
 
 The application comes with 14 MIxS Sample Checklists that are downloaded from https://www.ebi.ac.uk/ena/browser/checklists. These are stored and can be changed and updated under `staticfiles/xml/EnviornmentID.xml`. These IDs should match `MIXS_METADATA_STANDARDS` defined in `mixs_metadata_standards.py`. After the .xml files are changed, run `python manage.py collectstatic` to update the static files. 
 
+## Excel Sync
+
+To generate a .xlsx file with the database content run:
+
+```bash
+python manage.py sync_excel
+```
+
+To import from a .xlsx file (similar structure as the output of the sync_excel command) run:
+
+```bash
+python manage.py sync_excel --import /path/to/your/excel/file.xlsx
+```
+
 ## Application Screenshots
 
 Below are some screenshots that display the key functionalities of the application, including user registration/login, order creation, associating samples to an order, and associating samples to MIxS standards.
