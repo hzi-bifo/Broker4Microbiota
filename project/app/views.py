@@ -128,7 +128,7 @@ def samples_view(request, order_id):
     print(f"Retrieved samples: {list(samples)}")
     samples_data = [
         {
-            'index': index,
+            'index': sample.id,
             'sample_name': sample.sample_name or '',
             'mixs_metadata_standard': sample.mixs_metadata_standard or '',
             'concentration': sample.concentration or '',

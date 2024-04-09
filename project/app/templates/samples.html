@@ -30,7 +30,7 @@ var hotElement = document.querySelector('#handsontable-container');
 var hotSettings = {
   data: {{ samples|safe }},
   columns: [
-    { title: 'Sample Name', data: 'sample_name', readOnly: true },
+    { title: 'Sample ID', data: 'index', readOnly: true },
     { title: 'MIxS Metadata Standard', data: 'mixs_metadata_standard', type: 'dropdown', source: {{ mixs_metadata_standards|safe }} },
     { title: 'Concentration', data: 'concentration' },
     { title: 'Volume', data: 'volume' },
@@ -63,8 +63,8 @@ function addNewRow() {
 function saveSampleData() {
     var sampleData = hot.getData().map(function(row, index) {
         return {
-            index: index + 1,
-            sample_name: "Sample " + (index + 1),
+            index: row[0],
+            sample_name: row[0],
             mixs_metadata_standard: row[1], // Get the selected MIxS Metadata Standard
             concentration: row[2],
             volume: row[3],
@@ -80,7 +80,7 @@ function saveSampleData() {
     sampleData = sampleData.map(function(sample) {
         return {
             index: sample.index,
-            sample_name: sample.sample_name,
+            sample_id: sample.sample_id,
             mixs_metadata_standard: sample.mixs_metadata_standard,
             concentration: sample.concentration.trim(),
             volume: sample.volume.trim(),
