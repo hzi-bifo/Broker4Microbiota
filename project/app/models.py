@@ -56,7 +56,7 @@ class Sample(models.Model):
     ratio_260_280 = models.CharField(max_length=100, null=True, blank=True)
     ratio_260_230 = models.CharField(max_length=100, null=True, blank=True)
     comments = models.TextField(null=True, blank=True)
-    internal_id = models.DateTimeField(auto_now_add=True)
+    date = models.DateTimeField(auto_now_add=True)
     mixs_metadata_standard = models.CharField(max_length=100, choices=MIXS_METADATA_STANDARDS, null=True, blank=True)
     mixs_metadata = JSONField(null=True, blank=True)
     filename_forward = models.CharField(max_length=255, null=True, blank=True, verbose_name="Filename (Forward, R1)")
