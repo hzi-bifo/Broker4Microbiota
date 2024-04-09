@@ -37,7 +37,8 @@ var hotSettings = {
     { title: 'Ratio 260/280', data: 'ratio_260_280' },
     { title: 'Ratio 260/230', data: 'ratio_260_230' },
     { title: 'Comments', data: 'comments' },
-    { title: 'Status', data: 'status', readOnly: true }, 
+    { title: 'Status', data: 'status', readOnly: true}
+
 
   ],
   minSpareRows: 1,
@@ -85,7 +86,8 @@ function saveSampleData() {
             volume: sample.volume.trim(),
             ratio_260_280: sample.ratio_260_280.trim(),
             ratio_260_230: sample.ratio_260_230.trim(),
-            comments: sample.comments.trim()
+            comments: sample.comments.trim(),
+            status: sample.status,
         };
     });
 

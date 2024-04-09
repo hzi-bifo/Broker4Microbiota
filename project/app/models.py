@@ -23,6 +23,7 @@ STATUS_CHOICES = [
     ('uploaded_to_ENA', 'Uploaded to ENA'),
 ]
 
+
 class Order(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     name = models.CharField(max_length=100, null=True, blank=True)
@@ -60,7 +61,7 @@ class Sample(models.Model):
     mixs_metadata = JSONField(null=True, blank=True)
     filename_forward = models.CharField(max_length=255, null=True, blank=True, verbose_name="Filename (Forward, R1)")
     filename_reverse = models.CharField(max_length=255, null=True, blank=True, verbose_name="Filename (Reverse, R2)")
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES, null=True, blank=True, verbose_name="Status")
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, null=True, blank=True)
 
     def __str__(self):
         return self.sample_name or ''

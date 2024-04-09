@@ -1,24 +1,17 @@
+from django import forms
+import json
+import logging
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django.contrib.auth import login, logout
-from .forms import OrderForm, SampleForm
-from .models import Order, Sample
 from django.views.generic import ListView
 from funky_sheets.formsets import HotView
-from django.forms import CheckboxSelectMultiple, CheckboxInput, DateInput
-from django.http import HttpResponseRedirect
+from django.forms import CheckboxSelectMultiple, CheckboxInput, DateInput, modelformset_factory
+from django.http import HttpResponseRedirect, JsonResponse
 from django.urls import reverse, reverse_lazy
-from django.forms import modelformset_factory
-from django import forms
-from django.http import JsonResponse
-import json
 from .mixs_metadata_standards import MIXS_METADATA_STANDARDS
-import logging
-from .forms import SampleMetadataForm
-import json
-from django.http import JsonResponse
-from .models import Order, Sample
-from .forms import SampleMetadataForm
+from .forms import OrderForm, SampleForm, SampleMetadataForm
+from .models import Order, Sample, STATUS_CHOICES
 
 logger = logging.getLogger(__name__)
 
@@ -147,11 +140,14 @@ def samples_view(request, order_id):
         }
         for index, sample in enumerate(samples, start=1)
     ]
+    status_choices = [choice[1] for choice in STATUS_CHOICES]
+
     print(f"Sending samples_data to template: {samples_data}")
     return render(request, 'samples.html', {
             'order': order,
             'samples': samples_data,
             'mixs_metadata_standards': MIXS_METADATA_STANDARDS,
+            'status_choices': status_choices,
         })
 
 def mixs_view(request, order_id, mixs_standard):

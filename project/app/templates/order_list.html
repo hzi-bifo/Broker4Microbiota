@@ -38,7 +38,9 @@ Order List
                 <td>
                   <div class="buttons">
                     {% for mixs_standard in order.mixs_standards %}
-                      <a href="{% url 'mixs_view' order.id mixs_standard %}" class="button is-small is-link">{{ mixs_standard }}</a>
+                      {% if mixs_standard %}
+                        <a href="{% url 'mixs_view' order.id mixs_standard %}" class="button is-small is-link">{{ mixs_standard }}</a>
+                      {% endif %}
                     {% endfor %}
                   </div>
                 </td>
