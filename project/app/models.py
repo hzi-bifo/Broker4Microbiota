@@ -93,3 +93,11 @@ class Submission(models.Model):
     def __str__(self):
         return f"Submission for Order {self.order.id}"
 
+class Pipelines(models.Model):
+    run_id = models.CharField(max_length=100, unique=True)
+    samples = models.ManyToManyField(Sample)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, null=True, blank=True)
+    output_folder = models.CharField(max_length=255, null=True, blank=True)
+
+    def __str__(self):
+        return self.run_id

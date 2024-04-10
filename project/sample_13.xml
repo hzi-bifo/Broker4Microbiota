@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SAMPLE_SET>
+
+  <SAMPLE alias="MT5176">
+    <TITLE>human gastric microbiota, mucosal</TITLE>
+    <SAMPLE_NAME>
+      <TAXON_ID>1284369</TAXON_ID>
+    </SAMPLE_NAME>
+    <SAMPLE_ATTRIBUTES>   
+      <SAMPLE_ATTRIBUTE>
+        <TAG>collection date</TAG>
+        <VALUE>2010</VALUE>
+      </SAMPLE_ATTRIBUTE>   
+    </SAMPLE_ATTRIBUTES> 
+  </SAMPLE>
+
+</SAMPLE_SET>

@@ -1,5 +1,7 @@
 import os
 import random
+import time
+import subprocess
 import gzip
 import requests
 from django.contrib import admin, messages
@@ -8,7 +10,7 @@ from django.core.files.base import ContentFile
 from django.conf import settings
 from Bio import SeqIO
 from io import StringIO
-from .models import Order, Sample, Submission
+from .models import Order, Sample, Submission, Pipelines
 from .forms import CreateGZForm
 from django.template.loader import render_to_string
 from xml.etree import ElementTree as ET
@@ -16,14 +18,61 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-logger.debug(f"Current ENA password: {settings.ENA_PASSWORD}")
-
 class OrderAdmin(admin.ModelAdmin):
     list_display = ('user', 'name', 'date', 'quote_no', 'billing_address', 'ag_and_hzi', 'contact_phone', 'email', 'data_delivery', 'signature', 'experiment_title', 'dna', 'rna', 'library', 'method', 'buffer', 'organism', 'isolated_from', 'isolation_method')
 
 class SampleAdmin(admin.ModelAdmin):
     list_display = ('order', 'id', 'alias', 'title', 'taxon_id', 'scientific_name', 'investigation_type', 'study_type', 'platform', 'library_source', 'concentration', 'volume', 'ratio_260_280', 'ratio_260_230', 'comments', 'date', 'mixs_metadata_standard', 'mixs_metadata', 'filename_forward', 'filename_reverse', 'nf_core_mag_outdir', 'status')
-    actions = ['generate_xml_and_create_submission']
+    actions = ['generate_xml_and_create_submission', 'run_mag_pipeline']
+
+    def run_mag_pipeline(self, request, queryset):
+        
+        selected_samples = queryset
+
+        # Generate a unique run_id
+        timestamp = int(time.time())
+        random_num = random.randint(1000, 9999)
+        run_id = f"{timestamp}_{random_num}"
+
+        pipeline = Pipelines.objects.create(run_id=run_id)
+        pipeline.samples.set(selected_samples)
+
+        # Generate samplesheet.csv
+        samplesheet_content = "sample,group,short_reads_1,short_reads_2,long_reads\n"
+        for sample in selected_samples:
+            samplesheet_content += f"{sample.alias},0,{sample.filename_forward},{sample.filename_reverse},\n"
+        samplesheet_path = os.path.join(settings.MEDIA_ROOT, 'sample_files', f"{run_id}_samplesheet.csv")
+        with open(samplesheet_path, 'w') as file:
+            file.write(samplesheet_content)
+        logger.info(f"Generated samplesheet.csv at: {samplesheet_path}")
+
+        # Generate config file
+        config_path = os.path.join(settings.MEDIA_ROOT, 'sample_files', f"{run_id}.config")
+        test_config_path = os.path.join(settings.MEDIA_ROOT,'sample_files', "test.config")
+        with open(test_config_path, 'r') as file:
+            config_content = file.read()
+        config_content = config_content.replace("input                         = 'samplesheet.csv'", f"input                         = '{samplesheet_path}'")
+        with open(config_path, 'w') as file:
+            file.write(config_content)
+        logger.info(f"Generated config file at: {config_path}")
+
+        # Run nextflow command
+        output_folder = os.path.join(settings.MEDIA_ROOT, 'sample_files', f"{run_id}_out")
+        log_path = os.path.join(output_folder, f"{run_id}.log")
+        command = f"nextflow run nf-core/mag -profile docker -c {config_path} --outdir {output_folder}"
+        process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        stdout, stderr = process.communicate()
+
+        # Save pipeline details
+        pipeline.status = 'running'
+        pipeline.output_folder = output_folder
+        with open(log_path, 'w') as file:
+            file.write(stdout.decode())
+        pipeline.save()
+
+        self.message_user(request, f'Started MAG pipeline for {selected_samples.count()} samples')
+
+    run_mag_pipeline.short_description = 'Run MAG pipeline'
 
     def generate_xml_and_create_submission(self, request, queryset):
         selected_samples = queryset
@@ -52,40 +101,6 @@ class SampleAdmin(admin.ModelAdmin):
 
     generate_xml_and_create_submission.short_description = 'Generate XML and create Submission'
 
-    def run_nfcore_mag(modeladmin, request, queryset):
-        from subprocess import Popen, PIPE
-        
-        for sample in queryset:
-            forward_path = os.path.join(settings.MEDIA_ROOT, sample.filename_forward)
-            reverse_path = os.path.join(settings.MEDIA_ROOT, sample.filename_reverse)
-            
-            # Check if both files exist and are valid FASTQ
-            if not (os.path.isfile(forward_path) and os.path.isfile(reverse_path) and sample.status == 'Valid FASTQ'):
-                modeladmin.message_user(request, f"Sample {sample.id} missing valid FASTQ files. Skipping.", level=40)
-                continue
-            
-            # Construct Nextflow command
-            cmd = [
-                "nextflow", "run", "nf-core/mag",
-                "--input", f"{forward_path},{reverse_path}",
-                "--outdir", os.path.join(settings.MEDIA_ROOT, "output", sample.sample_name),
-                "-profile", "docker"  # Adjust profile as needed
-            ]
-            
-            # Execute Nextflow pipeline (consider background execution)
-            process = Popen(cmd, stdout=PIPE, stderr=PIPE)
-            output, error = process.communicate()
-            
-            # Handle output and errors (logging, updating sample status etc.)
-            if process.returncode == 0:
-                modeladmin.message_user(request, f"nf-core/mag successfully run for Sample {sample.id}.")
-                # Update sample status if needed
-            else:
-                modeladmin.message_user(request, f"Error running nf-core/mag for Sample {sample.id}: {error.decode()}", level=40)
-
-        modeladmin.message_user(request, f"nf-core/mag processing initiated for selected samples.")
-
-    run_nfcore_mag.short_description = "Run nf-core/mag pipeline"
 
 admin.site.register(Order, OrderAdmin)
 admin.site.register(Sample, SampleAdmin)
@@ -118,7 +133,6 @@ class SubmissionAdmin(admin.ModelAdmin):
 
                 # Prepare authentication
                 auth = (settings.ENA_USERNAME, settings.ENA_PASSWORD)
-                print(f"Current ENA password: {settings.ENA_PASSWORD}")
                 # Make the request
                 response = requests.post(
                     "https://wwwdev.ebi.ac.uk/ena/submit/drop-box/submit/",
@@ -147,3 +161,20 @@ class SubmissionAdmin(admin.ModelAdmin):
     register_sample.short_description = "Register sample with ENA"
 
 admin.site.register(Submission, SubmissionAdmin)
+
+
+class PipelinesAdmin(admin.ModelAdmin):
+    list_display = ('run_id', 'status', 'output_folder', 'sample_count', 'order')
+    
+    def sample_count(self, obj):
+        return obj.samples.count()
+    sample_count.short_description = 'Number of Samples'
+    
+    def order(self, obj):
+        samples = obj.samples.all()
+        if samples:
+            return samples.first().order
+        return None
+    order.short_description = 'Order'
+
+admin.site.register(Pipelines, PipelinesAdmin)
