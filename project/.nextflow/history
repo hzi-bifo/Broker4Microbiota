@@ -1,0 +1,6 @@
+2024-04-10 00:23:32	-	deadly_church	-	e486bb23b9012ecf649061f1eb448bb853e0aad8	0f669f7e-d548-41a7-8ec1-dca5c0f82884	nextflow run nf-core/mag
+2024-04-10 00:24:11	-	desperate_torricelli	-	e486bb23b9012ecf649061f1eb448bb853e0aad8	018699f9-c523-432d-bef8-46eb8cc2d8ae	nextflow run nf-core/mag --input media/sample_files/Sample355_R1.fastq --outdir nextflow_test_out
+2024-04-10 00:29:13	-	determined_woese	-	e486bb23b9012ecf649061f1eb448bb853e0aad8	f876dbc8-8925-4bb0-b7d6-966200f5c52e	nextflow run nf-core/mag --input media/sample_files/Sample355_R1.fastq media/sample_files/Sample355_R2.fastq --outdir nextflow_test_out
+2024-04-10 00:31:06	-	exotic_newton	-	e486bb23b9012ecf649061f1eb448bb853e0aad8	ab7c250b-425b-4cb4-bd14-23e961c206a5	nextflow run nf-core/mag --input media/sample_files/Sample412_R1.fastq.gz media/sample_files/Sample412_R2.fastq.gz --outdir nextflow_test_out
+2024-04-10 00:31:53	-	friendly_leakey	-	e486bb23b9012ecf649061f1eb448bb853e0aad8	c4597539-9d0d-4cdd-9e07-6172299d857e	nextflow run nf-core/mag --input media/sample_files/Sample412_R1.fastq.gz media/sample_files/Sample412_R2.fastq.gz --outdir nextflow_test_out
+2024-04-10 00:32:53	-	clever_torricelli	-	e486bb23b9012ecf649061f1eb448bb853e0aad8	46829ad0-62be-4797-96bf-24b5faa82f2f	nextflow run nf-core/mag --input '*_R{1,2}.fastq.gz' --outdir nextflow_test_out

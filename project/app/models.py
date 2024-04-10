@@ -62,6 +62,7 @@ class Sample(models.Model):
     filename_forward = models.CharField(max_length=255, null=True, blank=True, verbose_name="Filename (Forward, R1)")
     filename_reverse = models.CharField(max_length=255, null=True, blank=True, verbose_name="Filename (Reverse, R2)")
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, null=True, blank=True)
+    nf_core_mag_outdir = models.CharField(max_length=255, null=True, blank=True)
 
     def __str__(self):
         return self.sample_name or ''

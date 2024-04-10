@@ -4,7 +4,6 @@ from django.conf import settings
 import os
 import xml.etree.ElementTree as ET
 
-
 class OrderForm(forms.ModelForm):
     class Meta:
         model = Order
@@ -58,3 +57,6 @@ class SampleMetadataForm(forms.Form):
                         help_text=description,
                         widget=forms.TextInput(attrs={'class': 'form-control'})
                     )
+
+class CreateGZForm(forms.Form):
+    compression_level = forms.IntegerField(min_value=1, max_value=9, initial=9, help_text="Enter the compression level (1-9).")

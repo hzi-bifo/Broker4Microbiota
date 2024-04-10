@@ -21,11 +21,11 @@ This project is developed with Django. To set up and run the project locally, fo
 
 - Python (3.8 or newer)
 - pip (Python package installer)
+- Nextflow (see https://www.nextflow.io/docs/latest/install.html)
 
 ### Setting Up a Virtual Environment
 
 It's recommended to use a virtual environment for Python projects. This keeps dependencies required by different projects separate. To create a virtual environment, run:
-
 
 ```bash
 python3 -m venv myenv
@@ -36,6 +36,10 @@ source myenv/bin/activate
 
 ```bash
 pip install Django
+pip install biopython
+pip install phonenumbers
+pip install django-widget-tweaks
+pip install django-phonenumber-field
 ```
 
 ### Running the Project
@@ -44,6 +48,7 @@ Navigate to the project directory and run:
 
 
 ```bash
+cd project
 python manage.py runserver
 ```
 
@@ -56,7 +61,7 @@ This will start the Django development server, and you should be able to access 
 
 The Order form can be changed by modifying the class OrderForm in `myapp/forms.py` and the `models.py`file that defines the SQL fields. Updates on the SQL tables requires migration of the table layout.
 
-```
+```bash
 python manage.py makemigrations
 python manage.py migrate
 ```

@@ -5,7 +5,6 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django.contrib.auth import login, logout
 from django.views.generic import ListView
-from funky_sheets.formsets import HotView
 from django.forms import CheckboxSelectMultiple, CheckboxInput, DateInput, modelformset_factory
 from django.http import HttpResponseRedirect, JsonResponse
 from django.urls import reverse, reverse_lazy
