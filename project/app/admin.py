@@ -6,7 +6,7 @@ from django.shortcuts import render
 from django.conf import settings
 from Bio import SeqIO
 from io import StringIO
-from .models import Order, Sample
+from .models import Order, Sample, Submission
 from .forms import CreateGZForm
 
 def generate_fastq_content(num_reads=1000):
@@ -175,3 +175,15 @@ class SampleAdmin(admin.ModelAdmin):
 
 admin.site.register(Order, OrderAdmin)
 admin.site.register(Sample, SampleAdmin)
+
+
+class SubmissionAdmin(admin.ModelAdmin):
+    list_display = ('id', 'order', 'sample_count', 'accession_status')
+    list_filter = ('accession_status',)
+    search_fields = ('order__name', 'samples__title', 'sample_accession_number', 'samea_accession_number')
+
+    def sample_count(self, obj):
+        return obj.samples.count()
+    sample_count.short_description = 'Number of Samples'
+
+admin.site.register(Submission, SubmissionAdmin)

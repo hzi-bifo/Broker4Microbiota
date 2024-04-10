@@ -47,6 +47,7 @@ class Order(models.Model):
     def __str__(self):
         return f"Order by {self.user.username}"
 
+
 class Sample(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE)
     sample_name = models.CharField(max_length=100, null=True, blank=True)
@@ -78,4 +79,17 @@ class Sample(models.Model):
 
     def __str__(self):
         return self.sample_name or ''
+
+class Submission(models.Model):
+    order = models.ForeignKey(Order, on_delete=models.CASCADE)
+    samples = models.ManyToManyField(Sample)
+    sample_object_xml = models.TextField(null=True, blank=True)
+    submission_object_xml = models.TextField(null=True, blank=True)
+    receipt_xml = models.TextField(null=True, blank=True)
+    sample_accession_number = models.CharField(max_length=100, null=True, blank=True)
+    samea_accession_number = models.CharField(max_length=100, null=True, blank=True)
+    accession_status = models.CharField(max_length=100, null=True, blank=True)
+
+    def __str__(self):
+        return f"Submission for Order {self.order.id}"
 
