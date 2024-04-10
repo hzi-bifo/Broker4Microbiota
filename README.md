@@ -12,7 +12,6 @@ This project, "Establishing data broker functionalities at HZI for optimizing om
 
 This project is supported by the NFDI4Microbiota Strategy Funds, granted by the Helmholtz Centre for Infection Research (HZI) to facilitate the development of data broker functionalities for optimizing omics data submissions to public repositories.
 
-
 ## Installation
 
 This project is developed with Django. To set up and run the project locally, follow these steps:
@@ -31,6 +30,7 @@ It's recommended to use a virtual environment for Python projects. This keeps de
 python3 -m venv myenv
 source myenv/bin/activate
 ```
+
 
 ### Installing Dependencies
 
@@ -57,7 +57,16 @@ This will start the Django development server, and you should be able to access 
 
 ## Configuration 
 
-## Changes on the Order form
+### ENA account
+
+Register an ENA account (see https://ena-docs.readthedocs.io/en/latest/submit/general-guide/registration.html) and add the credentials to your environment. For example, on a Unix-like system, you can add the following lines to your .bashrc, .bash_profile, or .profile file:
+
+```bash
+export ENA_USERNAME='Webin-XXXXXX'
+export ENA_PASSWORD='XXXXXXXXXX'
+```
+
+### Changes on the Order form
 
 The Order form can be changed by modifying the class OrderForm in `myapp/forms.py` and the `models.py`file that defines the SQL fields. Updates on the SQL tables requires migration of the table layout.
 

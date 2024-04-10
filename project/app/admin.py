@@ -1,15 +1,22 @@
 import os
 import random
 import gzip
-from django.contrib import admin
+import requests
+from django.contrib import admin, messages
 from django.shortcuts import render 
+from django.core.files.base import ContentFile
 from django.conf import settings
 from Bio import SeqIO
 from io import StringIO
 from .models import Order, Sample, Submission
 from .forms import CreateGZForm
 from django.template.loader import render_to_string
+from xml.etree import ElementTree as ET
+import logging
 
+logger = logging.getLogger(__name__)
+
+logger.debug(f"Current ENA password: {settings.ENA_PASSWORD}")
 
 class OrderAdmin(admin.ModelAdmin):
     list_display = ('user', 'name', 'date', 'quote_no', 'billing_address', 'ag_and_hzi', 'contact_phone', 'email', 'data_delivery', 'signature', 'experiment_title', 'dna', 'rna', 'library', 'method', 'buffer', 'organism', 'isolated_from', 'isolation_method')
@@ -29,12 +36,20 @@ class SampleAdmin(admin.ModelAdmin):
             'samples': selected_samples,
         }
 
-        xml_content = render_to_string('admin/app/sample/sample_xml_template.xml', context)
-        submission.sample_object_xml = xml_content
+        sample_xml_content = render_to_string('admin/app/sample/sample_xml_template.xml', context)
+        submission.sample_object_xml = sample_xml_content
+
+        file_path = os.path.join(settings.BASE_DIR, 'app', 'templates', 'admin', 'app', 'sample', 'submission_template.xml')
+        with open(file_path, 'r') as file:
+            submission_xml_content = file.read()
+            print(submission_xml_content)  # Debugging: Check the content
+
+        submission.submission_object_xml = submission_xml_content
+
         submission.save()
 
         self.message_user(request, f'Successfully created Submission {submission.id} with {selected_samples.count()} samples')
-    
+
     generate_xml_and_create_submission.short_description = 'Generate XML and create Submission'
 
     def run_nfcore_mag(modeladmin, request, queryset):
@@ -72,17 +87,63 @@ class SampleAdmin(admin.ModelAdmin):
 
     run_nfcore_mag.short_description = "Run nf-core/mag pipeline"
 
-
 admin.site.register(Order, OrderAdmin)
 admin.site.register(Sample, SampleAdmin)
 
 class SubmissionAdmin(admin.ModelAdmin):
-    list_display = ('id', 'order', 'sample_count', 'accession_status')
-    list_filter = ('accession_status',)
-    search_fields = ('order__name', 'samples__title', 'sample_accession_number', 'samea_accession_number')
+    list_display = ('id', 'order', 'sample_count', 'accession_status', 'submission_object_xml')
+    
+    actions = ['register_sample']
 
     def sample_count(self, obj):
         return obj.samples.count()
     sample_count.short_description = 'Number of Samples'
+
+    def register_sample(self, request, queryset):
+        for submission in queryset:
+            try:
+                # Save XML content to files for debugging
+                sample_xml_filename = f"sample_{submission.id}.xml"
+                submission_xml_filename = f"submission_{submission.id}.xml"
+                with open(sample_xml_filename, 'w') as sample_file:
+                    sample_file.write(submission.sample_object_xml)
+                with open(submission_xml_filename, 'w') as submission_file:
+                    submission_file.write(submission.submission_object_xml)
+
+                # Prepare files for submission
+                files = {
+                    'SUBMISSION': (submission_xml_filename, open(submission_xml_filename, 'rb')),
+                    'SAMPLE': (sample_xml_filename, open(sample_xml_filename, 'rb')),
+                }
+
+                # Prepare authentication
+                auth = (settings.ENA_USERNAME, settings.ENA_PASSWORD)
+                print(f"Current ENA password: {settings.ENA_PASSWORD}")
+                # Make the request
+                response = requests.post(
+                    "https://wwwdev.ebi.ac.uk/ena/submit/drop-box/submit/",
+                    files=files,
+                    auth=auth
+                )
+
+                # Close the files
+                files['SUBMISSION'][1].close()
+                files['SAMPLE'][1].close()
+
+                if response.status_code == 200:
+                    # Parse the XML response
+                    root = ET.fromstring(response.content)
+                    receipt_xml = ET.tostring(root, encoding='unicode')
+                    submission.receipt_xml = receipt_xml
+                    submission.save()
+                    self.message_user(request, "Submission registered successfully.", messages.SUCCESS)
+                else:
+                    logger.error(f"Failed to register submission {submission.id}. Response: {response.content}")
+                    self.message_user(request, "Failed to register submission.", messages.ERROR)
+            except Exception as e:
+                logger.exception(f"Error registering submission {submission.id}: {e}")
+                self.message_user(request, "An error occurred while registering the submission.", messages.ERROR)
+
+    register_sample.short_description = "Register sample with ENA"
 
 admin.site.register(Submission, SubmissionAdmin)
