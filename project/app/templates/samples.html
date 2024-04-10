@@ -32,6 +32,14 @@ var hotSettings = {
   columns: [
     { title: 'Sample ID', data: 'index', readOnly: true },
     { title: 'MIxS Metadata Standard', data: 'mixs_metadata_standard', type: 'dropdown', source: {{ mixs_metadata_standards|safe }} },
+    { title: 'Alias', data: 'alias',},
+    { title: 'Title', data: 'title',},
+    { title: 'Taxon ID', data: 'taxon_id',},
+    { title: 'Scientific Name', data: 'scientific_name',},
+    { title: 'Investigation Type', data: 'investigation_type',},
+    { title: 'Study type', data: 'study_type',},
+    { title: 'Platform', data: 'platform',},
+    { title: 'Library Source', data: 'library_source',},
     { title: 'Concentration', data: 'concentration' },
     { title: 'Volume', data: 'volume' },
     { title: 'Ratio 260/280', data: 'ratio_260_280' },
@@ -64,16 +72,22 @@ function saveSampleData() {
         return {
             index: row[0],
             sample_name: row[0],
-            mixs_metadata_standard: row[1], // Get the selected MIxS Metadata Standard
-            concentration: row[2],
-            volume: row[3],
-            ratio_260_280: row[4],
-            ratio_260_230: row[5],
-            comments: row[6],
-            status: row[7] 
+            mixs_metadata_standard: row[1], 
+            alias: row[2],
+            title: row[3],
+            taxon_id: row[4],
+            scientific_name: row[5],
+            investigation_type: row[6],
+            study_type: row[7],
+            platform: row[8],
+            library_source: row[9],
+            concentration: row[10],
+            volume: row[11],
+            ratio_260_280: row[12],
+            ratio_260_230: row[13],
+            comments: row[14],
+            status: row[15] 
         };
-    }).filter(function(sample) {
-        return sample.concentration !== null && sample.concentration !== undefined;
     });
 
     sampleData = sampleData.map(function(sample) {
@@ -81,6 +95,14 @@ function saveSampleData() {
       index: sample.index,
       sample_id: sample.sample_id,
       mixs_metadata_standard: sample.mixs_metadata_standard,
+      alias: sample.alias ? sample.alias.trim() : '',
+      title: sample.title ? sample.title.trim() : '',
+      taxon_id: sample.taxon_id ? sample.taxon_id.trim() : '',
+      scientific_name: sample.scientific_name ? sample.scientific_name.trim() : '',
+      investigation_type: sample.investigation_type ? sample.investigation_type.trim() : '',
+      study_type: sample.study_type ? sample.study_type.trim() : '',
+      platform: sample.platform ? sample.platform.trim() : '',
+      library_source: sample.library_source ? sample.library_source.trim() : '',
       concentration: sample.concentration ? sample.concentration.trim() : '',
       volume: sample.volume ? sample.volume.trim() : '',
       ratio_260_280: sample.ratio_260_280 ? sample.ratio_260_280.trim() : '',

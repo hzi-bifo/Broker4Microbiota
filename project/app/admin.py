@@ -96,8 +96,12 @@ class OrderAdmin(admin.ModelAdmin):
 
 
 class SampleAdmin(admin.ModelAdmin):
-    list_display = ('order', 'id', 'concentration', 'volume', 'ratio_260_280', 'ratio_260_230', 'comments', 'date', 'mixs_metadata_standard', 'mixs_metadata', 'filename_forward', 'filename_reverse', 'nf_core_mag_outdir', 'status')
+    list_display = ('order', 'id', 'alias', 'title', 'taxon_id', 'scientific_name', 'investigation_type', 'study_type', 'platform', 'library_source', 'concentration', 'volume', 'ratio_260_280', 'ratio_260_230', 'comments', 'date', 'mixs_metadata_standard', 'mixs_metadata', 'filename_forward', 'filename_reverse', 'nf_core_mag_outdir', 'status')
     actions = [add_example_filenames, validate_fastq_files, 'create_gz', unpack_gz]
+     #'get_standard_id_display',
+    #def get_standard_id_display(self, obj):
+    #        return obj.get_standard_id()
+    #get_standard_id_display.short_description = 'Metadata Standard ID' 
 
     def run_nfcore_mag(modeladmin, request, queryset):
         from subprocess import Popen, PIPE

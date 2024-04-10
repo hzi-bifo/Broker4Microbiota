@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
-from .mixs_metadata_standards import MIXS_METADATA_STANDARDS
+from .mixs_metadata_standards import MIXS_METADATA_STANDARDS, MIXS_METADATA_STANDARDS_FULL
 from phonenumber_field.modelfields import PhoneNumberField
 from django.db.models import JSONField
 
@@ -22,7 +22,6 @@ STATUS_CHOICES = [
     ('finished', 'Finished'),
     ('uploaded_to_ENA', 'Uploaded to ENA'),
 ]
-
 
 class Order(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -51,6 +50,14 @@ class Order(models.Model):
 class Sample(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE)
     sample_name = models.CharField(max_length=100, null=True, blank=True)
+    alias = models.CharField(max_length=100, null=True, blank=True)
+    title = models.CharField(max_length=100, null=True, blank=True)
+    taxon_id = models.CharField(max_length=100, null=True, blank=True)
+    scientific_name = models.CharField(max_length=100, null=True, blank=True)
+    investigation_type = models.CharField(max_length=100, null=True, blank=True)
+    study_type = models.CharField(max_length=100, null=True, blank=True)
+    platform = models.CharField(max_length=100, null=True, blank=True)
+    library_source = models.CharField(max_length=100, null=True, blank=True)
     concentration = models.CharField(max_length=100, null=True, blank=True)
     volume = models.CharField(max_length=100, null=True, blank=True)
     ratio_260_280 = models.CharField(max_length=100, null=True, blank=True)
@@ -63,6 +70,11 @@ class Sample(models.Model):
     filename_reverse = models.CharField(max_length=255, null=True, blank=True, verbose_name="Filename (Reverse, R2)")
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, null=True, blank=True)
     nf_core_mag_outdir = models.CharField(max_length=255, null=True, blank=True)
+
+    def get_standard_id(self):
+        # Find the tuple in MIXS_METADATA_STANDARDS that matches the selected standard and return the ID
+        standard = next((item for item in MIXS_METADATA_STANDARDS_FULL if item[0] == self.mixs_metadata_standard), None)
+        return standard[2] if standard else None
 
     def __str__(self):
         return self.sample_name or ''
