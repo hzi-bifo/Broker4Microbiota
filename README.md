@@ -36,6 +36,7 @@ source myenv/bin/activate
 
 ```bash
 pip install Django
+pip install requests
 pip install biopython
 pip install phonenumbers
 pip install django-widget-tweaks
@@ -65,6 +66,8 @@ Register an ENA account (see https://ena-docs.readthedocs.io/en/latest/submit/ge
 export ENA_USERNAME='Webin-XXXXXX'
 export ENA_PASSWORD='XXXXXXXXXX'
 ```
+
+after createing an ENA account, please wait 24h due to a known bug that prevents test submissions https://github.com/enasequence/read_docs/issues/161
 
 ### Changes on the Order form
 
@@ -126,3 +129,10 @@ This screenshot displays how a user can associate samples with a specific order.
 ![Associating MIxS Standards](screenshots/image5.png)
 
 This image shows the functionality for associating samples with specific MIxS standards.
+
+
+![TODO](screenshots/image6.png)
+![TODO](screenshots/image7.png)
+![TODO](screenshots/image8.png)
+![TODO](screenshots/image9.png)
+![TODO](screenshots/image10.png)
