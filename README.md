@@ -110,29 +110,46 @@ This screenshot shows the user registration and login page, allowing users to ac
 
 ![Order Creation](screenshots/image2.png)
 
-Here, you can see the interface for listing all orders associated with the user.
+Here, you can see the interface for listing all orders associated with the user. The user can create new orders on the page and edit orders or fill out other metadata.
 
 ### Order Creation
 
 ![Order Creation](screenshots/image3.png)
 
-Here, you can see the interface for creating a new sequencing order.
+Here, you can see the interface for creating a new sequencing order. These values can be updated by the user at any time. 
 
 ### Sample Association
 
 ![Sample Association](screenshots/image4.png)
 
-This screenshot displays how a user can associate samples with a specific order.
+This screenshot displays how a user can associate a oder to one or more samples. 
 
 ### Associating MIxS Standards
 
 ![Associating MIxS Standards](screenshots/image5.png)
 
-This image shows the functionality for associating samples with specific MIxS standards.
-
-
 ![TODO](screenshots/image6.png)
+
+This image shows the functionality for associating samples with specific MIxS standards on the sample view. On the overview page there will now be a button/form for each standtart selected to all samples (Here: Air/Soil for Order 2 and Air/Soil/Host-associated for order 3)
+
+![TODO](screenshots/image2.png)
+
+
+### Admin View
+ 
+
 ![TODO](screenshots/image7.png)
+
+The site admin (sequencing center) can login and make changes to all data stored in the database
+ 
 ![TODO](screenshots/image8.png)
-![TODO](screenshots/image9.png)
+
+On the samples view the admin can select samples and can run a nf-core mag pipeline if he enters the file names for these samples. The output folder location path will be then written to the database. 
+
 ![TODO](screenshots/image10.png)
+
+A table showing all the pipeline runs (nf-core mag) for the samples or sample sets. 
+
+![TODO](screenshots/image9.png)
+
+The admin can also register the samples to ENA, the XML fields will then be auto-generated based on the samples selected. 
