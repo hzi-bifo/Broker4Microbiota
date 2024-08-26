@@ -1,0 +1,8 @@
+*.pyc
+myenv/
+project/staticfiles/
+sample*.xml
+submission*.xml
+project/debug.log
+debug.log
+project/db.sqlite3

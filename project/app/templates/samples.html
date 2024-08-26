@@ -9,23 +9,28 @@ Add and update Samples
     <div class="container">
       <h2 class="title has-text-centered">Update Samples</h2>
       <div class="has-text-centered mb-4">
-        <button class="button is-primary" onclick="addNewRow()">Add New Row</button>
+        <button id="add" class="button is-primary" onclick="addNewRow()">Add New Row</button>
       </div>
 
       <div id="handsontable-container"></div>
 
       <div class="has-text-centered mt-4">
-        <button class="button is-success" onclick="saveSampleData()">Save Samples</button>
-        <a href="{% url 'order_list' %}" class="button is-link">Back to Order Overview</a>
+        <button id="save" class="button is-success" onclick="saveSampleData()">Save Samples</button>
+        <button id="cancel" class="button is-link" onclick="redirectToOrders()">Back to Order Overview</button>
       </div>
     </div>
   </section>
   
-
+<!--
+Comment out for 6.2.2 (MIT)
+-->
 <script src="https://cdn.jsdelivr.net/npm/handsontable/dist/handsontable.full.min.js"></script>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/handsontable/dist/handsontable.full.min.css">
 
+
 <script>
+var unsaved = false;  
+document.getElementById('save').disabled = true;
 var hotElement = document.querySelector('#handsontable-container');
 var hotSettings = {
   data: {{ samples|safe }},
@@ -45,13 +50,22 @@ var hotSettings = {
     { title: 'Ratio 260/280', data: 'ratio_260_280' },
     { title: 'Ratio 260/230', data: 'ratio_260_230' },
     { title: 'Comments', data: 'comments' },
-    { title: 'Status', data: 'status', readOnly: true}
-
+    { title: 'Status', data: 'status', readOnly: true},
+    { title: 'Unsaved', data: 'unsaved', readOnly: true}
   ],
-  minSpareRows: 1,
+  minSpareRows: 0,
   rowHeaders: true,
   contextMenu: true,
   licenseKey: 'non-commercial-and-evaluation',
+  afterChange: (changes) => {
+    changes?.forEach(([row, prop, oldValue, newValue]) => {
+      if (prop != "unsaved" && hot.getDataAtCell(row, 16) != "x") {
+        hot.setDataAtCell(row, 16, "x");
+        unsaved = true;
+        document.getElementById('save').disabled = false;
+      }
+    });
+  }
 };
 var hot = new Handsontable(hotElement, hotSettings);
 
@@ -61,10 +75,13 @@ function addNewRow() {
   var selectedRow = hot.getSelected();
   if (selectedRow && selectedRow.length > 0) {
     var rowIndex = selectedRow[0][0];
-    hot.alter('insert_row_above', rowIndex, 1, newRow);
   } else {
-    hot.alter('insert_row_above', hot.countRows(), 1, newRow);
+    var rowIndex = hot.countRows();
   }
+  hot.alter('insert_row_above', rowIndex, 1, newRow);
+  hot.setDataAtCell(rowIndex, 16, "x");
+  unsaved = true;
+  document.getElementById('save').disabled = false;
 }
 
 function saveSampleData() {
@@ -86,7 +103,7 @@ function saveSampleData() {
             ratio_260_280: row[12],
             ratio_260_230: row[13],
             comments: row[14],
-            status: row[15] 
+            status: row[15],
         };
     });
 
@@ -112,6 +129,15 @@ function saveSampleData() {
     };
   });
 
+    unsaved = false;
+    document.getElementById('save').disabled = true;
+
+    hot.batch(() => {
+      for (let rowIndex = 0; rowIndex < hot.countRows(); rowIndex++) {
+        hot.setDataAtCell(rowIndex, 16, "");
+      }
+    });
+    
     console.log('Sending sample data:', sampleData);
 
     fetch("{% url 'samples_view' order.id %}", {
@@ -128,6 +154,16 @@ function saveSampleData() {
     .catch(function(error) {
         console.error('Error saving sample data:', error);
     });
+}
+
+function redirectToOrders() {
+    if (unsaved) {
+        if (confirm('You have unsaved changes. Are you sure you want to leave this page?')) {
+            window.location.href = "{% url 'order_list' %}";
+        }
+    } else {
+        window.location.href = "{% url 'order_list' %}";
+    }
 }
 </script>
 
