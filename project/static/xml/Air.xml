@@ -1,21 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CHECKLIST_SET>
-<CHECKLIST accession="ERC000011" checklistType="Sample">
+<CHECKLIST accession="ERC000012" checklistType="Sample">
     <IDENTIFIERS>
-        <PRIMARY_ID>ERC000011</PRIMARY_ID>
+        <PRIMARY_ID>ERC000012</PRIMARY_ID>
     </IDENTIFIERS>
     <DESCRIPTOR>
-        <LABEL>ENA default sample checklist</LABEL>
-        <NAME>ENA default sample checklist</NAME>
-        <DESCRIPTION>Minimum information required for the sample</DESCRIPTION>
+        <LABEL>GSC MIxS air</LABEL>
+        <NAME>GSC MIxS air</NAME>
+        <DESCRIPTION>Genomic Standards Consortium package extension for reporting of measurements and observations obtained from the environment where the sample was obtained. By choosing the environmental package, a selection of fields can be made from a relevant subsets of the GSC terms.</DESCRIPTION>
         <AUTHORITY>ENA</AUTHORITY>
         <FIELD_GROUP restrictionType="Any number or none of the fields">
-            <NAME>Part and developmental stage of organism</NAME>
-            <DESCRIPTION>Anatomical and developmental descriptions of the sample site or source material</DESCRIPTION>
+            <NAME>non-sample terms</NAME>
             <FIELD>
-                <LABEL>cell_type</LABEL>
-                <NAME>cell_type</NAME>
-                <DESCRIPTION>cell type from which the sample was obtained</DESCRIPTION>
+                <LABEL>project name</LABEL>
+                <NAME>project name</NAME>
+                <DESCRIPTION>Name of the project within which the sequencing was organized</DESCRIPTION>
+                <FIELD_TYPE>
+                    <TEXT_FIELD/>
+                </FIELD_TYPE>
+                <MANDATORY>mandatory</MANDATORY>
+                <MULTIPLICITY>multiple</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>experimental factor</LABEL>
+                <NAME>experimental factor</NAME>
+                <DESCRIPTION>Experimental factors are essentially the variable aspects of an experiment design which can be used to describe an experiment, or set of experiments, in an increasingly detailed manner. This field accepts ontology terms from Experimental Factor Ontology (EFO) and/or Ontology for Biomedical Investigations (OBI). For a browser of EFO (v 2.95) terms, please see http://purl.bioontology.org/ontology/EFO; for a browser of OBI (v 2018-02-12) terms please see http://purl.bioontology.org/ontology/OBI. E.g. time series design [EFO:EFO_0001779]</DESCRIPTION>
                 <FIELD_TYPE>
                     <TEXT_FIELD/>
                 </FIELD_TYPE>
@@ -23,9 +32,9 @@
                 <MULTIPLICITY>multiple</MULTIPLICITY>
             </FIELD>
             <FIELD>
-                <LABEL>dev_stage</LABEL>
-                <NAME>dev_stage</NAME>
-                <DESCRIPTION>if the sample was obtained from an organism in a specific developmental stage, it is specified with this qualifier</DESCRIPTION>
+                <LABEL>ploidy</LABEL>
+                <NAME>ploidy</NAME>
+                <DESCRIPTION>The ploidy level of the genome (e.g. allopolyploid, haploid, diploid, triploid, tetraploid). It has implications for the downstream study of duplicated gene and regions of the genomes (and perhaps for difficulties in assembly). For terms, please select terms listed under class ploidy (PATO:001374) of Phenotypic Quality Ontology (PATO), and for a browser of PATO (v 2018-03-27) please refer to http://purl.bioontology.org/ontology/PATO</DESCRIPTION>
                 <FIELD_TYPE>
                     <TEXT_FIELD/>
                 </FIELD_TYPE>
@@ -33,9 +42,45 @@
                 <MULTIPLICITY>multiple</MULTIPLICITY>
             </FIELD>
             <FIELD>
-                <LABEL>germline</LABEL>
-                <NAME>germline</NAME>
-                <DESCRIPTION>the sample described presented in the entry has not undergone somatic genomic rearrangement as part of an adaptive immune response; it is the unrearranged molecule that was inherited from the parental germline</DESCRIPTION>
+                <LABEL>number of replicons</LABEL>
+                <NAME>number of replicons</NAME>
+                <DESCRIPTION>Reports the number of replicons in a nuclear genome of eukaryotes, in the genome of a bacterium or archaea or the number of segments in a segmented virus. Always applied to the haploid chromosome count of a eukaryote. Mandatory for MIGS of eukaryotes, bacteria, archaea and segmented virus.</DESCRIPTION>
+                <FIELD_TYPE>
+                    <TEXT_FIELD>
+                        <REGEX_VALUE>[+-]?[0-9]+</REGEX_VALUE>
+                    </TEXT_FIELD>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>multiple</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>extrachromosomal elements</LABEL>
+                <NAME>extrachromosomal elements</NAME>
+                <DESCRIPTION>Do plasmids exist of significant phenotypic consequence (e.g. ones that determine virulence or antibiotic resistance). Megaplasmids? Other plasmids (borrelia has 15+ plasmids).</DESCRIPTION>
+                <FIELD_TYPE>
+                    <TEXT_FIELD>
+                        <REGEX_VALUE>[+-]?[0-9]+</REGEX_VALUE>
+                    </TEXT_FIELD>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>multiple</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>estimated size</LABEL>
+                <NAME>estimated size</NAME>
+                <DESCRIPTION>The estimated size of the genome (in bp) prior to sequencing. Of particular importance in the sequencing of (eukaryotic) genome which could remain in draft form for a long or unspecified period. Mandatory for MIGS of eukaryotes.</DESCRIPTION>
+                <FIELD_TYPE>
+                    <TEXT_FIELD>
+                        <REGEX_VALUE>[+-]?[0-9]+</REGEX_VALUE>
+                    </TEXT_FIELD>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>multiple</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>reference for biomaterial</LABEL>
+                <NAME>reference for biomaterial</NAME>
+                <DESCRIPTION>Primary publication if isolated before genome publication; otherwise, primary genome report. Mandatory for MIGS of bacteria and archaea.</DESCRIPTION>
                 <FIELD_TYPE>
                     <TEXT_FIELD/>
                 </FIELD_TYPE>
@@ -43,9 +88,9 @@
                 <MULTIPLICITY>multiple</MULTIPLICITY>
             </FIELD>
             <FIELD>
-                <LABEL>tissue_lib</LABEL>
-                <NAME>tissue_lib</NAME>
-                <DESCRIPTION>tissue library from which sample was obtained</DESCRIPTION>
+                <LABEL>annotation source</LABEL>
+                <NAME>annotation source</NAME>
+                <DESCRIPTION>For cases where annotation was provided by a community jamboree or model organism database rather than by a specific submitter</DESCRIPTION>
                 <FIELD_TYPE>
                     <TEXT_FIELD/>
                 </FIELD_TYPE>
@@ -53,48 +98,241 @@
                 <MULTIPLICITY>multiple</MULTIPLICITY>
             </FIELD>
             <FIELD>
-                <LABEL>tissue_type</LABEL>
-                <NAME>tissue_type</NAME>
-                <DESCRIPTION>tissue type from which the sample was obtained</DESCRIPTION>
+                <LABEL>sample volume or weight for DNA extraction</LABEL>
+                <NAME>sample volume or weight for DNA extraction</NAME>
+                <DESCRIPTION>Volume (ml) or mass (g) of total collected sample processed for DNA extraction. Note: total sample collected should be entered under the term &apos;sample size&apos;.</DESCRIPTION>
+                <UNITS>
+                    <UNIT>g</UNIT>
+                    <UNIT>mL</UNIT>
+                    <UNIT>mg</UNIT>
+                    <UNIT>ng</UNIT>
+                </UNITS>
+                <FIELD_TYPE>
+                    <TEXT_FIELD>
+                        <REGEX_VALUE>(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?</REGEX_VALUE>
+                    </TEXT_FIELD>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>multiple</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>nucleic acid extraction</LABEL>
+                <NAME>nucleic acid extraction</NAME>
+                <DESCRIPTION>A link to a literature reference, electronic resource or a standard operating procedure (SOP), that describes the material separation to recover the nucleic acid fraction from a sample</DESCRIPTION>
                 <FIELD_TYPE>
                     <TEXT_FIELD/>
                 </FIELD_TYPE>
                 <MANDATORY>optional</MANDATORY>
                 <MULTIPLICITY>multiple</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>nucleic acid amplification</LABEL>
+                <NAME>nucleic acid amplification</NAME>
+                <DESCRIPTION>A link to a literature reference, electronic resource or a standard operating procedure (SOP), that describes the enzymatic amplification (PCR, TMA, NASBA) of specific nucleic acids</DESCRIPTION>
+                <FIELD_TYPE>
+                    <TEXT_FIELD/>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>multiple</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>library size</LABEL>
+                <NAME>library size</NAME>
+                <DESCRIPTION>Total number of clones in the library prepared for the project</DESCRIPTION>
+                <FIELD_TYPE>
+                    <TEXT_FIELD>
+                        <REGEX_VALUE>[+-]?[0-9]+</REGEX_VALUE>
+                    </TEXT_FIELD>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>multiple</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>library reads sequenced</LABEL>
+                <NAME>library reads sequenced</NAME>
+                <DESCRIPTION>Total number of clones sequenced from the library</DESCRIPTION>
+                <FIELD_TYPE>
+                    <TEXT_FIELD>
+                        <REGEX_VALUE>[+-]?[0-9]+</REGEX_VALUE>
+                    </TEXT_FIELD>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>multiple</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>library construction method</LABEL>
+                <NAME>library construction method</NAME>
+                <DESCRIPTION>Library construction method used for clone libraries</DESCRIPTION>
+                <FIELD_TYPE>
+                    <TEXT_FIELD/>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>multiple</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>library vector</LABEL>
+                <NAME>library vector</NAME>
+                <DESCRIPTION>Cloning vector type(s) used in construction of libraries</DESCRIPTION>
+                <FIELD_TYPE>
+                    <TEXT_FIELD/>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>multiple</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>library screening strategy</LABEL>
+                <NAME>library screening strategy</NAME>
+                <DESCRIPTION>Specific enrichment or screening methods applied before and/or after creating clone libraries in order to select a specific group of sequences</DESCRIPTION>
+                <FIELD_TYPE>
+                    <TEXT_FIELD/>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>multiple</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>target gene</LABEL>
+                <NAME>target gene</NAME>
+                <DESCRIPTION>Targeted gene or locus name for marker gene studies</DESCRIPTION>
+                <FIELD_TYPE>
+                    <TEXT_FIELD/>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>multiple</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>target subfragment</LABEL>
+                <NAME>target subfragment</NAME>
+                <DESCRIPTION>Name of subfragment of a gene or locus. Important to e.g. identify special regions on marker genes like V6 on 16S rRNA</DESCRIPTION>
+                <FIELD_TYPE>
+                    <TEXT_FIELD/>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>multiple</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>pcr primers</LABEL>
+                <NAME>pcr primers</NAME>
+                <DESCRIPTION>PCR primers that were used to amplify the sequence of the targeted gene, locus or subfragment. This field should contain all the primers used for a single PCR reaction if multiple forward or reverse primers are present in a single PCR reaction. The primer sequence should be reported in uppercase letters</DESCRIPTION>
+                <FIELD_TYPE>
+                    <TEXT_FIELD/>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>multiple</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>multiplex identifiers</LABEL>
+                <NAME>multiplex identifiers</NAME>
+                <DESCRIPTION>Molecular barcodes, called Multiplex Identifiers (MIDs), that are used to specifically tag unique samples in a sequencing run. Sequence should be reported in uppercase letters</DESCRIPTION>
+                <FIELD_TYPE>
+                    <TEXT_FIELD/>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>multiple</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>adapters</LABEL>
+                <NAME>adapters</NAME>
+                <DESCRIPTION>Adapters provide priming sequences for both amplification and sequencing of the sample-library fragments. Both adapters should be reported; in uppercase letters</DESCRIPTION>
+                <FIELD_TYPE>
+                    <TEXT_FIELD/>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>multiple</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>pcr conditions</LABEL>
+                <NAME>pcr conditions</NAME>
+                <DESCRIPTION>Description of reaction conditions and components for PCR in the form of &apos;initial denaturation:94degC_1.5min; annealing=...&apos;</DESCRIPTION>
+                <FIELD_TYPE>
+                    <TEXT_FIELD/>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>multiple</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>sequencing method</LABEL>
+                <NAME>sequencing method</NAME>
+                <DESCRIPTION>Sequencing machine used. Where possible the term should be taken from the OBI list of DNA sequencers (http://purl.obolibrary.org/obo/OBI_0400103).</DESCRIPTION>
+                <FIELD_TYPE>
+                    <TEXT_FIELD/>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>multiple</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>sequence quality check</LABEL>
+                <NAME>sequence quality check</NAME>
+                <DESCRIPTION>Indicate if the sequence has been called by automatic systems (none) or undergone a manual editing procedure (e.g. by inspecting the raw data or chromatograms). Applied only for sequences that are not submitted to SRA or DRA</DESCRIPTION>
+                <FIELD_TYPE>
+                    <TEXT_CHOICE_FIELD>
+                        <TEXT_VALUE>
+                            <VALUE>manual</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>none</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>software</VALUE>
+                        </TEXT_VALUE>
+                    </TEXT_CHOICE_FIELD>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>multiple</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>chimera check software</LABEL>
+                <SYNONYM>chimera check</SYNONYM>
+                <NAME>chimera check software</NAME>
+                <DESCRIPTION>Tool(s) used for chimera checking, including version number and parameters, to discover and remove chimeric sequences. A chimeric sequence is comprised of two or more phylogenetically distinct parent sequences.</DESCRIPTION>
+                <FIELD_TYPE>
+                    <TEXT_FIELD/>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>multiple</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>relevant electronic resources</LABEL>
+                <NAME>relevant electronic resources</NAME>
+                <DESCRIPTION>A related resource that is referenced, cited, or otherwise associated to the sequence in the format of a PMID, DOI or URL</DESCRIPTION>
+                <FIELD_TYPE>
+                    <TEXT_FIELD/>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>multiple</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>relevant standard operating procedures</LABEL>
+                <NAME>relevant standard operating procedures</NAME>
+                <DESCRIPTION>Standard operating procedures used in assembly and/or annotation of genomes, metagenomes or environmental sequences in the format of a PMID, DOI or URL</DESCRIPTION>
+                <FIELD_TYPE>
+                    <TEXT_FIELD/>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>multiple</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>negative control type</LABEL>
+                <NAME>negative control type</NAME>
+                <DESCRIPTION>The substance or equipment used as a negative control in an investigation</DESCRIPTION>
+                <FIELD_TYPE>
+                    <TEXT_FIELD/>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>single</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>positive control type</LABEL>
+                <NAME>positive control type</NAME>
+                <DESCRIPTION>The substance, mixture, product, or apparatus used to verify that a process which is part of an investigation delivers a true positive.</DESCRIPTION>
+                <FIELD_TYPE>
+                    <TEXT_FIELD/>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>single</MULTIPLICITY>
             </FIELD>
         </FIELD_GROUP>
         <FIELD_GROUP restrictionType="Any number or none of the fields">
             <NAME>Collection event information</NAME>
-            <FIELD>
-                <LABEL>isolation_source</LABEL>
-                <NAME>isolation_source</NAME>
-                <DESCRIPTION>describes the physical, environmental and/or local geographical source of the biological sample from which the sample was derived</DESCRIPTION>
-                <FIELD_TYPE>
-                    <TEXT_FIELD/>
-                </FIELD_TYPE>
-                <MANDATORY>optional</MANDATORY>
-                <MULTIPLICITY>multiple</MULTIPLICITY>
-            </FIELD>
-            <FIELD>
-                <LABEL>lat_lon</LABEL>
-                <NAME>lat_lon</NAME>
-                <DESCRIPTION>geographical coordinates of the location where the specimen was collected</DESCRIPTION>
-                <FIELD_TYPE>
-                    <TEXT_FIELD/>
-                </FIELD_TYPE>
-                <MANDATORY>optional</MANDATORY>
-                <MULTIPLICITY>multiple</MULTIPLICITY>
-            </FIELD>
-            <FIELD>
-                <LABEL>collected_by</LABEL>
-                <NAME>collected_by</NAME>
-                <DESCRIPTION>name of persons or institute who collected the specimen</DESCRIPTION>
-                <FIELD_TYPE>
-                    <TEXT_AREA_FIELD/>
-                </FIELD_TYPE>
-                <MANDATORY>optional</MANDATORY>
-                <MULTIPLICITY>multiple</MULTIPLICITY>
-            </FIELD>
             <FIELD>
                 <LABEL>collection date</LABEL>
                 <SYNONYM>Event Date/Time</SYNONYM>
@@ -104,6 +342,22 @@
                 <FIELD_TYPE>
                     <TEXT_FIELD>
                         <REGEX_VALUE>(^[12][0-9]{3}(-(0[1-9]|1[0-2])(-(0[1-9]|[12][0-9]|3[01])(T[0-9]{2}:[0-9]{2}(:[0-9]{2})?Z?([+-][0-9]{1,2})?)?)?)?(/[0-9]{4}(-[0-9]{2}(-[0-9]{2}(T[0-9]{2}:[0-9]{2}(:[0-9]{2})?Z?([+-][0-9]{1,2})?)?)?)?)?$)|(^not collected$)|(^not provided$)|(^restricted access$)|(^missing: control sample$)|(^missing: sample group$)|(^missing: synthetic construct$)|(^missing: lab stock$)|(^missing: third party data$)|(^missing: data agreement established pre-2023$)|(^missing: endangered species$)|(^missing: human-identifiable$)</REGEX_VALUE>
+                    </TEXT_FIELD>
+                </FIELD_TYPE>
+                <MANDATORY>mandatory</MANDATORY>
+                <MULTIPLICITY>multiple</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>altitude</LABEL>
+                <SYNONYM>geographic location (altitude)</SYNONYM>
+                <NAME>altitude</NAME>
+                <DESCRIPTION>The altitude of the sample is the vertical distance between Earth&apos;s surface above Sea Level and the sampled position in the air.</DESCRIPTION>
+                <UNITS>
+                    <UNIT>m</UNIT>
+                </UNITS>
+                <FIELD_TYPE>
+                    <TEXT_FIELD>
+                        <REGEX_VALUE>(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?</REGEX_VALUE>
                     </TEXT_FIELD>
                 </FIELD_TYPE>
                 <MANDATORY>mandatory</MANDATORY>
@@ -982,6 +1236,36 @@
                 <MULTIPLICITY>multiple</MULTIPLICITY>
             </FIELD>
             <FIELD>
+                <LABEL>geographic location (latitude)</LABEL>
+                <NAME>geographic location (latitude)</NAME>
+                <DESCRIPTION>The geographical origin of the sample as defined by latitude. The values should be reported in decimal degrees and in WGS84 system</DESCRIPTION>
+                <UNITS>
+                    <UNIT>DD</UNIT>
+                </UNITS>
+                <FIELD_TYPE>
+                    <TEXT_FIELD>
+                        <REGEX_VALUE>(^[+-]?[0-9]+.?[0-9]{0,8}$)|(^not collected$)|(^not provided$)|(^restricted access$)|(^missing: control sample$)|(^missing: sample group$)|(^missing: synthetic construct$)|(^missing: lab stock$)|(^missing: third party data$)|(^missing: data agreement established pre-2023$)|(^missing: endangered species$)|(^missing: human-identifiable$)</REGEX_VALUE>
+                    </TEXT_FIELD>
+                </FIELD_TYPE>
+                <MANDATORY>mandatory</MANDATORY>
+                <MULTIPLICITY>multiple</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>geographic location (longitude)</LABEL>
+                <NAME>geographic location (longitude)</NAME>
+                <DESCRIPTION>The geographical origin of the sample as defined by longitude. The values should be reported in decimal degrees and in WGS84 system</DESCRIPTION>
+                <UNITS>
+                    <UNIT>DD</UNIT>
+                </UNITS>
+                <FIELD_TYPE>
+                    <TEXT_FIELD>
+                        <REGEX_VALUE>(^[+-]?[0-9]+.?[0-9]{0,8}$)|(^not collected$)|(^not provided$)|(^restricted access$)|(^missing: control sample$)|(^missing: sample group$)|(^missing: synthetic construct$)|(^missing: lab stock$)|(^missing: third party data$)|(^missing: data agreement established pre-2023$)|(^missing: endangered species$)|(^missing: human-identifiable$)</REGEX_VALUE>
+                    </TEXT_FIELD>
+                </FIELD_TYPE>
+                <MANDATORY>mandatory</MANDATORY>
+                <MULTIPLICITY>multiple</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
                 <LABEL>geographic location (region and locality)</LABEL>
                 <NAME>geographic location (region and locality)</NAME>
                 <DESCRIPTION>The geographical origin of the sample as defined by the specific region name followed by the locality name.</DESCRIPTION>
@@ -992,29 +1276,87 @@
                 <MULTIPLICITY>multiple</MULTIPLICITY>
             </FIELD>
             <FIELD>
-                <LABEL>identified_by</LABEL>
-                <NAME>identified_by</NAME>
-                <DESCRIPTION>name of the expert who identified the specimen taxonomically</DESCRIPTION>
+                <LABEL>broad-scale environmental context</LABEL>
+                <SYNONYM>environment (biome)</SYNONYM>
+                <NAME>broad-scale environmental context</NAME>
+                <DESCRIPTION>Report the major environmental system the sample or specimen came from. The system(s) identified should have a coarse spatial grain, to provide the general environmental context of where the sampling was done (e.g. in the desert or a rainforest). We recommend using subclasses of EnvO’s biome class: http://purl.obolibrary.org/obo/ENVO_00000428. EnvO documentation about how to use the field: https://github.com/EnvironmentOntology/envo/wiki/Using-ENVO-with-MIxS.</DESCRIPTION>
                 <FIELD_TYPE>
                     <TEXT_FIELD/>
+                </FIELD_TYPE>
+                <MANDATORY>mandatory</MANDATORY>
+                <MULTIPLICITY>multiple</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>local environmental context</LABEL>
+                <SYNONYM>environment (feature)</SYNONYM>
+                <NAME>local environmental context</NAME>
+                <DESCRIPTION>Report the entity or entities which are in the sample or specimen’s local vicinity and which you believe have significant causal influences on your sample or specimen. We recommend using EnvO terms which are of smaller spatial grain than your entry for &quot;broad-scale environmental context&quot;. Terms, such as anatomical sites, from other OBO Library ontologies which interoperate with EnvO (e.g. UBERON) are accepted in this field. EnvO documentation about how to use the field: https://github.com/EnvironmentOntology/envo/wiki/Using-ENVO-with-MIxS.</DESCRIPTION>
+                <FIELD_TYPE>
+                    <TEXT_FIELD/>
+                </FIELD_TYPE>
+                <MANDATORY>mandatory</MANDATORY>
+                <MULTIPLICITY>multiple</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>environmental medium</LABEL>
+                <SYNONYM>environment (material)</SYNONYM>
+                <NAME>environmental medium</NAME>
+                <DESCRIPTION>Report the environmental material(s) immediately surrounding the sample or specimen at the time of sampling. We recommend using subclasses of &apos;environmental material&apos; (http://purl.obolibrary.org/obo/ENVO_00010483). EnvO documentation about how to use the field: https://github.com/EnvironmentOntology/envo/wiki/Using-ENVO-with-MIxS . Terms from other OBO ontologies are permissible as long as they reference mass/volume nouns (e.g. air, water, blood) and not discrete, countable entities (e.g. a tree, a leaf, a table top).</DESCRIPTION>
+                <FIELD_TYPE>
+                    <TEXT_FIELD/>
+                </FIELD_TYPE>
+                <MANDATORY>mandatory</MANDATORY>
+                <MULTIPLICITY>multiple</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>elevation</LABEL>
+                <SYNONYM>geographic location (elevation)</SYNONYM>
+                <NAME>elevation</NAME>
+                <DESCRIPTION>The elevation of the sampling site as measured by the vertical distance from mean sea level.</DESCRIPTION>
+                <UNITS>
+                    <UNIT>m</UNIT>
+                </UNITS>
+                <FIELD_TYPE>
+                    <TEXT_FIELD>
+                        <REGEX_VALUE>[+-]?(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?</REGEX_VALUE>
+                    </TEXT_FIELD>
                 </FIELD_TYPE>
                 <MANDATORY>optional</MANDATORY>
                 <MULTIPLICITY>multiple</MULTIPLICITY>
             </FIELD>
         </FIELD_GROUP>
         <FIELD_GROUP restrictionType="Any number or none of the fields">
-            <NAME>sample collection</NAME>
+            <NAME>internal environment</NAME>
             <FIELD>
-                <LABEL>environmental_sample</LABEL>
-                <NAME>environmental_sample</NAME>
-                <DESCRIPTION>identifies sequences derived by direct molecular isolation from a bulk environmental DNA sample (by PCR with or without subsequent cloning of the product, DGGE, or other anonymous methods) with no reliable identification of the source organism</DESCRIPTION>
+                <LABEL>ventilation rate</LABEL>
+                <NAME>ventilation rate</NAME>
+                <DESCRIPTION>ventilation rate of the system in the sampled premises</DESCRIPTION>
+                <UNITS>
+                    <UNIT>L/sec</UNIT>
+                    <UNIT>m3/min</UNIT>
+                </UNITS>
+                <FIELD_TYPE>
+                    <TEXT_FIELD>
+                        <REGEX_VALUE>(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?</REGEX_VALUE>
+                    </TEXT_FIELD>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>multiple</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>ventilation type</LABEL>
+                <NAME>ventilation type</NAME>
+                <DESCRIPTION>The intentional movement of air from outside a building to the inside through forced or natural movement of air</DESCRIPTION>
                 <FIELD_TYPE>
                     <TEXT_CHOICE_FIELD>
                         <TEXT_VALUE>
-                            <VALUE>No</VALUE>
+                            <VALUE>forced ventilation</VALUE>
                         </TEXT_VALUE>
                         <TEXT_VALUE>
-                            <VALUE>Yes</VALUE>
+                            <VALUE>mechanical ventilation</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>natural ventilation</VALUE>
                         </TEXT_VALUE>
                     </TEXT_CHOICE_FIELD>
                 </FIELD_TYPE>
@@ -1023,12 +1365,11 @@
             </FIELD>
         </FIELD_GROUP>
         <FIELD_GROUP restrictionType="Any number or none of the fields">
-            <NAME>Organism characteristics</NAME>
-            <DESCRIPTION>Characteristics of the source organism</DESCRIPTION>
+            <NAME>sample collection</NAME>
             <FIELD>
-                <LABEL>mating_type</LABEL>
-                <NAME>mating_type</NAME>
-                <DESCRIPTION>mating type of the organism from which the sequence was obtained; mating type is used for prokaryotes, and for eukaryotes that undergo meiosis without sexually dimorphic gametes</DESCRIPTION>
+                <LABEL>source material identifiers</LABEL>
+                <NAME>source material identifiers</NAME>
+                <DESCRIPTION>A unique identifier assigned to a material sample (as defined by http://rs.tdwg.org/dwc/terms/materialSampleID, and as opposed to a particular digital record of a material sample) used for extracting nucleic acids, and subsequent sequencing. The identifier can refer either to the original material collected or to any derived sub-samples. The INSDC qualifiers /specimen_voucher, /bio_material, or /culture_collection may or may not share the same value as the source_mat_id field. For instance, the /specimen_voucher qualifier and source_mat_id may both contain &apos;UAM:Herps:14&apos; , referring to both the specimen voucher and sampled tissue with the same identifier. However, the /culture_collection qualifier may refer to a value from an initial culture (e.g. ATCC:11775) while source_mat_id would refer to an identifier from some derived culture from which the nucleic acids were extracted (e.g. xatc123 or ark:/2154/R2).</DESCRIPTION>
                 <FIELD_TYPE>
                     <TEXT_FIELD/>
                 </FIELD_TYPE>
@@ -1036,9 +1377,153 @@
                 <MULTIPLICITY>multiple</MULTIPLICITY>
             </FIELD>
             <FIELD>
-                <LABEL>sex</LABEL>
-                <NAME>sex</NAME>
-                <DESCRIPTION>sex of the organism from which the sample was obtained</DESCRIPTION>
+                <LABEL>sample material processing</LABEL>
+                <NAME>sample material processing</NAME>
+                <DESCRIPTION>A brief description of any processing applied to the sample during or after retrieving the sample from environment, or a link to the relevant protocol(s) performed.</DESCRIPTION>
+                <FIELD_TYPE>
+                    <TEXT_FIELD/>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>multiple</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>isolation and growth condition</LABEL>
+                <NAME>isolation and growth condition</NAME>
+                <DESCRIPTION>Publication reference in the form of pubmed ID (pmid), digital object identifier (doi) or url for isolation and growth condition specifications of the organism/material. Mandatory for MIGS and MIMARKS Specimen.</DESCRIPTION>
+                <FIELD_TYPE>
+                    <TEXT_FIELD/>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>multiple</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>propagation</LABEL>
+                <NAME>propagation</NAME>
+                <DESCRIPTION>The type of reproduction from the parent stock. Values for this field is specific to different taxa. For phage or virus: lytic/lysogenic/temperate/obligately lytic. For plasmids: incompatibility group. For eukaryotes: sexual/asexual. Mandatory for MIGs of eukayotes, plasmids and viruses.</DESCRIPTION>
+                <FIELD_TYPE>
+                    <TEXT_FIELD/>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>multiple</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>amount or size of sample collected</LABEL>
+                <NAME>amount or size of sample collected</NAME>
+                <DESCRIPTION>The total amount or size (volume (ml), mass (g) or area (m2) ) of sample collected.</DESCRIPTION>
+                <UNITS>
+                    <UNIT>L</UNIT>
+                    <UNIT>g</UNIT>
+                    <UNIT>kg</UNIT>
+                    <UNIT>m2</UNIT>
+                    <UNIT>m3</UNIT>
+                </UNITS>
+                <FIELD_TYPE>
+                    <TEXT_FIELD>
+                        <REGEX_VALUE>(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?</REGEX_VALUE>
+                    </TEXT_FIELD>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>multiple</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>oxygenation status of sample</LABEL>
+                <NAME>oxygenation status of sample</NAME>
+                <DESCRIPTION>oxygenation status of sample</DESCRIPTION>
+                <FIELD_TYPE>
+                    <TEXT_CHOICE_FIELD>
+                        <TEXT_VALUE>
+                            <VALUE>aerobic</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>anaerobic</VALUE>
+                        </TEXT_VALUE>
+                    </TEXT_CHOICE_FIELD>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>multiple</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>organism count</LABEL>
+                <NAME>organism count</NAME>
+                <DESCRIPTION>Total cell count of any organism (or group of organisms) per gram, volume or area of sample, should include name of organism followed by count. The method that was used for the enumeration (e.g. qPCR, atp, mpn, etc.) Should also be provided. (example: total prokaryotes; 3.5e7 cells per ml; qpcr)</DESCRIPTION>
+                <FIELD_TYPE>
+                    <TEXT_FIELD/>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>multiple</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>sample storage duration</LABEL>
+                <NAME>sample storage duration</NAME>
+                <DESCRIPTION>duration for which sample was stored</DESCRIPTION>
+                <UNITS>
+                    <UNIT>days</UNIT>
+                    <UNIT>hours</UNIT>
+                    <UNIT>months</UNIT>
+                    <UNIT>weeks</UNIT>
+                    <UNIT>years</UNIT>
+                </UNITS>
+                <FIELD_TYPE>
+                    <TEXT_FIELD>
+                        <REGEX_VALUE>(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?</REGEX_VALUE>
+                    </TEXT_FIELD>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>multiple</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>sample storage temperature</LABEL>
+                <NAME>sample storage temperature</NAME>
+                <DESCRIPTION>temperature at which sample was stored, e.g. -80</DESCRIPTION>
+                <UNITS>
+                    <UNIT>°C</UNIT>
+                </UNITS>
+                <FIELD_TYPE>
+                    <TEXT_FIELD>
+                        <REGEX_VALUE>[+-]?(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?</REGEX_VALUE>
+                    </TEXT_FIELD>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>multiple</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>sample storage location</LABEL>
+                <NAME>sample storage location</NAME>
+                <DESCRIPTION>location at which sample was stored, usually name of a specific freezer/room</DESCRIPTION>
+                <FIELD_TYPE>
+                    <TEXT_FIELD/>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>multiple</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>sample collection device</LABEL>
+                <NAME>sample collection device</NAME>
+                <DESCRIPTION>The device used to collect an environmental sample. It is recommended to use terms listed under environmental sampling device (http://purl.obolibrary.org/obo/ENVO) and/or terms listed under specimen collection device (http://purl.obolibrary.org/obo/GENEPIO_0002094).</DESCRIPTION>
+                <FIELD_TYPE>
+                    <TEXT_FIELD/>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>single</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>sample collection method</LABEL>
+                <NAME>sample collection method</NAME>
+                <DESCRIPTION>The method employed for collecting the sample. Can be provided in the form of a PMID, DOI, url or text.</DESCRIPTION>
+                <FIELD_TYPE>
+                    <TEXT_FIELD/>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>single</MULTIPLICITY>
+            </FIELD>
+        </FIELD_GROUP>
+        <FIELD_GROUP restrictionType="Any number or none of the fields">
+            <NAME>host disorder</NAME>
+            <FIELD>
+                <LABEL>host disease status</LABEL>
+                <SYNONYM>health or disease status of specific host</SYNONYM>
+                <NAME>host disease status</NAME>
+                <DESCRIPTION>list of diseases with which the host has been diagnosed; can include multiple diagnoses. The value of the field depends on host; for humans the terms should be chosen from DO (Disease Ontology) at http://www.disease-ontology.org, other hosts are free text</DESCRIPTION>
                 <FIELD_TYPE>
                     <TEXT_FIELD/>
                 </FIELD_TYPE>
@@ -1048,16 +1533,6 @@
         </FIELD_GROUP>
         <FIELD_GROUP restrictionType="Any number or none of the fields">
             <NAME>host description</NAME>
-            <FIELD>
-                <LABEL>lab_host</LABEL>
-                <NAME>lab_host</NAME>
-                <DESCRIPTION>scientific name of the laboratory host used to propagate the source organism from which the sample was obtained</DESCRIPTION>
-                <FIELD_TYPE>
-                    <TEXT_FIELD/>
-                </FIELD_TYPE>
-                <MANDATORY>optional</MANDATORY>
-                <MULTIPLICITY>multiple</MULTIPLICITY>
-            </FIELD>
             <FIELD>
                 <LABEL>host scientific name</LABEL>
                 <SYNONYM>specific host</SYNONYM>
@@ -1071,12 +1546,50 @@
             </FIELD>
         </FIELD_GROUP>
         <FIELD_GROUP restrictionType="Any number or none of the fields">
-            <NAME>Pointer to physical material</NAME>
-            <DESCRIPTION>References to sample or sample source material in physical resources</DESCRIPTION>
+            <NAME>local environment conditions</NAME>
             <FIELD>
-                <LABEL>bio_material</LABEL>
-                <NAME>bio_material</NAME>
-                <DESCRIPTION>Unique identifier that references the biological material from which the sample was obtained and that ideally exists in a curated collection (e.g. stock centres, seed banks, DNA banks). The ID should have the following structure: name of the institution (institution code) followed by the collection code (if available) and the voucher id (institution_code:collection_code:voucher_id). Please note institution codes and collection codes are taken from a controlled vocabulary maintained by the INSDC: https://ftp.ncbi.nih.gov/pub/taxonomy/biocollections/</DESCRIPTION>
+                <LABEL>barometric pressure</LABEL>
+                <NAME>barometric pressure</NAME>
+                <DESCRIPTION>force per unit area exerted against a surface by the weight of air above that surface</DESCRIPTION>
+                <UNITS>
+                    <UNIT>Torr</UNIT>
+                    <UNIT>in. Hg</UNIT>
+                    <UNIT>millibar(hPa)</UNIT>
+                    <UNIT>mm Hg</UNIT>
+                </UNITS>
+                <FIELD_TYPE>
+                    <TEXT_FIELD>
+                        <REGEX_VALUE>(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?</REGEX_VALUE>
+                    </TEXT_FIELD>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>multiple</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>humidity</LABEL>
+                <NAME>humidity</NAME>
+                <DESCRIPTION>amount of water vapour in the air, at the time of sampling</DESCRIPTION>
+                <UNITS>
+                    <UNIT>%</UNIT>
+                    <UNIT>g/m3</UNIT>
+                </UNITS>
+                <FIELD_TYPE>
+                    <TEXT_FIELD>
+                        <REGEX_VALUE>(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?</REGEX_VALUE>
+                    </TEXT_FIELD>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>multiple</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>pollutants</LABEL>
+                <NAME>pollutants</NAME>
+                <DESCRIPTION>pollutant types and, amount or concentrations measured at the time of sampling; can report multiple pollutants by entering numeric values preceded by name of pollutant</DESCRIPTION>
+                <UNITS>
+                    <UNIT>M/L</UNIT>
+                    <UNIT>g</UNIT>
+                    <UNIT>mg/L</UNIT>
+                </UNITS>
                 <FIELD_TYPE>
                     <TEXT_FIELD/>
                 </FIELD_TYPE>
@@ -1084,9 +1597,24 @@
                 <MULTIPLICITY>multiple</MULTIPLICITY>
             </FIELD>
             <FIELD>
-                <LABEL>culture_collection</LABEL>
-                <NAME>culture_collection</NAME>
-                <DESCRIPTION>Unique identifier that references the culture (e.g. live microbial and viral cultures and cell lines) from which the sample has been obtained and that have been deposited in curated culture collections. The ID needs to provide an institution code and the culture id, with optional collection code, in the following structure: (-institution_code:(collection_code):voucher_id. Please note institution codes (and optional collection codes) are taken from a controlled vocabulary maintained by the INSDC: https://ftp.ncbi.nih.gov/pub/taxonomy/biocollections/</DESCRIPTION>
+                <LABEL>solar irradiance</LABEL>
+                <NAME>solar irradiance</NAME>
+                <DESCRIPTION>the amount of solar energy that arrives at a specific area of a surface during a specific time interval</DESCRIPTION>
+                <UNITS>
+                    <UNIT>W/m2</UNIT>
+                </UNITS>
+                <FIELD_TYPE>
+                    <TEXT_FIELD>
+                        <REGEX_VALUE>(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?</REGEX_VALUE>
+                    </TEXT_FIELD>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>multiple</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>wind direction</LABEL>
+                <NAME>wind direction</NAME>
+                <DESCRIPTION>wind direction is the direction from which a wind originates</DESCRIPTION>
                 <FIELD_TYPE>
                     <TEXT_FIELD/>
                 </FIELD_TYPE>
@@ -1094,23 +1622,109 @@
                 <MULTIPLICITY>multiple</MULTIPLICITY>
             </FIELD>
             <FIELD>
-                <LABEL>specimen_voucher</LABEL>
-                <NAME>specimen_voucher</NAME>
-                <DESCRIPTION>Unique identifier that references the physical specimen that remains after the sequence has been obtained and that ideally exists in a curated collection. The ID should have the following structure: name of the institution (institution code) followed by the collection code (if available) and the voucher id (institution_code:collection_code:voucher_id). Please note institution codes and collection codes are taken from a controlled vocabulary maintained by the INSDC: https://ftp.ncbi.nih.gov/pub/taxonomy/biocollections/</DESCRIPTION>
+                <LABEL>wind speed</LABEL>
+                <NAME>wind speed</NAME>
+                <DESCRIPTION>speed of wind measured at the time of sampling</DESCRIPTION>
+                <UNITS>
+                    <UNIT>km/h</UNIT>
+                    <UNIT>m/s</UNIT>
+                </UNITS>
                 <FIELD_TYPE>
-                    <TEXT_FIELD/>
+                    <TEXT_FIELD>
+                        <REGEX_VALUE>(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?</REGEX_VALUE>
+                    </TEXT_FIELD>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>multiple</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>temperature</LABEL>
+                <NAME>temperature</NAME>
+                <DESCRIPTION>temperature of the sample at time of sampling</DESCRIPTION>
+                <UNITS>
+                    <UNIT>ºC</UNIT>
+                </UNITS>
+                <FIELD_TYPE>
+                    <TEXT_FIELD>
+                        <REGEX_VALUE>[+-]?(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?</REGEX_VALUE>
+                    </TEXT_FIELD>
                 </FIELD_TYPE>
                 <MANDATORY>optional</MANDATORY>
                 <MULTIPLICITY>multiple</MULTIPLICITY>
             </FIELD>
         </FIELD_GROUP>
         <FIELD_GROUP restrictionType="Any number or none of the fields">
-            <NAME>Infraspecies information</NAME>
-            <DESCRIPTION>Formal and informal infraspecies taxonomic information</DESCRIPTION>
+            <NAME>concentration measurement</NAME>
             <FIELD>
-                <LABEL>cultivar</LABEL>
-                <NAME>cultivar</NAME>
-                <DESCRIPTION>cultivar (cultivated variety) of plant from which sample was obtained</DESCRIPTION>
+                <LABEL>carbon dioxide</LABEL>
+                <NAME>carbon dioxide</NAME>
+                <DESCRIPTION>carbon dioxide (gas) amount or concentration at the time of sampling</DESCRIPTION>
+                <UNITS>
+                    <UNIT>µmol/L</UNIT>
+                </UNITS>
+                <FIELD_TYPE>
+                    <TEXT_FIELD>
+                        <REGEX_VALUE>(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?</REGEX_VALUE>
+                    </TEXT_FIELD>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>multiple</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>carbon monoxide</LABEL>
+                <NAME>carbon monoxide</NAME>
+                <DESCRIPTION>carbon monoxide (gas) amount or concentration at the time of sampling</DESCRIPTION>
+                <UNITS>
+                    <UNIT>µM/L</UNIT>
+                </UNITS>
+                <FIELD_TYPE>
+                    <TEXT_FIELD>
+                        <REGEX_VALUE>(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?</REGEX_VALUE>
+                    </TEXT_FIELD>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>multiple</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>oxygen</LABEL>
+                <NAME>oxygen</NAME>
+                <DESCRIPTION>oxygen (gas) amount or concentration at the time of sampling</DESCRIPTION>
+                <UNITS>
+                    <UNIT>mg/L</UNIT>
+                    <UNIT>parts/million</UNIT>
+                </UNITS>
+                <FIELD_TYPE>
+                    <TEXT_FIELD>
+                        <REGEX_VALUE>(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?</REGEX_VALUE>
+                    </TEXT_FIELD>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>multiple</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>air particulate matter concentration</LABEL>
+                <SYNONYM>respirable particulate matter</SYNONYM>
+                <NAME>air particulate matter concentration</NAME>
+                <DESCRIPTION>Concentration of substances that remain suspended in the air, and comprise mixtures of organic and inorganic substances (PM10 and PM2.5); can report multiple PM&apos;s by entering numeric values preceded by name of PM</DESCRIPTION>
+                <UNITS>
+                    <UNIT>µg/m3</UNIT>
+                </UNITS>
+                <FIELD_TYPE>
+                    <TEXT_FIELD>
+                        <REGEX_VALUE>(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?</REGEX_VALUE>
+                    </TEXT_FIELD>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>multiple</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>volatile organic compounds</LABEL>
+                <NAME>volatile organic compounds</NAME>
+                <DESCRIPTION>concentration of carbon-based chemicals that easily evaporate at room temperature; can report multiple volatile organic compounds by entering numeric values preceded by name of compound</DESCRIPTION>
+                <UNITS>
+                    <UNIT>parts/million</UNIT>
+                    <UNIT>µg/m3</UNIT>
+                </UNITS>
                 <FIELD_TYPE>
                     <TEXT_FIELD/>
                 </FIELD_TYPE>
@@ -1118,9 +1732,44 @@
                 <MULTIPLICITY>multiple</MULTIPLICITY>
             </FIELD>
             <FIELD>
-                <LABEL>ecotype</LABEL>
-                <NAME>ecotype</NAME>
-                <DESCRIPTION>a population within a given species displaying genetically based, phenotypic traits that reflect adaptation to a local habitat.</DESCRIPTION>
+                <LABEL>methane</LABEL>
+                <NAME>methane</NAME>
+                <DESCRIPTION>methane (gas) amount or concentration at the time of sampling</DESCRIPTION>
+                <UNITS>
+                    <UNIT>µM/L</UNIT>
+                </UNITS>
+                <FIELD_TYPE>
+                    <TEXT_FIELD>
+                        <REGEX_VALUE>(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?</REGEX_VALUE>
+                    </TEXT_FIELD>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>multiple</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>salinity</LABEL>
+                <SYNONYM>extreme_unusual_properties/salinity</SYNONYM>
+                <SYNONYM>sample salinity</SYNONYM>
+                <NAME>salinity</NAME>
+                <DESCRIPTION>The total concentration of all dissolved salts in a liquid or solid sample. While salinity can be measured by a complete chemical analysis, this method is difficult and time consuming. More often, it is instead derived from the conductivity measurement. This is known as practical salinity. These derivations compare the specific conductance of the sample to a salinity standard such as seawater.</DESCRIPTION>
+                <UNITS>
+                    <UNIT>psu</UNIT>
+                </UNITS>
+                <FIELD_TYPE>
+                    <TEXT_FIELD>
+                        <REGEX_VALUE>(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?</REGEX_VALUE>
+                    </TEXT_FIELD>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>multiple</MULTIPLICITY>
+            </FIELD>
+        </FIELD_GROUP>
+        <FIELD_GROUP restrictionType="Any number or none of the fields">
+            <NAME>organism characteristics</NAME>
+            <FIELD>
+                <LABEL>subspecific genetic lineage</LABEL>
+                <NAME>subspecific genetic lineage</NAME>
+                <DESCRIPTION>Information about the genetic distinctness of the sequenced organism below the subspecies level, e.g., serovar, serotype, biotype, ecotype, or any relevant genetic typing schemes like Group I plasmid. Subspecies should not be recorded in this term, but in the NCBI taxonomy. Supply both the lineage name and the lineage rank separated by a colon, e.g., biovar:abc123.</DESCRIPTION>
                 <FIELD_TYPE>
                     <TEXT_FIELD/>
                 </FIELD_TYPE>
@@ -1128,9 +1777,142 @@
                 <MULTIPLICITY>multiple</MULTIPLICITY>
             </FIELD>
             <FIELD>
-                <LABEL>isolate</LABEL>
-                <NAME>isolate</NAME>
-                <DESCRIPTION>individual isolate from which the sample was obtained</DESCRIPTION>
+                <LABEL>trophic level</LABEL>
+                <NAME>trophic level</NAME>
+                <DESCRIPTION>Trophic levels are the feeding position in a food chain. Microbes can be a range of producers (e.g. chemolithotroph)</DESCRIPTION>
+                <FIELD_TYPE>
+                    <TEXT_CHOICE_FIELD>
+                        <TEXT_VALUE>
+                            <VALUE>autotroph</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>carboxydotroph</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>chemoautotroph</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>chemoheterotroph</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>chemolithoautotroph</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>chemolithotroph</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>chemoorganoheterotroph</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>chemoorganotroph</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>chemosynthetic</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>chemotroph</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>copiotroph</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>diazotroph</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>facultative autotroph</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>heterotroph</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>lithoautotroph</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>lithoheterotroph</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>lithotroph</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>methanotroph</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>methylotroph</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>mixotroph</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>obligate chemoautolithotroph</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>oligotroph</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>organoheterotroph</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>organotroph</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>photoautotroph</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>photoheterotroph</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>photolithoautotroph</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>photolithotroph</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>photosynthetic</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>phototroph</VALUE>
+                        </TEXT_VALUE>
+                    </TEXT_CHOICE_FIELD>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>multiple</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>relationship to oxygen</LABEL>
+                <NAME>relationship to oxygen</NAME>
+                <DESCRIPTION>Is this organism an aerobe, anaerobe? Please note that aerobic and anaerobic are valid descriptors for microbial environments</DESCRIPTION>
+                <FIELD_TYPE>
+                    <TEXT_CHOICE_FIELD>
+                        <TEXT_VALUE>
+                            <VALUE>aerobe</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>anaerobe</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>facultative</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>microaerophilic</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>microanaerobe</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>obligate aerobe</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>obligate anaerobe</VALUE>
+                        </TEXT_VALUE>
+                    </TEXT_CHOICE_FIELD>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>multiple</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>known pathogenicity</LABEL>
+                <NAME>known pathogenicity</NAME>
+                <DESCRIPTION>To what is the entity pathogenic, for instance plant, fungi, bacteria</DESCRIPTION>
                 <FIELD_TYPE>
                     <TEXT_FIELD/>
                 </FIELD_TYPE>
@@ -1138,9 +1920,9 @@
                 <MULTIPLICITY>multiple</MULTIPLICITY>
             </FIELD>
             <FIELD>
-                <LABEL>sub_species</LABEL>
-                <NAME>sub_species</NAME>
-                <DESCRIPTION>name of sub-species of organism from which sample was obtained</DESCRIPTION>
+                <LABEL>encoded traits</LABEL>
+                <NAME>encoded traits</NAME>
+                <DESCRIPTION>Should include key traits like antibiotic resistance or xenobiotic degradation phenotypes for plasmids, converting genes for phage</DESCRIPTION>
                 <FIELD_TYPE>
                     <TEXT_FIELD/>
                 </FIELD_TYPE>
@@ -1148,9 +1930,38 @@
                 <MULTIPLICITY>multiple</MULTIPLICITY>
             </FIELD>
             <FIELD>
-                <LABEL>variety</LABEL>
-                <NAME>variety</NAME>
-                <DESCRIPTION>variety (= varietas, a formal Linnaean rank) of organism from which sample was derived.</DESCRIPTION>
+                <LABEL>observed biotic relationship</LABEL>
+                <NAME>observed biotic relationship</NAME>
+                <DESCRIPTION>Is it free-living or in a host and if the latter what type of relationship is observed</DESCRIPTION>
+                <FIELD_TYPE>
+                    <TEXT_CHOICE_FIELD>
+                        <TEXT_VALUE>
+                            <VALUE>commensal</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>free living</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>mutualism</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>parasite</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>symbiont</VALUE>
+                        </TEXT_VALUE>
+                    </TEXT_CHOICE_FIELD>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>multiple</MULTIPLICITY>
+            </FIELD>
+        </FIELD_GROUP>
+        <FIELD_GROUP restrictionType="Any number or none of the fields">
+            <NAME>local environment conditions imposed</NAME>
+            <FIELD>
+                <LABEL>chemical administration</LABEL>
+                <NAME>chemical administration</NAME>
+                <DESCRIPTION>list of chemical compounds administered to the host or site where sampling occurred, and when (e.g. antibiotics, N fertilizer, air filter); can include multiple compounds. For Chemical Entities of Biological Interest ontology (CHEBI) (v111), please see http://purl.bioontology.org/ontology/CHEBI</DESCRIPTION>
                 <FIELD_TYPE>
                     <TEXT_FIELD/>
                 </FIELD_TYPE>
@@ -1158,49 +1969,9 @@
                 <MULTIPLICITY>multiple</MULTIPLICITY>
             </FIELD>
             <FIELD>
-                <LABEL>sub_strain</LABEL>
-                <NAME>sub_strain</NAME>
-                <DESCRIPTION>name or identifier of a genetically or otherwise modified strain from which sample was obtained, derived from a parental strain (which should be annotated in the strain field; sub_strain from which sample was obtained</DESCRIPTION>
-                <FIELD_TYPE>
-                    <TEXT_FIELD/>
-                </FIELD_TYPE>
-                <MANDATORY>optional</MANDATORY>
-                <MULTIPLICITY>multiple</MULTIPLICITY>
-            </FIELD>
-            <FIELD>
-                <LABEL>cell_line</LABEL>
-                <NAME>cell_line</NAME>
-                <DESCRIPTION>cell line from which the sample was obtained</DESCRIPTION>
-                <FIELD_TYPE>
-                    <TEXT_FIELD/>
-                </FIELD_TYPE>
-                <MANDATORY>optional</MANDATORY>
-                <MULTIPLICITY>multiple</MULTIPLICITY>
-            </FIELD>
-            <FIELD>
-                <LABEL>serotype</LABEL>
-                <NAME>serotype</NAME>
-                <DESCRIPTION>serological variety of a species characterized by its antigenic properties</DESCRIPTION>
-                <FIELD_TYPE>
-                    <TEXT_FIELD/>
-                </FIELD_TYPE>
-                <MANDATORY>optional</MANDATORY>
-                <MULTIPLICITY>multiple</MULTIPLICITY>
-            </FIELD>
-            <FIELD>
-                <LABEL>serovar</LABEL>
-                <NAME>serovar</NAME>
-                <DESCRIPTION>serological variety of a species (usually a prokaryote) characterized by its antigenic properties</DESCRIPTION>
-                <FIELD_TYPE>
-                    <TEXT_FIELD/>
-                </FIELD_TYPE>
-                <MANDATORY>optional</MANDATORY>
-                <MULTIPLICITY>multiple</MULTIPLICITY>
-            </FIELD>
-            <FIELD>
-                <LABEL>strain</LABEL>
-                <NAME>strain</NAME>
-                <DESCRIPTION>Name of the strain from which the sample was obtained.</DESCRIPTION>
+                <LABEL>perturbation</LABEL>
+                <NAME>perturbation</NAME>
+                <DESCRIPTION>type of perturbation, e.g. chemical administration, physical disturbance, etc., coupled with time that perturbation occurred; can include multiple perturbation types</DESCRIPTION>
                 <FIELD_TYPE>
                     <TEXT_FIELD/>
                 </FIELD_TYPE>
