@@ -51,7 +51,8 @@ var hotSettings = {
     { title: 'Ratio 260/230', data: 'ratio_260_230' },
     { title: 'Comments', data: 'comments' },
     { title: 'Status', data: 'status', readOnly: true},
-    { title: 'Unsaved', data: 'unsaved', readOnly: true}
+    { title: 'Unsaved', data: 'unsaved', readOnly: true},
+    { title: 'Delete', renderer: deleteButtonRenderer}
   ],
   minSpareRows: 0,
   rowHeaders: true,
@@ -165,6 +166,23 @@ function redirectToOrders() {
         window.location.href = "{% url 'order_list' %}";
     }
 }
+
+function deleteButtonRenderer(instance, td, row, col, prop, value, cellProperties) {
+      Handsontable.renderers.TextRenderer.apply(this, arguments);
+      td.innerHTML = '';
+      var button = document.createElement('button');
+      button.innerHTML = 'Delete';
+      button.addEventListener('click', function() {
+        instance.alter('remove_row', row); // Delete the row on button click
+        unsaved = true;
+        document.getElementById('save').disabled = false;
+      });
+      td.appendChild(button);
+
+      return td;
+    }
+
+
 </script>
 
 {% endblock content %}
