@@ -6,21 +6,21 @@ Add and update Samples
 
 {% block content %}
 <section class="section">
-    <div class="container">
-      <h2 class="title has-text-centered">Update Samples</h2>
-      <div class="has-text-centered mb-4">
-        <button id="add" class="button is-primary" onclick="addNewRow()">Add New Row</button>
-      </div>
-
-      <div id="handsontable-container"></div>
-
-      <div class="has-text-centered mt-4">
-        <button id="save" class="button is-success" onclick="saveSampleData()">Save Samples</button>
-        <button id="cancel" class="button is-link" onclick="redirectToOrders()">Back to Order Overview</button>
-      </div>
+  <div class="container">
+    <h2 class="title has-text-centered">Update Samples</h2>
+    <div class="has-text-centered mb-4">
+      <button id="add" class="button is-primary" onclick="addNewRow()">Add New Row</button>
     </div>
-  </section>
-  
+
+    <div id="handsontable-container"></div>
+
+    <div class="has-text-centered mt-4">
+      <button id="save" class="button is-success" onclick="saveSampleData()">Save Samples</button>
+      <button id="cancel" class="button is-link" onclick="redirectToOrders()">Back to Order Overview</button>
+    </div>
+  </div>
+</section>
+
 <!--
 Comment out for 6.2.2 (MIT)
 -->
@@ -29,106 +29,104 @@ Comment out for 6.2.2 (MIT)
 
 
 <script>
-var unsaved = false;  
-document.getElementById('save').disabled = true;
-var hotElement = document.querySelector('#handsontable-container');
-var hotSettings = {
-  data: {{ samples|safe }},
+  var unsaved = false;
+  document.getElementById('save').disabled = true;
+  var hotElement = document.querySelector('#handsontable-container');
+  var hotSettings = {
+    data: {{ samples| safe }},
   columns: [
-    { title: 'Sample ID', data: 'index', readOnly: true },
-    { title: 'MIxS Metadata Standard', data: 'mixs_metadata_standard', type: 'dropdown', source: {{ mixs_metadata_standards|safe }} },
-    { title: 'Alias', data: 'alias',},
-    { title: 'Title', data: 'title',},
-    { title: 'Taxon ID', data: 'taxon_id',},
-    { title: 'Scientific Name', data: 'scientific_name',},
-    { title: 'Investigation Type', data: 'investigation_type',},
-    { title: 'Study type', data: 'study_type',},
-    { title: 'Platform', data: 'platform',},
-    { title: 'Library Source', data: 'library_source',},
+    { title: 'Sample Name', data: 'sample_name', readOnly: true },
+    { title: 'MIxS Metadata Standard', data: 'mixs_metadata_standard', type: 'dropdown', source: {{ mixs_metadata_standards| safe }} },
+    { title: 'Alias', data: 'alias', },
+    { title: 'Title', data: 'title', },
+    { title: 'Taxon ID', data: 'taxon_id', },
+    { title: 'Scientific Name', data: 'scientific_name', },
+    { title: 'Investigation Type', data: 'investigation_type', },
+    { title: 'Study type', data: 'study_type', },
+    { title: 'Platform', data: 'platform', },
+    { title: 'Library Source', data: 'library_source', },
     { title: 'Concentration', data: 'concentration' },
     { title: 'Volume', data: 'volume' },
     { title: 'Ratio 260/280', data: 'ratio_260_280' },
     { title: 'Ratio 260/230', data: 'ratio_260_230' },
     { title: 'Comments', data: 'comments' },
-    { title: 'Status', data: 'status', readOnly: true},
-    { title: 'Unsaved', data: 'unsaved', readOnly: true},
-    { title: 'Delete', renderer: deleteButtonRenderer}
+    { title: 'Status', data: 'status', readOnly: true },
+    { title: 'Unsaved', data: 'unsaved', readOnly: true },
+    { title: 'Delete', renderer: deleteButtonRenderer }
   ],
-  minSpareRows: 0,
-  rowHeaders: true,
-  contextMenu: true,
-  licenseKey: 'non-commercial-and-evaluation',
-  afterChange: (changes) => {
-    changes?.forEach(([row, prop, oldValue, newValue]) => {
-      if (prop != "unsaved" && hot.getDataAtCell(row, 16) != "x") {
-        hot.setDataAtCell(row, 16, "x");
-        unsaved = true;
-        document.getElementById('save').disabled = false;
-      }
-    });
-  }
+    minSpareRows: 0,
+      rowHeaders: true,
+        contextMenu: true,
+          licenseKey: 'non-commercial-and-evaluation',
+            afterChange: (changes) => {
+              changes?.forEach(([row, prop, oldValue, newValue]) => {
+                if (prop != "unsaved" && hot.getDataAtCell(row, 16) != "x") {
+                  hot.setDataAtCell(row, 16, "x");
+                  unsaved = true;
+                  document.getElementById('save').disabled = false;
+                }
+              });
+            }
 };
-var hot = new Handsontable(hotElement, hotSettings);
+  var hot = new Handsontable(hotElement, hotSettings);
 
-function addNewRow() {
-  var newRow = ['', '']; // Adjust based on number of columns
-  
-  var selectedRow = hot.getSelected();
-  if (selectedRow && selectedRow.length > 0) {
-    var rowIndex = selectedRow[0][0];
-  } else {
-    var rowIndex = hot.countRows();
+  function addNewRow() {
+    var newRow = ['', '']; // Adjust based on number of columns
+
+    var selectedRow = hot.getSelected();
+    if (selectedRow && selectedRow.length > 0) {
+      var rowIndex = selectedRow[0][0];
+    } else {
+      var rowIndex = hot.countRows();
+    }
+    hot.alter('insert_row_above', rowIndex, 1, newRow);
+    hot.setDataAtCell(rowIndex, 16, "x");
+    unsaved = true;
+    document.getElementById('save').disabled = false;
   }
-  hot.alter('insert_row_above', rowIndex, 1, newRow);
-  hot.setDataAtCell(rowIndex, 16, "x");
-  unsaved = true;
-  document.getElementById('save').disabled = false;
-}
 
-function saveSampleData() {
-    var sampleData = hot.getData().map(function(row, index) {
-        return {
-            index: row[0],
-            sample_name: row[0],
-            mixs_metadata_standard: row[1], 
-            alias: row[2],
-            title: row[3],
-            taxon_id: row[4],
-            scientific_name: row[5],
-            investigation_type: row[6],
-            study_type: row[7],
-            platform: row[8],
-            library_source: row[9],
-            concentration: row[10],
-            volume: row[11],
-            ratio_260_280: row[12],
-            ratio_260_230: row[13],
-            comments: row[14],
-            status: row[15],
-        };
+  function saveSampleData() {
+    var sampleData = hot.getData().map(function (row, index) {
+      return {
+        sample_name: row[0],
+        mixs_metadata_standard: row[1],
+        alias: row[2],
+        title: row[3],
+        taxon_id: row[4],
+        scientific_name: row[5],
+        investigation_type: row[6],
+        study_type: row[7],
+        platform: row[8],
+        library_source: row[9],
+        concentration: row[10],
+        volume: row[11],
+        ratio_260_280: row[12],
+        ratio_260_230: row[13],
+        comments: row[14],
+        status: row[15],
+      };
     });
 
-    sampleData = sampleData.map(function(sample) {
-    return {
-      index: sample.index,
-      sample_id: sample.sample_id,
-      mixs_metadata_standard: sample.mixs_metadata_standard,
-      alias: sample.alias ? sample.alias.trim() : '',
-      title: sample.title ? sample.title.trim() : '',
-      taxon_id: sample.taxon_id ? sample.taxon_id.trim() : '',
-      scientific_name: sample.scientific_name ? sample.scientific_name.trim() : '',
-      investigation_type: sample.investigation_type ? sample.investigation_type.trim() : '',
-      study_type: sample.study_type ? sample.study_type.trim() : '',
-      platform: sample.platform ? sample.platform.trim() : '',
-      library_source: sample.library_source ? sample.library_source.trim() : '',
-      concentration: sample.concentration ? sample.concentration.trim() : '',
-      volume: sample.volume ? sample.volume.trim() : '',
-      ratio_260_280: sample.ratio_260_280 ? sample.ratio_260_280.trim() : '',
-      ratio_260_230: sample.ratio_260_230 ? sample.ratio_260_230.trim() : '',
-      comments: sample.comments ? sample.comments.trim() : '',
-      status: sample.status,
-    };
-  });
+    sampleData = sampleData.map(function (sample) {
+      return {
+        sample_name: sample.sample_name,
+        mixs_metadata_standard: sample.mixs_metadata_standard,
+        alias: sample.alias ? sample.alias.trim() : '',
+        title: sample.title ? sample.title.trim() : '',
+        taxon_id: sample.taxon_id ? sample.taxon_id.trim() : '',
+        scientific_name: sample.scientific_name ? sample.scientific_name.trim() : '',
+        investigation_type: sample.investigation_type ? sample.investigation_type.trim() : '',
+        study_type: sample.study_type ? sample.study_type.trim() : '',
+        platform: sample.platform ? sample.platform.trim() : '',
+        library_source: sample.library_source ? sample.library_source.trim() : '',
+        concentration: sample.concentration ? sample.concentration.trim() : '',
+        volume: sample.volume ? sample.volume.trim() : '',
+        ratio_260_280: sample.ratio_260_280 ? sample.ratio_260_280.trim() : '',
+        ratio_260_230: sample.ratio_260_230 ? sample.ratio_260_230.trim() : '',
+        comments: sample.comments ? sample.comments.trim() : '',
+        status: sample.status,
+      };
+    });
 
     unsaved = false;
     document.getElementById('save').disabled = true;
@@ -138,50 +136,62 @@ function saveSampleData() {
         hot.setDataAtCell(rowIndex, 16, "");
       }
     });
-    
+
     console.log('Sending sample data:', sampleData);
 
     fetch("{% url 'samples_view' order.id %}", {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-            'X-CSRFToken': '{{ csrf_token }}'
-        },
-        body: 'sample_data=' + JSON.stringify(sampleData)
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'X-CSRFToken': '{{ csrf_token }}'
+      },
+      body: 'sample_data=' + JSON.stringify(sampleData)
     })
-    .then(function(response) {
+      .then(function (response) {
         console.log('Sample data saved successfully');
-    })
-    .catch(function(error) {
+      })
+      .catch(function (error) {
         console.error('Error saving sample data:', error);
-    });
-}
-
-function redirectToOrders() {
-    if (unsaved) {
-        if (confirm('You have unsaved changes. Are you sure you want to leave this page?')) {
-            window.location.href = "{% url 'order_list' %}";
-        }
-    } else {
-        window.location.href = "{% url 'order_list' %}";
-    }
-}
-
-function deleteButtonRenderer(instance, td, row, col, prop, value, cellProperties) {
-      Handsontable.renderers.TextRenderer.apply(this, arguments);
-      td.innerHTML = '';
-      var button = document.createElement('button');
-      button.innerHTML = 'Delete';
-      button.addEventListener('click', function() {
-        instance.alter('remove_row', row); // Delete the row on button click
-        unsaved = true;
-        document.getElementById('save').disabled = false;
       });
-      td.appendChild(button);
+  }
 
-      return td;
+  function redirectToOrders() {
+    if (unsaved) {
+      if (confirm('You have unsaved changes. Are you sure you want to leave this page?')) {
+        window.location.href = "{% url 'order_list' %}";
+      }
+    } else {
+      window.location.href = "{% url 'order_list' %}";
+    }
+  }
+
+  function deleteButtonRenderer(instance, td, row, col, prop, value, cellProperties) {
+    Handsontable.renderers.TextRenderer.apply(this, arguments);
+    td.innerHTML = '';
+    var button = document.createElement('button');
+    button.innerHTML = 'Delete';
+    button.addEventListener('click', function () {
+      instance.alter('remove_row', row); // Delete the row on button click
+      unsaved = true;
+      document.getElementById('save').disabled = false;
+    });
+    td.appendChild(button);
+
+    return td;
+  }
+    // Utility function to generate a unique ID
+    function generateUniqueId() {
+      return 'id-' + Math.random().toString(36).substr(2, 16);
     }
 
+       // Hook to handle new rows, adding a unique ID to each
+    hot.addHook('afterCreateRow', function(index, amount) {
+      for (let i = 0; i < amount; i++) {
+        let row = index + i;
+        // Ensure each new row gets a unique ID
+        hot.setDataAtRowProp(row, 'sample_name', generateUniqueId());
+      }
+    }); 
 
 </script>
 

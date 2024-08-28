@@ -92,7 +92,8 @@ def samples_view(request, order_id):
 
         # Create new samples based on the received data
         for sample_info in sample_data:
-            index = sample_info.get('index')
+            sample_name = sample_info.get('sample_name')
+            mixs_metadata_standard = sample_info.get('mixs_metadata_standard', '')
             alias = sample_info.get('alias')
             title = sample_info.get('title')
             taxon_id = sample_info.get('taxon_id')
@@ -106,13 +107,14 @@ def samples_view(request, order_id):
             ratio_260_280 = sample_info.get('ratio_260_280')
             ratio_260_230 = sample_info.get('ratio_260_230')
             comments = sample_info.get('comments')
-            mixs_metadata_standard = sample_info.get('mixs_metadata_standard', '')
             status = sample_info.get('status', '')
 
-            print(f"Processing sample {index} with alias: {alias}, title: {title}, taxon_id: {taxon_id}, scientific_name: {scientific_name}, investigation_type: {investigation_type}, study_type: {study_type}, platform: {platform}, library_source: {library_source}")
+            print(f"Processing sample {sample_name} with alias: {alias}, title: {title}, taxon_id: {taxon_id}, scientific_name: {scientific_name}, investigation_type: {investigation_type}, study_type: {study_type}, platform: {platform}, library_source: {library_source}")
 
             sample = Sample(
                 order=order,
+                sample_name=sample_name,
+                mixs_metadata_standard=mixs_metadata_standard,
                 alias=alias,
                 title=title,
                 taxon_id=taxon_id,
@@ -126,7 +128,6 @@ def samples_view(request, order_id):
                 ratio_260_280=ratio_260_280,
                 ratio_260_230=ratio_260_230,
                 comments=comments,
-                mixs_metadata_standard=mixs_metadata_standard,
                 status=status
                 
             )
@@ -141,7 +142,8 @@ def samples_view(request, order_id):
     print(f"Retrieved samples: {list(samples)}")
     samples_data = [
         {
-            'index': sample.id,
+            'sample_name': sample.sample_name or '',
+            'mixs_metadata_standard': sample.mixs_metadata_standard or '',
             'alias': sample.alias or '',
             'title': sample.title or '',
             'taxon_id': sample.taxon_id or '',
@@ -150,7 +152,6 @@ def samples_view(request, order_id):
             'study_type': sample.study_type or '',
             'platform': sample.platform or '',
             'library_source': sample.library_source or '',
-            'mixs_metadata_standard': sample.mixs_metadata_standard or '',
             'concentration': sample.concentration or '',
             'volume': sample.volume or '',
             'ratio_260_280': sample.ratio_260_280 or '',
@@ -163,17 +164,19 @@ def samples_view(request, order_id):
     status_choices = [choice[1] for choice in STATUS_CHOICES]
 
     print(f"Sending samples_data to template: {samples_data}")
+    
     return render(request, 'samples.html', {
             'order': order,
             'samples': samples_data,
             'mixs_metadata_standards': MIXS_METADATA_STANDARDS,
             'status_choices': status_choices,
         })
+    
 
 def mixs_view(request, order_id, mixs_standard):
     print(f"Received request for order_id: {order_id} with mixs_standard: {mixs_standard}")
     order = Order.objects.get(id=order_id)
-    
+
     # Find the tuple in MIXS_METADATA_STANDARDS where the first element matches mixs_standard
     mixs_metadata_standard = next((item[0] for item in MIXS_METADATA_STANDARDS if item[0] == mixs_standard), None)
     print(f"Mixs metadata standard: {mixs_metadata_standard}")
@@ -198,26 +201,28 @@ def mixs_view(request, order_id, mixs_standard):
             return JsonResponse({'error': 'Invalid JSON'}, status=400)
 
         for metadata in mixs_metadata:
-            sample_id = metadata.get('sample_id')
+            sample_name = metadata.get('sample_name')
             metadata_values = metadata.get('metadata')
-            print(f"Processing metadata for sample_id: {sample_id}")
+            print(f"Processing metadata for sample_name: {sample_name}")
             try:
-                sample = Sample.objects.get(id=sample_id)
+                sample = Sample.objects.get(sample_name=sample_name)
                 sample.mixs_metadata = metadata_values
                 sample.save()
-                print(f"Updated mixs_metadata for sample_id: {sample_id}")
+                print(f"Updated mixs_metadata for sample_name: {sample_name}")
             except Sample.DoesNotExist:
-                print(f"Sample with id {sample_id} does not exist.")
+                print(f"Sample with sample_name {sample_name} does not exist.")
                 continue
         return JsonResponse({'success': True})
     else:
         initial_data = []
+        
         for sample in samples:
             sample_data = {
-                'id': sample.id,
+                'sample_name': sample.sample_name,
             }
             if sample.mixs_metadata:
                 sample_data['mixs_metadata'] = sample.mixs_metadata
+        
             initial_data.append(sample_data)
         print(f"Preparing initial data for form: {initial_data}")
         form = SampleMetadataForm(mixs_metadata_standard=mixs_metadata_standard, initial=initial_data)

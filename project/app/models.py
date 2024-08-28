@@ -51,6 +51,7 @@ class Order(models.Model):
 class Sample(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE)
     sample_name = models.CharField(max_length=100, null=True, blank=True)
+    mixs_metadata_standard = models.CharField(max_length=100, choices=MIXS_METADATA_STANDARDS, null=True, blank=True)
     alias = models.CharField(max_length=100, null=True, blank=True)
     title = models.CharField(max_length=100, null=True, blank=True)
     taxon_id = models.CharField(max_length=100, null=True, blank=True)
@@ -64,12 +65,11 @@ class Sample(models.Model):
     ratio_260_280 = models.CharField(max_length=100, null=True, blank=True)
     ratio_260_230 = models.CharField(max_length=100, null=True, blank=True)
     comments = models.TextField(null=True, blank=True)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, null=True, blank=True)
     date = models.DateTimeField(auto_now_add=True)
-    mixs_metadata_standard = models.CharField(max_length=100, choices=MIXS_METADATA_STANDARDS, null=True, blank=True)
     mixs_metadata = JSONField(null=True, blank=True)
     filename_forward = models.CharField(max_length=255, null=True, blank=True, verbose_name="Filename (Forward, R1)")
     filename_reverse = models.CharField(max_length=255, null=True, blank=True, verbose_name="Filename (Reverse, R2)")
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES, null=True, blank=True)
     nf_core_mag_outdir = models.CharField(max_length=255, null=True, blank=True)
 
     def get_standard_id(self):

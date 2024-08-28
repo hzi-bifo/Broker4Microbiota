@@ -28,7 +28,7 @@ MixS {{ mixs_standard }} Samples for Order {{ order.id }}
         data: [
             {% for sample in samples %}
             {
-                id: {{ sample.id }},
+                sample_name: '{{ sample.sample_name }}',
                 {% if sample.mixs_metadata %}
                     {% for key, value in sample.mixs_metadata.items %}
                         '{{ key }}': '{{ value|default:"" }}',
@@ -38,7 +38,7 @@ MixS {{ mixs_standard }} Samples for Order {{ order.id }}
             {% endfor %}
         ],
         columns: [
-            { title: 'Sample ID', data: 'id', readOnly: true },
+            { title: 'Sample name', data: 'sample_name', readOnly: true },
             {% for field in form %}
                 { title: '{{ field.label }}', data: '{{ field.name }}' },
             {% endfor %}
@@ -50,13 +50,13 @@ MixS {{ mixs_standard }} Samples for Order {{ order.id }}
 
     function saveMixsMetadata() {
         var mixsMetadata = hot.getData().map(function(row) {
-            var sampleId = row[0];
+            var sampleName = row[0];
             var metadata = {};
             {% for field in form %}
             metadata['{{ field.name }}'] = row[{{ forloop.counter }}];
             {% endfor %}
             return {
-                sample_id: sampleId,
+                sample_name: sampleName,
                 metadata: metadata
             };
         });
