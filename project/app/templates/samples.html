@@ -51,6 +51,10 @@ Comment out for 6.2.2 (MIT)
     { title: 'Ratio 260/230', data: 'ratio_260_230' },
     { title: 'Comments', data: 'comments' },
     { title: 'Status', data: 'status', readOnly: true },
+    { title: 'mixs_metadata', data: 'mixs_metadata', readOnly: true },
+    { title: 'filename_forward', data: 'filename_forward', readOnly: true },
+    { title: 'filename_reverse', data: 'filename_reverse', readOnly: true },
+    { title: 'nf_core_mag_outdir', data: 'nf_core_mag_outdir', readOnly: true },
     { title: 'Unsaved', data: 'unsaved', readOnly: true },
     { title: 'Delete', renderer: deleteButtonRenderer }
   ],
@@ -60,8 +64,8 @@ Comment out for 6.2.2 (MIT)
           licenseKey: 'non-commercial-and-evaluation',
             afterChange: (changes) => {
               changes?.forEach(([row, prop, oldValue, newValue]) => {
-                if (prop != "unsaved" && hot.getDataAtCell(row, 16) != "x") {
-                  hot.setDataAtCell(row, 16, "x");
+                if (prop != "unsaved" && hot.getDataAtCell(row, 20) != "x") {
+                  hot.setDataAtCell(row, 20, "x");
                   unsaved = true;
                   document.getElementById('save').disabled = false;
                 }
@@ -80,7 +84,7 @@ Comment out for 6.2.2 (MIT)
       var rowIndex = hot.countRows();
     }
     hot.alter('insert_row_above', rowIndex, 1, newRow);
-    hot.setDataAtCell(rowIndex, 16, "x");
+    hot.setDataAtCell(rowIndex, 20, "x");
     unsaved = true;
     document.getElementById('save').disabled = false;
   }
@@ -104,6 +108,10 @@ Comment out for 6.2.2 (MIT)
         ratio_260_230: row[13],
         comments: row[14],
         status: row[15],
+        mixs_metadata: row[16],
+        filename_forward: row[17],
+        filename_reverse: row[18],
+        nf_core_mag_outdir: row[19],
       };
     });
 
@@ -125,6 +133,10 @@ Comment out for 6.2.2 (MIT)
         ratio_260_230: sample.ratio_260_230 ? sample.ratio_260_230.trim() : '',
         comments: sample.comments ? sample.comments.trim() : '',
         status: sample.status,
+        mixs_metadata: sample.mixs_metadata ? sample.mixs_metadata.trim() : '',
+        filename_forward: sample.filename_forward ? sample.filename_forward.trim() : '',
+        filename_reverse: sample.filename_reverse ? sample.filename_reverse.trim() : '',
+        nf_core_mag_outdir: sample.nf_core_mag_outdir ? sample.nf_core_mag_outdir.trim() : '',
       };
     });
 
@@ -133,7 +145,7 @@ Comment out for 6.2.2 (MIT)
 
     hot.batch(() => {
       for (let rowIndex = 0; rowIndex < hot.countRows(); rowIndex++) {
-        hot.setDataAtCell(rowIndex, 16, "");
+        hot.setDataAtCell(rowIndex, 20, "");
       }
     });
 

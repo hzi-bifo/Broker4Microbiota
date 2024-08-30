@@ -11,6 +11,7 @@ from django.urls import reverse, reverse_lazy
 from .mixs_metadata_standards import MIXS_METADATA_STANDARDS
 from .forms import OrderForm, SampleForm, SampleMetadataForm
 from .models import Order, Sample, STATUS_CHOICES
+from json.decoder import JSONDecodeError
 
 logger = logging.getLogger(__name__)
 
@@ -108,8 +109,22 @@ def samples_view(request, order_id):
             ratio_260_230 = sample_info.get('ratio_260_230')
             comments = sample_info.get('comments')
             status = sample_info.get('status', '')
+            mixs_metadata = sample_info.get('mixs_metadata') or ''
+            try:
+                mixs_metadata_json = json.loads(mixs_metadata)
+            except:
+                mixs_metadata_json = ''
+                           
+            filename_forward = sample_info.get('filename_forward')
+            filename_reverse = sample_info.get('filename_reverse')
+            nf_core_mag_outdir = sample_info.get('nf_core_mag_outdir')
 
             print(f"Processing sample {sample_name} with alias: {alias}, title: {title}, taxon_id: {taxon_id}, scientific_name: {scientific_name}, investigation_type: {investigation_type}, study_type: {study_type}, platform: {platform}, library_source: {library_source}")
+
+            try:
+                mixs_metadata = json.loads(json.dumps(mixs_metadata_json))
+            except Exception as e:
+                mixs_metadata = ''
 
             sample = Sample(
                 order=order,
@@ -128,7 +143,11 @@ def samples_view(request, order_id):
                 ratio_260_280=ratio_260_280,
                 ratio_260_230=ratio_260_230,
                 comments=comments,
-                status=status
+                status=status,
+                mixs_metadata = mixs_metadata,
+                filename_forward = filename_forward,
+                filename_reverse = filename_reverse,
+                nf_core_mag_outdir = nf_core_mag_outdir
                 
             )
             if status:
@@ -157,7 +176,11 @@ def samples_view(request, order_id):
             'ratio_260_280': sample.ratio_260_280 or '',
             'ratio_260_230': sample.ratio_260_230 or '',
             'comments': sample.comments or '',
-            'status': sample.get_status_display() or ''
+            'status': sample.get_status_display() or '',
+            'mixs_metadata': json.dumps(sample.mixs_metadata or ''),
+            'filename_forward': sample.filename_forward or '',
+            'filename_reverse': sample.filename_reverse or '',
+            'nf_core_mag_outdir': sample.nf_core_mag_outdir or '',
         }
         for index, sample in enumerate(samples, start=1)
     ]
