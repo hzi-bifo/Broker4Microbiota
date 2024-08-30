@@ -58,6 +58,10 @@ Comment out for 6.2.2 (MIT)
     { title: 'Unsaved', data: 'unsaved', readOnly: true },
     { title: 'Delete', renderer: deleteButtonRenderer }
   ],
+  hiddenColumns: {
+        columns: [16],  // Hide the third column (index 2)
+        indicators: false  // Show a small indicator where columns are hidden
+      },
     minSpareRows: 0,
       rowHeaders: true,
         contextMenu: true,
