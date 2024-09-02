@@ -41,6 +41,7 @@ pip install biopython
 pip install phonenumbers
 pip install django-widget-tweaks
 pip install django-phonenumber-field
+pip install django-clearcache
 ```
 
 ### Running the Project
@@ -50,6 +51,7 @@ Navigate to the project directory and run:
 
 ```bash
 cd project
+python manage.py collectstatic
 python manage.py runserver
 ```
 

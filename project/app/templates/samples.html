@@ -65,6 +65,9 @@ Comment out for 6.2.2 (MIT)
     minSpareRows: 0,
       rowHeaders: true,
         contextMenu: true,
+        width: '100%',
+      height: 'auto',
+      stretchH: 'all', // Optionally stretch the columns to fit the width
           licenseKey: 'non-commercial-and-evaluation',
             afterChange: (changes) => {
               changes?.forEach(([row, prop, oldValue, newValue]) => {
