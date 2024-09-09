@@ -3,6 +3,11 @@ import json
 import xmltodict
 import pdb
 
+def get_next_node_id():
+    global node_id
+    node_id += 1
+    return node_id
+
 # Path to the directory containing the XML files
 xml_dir = '/home/gary/git/django_ngs_metadata_collection/project/static/xml'
 
@@ -14,10 +19,9 @@ jqtree_path = os.path.join(json_dir, 'jqtree.json')
 # Create the JSON directory if it doesn't exist
 os.makedirs(json_dir, exist_ok=True)
 
-pdb.set_trace()
-
 jqtree_data = []
 
+node_id = 0
 
 # Iterate over each XML file in the XML directory
 for filename in os.listdir(xml_dir):
@@ -35,17 +39,21 @@ for filename in os.listdir(xml_dir):
         checklist_name = checklist['NAME']
         jqtree_checklist = {}
         jqtree_checklist['name'] = checklist_name
+        jqtree_checklist['id'] = get_next_node_id() 
         jqtree_checklist['children'] = []
         for fieldgroup in checklist['FIELD_GROUP']:
             fieldgroup_name = fieldgroup['NAME']
             jqtree_fieldgroup = {}
             jqtree_fieldgroup['name'] = fieldgroup_name
+            jqtree_fieldgroup['id'] = get_next_node_id() 
             jqtree_fieldgroup['children'] = []
             for field in fieldgroup['FIELD']:
                 field_name = field['NAME']
                 field_description = field['DESCRIPTION']
                 jqtree_field = {}
                 jqtree_field['name'] = field_name
+                jqtree_field['description'] = field_description
+                jqtree_field['id'] = get_next_node_id() 
                 jqtree_fieldgroup['children'].append(jqtree_field)
                 print(f'{checklist_name}: {fieldgroup_name}: {field_name}')
             jqtree_checklist['children'].append(jqtree_fieldgroup)
@@ -55,9 +63,9 @@ for filename in os.listdir(xml_dir):
             json.dump(jqtree_data, jqtree_file, indent=4)
 
         # Show description in seperate panel
-        # search
         # drag to outside field
 
         # Save the data as JSON
         with open(json_path, 'w') as json_file:
             json.dump(data, json_file, indent=4)
+

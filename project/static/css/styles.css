@@ -52,3 +52,73 @@ body {
     margin-bottom: 16px;
     margin-right: 8px;
 }
+
+/* Remove any unwanted ::after content for the "select" button */
+.jqtree-element a.select::after {
+  content: none !important;
+}
+
+.jqtree-title {
+  margin: 0;
+  padding: 0;
+  display: inline; /* Ensure the title is displayed inline without breaking to a new line */
+}
+.jqtree-title-folder {
+  margin: 0;
+  padding: 0;
+  display: inline; /* Ensure the title is displayed inline without breaking to a new line */
+}
+
+.jqtree-title-button-left {
+  margin: 0;
+  padding: 0;
+  display: inline; /* Ensure the title is displayed inline without breaking to a new line */
+}
+/* Ensure no unnecessary whitespace or line breaks */
+.jqtree-element {
+  white-space: nowrap;
+  margin: 0;
+  padding: 0;
+}
+
+.jqtree-element a {
+  margin-left: 5px; /* Ensures a consistent space between node name and the action link */
+  text-decoration: none;
+}
+
+.jqtree {
+  list-style-type: none;
+  padding-left: 0;
+}
+
+.jqtree-element, .jqtree-folder-header {
+  display: inline-block; /* Inline block to prevent extra lines */
+  vertical-align: middle; /* Align the node text and links properly */
+  margin: 0;
+  padding: 0;
+}
+
+/* Ensure no extra margins or padding for the entire tree structure */
+.jqtree ul, .jqtree li {
+  padding-left: 0;
+  margin: 0;
+}
+
+/* Ensure the title of each node behaves like inline-block (to stay on the same line as the action links) */
+.jqtree-title {
+  display: inline-block; /* Prevent line breaks */
+  margin: 0;
+  padding: 0;
+}
+
+/* Add a small margin between the node name and the action link */
+.jqtree-element a {
+  margin-left: 5px;
+  text-decoration: none;
+}
+
+/* Ensure the expand/collapse icon doesn't create extra space */
+.jqtree-toggler {
+  margin-right: 5px;
+  vertical-align: middle;
+}
