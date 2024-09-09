@@ -39,3 +39,16 @@ body {
     text-align: center;
     font-size: 14px;
   }
+
+  .hidden-node {
+    display: none;
+}
+
+.highlight-node > .jqtree-element > .jqtree-title {
+    font-weight: bold;
+}
+
+#search-term {
+    margin-bottom: 16px;
+    margin-right: 8px;
+}

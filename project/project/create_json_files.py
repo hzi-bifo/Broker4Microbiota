@@ -9,6 +9,8 @@ xml_dir = '/home/gary/git/django_ngs_metadata_collection/project/static/xml'
 # Path to the directory where the JSON files will be saved
 json_dir = '/home/gary/git/django_ngs_metadata_collection/project/static/json'
 
+jqtree_path = os.path.join(json_dir, 'jqtree.json')
+
 # Create the JSON directory if it doesn't exist
 os.makedirs(json_dir, exist_ok=True)
 
@@ -22,7 +24,6 @@ for filename in os.listdir(xml_dir):
     if filename.endswith('.xml'):
         xml_path = os.path.join(xml_dir, filename)
         json_path = os.path.join(json_dir, filename.replace('.xml', '.json'))
-        jqtree_path = os.path.join(json_dir, 'jqtree.json')
 
         # Load the contents of the XML file
         with open(xml_path, 'r') as xml_file:

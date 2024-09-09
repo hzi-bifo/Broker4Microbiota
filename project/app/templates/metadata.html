@@ -12,6 +12,10 @@ Metadata List
     <p class="has-text-centered">
       Choose a metadata sample.
     </p>
+    <div"></div>
+    <input id="search-term" autofocus></input>
+    <button id="search">Search</button>
+    </div>
     <div id="tree1"></div>
     <div class="has-text-centered mt-4">
       <a href="{% url 'order_create' %}" class="button is-primary">Request new order</a>
@@ -20,14 +24,74 @@ Metadata List
 </section>
 
 <script>
+  
+  const $tree = $("#tree1");
 
-  $.getJSON("{% static 'json/jqtree.json' %}", function(responseData) {
-    var treeData = responseData;
-    $('#tree1').tree({
-      data: treeData
+  let foundMatch = false;
+
+    $.getJSON("{% static 'json/jqtree.json' %}", function(responseData) {
+        var treeData = responseData;
+        $tree.tree({
+            autoOpen: false,
+            data: treeData,
+            useContextMenu: false,
+            onCreateLi: (node, $el) => {
+                if (foundMatch && !node.openForMatch && !node.parent.matches) {
+                    $el.addClass("hidden-node");
+                }
+
+                if (node.matches) {
+                    $el.addClass("highlight-node");
+                }
+            },
+        });
     });
-  });
 
+
+  $("#search").on("click", () => {
+      const searchTerm = $("#search-term").val().toLowerCase();
+      const tree = $tree.tree("getTree");
+
+      if (!searchTerm) {
+          foundMatch = false;
+
+          tree.iterate((node) => {
+              node['openForMatch'] = false;
+              node["matches"] = false;
+              return true;
+          });
+
+          $tree.tree("refresh");
+          return;
+      }
+
+      foundMatch = false;
+
+      tree.iterate((node) => {
+          const matches = node.name.toLowerCase().includes(searchTerm);
+          node["openForMatch"] = matches;
+          node["matches"] = matches;
+
+          if (matches) {
+              foundMatch = true;
+
+              if (node.isFolder()) {
+                  node.is_open = true;
+              }
+
+              let parent = node.parent;
+              while (parent) {
+                  parent["openForMatch"] = true;
+                  parent.is_open = true;
+                  parent = parent.parent;
+              }
+          }
+
+          return true;
+      });
+
+      $tree.tree("refresh");
+  });
 
   function deleteOrder(url, orderId) {
         if (confirm('Are you sure you want to delete this order?')) {
