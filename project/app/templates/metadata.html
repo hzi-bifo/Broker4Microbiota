@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+Metadata List
+{% endblock title %}
+
+{% block content %}
+<section class="section">
+  <div class="container">
+    <h2 class="title has-text-centered">Metadata List</h2>
+    <p class="has-text-centered">
+      Choose a metadata sample.
+    </p>
+    <div id="tree1"></div>
+    <div class="has-text-centered mt-4">
+      <a href="{% url 'order_create' %}" class="button is-primary">Request new order</a>
+    </div>
+  </div>
+</section>
+
+<script>
+
+  $.getJSON("{% static 'json/jqtree.json' %}", function(responseData) {
+    var treeData = responseData;
+    $('#tree1').tree({
+      data: treeData
+    });
+  });
+
+
+  function deleteOrder(url, orderId) {
+        if (confirm('Are you sure you want to delete this order?')) {
+          window.location.href = url;
+        }
+    }
+
+</script>
+{% endblock content %}

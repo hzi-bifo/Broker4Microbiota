@@ -284,3 +284,6 @@ def order_view(request, order_id=None):
         return render(request, 'order_form.html', {'form': form})
     else:
         return redirect('login')
+
+def metadata_view(request):
+    return render(request, 'metadata.html', {})

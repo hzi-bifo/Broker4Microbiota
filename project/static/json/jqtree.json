@@ -1,0 +1,4909 @@
+[
+    {
+        "name": "GSC MIxS wastewater sludge",
+        "children": [
+            {
+                "name": "non-sample terms",
+                "children": [
+                    {
+                        "name": "project name"
+                    },
+                    {
+                        "name": "experimental factor"
+                    },
+                    {
+                        "name": "ploidy"
+                    },
+                    {
+                        "name": "number of replicons"
+                    },
+                    {
+                        "name": "extrachromosomal elements"
+                    },
+                    {
+                        "name": "estimated size"
+                    },
+                    {
+                        "name": "reference for biomaterial"
+                    },
+                    {
+                        "name": "annotation source"
+                    },
+                    {
+                        "name": "sample volume or weight for DNA extraction"
+                    },
+                    {
+                        "name": "nucleic acid extraction"
+                    },
+                    {
+                        "name": "nucleic acid amplification"
+                    },
+                    {
+                        "name": "library size"
+                    },
+                    {
+                        "name": "library reads sequenced"
+                    },
+                    {
+                        "name": "library construction method"
+                    },
+                    {
+                        "name": "library vector"
+                    },
+                    {
+                        "name": "library screening strategy"
+                    },
+                    {
+                        "name": "target gene"
+                    },
+                    {
+                        "name": "target subfragment"
+                    },
+                    {
+                        "name": "pcr primers"
+                    },
+                    {
+                        "name": "multiplex identifiers"
+                    },
+                    {
+                        "name": "adapters"
+                    },
+                    {
+                        "name": "pcr conditions"
+                    },
+                    {
+                        "name": "sequencing method"
+                    },
+                    {
+                        "name": "sequence quality check"
+                    },
+                    {
+                        "name": "chimera check software"
+                    },
+                    {
+                        "name": "relevant electronic resources"
+                    },
+                    {
+                        "name": "relevant standard operating procedures"
+                    },
+                    {
+                        "name": "negative control type"
+                    },
+                    {
+                        "name": "positive control type"
+                    }
+                ]
+            },
+            {
+                "name": "Collection event information",
+                "children": [
+                    {
+                        "name": "collection date"
+                    },
+                    {
+                        "name": "geographic location (country and/or sea)"
+                    },
+                    {
+                        "name": "geographic location (latitude)"
+                    },
+                    {
+                        "name": "geographic location (longitude)"
+                    },
+                    {
+                        "name": "geographic location (region and locality)"
+                    },
+                    {
+                        "name": "depth"
+                    },
+                    {
+                        "name": "broad-scale environmental context"
+                    },
+                    {
+                        "name": "local environmental context"
+                    },
+                    {
+                        "name": "environmental medium"
+                    }
+                ]
+            },
+            {
+                "name": "sample collection",
+                "children": [
+                    {
+                        "name": "source material identifiers"
+                    },
+                    {
+                        "name": "sample material processing"
+                    },
+                    {
+                        "name": "isolation and growth condition"
+                    },
+                    {
+                        "name": "propagation"
+                    },
+                    {
+                        "name": "amount or size of sample collected"
+                    },
+                    {
+                        "name": "oxygenation status of sample"
+                    },
+                    {
+                        "name": "organism count"
+                    },
+                    {
+                        "name": "sample storage duration"
+                    },
+                    {
+                        "name": "sample storage temperature"
+                    },
+                    {
+                        "name": "sample storage location"
+                    },
+                    {
+                        "name": "sample collection device"
+                    },
+                    {
+                        "name": "sample collection method"
+                    }
+                ]
+            },
+            {
+                "name": "bioreactor",
+                "children": [
+                    {
+                        "name": "biochemical oxygen demand"
+                    },
+                    {
+                        "name": "chemical oxygen demand"
+                    },
+                    {
+                        "name": "pre-treatment"
+                    },
+                    {
+                        "name": "primary treatment"
+                    },
+                    {
+                        "name": "reactor type"
+                    },
+                    {
+                        "name": "secondary treatment"
+                    },
+                    {
+                        "name": "sludge retention time"
+                    },
+                    {
+                        "name": "tertiary treatment"
+                    }
+                ]
+            },
+            {
+                "name": "host disorder",
+                "children": [
+                    {
+                        "name": "host disease status"
+                    }
+                ]
+            },
+            {
+                "name": "host description",
+                "children": [
+                    {
+                        "name": "host scientific name"
+                    }
+                ]
+            },
+            {
+                "name": "local environment conditions",
+                "children": [
+                    {
+                        "name": "alkalinity"
+                    },
+                    {
+                        "name": "industrial effluent percent"
+                    },
+                    {
+                        "name": "sewage type"
+                    },
+                    {
+                        "name": "wastewater type"
+                    },
+                    {
+                        "name": "temperature"
+                    },
+                    {
+                        "name": "pH"
+                    }
+                ]
+            },
+            {
+                "name": "concentration measurement",
+                "children": [
+                    {
+                        "name": "efficiency percent"
+                    },
+                    {
+                        "name": "emulsions"
+                    },
+                    {
+                        "name": "gaseous substances"
+                    },
+                    {
+                        "name": "inorganic particles"
+                    },
+                    {
+                        "name": "organic particles"
+                    },
+                    {
+                        "name": "soluble inorganic material"
+                    },
+                    {
+                        "name": "soluble organic material"
+                    },
+                    {
+                        "name": "suspended solids"
+                    },
+                    {
+                        "name": "total phosphate"
+                    },
+                    {
+                        "name": "nitrate"
+                    },
+                    {
+                        "name": "phosphate"
+                    },
+                    {
+                        "name": "salinity"
+                    },
+                    {
+                        "name": "sodium"
+                    },
+                    {
+                        "name": "total nitrogen"
+                    }
+                ]
+            },
+            {
+                "name": "organism characteristics",
+                "children": [
+                    {
+                        "name": "subspecific genetic lineage"
+                    },
+                    {
+                        "name": "trophic level"
+                    },
+                    {
+                        "name": "relationship to oxygen"
+                    },
+                    {
+                        "name": "known pathogenicity"
+                    },
+                    {
+                        "name": "encoded traits"
+                    },
+                    {
+                        "name": "observed biotic relationship"
+                    }
+                ]
+            },
+            {
+                "name": "local environment conditions imposed",
+                "children": [
+                    {
+                        "name": "chemical administration"
+                    },
+                    {
+                        "name": "perturbation"
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "name": "GSC MIxS miscellaneous natural or artificial environment",
+        "children": [
+            {
+                "name": "non-sample terms",
+                "children": [
+                    {
+                        "name": "project name"
+                    },
+                    {
+                        "name": "experimental factor"
+                    },
+                    {
+                        "name": "ploidy"
+                    },
+                    {
+                        "name": "number of replicons"
+                    },
+                    {
+                        "name": "extrachromosomal elements"
+                    },
+                    {
+                        "name": "estimated size"
+                    },
+                    {
+                        "name": "reference for biomaterial"
+                    },
+                    {
+                        "name": "annotation source"
+                    },
+                    {
+                        "name": "sample volume or weight for DNA extraction"
+                    },
+                    {
+                        "name": "nucleic acid extraction"
+                    },
+                    {
+                        "name": "nucleic acid amplification"
+                    },
+                    {
+                        "name": "library size"
+                    },
+                    {
+                        "name": "library reads sequenced"
+                    },
+                    {
+                        "name": "library construction method"
+                    },
+                    {
+                        "name": "library vector"
+                    },
+                    {
+                        "name": "library screening strategy"
+                    },
+                    {
+                        "name": "target gene"
+                    },
+                    {
+                        "name": "target subfragment"
+                    },
+                    {
+                        "name": "pcr primers"
+                    },
+                    {
+                        "name": "multiplex identifiers"
+                    },
+                    {
+                        "name": "adapters"
+                    },
+                    {
+                        "name": "pcr conditions"
+                    },
+                    {
+                        "name": "sequencing method"
+                    },
+                    {
+                        "name": "sequence quality check"
+                    },
+                    {
+                        "name": "chimera check software"
+                    },
+                    {
+                        "name": "relevant electronic resources"
+                    },
+                    {
+                        "name": "relevant standard operating procedures"
+                    },
+                    {
+                        "name": "negative control type"
+                    },
+                    {
+                        "name": "positive control type"
+                    }
+                ]
+            },
+            {
+                "name": "Collection event information",
+                "children": [
+                    {
+                        "name": "collection date"
+                    },
+                    {
+                        "name": "altitude"
+                    },
+                    {
+                        "name": "geographic location (country and/or sea)"
+                    },
+                    {
+                        "name": "geographic location (latitude)"
+                    },
+                    {
+                        "name": "geographic location (longitude)"
+                    },
+                    {
+                        "name": "geographic location (region and locality)"
+                    },
+                    {
+                        "name": "depth"
+                    },
+                    {
+                        "name": "broad-scale environmental context"
+                    },
+                    {
+                        "name": "local environmental context"
+                    },
+                    {
+                        "name": "environmental medium"
+                    },
+                    {
+                        "name": "elevation"
+                    }
+                ]
+            },
+            {
+                "name": "sample collection",
+                "children": [
+                    {
+                        "name": "source material identifiers"
+                    },
+                    {
+                        "name": "sample material processing"
+                    },
+                    {
+                        "name": "isolation and growth condition"
+                    },
+                    {
+                        "name": "propagation"
+                    },
+                    {
+                        "name": "amount or size of sample collected"
+                    },
+                    {
+                        "name": "biomass"
+                    },
+                    {
+                        "name": "density"
+                    },
+                    {
+                        "name": "oxygenation status of sample"
+                    },
+                    {
+                        "name": "organism count"
+                    },
+                    {
+                        "name": "sample storage duration"
+                    },
+                    {
+                        "name": "sample storage temperature"
+                    },
+                    {
+                        "name": "sample storage location"
+                    },
+                    {
+                        "name": "sample collection device"
+                    },
+                    {
+                        "name": "sample collection method"
+                    }
+                ]
+            },
+            {
+                "name": "host disorder",
+                "children": [
+                    {
+                        "name": "host disease status"
+                    }
+                ]
+            },
+            {
+                "name": "host description",
+                "children": [
+                    {
+                        "name": "host scientific name"
+                    }
+                ]
+            },
+            {
+                "name": "local environment conditions",
+                "children": [
+                    {
+                        "name": "alkalinity"
+                    },
+                    {
+                        "name": "water current"
+                    },
+                    {
+                        "name": "pressure"
+                    },
+                    {
+                        "name": "temperature"
+                    },
+                    {
+                        "name": "pH"
+                    }
+                ]
+            },
+            {
+                "name": "concentration measurement",
+                "children": [
+                    {
+                        "name": "ammonium"
+                    },
+                    {
+                        "name": "bromide"
+                    },
+                    {
+                        "name": "calcium"
+                    },
+                    {
+                        "name": "chloride"
+                    },
+                    {
+                        "name": "chlorophyll"
+                    },
+                    {
+                        "name": "diether lipids"
+                    },
+                    {
+                        "name": "dissolved carbon dioxide"
+                    },
+                    {
+                        "name": "dissolved hydrogen"
+                    },
+                    {
+                        "name": "dissolved inorganic carbon"
+                    },
+                    {
+                        "name": "dissolved organic nitrogen"
+                    },
+                    {
+                        "name": "dissolved oxygen"
+                    },
+                    {
+                        "name": "nitrate"
+                    },
+                    {
+                        "name": "nitrite"
+                    },
+                    {
+                        "name": "nitrogen"
+                    },
+                    {
+                        "name": "organic carbon"
+                    },
+                    {
+                        "name": "organic matter"
+                    },
+                    {
+                        "name": "organic nitrogen"
+                    },
+                    {
+                        "name": "phosphate"
+                    },
+                    {
+                        "name": "phospholipid fatty acid"
+                    },
+                    {
+                        "name": "potassium"
+                    },
+                    {
+                        "name": "salinity"
+                    },
+                    {
+                        "name": "silicate"
+                    },
+                    {
+                        "name": "sodium"
+                    },
+                    {
+                        "name": "sulfate"
+                    },
+                    {
+                        "name": "sulfide"
+                    }
+                ]
+            },
+            {
+                "name": "organism characteristics",
+                "children": [
+                    {
+                        "name": "subspecific genetic lineage"
+                    },
+                    {
+                        "name": "trophic level"
+                    },
+                    {
+                        "name": "relationship to oxygen"
+                    },
+                    {
+                        "name": "known pathogenicity"
+                    },
+                    {
+                        "name": "encoded traits"
+                    },
+                    {
+                        "name": "observed biotic relationship"
+                    }
+                ]
+            },
+            {
+                "name": "local environment conditions imposed",
+                "children": [
+                    {
+                        "name": "chemical administration"
+                    },
+                    {
+                        "name": "perturbation"
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "name": "GSC MIxS human skin",
+        "children": [
+            {
+                "name": "non-sample terms",
+                "children": [
+                    {
+                        "name": "project name"
+                    },
+                    {
+                        "name": "experimental factor"
+                    },
+                    {
+                        "name": "ploidy"
+                    },
+                    {
+                        "name": "number of replicons"
+                    },
+                    {
+                        "name": "extrachromosomal elements"
+                    },
+                    {
+                        "name": "estimated size"
+                    },
+                    {
+                        "name": "reference for biomaterial"
+                    },
+                    {
+                        "name": "annotation source"
+                    },
+                    {
+                        "name": "sample volume or weight for DNA extraction"
+                    },
+                    {
+                        "name": "nucleic acid extraction"
+                    },
+                    {
+                        "name": "nucleic acid amplification"
+                    },
+                    {
+                        "name": "library size"
+                    },
+                    {
+                        "name": "library reads sequenced"
+                    },
+                    {
+                        "name": "library construction method"
+                    },
+                    {
+                        "name": "library vector"
+                    },
+                    {
+                        "name": "library screening strategy"
+                    },
+                    {
+                        "name": "target gene"
+                    },
+                    {
+                        "name": "target subfragment"
+                    },
+                    {
+                        "name": "pcr primers"
+                    },
+                    {
+                        "name": "multiplex identifiers"
+                    },
+                    {
+                        "name": "adapters"
+                    },
+                    {
+                        "name": "pcr conditions"
+                    },
+                    {
+                        "name": "sequencing method"
+                    },
+                    {
+                        "name": "sequence quality check"
+                    },
+                    {
+                        "name": "chimera check software"
+                    },
+                    {
+                        "name": "relevant electronic resources"
+                    },
+                    {
+                        "name": "relevant standard operating procedures"
+                    },
+                    {
+                        "name": "negative control type"
+                    },
+                    {
+                        "name": "positive control type"
+                    }
+                ]
+            },
+            {
+                "name": "Collection event information",
+                "children": [
+                    {
+                        "name": "collection date"
+                    },
+                    {
+                        "name": "geographic location (country and/or sea)"
+                    },
+                    {
+                        "name": "geographic location (latitude)"
+                    },
+                    {
+                        "name": "geographic location (longitude)"
+                    },
+                    {
+                        "name": "geographic location (region and locality)"
+                    },
+                    {
+                        "name": "broad-scale environmental context"
+                    },
+                    {
+                        "name": "local environmental context"
+                    },
+                    {
+                        "name": "environmental medium"
+                    }
+                ]
+            },
+            {
+                "name": "sample collection",
+                "children": [
+                    {
+                        "name": "source material identifiers"
+                    },
+                    {
+                        "name": "sample material processing"
+                    },
+                    {
+                        "name": "isolation and growth condition"
+                    },
+                    {
+                        "name": "propagation"
+                    },
+                    {
+                        "name": "amount or size of sample collected"
+                    },
+                    {
+                        "name": "host body product"
+                    },
+                    {
+                        "name": "medical history performed"
+                    },
+                    {
+                        "name": "oxygenation status of sample"
+                    },
+                    {
+                        "name": "organism count"
+                    },
+                    {
+                        "name": "sample storage duration"
+                    },
+                    {
+                        "name": "sample storage temperature"
+                    },
+                    {
+                        "name": "sample storage location"
+                    },
+                    {
+                        "name": "sample collection device"
+                    },
+                    {
+                        "name": "sample collection method"
+                    }
+                ]
+            },
+            {
+                "name": "host disorder",
+                "children": [
+                    {
+                        "name": "dermatology disorder"
+                    },
+                    {
+                        "name": "host disease status"
+                    }
+                ]
+            },
+            {
+                "name": "host description",
+                "children": [
+                    {
+                        "name": "host subject id"
+                    },
+                    {
+                        "name": "IHMC medication code"
+                    },
+                    {
+                        "name": "host age"
+                    },
+                    {
+                        "name": "host body site"
+                    },
+                    {
+                        "name": "host height"
+                    },
+                    {
+                        "name": "host body-mass index"
+                    },
+                    {
+                        "name": "ethnicity"
+                    },
+                    {
+                        "name": "host occupation"
+                    },
+                    {
+                        "name": "host total mass"
+                    },
+                    {
+                        "name": "host phenotype"
+                    },
+                    {
+                        "name": "host body temperature"
+                    },
+                    {
+                        "name": "host sex"
+                    }
+                ]
+            },
+            {
+                "name": "local environment conditions",
+                "children": [
+                    {
+                        "name": "temperature"
+                    }
+                ]
+            },
+            {
+                "name": "concentration measurement",
+                "children": [
+                    {
+                        "name": "salinity"
+                    }
+                ]
+            },
+            {
+                "name": "host details",
+                "children": [
+                    {
+                        "name": "time since last wash"
+                    },
+                    {
+                        "name": "dominant hand"
+                    },
+                    {
+                        "name": "host diet"
+                    },
+                    {
+                        "name": "host last meal"
+                    },
+                    {
+                        "name": "host family relationship"
+                    },
+                    {
+                        "name": "host genotype"
+                    },
+                    {
+                        "name": "host pulse"
+                    }
+                ]
+            },
+            {
+                "name": "organism characteristics",
+                "children": [
+                    {
+                        "name": "subspecific genetic lineage"
+                    },
+                    {
+                        "name": "trophic level"
+                    },
+                    {
+                        "name": "relationship to oxygen"
+                    },
+                    {
+                        "name": "known pathogenicity"
+                    },
+                    {
+                        "name": "encoded traits"
+                    },
+                    {
+                        "name": "observed biotic relationship"
+                    }
+                ]
+            },
+            {
+                "name": "local environment conditions imposed",
+                "children": [
+                    {
+                        "name": "chemical administration"
+                    },
+                    {
+                        "name": "perturbation"
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "name": "ENA default sample checklist",
+        "children": [
+            {
+                "name": "Part and developmental stage of organism",
+                "children": [
+                    {
+                        "name": "cell_type"
+                    },
+                    {
+                        "name": "dev_stage"
+                    },
+                    {
+                        "name": "germline"
+                    },
+                    {
+                        "name": "tissue_lib"
+                    },
+                    {
+                        "name": "tissue_type"
+                    }
+                ]
+            },
+            {
+                "name": "Collection event information",
+                "children": [
+                    {
+                        "name": "isolation_source"
+                    },
+                    {
+                        "name": "lat_lon"
+                    },
+                    {
+                        "name": "collected_by"
+                    },
+                    {
+                        "name": "collection date"
+                    },
+                    {
+                        "name": "geographic location (country and/or sea)"
+                    },
+                    {
+                        "name": "geographic location (region and locality)"
+                    },
+                    {
+                        "name": "identified_by"
+                    }
+                ]
+            },
+            {
+                "name": "sample collection",
+                "children": [
+                    {
+                        "name": "environmental_sample"
+                    }
+                ]
+            },
+            {
+                "name": "Organism characteristics",
+                "children": [
+                    {
+                        "name": "mating_type"
+                    },
+                    {
+                        "name": "sex"
+                    }
+                ]
+            },
+            {
+                "name": "host description",
+                "children": [
+                    {
+                        "name": "lab_host"
+                    },
+                    {
+                        "name": "host scientific name"
+                    }
+                ]
+            },
+            {
+                "name": "Pointer to physical material",
+                "children": [
+                    {
+                        "name": "bio_material"
+                    },
+                    {
+                        "name": "culture_collection"
+                    },
+                    {
+                        "name": "specimen_voucher"
+                    }
+                ]
+            },
+            {
+                "name": "Infraspecies information",
+                "children": [
+                    {
+                        "name": "cultivar"
+                    },
+                    {
+                        "name": "ecotype"
+                    },
+                    {
+                        "name": "isolate"
+                    },
+                    {
+                        "name": "sub_species"
+                    },
+                    {
+                        "name": "variety"
+                    },
+                    {
+                        "name": "sub_strain"
+                    },
+                    {
+                        "name": "cell_line"
+                    },
+                    {
+                        "name": "serotype"
+                    },
+                    {
+                        "name": "serovar"
+                    },
+                    {
+                        "name": "strain"
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "name": "GSC MIxS plant associated",
+        "children": [
+            {
+                "name": "non-sample terms",
+                "children": [
+                    {
+                        "name": "project name"
+                    },
+                    {
+                        "name": "experimental factor"
+                    },
+                    {
+                        "name": "ploidy"
+                    },
+                    {
+                        "name": "number of replicons"
+                    },
+                    {
+                        "name": "extrachromosomal elements"
+                    },
+                    {
+                        "name": "estimated size"
+                    },
+                    {
+                        "name": "reference for biomaterial"
+                    },
+                    {
+                        "name": "annotation source"
+                    },
+                    {
+                        "name": "sample volume or weight for DNA extraction"
+                    },
+                    {
+                        "name": "nucleic acid extraction"
+                    },
+                    {
+                        "name": "nucleic acid amplification"
+                    },
+                    {
+                        "name": "library size"
+                    },
+                    {
+                        "name": "library reads sequenced"
+                    },
+                    {
+                        "name": "library construction method"
+                    },
+                    {
+                        "name": "library vector"
+                    },
+                    {
+                        "name": "library screening strategy"
+                    },
+                    {
+                        "name": "target gene"
+                    },
+                    {
+                        "name": "target subfragment"
+                    },
+                    {
+                        "name": "pcr primers"
+                    },
+                    {
+                        "name": "multiplex identifiers"
+                    },
+                    {
+                        "name": "adapters"
+                    },
+                    {
+                        "name": "pcr conditions"
+                    },
+                    {
+                        "name": "sequencing method"
+                    },
+                    {
+                        "name": "sequence quality check"
+                    },
+                    {
+                        "name": "chimera check software"
+                    },
+                    {
+                        "name": "relevant electronic resources"
+                    },
+                    {
+                        "name": "relevant standard operating procedures"
+                    },
+                    {
+                        "name": "negative control type"
+                    },
+                    {
+                        "name": "positive control type"
+                    }
+                ]
+            },
+            {
+                "name": "Collection event information",
+                "children": [
+                    {
+                        "name": "collection date"
+                    },
+                    {
+                        "name": "altitude"
+                    },
+                    {
+                        "name": "geographic location (country and/or sea)"
+                    },
+                    {
+                        "name": "geographic location (latitude)"
+                    },
+                    {
+                        "name": "geographic location (longitude)"
+                    },
+                    {
+                        "name": "geographic location (region and locality)"
+                    },
+                    {
+                        "name": "depth"
+                    },
+                    {
+                        "name": "broad-scale environmental context"
+                    },
+                    {
+                        "name": "local environmental context"
+                    },
+                    {
+                        "name": "environmental medium"
+                    },
+                    {
+                        "name": "elevation"
+                    }
+                ]
+            },
+            {
+                "name": "sample collection",
+                "children": [
+                    {
+                        "name": "source material identifiers"
+                    },
+                    {
+                        "name": "sample material processing"
+                    },
+                    {
+                        "name": "isolation and growth condition"
+                    },
+                    {
+                        "name": "propagation"
+                    },
+                    {
+                        "name": "amount or size of sample collected"
+                    },
+                    {
+                        "name": "host dry mass"
+                    },
+                    {
+                        "name": "oxygenation status of sample"
+                    },
+                    {
+                        "name": "plant product"
+                    },
+                    {
+                        "name": "organism count"
+                    },
+                    {
+                        "name": "sample storage duration"
+                    },
+                    {
+                        "name": "sample storage temperature"
+                    },
+                    {
+                        "name": "host wet mass"
+                    },
+                    {
+                        "name": "sample storage location"
+                    },
+                    {
+                        "name": "sample collection device"
+                    },
+                    {
+                        "name": "sample collection method"
+                    }
+                ]
+            },
+            {
+                "name": "host disorder",
+                "children": [
+                    {
+                        "name": "host disease status"
+                    }
+                ]
+            },
+            {
+                "name": "host description",
+                "children": [
+                    {
+                        "name": "host common name"
+                    },
+                    {
+                        "name": "host age"
+                    },
+                    {
+                        "name": "host taxid"
+                    },
+                    {
+                        "name": "host life stage"
+                    },
+                    {
+                        "name": "host height"
+                    },
+                    {
+                        "name": "host length"
+                    },
+                    {
+                        "name": "plant body site"
+                    },
+                    {
+                        "name": "host total mass"
+                    },
+                    {
+                        "name": "host phenotype"
+                    },
+                    {
+                        "name": "host subspecific genetic lineage"
+                    }
+                ]
+            },
+            {
+                "name": "local environment conditions",
+                "children": [
+                    {
+                        "name": "climate environment"
+                    },
+                    {
+                        "name": "gaseous environment"
+                    },
+                    {
+                        "name": "seasonal environment"
+                    },
+                    {
+                        "name": "temperature"
+                    }
+                ]
+            },
+            {
+                "name": "concentration measurement",
+                "children": [
+                    {
+                        "name": "salinity"
+                    }
+                ]
+            },
+            {
+                "name": "host details",
+                "children": [
+                    {
+                        "name": "host genotype"
+                    }
+                ]
+            },
+            {
+                "name": "organism characteristics",
+                "children": [
+                    {
+                        "name": "subspecific genetic lineage"
+                    },
+                    {
+                        "name": "trophic level"
+                    },
+                    {
+                        "name": "relationship to oxygen"
+                    },
+                    {
+                        "name": "known pathogenicity"
+                    },
+                    {
+                        "name": "encoded traits"
+                    },
+                    {
+                        "name": "observed biotic relationship"
+                    }
+                ]
+            },
+            {
+                "name": "local environment conditions imposed",
+                "children": [
+                    {
+                        "name": "air temperature regimen"
+                    },
+                    {
+                        "name": "antibiotic regimen"
+                    },
+                    {
+                        "name": "chemical mutagen"
+                    },
+                    {
+                        "name": "fertilizer regimen"
+                    },
+                    {
+                        "name": "fungicide regimen"
+                    },
+                    {
+                        "name": "gravity"
+                    },
+                    {
+                        "name": "growth hormone regimen"
+                    },
+                    {
+                        "name": "growth media"
+                    },
+                    {
+                        "name": "herbicide regimen"
+                    },
+                    {
+                        "name": "humidity regimen"
+                    },
+                    {
+                        "name": "mineral nutrient regimen"
+                    },
+                    {
+                        "name": "non-mineral nutrient regimen"
+                    },
+                    {
+                        "name": "pesticide regimen"
+                    },
+                    {
+                        "name": "pH regimen"
+                    },
+                    {
+                        "name": "radiation regimen"
+                    },
+                    {
+                        "name": "rainfall regimen"
+                    },
+                    {
+                        "name": "salt regimen"
+                    },
+                    {
+                        "name": "standing water regimen"
+                    },
+                    {
+                        "name": "tissue culture growth media"
+                    },
+                    {
+                        "name": "watering regimen"
+                    },
+                    {
+                        "name": "water temperature regimen"
+                    },
+                    {
+                        "name": "mechanical damage"
+                    },
+                    {
+                        "name": "chemical administration"
+                    },
+                    {
+                        "name": "perturbation"
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "name": "GSC MIxS water",
+        "children": [
+            {
+                "name": "non-sample terms",
+                "children": [
+                    {
+                        "name": "project name"
+                    },
+                    {
+                        "name": "experimental factor"
+                    },
+                    {
+                        "name": "ploidy"
+                    },
+                    {
+                        "name": "number of replicons"
+                    },
+                    {
+                        "name": "extrachromosomal elements"
+                    },
+                    {
+                        "name": "estimated size"
+                    },
+                    {
+                        "name": "reference for biomaterial"
+                    },
+                    {
+                        "name": "annotation source"
+                    },
+                    {
+                        "name": "sample volume or weight for DNA extraction"
+                    },
+                    {
+                        "name": "nucleic acid extraction"
+                    },
+                    {
+                        "name": "nucleic acid amplification"
+                    },
+                    {
+                        "name": "library size"
+                    },
+                    {
+                        "name": "library reads sequenced"
+                    },
+                    {
+                        "name": "library construction method"
+                    },
+                    {
+                        "name": "library vector"
+                    },
+                    {
+                        "name": "library screening strategy"
+                    },
+                    {
+                        "name": "target gene"
+                    },
+                    {
+                        "name": "target subfragment"
+                    },
+                    {
+                        "name": "pcr primers"
+                    },
+                    {
+                        "name": "multiplex identifiers"
+                    },
+                    {
+                        "name": "adapters"
+                    },
+                    {
+                        "name": "pcr conditions"
+                    },
+                    {
+                        "name": "sequencing method"
+                    },
+                    {
+                        "name": "sequence quality check"
+                    },
+                    {
+                        "name": "chimera check software"
+                    },
+                    {
+                        "name": "relevant electronic resources"
+                    },
+                    {
+                        "name": "relevant standard operating procedures"
+                    },
+                    {
+                        "name": "negative control type"
+                    },
+                    {
+                        "name": "positive control type"
+                    }
+                ]
+            },
+            {
+                "name": "Collection event information",
+                "children": [
+                    {
+                        "name": "collection date"
+                    },
+                    {
+                        "name": "altitude"
+                    },
+                    {
+                        "name": "geographic location (country and/or sea)"
+                    },
+                    {
+                        "name": "geographic location (latitude)"
+                    },
+                    {
+                        "name": "geographic location (longitude)"
+                    },
+                    {
+                        "name": "geographic location (region and locality)"
+                    },
+                    {
+                        "name": "depth"
+                    },
+                    {
+                        "name": "broad-scale environmental context"
+                    },
+                    {
+                        "name": "local environmental context"
+                    },
+                    {
+                        "name": "environmental medium"
+                    },
+                    {
+                        "name": "elevation"
+                    }
+                ]
+            },
+            {
+                "name": "sample collection",
+                "children": [
+                    {
+                        "name": "source material identifiers"
+                    },
+                    {
+                        "name": "sample material processing"
+                    },
+                    {
+                        "name": "isolation and growth condition"
+                    },
+                    {
+                        "name": "propagation"
+                    },
+                    {
+                        "name": "amount or size of sample collected"
+                    },
+                    {
+                        "name": "biomass"
+                    },
+                    {
+                        "name": "density"
+                    },
+                    {
+                        "name": "oxygenation status of sample"
+                    },
+                    {
+                        "name": "organism count"
+                    },
+                    {
+                        "name": "sample storage duration"
+                    },
+                    {
+                        "name": "sample storage temperature"
+                    },
+                    {
+                        "name": "sample storage location"
+                    },
+                    {
+                        "name": "sample collection device"
+                    },
+                    {
+                        "name": "sample collection method"
+                    }
+                ]
+            },
+            {
+                "name": "host disorder",
+                "children": [
+                    {
+                        "name": "host disease status"
+                    }
+                ]
+            },
+            {
+                "name": "host description",
+                "children": [
+                    {
+                        "name": "host scientific name"
+                    }
+                ]
+            },
+            {
+                "name": "local environment conditions",
+                "children": [
+                    {
+                        "name": "alkalinity"
+                    },
+                    {
+                        "name": "atmospheric data"
+                    },
+                    {
+                        "name": "conductivity"
+                    },
+                    {
+                        "name": "water current"
+                    },
+                    {
+                        "name": "fluorescence"
+                    },
+                    {
+                        "name": "light intensity"
+                    },
+                    {
+                        "name": "mean friction velocity"
+                    },
+                    {
+                        "name": "mean peak friction velocity"
+                    },
+                    {
+                        "name": "downward PAR"
+                    },
+                    {
+                        "name": "photon flux"
+                    },
+                    {
+                        "name": "pressure"
+                    },
+                    {
+                        "name": "temperature"
+                    },
+                    {
+                        "name": "tidal stage"
+                    },
+                    {
+                        "name": "pH"
+                    },
+                    {
+                        "name": "total depth of water column"
+                    }
+                ]
+            },
+            {
+                "name": "concentration measurement",
+                "children": [
+                    {
+                        "name": "alkyl diethers"
+                    },
+                    {
+                        "name": "aminopeptidase activity"
+                    },
+                    {
+                        "name": "ammonium"
+                    },
+                    {
+                        "name": "bacterial carbon production"
+                    },
+                    {
+                        "name": "bacterial production"
+                    },
+                    {
+                        "name": "bacterial respiration"
+                    },
+                    {
+                        "name": "bishomohopanol"
+                    },
+                    {
+                        "name": "bromide"
+                    },
+                    {
+                        "name": "calcium"
+                    },
+                    {
+                        "name": "carbon/nitrogen ratio"
+                    },
+                    {
+                        "name": "chloride"
+                    },
+                    {
+                        "name": "chlorophyll"
+                    },
+                    {
+                        "name": "diether lipids"
+                    },
+                    {
+                        "name": "dissolved carbon dioxide"
+                    },
+                    {
+                        "name": "dissolved hydrogen"
+                    },
+                    {
+                        "name": "dissolved inorganic carbon"
+                    },
+                    {
+                        "name": "dissolved inorganic nitrogen"
+                    },
+                    {
+                        "name": "dissolved inorganic phosphorus"
+                    },
+                    {
+                        "name": "dissolved organic carbon"
+                    },
+                    {
+                        "name": "dissolved organic nitrogen"
+                    },
+                    {
+                        "name": "dissolved oxygen"
+                    },
+                    {
+                        "name": "glucosidase activity"
+                    },
+                    {
+                        "name": "magnesium"
+                    },
+                    {
+                        "name": "n-alkanes"
+                    },
+                    {
+                        "name": "nitrate"
+                    },
+                    {
+                        "name": "nitrite"
+                    },
+                    {
+                        "name": "nitrogen"
+                    },
+                    {
+                        "name": "organic carbon"
+                    },
+                    {
+                        "name": "organic matter"
+                    },
+                    {
+                        "name": "organic nitrogen"
+                    },
+                    {
+                        "name": "particulate organic carbon"
+                    },
+                    {
+                        "name": "particulate organic nitrogen"
+                    },
+                    {
+                        "name": "petroleum hydrocarbon"
+                    },
+                    {
+                        "name": "phaeopigments"
+                    },
+                    {
+                        "name": "phosphate"
+                    },
+                    {
+                        "name": "phospholipid fatty acid"
+                    },
+                    {
+                        "name": "potassium"
+                    },
+                    {
+                        "name": "primary production"
+                    },
+                    {
+                        "name": "redox potential"
+                    },
+                    {
+                        "name": "salinity"
+                    },
+                    {
+                        "name": "silicate"
+                    },
+                    {
+                        "name": "sodium"
+                    },
+                    {
+                        "name": "soluble reactive phosphorus"
+                    },
+                    {
+                        "name": "sulfate"
+                    },
+                    {
+                        "name": "sulfide"
+                    },
+                    {
+                        "name": "suspended particulate matter"
+                    },
+                    {
+                        "name": "total dissolved nitrogen"
+                    },
+                    {
+                        "name": "total inorganic nitrogen"
+                    },
+                    {
+                        "name": "total nitrogen"
+                    },
+                    {
+                        "name": "total particulate carbon"
+                    },
+                    {
+                        "name": "total phosphorus"
+                    }
+                ]
+            },
+            {
+                "name": "organism characteristics",
+                "children": [
+                    {
+                        "name": "subspecific genetic lineage"
+                    },
+                    {
+                        "name": "trophic level"
+                    },
+                    {
+                        "name": "relationship to oxygen"
+                    },
+                    {
+                        "name": "known pathogenicity"
+                    },
+                    {
+                        "name": "encoded traits"
+                    },
+                    {
+                        "name": "observed biotic relationship"
+                    }
+                ]
+            },
+            {
+                "name": "local environment conditions imposed",
+                "children": [
+                    {
+                        "name": "chemical administration"
+                    },
+                    {
+                        "name": "perturbation"
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "name": "GSC MIxS soil",
+        "children": [
+            {
+                "name": "geography",
+                "children": [
+                    {
+                        "name": "slope gradient"
+                    },
+                    {
+                        "name": "slope aspect"
+                    },
+                    {
+                        "name": "profile position"
+                    }
+                ]
+            },
+            {
+                "name": "non-sample terms",
+                "children": [
+                    {
+                        "name": "project name"
+                    },
+                    {
+                        "name": "experimental factor"
+                    },
+                    {
+                        "name": "ploidy"
+                    },
+                    {
+                        "name": "number of replicons"
+                    },
+                    {
+                        "name": "extrachromosomal elements"
+                    },
+                    {
+                        "name": "estimated size"
+                    },
+                    {
+                        "name": "reference for biomaterial"
+                    },
+                    {
+                        "name": "annotation source"
+                    },
+                    {
+                        "name": "sample volume or weight for DNA extraction"
+                    },
+                    {
+                        "name": "nucleic acid extraction"
+                    },
+                    {
+                        "name": "nucleic acid amplification"
+                    },
+                    {
+                        "name": "library size"
+                    },
+                    {
+                        "name": "library reads sequenced"
+                    },
+                    {
+                        "name": "library construction method"
+                    },
+                    {
+                        "name": "library vector"
+                    },
+                    {
+                        "name": "library screening strategy"
+                    },
+                    {
+                        "name": "target gene"
+                    },
+                    {
+                        "name": "target subfragment"
+                    },
+                    {
+                        "name": "pcr primers"
+                    },
+                    {
+                        "name": "multiplex identifiers"
+                    },
+                    {
+                        "name": "adapters"
+                    },
+                    {
+                        "name": "pcr conditions"
+                    },
+                    {
+                        "name": "sequencing method"
+                    },
+                    {
+                        "name": "sequence quality check"
+                    },
+                    {
+                        "name": "chimera check software"
+                    },
+                    {
+                        "name": "relevant electronic resources"
+                    },
+                    {
+                        "name": "relevant standard operating procedures"
+                    },
+                    {
+                        "name": "pooling of DNA extracts (if done)"
+                    },
+                    {
+                        "name": "negative control type"
+                    },
+                    {
+                        "name": "positive control type"
+                    }
+                ]
+            },
+            {
+                "name": "Collection event information",
+                "children": [
+                    {
+                        "name": "collection date"
+                    },
+                    {
+                        "name": "altitude"
+                    },
+                    {
+                        "name": "geographic location (country and/or sea)"
+                    },
+                    {
+                        "name": "geographic location (latitude)"
+                    },
+                    {
+                        "name": "geographic location (longitude)"
+                    },
+                    {
+                        "name": "geographic location (region and locality)"
+                    },
+                    {
+                        "name": "depth"
+                    },
+                    {
+                        "name": "broad-scale environmental context"
+                    },
+                    {
+                        "name": "local environmental context"
+                    },
+                    {
+                        "name": "environmental medium"
+                    },
+                    {
+                        "name": "elevation"
+                    }
+                ]
+            },
+            {
+                "name": "sample collection",
+                "children": [
+                    {
+                        "name": "source material identifiers"
+                    },
+                    {
+                        "name": "sample material processing"
+                    },
+                    {
+                        "name": "isolation and growth condition"
+                    },
+                    {
+                        "name": "propagation"
+                    },
+                    {
+                        "name": "amount or size of sample collected"
+                    },
+                    {
+                        "name": "composite design/sieving (if any)"
+                    },
+                    {
+                        "name": "sample weight for DNA extraction"
+                    },
+                    {
+                        "name": "storage conditions (fresh/frozen/other)"
+                    },
+                    {
+                        "name": "microbial biomass"
+                    },
+                    {
+                        "name": "microbial biomass method"
+                    },
+                    {
+                        "name": "sample collection device"
+                    },
+                    {
+                        "name": "sample collection method"
+                    }
+                ]
+            },
+            {
+                "name": "unusual properties",
+                "children": [
+                    {
+                        "name": "salinity method"
+                    },
+                    {
+                        "name": "extreme_unusual_properties/heavy metals"
+                    },
+                    {
+                        "name": "extreme_unusual_properties/heavy metals method"
+                    },
+                    {
+                        "name": "extreme_unusual_properties/Al saturation"
+                    },
+                    {
+                        "name": "extreme_unusual_properties/Al saturation method"
+                    }
+                ]
+            },
+            {
+                "name": "host disorder",
+                "children": [
+                    {
+                        "name": "host disease status"
+                    }
+                ]
+            },
+            {
+                "name": "host description",
+                "children": [
+                    {
+                        "name": "host scientific name"
+                    }
+                ]
+            },
+            {
+                "name": "link",
+                "children": [
+                    {
+                        "name": "link to climate information"
+                    },
+                    {
+                        "name": "link to classification information"
+                    },
+                    {
+                        "name": "links to additional analysis"
+                    }
+                ]
+            },
+            {
+                "name": "local environment conditions",
+                "children": [
+                    {
+                        "name": "current land use"
+                    },
+                    {
+                        "name": "current vegetation"
+                    },
+                    {
+                        "name": "current vegetation method"
+                    },
+                    {
+                        "name": "soil horizon"
+                    },
+                    {
+                        "name": "soil horizon method"
+                    },
+                    {
+                        "name": "mean annual and seasonal temperature"
+                    },
+                    {
+                        "name": "mean annual and seasonal precipitation"
+                    },
+                    {
+                        "name": "soil_taxonomic/FAO classification"
+                    },
+                    {
+                        "name": "soil_taxonomic/local classification"
+                    },
+                    {
+                        "name": "soil_taxonomic/local classification method"
+                    },
+                    {
+                        "name": "soil type"
+                    },
+                    {
+                        "name": "soil type method"
+                    },
+                    {
+                        "name": "drainage classification"
+                    },
+                    {
+                        "name": "temperature"
+                    },
+                    {
+                        "name": "soil texture measurement"
+                    },
+                    {
+                        "name": "soil texture method"
+                    },
+                    {
+                        "name": "pH"
+                    },
+                    {
+                        "name": "pH method"
+                    }
+                ]
+            },
+            {
+                "name": "concentration measurement",
+                "children": [
+                    {
+                        "name": "water content method"
+                    },
+                    {
+                        "name": "total organic C method"
+                    },
+                    {
+                        "name": "total nitrogen method"
+                    },
+                    {
+                        "name": "organic matter"
+                    },
+                    {
+                        "name": "total organic carbon"
+                    },
+                    {
+                        "name": "water content"
+                    },
+                    {
+                        "name": "total nitrogen"
+                    }
+                ]
+            },
+            {
+                "name": "local environment history",
+                "children": [
+                    {
+                        "name": "history/previous land use"
+                    },
+                    {
+                        "name": "history/previous land use method"
+                    },
+                    {
+                        "name": "history/crop rotation"
+                    },
+                    {
+                        "name": "history/agrochemical additions"
+                    },
+                    {
+                        "name": "history/tillage"
+                    },
+                    {
+                        "name": "history/fire"
+                    },
+                    {
+                        "name": "history/flooding"
+                    },
+                    {
+                        "name": "history/extreme events"
+                    }
+                ]
+            },
+            {
+                "name": "organism characteristics",
+                "children": [
+                    {
+                        "name": "subspecific genetic lineage"
+                    },
+                    {
+                        "name": "trophic level"
+                    },
+                    {
+                        "name": "relationship to oxygen"
+                    },
+                    {
+                        "name": "known pathogenicity"
+                    },
+                    {
+                        "name": "encoded traits"
+                    },
+                    {
+                        "name": "observed biotic relationship"
+                    }
+                ]
+            },
+            {
+                "name": "local environment conditions imposed",
+                "children": [
+                    {
+                        "name": "perturbation"
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "name": "GSC MIxS human gut",
+        "children": [
+            {
+                "name": "non-sample terms",
+                "children": [
+                    {
+                        "name": "project name"
+                    },
+                    {
+                        "name": "experimental factor"
+                    },
+                    {
+                        "name": "ploidy"
+                    },
+                    {
+                        "name": "number of replicons"
+                    },
+                    {
+                        "name": "extrachromosomal elements"
+                    },
+                    {
+                        "name": "estimated size"
+                    },
+                    {
+                        "name": "reference for biomaterial"
+                    },
+                    {
+                        "name": "annotation source"
+                    },
+                    {
+                        "name": "sample volume or weight for DNA extraction"
+                    },
+                    {
+                        "name": "nucleic acid extraction"
+                    },
+                    {
+                        "name": "nucleic acid amplification"
+                    },
+                    {
+                        "name": "library size"
+                    },
+                    {
+                        "name": "library reads sequenced"
+                    },
+                    {
+                        "name": "library construction method"
+                    },
+                    {
+                        "name": "library vector"
+                    },
+                    {
+                        "name": "library screening strategy"
+                    },
+                    {
+                        "name": "target gene"
+                    },
+                    {
+                        "name": "target subfragment"
+                    },
+                    {
+                        "name": "pcr primers"
+                    },
+                    {
+                        "name": "multiplex identifiers"
+                    },
+                    {
+                        "name": "adapters"
+                    },
+                    {
+                        "name": "pcr conditions"
+                    },
+                    {
+                        "name": "sequencing method"
+                    },
+                    {
+                        "name": "sequence quality check"
+                    },
+                    {
+                        "name": "chimera check software"
+                    },
+                    {
+                        "name": "relevant electronic resources"
+                    },
+                    {
+                        "name": "relevant standard operating procedures"
+                    },
+                    {
+                        "name": "negative control type"
+                    },
+                    {
+                        "name": "positive control type"
+                    }
+                ]
+            },
+            {
+                "name": "Collection event information",
+                "children": [
+                    {
+                        "name": "collection date"
+                    },
+                    {
+                        "name": "geographic location (country and/or sea)"
+                    },
+                    {
+                        "name": "geographic location (latitude)"
+                    },
+                    {
+                        "name": "geographic location (longitude)"
+                    },
+                    {
+                        "name": "geographic location (region and locality)"
+                    },
+                    {
+                        "name": "broad-scale environmental context"
+                    },
+                    {
+                        "name": "local environmental context"
+                    },
+                    {
+                        "name": "environmental medium"
+                    }
+                ]
+            },
+            {
+                "name": "sample collection",
+                "children": [
+                    {
+                        "name": "source material identifiers"
+                    },
+                    {
+                        "name": "sample material processing"
+                    },
+                    {
+                        "name": "isolation and growth condition"
+                    },
+                    {
+                        "name": "propagation"
+                    },
+                    {
+                        "name": "amount or size of sample collected"
+                    },
+                    {
+                        "name": "host body product"
+                    },
+                    {
+                        "name": "medical history performed"
+                    },
+                    {
+                        "name": "oxygenation status of sample"
+                    },
+                    {
+                        "name": "organism count"
+                    },
+                    {
+                        "name": "sample storage duration"
+                    },
+                    {
+                        "name": "sample storage temperature"
+                    },
+                    {
+                        "name": "sample storage location"
+                    },
+                    {
+                        "name": "sample collection device"
+                    },
+                    {
+                        "name": "sample collection method"
+                    }
+                ]
+            },
+            {
+                "name": "host disorder",
+                "children": [
+                    {
+                        "name": "gastrointestinal tract disorder"
+                    },
+                    {
+                        "name": "liver disorder"
+                    },
+                    {
+                        "name": "host disease status"
+                    }
+                ]
+            },
+            {
+                "name": "host description",
+                "children": [
+                    {
+                        "name": "host subject id"
+                    },
+                    {
+                        "name": "IHMC medication code"
+                    },
+                    {
+                        "name": "host age"
+                    },
+                    {
+                        "name": "host body site"
+                    },
+                    {
+                        "name": "host height"
+                    },
+                    {
+                        "name": "host body-mass index"
+                    },
+                    {
+                        "name": "ethnicity"
+                    },
+                    {
+                        "name": "host occupation"
+                    },
+                    {
+                        "name": "host total mass"
+                    },
+                    {
+                        "name": "host phenotype"
+                    },
+                    {
+                        "name": "host body temperature"
+                    },
+                    {
+                        "name": "host sex"
+                    }
+                ]
+            },
+            {
+                "name": "local environment conditions",
+                "children": [
+                    {
+                        "name": "temperature"
+                    }
+                ]
+            },
+            {
+                "name": "concentration measurement",
+                "children": [
+                    {
+                        "name": "salinity"
+                    }
+                ]
+            },
+            {
+                "name": "host details",
+                "children": [
+                    {
+                        "name": "special diet"
+                    },
+                    {
+                        "name": "host diet"
+                    },
+                    {
+                        "name": "host last meal"
+                    },
+                    {
+                        "name": "host family relationship"
+                    },
+                    {
+                        "name": "host genotype"
+                    },
+                    {
+                        "name": "host pulse"
+                    }
+                ]
+            },
+            {
+                "name": "organism characteristics",
+                "children": [
+                    {
+                        "name": "subspecific genetic lineage"
+                    },
+                    {
+                        "name": "trophic level"
+                    },
+                    {
+                        "name": "relationship to oxygen"
+                    },
+                    {
+                        "name": "known pathogenicity"
+                    },
+                    {
+                        "name": "encoded traits"
+                    },
+                    {
+                        "name": "observed biotic relationship"
+                    }
+                ]
+            },
+            {
+                "name": "local environment conditions imposed",
+                "children": [
+                    {
+                        "name": "chemical administration"
+                    },
+                    {
+                        "name": "perturbation"
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "name": "GSC MIxS host associated",
+        "children": [
+            {
+                "name": "non-sample terms",
+                "children": [
+                    {
+                        "name": "project name"
+                    },
+                    {
+                        "name": "experimental factor"
+                    },
+                    {
+                        "name": "ploidy"
+                    },
+                    {
+                        "name": "number of replicons"
+                    },
+                    {
+                        "name": "extrachromosomal elements"
+                    },
+                    {
+                        "name": "estimated size"
+                    },
+                    {
+                        "name": "reference for biomaterial"
+                    },
+                    {
+                        "name": "annotation source"
+                    },
+                    {
+                        "name": "sample volume or weight for DNA extraction"
+                    },
+                    {
+                        "name": "nucleic acid extraction"
+                    },
+                    {
+                        "name": "nucleic acid amplification"
+                    },
+                    {
+                        "name": "library size"
+                    },
+                    {
+                        "name": "library reads sequenced"
+                    },
+                    {
+                        "name": "library construction method"
+                    },
+                    {
+                        "name": "library vector"
+                    },
+                    {
+                        "name": "library screening strategy"
+                    },
+                    {
+                        "name": "target gene"
+                    },
+                    {
+                        "name": "target subfragment"
+                    },
+                    {
+                        "name": "pcr primers"
+                    },
+                    {
+                        "name": "multiplex identifiers"
+                    },
+                    {
+                        "name": "adapters"
+                    },
+                    {
+                        "name": "pcr conditions"
+                    },
+                    {
+                        "name": "sequencing method"
+                    },
+                    {
+                        "name": "sequence quality check"
+                    },
+                    {
+                        "name": "chimera check software"
+                    },
+                    {
+                        "name": "relevant electronic resources"
+                    },
+                    {
+                        "name": "relevant standard operating procedures"
+                    },
+                    {
+                        "name": "negative control type"
+                    },
+                    {
+                        "name": "positive control type"
+                    }
+                ]
+            },
+            {
+                "name": "Collection event information",
+                "children": [
+                    {
+                        "name": "collection date"
+                    },
+                    {
+                        "name": "altitude"
+                    },
+                    {
+                        "name": "geographic location (country and/or sea)"
+                    },
+                    {
+                        "name": "geographic location (latitude)"
+                    },
+                    {
+                        "name": "geographic location (longitude)"
+                    },
+                    {
+                        "name": "geographic location (region and locality)"
+                    },
+                    {
+                        "name": "depth"
+                    },
+                    {
+                        "name": "broad-scale environmental context"
+                    },
+                    {
+                        "name": "local environmental context"
+                    },
+                    {
+                        "name": "environmental medium"
+                    },
+                    {
+                        "name": "elevation"
+                    }
+                ]
+            },
+            {
+                "name": "sample collection",
+                "children": [
+                    {
+                        "name": "source material identifiers"
+                    },
+                    {
+                        "name": "sample material processing"
+                    },
+                    {
+                        "name": "isolation and growth condition"
+                    },
+                    {
+                        "name": "propagation"
+                    },
+                    {
+                        "name": "amount or size of sample collected"
+                    },
+                    {
+                        "name": "host body product"
+                    },
+                    {
+                        "name": "host dry mass"
+                    },
+                    {
+                        "name": "oxygenation status of sample"
+                    },
+                    {
+                        "name": "organism count"
+                    },
+                    {
+                        "name": "sample storage duration"
+                    },
+                    {
+                        "name": "sample storage temperature"
+                    },
+                    {
+                        "name": "sample storage location"
+                    }
+                ]
+            },
+            {
+                "name": "host disorder",
+                "children": [
+                    {
+                        "name": "host disease status"
+                    }
+                ]
+            },
+            {
+                "name": "host description",
+                "children": [
+                    {
+                        "name": "host common name"
+                    },
+                    {
+                        "name": "host subject id"
+                    },
+                    {
+                        "name": "host age"
+                    },
+                    {
+                        "name": "host taxid"
+                    },
+                    {
+                        "name": "host body habitat"
+                    },
+                    {
+                        "name": "host body site"
+                    },
+                    {
+                        "name": "host life stage"
+                    },
+                    {
+                        "name": "host height"
+                    },
+                    {
+                        "name": "host length"
+                    },
+                    {
+                        "name": "host growth conditions"
+                    },
+                    {
+                        "name": "host substrate"
+                    },
+                    {
+                        "name": "host total mass"
+                    },
+                    {
+                        "name": "host phenotype"
+                    },
+                    {
+                        "name": "host body temperature"
+                    },
+                    {
+                        "name": "host color"
+                    },
+                    {
+                        "name": "host shape"
+                    },
+                    {
+                        "name": "host sex"
+                    },
+                    {
+                        "name": "host scientific name"
+                    },
+                    {
+                        "name": "host subspecific genetic lineage"
+                    }
+                ]
+            },
+            {
+                "name": "local environment conditions",
+                "children": [
+                    {
+                        "name": "temperature"
+                    }
+                ]
+            },
+            {
+                "name": "concentration measurement",
+                "children": [
+                    {
+                        "name": "salinity"
+                    }
+                ]
+            },
+            {
+                "name": "host details",
+                "children": [
+                    {
+                        "name": "host blood pressure diastolic"
+                    },
+                    {
+                        "name": "host blood pressure systolic"
+                    },
+                    {
+                        "name": "host diet"
+                    },
+                    {
+                        "name": "host last meal"
+                    },
+                    {
+                        "name": "host family relationship"
+                    },
+                    {
+                        "name": "host genotype"
+                    },
+                    {
+                        "name": "gravidity"
+                    }
+                ]
+            },
+            {
+                "name": "organism characteristics",
+                "children": [
+                    {
+                        "name": "subspecific genetic lineage"
+                    },
+                    {
+                        "name": "trophic level"
+                    },
+                    {
+                        "name": "relationship to oxygen"
+                    },
+                    {
+                        "name": "known pathogenicity"
+                    },
+                    {
+                        "name": "encoded traits"
+                    },
+                    {
+                        "name": "observed biotic relationship"
+                    }
+                ]
+            },
+            {
+                "name": "local environment conditions imposed",
+                "children": [
+                    {
+                        "name": "chemical administration"
+                    },
+                    {
+                        "name": "perturbation"
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "name": "GSC MIxS human vaginal",
+        "children": [
+            {
+                "name": "non-sample terms",
+                "children": [
+                    {
+                        "name": "project name"
+                    },
+                    {
+                        "name": "experimental factor"
+                    },
+                    {
+                        "name": "ploidy"
+                    },
+                    {
+                        "name": "number of replicons"
+                    },
+                    {
+                        "name": "extrachromosomal elements"
+                    },
+                    {
+                        "name": "estimated size"
+                    },
+                    {
+                        "name": "reference for biomaterial"
+                    },
+                    {
+                        "name": "annotation source"
+                    },
+                    {
+                        "name": "sample volume or weight for DNA extraction"
+                    },
+                    {
+                        "name": "nucleic acid extraction"
+                    },
+                    {
+                        "name": "nucleic acid amplification"
+                    },
+                    {
+                        "name": "library size"
+                    },
+                    {
+                        "name": "library reads sequenced"
+                    },
+                    {
+                        "name": "library construction method"
+                    },
+                    {
+                        "name": "library vector"
+                    },
+                    {
+                        "name": "library screening strategy"
+                    },
+                    {
+                        "name": "target gene"
+                    },
+                    {
+                        "name": "target subfragment"
+                    },
+                    {
+                        "name": "pcr primers"
+                    },
+                    {
+                        "name": "multiplex identifiers"
+                    },
+                    {
+                        "name": "adapters"
+                    },
+                    {
+                        "name": "pcr conditions"
+                    },
+                    {
+                        "name": "sequencing method"
+                    },
+                    {
+                        "name": "sequence quality check"
+                    },
+                    {
+                        "name": "chimera check software"
+                    },
+                    {
+                        "name": "relevant electronic resources"
+                    },
+                    {
+                        "name": "relevant standard operating procedures"
+                    },
+                    {
+                        "name": "negative control type"
+                    },
+                    {
+                        "name": "positive control type"
+                    }
+                ]
+            },
+            {
+                "name": "Collection event information",
+                "children": [
+                    {
+                        "name": "collection date"
+                    },
+                    {
+                        "name": "geographic location (country and/or sea)"
+                    },
+                    {
+                        "name": "geographic location (latitude)"
+                    },
+                    {
+                        "name": "geographic location (longitude)"
+                    },
+                    {
+                        "name": "geographic location (region and locality)"
+                    },
+                    {
+                        "name": "broad-scale environmental context"
+                    },
+                    {
+                        "name": "local environmental context"
+                    },
+                    {
+                        "name": "environmental medium"
+                    }
+                ]
+            },
+            {
+                "name": "sample collection",
+                "children": [
+                    {
+                        "name": "source material identifiers"
+                    },
+                    {
+                        "name": "sample material processing"
+                    },
+                    {
+                        "name": "isolation and growth condition"
+                    },
+                    {
+                        "name": "propagation"
+                    },
+                    {
+                        "name": "amount or size of sample collected"
+                    },
+                    {
+                        "name": "host body product"
+                    },
+                    {
+                        "name": "medical history performed"
+                    },
+                    {
+                        "name": "oxygenation status of sample"
+                    },
+                    {
+                        "name": "organism count"
+                    },
+                    {
+                        "name": "sample storage duration"
+                    },
+                    {
+                        "name": "sample storage temperature"
+                    },
+                    {
+                        "name": "sample storage location"
+                    },
+                    {
+                        "name": "sample collection device"
+                    },
+                    {
+                        "name": "sample collection method"
+                    }
+                ]
+            },
+            {
+                "name": "host disorder",
+                "children": [
+                    {
+                        "name": "gynecological disorder"
+                    },
+                    {
+                        "name": "urogenital disorder"
+                    },
+                    {
+                        "name": "host disease status"
+                    }
+                ]
+            },
+            {
+                "name": "host description",
+                "children": [
+                    {
+                        "name": "host subject id"
+                    },
+                    {
+                        "name": "IHMC medication code"
+                    },
+                    {
+                        "name": "host age"
+                    },
+                    {
+                        "name": "host body site"
+                    },
+                    {
+                        "name": "host height"
+                    },
+                    {
+                        "name": "host body-mass index"
+                    },
+                    {
+                        "name": "ethnicity"
+                    },
+                    {
+                        "name": "host occupation"
+                    },
+                    {
+                        "name": "host total mass"
+                    },
+                    {
+                        "name": "host phenotype"
+                    },
+                    {
+                        "name": "host body temperature"
+                    },
+                    {
+                        "name": "host sex"
+                    }
+                ]
+            },
+            {
+                "name": "local environment conditions",
+                "children": [
+                    {
+                        "name": "temperature"
+                    }
+                ]
+            },
+            {
+                "name": "concentration measurement",
+                "children": [
+                    {
+                        "name": "salinity"
+                    }
+                ]
+            },
+            {
+                "name": "host details",
+                "children": [
+                    {
+                        "name": "menarche"
+                    },
+                    {
+                        "name": "sexual activity"
+                    },
+                    {
+                        "name": "pregnancy"
+                    },
+                    {
+                        "name": "douche"
+                    },
+                    {
+                        "name": "birth control"
+                    },
+                    {
+                        "name": "menopause"
+                    },
+                    {
+                        "name": "HRT"
+                    },
+                    {
+                        "name": "hysterectomy"
+                    },
+                    {
+                        "name": "host diet"
+                    },
+                    {
+                        "name": "host last meal"
+                    },
+                    {
+                        "name": "host family relationship"
+                    },
+                    {
+                        "name": "host genotype"
+                    },
+                    {
+                        "name": "host pulse"
+                    }
+                ]
+            },
+            {
+                "name": "organism characteristics",
+                "children": [
+                    {
+                        "name": "subspecific genetic lineage"
+                    },
+                    {
+                        "name": "trophic level"
+                    },
+                    {
+                        "name": "relationship to oxygen"
+                    },
+                    {
+                        "name": "known pathogenicity"
+                    },
+                    {
+                        "name": "encoded traits"
+                    },
+                    {
+                        "name": "observed biotic relationship"
+                    }
+                ]
+            },
+            {
+                "name": "local environment conditions imposed",
+                "children": [
+                    {
+                        "name": "chemical administration"
+                    },
+                    {
+                        "name": "perturbation"
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "name": "GSC MIxS human oral",
+        "children": [
+            {
+                "name": "non-sample terms",
+                "children": [
+                    {
+                        "name": "project name"
+                    },
+                    {
+                        "name": "experimental factor"
+                    },
+                    {
+                        "name": "ploidy"
+                    },
+                    {
+                        "name": "number of replicons"
+                    },
+                    {
+                        "name": "extrachromosomal elements"
+                    },
+                    {
+                        "name": "estimated size"
+                    },
+                    {
+                        "name": "reference for biomaterial"
+                    },
+                    {
+                        "name": "annotation source"
+                    },
+                    {
+                        "name": "sample volume or weight for DNA extraction"
+                    },
+                    {
+                        "name": "nucleic acid extraction"
+                    },
+                    {
+                        "name": "nucleic acid amplification"
+                    },
+                    {
+                        "name": "library size"
+                    },
+                    {
+                        "name": "library reads sequenced"
+                    },
+                    {
+                        "name": "library construction method"
+                    },
+                    {
+                        "name": "library vector"
+                    },
+                    {
+                        "name": "library screening strategy"
+                    },
+                    {
+                        "name": "target gene"
+                    },
+                    {
+                        "name": "target subfragment"
+                    },
+                    {
+                        "name": "pcr primers"
+                    },
+                    {
+                        "name": "multiplex identifiers"
+                    },
+                    {
+                        "name": "adapters"
+                    },
+                    {
+                        "name": "pcr conditions"
+                    },
+                    {
+                        "name": "sequencing method"
+                    },
+                    {
+                        "name": "sequence quality check"
+                    },
+                    {
+                        "name": "chimera check software"
+                    },
+                    {
+                        "name": "relevant electronic resources"
+                    },
+                    {
+                        "name": "relevant standard operating procedures"
+                    },
+                    {
+                        "name": "negative control type"
+                    },
+                    {
+                        "name": "positive control type"
+                    }
+                ]
+            },
+            {
+                "name": "Collection event information",
+                "children": [
+                    {
+                        "name": "collection date"
+                    },
+                    {
+                        "name": "geographic location (country and/or sea)"
+                    },
+                    {
+                        "name": "geographic location (latitude)"
+                    },
+                    {
+                        "name": "geographic location (longitude)"
+                    },
+                    {
+                        "name": "geographic location (region and locality)"
+                    },
+                    {
+                        "name": "broad-scale environmental context"
+                    },
+                    {
+                        "name": "local environmental context"
+                    },
+                    {
+                        "name": "environmental medium"
+                    }
+                ]
+            },
+            {
+                "name": "sample collection",
+                "children": [
+                    {
+                        "name": "source material identifiers"
+                    },
+                    {
+                        "name": "sample material processing"
+                    },
+                    {
+                        "name": "isolation and growth condition"
+                    },
+                    {
+                        "name": "propagation"
+                    },
+                    {
+                        "name": "amount or size of sample collected"
+                    },
+                    {
+                        "name": "host body product"
+                    },
+                    {
+                        "name": "medical history performed"
+                    },
+                    {
+                        "name": "oxygenation status of sample"
+                    },
+                    {
+                        "name": "organism count"
+                    },
+                    {
+                        "name": "sample storage duration"
+                    },
+                    {
+                        "name": "sample storage temperature"
+                    },
+                    {
+                        "name": "sample storage location"
+                    },
+                    {
+                        "name": "sample collection device"
+                    },
+                    {
+                        "name": "sample collection method"
+                    }
+                ]
+            },
+            {
+                "name": "host disorder",
+                "children": [
+                    {
+                        "name": "nose/mouth/teeth/throat disorder"
+                    },
+                    {
+                        "name": "host disease status"
+                    }
+                ]
+            },
+            {
+                "name": "host description",
+                "children": [
+                    {
+                        "name": "host subject id"
+                    },
+                    {
+                        "name": "IHMC medication code"
+                    },
+                    {
+                        "name": "host age"
+                    },
+                    {
+                        "name": "host body site"
+                    },
+                    {
+                        "name": "host height"
+                    },
+                    {
+                        "name": "host body-mass index"
+                    },
+                    {
+                        "name": "ethnicity"
+                    },
+                    {
+                        "name": "host occupation"
+                    },
+                    {
+                        "name": "host total mass"
+                    },
+                    {
+                        "name": "host phenotype"
+                    },
+                    {
+                        "name": "host body temperature"
+                    },
+                    {
+                        "name": "host sex"
+                    }
+                ]
+            },
+            {
+                "name": "local environment conditions",
+                "children": [
+                    {
+                        "name": "temperature"
+                    }
+                ]
+            },
+            {
+                "name": "concentration measurement",
+                "children": [
+                    {
+                        "name": "salinity"
+                    }
+                ]
+            },
+            {
+                "name": "host details",
+                "children": [
+                    {
+                        "name": "time since last toothbrushing"
+                    },
+                    {
+                        "name": "host diet"
+                    },
+                    {
+                        "name": "host last meal"
+                    },
+                    {
+                        "name": "host family relationship"
+                    },
+                    {
+                        "name": "host genotype"
+                    },
+                    {
+                        "name": "host pulse"
+                    }
+                ]
+            },
+            {
+                "name": "organism characteristics",
+                "children": [
+                    {
+                        "name": "subspecific genetic lineage"
+                    },
+                    {
+                        "name": "trophic level"
+                    },
+                    {
+                        "name": "relationship to oxygen"
+                    },
+                    {
+                        "name": "known pathogenicity"
+                    },
+                    {
+                        "name": "encoded traits"
+                    },
+                    {
+                        "name": "observed biotic relationship"
+                    }
+                ]
+            },
+            {
+                "name": "local environment conditions imposed",
+                "children": [
+                    {
+                        "name": "chemical administration"
+                    },
+                    {
+                        "name": "perturbation"
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "name": "GSC MIxS sediment",
+        "children": [
+            {
+                "name": "non-sample terms",
+                "children": [
+                    {
+                        "name": "project name"
+                    },
+                    {
+                        "name": "experimental factor"
+                    },
+                    {
+                        "name": "ploidy"
+                    },
+                    {
+                        "name": "number of replicons"
+                    },
+                    {
+                        "name": "extrachromosomal elements"
+                    },
+                    {
+                        "name": "estimated size"
+                    },
+                    {
+                        "name": "reference for biomaterial"
+                    },
+                    {
+                        "name": "annotation source"
+                    },
+                    {
+                        "name": "sample volume or weight for DNA extraction"
+                    },
+                    {
+                        "name": "nucleic acid extraction"
+                    },
+                    {
+                        "name": "nucleic acid amplification"
+                    },
+                    {
+                        "name": "library size"
+                    },
+                    {
+                        "name": "library reads sequenced"
+                    },
+                    {
+                        "name": "library construction method"
+                    },
+                    {
+                        "name": "library vector"
+                    },
+                    {
+                        "name": "library screening strategy"
+                    },
+                    {
+                        "name": "target gene"
+                    },
+                    {
+                        "name": "target subfragment"
+                    },
+                    {
+                        "name": "pcr primers"
+                    },
+                    {
+                        "name": "multiplex identifiers"
+                    },
+                    {
+                        "name": "adapters"
+                    },
+                    {
+                        "name": "pcr conditions"
+                    },
+                    {
+                        "name": "sequencing method"
+                    },
+                    {
+                        "name": "sequence quality check"
+                    },
+                    {
+                        "name": "chimera check software"
+                    },
+                    {
+                        "name": "relevant electronic resources"
+                    },
+                    {
+                        "name": "relevant standard operating procedures"
+                    },
+                    {
+                        "name": "negative control type"
+                    },
+                    {
+                        "name": "positive control type"
+                    }
+                ]
+            },
+            {
+                "name": "Collection event information",
+                "children": [
+                    {
+                        "name": "collection date"
+                    },
+                    {
+                        "name": "altitude"
+                    },
+                    {
+                        "name": "geographic location (country and/or sea)"
+                    },
+                    {
+                        "name": "geographic location (latitude)"
+                    },
+                    {
+                        "name": "geographic location (longitude)"
+                    },
+                    {
+                        "name": "geographic location (region and locality)"
+                    },
+                    {
+                        "name": "depth"
+                    },
+                    {
+                        "name": "broad-scale environmental context"
+                    },
+                    {
+                        "name": "local environmental context"
+                    },
+                    {
+                        "name": "environmental medium"
+                    },
+                    {
+                        "name": "elevation"
+                    }
+                ]
+            },
+            {
+                "name": "sample collection",
+                "children": [
+                    {
+                        "name": "source material identifiers"
+                    },
+                    {
+                        "name": "sample material processing"
+                    },
+                    {
+                        "name": "isolation and growth condition"
+                    },
+                    {
+                        "name": "propagation"
+                    },
+                    {
+                        "name": "amount or size of sample collected"
+                    },
+                    {
+                        "name": "biomass"
+                    },
+                    {
+                        "name": "density"
+                    },
+                    {
+                        "name": "oxygenation status of sample"
+                    },
+                    {
+                        "name": "organism count"
+                    },
+                    {
+                        "name": "sample storage duration"
+                    },
+                    {
+                        "name": "sample storage temperature"
+                    },
+                    {
+                        "name": "sample storage location"
+                    },
+                    {
+                        "name": "sample collection device"
+                    },
+                    {
+                        "name": "sample collection method"
+                    }
+                ]
+            },
+            {
+                "name": "host disorder",
+                "children": [
+                    {
+                        "name": "host disease status"
+                    }
+                ]
+            },
+            {
+                "name": "host description",
+                "children": [
+                    {
+                        "name": "host scientific name"
+                    }
+                ]
+            },
+            {
+                "name": "concentration measurement",
+                "children": [
+                    {
+                        "name": "alkyl diethers"
+                    },
+                    {
+                        "name": "aminopeptidase activity"
+                    },
+                    {
+                        "name": "ammonium"
+                    },
+                    {
+                        "name": "bacterial carbon production"
+                    },
+                    {
+                        "name": "bishomohopanol"
+                    },
+                    {
+                        "name": "bromide"
+                    },
+                    {
+                        "name": "calcium"
+                    },
+                    {
+                        "name": "carbon/nitrogen ratio"
+                    },
+                    {
+                        "name": "chloride"
+                    },
+                    {
+                        "name": "chlorophyll"
+                    },
+                    {
+                        "name": "diether lipids"
+                    },
+                    {
+                        "name": "dissolved carbon dioxide"
+                    },
+                    {
+                        "name": "dissolved hydrogen"
+                    },
+                    {
+                        "name": "dissolved inorganic carbon"
+                    },
+                    {
+                        "name": "dissolved organic carbon"
+                    },
+                    {
+                        "name": "dissolved organic nitrogen"
+                    },
+                    {
+                        "name": "methane"
+                    },
+                    {
+                        "name": "dissolved oxygen"
+                    },
+                    {
+                        "name": "glucosidase activity"
+                    },
+                    {
+                        "name": "magnesium"
+                    },
+                    {
+                        "name": "n-alkanes"
+                    },
+                    {
+                        "name": "nitrate"
+                    },
+                    {
+                        "name": "nitrite"
+                    },
+                    {
+                        "name": "nitrogen"
+                    },
+                    {
+                        "name": "organic carbon"
+                    },
+                    {
+                        "name": "organic matter"
+                    },
+                    {
+                        "name": "organic nitrogen"
+                    },
+                    {
+                        "name": "particulate organic carbon"
+                    },
+                    {
+                        "name": "petroleum hydrocarbon"
+                    },
+                    {
+                        "name": "phaeopigments"
+                    },
+                    {
+                        "name": "phosphate"
+                    },
+                    {
+                        "name": "phospholipid fatty acid"
+                    },
+                    {
+                        "name": "potassium"
+                    },
+                    {
+                        "name": "redox potential"
+                    },
+                    {
+                        "name": "salinity"
+                    },
+                    {
+                        "name": "total carbon"
+                    },
+                    {
+                        "name": "silicate"
+                    },
+                    {
+                        "name": "sodium"
+                    },
+                    {
+                        "name": "total organic carbon"
+                    },
+                    {
+                        "name": "water content"
+                    },
+                    {
+                        "name": "sulfate"
+                    },
+                    {
+                        "name": "sulfide"
+                    },
+                    {
+                        "name": "total nitrogen"
+                    }
+                ]
+            },
+            {
+                "name": "organism characteristics",
+                "children": [
+                    {
+                        "name": "subspecific genetic lineage"
+                    },
+                    {
+                        "name": "trophic level"
+                    },
+                    {
+                        "name": "relationship to oxygen"
+                    },
+                    {
+                        "name": "known pathogenicity"
+                    },
+                    {
+                        "name": "encoded traits"
+                    },
+                    {
+                        "name": "observed biotic relationship"
+                    }
+                ]
+            },
+            {
+                "name": "local environment conditions imposed",
+                "children": [
+                    {
+                        "name": "chemical administration"
+                    },
+                    {
+                        "name": "perturbation"
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "name": "GSC MIxS human associated",
+        "children": [
+            {
+                "name": "non-sample terms",
+                "children": [
+                    {
+                        "name": "project name"
+                    },
+                    {
+                        "name": "experimental factor"
+                    },
+                    {
+                        "name": "ploidy"
+                    },
+                    {
+                        "name": "number of replicons"
+                    },
+                    {
+                        "name": "extrachromosomal elements"
+                    },
+                    {
+                        "name": "estimated size"
+                    },
+                    {
+                        "name": "reference for biomaterial"
+                    },
+                    {
+                        "name": "annotation source"
+                    },
+                    {
+                        "name": "sample volume or weight for DNA extraction"
+                    },
+                    {
+                        "name": "nucleic acid extraction"
+                    },
+                    {
+                        "name": "nucleic acid amplification"
+                    },
+                    {
+                        "name": "library size"
+                    },
+                    {
+                        "name": "library reads sequenced"
+                    },
+                    {
+                        "name": "library construction method"
+                    },
+                    {
+                        "name": "library vector"
+                    },
+                    {
+                        "name": "library screening strategy"
+                    },
+                    {
+                        "name": "target gene"
+                    },
+                    {
+                        "name": "target subfragment"
+                    },
+                    {
+                        "name": "pcr primers"
+                    },
+                    {
+                        "name": "multiplex identifiers"
+                    },
+                    {
+                        "name": "adapters"
+                    },
+                    {
+                        "name": "pcr conditions"
+                    },
+                    {
+                        "name": "sequencing method"
+                    },
+                    {
+                        "name": "sequence quality check"
+                    },
+                    {
+                        "name": "chimera check software"
+                    },
+                    {
+                        "name": "relevant electronic resources"
+                    },
+                    {
+                        "name": "relevant standard operating procedures"
+                    },
+                    {
+                        "name": "study completion status"
+                    },
+                    {
+                        "name": "negative control type"
+                    },
+                    {
+                        "name": "positive control type"
+                    }
+                ]
+            },
+            {
+                "name": "Collection event information",
+                "children": [
+                    {
+                        "name": "collection date"
+                    },
+                    {
+                        "name": "geographic location (country and/or sea)"
+                    },
+                    {
+                        "name": "geographic location (latitude)"
+                    },
+                    {
+                        "name": "geographic location (longitude)"
+                    },
+                    {
+                        "name": "geographic location (region and locality)"
+                    },
+                    {
+                        "name": "broad-scale environmental context"
+                    },
+                    {
+                        "name": "local environmental context"
+                    },
+                    {
+                        "name": "environmental medium"
+                    }
+                ]
+            },
+            {
+                "name": "sample collection",
+                "children": [
+                    {
+                        "name": "source material identifiers"
+                    },
+                    {
+                        "name": "sample material processing"
+                    },
+                    {
+                        "name": "isolation and growth condition"
+                    },
+                    {
+                        "name": "propagation"
+                    },
+                    {
+                        "name": "amount or size of sample collected"
+                    },
+                    {
+                        "name": "host body product"
+                    },
+                    {
+                        "name": "medical history performed"
+                    },
+                    {
+                        "name": "urine/collection method"
+                    },
+                    {
+                        "name": "oxygenation status of sample"
+                    },
+                    {
+                        "name": "organism count"
+                    },
+                    {
+                        "name": "sample storage duration"
+                    },
+                    {
+                        "name": "sample storage temperature"
+                    },
+                    {
+                        "name": "sample storage location"
+                    },
+                    {
+                        "name": "sample collection device"
+                    },
+                    {
+                        "name": "sample collection method"
+                    }
+                ]
+            },
+            {
+                "name": "host disorder",
+                "children": [
+                    {
+                        "name": "host HIV status"
+                    },
+                    {
+                        "name": "host disease status"
+                    },
+                    {
+                        "name": "lung/pulmonary disorder"
+                    },
+                    {
+                        "name": "lung/nose-throat disorder"
+                    },
+                    {
+                        "name": "blood/blood disorder"
+                    },
+                    {
+                        "name": "urine/kidney disorder"
+                    },
+                    {
+                        "name": "urine/urogenital tract disorder"
+                    }
+                ]
+            },
+            {
+                "name": "host description",
+                "children": [
+                    {
+                        "name": "host subject id"
+                    },
+                    {
+                        "name": "IHMC medication code"
+                    },
+                    {
+                        "name": "host age"
+                    },
+                    {
+                        "name": "host body site"
+                    },
+                    {
+                        "name": "drug usage"
+                    },
+                    {
+                        "name": "host height"
+                    },
+                    {
+                        "name": "host body-mass index"
+                    },
+                    {
+                        "name": "ethnicity"
+                    },
+                    {
+                        "name": "host occupation"
+                    },
+                    {
+                        "name": "host total mass"
+                    },
+                    {
+                        "name": "host phenotype"
+                    },
+                    {
+                        "name": "host body temperature"
+                    },
+                    {
+                        "name": "host sex"
+                    },
+                    {
+                        "name": "host scientific name"
+                    }
+                ]
+            },
+            {
+                "name": "local environment conditions",
+                "children": [
+                    {
+                        "name": "presence of pets or farm animals"
+                    },
+                    {
+                        "name": "temperature"
+                    }
+                ]
+            },
+            {
+                "name": "concentration measurement",
+                "children": [
+                    {
+                        "name": "salinity"
+                    }
+                ]
+            },
+            {
+                "name": "host details",
+                "children": [
+                    {
+                        "name": "smoker"
+                    },
+                    {
+                        "name": "major diet change in last six months"
+                    },
+                    {
+                        "name": "weight loss in last three months"
+                    },
+                    {
+                        "name": "travel outside the country in last six months"
+                    },
+                    {
+                        "name": "host diet"
+                    },
+                    {
+                        "name": "twin sibling presence"
+                    },
+                    {
+                        "name": "host last meal"
+                    },
+                    {
+                        "name": "amniotic fluid/gestation state"
+                    },
+                    {
+                        "name": "host family relationship"
+                    },
+                    {
+                        "name": "amniotic fluid/maternal health status"
+                    },
+                    {
+                        "name": "host genotype"
+                    },
+                    {
+                        "name": "amniotic fluid/foetal health status"
+                    },
+                    {
+                        "name": "host pulse"
+                    },
+                    {
+                        "name": "amniotic fluid/color"
+                    }
+                ]
+            },
+            {
+                "name": "organism characteristics",
+                "children": [
+                    {
+                        "name": "subspecific genetic lineage"
+                    },
+                    {
+                        "name": "trophic level"
+                    },
+                    {
+                        "name": "relationship to oxygen"
+                    },
+                    {
+                        "name": "known pathogenicity"
+                    },
+                    {
+                        "name": "encoded traits"
+                    },
+                    {
+                        "name": "observed biotic relationship"
+                    }
+                ]
+            },
+            {
+                "name": "local environment conditions imposed",
+                "children": [
+                    {
+                        "name": "chemical administration"
+                    },
+                    {
+                        "name": "perturbation"
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "name": "GSC MIxS air",
+        "children": [
+            {
+                "name": "non-sample terms",
+                "children": [
+                    {
+                        "name": "project name"
+                    },
+                    {
+                        "name": "experimental factor"
+                    },
+                    {
+                        "name": "ploidy"
+                    },
+                    {
+                        "name": "number of replicons"
+                    },
+                    {
+                        "name": "extrachromosomal elements"
+                    },
+                    {
+                        "name": "estimated size"
+                    },
+                    {
+                        "name": "reference for biomaterial"
+                    },
+                    {
+                        "name": "annotation source"
+                    },
+                    {
+                        "name": "sample volume or weight for DNA extraction"
+                    },
+                    {
+                        "name": "nucleic acid extraction"
+                    },
+                    {
+                        "name": "nucleic acid amplification"
+                    },
+                    {
+                        "name": "library size"
+                    },
+                    {
+                        "name": "library reads sequenced"
+                    },
+                    {
+                        "name": "library construction method"
+                    },
+                    {
+                        "name": "library vector"
+                    },
+                    {
+                        "name": "library screening strategy"
+                    },
+                    {
+                        "name": "target gene"
+                    },
+                    {
+                        "name": "target subfragment"
+                    },
+                    {
+                        "name": "pcr primers"
+                    },
+                    {
+                        "name": "multiplex identifiers"
+                    },
+                    {
+                        "name": "adapters"
+                    },
+                    {
+                        "name": "pcr conditions"
+                    },
+                    {
+                        "name": "sequencing method"
+                    },
+                    {
+                        "name": "sequence quality check"
+                    },
+                    {
+                        "name": "chimera check software"
+                    },
+                    {
+                        "name": "relevant electronic resources"
+                    },
+                    {
+                        "name": "relevant standard operating procedures"
+                    },
+                    {
+                        "name": "negative control type"
+                    },
+                    {
+                        "name": "positive control type"
+                    }
+                ]
+            },
+            {
+                "name": "Collection event information",
+                "children": [
+                    {
+                        "name": "collection date"
+                    },
+                    {
+                        "name": "altitude"
+                    },
+                    {
+                        "name": "geographic location (country and/or sea)"
+                    },
+                    {
+                        "name": "geographic location (latitude)"
+                    },
+                    {
+                        "name": "geographic location (longitude)"
+                    },
+                    {
+                        "name": "geographic location (region and locality)"
+                    },
+                    {
+                        "name": "broad-scale environmental context"
+                    },
+                    {
+                        "name": "local environmental context"
+                    },
+                    {
+                        "name": "environmental medium"
+                    },
+                    {
+                        "name": "elevation"
+                    }
+                ]
+            },
+            {
+                "name": "internal environment",
+                "children": [
+                    {
+                        "name": "ventilation rate"
+                    },
+                    {
+                        "name": "ventilation type"
+                    }
+                ]
+            },
+            {
+                "name": "sample collection",
+                "children": [
+                    {
+                        "name": "source material identifiers"
+                    },
+                    {
+                        "name": "sample material processing"
+                    },
+                    {
+                        "name": "isolation and growth condition"
+                    },
+                    {
+                        "name": "propagation"
+                    },
+                    {
+                        "name": "amount or size of sample collected"
+                    },
+                    {
+                        "name": "oxygenation status of sample"
+                    },
+                    {
+                        "name": "organism count"
+                    },
+                    {
+                        "name": "sample storage duration"
+                    },
+                    {
+                        "name": "sample storage temperature"
+                    },
+                    {
+                        "name": "sample storage location"
+                    },
+                    {
+                        "name": "sample collection device"
+                    },
+                    {
+                        "name": "sample collection method"
+                    }
+                ]
+            },
+            {
+                "name": "host disorder",
+                "children": [
+                    {
+                        "name": "host disease status"
+                    }
+                ]
+            },
+            {
+                "name": "host description",
+                "children": [
+                    {
+                        "name": "host scientific name"
+                    }
+                ]
+            },
+            {
+                "name": "local environment conditions",
+                "children": [
+                    {
+                        "name": "barometric pressure"
+                    },
+                    {
+                        "name": "humidity"
+                    },
+                    {
+                        "name": "pollutants"
+                    },
+                    {
+                        "name": "solar irradiance"
+                    },
+                    {
+                        "name": "wind direction"
+                    },
+                    {
+                        "name": "wind speed"
+                    },
+                    {
+                        "name": "temperature"
+                    }
+                ]
+            },
+            {
+                "name": "concentration measurement",
+                "children": [
+                    {
+                        "name": "carbon dioxide"
+                    },
+                    {
+                        "name": "carbon monoxide"
+                    },
+                    {
+                        "name": "oxygen"
+                    },
+                    {
+                        "name": "air particulate matter concentration"
+                    },
+                    {
+                        "name": "volatile organic compounds"
+                    },
+                    {
+                        "name": "methane"
+                    },
+                    {
+                        "name": "salinity"
+                    }
+                ]
+            },
+            {
+                "name": "organism characteristics",
+                "children": [
+                    {
+                        "name": "subspecific genetic lineage"
+                    },
+                    {
+                        "name": "trophic level"
+                    },
+                    {
+                        "name": "relationship to oxygen"
+                    },
+                    {
+                        "name": "known pathogenicity"
+                    },
+                    {
+                        "name": "encoded traits"
+                    },
+                    {
+                        "name": "observed biotic relationship"
+                    }
+                ]
+            },
+            {
+                "name": "local environment conditions imposed",
+                "children": [
+                    {
+                        "name": "chemical administration"
+                    },
+                    {
+                        "name": "perturbation"
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "name": "GSC MIxS microbial mat biolfilm",
+        "children": [
+            {
+                "name": "non-sample terms",
+                "children": [
+                    {
+                        "name": "project name"
+                    },
+                    {
+                        "name": "experimental factor"
+                    },
+                    {
+                        "name": "ploidy"
+                    },
+                    {
+                        "name": "number of replicons"
+                    },
+                    {
+                        "name": "extrachromosomal elements"
+                    },
+                    {
+                        "name": "estimated size"
+                    },
+                    {
+                        "name": "reference for biomaterial"
+                    },
+                    {
+                        "name": "annotation source"
+                    },
+                    {
+                        "name": "sample volume or weight for DNA extraction"
+                    },
+                    {
+                        "name": "nucleic acid extraction"
+                    },
+                    {
+                        "name": "nucleic acid amplification"
+                    },
+                    {
+                        "name": "library size"
+                    },
+                    {
+                        "name": "library reads sequenced"
+                    },
+                    {
+                        "name": "library construction method"
+                    },
+                    {
+                        "name": "library vector"
+                    },
+                    {
+                        "name": "library screening strategy"
+                    },
+                    {
+                        "name": "target gene"
+                    },
+                    {
+                        "name": "target subfragment"
+                    },
+                    {
+                        "name": "pcr primers"
+                    },
+                    {
+                        "name": "multiplex identifiers"
+                    },
+                    {
+                        "name": "adapters"
+                    },
+                    {
+                        "name": "pcr conditions"
+                    },
+                    {
+                        "name": "sequencing method"
+                    },
+                    {
+                        "name": "sequence quality check"
+                    },
+                    {
+                        "name": "chimera check software"
+                    },
+                    {
+                        "name": "relevant electronic resources"
+                    },
+                    {
+                        "name": "relevant standard operating procedures"
+                    },
+                    {
+                        "name": "negative control type"
+                    },
+                    {
+                        "name": "positive control type"
+                    }
+                ]
+            },
+            {
+                "name": "Collection event information",
+                "children": [
+                    {
+                        "name": "collection date"
+                    },
+                    {
+                        "name": "altitude"
+                    },
+                    {
+                        "name": "geographic location (country and/or sea)"
+                    },
+                    {
+                        "name": "geographic location (latitude)"
+                    },
+                    {
+                        "name": "geographic location (longitude)"
+                    },
+                    {
+                        "name": "geographic location (region and locality)"
+                    },
+                    {
+                        "name": "depth"
+                    },
+                    {
+                        "name": "broad-scale environmental context"
+                    },
+                    {
+                        "name": "local environmental context"
+                    },
+                    {
+                        "name": "environmental medium"
+                    },
+                    {
+                        "name": "elevation"
+                    }
+                ]
+            },
+            {
+                "name": "sample collection",
+                "children": [
+                    {
+                        "name": "source material identifiers"
+                    },
+                    {
+                        "name": "sample material processing"
+                    },
+                    {
+                        "name": "isolation and growth condition"
+                    },
+                    {
+                        "name": "propagation"
+                    },
+                    {
+                        "name": "amount or size of sample collected"
+                    },
+                    {
+                        "name": "biomass"
+                    },
+                    {
+                        "name": "oxygenation status of sample"
+                    },
+                    {
+                        "name": "organism count"
+                    },
+                    {
+                        "name": "sample storage duration"
+                    },
+                    {
+                        "name": "sample storage temperature"
+                    },
+                    {
+                        "name": "sample storage location"
+                    },
+                    {
+                        "name": "sample collection device"
+                    },
+                    {
+                        "name": "sample collection method"
+                    }
+                ]
+            },
+            {
+                "name": "host disorder",
+                "children": [
+                    {
+                        "name": "host disease status"
+                    }
+                ]
+            },
+            {
+                "name": "host description",
+                "children": [
+                    {
+                        "name": "host scientific name"
+                    }
+                ]
+            },
+            {
+                "name": "local environment conditions",
+                "children": [
+                    {
+                        "name": "alkalinity"
+                    },
+                    {
+                        "name": "mean friction velocity"
+                    },
+                    {
+                        "name": "mean peak friction velocity"
+                    },
+                    {
+                        "name": "pressure"
+                    },
+                    {
+                        "name": "temperature"
+                    },
+                    {
+                        "name": "turbidity"
+                    },
+                    {
+                        "name": "pH"
+                    }
+                ]
+            },
+            {
+                "name": "concentration measurement",
+                "children": [
+                    {
+                        "name": "alkyl diethers"
+                    },
+                    {
+                        "name": "aminopeptidase activity"
+                    },
+                    {
+                        "name": "ammonium"
+                    },
+                    {
+                        "name": "bacterial carbon production"
+                    },
+                    {
+                        "name": "bishomohopanol"
+                    },
+                    {
+                        "name": "bromide"
+                    },
+                    {
+                        "name": "calcium"
+                    },
+                    {
+                        "name": "carbon/nitrogen ratio"
+                    },
+                    {
+                        "name": "chloride"
+                    },
+                    {
+                        "name": "chlorophyll"
+                    },
+                    {
+                        "name": "diether lipids"
+                    },
+                    {
+                        "name": "dissolved carbon dioxide"
+                    },
+                    {
+                        "name": "dissolved hydrogen"
+                    },
+                    {
+                        "name": "dissolved inorganic carbon"
+                    },
+                    {
+                        "name": "dissolved organic carbon"
+                    },
+                    {
+                        "name": "dissolved organic nitrogen"
+                    },
+                    {
+                        "name": "methane"
+                    },
+                    {
+                        "name": "dissolved oxygen"
+                    },
+                    {
+                        "name": "glucosidase activity"
+                    },
+                    {
+                        "name": "magnesium"
+                    },
+                    {
+                        "name": "n-alkanes"
+                    },
+                    {
+                        "name": "nitrate"
+                    },
+                    {
+                        "name": "nitrite"
+                    },
+                    {
+                        "name": "nitrogen"
+                    },
+                    {
+                        "name": "organic carbon"
+                    },
+                    {
+                        "name": "organic matter"
+                    },
+                    {
+                        "name": "organic nitrogen"
+                    },
+                    {
+                        "name": "particulate organic carbon"
+                    },
+                    {
+                        "name": "petroleum hydrocarbon"
+                    },
+                    {
+                        "name": "phaeopigments"
+                    },
+                    {
+                        "name": "phosphate"
+                    },
+                    {
+                        "name": "phospholipid fatty acid"
+                    },
+                    {
+                        "name": "potassium"
+                    },
+                    {
+                        "name": "redox potential"
+                    },
+                    {
+                        "name": "salinity"
+                    },
+                    {
+                        "name": "total carbon"
+                    },
+                    {
+                        "name": "silicate"
+                    },
+                    {
+                        "name": "sodium"
+                    },
+                    {
+                        "name": "total organic carbon"
+                    },
+                    {
+                        "name": "water content"
+                    },
+                    {
+                        "name": "sulfate"
+                    },
+                    {
+                        "name": "sulfide"
+                    },
+                    {
+                        "name": "total nitrogen"
+                    }
+                ]
+            },
+            {
+                "name": "organism characteristics",
+                "children": [
+                    {
+                        "name": "subspecific genetic lineage"
+                    },
+                    {
+                        "name": "trophic level"
+                    },
+                    {
+                        "name": "relationship to oxygen"
+                    },
+                    {
+                        "name": "known pathogenicity"
+                    },
+                    {
+                        "name": "encoded traits"
+                    },
+                    {
+                        "name": "observed biotic relationship"
+                    }
+                ]
+            },
+            {
+                "name": "local environment conditions imposed",
+                "children": [
+                    {
+                        "name": "chemical administration"
+                    },
+                    {
+                        "name": "perturbation"
+                    }
+                ]
+            }
+        ]
+    }
+]

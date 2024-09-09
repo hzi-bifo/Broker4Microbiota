@@ -1,0 +1,2317 @@
+{
+    "CHECKLIST_SET": {
+        "CHECKLIST": {
+            "@accession": "ERC000025",
+            "@checklistType": "Sample",
+            "IDENTIFIERS": {
+                "PRIMARY_ID": "ERC000025"
+            },
+            "DESCRIPTOR": {
+                "LABEL": "GSC MIxS miscellaneous natural or artificial environment",
+                "NAME": "GSC MIxS miscellaneous natural or artificial environment",
+                "DESCRIPTION": "Genomic Standards Consortium package extension for reporting of measurements and observations obtained from the environment where the sample was obtained. By choosing the environmental package, a selection of fields can be made from a relevant subsets of the GSC terms.",
+                "AUTHORITY": "ENA",
+                "FIELD_GROUP": [
+                    {
+                        "@restrictionType": "Any number or none of the fields",
+                        "NAME": "non-sample terms",
+                        "FIELD": [
+                            {
+                                "LABEL": "project name",
+                                "NAME": "project name",
+                                "DESCRIPTION": "Name of the project within which the sequencing was organized",
+                                "FIELD_TYPE": {
+                                    "TEXT_FIELD": null
+                                },
+                                "MANDATORY": "mandatory",
+                                "MULTIPLICITY": "multiple"
+                            },
+                            {
+                                "LABEL": "experimental factor",
+                                "NAME": "experimental factor",
+                                "DESCRIPTION": "Experimental factors are essentially the variable aspects of an experiment design which can be used to describe an experiment, or set of experiments, in an increasingly detailed manner. This field accepts ontology terms from Experimental Factor Ontology (EFO) and/or Ontology for Biomedical Investigations (OBI). For a browser of EFO (v 2.95) terms, please see http://purl.bioontology.org/ontology/EFO; for a browser of OBI (v 2018-02-12) terms please see http://purl.bioontology.org/ontology/OBI. E.g. time series design [EFO:EFO_0001779]",
+                                "FIELD_TYPE": {
+                                    "TEXT_FIELD": null
+                                },
+                                "MANDATORY": "optional",
+                                "MULTIPLICITY": "multiple"
+                            },
+                            {
+                                "LABEL": "ploidy",
+                                "NAME": "ploidy",
+                                "DESCRIPTION": "The ploidy level of the genome (e.g. allopolyploid, haploid, diploid, triploid, tetraploid). It has implications for the downstream study of duplicated gene and regions of the genomes (and perhaps for difficulties in assembly). For terms, please select terms listed under class ploidy (PATO:001374) of Phenotypic Quality Ontology (PATO), and for a browser of PATO (v 2018-03-27) please refer to http://purl.bioontology.org/ontology/PATO",
+                                "FIELD_TYPE": {
+                                    "TEXT_FIELD": null
+                                },
+                                "MANDATORY": "optional",
+                                "MULTIPLICITY": "multiple"
+                            },
+                            {
+                                "LABEL": "number of replicons",
+                                "NAME": "number of replicons",
+                                "DESCRIPTION": "Reports the number of replicons in a nuclear genome of eukaryotes, in the genome of a bacterium or archaea or the number of segments in a segmented virus. Always applied to the haploid chromosome count of a eukaryote. Mandatory for MIGS of eukaryotes, bacteria, archaea and segmented virus.",
+                                "FIELD_TYPE": {
+                                    "TEXT_FIELD": {
+                                        "REGEX_VALUE": "[+-]?[0-9]+"
+                                    }
+                                },
+                                "MANDATORY": "optional",
+                                "MULTIPLICITY": "multiple"
+                            },
+                            {
+                                "LABEL": "extrachromosomal elements",
+                                "NAME": "extrachromosomal elements",
+                                "DESCRIPTION": "Do plasmids exist of significant phenotypic consequence (e.g. ones that determine virulence or antibiotic resistance). Megaplasmids? Other plasmids (borrelia has 15+ plasmids).",
+                                "FIELD_TYPE": {
+                                    "TEXT_FIELD": {
+                                        "REGEX_VALUE": "[+-]?[0-9]+"
+                                    }
+                                },
+                                "MANDATORY": "optional",
+                                "MULTIPLICITY": "multiple"
+                            },
+                            {
+                                "LABEL": "estimated size",
+                                "NAME": "estimated size",
+                                "DESCRIPTION": "The estimated size of the genome (in bp) prior to sequencing. Of particular importance in the sequencing of (eukaryotic) genome which could remain in draft form for a long or unspecified period. Mandatory for MIGS of eukaryotes.",
+                                "FIELD_TYPE": {
+                                    "TEXT_FIELD": {
+                                        "REGEX_VALUE": "[+-]?[0-9]+"
+                                    }
+                                },
+                                "MANDATORY": "optional",
+                                "MULTIPLICITY": "multiple"
+                            },
+                            {
+                                "LABEL": "reference for biomaterial",
+                                "NAME": "reference for biomaterial",
+                                "DESCRIPTION": "Primary publication if isolated before genome publication; otherwise, primary genome report. Mandatory for MIGS of bacteria and archaea.",
+                                "FIELD_TYPE": {
+                                    "TEXT_FIELD": null
+                                },
+                                "MANDATORY": "optional",
+                                "MULTIPLICITY": "multiple"
+                            },
+                            {
+                                "LABEL": "annotation source",
+                                "NAME": "annotation source",
+                                "DESCRIPTION": "For cases where annotation was provided by a community jamboree or model organism database rather than by a specific submitter",
+                                "FIELD_TYPE": {
+                                    "TEXT_FIELD": null
+                                },
+                                "MANDATORY": "optional",
+                                "MULTIPLICITY": "multiple"
+                            },
+                            {
+                                "LABEL": "sample volume or weight for DNA extraction",
+                                "NAME": "sample volume or weight for DNA extraction",
+                                "DESCRIPTION": "Volume (ml) or mass (g) of total collected sample processed for DNA extraction. Note: total sample collected should be entered under the term 'sample size'.",
+                                "UNITS": {
+                                    "UNIT": [
+                                        "g",
+                                        "mL",
+                                        "mg",
+                                        "ng"
+                                    ]
+                                },
+                                "FIELD_TYPE": {
+                                    "TEXT_FIELD": {
+                                        "REGEX_VALUE": "(0|((0\\.)|([1-9][0-9]*\\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+                                    }
+                                },
+                                "MANDATORY": "optional",
+                                "MULTIPLICITY": "multiple"
+                            },
+                            {
+                                "LABEL": "nucleic acid extraction",
+                                "NAME": "nucleic acid extraction",
+                                "DESCRIPTION": "A link to a literature reference, electronic resource or a standard operating procedure (SOP), that describes the material separation to recover the nucleic acid fraction from a sample",
+                                "FIELD_TYPE": {
+                                    "TEXT_FIELD": null
+                                },
+                                "MANDATORY": "optional",
+                                "MULTIPLICITY": "multiple"
+                            },
+                            {
+                                "LABEL": "nucleic acid amplification",
+                                "NAME": "nucleic acid amplification",
+                                "DESCRIPTION": "A link to a literature reference, electronic resource or a standard operating procedure (SOP), that describes the enzymatic amplification (PCR, TMA, NASBA) of specific nucleic acids",
+                                "FIELD_TYPE": {
+                                    "TEXT_FIELD": null
+                                },
+                                "MANDATORY": "optional",
+                                "MULTIPLICITY": "multiple"
+                            },
+                            {
+                                "LABEL": "library size",
+                                "NAME": "library size",
+                                "DESCRIPTION": "Total number of clones in the library prepared for the project",
+                                "FIELD_TYPE": {
+                                    "TEXT_FIELD": {
+                                        "REGEX_VALUE": "[+-]?[0-9]+"
+                                    }
+                                },
+                                "MANDATORY": "optional",
+                                "MULTIPLICITY": "multiple"
+                            },
+                            {
+                                "LABEL": "library reads sequenced",
+                                "NAME": "library reads sequenced",
+                                "DESCRIPTION": "Total number of clones sequenced from the library",
+                                "FIELD_TYPE": {
+                                    "TEXT_FIELD": {
+                                        "REGEX_VALUE": "[+-]?[0-9]+"
+                                    }
+                                },
+                                "MANDATORY": "optional",
+                                "MULTIPLICITY": "multiple"
+                            },
+                            {
+                                "LABEL": "library construction method",
+                                "NAME": "library construction method",
+                                "DESCRIPTION": "Library construction method used for clone libraries",
+                                "FIELD_TYPE": {
+                                    "TEXT_FIELD": null
+                                },
+                                "MANDATORY": "optional",
+                                "MULTIPLICITY": "multiple"
+                            },
+                            {
+                                "LABEL": "library vector",
+                                "NAME": "library vector",
+                                "DESCRIPTION": "Cloning vector type(s) used in construction of libraries",
+                                "FIELD_TYPE": {
+                                    "TEXT_FIELD": null
+                                },
+                                "MANDATORY": "optional",
+                                "MULTIPLICITY": "multiple"
+                            },
+                            {
+                                "LABEL": "library screening strategy",
+                                "NAME": "library screening strategy",
+                                "DESCRIPTION": "Specific enrichment or screening methods applied before and/or after creating clone libraries in order to select a specific group of sequences",
+                                "FIELD_TYPE": {
+                                    "TEXT_FIELD": null
+                                },
+                                "MANDATORY": "optional",
+                                "MULTIPLICITY": "multiple"
+                            },
+                            {
+                                "LABEL": "target gene",
+                                "NAME": "target gene",
+                                "DESCRIPTION": "Targeted gene or locus name for marker gene studies",
+                                "FIELD_TYPE": {
+                                    "TEXT_FIELD": null
+                                },
+                                "MANDATORY": "optional",
+                                "MULTIPLICITY": "multiple"
+                            },
+                            {
+                                "LABEL": "target subfragment",
+                                "NAME": "target subfragment",
+                                "DESCRIPTION": "Name of subfragment of a gene or locus. Important to e.g. identify special regions on marker genes like V6 on 16S rRNA",
+                                "FIELD_TYPE": {
+                                    "TEXT_FIELD": null
+                                },
+                                "MANDATORY": "optional",
+                                "MULTIPLICITY": "multiple"
+                            },
+                            {
+                                "LABEL": "pcr primers",
+                                "NAME": "pcr primers",
+                                "DESCRIPTION": "PCR primers that were used to amplify the sequence of the targeted gene, locus or subfragment. This field should contain all the primers used for a single PCR reaction if multiple forward or reverse primers are present in a single PCR reaction. The primer sequence should be reported in uppercase letters",
+                                "FIELD_TYPE": {
+                                    "TEXT_FIELD": null
+                                },
+                                "MANDATORY": "optional",
+                                "MULTIPLICITY": "multiple"
+                            },
+                            {
+                                "LABEL": "multiplex identifiers",
+                                "NAME": "multiplex identifiers",
+                                "DESCRIPTION": "Molecular barcodes, called Multiplex Identifiers (MIDs), that are used to specifically tag unique samples in a sequencing run. Sequence should be reported in uppercase letters",
+                                "FIELD_TYPE": {
+                                    "TEXT_FIELD": null
+                                },
+                                "MANDATORY": "optional",
+                                "MULTIPLICITY": "multiple"
+                            },
+                            {
+                                "LABEL": "adapters",
+                                "NAME": "adapters",
+                                "DESCRIPTION": "Adapters provide priming sequences for both amplification and sequencing of the sample-library fragments. Both adapters should be reported; in uppercase letters",
+                                "FIELD_TYPE": {
+                                    "TEXT_FIELD": null
+                                },
+                                "MANDATORY": "optional",
+                                "MULTIPLICITY": "multiple"
+                            },
+                            {
+                                "LABEL": "pcr conditions",
+                                "NAME": "pcr conditions",
+                                "DESCRIPTION": "Description of reaction conditions and components for PCR in the form of 'initial denaturation:94degC_1.5min; annealing=...'",
+                                "FIELD_TYPE": {
+                                    "TEXT_FIELD": null
+                                },
+                                "MANDATORY": "optional",
+                                "MULTIPLICITY": "multiple"
+                            },
+                            {
+                                "LABEL": "sequencing method",
+                                "NAME": "sequencing method",
+                                "DESCRIPTION": "Sequencing machine used. Where possible the term should be taken from the OBI list of DNA sequencers (http://purl.obolibrary.org/obo/OBI_0400103).",
+                                "FIELD_TYPE": {
+                                    "TEXT_FIELD": null
+                                },
+                                "MANDATORY": "optional",
+                                "MULTIPLICITY": "multiple"
+                            },
+                            {
+                                "LABEL": "sequence quality check",
+                                "NAME": "sequence quality check",
+                                "DESCRIPTION": "Indicate if the sequence has been called by automatic systems (none) or undergone a manual editing procedure (e.g. by inspecting the raw data or chromatograms). Applied only for sequences that are not submitted to SRA or DRA",
+                                "FIELD_TYPE": {
+                                    "TEXT_CHOICE_FIELD": {
+                                        "TEXT_VALUE": [
+                                            {
+                                                "VALUE": "manual"
+                                            },
+                                            {
+                                                "VALUE": "none"
+                                            },
+                                            {
+                                                "VALUE": "software"
+                                            }
+                                        ]
+                                    }
+                                },
+                                "MANDATORY": "optional",
+                                "MULTIPLICITY": "multiple"
+                            },
+                            {
+                                "LABEL": "chimera check software",
+                                "SYNONYM": "chimera check",
+                                "NAME": "chimera check software",
+                                "DESCRIPTION": "Tool(s) used for chimera checking, including version number and parameters, to discover and remove chimeric sequences. A chimeric sequence is comprised of two or more phylogenetically distinct parent sequences.",
+                                "FIELD_TYPE": {
+                                    "TEXT_FIELD": null
+                                },
+                                "MANDATORY": "optional",
+                                "MULTIPLICITY": "multiple"
+                            },
+                            {
+                                "LABEL": "relevant electronic resources",
+                                "NAME": "relevant electronic resources",
+                                "DESCRIPTION": "A related resource that is referenced, cited, or otherwise associated to the sequence in the format of a PMID, DOI or URL",
+                                "FIELD_TYPE": {
+                                    "TEXT_FIELD": null
+                                },
+                                "MANDATORY": "optional",
+                                "MULTIPLICITY": "multiple"
+                            },
+                            {
+                                "LABEL": "relevant standard operating procedures",
+                                "NAME": "relevant standard operating procedures",
+                                "DESCRIPTION": "Standard operating procedures used in assembly and/or annotation of genomes, metagenomes or environmental sequences in the format of a PMID, DOI or URL",
+                                "FIELD_TYPE": {
+                                    "TEXT_FIELD": null
+                                },
+                                "MANDATORY": "optional",
+                                "MULTIPLICITY": "multiple"
+                            },
+                            {
+                                "LABEL": "negative control type",
+                                "NAME": "negative control type",
+                                "DESCRIPTION": "The substance or equipment used as a negative control in an investigation",
+                                "FIELD_TYPE": {
+                                    "TEXT_FIELD": null
+                                },
+                                "MANDATORY": "optional",
+                                "MULTIPLICITY": "single"
+                            },
+                            {
+                                "LABEL": "positive control type",
+                                "NAME": "positive control type",
+                                "DESCRIPTION": "The substance, mixture, product, or apparatus used to verify that a process which is part of an investigation delivers a true positive.",
+                                "FIELD_TYPE": {
+                                    "TEXT_FIELD": null
+                                },
+                                "MANDATORY": "optional",
+                                "MULTIPLICITY": "single"
+                            }
+                        ]
+                    },
+                    {
+                        "@restrictionType": "Any number or none of the fields",
+                        "NAME": "Collection event information",
+                        "FIELD": [
+                            {
+                                "LABEL": "collection date",
+                                "SYNONYM": [
+                                    "Event Date/Time",
+                                    "collection_date"
+                                ],
+                                "NAME": "collection date",
+                                "DESCRIPTION": "The date the sample was collected with the intention of sequencing, either as an instance (single point in time) or interval. In case no exact time is available, the date/time can be right truncated i.e. all of these are valid ISO8601 compliant times: 2008-01-23T19:23:10+00:00; 2008-01-23T19:23:10; 2008-01-23; 2008-01; 2008.",
+                                "FIELD_TYPE": {
+                                    "TEXT_FIELD": {
+                                        "REGEX_VALUE": "(^[12][0-9]{3}(-(0[1-9]|1[0-2])(-(0[1-9]|[12][0-9]|3[01])(T[0-9]{2}:[0-9]{2}(:[0-9]{2})?Z?([+-][0-9]{1,2})?)?)?)?(/[0-9]{4}(-[0-9]{2}(-[0-9]{2}(T[0-9]{2}:[0-9]{2}(:[0-9]{2})?Z?([+-][0-9]{1,2})?)?)?)?)?$)|(^not collected$)|(^not provided$)|(^restricted access$)|(^missing: control sample$)|(^missing: sample group$)|(^missing: synthetic construct$)|(^missing: lab stock$)|(^missing: third party data$)|(^missing: data agreement established pre-2023$)|(^missing: endangered species$)|(^missing: human-identifiable$)"
+                                    }
+                                },
+                                "MANDATORY": "mandatory",
+                                "MULTIPLICITY": "multiple"
+                            },
+                            {
+                                "LABEL": "altitude",
+                                "SYNONYM": "geographic location (altitude)",
+                                "NAME": "altitude",
+                                "DESCRIPTION": "The altitude of the sample is the vertical distance between Earth's surface above Sea Level and the sampled position in the air.",
+                                "UNITS": {
+                                    "UNIT": "m"
+                                },
+                                "FIELD_TYPE": {
+                                    "TEXT_FIELD": {
+                                        "REGEX_VALUE": "(0|((0\\.)|([1-9][0-9]*\\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+                                    }
+                                },
+                                "MANDATORY": "optional",
+                                "MULTIPLICITY": "multiple"
+                            },
+                            {
+                                "LABEL": "geographic location (country and/or sea)",
+                                "NAME": "geographic location (country and/or sea)",
+                                "DESCRIPTION": "The location the sample was collected from with the intention of sequencing, as defined by the country or sea. Country or sea names should be chosen from the INSDC country list (http://insdc.org/country.html).",
+                                "FIELD_TYPE": {
+                                    "TEXT_CHOICE_FIELD": {
+                                        "TEXT_VALUE": [
+                                            {
+                                                "VALUE": "Afghanistan"
+                                            },
+                                            {
+                                                "VALUE": "Albania"
+                                            },
+                                            {
+                                                "VALUE": "Algeria"
+                                            },
+                                            {
+                                                "VALUE": "American Samoa"
+                                            },
+                                            {
+                                                "VALUE": "Andorra"
+                                            },
+                                            {
+                                                "VALUE": "Angola"
+                                            },
+                                            {
+                                                "VALUE": "Anguilla"
+                                            },
+                                            {
+                                                "VALUE": "Antarctica"
+                                            },
+                                            {
+                                                "VALUE": "Antigua and Barbuda"
+                                            },
+                                            {
+                                                "VALUE": "Arctic Ocean"
+                                            },
+                                            {
+                                                "VALUE": "Argentina"
+                                            },
+                                            {
+                                                "VALUE": "Armenia"
+                                            },
+                                            {
+                                                "VALUE": "Aruba"
+                                            },
+                                            {
+                                                "VALUE": "Ashmore and Cartier Islands"
+                                            },
+                                            {
+                                                "VALUE": "Atlantic Ocean"
+                                            },
+                                            {
+                                                "VALUE": "Australia"
+                                            },
+                                            {
+                                                "VALUE": "Austria"
+                                            },
+                                            {
+                                                "VALUE": "Azerbaijan"
+                                            },
+                                            {
+                                                "VALUE": "Bahamas"
+                                            },
+                                            {
+                                                "VALUE": "Bahrain"
+                                            },
+                                            {
+                                                "VALUE": "Baker Island"
+                                            },
+                                            {
+                                                "VALUE": "Baltic Sea"
+                                            },
+                                            {
+                                                "VALUE": "Bangladesh"
+                                            },
+                                            {
+                                                "VALUE": "Barbados"
+                                            },
+                                            {
+                                                "VALUE": "Bassas da India"
+                                            },
+                                            {
+                                                "VALUE": "Belarus"
+                                            },
+                                            {
+                                                "VALUE": "Belgium"
+                                            },
+                                            {
+                                                "VALUE": "Belize"
+                                            },
+                                            {
+                                                "VALUE": "Benin"
+                                            },
+                                            {
+                                                "VALUE": "Bermuda"
+                                            },
+                                            {
+                                                "VALUE": "Bhutan"
+                                            },
+                                            {
+                                                "VALUE": "Bolivia"
+                                            },
+                                            {
+                                                "VALUE": "Borneo"
+                                            },
+                                            {
+                                                "VALUE": "Bosnia and Herzegovina"
+                                            },
+                                            {
+                                                "VALUE": "Botswana"
+                                            },
+                                            {
+                                                "VALUE": "Bouvet Island"
+                                            },
+                                            {
+                                                "VALUE": "Brazil"
+                                            },
+                                            {
+                                                "VALUE": "British Virgin Islands"
+                                            },
+                                            {
+                                                "VALUE": "Brunei"
+                                            },
+                                            {
+                                                "VALUE": "Bulgaria"
+                                            },
+                                            {
+                                                "VALUE": "Burkina Faso"
+                                            },
+                                            {
+                                                "VALUE": "Burundi"
+                                            },
+                                            {
+                                                "VALUE": "Cambodia"
+                                            },
+                                            {
+                                                "VALUE": "Cameroon"
+                                            },
+                                            {
+                                                "VALUE": "Canada"
+                                            },
+                                            {
+                                                "VALUE": "Cape Verde"
+                                            },
+                                            {
+                                                "VALUE": "Cayman Islands"
+                                            },
+                                            {
+                                                "VALUE": "Central African Republic"
+                                            },
+                                            {
+                                                "VALUE": "Chad"
+                                            },
+                                            {
+                                                "VALUE": "Chile"
+                                            },
+                                            {
+                                                "VALUE": "China"
+                                            },
+                                            {
+                                                "VALUE": "Christmas Island"
+                                            },
+                                            {
+                                                "VALUE": "Clipperton Island"
+                                            },
+                                            {
+                                                "VALUE": "Cocos Islands"
+                                            },
+                                            {
+                                                "VALUE": "Colombia"
+                                            },
+                                            {
+                                                "VALUE": "Comoros"
+                                            },
+                                            {
+                                                "VALUE": "Cook Islands"
+                                            },
+                                            {
+                                                "VALUE": "Coral Sea Islands"
+                                            },
+                                            {
+                                                "VALUE": "Costa Rica"
+                                            },
+                                            {
+                                                "VALUE": "Cote d'Ivoire"
+                                            },
+                                            {
+                                                "VALUE": "Croatia"
+                                            },
+                                            {
+                                                "VALUE": "Cuba"
+                                            },
+                                            {
+                                                "VALUE": "Curacao"
+                                            },
+                                            {
+                                                "VALUE": "Cyprus"
+                                            },
+                                            {
+                                                "VALUE": "Czech Republic"
+                                            },
+                                            {
+                                                "VALUE": "Democratic Republic of the Congo"
+                                            },
+                                            {
+                                                "VALUE": "Denmark"
+                                            },
+                                            {
+                                                "VALUE": "Djibouti"
+                                            },
+                                            {
+                                                "VALUE": "Dominica"
+                                            },
+                                            {
+                                                "VALUE": "Dominican Republic"
+                                            },
+                                            {
+                                                "VALUE": "East Timor"
+                                            },
+                                            {
+                                                "VALUE": "Ecuador"
+                                            },
+                                            {
+                                                "VALUE": "Egypt"
+                                            },
+                                            {
+                                                "VALUE": "El Salvador"
+                                            },
+                                            {
+                                                "VALUE": "Equatorial Guinea"
+                                            },
+                                            {
+                                                "VALUE": "Eritrea"
+                                            },
+                                            {
+                                                "VALUE": "Estonia"
+                                            },
+                                            {
+                                                "VALUE": "Ethiopia"
+                                            },
+                                            {
+                                                "VALUE": "Europa Island"
+                                            },
+                                            {
+                                                "VALUE": "Falkland Islands (Islas Malvinas)"
+                                            },
+                                            {
+                                                "VALUE": "Faroe Islands"
+                                            },
+                                            {
+                                                "VALUE": "Fiji"
+                                            },
+                                            {
+                                                "VALUE": "Finland"
+                                            },
+                                            {
+                                                "VALUE": "France"
+                                            },
+                                            {
+                                                "VALUE": "French Guiana"
+                                            },
+                                            {
+                                                "VALUE": "French Polynesia"
+                                            },
+                                            {
+                                                "VALUE": "French Southern and Antarctic Lands"
+                                            },
+                                            {
+                                                "VALUE": "Gabon"
+                                            },
+                                            {
+                                                "VALUE": "Gambia"
+                                            },
+                                            {
+                                                "VALUE": "Gaza Strip"
+                                            },
+                                            {
+                                                "VALUE": "Georgia"
+                                            },
+                                            {
+                                                "VALUE": "Germany"
+                                            },
+                                            {
+                                                "VALUE": "Ghana"
+                                            },
+                                            {
+                                                "VALUE": "Gibraltar"
+                                            },
+                                            {
+                                                "VALUE": "Glorioso Islands"
+                                            },
+                                            {
+                                                "VALUE": "Greece"
+                                            },
+                                            {
+                                                "VALUE": "Greenland"
+                                            },
+                                            {
+                                                "VALUE": "Grenada"
+                                            },
+                                            {
+                                                "VALUE": "Guadeloupe"
+                                            },
+                                            {
+                                                "VALUE": "Guam"
+                                            },
+                                            {
+                                                "VALUE": "Guatemala"
+                                            },
+                                            {
+                                                "VALUE": "Guernsey"
+                                            },
+                                            {
+                                                "VALUE": "Guinea"
+                                            },
+                                            {
+                                                "VALUE": "Guinea-Bissau"
+                                            },
+                                            {
+                                                "VALUE": "Guyana"
+                                            },
+                                            {
+                                                "VALUE": "Haiti"
+                                            },
+                                            {
+                                                "VALUE": "Heard Island and McDonald Islands"
+                                            },
+                                            {
+                                                "VALUE": "Honduras"
+                                            },
+                                            {
+                                                "VALUE": "Hong Kong"
+                                            },
+                                            {
+                                                "VALUE": "Howland Island"
+                                            },
+                                            {
+                                                "VALUE": "Hungary"
+                                            },
+                                            {
+                                                "VALUE": "Iceland"
+                                            },
+                                            {
+                                                "VALUE": "India"
+                                            },
+                                            {
+                                                "VALUE": "Indian Ocean"
+                                            },
+                                            {
+                                                "VALUE": "Indonesia"
+                                            },
+                                            {
+                                                "VALUE": "Iran"
+                                            },
+                                            {
+                                                "VALUE": "Iraq"
+                                            },
+                                            {
+                                                "VALUE": "Ireland"
+                                            },
+                                            {
+                                                "VALUE": "Isle of Man"
+                                            },
+                                            {
+                                                "VALUE": "Israel"
+                                            },
+                                            {
+                                                "VALUE": "Italy"
+                                            },
+                                            {
+                                                "VALUE": "Jamaica"
+                                            },
+                                            {
+                                                "VALUE": "Jan Mayen"
+                                            },
+                                            {
+                                                "VALUE": "Japan"
+                                            },
+                                            {
+                                                "VALUE": "Jarvis Island"
+                                            },
+                                            {
+                                                "VALUE": "Jersey"
+                                            },
+                                            {
+                                                "VALUE": "Johnston Atoll"
+                                            },
+                                            {
+                                                "VALUE": "Jordan"
+                                            },
+                                            {
+                                                "VALUE": "Juan de Nova Island"
+                                            },
+                                            {
+                                                "VALUE": "Kazakhstan"
+                                            },
+                                            {
+                                                "VALUE": "Kenya"
+                                            },
+                                            {
+                                                "VALUE": "Kerguelen Archipelago"
+                                            },
+                                            {
+                                                "VALUE": "Kingman Reef"
+                                            },
+                                            {
+                                                "VALUE": "Kiribati"
+                                            },
+                                            {
+                                                "VALUE": "Kosovo"
+                                            },
+                                            {
+                                                "VALUE": "Kuwait"
+                                            },
+                                            {
+                                                "VALUE": "Kyrgyzstan"
+                                            },
+                                            {
+                                                "VALUE": "Laos"
+                                            },
+                                            {
+                                                "VALUE": "Latvia"
+                                            },
+                                            {
+                                                "VALUE": "Lebanon"
+                                            },
+                                            {
+                                                "VALUE": "Lesotho"
+                                            },
+                                            {
+                                                "VALUE": "Liberia"
+                                            },
+                                            {
+                                                "VALUE": "Libya"
+                                            },
+                                            {
+                                                "VALUE": "Liechtenstein"
+                                            },
+                                            {
+                                                "VALUE": "Lithuania"
+                                            },
+                                            {
+                                                "VALUE": "Luxembourg"
+                                            },
+                                            {
+                                                "VALUE": "Macau"
+                                            },
+                                            {
+                                                "VALUE": "Macedonia"
+                                            },
+                                            {
+                                                "VALUE": "Madagascar"
+                                            },
+                                            {
+                                                "VALUE": "Malawi"
+                                            },
+                                            {
+                                                "VALUE": "Malaysia"
+                                            },
+                                            {
+                                                "VALUE": "Maldives"
+                                            },
+                                            {
+                                                "VALUE": "Mali"
+                                            },
+                                            {
+                                                "VALUE": "Malta"
+                                            },
+                                            {
+                                                "VALUE": "Marshall Islands"
+                                            },
+                                            {
+                                                "VALUE": "Martinique"
+                                            },
+                                            {
+                                                "VALUE": "Mauritania"
+                                            },
+                                            {
+                                                "VALUE": "Mauritius"
+                                            },
+                                            {
+                                                "VALUE": "Mayotte"
+                                            },
+                                            {
+                                                "VALUE": "Mediterranean Sea"
+                                            },
+                                            {
+                                                "VALUE": "Mexico"
+                                            },
+                                            {
+                                                "VALUE": "Micronesia"
+                                            },
+                                            {
+                                                "VALUE": "Midway Islands"
+                                            },
+                                            {
+                                                "VALUE": "Moldova"
+                                            },
+                                            {
+                                                "VALUE": "Monaco"
+                                            },
+                                            {
+                                                "VALUE": "Mongolia"
+                                            },
+                                            {
+                                                "VALUE": "Montenegro"
+                                            },
+                                            {
+                                                "VALUE": "Montserrat"
+                                            },
+                                            {
+                                                "VALUE": "Morocco"
+                                            },
+                                            {
+                                                "VALUE": "Mozambique"
+                                            },
+                                            {
+                                                "VALUE": "Myanmar"
+                                            },
+                                            {
+                                                "VALUE": "Namibia"
+                                            },
+                                            {
+                                                "VALUE": "Nauru"
+                                            },
+                                            {
+                                                "VALUE": "Navassa Island"
+                                            },
+                                            {
+                                                "VALUE": "Nepal"
+                                            },
+                                            {
+                                                "VALUE": "Netherlands"
+                                            },
+                                            {
+                                                "VALUE": "New Caledonia"
+                                            },
+                                            {
+                                                "VALUE": "New Zealand"
+                                            },
+                                            {
+                                                "VALUE": "Nicaragua"
+                                            },
+                                            {
+                                                "VALUE": "Niger"
+                                            },
+                                            {
+                                                "VALUE": "Nigeria"
+                                            },
+                                            {
+                                                "VALUE": "Niue"
+                                            },
+                                            {
+                                                "VALUE": "Norfolk Island"
+                                            },
+                                            {
+                                                "VALUE": "North Korea"
+                                            },
+                                            {
+                                                "VALUE": "North Sea"
+                                            },
+                                            {
+                                                "VALUE": "Northern Mariana Islands"
+                                            },
+                                            {
+                                                "VALUE": "Norway"
+                                            },
+                                            {
+                                                "VALUE": "Oman"
+                                            },
+                                            {
+                                                "VALUE": "Pacific Ocean"
+                                            },
+                                            {
+                                                "VALUE": "Pakistan"
+                                            },
+                                            {
+                                                "VALUE": "Palau"
+                                            },
+                                            {
+                                                "VALUE": "Palmyra Atoll"
+                                            },
+                                            {
+                                                "VALUE": "Panama"
+                                            },
+                                            {
+                                                "VALUE": "Papua New Guinea"
+                                            },
+                                            {
+                                                "VALUE": "Paracel Islands"
+                                            },
+                                            {
+                                                "VALUE": "Paraguay"
+                                            },
+                                            {
+                                                "VALUE": "Peru"
+                                            },
+                                            {
+                                                "VALUE": "Philippines"
+                                            },
+                                            {
+                                                "VALUE": "Pitcairn Islands"
+                                            },
+                                            {
+                                                "VALUE": "Poland"
+                                            },
+                                            {
+                                                "VALUE": "Portugal"
+                                            },
+                                            {
+                                                "VALUE": "Puerto Rico"
+                                            },
+                                            {
+                                                "VALUE": "Qatar"
+                                            },
+                                            {
+                                                "VALUE": "Republic of the Congo"
+                                            },
+                                            {
+                                                "VALUE": "Reunion"
+                                            },
+                                            {
+                                                "VALUE": "Romania"
+                                            },
+                                            {
+                                                "VALUE": "Ross Sea"
+                                            },
+                                            {
+                                                "VALUE": "Russia"
+                                            },
+                                            {
+                                                "VALUE": "Rwanda"
+                                            },
+                                            {
+                                                "VALUE": "Saint Helena"
+                                            },
+                                            {
+                                                "VALUE": "Saint Kitts and Nevis"
+                                            },
+                                            {
+                                                "VALUE": "Saint Lucia"
+                                            },
+                                            {
+                                                "VALUE": "Saint Pierre and Miquelon"
+                                            },
+                                            {
+                                                "VALUE": "Saint Vincent and the Grenadines"
+                                            },
+                                            {
+                                                "VALUE": "Samoa"
+                                            },
+                                            {
+                                                "VALUE": "San Marino"
+                                            },
+                                            {
+                                                "VALUE": "Sao Tome and Principe"
+                                            },
+                                            {
+                                                "VALUE": "Saudi Arabia"
+                                            },
+                                            {
+                                                "VALUE": "Senegal"
+                                            },
+                                            {
+                                                "VALUE": "Serbia"
+                                            },
+                                            {
+                                                "VALUE": "Seychelles"
+                                            },
+                                            {
+                                                "VALUE": "Sierra Leone"
+                                            },
+                                            {
+                                                "VALUE": "Singapore"
+                                            },
+                                            {
+                                                "VALUE": "Sint Maarten"
+                                            },
+                                            {
+                                                "VALUE": "Slovakia"
+                                            },
+                                            {
+                                                "VALUE": "Slovenia"
+                                            },
+                                            {
+                                                "VALUE": "Solomon Islands"
+                                            },
+                                            {
+                                                "VALUE": "Somalia"
+                                            },
+                                            {
+                                                "VALUE": "South Africa"
+                                            },
+                                            {
+                                                "VALUE": "South Georgia and the South Sandwich Islands"
+                                            },
+                                            {
+                                                "VALUE": "South Korea"
+                                            },
+                                            {
+                                                "VALUE": "Southern Ocean"
+                                            },
+                                            {
+                                                "VALUE": "Spain"
+                                            },
+                                            {
+                                                "VALUE": "Spratly Islands"
+                                            },
+                                            {
+                                                "VALUE": "Sri Lanka"
+                                            },
+                                            {
+                                                "VALUE": "Sudan"
+                                            },
+                                            {
+                                                "VALUE": "Suriname"
+                                            },
+                                            {
+                                                "VALUE": "Svalbard"
+                                            },
+                                            {
+                                                "VALUE": "Swaziland"
+                                            },
+                                            {
+                                                "VALUE": "Sweden"
+                                            },
+                                            {
+                                                "VALUE": "Switzerland"
+                                            },
+                                            {
+                                                "VALUE": "Syria"
+                                            },
+                                            {
+                                                "VALUE": "Taiwan"
+                                            },
+                                            {
+                                                "VALUE": "Tajikistan"
+                                            },
+                                            {
+                                                "VALUE": "Tanzania"
+                                            },
+                                            {
+                                                "VALUE": "Tasman Sea"
+                                            },
+                                            {
+                                                "VALUE": "Thailand"
+                                            },
+                                            {
+                                                "VALUE": "Togo"
+                                            },
+                                            {
+                                                "VALUE": "Tokelau"
+                                            },
+                                            {
+                                                "VALUE": "Tonga"
+                                            },
+                                            {
+                                                "VALUE": "Trinidad and Tobago"
+                                            },
+                                            {
+                                                "VALUE": "Tromelin Island"
+                                            },
+                                            {
+                                                "VALUE": "Tunisia"
+                                            },
+                                            {
+                                                "VALUE": "Turkey"
+                                            },
+                                            {
+                                                "VALUE": "Turkmenistan"
+                                            },
+                                            {
+                                                "VALUE": "Turks and Caicos Islands"
+                                            },
+                                            {
+                                                "VALUE": "Tuvalu"
+                                            },
+                                            {
+                                                "VALUE": "USA"
+                                            },
+                                            {
+                                                "VALUE": "Uganda"
+                                            },
+                                            {
+                                                "VALUE": "Ukraine"
+                                            },
+                                            {
+                                                "VALUE": "United Arab Emirates"
+                                            },
+                                            {
+                                                "VALUE": "United Kingdom"
+                                            },
+                                            {
+                                                "VALUE": "Uruguay"
+                                            },
+                                            {
+                                                "VALUE": "Uzbekistan"
+                                            },
+                                            {
+                                                "VALUE": "Vanuatu"
+                                            },
+                                            {
+                                                "VALUE": "Venezuela"
+                                            },
+                                            {
+                                                "VALUE": "Viet Nam"
+                                            },
+                                            {
+                                                "VALUE": "Virgin Islands"
+                                            },
+                                            {
+                                                "VALUE": "Wake Island"
+                                            },
+                                            {
+                                                "VALUE": "Wallis and Futuna"
+                                            },
+                                            {
+                                                "VALUE": "West Bank"
+                                            },
+                                            {
+                                                "VALUE": "Western Sahara"
+                                            },
+                                            {
+                                                "VALUE": "Yemen"
+                                            },
+                                            {
+                                                "VALUE": "Zambia"
+                                            },
+                                            {
+                                                "VALUE": "Zimbabwe"
+                                            },
+                                            {
+                                                "VALUE": "missing: control sample"
+                                            },
+                                            {
+                                                "VALUE": "missing: data agreement established pre-2023"
+                                            },
+                                            {
+                                                "VALUE": "missing: endangered species"
+                                            },
+                                            {
+                                                "VALUE": "missing: human-identifiable"
+                                            },
+                                            {
+                                                "VALUE": "missing: lab stock"
+                                            },
+                                            {
+                                                "VALUE": "missing: sample group"
+                                            },
+                                            {
+                                                "VALUE": "missing: synthetic construct"
+                                            },
+                                            {
+                                                "VALUE": "missing: third party data"
+                                            },
+                                            {
+                                                "VALUE": "not applicable"
+                                            },
+                                            {
+                                                "VALUE": "not collected"
+                                            },
+                                            {
+                                                "VALUE": "not provided"
+                                            },
+                                            {
+                                                "VALUE": "restricted access"
+                                            }
+                                        ]
+                                    }
+                                },
+                                "MANDATORY": "mandatory",
+                                "MULTIPLICITY": "multiple"
+                            },
+                            {
+                                "LABEL": "geographic location (latitude)",
+                                "NAME": "geographic location (latitude)",
+                                "DESCRIPTION": "The geographical origin of the sample as defined by latitude. The values should be reported in decimal degrees and in WGS84 system",
+                                "UNITS": {
+                                    "UNIT": "DD"
+                                },
+                                "FIELD_TYPE": {
+                                    "TEXT_FIELD": {
+                                        "REGEX_VALUE": "(^[+-]?[0-9]+.?[0-9]{0,8}$)|(^not collected$)|(^not provided$)|(^restricted access$)|(^missing: control sample$)|(^missing: sample group$)|(^missing: synthetic construct$)|(^missing: lab stock$)|(^missing: third party data$)|(^missing: data agreement established pre-2023$)|(^missing: endangered species$)|(^missing: human-identifiable$)"
+                                    }
+                                },
+                                "MANDATORY": "mandatory",
+                                "MULTIPLICITY": "multiple"
+                            },
+                            {
+                                "LABEL": "geographic location (longitude)",
+                                "NAME": "geographic location (longitude)",
+                                "DESCRIPTION": "The geographical origin of the sample as defined by longitude. The values should be reported in decimal degrees and in WGS84 system",
+                                "UNITS": {
+                                    "UNIT": "DD"
+                                },
+                                "FIELD_TYPE": {
+                                    "TEXT_FIELD": {
+                                        "REGEX_VALUE": "(^[+-]?[0-9]+.?[0-9]{0,8}$)|(^not collected$)|(^not provided$)|(^restricted access$)|(^missing: control sample$)|(^missing: sample group$)|(^missing: synthetic construct$)|(^missing: lab stock$)|(^missing: third party data$)|(^missing: data agreement established pre-2023$)|(^missing: endangered species$)|(^missing: human-identifiable$)"
+                                    }
+                                },
+                                "MANDATORY": "mandatory",
+                                "MULTIPLICITY": "multiple"
+                            },
+                            {
+                                "LABEL": "geographic location (region and locality)",
+                                "NAME": "geographic location (region and locality)",
+                                "DESCRIPTION": "The geographical origin of the sample as defined by the specific region name followed by the locality name.",
+                                "FIELD_TYPE": {
+                                    "TEXT_FIELD": null
+                                },
+                                "MANDATORY": "optional",
+                                "MULTIPLICITY": "multiple"
+                            },
+                            {
+                                "LABEL": "depth",
+                                "SYNONYM": "geographic location (depth)",
+                                "NAME": "depth",
+                                "DESCRIPTION": "The vertical distance below local surface, e.g. for sediment or soil samples depth is measured from sediment or soil surface, respectively. Depth can be reported as an interval for subsurface samples.",
+                                "UNITS": {
+                                    "UNIT": "m"
+                                },
+                                "FIELD_TYPE": {
+                                    "TEXT_FIELD": {
+                                        "REGEX_VALUE": "(0|((0\\.)|([1-9][0-9]*\\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+                                    }
+                                },
+                                "MANDATORY": "optional",
+                                "MULTIPLICITY": "multiple"
+                            },
+                            {
+                                "LABEL": "broad-scale environmental context",
+                                "SYNONYM": "environment (biome)",
+                                "NAME": "broad-scale environmental context",
+                                "DESCRIPTION": "Report the major environmental system the sample or specimen came from. The system(s) identified should have a coarse spatial grain, to provide the general environmental context of where the sampling was done (e.g. in the desert or a rainforest). We recommend using subclasses of EnvO\u2019s biome class: http://purl.obolibrary.org/obo/ENVO_00000428. EnvO documentation about how to use the field: https://github.com/EnvironmentOntology/envo/wiki/Using-ENVO-with-MIxS.",
+                                "FIELD_TYPE": {
+                                    "TEXT_FIELD": null
+                                },
+                                "MANDATORY": "mandatory",
+                                "MULTIPLICITY": "multiple"
+                            },
+                            {
+                                "LABEL": "local environmental context",
+                                "SYNONYM": "environment (feature)",
+                                "NAME": "local environmental context",
+                                "DESCRIPTION": "Report the entity or entities which are in the sample or specimen\u2019s local vicinity and which you believe have significant causal influences on your sample or specimen. We recommend using EnvO terms which are of smaller spatial grain than your entry for \"broad-scale environmental context\". Terms, such as anatomical sites, from other OBO Library ontologies which interoperate with EnvO (e.g. UBERON) are accepted in this field. EnvO documentation about how to use the field: https://github.com/EnvironmentOntology/envo/wiki/Using-ENVO-with-MIxS.",
+                                "FIELD_TYPE": {
+                                    "TEXT_FIELD": null
+                                },
+                                "MANDATORY": "mandatory",
+                                "MULTIPLICITY": "multiple"
+                            },
+                            {
+                                "LABEL": "environmental medium",
+                                "SYNONYM": "environment (material)",
+                                "NAME": "environmental medium",
+                                "DESCRIPTION": "Report the environmental material(s) immediately surrounding the sample or specimen at the time of sampling. We recommend using subclasses of 'environmental material' (http://purl.obolibrary.org/obo/ENVO_00010483). EnvO documentation about how to use the field: https://github.com/EnvironmentOntology/envo/wiki/Using-ENVO-with-MIxS . Terms from other OBO ontologies are permissible as long as they reference mass/volume nouns (e.g. air, water, blood) and not discrete, countable entities (e.g. a tree, a leaf, a table top).",
+                                "FIELD_TYPE": {
+                                    "TEXT_FIELD": null
+                                },
+                                "MANDATORY": "mandatory",
+                                "MULTIPLICITY": "multiple"
+                            },
+                            {
+                                "LABEL": "elevation",
+                                "SYNONYM": "geographic location (elevation)",
+                                "NAME": "elevation",
+                                "DESCRIPTION": "The elevation of the sampling site as measured by the vertical distance from mean sea level.",
+                                "UNITS": {
+                                    "UNIT": "m"
+                                },
+                                "FIELD_TYPE": {
+                                    "TEXT_FIELD": {
+                                        "REGEX_VALUE": "[+-]?(0|((0\\.)|([1-9][0-9]*\\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+                                    }
+                                },
+                                "MANDATORY": "optional",
+                                "MULTIPLICITY": "multiple"
+                            }
+                        ]
+                    },
+                    {
+                        "@restrictionType": "Any number or none of the fields",
+                        "NAME": "sample collection",
+                        "FIELD": [
+                            {
+                                "LABEL": "source material identifiers",
+                                "NAME": "source material identifiers",
+                                "DESCRIPTION": "A unique identifier assigned to a material sample (as defined by http://rs.tdwg.org/dwc/terms/materialSampleID, and as opposed to a particular digital record of a material sample) used for extracting nucleic acids, and subsequent sequencing. The identifier can refer either to the original material collected or to any derived sub-samples. The INSDC qualifiers /specimen_voucher, /bio_material, or /culture_collection may or may not share the same value as the source_mat_id field. For instance, the /specimen_voucher qualifier and source_mat_id may both contain 'UAM:Herps:14' , referring to both the specimen voucher and sampled tissue with the same identifier. However, the /culture_collection qualifier may refer to a value from an initial culture (e.g. ATCC:11775) while source_mat_id would refer to an identifier from some derived culture from which the nucleic acids were extracted (e.g. xatc123 or ark:/2154/R2).",
+                                "FIELD_TYPE": {
+                                    "TEXT_FIELD": null
+                                },
+                                "MANDATORY": "optional",
+                                "MULTIPLICITY": "multiple"
+                            },
+                            {
+                                "LABEL": "sample material processing",
+                                "NAME": "sample material processing",
+                                "DESCRIPTION": "A brief description of any processing applied to the sample during or after retrieving the sample from environment, or a link to the relevant protocol(s) performed.",
+                                "FIELD_TYPE": {
+                                    "TEXT_FIELD": null
+                                },
+                                "MANDATORY": "optional",
+                                "MULTIPLICITY": "multiple"
+                            },
+                            {
+                                "LABEL": "isolation and growth condition",
+                                "NAME": "isolation and growth condition",
+                                "DESCRIPTION": "Publication reference in the form of pubmed ID (pmid), digital object identifier (doi) or url for isolation and growth condition specifications of the organism/material. Mandatory for MIGS and MIMARKS Specimen.",
+                                "FIELD_TYPE": {
+                                    "TEXT_FIELD": null
+                                },
+                                "MANDATORY": "optional",
+                                "MULTIPLICITY": "multiple"
+                            },
+                            {
+                                "LABEL": "propagation",
+                                "NAME": "propagation",
+                                "DESCRIPTION": "The type of reproduction from the parent stock. Values for this field is specific to different taxa. For phage or virus: lytic/lysogenic/temperate/obligately lytic. For plasmids: incompatibility group. For eukaryotes: sexual/asexual. Mandatory for MIGs of eukayotes, plasmids and viruses.",
+                                "FIELD_TYPE": {
+                                    "TEXT_FIELD": null
+                                },
+                                "MANDATORY": "optional",
+                                "MULTIPLICITY": "multiple"
+                            },
+                            {
+                                "LABEL": "amount or size of sample collected",
+                                "NAME": "amount or size of sample collected",
+                                "DESCRIPTION": "The total amount or size (volume (ml), mass (g) or area (m2) ) of sample collected.",
+                                "UNITS": {
+                                    "UNIT": [
+                                        "L",
+                                        "g",
+                                        "kg",
+                                        "m2",
+                                        "m3"
+                                    ]
+                                },
+                                "FIELD_TYPE": {
+                                    "TEXT_FIELD": {
+                                        "REGEX_VALUE": "(0|((0\\.)|([1-9][0-9]*\\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+                                    }
+                                },
+                                "MANDATORY": "optional",
+                                "MULTIPLICITY": "multiple"
+                            },
+                            {
+                                "LABEL": "biomass",
+                                "NAME": "biomass",
+                                "DESCRIPTION": "amount of biomass; should include the name for the part of biomass measured, e.g. microbial, total. can include multiple measurements",
+                                "UNITS": {
+                                    "UNIT": [
+                                        "g",
+                                        "kg",
+                                        "t"
+                                    ]
+                                },
+                                "FIELD_TYPE": {
+                                    "TEXT_FIELD": null
+                                },
+                                "MANDATORY": "optional",
+                                "MULTIPLICITY": "multiple"
+                            },
+                            {
+                                "LABEL": "density",
+                                "NAME": "density",
+                                "DESCRIPTION": "density of sample",
+                                "UNITS": {
+                                    "UNIT": "g/m3"
+                                },
+                                "FIELD_TYPE": {
+                                    "TEXT_FIELD": {
+                                        "REGEX_VALUE": "(0|((0\\.)|([1-9][0-9]*\\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+                                    }
+                                },
+                                "MANDATORY": "optional",
+                                "MULTIPLICITY": "multiple"
+                            },
+                            {
+                                "LABEL": "oxygenation status of sample",
+                                "NAME": "oxygenation status of sample",
+                                "DESCRIPTION": "oxygenation status of sample",
+                                "FIELD_TYPE": {
+                                    "TEXT_CHOICE_FIELD": {
+                                        "TEXT_VALUE": [
+                                            {
+                                                "VALUE": "aerobic"
+                                            },
+                                            {
+                                                "VALUE": "anaerobic"
+                                            }
+                                        ]
+                                    }
+                                },
+                                "MANDATORY": "optional",
+                                "MULTIPLICITY": "multiple"
+                            },
+                            {
+                                "LABEL": "organism count",
+                                "NAME": "organism count",
+                                "DESCRIPTION": "Total cell count of any organism (or group of organisms) per gram, volume or area of sample, should include name of organism followed by count. The method that was used for the enumeration (e.g. qPCR, atp, mpn, etc.) Should also be provided. (example: total prokaryotes; 3.5e7 cells per ml; qpcr)",
+                                "FIELD_TYPE": {
+                                    "TEXT_FIELD": null
+                                },
+                                "MANDATORY": "optional",
+                                "MULTIPLICITY": "multiple"
+                            },
+                            {
+                                "LABEL": "sample storage duration",
+                                "NAME": "sample storage duration",
+                                "DESCRIPTION": "duration for which sample was stored",
+                                "UNITS": {
+                                    "UNIT": [
+                                        "days",
+                                        "hours",
+                                        "months",
+                                        "weeks",
+                                        "years"
+                                    ]
+                                },
+                                "FIELD_TYPE": {
+                                    "TEXT_FIELD": {
+                                        "REGEX_VALUE": "(0|((0\\.)|([1-9][0-9]*\\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+                                    }
+                                },
+                                "MANDATORY": "optional",
+                                "MULTIPLICITY": "multiple"
+                            },
+                            {
+                                "LABEL": "sample storage temperature",
+                                "NAME": "sample storage temperature",
+                                "DESCRIPTION": "temperature at which sample was stored, e.g. -80",
+                                "UNITS": {
+                                    "UNIT": "\u00b0C"
+                                },
+                                "FIELD_TYPE": {
+                                    "TEXT_FIELD": {
+                                        "REGEX_VALUE": "[+-]?(0|((0\\.)|([1-9][0-9]*\\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+                                    }
+                                },
+                                "MANDATORY": "optional",
+                                "MULTIPLICITY": "multiple"
+                            },
+                            {
+                                "LABEL": "sample storage location",
+                                "NAME": "sample storage location",
+                                "DESCRIPTION": "location at which sample was stored, usually name of a specific freezer/room",
+                                "FIELD_TYPE": {
+                                    "TEXT_FIELD": null
+                                },
+                                "MANDATORY": "optional",
+                                "MULTIPLICITY": "multiple"
+                            },
+                            {
+                                "LABEL": "sample collection device",
+                                "NAME": "sample collection device",
+                                "DESCRIPTION": "The device used to collect an environmental sample. It is recommended to use terms listed under environmental sampling device (http://purl.obolibrary.org/obo/ENVO) and/or terms listed under specimen collection device (http://purl.obolibrary.org/obo/GENEPIO_0002094).",
+                                "FIELD_TYPE": {
+                                    "TEXT_FIELD": null
+                                },
+                                "MANDATORY": "optional",
+                                "MULTIPLICITY": "single"
+                            },
+                            {
+                                "LABEL": "sample collection method",
+                                "NAME": "sample collection method",
+                                "DESCRIPTION": "The method employed for collecting the sample. Can be provided in the form of a PMID, DOI, url or text.",
+                                "FIELD_TYPE": {
+                                    "TEXT_FIELD": null
+                                },
+                                "MANDATORY": "optional",
+                                "MULTIPLICITY": "single"
+                            }
+                        ]
+                    },
+                    {
+                        "@restrictionType": "Any number or none of the fields",
+                        "NAME": "host disorder",
+                        "FIELD": [
+                            {
+                                "LABEL": "host disease status",
+                                "SYNONYM": "health or disease status of specific host",
+                                "NAME": "host disease status",
+                                "DESCRIPTION": "list of diseases with which the host has been diagnosed; can include multiple diagnoses. The value of the field depends on host; for humans the terms should be chosen from DO (Disease Ontology) at http://www.disease-ontology.org, other hosts are free text",
+                                "FIELD_TYPE": {
+                                    "TEXT_FIELD": null
+                                },
+                                "MANDATORY": "optional",
+                                "MULTIPLICITY": "multiple"
+                            }
+                        ]
+                    },
+                    {
+                        "@restrictionType": "Any number or none of the fields",
+                        "NAME": "host description",
+                        "FIELD": [
+                            {
+                                "LABEL": "host scientific name",
+                                "SYNONYM": "specific host",
+                                "NAME": "host scientific name",
+                                "DESCRIPTION": "Scientific name of the natural (as opposed to laboratory) host to the organism from which sample was obtained.",
+                                "FIELD_TYPE": {
+                                    "TEXT_FIELD": null
+                                },
+                                "MANDATORY": "optional",
+                                "MULTIPLICITY": "multiple"
+                            }
+                        ]
+                    },
+                    {
+                        "@restrictionType": "Any number or none of the fields",
+                        "NAME": "local environment conditions",
+                        "FIELD": [
+                            {
+                                "LABEL": "alkalinity",
+                                "NAME": "alkalinity",
+                                "DESCRIPTION": "alkalinity, the ability of a solution to neutralize acids to the equivalence point of carbonate or bicarbonate",
+                                "UNITS": {
+                                    "UNIT": "mEq/L"
+                                },
+                                "FIELD_TYPE": {
+                                    "TEXT_FIELD": {
+                                        "REGEX_VALUE": "(0|((0\\.)|([1-9][0-9]*\\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+                                    }
+                                },
+                                "MANDATORY": "optional",
+                                "MULTIPLICITY": "multiple"
+                            },
+                            {
+                                "LABEL": "water current",
+                                "NAME": "water current",
+                                "DESCRIPTION": "measurement of magnitude and direction of flow within a fluid",
+                                "UNITS": {
+                                    "UNIT": [
+                                        "knot",
+                                        "m3/s"
+                                    ]
+                                },
+                                "FIELD_TYPE": {
+                                    "TEXT_FIELD": {
+                                        "REGEX_VALUE": "(0|((0\\.)|([1-9][0-9]*\\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+                                    }
+                                },
+                                "MANDATORY": "optional",
+                                "MULTIPLICITY": "multiple"
+                            },
+                            {
+                                "LABEL": "pressure",
+                                "NAME": "pressure",
+                                "DESCRIPTION": "pressure to which the sample is subject, in atmospheres",
+                                "UNITS": {
+                                    "UNIT": [
+                                        "atm",
+                                        "bar"
+                                    ]
+                                },
+                                "FIELD_TYPE": {
+                                    "TEXT_FIELD": {
+                                        "REGEX_VALUE": "(0|((0\\.)|([1-9][0-9]*\\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+                                    }
+                                },
+                                "MANDATORY": "optional",
+                                "MULTIPLICITY": "multiple"
+                            },
+                            {
+                                "LABEL": "temperature",
+                                "NAME": "temperature",
+                                "DESCRIPTION": "temperature of the sample at time of sampling",
+                                "UNITS": {
+                                    "UNIT": "\u00baC"
+                                },
+                                "FIELD_TYPE": {
+                                    "TEXT_FIELD": {
+                                        "REGEX_VALUE": "[+-]?(0|((0\\.)|([1-9][0-9]*\\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+                                    }
+                                },
+                                "MANDATORY": "optional",
+                                "MULTIPLICITY": "multiple"
+                            },
+                            {
+                                "LABEL": "pH",
+                                "NAME": "pH",
+                                "DESCRIPTION": "pH measurement",
+                                "FIELD_TYPE": {
+                                    "TEXT_FIELD": {
+                                        "REGEX_VALUE": "(0|((0\\.)|([1-9][0-9]*\\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+                                    }
+                                },
+                                "MANDATORY": "optional",
+                                "MULTIPLICITY": "multiple"
+                            }
+                        ]
+                    },
+                    {
+                        "@restrictionType": "Any number or none of the fields",
+                        "NAME": "concentration measurement",
+                        "FIELD": [
+                            {
+                                "LABEL": "ammonium",
+                                "NAME": "ammonium",
+                                "DESCRIPTION": "concentration of ammonium",
+                                "UNITS": {
+                                    "UNIT": "\u00b5mol/L"
+                                },
+                                "FIELD_TYPE": {
+                                    "TEXT_FIELD": {
+                                        "REGEX_VALUE": "(0|((0\\.)|([1-9][0-9]*\\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+                                    }
+                                },
+                                "MANDATORY": "optional",
+                                "MULTIPLICITY": "multiple"
+                            },
+                            {
+                                "LABEL": "bromide",
+                                "NAME": "bromide",
+                                "DESCRIPTION": "concentration of bromide",
+                                "UNITS": {
+                                    "UNIT": [
+                                        "parts/million",
+                                        "\u00b5mol/L"
+                                    ]
+                                },
+                                "FIELD_TYPE": {
+                                    "TEXT_FIELD": {
+                                        "REGEX_VALUE": "(0|((0\\.)|([1-9][0-9]*\\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+                                    }
+                                },
+                                "MANDATORY": "optional",
+                                "MULTIPLICITY": "multiple"
+                            },
+                            {
+                                "LABEL": "calcium",
+                                "NAME": "calcium",
+                                "DESCRIPTION": "concentration of calcium",
+                                "UNITS": {
+                                    "UNIT": [
+                                        "mg/L",
+                                        "parts/million",
+                                        "\u00b5mol/L"
+                                    ]
+                                },
+                                "FIELD_TYPE": {
+                                    "TEXT_FIELD": {
+                                        "REGEX_VALUE": "(0|((0\\.)|([1-9][0-9]*\\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+                                    }
+                                },
+                                "MANDATORY": "optional",
+                                "MULTIPLICITY": "multiple"
+                            },
+                            {
+                                "LABEL": "chloride",
+                                "NAME": "chloride",
+                                "DESCRIPTION": "concentration of chloride",
+                                "UNITS": {
+                                    "UNIT": "mg/L"
+                                },
+                                "FIELD_TYPE": {
+                                    "TEXT_FIELD": {
+                                        "REGEX_VALUE": "(0|((0\\.)|([1-9][0-9]*\\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+                                    }
+                                },
+                                "MANDATORY": "optional",
+                                "MULTIPLICITY": "multiple"
+                            },
+                            {
+                                "LABEL": "chlorophyll",
+                                "NAME": "chlorophyll",
+                                "DESCRIPTION": "concentration of chlorophyll",
+                                "UNITS": {
+                                    "UNIT": [
+                                        "mg/m3",
+                                        "\u00b5g/L"
+                                    ]
+                                },
+                                "FIELD_TYPE": {
+                                    "TEXT_FIELD": {
+                                        "REGEX_VALUE": "(0|((0\\.)|([1-9][0-9]*\\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+                                    }
+                                },
+                                "MANDATORY": "optional",
+                                "MULTIPLICITY": "multiple"
+                            },
+                            {
+                                "LABEL": "diether lipids",
+                                "NAME": "diether lipids",
+                                "DESCRIPTION": "concentration of diether lipids; can include multiple types of diether lipids",
+                                "UNITS": {
+                                    "UNIT": "ng/L"
+                                },
+                                "FIELD_TYPE": {
+                                    "TEXT_FIELD": {
+                                        "REGEX_VALUE": "(0|((0\\.)|([1-9][0-9]*\\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+                                    }
+                                },
+                                "MANDATORY": "optional",
+                                "MULTIPLICITY": "multiple"
+                            },
+                            {
+                                "LABEL": "dissolved carbon dioxide",
+                                "NAME": "dissolved carbon dioxide",
+                                "DESCRIPTION": "concentration of dissolved carbon dioxide",
+                                "UNITS": {
+                                    "UNIT": "\u00b5mol/L"
+                                },
+                                "FIELD_TYPE": {
+                                    "TEXT_FIELD": {
+                                        "REGEX_VALUE": "(0|((0\\.)|([1-9][0-9]*\\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+                                    }
+                                },
+                                "MANDATORY": "optional",
+                                "MULTIPLICITY": "multiple"
+                            },
+                            {
+                                "LABEL": "dissolved hydrogen",
+                                "NAME": "dissolved hydrogen",
+                                "DESCRIPTION": "concentration of dissolved hydrogen",
+                                "UNITS": {
+                                    "UNIT": "\u00b5mol/L"
+                                },
+                                "FIELD_TYPE": {
+                                    "TEXT_FIELD": {
+                                        "REGEX_VALUE": "(0|((0\\.)|([1-9][0-9]*\\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+                                    }
+                                },
+                                "MANDATORY": "optional",
+                                "MULTIPLICITY": "multiple"
+                            },
+                            {
+                                "LABEL": "dissolved inorganic carbon",
+                                "NAME": "dissolved inorganic carbon",
+                                "DESCRIPTION": "dissolved inorganic carbon concentration",
+                                "UNITS": {
+                                    "UNIT": "\u00b5g/L"
+                                },
+                                "FIELD_TYPE": {
+                                    "TEXT_FIELD": {
+                                        "REGEX_VALUE": "(0|((0\\.)|([1-9][0-9]*\\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+                                    }
+                                },
+                                "MANDATORY": "optional",
+                                "MULTIPLICITY": "multiple"
+                            },
+                            {
+                                "LABEL": "dissolved organic nitrogen",
+                                "NAME": "dissolved organic nitrogen",
+                                "DESCRIPTION": "dissolved organic nitrogen concentration measured as; total dissolved nitrogen - NH4 - NO3 - NO2",
+                                "UNITS": {
+                                    "UNIT": [
+                                        "mg/L",
+                                        "\u00b5g/L"
+                                    ]
+                                },
+                                "FIELD_TYPE": {
+                                    "TEXT_FIELD": {
+                                        "REGEX_VALUE": "(0|((0\\.)|([1-9][0-9]*\\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+                                    }
+                                },
+                                "MANDATORY": "optional",
+                                "MULTIPLICITY": "multiple"
+                            },
+                            {
+                                "LABEL": "dissolved oxygen",
+                                "NAME": "dissolved oxygen",
+                                "DESCRIPTION": "concentration of dissolved oxygen",
+                                "UNITS": {
+                                    "UNIT": "\u00b5mol/kg"
+                                },
+                                "FIELD_TYPE": {
+                                    "TEXT_FIELD": {
+                                        "REGEX_VALUE": "(0|((0\\.)|([1-9][0-9]*\\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+                                    }
+                                },
+                                "MANDATORY": "optional",
+                                "MULTIPLICITY": "multiple"
+                            },
+                            {
+                                "LABEL": "nitrate",
+                                "NAME": "nitrate",
+                                "DESCRIPTION": "concentration of nitrate",
+                                "UNITS": {
+                                    "UNIT": "\u00b5mol/L"
+                                },
+                                "FIELD_TYPE": {
+                                    "TEXT_FIELD": {
+                                        "REGEX_VALUE": "(0|((0\\.)|([1-9][0-9]*\\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+                                    }
+                                },
+                                "MANDATORY": "optional",
+                                "MULTIPLICITY": "multiple"
+                            },
+                            {
+                                "LABEL": "nitrite",
+                                "NAME": "nitrite",
+                                "DESCRIPTION": "concentration of nitrite",
+                                "UNITS": {
+                                    "UNIT": "\u00b5mol/L"
+                                },
+                                "FIELD_TYPE": {
+                                    "TEXT_FIELD": {
+                                        "REGEX_VALUE": "(0|((0\\.)|([1-9][0-9]*\\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+                                    }
+                                },
+                                "MANDATORY": "optional",
+                                "MULTIPLICITY": "multiple"
+                            },
+                            {
+                                "LABEL": "nitrogen",
+                                "NAME": "nitrogen",
+                                "DESCRIPTION": "concentration of nitrogen (total)",
+                                "UNITS": {
+                                    "UNIT": "\u00b5mol/L"
+                                },
+                                "FIELD_TYPE": {
+                                    "TEXT_FIELD": {
+                                        "REGEX_VALUE": "(0|((0\\.)|([1-9][0-9]*\\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+                                    }
+                                },
+                                "MANDATORY": "optional",
+                                "MULTIPLICITY": "multiple"
+                            },
+                            {
+                                "LABEL": "organic carbon",
+                                "NAME": "organic carbon",
+                                "DESCRIPTION": "concentration of organic carbon",
+                                "UNITS": {
+                                    "UNIT": "\u00b5mol/L"
+                                },
+                                "FIELD_TYPE": {
+                                    "TEXT_FIELD": {
+                                        "REGEX_VALUE": "(0|((0\\.)|([1-9][0-9]*\\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+                                    }
+                                },
+                                "MANDATORY": "optional",
+                                "MULTIPLICITY": "multiple"
+                            },
+                            {
+                                "LABEL": "organic matter",
+                                "NAME": "organic matter",
+                                "DESCRIPTION": "concentration of organic matter",
+                                "UNITS": {
+                                    "UNIT": "\u00b5g/L"
+                                },
+                                "FIELD_TYPE": {
+                                    "TEXT_FIELD": {
+                                        "REGEX_VALUE": "(0|((0\\.)|([1-9][0-9]*\\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+                                    }
+                                },
+                                "MANDATORY": "optional",
+                                "MULTIPLICITY": "multiple"
+                            },
+                            {
+                                "LABEL": "organic nitrogen",
+                                "NAME": "organic nitrogen",
+                                "DESCRIPTION": "concentration of organic nitrogen",
+                                "UNITS": {
+                                    "UNIT": "\u00b5g/L"
+                                },
+                                "FIELD_TYPE": {
+                                    "TEXT_FIELD": {
+                                        "REGEX_VALUE": "(0|((0\\.)|([1-9][0-9]*\\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+                                    }
+                                },
+                                "MANDATORY": "optional",
+                                "MULTIPLICITY": "multiple"
+                            },
+                            {
+                                "LABEL": "phosphate",
+                                "NAME": "phosphate",
+                                "DESCRIPTION": "concentration of phosphate",
+                                "UNITS": {
+                                    "UNIT": "\u00b5mol/L"
+                                },
+                                "FIELD_TYPE": {
+                                    "TEXT_FIELD": {
+                                        "REGEX_VALUE": "(0|((0\\.)|([1-9][0-9]*\\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+                                    }
+                                },
+                                "MANDATORY": "optional",
+                                "MULTIPLICITY": "multiple"
+                            },
+                            {
+                                "LABEL": "phospholipid fatty acid",
+                                "NAME": "phospholipid fatty acid",
+                                "DESCRIPTION": "concentration of phospholipid fatty acids; can include multiple values",
+                                "UNITS": {
+                                    "UNIT": [
+                                        "mol/L",
+                                        "mol/g"
+                                    ]
+                                },
+                                "FIELD_TYPE": {
+                                    "TEXT_FIELD": {
+                                        "REGEX_VALUE": "(0|((0\\.)|([1-9][0-9]*\\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+                                    }
+                                },
+                                "MANDATORY": "optional",
+                                "MULTIPLICITY": "multiple"
+                            },
+                            {
+                                "LABEL": "potassium",
+                                "NAME": "potassium",
+                                "DESCRIPTION": "concentration of potassium",
+                                "UNITS": {
+                                    "UNIT": [
+                                        "parts/million",
+                                        "\u00b5mol/L"
+                                    ]
+                                },
+                                "FIELD_TYPE": {
+                                    "TEXT_FIELD": {
+                                        "REGEX_VALUE": "(0|((0\\.)|([1-9][0-9]*\\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+                                    }
+                                },
+                                "MANDATORY": "optional",
+                                "MULTIPLICITY": "multiple"
+                            },
+                            {
+                                "LABEL": "salinity",
+                                "SYNONYM": [
+                                    "extreme_unusual_properties/salinity",
+                                    "sample salinity"
+                                ],
+                                "NAME": "salinity",
+                                "DESCRIPTION": "The total concentration of all dissolved salts in a liquid or solid sample. While salinity can be measured by a complete chemical analysis, this method is difficult and time consuming. More often, it is instead derived from the conductivity measurement. This is known as practical salinity. These derivations compare the specific conductance of the sample to a salinity standard such as seawater.",
+                                "UNITS": {
+                                    "UNIT": "psu"
+                                },
+                                "FIELD_TYPE": {
+                                    "TEXT_FIELD": {
+                                        "REGEX_VALUE": "(0|((0\\.)|([1-9][0-9]*\\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+                                    }
+                                },
+                                "MANDATORY": "optional",
+                                "MULTIPLICITY": "multiple"
+                            },
+                            {
+                                "LABEL": "silicate",
+                                "NAME": "silicate",
+                                "DESCRIPTION": "concentration of silicate",
+                                "UNITS": {
+                                    "UNIT": "\u00b5mol/L"
+                                },
+                                "FIELD_TYPE": {
+                                    "TEXT_FIELD": {
+                                        "REGEX_VALUE": "(0|((0\\.)|([1-9][0-9]*\\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+                                    }
+                                },
+                                "MANDATORY": "optional",
+                                "MULTIPLICITY": "multiple"
+                            },
+                            {
+                                "LABEL": "sodium",
+                                "NAME": "sodium",
+                                "DESCRIPTION": "sodium concentration",
+                                "UNITS": {
+                                    "UNIT": [
+                                        "parts/million",
+                                        "\u00b5mol/L"
+                                    ]
+                                },
+                                "FIELD_TYPE": {
+                                    "TEXT_FIELD": {
+                                        "REGEX_VALUE": "(0|((0\\.)|([1-9][0-9]*\\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+                                    }
+                                },
+                                "MANDATORY": "optional",
+                                "MULTIPLICITY": "multiple"
+                            },
+                            {
+                                "LABEL": "sulfate",
+                                "NAME": "sulfate",
+                                "DESCRIPTION": "concentration of sulfate",
+                                "UNITS": {
+                                    "UNIT": [
+                                        "mg/L",
+                                        "\u00b5mol/L"
+                                    ]
+                                },
+                                "FIELD_TYPE": {
+                                    "TEXT_FIELD": {
+                                        "REGEX_VALUE": "(0|((0\\.)|([1-9][0-9]*\\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+                                    }
+                                },
+                                "MANDATORY": "optional",
+                                "MULTIPLICITY": "multiple"
+                            },
+                            {
+                                "LABEL": "sulfide",
+                                "NAME": "sulfide",
+                                "DESCRIPTION": "concentration of sulfide",
+                                "UNITS": {
+                                    "UNIT": [
+                                        "mg/L",
+                                        "\u00b5mol/L"
+                                    ]
+                                },
+                                "FIELD_TYPE": {
+                                    "TEXT_FIELD": {
+                                        "REGEX_VALUE": "(0|((0\\.)|([1-9][0-9]*\\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+                                    }
+                                },
+                                "MANDATORY": "optional",
+                                "MULTIPLICITY": "multiple"
+                            }
+                        ]
+                    },
+                    {
+                        "@restrictionType": "Any number or none of the fields",
+                        "NAME": "organism characteristics",
+                        "FIELD": [
+                            {
+                                "LABEL": "subspecific genetic lineage",
+                                "NAME": "subspecific genetic lineage",
+                                "DESCRIPTION": "Information about the genetic distinctness of the sequenced organism below the subspecies level, e.g., serovar, serotype, biotype, ecotype, or any relevant genetic typing schemes like Group I plasmid. Subspecies should not be recorded in this term, but in the NCBI taxonomy. Supply both the lineage name and the lineage rank separated by a colon, e.g., biovar:abc123.",
+                                "FIELD_TYPE": {
+                                    "TEXT_FIELD": null
+                                },
+                                "MANDATORY": "optional",
+                                "MULTIPLICITY": "multiple"
+                            },
+                            {
+                                "LABEL": "trophic level",
+                                "NAME": "trophic level",
+                                "DESCRIPTION": "Trophic levels are the feeding position in a food chain. Microbes can be a range of producers (e.g. chemolithotroph)",
+                                "FIELD_TYPE": {
+                                    "TEXT_CHOICE_FIELD": {
+                                        "TEXT_VALUE": [
+                                            {
+                                                "VALUE": "autotroph"
+                                            },
+                                            {
+                                                "VALUE": "carboxydotroph"
+                                            },
+                                            {
+                                                "VALUE": "chemoautotroph"
+                                            },
+                                            {
+                                                "VALUE": "chemoheterotroph"
+                                            },
+                                            {
+                                                "VALUE": "chemolithoautotroph"
+                                            },
+                                            {
+                                                "VALUE": "chemolithotroph"
+                                            },
+                                            {
+                                                "VALUE": "chemoorganoheterotroph"
+                                            },
+                                            {
+                                                "VALUE": "chemoorganotroph"
+                                            },
+                                            {
+                                                "VALUE": "chemosynthetic"
+                                            },
+                                            {
+                                                "VALUE": "chemotroph"
+                                            },
+                                            {
+                                                "VALUE": "copiotroph"
+                                            },
+                                            {
+                                                "VALUE": "diazotroph"
+                                            },
+                                            {
+                                                "VALUE": "facultative autotroph"
+                                            },
+                                            {
+                                                "VALUE": "heterotroph"
+                                            },
+                                            {
+                                                "VALUE": "lithoautotroph"
+                                            },
+                                            {
+                                                "VALUE": "lithoheterotroph"
+                                            },
+                                            {
+                                                "VALUE": "lithotroph"
+                                            },
+                                            {
+                                                "VALUE": "methanotroph"
+                                            },
+                                            {
+                                                "VALUE": "methylotroph"
+                                            },
+                                            {
+                                                "VALUE": "mixotroph"
+                                            },
+                                            {
+                                                "VALUE": "obligate chemoautolithotroph"
+                                            },
+                                            {
+                                                "VALUE": "oligotroph"
+                                            },
+                                            {
+                                                "VALUE": "organoheterotroph"
+                                            },
+                                            {
+                                                "VALUE": "organotroph"
+                                            },
+                                            {
+                                                "VALUE": "photoautotroph"
+                                            },
+                                            {
+                                                "VALUE": "photoheterotroph"
+                                            },
+                                            {
+                                                "VALUE": "photolithoautotroph"
+                                            },
+                                            {
+                                                "VALUE": "photolithotroph"
+                                            },
+                                            {
+                                                "VALUE": "photosynthetic"
+                                            },
+                                            {
+                                                "VALUE": "phototroph"
+                                            }
+                                        ]
+                                    }
+                                },
+                                "MANDATORY": "optional",
+                                "MULTIPLICITY": "multiple"
+                            },
+                            {
+                                "LABEL": "relationship to oxygen",
+                                "NAME": "relationship to oxygen",
+                                "DESCRIPTION": "Is this organism an aerobe, anaerobe? Please note that aerobic and anaerobic are valid descriptors for microbial environments",
+                                "FIELD_TYPE": {
+                                    "TEXT_CHOICE_FIELD": {
+                                        "TEXT_VALUE": [
+                                            {
+                                                "VALUE": "aerobe"
+                                            },
+                                            {
+                                                "VALUE": "anaerobe"
+                                            },
+                                            {
+                                                "VALUE": "facultative"
+                                            },
+                                            {
+                                                "VALUE": "microaerophilic"
+                                            },
+                                            {
+                                                "VALUE": "microanaerobe"
+                                            },
+                                            {
+                                                "VALUE": "obligate aerobe"
+                                            },
+                                            {
+                                                "VALUE": "obligate anaerobe"
+                                            }
+                                        ]
+                                    }
+                                },
+                                "MANDATORY": "optional",
+                                "MULTIPLICITY": "multiple"
+                            },
+                            {
+                                "LABEL": "known pathogenicity",
+                                "NAME": "known pathogenicity",
+                                "DESCRIPTION": "To what is the entity pathogenic, for instance plant, fungi, bacteria",
+                                "FIELD_TYPE": {
+                                    "TEXT_FIELD": null
+                                },
+                                "MANDATORY": "optional",
+                                "MULTIPLICITY": "multiple"
+                            },
+                            {
+                                "LABEL": "encoded traits",
+                                "NAME": "encoded traits",
+                                "DESCRIPTION": "Should include key traits like antibiotic resistance or xenobiotic degradation phenotypes for plasmids, converting genes for phage",
+                                "FIELD_TYPE": {
+                                    "TEXT_FIELD": null
+                                },
+                                "MANDATORY": "optional",
+                                "MULTIPLICITY": "multiple"
+                            },
+                            {
+                                "LABEL": "observed biotic relationship",
+                                "NAME": "observed biotic relationship",
+                                "DESCRIPTION": "Is it free-living or in a host and if the latter what type of relationship is observed",
+                                "FIELD_TYPE": {
+                                    "TEXT_CHOICE_FIELD": {
+                                        "TEXT_VALUE": [
+                                            {
+                                                "VALUE": "commensal"
+                                            },
+                                            {
+                                                "VALUE": "free living"
+                                            },
+                                            {
+                                                "VALUE": "mutualism"
+                                            },
+                                            {
+                                                "VALUE": "parasite"
+                                            },
+                                            {
+                                                "VALUE": "symbiont"
+                                            }
+                                        ]
+                                    }
+                                },
+                                "MANDATORY": "optional",
+                                "MULTIPLICITY": "multiple"
+                            }
+                        ]
+                    },
+                    {
+                        "@restrictionType": "Any number or none of the fields",
+                        "NAME": "local environment conditions imposed",
+                        "FIELD": [
+                            {
+                                "LABEL": "chemical administration",
+                                "NAME": "chemical administration",
+                                "DESCRIPTION": "list of chemical compounds administered to the host or site where sampling occurred, and when (e.g. antibiotics, N fertilizer, air filter); can include multiple compounds. For Chemical Entities of Biological Interest ontology (CHEBI) (v111), please see http://purl.bioontology.org/ontology/CHEBI",
+                                "FIELD_TYPE": {
+                                    "TEXT_FIELD": null
+                                },
+                                "MANDATORY": "optional",
+                                "MULTIPLICITY": "multiple"
+                            },
+                            {
+                                "LABEL": "perturbation",
+                                "NAME": "perturbation",
+                                "DESCRIPTION": "type of perturbation, e.g. chemical administration, physical disturbance, etc., coupled with time that perturbation occurred; can include multiple perturbation types",
+                                "FIELD_TYPE": {
+                                    "TEXT_FIELD": null
+                                },
+                                "MANDATORY": "optional",
+                                "MULTIPLICITY": "multiple"
+                            }
+                        ]
+                    }
+                ]
+            }
+        }
+    }
+}

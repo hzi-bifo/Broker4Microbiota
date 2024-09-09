@@ -1,0 +1,1245 @@
+{
+    "CHECKLIST_SET": {
+        "CHECKLIST": {
+            "@accession": "ERC000011",
+            "@checklistType": "Sample",
+            "IDENTIFIERS": {
+                "PRIMARY_ID": "ERC000011"
+            },
+            "DESCRIPTOR": {
+                "LABEL": "ENA default sample checklist",
+                "NAME": "ENA default sample checklist",
+                "DESCRIPTION": "Minimum information required for the sample",
+                "AUTHORITY": "ENA",
+                "FIELD_GROUP": [
+                    {
+                        "@restrictionType": "Any number or none of the fields",
+                        "NAME": "Part and developmental stage of organism",
+                        "DESCRIPTION": "Anatomical and developmental descriptions of the sample site or source material",
+                        "FIELD": [
+                            {
+                                "LABEL": "cell_type",
+                                "NAME": "cell_type",
+                                "DESCRIPTION": "cell type from which the sample was obtained",
+                                "FIELD_TYPE": {
+                                    "TEXT_FIELD": null
+                                },
+                                "MANDATORY": "optional",
+                                "MULTIPLICITY": "multiple"
+                            },
+                            {
+                                "LABEL": "dev_stage",
+                                "NAME": "dev_stage",
+                                "DESCRIPTION": "if the sample was obtained from an organism in a specific developmental stage, it is specified with this qualifier",
+                                "FIELD_TYPE": {
+                                    "TEXT_FIELD": null
+                                },
+                                "MANDATORY": "optional",
+                                "MULTIPLICITY": "multiple"
+                            },
+                            {
+                                "LABEL": "germline",
+                                "NAME": "germline",
+                                "DESCRIPTION": "the sample described presented in the entry has not undergone somatic genomic rearrangement as part of an adaptive immune response; it is the unrearranged molecule that was inherited from the parental germline",
+                                "FIELD_TYPE": {
+                                    "TEXT_FIELD": null
+                                },
+                                "MANDATORY": "optional",
+                                "MULTIPLICITY": "multiple"
+                            },
+                            {
+                                "LABEL": "tissue_lib",
+                                "NAME": "tissue_lib",
+                                "DESCRIPTION": "tissue library from which sample was obtained",
+                                "FIELD_TYPE": {
+                                    "TEXT_FIELD": null
+                                },
+                                "MANDATORY": "optional",
+                                "MULTIPLICITY": "multiple"
+                            },
+                            {
+                                "LABEL": "tissue_type",
+                                "NAME": "tissue_type",
+                                "DESCRIPTION": "tissue type from which the sample was obtained",
+                                "FIELD_TYPE": {
+                                    "TEXT_FIELD": null
+                                },
+                                "MANDATORY": "optional",
+                                "MULTIPLICITY": "multiple"
+                            }
+                        ]
+                    },
+                    {
+                        "@restrictionType": "Any number or none of the fields",
+                        "NAME": "Collection event information",
+                        "FIELD": [
+                            {
+                                "LABEL": "isolation_source",
+                                "NAME": "isolation_source",
+                                "DESCRIPTION": "describes the physical, environmental and/or local geographical source of the biological sample from which the sample was derived",
+                                "FIELD_TYPE": {
+                                    "TEXT_FIELD": null
+                                },
+                                "MANDATORY": "optional",
+                                "MULTIPLICITY": "multiple"
+                            },
+                            {
+                                "LABEL": "lat_lon",
+                                "NAME": "lat_lon",
+                                "DESCRIPTION": "geographical coordinates of the location where the specimen was collected",
+                                "FIELD_TYPE": {
+                                    "TEXT_FIELD": null
+                                },
+                                "MANDATORY": "optional",
+                                "MULTIPLICITY": "multiple"
+                            },
+                            {
+                                "LABEL": "collected_by",
+                                "NAME": "collected_by",
+                                "DESCRIPTION": "name of persons or institute who collected the specimen",
+                                "FIELD_TYPE": {
+                                    "TEXT_AREA_FIELD": null
+                                },
+                                "MANDATORY": "optional",
+                                "MULTIPLICITY": "multiple"
+                            },
+                            {
+                                "LABEL": "collection date",
+                                "SYNONYM": [
+                                    "Event Date/Time",
+                                    "collection_date"
+                                ],
+                                "NAME": "collection date",
+                                "DESCRIPTION": "The date the sample was collected with the intention of sequencing, either as an instance (single point in time) or interval. In case no exact time is available, the date/time can be right truncated i.e. all of these are valid ISO8601 compliant times: 2008-01-23T19:23:10+00:00; 2008-01-23T19:23:10; 2008-01-23; 2008-01; 2008.",
+                                "FIELD_TYPE": {
+                                    "TEXT_FIELD": {
+                                        "REGEX_VALUE": "(^[12][0-9]{3}(-(0[1-9]|1[0-2])(-(0[1-9]|[12][0-9]|3[01])(T[0-9]{2}:[0-9]{2}(:[0-9]{2})?Z?([+-][0-9]{1,2})?)?)?)?(/[0-9]{4}(-[0-9]{2}(-[0-9]{2}(T[0-9]{2}:[0-9]{2}(:[0-9]{2})?Z?([+-][0-9]{1,2})?)?)?)?)?$)|(^not collected$)|(^not provided$)|(^restricted access$)|(^missing: control sample$)|(^missing: sample group$)|(^missing: synthetic construct$)|(^missing: lab stock$)|(^missing: third party data$)|(^missing: data agreement established pre-2023$)|(^missing: endangered species$)|(^missing: human-identifiable$)"
+                                    }
+                                },
+                                "MANDATORY": "mandatory",
+                                "MULTIPLICITY": "multiple"
+                            },
+                            {
+                                "LABEL": "geographic location (country and/or sea)",
+                                "NAME": "geographic location (country and/or sea)",
+                                "DESCRIPTION": "The location the sample was collected from with the intention of sequencing, as defined by the country or sea. Country or sea names should be chosen from the INSDC country list (http://insdc.org/country.html).",
+                                "FIELD_TYPE": {
+                                    "TEXT_CHOICE_FIELD": {
+                                        "TEXT_VALUE": [
+                                            {
+                                                "VALUE": "Afghanistan"
+                                            },
+                                            {
+                                                "VALUE": "Albania"
+                                            },
+                                            {
+                                                "VALUE": "Algeria"
+                                            },
+                                            {
+                                                "VALUE": "American Samoa"
+                                            },
+                                            {
+                                                "VALUE": "Andorra"
+                                            },
+                                            {
+                                                "VALUE": "Angola"
+                                            },
+                                            {
+                                                "VALUE": "Anguilla"
+                                            },
+                                            {
+                                                "VALUE": "Antarctica"
+                                            },
+                                            {
+                                                "VALUE": "Antigua and Barbuda"
+                                            },
+                                            {
+                                                "VALUE": "Arctic Ocean"
+                                            },
+                                            {
+                                                "VALUE": "Argentina"
+                                            },
+                                            {
+                                                "VALUE": "Armenia"
+                                            },
+                                            {
+                                                "VALUE": "Aruba"
+                                            },
+                                            {
+                                                "VALUE": "Ashmore and Cartier Islands"
+                                            },
+                                            {
+                                                "VALUE": "Atlantic Ocean"
+                                            },
+                                            {
+                                                "VALUE": "Australia"
+                                            },
+                                            {
+                                                "VALUE": "Austria"
+                                            },
+                                            {
+                                                "VALUE": "Azerbaijan"
+                                            },
+                                            {
+                                                "VALUE": "Bahamas"
+                                            },
+                                            {
+                                                "VALUE": "Bahrain"
+                                            },
+                                            {
+                                                "VALUE": "Baker Island"
+                                            },
+                                            {
+                                                "VALUE": "Baltic Sea"
+                                            },
+                                            {
+                                                "VALUE": "Bangladesh"
+                                            },
+                                            {
+                                                "VALUE": "Barbados"
+                                            },
+                                            {
+                                                "VALUE": "Bassas da India"
+                                            },
+                                            {
+                                                "VALUE": "Belarus"
+                                            },
+                                            {
+                                                "VALUE": "Belgium"
+                                            },
+                                            {
+                                                "VALUE": "Belize"
+                                            },
+                                            {
+                                                "VALUE": "Benin"
+                                            },
+                                            {
+                                                "VALUE": "Bermuda"
+                                            },
+                                            {
+                                                "VALUE": "Bhutan"
+                                            },
+                                            {
+                                                "VALUE": "Bolivia"
+                                            },
+                                            {
+                                                "VALUE": "Borneo"
+                                            },
+                                            {
+                                                "VALUE": "Bosnia and Herzegovina"
+                                            },
+                                            {
+                                                "VALUE": "Botswana"
+                                            },
+                                            {
+                                                "VALUE": "Bouvet Island"
+                                            },
+                                            {
+                                                "VALUE": "Brazil"
+                                            },
+                                            {
+                                                "VALUE": "British Virgin Islands"
+                                            },
+                                            {
+                                                "VALUE": "Brunei"
+                                            },
+                                            {
+                                                "VALUE": "Bulgaria"
+                                            },
+                                            {
+                                                "VALUE": "Burkina Faso"
+                                            },
+                                            {
+                                                "VALUE": "Burundi"
+                                            },
+                                            {
+                                                "VALUE": "Cambodia"
+                                            },
+                                            {
+                                                "VALUE": "Cameroon"
+                                            },
+                                            {
+                                                "VALUE": "Canada"
+                                            },
+                                            {
+                                                "VALUE": "Cape Verde"
+                                            },
+                                            {
+                                                "VALUE": "Cayman Islands"
+                                            },
+                                            {
+                                                "VALUE": "Central African Republic"
+                                            },
+                                            {
+                                                "VALUE": "Chad"
+                                            },
+                                            {
+                                                "VALUE": "Chile"
+                                            },
+                                            {
+                                                "VALUE": "China"
+                                            },
+                                            {
+                                                "VALUE": "Christmas Island"
+                                            },
+                                            {
+                                                "VALUE": "Clipperton Island"
+                                            },
+                                            {
+                                                "VALUE": "Cocos Islands"
+                                            },
+                                            {
+                                                "VALUE": "Colombia"
+                                            },
+                                            {
+                                                "VALUE": "Comoros"
+                                            },
+                                            {
+                                                "VALUE": "Cook Islands"
+                                            },
+                                            {
+                                                "VALUE": "Coral Sea Islands"
+                                            },
+                                            {
+                                                "VALUE": "Costa Rica"
+                                            },
+                                            {
+                                                "VALUE": "Cote d'Ivoire"
+                                            },
+                                            {
+                                                "VALUE": "Croatia"
+                                            },
+                                            {
+                                                "VALUE": "Cuba"
+                                            },
+                                            {
+                                                "VALUE": "Curacao"
+                                            },
+                                            {
+                                                "VALUE": "Cyprus"
+                                            },
+                                            {
+                                                "VALUE": "Czech Republic"
+                                            },
+                                            {
+                                                "VALUE": "Democratic Republic of the Congo"
+                                            },
+                                            {
+                                                "VALUE": "Denmark"
+                                            },
+                                            {
+                                                "VALUE": "Djibouti"
+                                            },
+                                            {
+                                                "VALUE": "Dominica"
+                                            },
+                                            {
+                                                "VALUE": "Dominican Republic"
+                                            },
+                                            {
+                                                "VALUE": "East Timor"
+                                            },
+                                            {
+                                                "VALUE": "Ecuador"
+                                            },
+                                            {
+                                                "VALUE": "Egypt"
+                                            },
+                                            {
+                                                "VALUE": "El Salvador"
+                                            },
+                                            {
+                                                "VALUE": "Equatorial Guinea"
+                                            },
+                                            {
+                                                "VALUE": "Eritrea"
+                                            },
+                                            {
+                                                "VALUE": "Estonia"
+                                            },
+                                            {
+                                                "VALUE": "Ethiopia"
+                                            },
+                                            {
+                                                "VALUE": "Europa Island"
+                                            },
+                                            {
+                                                "VALUE": "Falkland Islands (Islas Malvinas)"
+                                            },
+                                            {
+                                                "VALUE": "Faroe Islands"
+                                            },
+                                            {
+                                                "VALUE": "Fiji"
+                                            },
+                                            {
+                                                "VALUE": "Finland"
+                                            },
+                                            {
+                                                "VALUE": "France"
+                                            },
+                                            {
+                                                "VALUE": "French Guiana"
+                                            },
+                                            {
+                                                "VALUE": "French Polynesia"
+                                            },
+                                            {
+                                                "VALUE": "French Southern and Antarctic Lands"
+                                            },
+                                            {
+                                                "VALUE": "Gabon"
+                                            },
+                                            {
+                                                "VALUE": "Gambia"
+                                            },
+                                            {
+                                                "VALUE": "Gaza Strip"
+                                            },
+                                            {
+                                                "VALUE": "Georgia"
+                                            },
+                                            {
+                                                "VALUE": "Germany"
+                                            },
+                                            {
+                                                "VALUE": "Ghana"
+                                            },
+                                            {
+                                                "VALUE": "Gibraltar"
+                                            },
+                                            {
+                                                "VALUE": "Glorioso Islands"
+                                            },
+                                            {
+                                                "VALUE": "Greece"
+                                            },
+                                            {
+                                                "VALUE": "Greenland"
+                                            },
+                                            {
+                                                "VALUE": "Grenada"
+                                            },
+                                            {
+                                                "VALUE": "Guadeloupe"
+                                            },
+                                            {
+                                                "VALUE": "Guam"
+                                            },
+                                            {
+                                                "VALUE": "Guatemala"
+                                            },
+                                            {
+                                                "VALUE": "Guernsey"
+                                            },
+                                            {
+                                                "VALUE": "Guinea"
+                                            },
+                                            {
+                                                "VALUE": "Guinea-Bissau"
+                                            },
+                                            {
+                                                "VALUE": "Guyana"
+                                            },
+                                            {
+                                                "VALUE": "Haiti"
+                                            },
+                                            {
+                                                "VALUE": "Heard Island and McDonald Islands"
+                                            },
+                                            {
+                                                "VALUE": "Honduras"
+                                            },
+                                            {
+                                                "VALUE": "Hong Kong"
+                                            },
+                                            {
+                                                "VALUE": "Howland Island"
+                                            },
+                                            {
+                                                "VALUE": "Hungary"
+                                            },
+                                            {
+                                                "VALUE": "Iceland"
+                                            },
+                                            {
+                                                "VALUE": "India"
+                                            },
+                                            {
+                                                "VALUE": "Indian Ocean"
+                                            },
+                                            {
+                                                "VALUE": "Indonesia"
+                                            },
+                                            {
+                                                "VALUE": "Iran"
+                                            },
+                                            {
+                                                "VALUE": "Iraq"
+                                            },
+                                            {
+                                                "VALUE": "Ireland"
+                                            },
+                                            {
+                                                "VALUE": "Isle of Man"
+                                            },
+                                            {
+                                                "VALUE": "Israel"
+                                            },
+                                            {
+                                                "VALUE": "Italy"
+                                            },
+                                            {
+                                                "VALUE": "Jamaica"
+                                            },
+                                            {
+                                                "VALUE": "Jan Mayen"
+                                            },
+                                            {
+                                                "VALUE": "Japan"
+                                            },
+                                            {
+                                                "VALUE": "Jarvis Island"
+                                            },
+                                            {
+                                                "VALUE": "Jersey"
+                                            },
+                                            {
+                                                "VALUE": "Johnston Atoll"
+                                            },
+                                            {
+                                                "VALUE": "Jordan"
+                                            },
+                                            {
+                                                "VALUE": "Juan de Nova Island"
+                                            },
+                                            {
+                                                "VALUE": "Kazakhstan"
+                                            },
+                                            {
+                                                "VALUE": "Kenya"
+                                            },
+                                            {
+                                                "VALUE": "Kerguelen Archipelago"
+                                            },
+                                            {
+                                                "VALUE": "Kingman Reef"
+                                            },
+                                            {
+                                                "VALUE": "Kiribati"
+                                            },
+                                            {
+                                                "VALUE": "Kosovo"
+                                            },
+                                            {
+                                                "VALUE": "Kuwait"
+                                            },
+                                            {
+                                                "VALUE": "Kyrgyzstan"
+                                            },
+                                            {
+                                                "VALUE": "Laos"
+                                            },
+                                            {
+                                                "VALUE": "Latvia"
+                                            },
+                                            {
+                                                "VALUE": "Lebanon"
+                                            },
+                                            {
+                                                "VALUE": "Lesotho"
+                                            },
+                                            {
+                                                "VALUE": "Liberia"
+                                            },
+                                            {
+                                                "VALUE": "Libya"
+                                            },
+                                            {
+                                                "VALUE": "Liechtenstein"
+                                            },
+                                            {
+                                                "VALUE": "Lithuania"
+                                            },
+                                            {
+                                                "VALUE": "Luxembourg"
+                                            },
+                                            {
+                                                "VALUE": "Macau"
+                                            },
+                                            {
+                                                "VALUE": "Macedonia"
+                                            },
+                                            {
+                                                "VALUE": "Madagascar"
+                                            },
+                                            {
+                                                "VALUE": "Malawi"
+                                            },
+                                            {
+                                                "VALUE": "Malaysia"
+                                            },
+                                            {
+                                                "VALUE": "Maldives"
+                                            },
+                                            {
+                                                "VALUE": "Mali"
+                                            },
+                                            {
+                                                "VALUE": "Malta"
+                                            },
+                                            {
+                                                "VALUE": "Marshall Islands"
+                                            },
+                                            {
+                                                "VALUE": "Martinique"
+                                            },
+                                            {
+                                                "VALUE": "Mauritania"
+                                            },
+                                            {
+                                                "VALUE": "Mauritius"
+                                            },
+                                            {
+                                                "VALUE": "Mayotte"
+                                            },
+                                            {
+                                                "VALUE": "Mediterranean Sea"
+                                            },
+                                            {
+                                                "VALUE": "Mexico"
+                                            },
+                                            {
+                                                "VALUE": "Micronesia"
+                                            },
+                                            {
+                                                "VALUE": "Midway Islands"
+                                            },
+                                            {
+                                                "VALUE": "Moldova"
+                                            },
+                                            {
+                                                "VALUE": "Monaco"
+                                            },
+                                            {
+                                                "VALUE": "Mongolia"
+                                            },
+                                            {
+                                                "VALUE": "Montenegro"
+                                            },
+                                            {
+                                                "VALUE": "Montserrat"
+                                            },
+                                            {
+                                                "VALUE": "Morocco"
+                                            },
+                                            {
+                                                "VALUE": "Mozambique"
+                                            },
+                                            {
+                                                "VALUE": "Myanmar"
+                                            },
+                                            {
+                                                "VALUE": "Namibia"
+                                            },
+                                            {
+                                                "VALUE": "Nauru"
+                                            },
+                                            {
+                                                "VALUE": "Navassa Island"
+                                            },
+                                            {
+                                                "VALUE": "Nepal"
+                                            },
+                                            {
+                                                "VALUE": "Netherlands"
+                                            },
+                                            {
+                                                "VALUE": "New Caledonia"
+                                            },
+                                            {
+                                                "VALUE": "New Zealand"
+                                            },
+                                            {
+                                                "VALUE": "Nicaragua"
+                                            },
+                                            {
+                                                "VALUE": "Niger"
+                                            },
+                                            {
+                                                "VALUE": "Nigeria"
+                                            },
+                                            {
+                                                "VALUE": "Niue"
+                                            },
+                                            {
+                                                "VALUE": "Norfolk Island"
+                                            },
+                                            {
+                                                "VALUE": "North Korea"
+                                            },
+                                            {
+                                                "VALUE": "North Sea"
+                                            },
+                                            {
+                                                "VALUE": "Northern Mariana Islands"
+                                            },
+                                            {
+                                                "VALUE": "Norway"
+                                            },
+                                            {
+                                                "VALUE": "Oman"
+                                            },
+                                            {
+                                                "VALUE": "Pacific Ocean"
+                                            },
+                                            {
+                                                "VALUE": "Pakistan"
+                                            },
+                                            {
+                                                "VALUE": "Palau"
+                                            },
+                                            {
+                                                "VALUE": "Palmyra Atoll"
+                                            },
+                                            {
+                                                "VALUE": "Panama"
+                                            },
+                                            {
+                                                "VALUE": "Papua New Guinea"
+                                            },
+                                            {
+                                                "VALUE": "Paracel Islands"
+                                            },
+                                            {
+                                                "VALUE": "Paraguay"
+                                            },
+                                            {
+                                                "VALUE": "Peru"
+                                            },
+                                            {
+                                                "VALUE": "Philippines"
+                                            },
+                                            {
+                                                "VALUE": "Pitcairn Islands"
+                                            },
+                                            {
+                                                "VALUE": "Poland"
+                                            },
+                                            {
+                                                "VALUE": "Portugal"
+                                            },
+                                            {
+                                                "VALUE": "Puerto Rico"
+                                            },
+                                            {
+                                                "VALUE": "Qatar"
+                                            },
+                                            {
+                                                "VALUE": "Republic of the Congo"
+                                            },
+                                            {
+                                                "VALUE": "Reunion"
+                                            },
+                                            {
+                                                "VALUE": "Romania"
+                                            },
+                                            {
+                                                "VALUE": "Ross Sea"
+                                            },
+                                            {
+                                                "VALUE": "Russia"
+                                            },
+                                            {
+                                                "VALUE": "Rwanda"
+                                            },
+                                            {
+                                                "VALUE": "Saint Helena"
+                                            },
+                                            {
+                                                "VALUE": "Saint Kitts and Nevis"
+                                            },
+                                            {
+                                                "VALUE": "Saint Lucia"
+                                            },
+                                            {
+                                                "VALUE": "Saint Pierre and Miquelon"
+                                            },
+                                            {
+                                                "VALUE": "Saint Vincent and the Grenadines"
+                                            },
+                                            {
+                                                "VALUE": "Samoa"
+                                            },
+                                            {
+                                                "VALUE": "San Marino"
+                                            },
+                                            {
+                                                "VALUE": "Sao Tome and Principe"
+                                            },
+                                            {
+                                                "VALUE": "Saudi Arabia"
+                                            },
+                                            {
+                                                "VALUE": "Senegal"
+                                            },
+                                            {
+                                                "VALUE": "Serbia"
+                                            },
+                                            {
+                                                "VALUE": "Seychelles"
+                                            },
+                                            {
+                                                "VALUE": "Sierra Leone"
+                                            },
+                                            {
+                                                "VALUE": "Singapore"
+                                            },
+                                            {
+                                                "VALUE": "Sint Maarten"
+                                            },
+                                            {
+                                                "VALUE": "Slovakia"
+                                            },
+                                            {
+                                                "VALUE": "Slovenia"
+                                            },
+                                            {
+                                                "VALUE": "Solomon Islands"
+                                            },
+                                            {
+                                                "VALUE": "Somalia"
+                                            },
+                                            {
+                                                "VALUE": "South Africa"
+                                            },
+                                            {
+                                                "VALUE": "South Georgia and the South Sandwich Islands"
+                                            },
+                                            {
+                                                "VALUE": "South Korea"
+                                            },
+                                            {
+                                                "VALUE": "Southern Ocean"
+                                            },
+                                            {
+                                                "VALUE": "Spain"
+                                            },
+                                            {
+                                                "VALUE": "Spratly Islands"
+                                            },
+                                            {
+                                                "VALUE": "Sri Lanka"
+                                            },
+                                            {
+                                                "VALUE": "Sudan"
+                                            },
+                                            {
+                                                "VALUE": "Suriname"
+                                            },
+                                            {
+                                                "VALUE": "Svalbard"
+                                            },
+                                            {
+                                                "VALUE": "Swaziland"
+                                            },
+                                            {
+                                                "VALUE": "Sweden"
+                                            },
+                                            {
+                                                "VALUE": "Switzerland"
+                                            },
+                                            {
+                                                "VALUE": "Syria"
+                                            },
+                                            {
+                                                "VALUE": "Taiwan"
+                                            },
+                                            {
+                                                "VALUE": "Tajikistan"
+                                            },
+                                            {
+                                                "VALUE": "Tanzania"
+                                            },
+                                            {
+                                                "VALUE": "Tasman Sea"
+                                            },
+                                            {
+                                                "VALUE": "Thailand"
+                                            },
+                                            {
+                                                "VALUE": "Togo"
+                                            },
+                                            {
+                                                "VALUE": "Tokelau"
+                                            },
+                                            {
+                                                "VALUE": "Tonga"
+                                            },
+                                            {
+                                                "VALUE": "Trinidad and Tobago"
+                                            },
+                                            {
+                                                "VALUE": "Tromelin Island"
+                                            },
+                                            {
+                                                "VALUE": "Tunisia"
+                                            },
+                                            {
+                                                "VALUE": "Turkey"
+                                            },
+                                            {
+                                                "VALUE": "Turkmenistan"
+                                            },
+                                            {
+                                                "VALUE": "Turks and Caicos Islands"
+                                            },
+                                            {
+                                                "VALUE": "Tuvalu"
+                                            },
+                                            {
+                                                "VALUE": "USA"
+                                            },
+                                            {
+                                                "VALUE": "Uganda"
+                                            },
+                                            {
+                                                "VALUE": "Ukraine"
+                                            },
+                                            {
+                                                "VALUE": "United Arab Emirates"
+                                            },
+                                            {
+                                                "VALUE": "United Kingdom"
+                                            },
+                                            {
+                                                "VALUE": "Uruguay"
+                                            },
+                                            {
+                                                "VALUE": "Uzbekistan"
+                                            },
+                                            {
+                                                "VALUE": "Vanuatu"
+                                            },
+                                            {
+                                                "VALUE": "Venezuela"
+                                            },
+                                            {
+                                                "VALUE": "Viet Nam"
+                                            },
+                                            {
+                                                "VALUE": "Virgin Islands"
+                                            },
+                                            {
+                                                "VALUE": "Wake Island"
+                                            },
+                                            {
+                                                "VALUE": "Wallis and Futuna"
+                                            },
+                                            {
+                                                "VALUE": "West Bank"
+                                            },
+                                            {
+                                                "VALUE": "Western Sahara"
+                                            },
+                                            {
+                                                "VALUE": "Yemen"
+                                            },
+                                            {
+                                                "VALUE": "Zambia"
+                                            },
+                                            {
+                                                "VALUE": "Zimbabwe"
+                                            },
+                                            {
+                                                "VALUE": "missing: control sample"
+                                            },
+                                            {
+                                                "VALUE": "missing: data agreement established pre-2023"
+                                            },
+                                            {
+                                                "VALUE": "missing: endangered species"
+                                            },
+                                            {
+                                                "VALUE": "missing: human-identifiable"
+                                            },
+                                            {
+                                                "VALUE": "missing: lab stock"
+                                            },
+                                            {
+                                                "VALUE": "missing: sample group"
+                                            },
+                                            {
+                                                "VALUE": "missing: synthetic construct"
+                                            },
+                                            {
+                                                "VALUE": "missing: third party data"
+                                            },
+                                            {
+                                                "VALUE": "not applicable"
+                                            },
+                                            {
+                                                "VALUE": "not collected"
+                                            },
+                                            {
+                                                "VALUE": "not provided"
+                                            },
+                                            {
+                                                "VALUE": "restricted access"
+                                            }
+                                        ]
+                                    }
+                                },
+                                "MANDATORY": "mandatory",
+                                "MULTIPLICITY": "multiple"
+                            },
+                            {
+                                "LABEL": "geographic location (region and locality)",
+                                "NAME": "geographic location (region and locality)",
+                                "DESCRIPTION": "The geographical origin of the sample as defined by the specific region name followed by the locality name.",
+                                "FIELD_TYPE": {
+                                    "TEXT_FIELD": null
+                                },
+                                "MANDATORY": "optional",
+                                "MULTIPLICITY": "multiple"
+                            },
+                            {
+                                "LABEL": "identified_by",
+                                "NAME": "identified_by",
+                                "DESCRIPTION": "name of the expert who identified the specimen taxonomically",
+                                "FIELD_TYPE": {
+                                    "TEXT_FIELD": null
+                                },
+                                "MANDATORY": "optional",
+                                "MULTIPLICITY": "multiple"
+                            }
+                        ]
+                    },
+                    {
+                        "@restrictionType": "Any number or none of the fields",
+                        "NAME": "sample collection",
+                        "FIELD": [
+                            {
+                                "LABEL": "environmental_sample",
+                                "NAME": "environmental_sample",
+                                "DESCRIPTION": "identifies sequences derived by direct molecular isolation from a bulk environmental DNA sample (by PCR with or without subsequent cloning of the product, DGGE, or other anonymous methods) with no reliable identification of the source organism",
+                                "FIELD_TYPE": {
+                                    "TEXT_CHOICE_FIELD": {
+                                        "TEXT_VALUE": [
+                                            {
+                                                "VALUE": "No"
+                                            },
+                                            {
+                                                "VALUE": "Yes"
+                                            }
+                                        ]
+                                    }
+                                },
+                                "MANDATORY": "optional",
+                                "MULTIPLICITY": "multiple"
+                            }
+                        ]
+                    },
+                    {
+                        "@restrictionType": "Any number or none of the fields",
+                        "NAME": "Organism characteristics",
+                        "DESCRIPTION": "Characteristics of the source organism",
+                        "FIELD": [
+                            {
+                                "LABEL": "mating_type",
+                                "NAME": "mating_type",
+                                "DESCRIPTION": "mating type of the organism from which the sequence was obtained; mating type is used for prokaryotes, and for eukaryotes that undergo meiosis without sexually dimorphic gametes",
+                                "FIELD_TYPE": {
+                                    "TEXT_FIELD": null
+                                },
+                                "MANDATORY": "optional",
+                                "MULTIPLICITY": "multiple"
+                            },
+                            {
+                                "LABEL": "sex",
+                                "NAME": "sex",
+                                "DESCRIPTION": "sex of the organism from which the sample was obtained",
+                                "FIELD_TYPE": {
+                                    "TEXT_FIELD": null
+                                },
+                                "MANDATORY": "optional",
+                                "MULTIPLICITY": "multiple"
+                            }
+                        ]
+                    },
+                    {
+                        "@restrictionType": "Any number or none of the fields",
+                        "NAME": "host description",
+                        "FIELD": [
+                            {
+                                "LABEL": "lab_host",
+                                "NAME": "lab_host",
+                                "DESCRIPTION": "scientific name of the laboratory host used to propagate the source organism from which the sample was obtained",
+                                "FIELD_TYPE": {
+                                    "TEXT_FIELD": null
+                                },
+                                "MANDATORY": "optional",
+                                "MULTIPLICITY": "multiple"
+                            },
+                            {
+                                "LABEL": "host scientific name",
+                                "SYNONYM": "specific host",
+                                "NAME": "host scientific name",
+                                "DESCRIPTION": "Scientific name of the natural (as opposed to laboratory) host to the organism from which sample was obtained.",
+                                "FIELD_TYPE": {
+                                    "TEXT_FIELD": null
+                                },
+                                "MANDATORY": "optional",
+                                "MULTIPLICITY": "multiple"
+                            }
+                        ]
+                    },
+                    {
+                        "@restrictionType": "Any number or none of the fields",
+                        "NAME": "Pointer to physical material",
+                        "DESCRIPTION": "References to sample or sample source material in physical resources",
+                        "FIELD": [
+                            {
+                                "LABEL": "bio_material",
+                                "NAME": "bio_material",
+                                "DESCRIPTION": "Unique identifier that references the biological material from which the sample was obtained and that ideally exists in a curated collection (e.g. stock centres, seed banks, DNA banks). The ID should have the following structure: name of the institution (institution code) followed by the collection code (if available) and the voucher id (institution_code:collection_code:voucher_id). Please note institution codes and collection codes are taken from a controlled vocabulary maintained by the INSDC: https://ftp.ncbi.nih.gov/pub/taxonomy/biocollections/",
+                                "FIELD_TYPE": {
+                                    "TEXT_FIELD": null
+                                },
+                                "MANDATORY": "optional",
+                                "MULTIPLICITY": "multiple"
+                            },
+                            {
+                                "LABEL": "culture_collection",
+                                "NAME": "culture_collection",
+                                "DESCRIPTION": "Unique identifier that references the culture (e.g. live microbial and viral cultures and cell lines) from which the sample has been obtained and that have been deposited in curated culture collections. The ID needs to provide an institution code and the culture id, with optional collection code, in the following structure: (-institution_code:(collection_code):voucher_id. Please note institution codes (and optional collection codes) are taken from a controlled vocabulary maintained by the INSDC: https://ftp.ncbi.nih.gov/pub/taxonomy/biocollections/",
+                                "FIELD_TYPE": {
+                                    "TEXT_FIELD": null
+                                },
+                                "MANDATORY": "optional",
+                                "MULTIPLICITY": "multiple"
+                            },
+                            {
+                                "LABEL": "specimen_voucher",
+                                "NAME": "specimen_voucher",
+                                "DESCRIPTION": "Unique identifier that references the physical specimen that remains after the sequence has been obtained and that ideally exists in a curated collection. The ID should have the following structure: name of the institution (institution code) followed by the collection code (if available) and the voucher id (institution_code:collection_code:voucher_id). Please note institution codes and collection codes are taken from a controlled vocabulary maintained by the INSDC: https://ftp.ncbi.nih.gov/pub/taxonomy/biocollections/",
+                                "FIELD_TYPE": {
+                                    "TEXT_FIELD": null
+                                },
+                                "MANDATORY": "optional",
+                                "MULTIPLICITY": "multiple"
+                            }
+                        ]
+                    },
+                    {
+                        "@restrictionType": "Any number or none of the fields",
+                        "NAME": "Infraspecies information",
+                        "DESCRIPTION": "Formal and informal infraspecies taxonomic information",
+                        "FIELD": [
+                            {
+                                "LABEL": "cultivar",
+                                "NAME": "cultivar",
+                                "DESCRIPTION": "cultivar (cultivated variety) of plant from which sample was obtained",
+                                "FIELD_TYPE": {
+                                    "TEXT_FIELD": null
+                                },
+                                "MANDATORY": "optional",
+                                "MULTIPLICITY": "multiple"
+                            },
+                            {
+                                "LABEL": "ecotype",
+                                "NAME": "ecotype",
+                                "DESCRIPTION": "a population within a given species displaying genetically based, phenotypic traits that reflect adaptation to a local habitat.",
+                                "FIELD_TYPE": {
+                                    "TEXT_FIELD": null
+                                },
+                                "MANDATORY": "optional",
+                                "MULTIPLICITY": "multiple"
+                            },
+                            {
+                                "LABEL": "isolate",
+                                "NAME": "isolate",
+                                "DESCRIPTION": "individual isolate from which the sample was obtained",
+                                "FIELD_TYPE": {
+                                    "TEXT_FIELD": null
+                                },
+                                "MANDATORY": "optional",
+                                "MULTIPLICITY": "multiple"
+                            },
+                            {
+                                "LABEL": "sub_species",
+                                "NAME": "sub_species",
+                                "DESCRIPTION": "name of sub-species of organism from which sample was obtained",
+                                "FIELD_TYPE": {
+                                    "TEXT_FIELD": null
+                                },
+                                "MANDATORY": "optional",
+                                "MULTIPLICITY": "multiple"
+                            },
+                            {
+                                "LABEL": "variety",
+                                "NAME": "variety",
+                                "DESCRIPTION": "variety (= varietas, a formal Linnaean rank) of organism from which sample was derived.",
+                                "FIELD_TYPE": {
+                                    "TEXT_FIELD": null
+                                },
+                                "MANDATORY": "optional",
+                                "MULTIPLICITY": "multiple"
+                            },
+                            {
+                                "LABEL": "sub_strain",
+                                "NAME": "sub_strain",
+                                "DESCRIPTION": "name or identifier of a genetically or otherwise modified strain from which sample was obtained, derived from a parental strain (which should be annotated in the strain field; sub_strain from which sample was obtained",
+                                "FIELD_TYPE": {
+                                    "TEXT_FIELD": null
+                                },
+                                "MANDATORY": "optional",
+                                "MULTIPLICITY": "multiple"
+                            },
+                            {
+                                "LABEL": "cell_line",
+                                "NAME": "cell_line",
+                                "DESCRIPTION": "cell line from which the sample was obtained",
+                                "FIELD_TYPE": {
+                                    "TEXT_FIELD": null
+                                },
+                                "MANDATORY": "optional",
+                                "MULTIPLICITY": "multiple"
+                            },
+                            {
+                                "LABEL": "serotype",
+                                "NAME": "serotype",
+                                "DESCRIPTION": "serological variety of a species characterized by its antigenic properties",
+                                "FIELD_TYPE": {
+                                    "TEXT_FIELD": null
+                                },
+                                "MANDATORY": "optional",
+                                "MULTIPLICITY": "multiple"
+                            },
+                            {
+                                "LABEL": "serovar",
+                                "NAME": "serovar",
+                                "DESCRIPTION": "serological variety of a species (usually a prokaryote) characterized by its antigenic properties",
+                                "FIELD_TYPE": {
+                                    "TEXT_FIELD": null
+                                },
+                                "MANDATORY": "optional",
+                                "MULTIPLICITY": "multiple"
+                            },
+                            {
+                                "LABEL": "strain",
+                                "NAME": "strain",
+                                "DESCRIPTION": "Name of the strain from which the sample was obtained.",
+                                "FIELD_TYPE": {
+                                    "TEXT_FIELD": null
+                                },
+                                "MANDATORY": "optional",
+                                "MULTIPLICITY": "multiple"
+                            }
+                        ]
+                    }
+                ]
+            }
+        }
+    }
+}
