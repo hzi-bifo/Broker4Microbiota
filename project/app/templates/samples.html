@@ -27,39 +27,17 @@ Comment out for 6.2.2 (MIT)
 <script src="https://cdn.jsdelivr.net/npm/handsontable/dist/handsontable.full.min.js"></script>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/handsontable/dist/handsontable.full.min.css">
 
+# todo - adjust columns for hidden cols etc
 
 <script>
   var unsaved = false;
   document.getElementById('save').disabled = true;
   var hotElement = document.querySelector('#handsontable-container');
   var hotSettings = {
-    data: {{ samples| safe }},
-  columns: [
-    { title: 'Sample Name', data: 'sample_name', readOnly: true },
-    { title: 'MIxS Metadata Standard', data: 'mixs_metadata_standard', type: 'dropdown', source: {{ mixs_metadata_standards| safe }} },
-    { title: 'Alias', data: 'alias', },
-    { title: 'Title', data: 'title', },
-    { title: 'Taxon ID', data: 'taxon_id', },
-    { title: 'Scientific Name', data: 'scientific_name', },
-    { title: 'Investigation Type', data: 'investigation_type', },
-    { title: 'Study type', data: 'study_type', },
-    { title: 'Platform', data: 'platform', },
-    { title: 'Library Source', data: 'library_source', },
-    { title: 'Concentration', data: 'concentration' },
-    { title: 'Volume', data: 'volume' },
-    { title: 'Ratio 260/280', data: 'ratio_260_280' },
-    { title: 'Ratio 260/230', data: 'ratio_260_230' },
-    { title: 'Comments', data: 'comments' },
-    { title: 'Status', data: 'status', readOnly: true },
-    { title: 'mixs_metadata', data: 'mixs_metadata', readOnly: true },
-    { title: 'filename_forward', data: 'filename_forward', readOnly: true },
-    { title: 'filename_reverse', data: 'filename_reverse', readOnly: true },
-    { title: 'nf_core_mag_outdir', data: 'nf_core_mag_outdir', readOnly: true },
-    { title: 'Unsaved', data: 'unsaved', readOnly: true },
-    { title: 'Delete', renderer: deleteButtonRenderer }
-  ],
+    data: {{ samples_data | safe }},
+  columns: {{ samples_headers | safe }},
   hiddenColumns: {
-        columns: [16],  // Hide the third column (index 2)
+        columns: [],
         indicators: false  // Show a small indicator where columns are hidden
       },
     minSpareRows: 0,
@@ -71,8 +49,8 @@ Comment out for 6.2.2 (MIT)
           licenseKey: 'non-commercial-and-evaluation',
             afterChange: (changes) => {
               changes?.forEach(([row, prop, oldValue, newValue]) => {
-                if (prop != "unsaved" && hot.getDataAtCell(row, 20) != "x") {
-                  hot.setDataAtCell(row, 20, "x");
+                if (prop != "unsaved" && hot.getDataAtCell(row, 1) != "x") {
+                  hot.setDataAtCell(row, 1, "x");
                   unsaved = true;
                   document.getElementById('save').disabled = false;
                 }
@@ -91,68 +69,29 @@ Comment out for 6.2.2 (MIT)
       var rowIndex = hot.countRows();
     }
     hot.alter('insert_row_above', rowIndex, 1, newRow);
-    hot.setDataAtCell(rowIndex, 20, "x");
+    hot.setDataAtCell(rowIndex, 1, "x");
     unsaved = true;
     document.getElementById('save').disabled = false;
   }
 
   function saveSampleData() {
+
+
     var sampleData = hot.getData().map(function (row, index) {
       return {
-        sample_name: row[0],
-        mixs_metadata_standard: row[1],
-        alias: row[2],
-        title: row[3],
-        taxon_id: row[4],
-        scientific_name: row[5],
-        investigation_type: row[6],
-        study_type: row[7],
-        platform: row[8],
-        library_source: row[9],
-        concentration: row[10],
-        volume: row[11],
-        ratio_260_280: row[12],
-        ratio_260_230: row[13],
-        comments: row[14],
-        status: row[15],
-        mixs_metadata: row[16],
-        filename_forward: row[17],
-        filename_reverse: row[18],
-        nf_core_mag_outdir: row[19],
+
+        {{ sample_headers_array | safe }}
+
       };
     });
 
-    sampleData = sampleData.map(function (sample) {
-      return {
-        sample_name: sample.sample_name,
-        mixs_metadata_standard: sample.mixs_metadata_standard,
-        alias: sample.alias ? sample.alias.trim() : '',
-        title: sample.title ? sample.title.trim() : '',
-        taxon_id: sample.taxon_id ? sample.taxon_id.trim() : '',
-        scientific_name: sample.scientific_name ? sample.scientific_name.trim() : '',
-        investigation_type: sample.investigation_type ? sample.investigation_type.trim() : '',
-        study_type: sample.study_type ? sample.study_type.trim() : '',
-        platform: sample.platform ? sample.platform.trim() : '',
-        library_source: sample.library_source ? sample.library_source.trim() : '',
-        concentration: sample.concentration ? sample.concentration.trim() : '',
-        volume: sample.volume ? sample.volume.trim() : '',
-        ratio_260_280: sample.ratio_260_280 ? sample.ratio_260_280.trim() : '',
-        ratio_260_230: sample.ratio_260_230 ? sample.ratio_260_230.trim() : '',
-        comments: sample.comments ? sample.comments.trim() : '',
-        status: sample.status,
-        mixs_metadata: sample.mixs_metadata ? sample.mixs_metadata.trim() : '',
-        filename_forward: sample.filename_forward ? sample.filename_forward.trim() : '',
-        filename_reverse: sample.filename_reverse ? sample.filename_reverse.trim() : '',
-        nf_core_mag_outdir: sample.nf_core_mag_outdir ? sample.nf_core_mag_outdir.trim() : '',
-      };
-    });
 
     unsaved = false;
     document.getElementById('save').disabled = true;
 
     hot.batch(() => {
       for (let rowIndex = 0; rowIndex < hot.countRows(); rowIndex++) {
-        hot.setDataAtCell(rowIndex, 20, "");
+        hot.setDataAtCell(rowIndex, 1, "");
       }
     });
 

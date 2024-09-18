@@ -10,8 +10,9 @@ from django.http import HttpResponseRedirect, JsonResponse
 from django.urls import reverse, reverse_lazy
 from .mixs_metadata_standards import MIXS_METADATA_STANDARDS
 from .forms import OrderForm, SampleForm, SampleMetadataForm
-from .models import Order, Sample, STATUS_CHOICES
+from .models import Order, Sample, Air_checklist, STATUS_CHOICES
 from json.decoder import JSONDecodeError
+import importlib
 
 logger = logging.getLogger(__name__)
 
@@ -37,9 +38,6 @@ class OrderListView(ListView):
 
     def get_queryset(self):
         orders = Order.objects.filter(user=self.request.user)
-        for order in orders:
-            mixs_standards = order.sample_set.values_list('mixs_metadata_standard', flat=True).distinct()
-            order.mixs_standards = [item[0] for item in MIXS_METADATA_STANDARDS if item[1] in mixs_standards]
         return orders
 
 def order_view(request, order_id=None):
@@ -84,118 +82,105 @@ def samples_view(request, order_id):
     print("Received POST request")
     order = get_object_or_404(Order, pk=order_id)
 
+    checklist_structure = {
+        'Air': {'checklist_class_name': 'Air_checklist', 'unitchecklist_class_name': 'Air_unitchecklist'},
+        'Blah': {'checklist_class_name': 'Blah_checklist', 'unitchecklist_class_name': 'Blah_unitchecklist'},
+    }
+
     if request.method == 'POST':
         sample_data = json.loads(request.POST.get('sample_data'))
+
         print(f"Received sample_data: {sample_data}")
 
          # Delete all existing samples for the order
         Sample.objects.filter(order=order).delete()
 
+        # temporary - this needs to be passed through properly
+        checklists = ['Air', 'Blah']
+    
+
         # Create new samples based on the received data
         for sample_info in sample_data:
-            sample_name = sample_info.get('sample_name')
-            mixs_metadata_standard = sample_info.get('mixs_metadata_standard', '')
-            alias = sample_info.get('alias')
-            title = sample_info.get('title')
-            taxon_id = sample_info.get('taxon_id')
-            scientific_name = sample_info.get('scientific_name')
-            investigation_type = sample_info.get('investigation_type')
-            study_type = sample_info.get('study_type')
-            platform = sample_info.get('platform')
-            library_source = sample_info.get('library_source')
-            concentration = sample_info.get('concentration')
-            volume = sample_info.get('volume')
-            ratio_260_280 = sample_info.get('ratio_260_280')
-            ratio_260_230 = sample_info.get('ratio_260_230')
-            comments = sample_info.get('comments')
-            status = sample_info.get('status', '')
-            mixs_metadata = sample_info.get('mixs_metadata') or ''
-            try:
-                mixs_metadata_json = json.loads(mixs_metadata)
-            except:
-                mixs_metadata_json = ''
-                           
-            filename_forward = sample_info.get('filename_forward')
-            filename_reverse = sample_info.get('filename_reverse')
-            nf_core_mag_outdir = sample_info.get('nf_core_mag_outdir')
 
-            print(f"Processing sample {sample_name} with alias: {alias}, title: {title}, taxon_id: {taxon_id}, scientific_name: {scientific_name}, investigation_type: {investigation_type}, study_type: {study_type}, platform: {platform}, library_source: {library_source}")
-
-            try:
-                mixs_metadata = json.loads(json.dumps(mixs_metadata_json))
-            except Exception as e:
-                mixs_metadata = ''
-
-            sample = Sample(
-                order=order,
-                sample_name=sample_name,
-                mixs_metadata_standard=mixs_metadata_standard,
-                alias=alias,
-                title=title,
-                taxon_id=taxon_id,
-                scientific_name=scientific_name,
-                investigation_type=investigation_type,
-                study_type=study_type,
-                platform=platform,
-                library_source=library_source,
-                concentration=concentration,
-                volume=volume,
-                ratio_260_280=ratio_260_280,
-                ratio_260_230=ratio_260_230,
-                comments=comments,
-                status=status,
-                mixs_metadata = mixs_metadata,
-                filename_forward = filename_forward,
-                filename_reverse = filename_reverse,
-                nf_core_mag_outdir = nf_core_mag_outdir
-                
-            )
-            if status:
-                sample.status = status 
-
+            sample=Sample(order = order)
+            sample.setFieldsFromResponse(sample_info)
             sample.save()
+
+            # for all checklists or just ones used (initially, latter)
+            for checklist in checklists:
+                checklist_class_name = checklist_structure[checklist]['checklist_class_name']
+                checklist_item_class =  getattr(importlib.import_module("app.models"), checklist_class_name)
+                checklist_item_instance = checklist_item_class(sample = sample)
+                checklist_item_instance.setFieldsFromResponse(sample_info)
+                checklist_item_instance.save()
+
+            print(f"Processing sample {sample.id}")
 
         return JsonResponse({'success': True})
 
     samples = order.sample_set.all().order_by('sample_name')
+
     print(f"Retrieved samples: {list(samples)}")
-    samples_data = [
-        {
-            'sample_name': sample.sample_name or '',
-            'mixs_metadata_standard': sample.mixs_metadata_standard or '',
-            'alias': sample.alias or '',
-            'title': sample.title or '',
-            'taxon_id': sample.taxon_id or '',
-            'scientific_name': sample.scientific_name or '',
-            'investigation_type': sample.investigation_type or '',
-            'study_type': sample.study_type or '',
-            'platform': sample.platform or '',
-            'library_source': sample.library_source or '',
-            'concentration': sample.concentration or '',
-            'volume': sample.volume or '',
-            'ratio_260_280': sample.ratio_260_280 or '',
-            'ratio_260_230': sample.ratio_260_230 or '',
-            'comments': sample.comments or '',
-            'status': sample.get_status_display() or '',
-            'mixs_metadata': json.dumps(sample.mixs_metadata or ''),
-            'filename_forward': sample.filename_forward or '',
-            'filename_reverse': sample.filename_reverse or '',
-            'nf_core_mag_outdir': sample.nf_core_mag_outdir or '',
-        }
-        for index, sample in enumerate(samples, start=1)
-    ]
+
+    # this needs to be passed through properly
+    checklists = ['Air', 'Blah']
+
+    inclusions = []
+    exclusions = []
+
+    samples_headers = f"[\n"
+    sample_headers_array = ""
+    index = 2 # make space for delete button and unsaved indicator
+
+    samples_headers = samples_headers + f"{{ title: 'Delete', renderer: deleteButtonRenderer }},\n{{ title: 'Unsaved', data: 'unsaved', readOnly: true }},\n"
+    sample_headers_array = sample_headers_array + f"Delete: row[1],\nunsaved: row[1],\n"
+
+    checklist_entries_list = []
+    for checklist in checklists:
+
+        # get the checklist model name from Checklist_structure 
+        checklist_class_name = checklist_structure[checklist]['checklist_class_name']
+
+        checklist_entries_class =  getattr(importlib.import_module("app.models"), checklist_class_name)
+        samples_headers = samples_headers + checklist_entries_class().getHeaders(inclusions, exclusions)
+        (index, sample_headers_array_update) = checklist_entries_class().getHeadersArray(index, inclusions, exclusions)
+        sample_headers_array = sample_headers_array + sample_headers_array_update
+
+        try:
+            checklist_entries = checklist_entries_class.objects.all() # filter on order or sample
+            checklist_entries_list.append(checklist_entries)
+        except:
+            pass
+    samples_headers = samples_headers + f"]"
+
+    samples_data = []
+
+    for sample in samples:
+        output = {}
+        fields = sample.getFields(inclusions, exclusions)
+        output.update(fields)
+
+        # get the checklists for this sample    
+        for checklist_type in checklist_entries_list:
+            for checklist in checklist_type.all().filter(sample=sample):
+                fields = checklist.getFields(inclusions, exclusions)
+                output.update(fields)    
+
+        samples_data.append(output)
+
     status_choices = [choice[1] for choice in STATUS_CHOICES]
 
     print(f"Sending samples_data to template: {samples_data}")
-    
+
     return render(request, 'samples.html', {
             'order': order,
-            'samples': samples_data,
-            'mixs_metadata_standards': MIXS_METADATA_STANDARDS,
+            'samples_headers': samples_headers,
+            'samples_data': samples_data,
+            'sample_headers_array': sample_headers_array,
             'status_choices': status_choices,
         })
-    
 
+    
 def mixs_view(request, order_id, mixs_standard):
     print(f"Received request for order_id: {order_id} with mixs_standard: {mixs_standard}")
     order = Order.objects.get(id=order_id)

@@ -50,12 +50,18 @@ for filename in os.listdir(xml_dir):
             for field in fieldgroup['FIELD']:
                 field_name = field['NAME']
                 field_description = field['DESCRIPTION']
+
+                # get units (if existing - could be multiple) and create as a choices option
+                # 
+
+
                 jqtree_field = {}
                 jqtree_field['name'] = field_name
                 jqtree_field['description'] = field_description
                 jqtree_field['id'] = get_next_node_id() 
                 jqtree_fieldgroup['children'].append(jqtree_field)
-                print(f'{checklist_name}: {fieldgroup_name}: {field_name}')
+                #print(f'{checklist_name}: {fieldgroup_name}: {field_name}')
+                print(f'{field_name} = models.CharField(max_length=100, choices=MIXS_METADATA_STANDARDS, null=True, blank=True), ')
             jqtree_checklist['children'].append(jqtree_fieldgroup)
         jqtree_data.append(jqtree_checklist)
 
