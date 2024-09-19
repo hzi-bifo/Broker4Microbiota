@@ -43,7 +43,9 @@ def produceModels(data, model_data, field_names):
     checklist_name = checklist['NAME'].replace(' ', '_').replace('(', '').replace(')', '').replace('/', '_').replace('-', '_')
     model_name = checklist_name
 
+    checklist_header = ""
     checklist_output = ""
+    unitchecklist_header = ""
     unitchecklist_output = ""
     checklist_fields_output = ""
     unitchecklist_fields_output = ""
@@ -51,15 +53,15 @@ def produceModels(data, model_data, field_names):
     choice_output = ""
     unit_output = "" 
 
-    checklist_output = checklist_output + f"class {model_name}(SelfDescribingModel):\n"
+    checklist_header = checklist_header + f"class {model_name}(SelfDescribingModel):\n"
     checklist_output = checklist_output + f"\tsample = models.ForeignKey(Sample, on_delete=models.CASCADE)\n"
 
     checklist_fields_output = f"\tfields = {{\n"
 
-    # unitchecklist_fields_output = f"\tfields = {{\n"
+    unitchecklist_fields_output = f"\tfields = {{\n"
 
-    # unitchecklist_output = unitchecklist_output + f"class {model_name}_unit(SelfDescribingModel):\n"
-    # unitchecklist_output = unitchecklist_output + f"\tsample = models.ForeignKey(Sample, on_delete=models.CASCADE)\n"
+    unitchecklist_header = unitchecklist_header + f"class {model_name}_unit(SelfDescribingModel):\n"
+    unitchecklist_output = unitchecklist_output + f"\tsample = models.ForeignKey(Sample, on_delete=models.CASCADE)\n"
 
     for fieldgroup in checklist['FIELD_GROUP']:
         fieldgroup_name = fieldgroup['NAME']
@@ -97,8 +99,7 @@ def produceModels(data, model_data, field_names):
                 else:
                     field_type = "TEXT"
                     if field['FIELD_TYPE']['TEXT_FIELD']['REGEX_VALUE']:
-                        # field_validator = field['FIELD_TYPE']['TEXT_FIELD']['REGEX_VALUE']
-                        field_validator = ".*"
+                        field_validator = field['FIELD_TYPE']['TEXT_FIELD']['REGEX_VALUE']
                         field_validator_name = f'{field_name}_validator'
             except:
                 pass
@@ -142,27 +143,27 @@ def produceModels(data, model_data, field_names):
                     checklist_output = checklist_output + f"models.CharField(max_length=100, blank={field_blank}"
                 if field_description:
                     checklist_output = checklist_output + f",help_text=\"{field_description}\""
-                # if field_validator:
-                #     checklist_output = checklist_output + f", validators=[RegexValidator({field_validator_name})]"
-                #     validator_output = validator_output + f"{field_validator_name} = \"{field_validator}\"\n"
+                if field_validator:
+                    checklist_output = checklist_output + f", validators=[RegexValidator({field_validator_name})]"
+                    validator_output = validator_output + f"\t{field_validator_name} = \"{field_validator}\"\n"
                 if field_type == 'TEXT_CHOICES':
-                    # checklist_output = checklist_output + f", choices={field_choice_name}"
-                    choice_output = choice_output + f"{field_choice_name} = {field_choices}\n"
+                    checklist_output = checklist_output + f", choices={field_choice_name}"
+                    choice_output = choice_output + f"\t{field_choice_name} = {field_choices}\n"
                 checklist_output = checklist_output + f")\n"
 
                 checklist_fields_output = checklist_fields_output + f"\t\t'{field_name}': {field_name},\n"
 
-                # if field_units_name:
-                #     unitchecklist_output = unitchecklist_output + f"\t{field_name } = models.CharField(max_length=100, choices={field_units_name}, blank=False)\n"
+                if field_units_name:
+                    unitchecklist_output = unitchecklist_output + f"\t{field_name } = models.CharField(max_length=100, choices={field_units_name}, blank=False)\n"
                     
-                #     unit_output = unit_output + f"{field_units_name} = {field_units}\n"
+                    unit_output = unit_output + f"\t{field_units_name} = {field_units}\n"
 
-                #     unitchecklist_fields_output = unitchecklist_fields_output + f"\t\t'{field_name}': {field_name},\n"
+                    unitchecklist_fields_output = unitchecklist_fields_output + f"\t\t'{field_units_name}': {field_units_name},\n"
 
     checklist_fields_output = checklist_fields_output + f"\t}}\n"
-    # unitchecklist_fields_output = unitchecklist_fields_output + f"\t}}\n"
+    unitchecklist_fields_output = unitchecklist_fields_output + f"\t}}\n"
 
-    model_data = f'{checklist_output}\n{checklist_fields_output}\n{unitchecklist_output}\n{unitchecklist_fields_output}\n{choice_output}\n{validator_output}\n{unit_output}\n'
+    model_data = f'{checklist_header}\n{choice_output}\n{validator_output}\n{checklist_output}\n{checklist_fields_output}\n{unitchecklist_header}\n{unit_output}\n{unitchecklist_fields_output}\n{unitchecklist_output}\n'
     return model_data
 
 

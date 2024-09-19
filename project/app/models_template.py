@@ -50,6 +50,8 @@ class SelfDescribingModel(models.Model):
             for k, v in self.fields.items():
                 if k in include:
                     headers = headers + f"{{title: '{k}', data: '{k}'}},\n"
+                    # if class attribute (k) is of type text choices then get choices class
+                        # set type: 'dropdown', source: choices class value
         else:
             for k, v in self.fields.items():
                 if k not in exclude:
