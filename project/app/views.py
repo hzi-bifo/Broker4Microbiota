@@ -10,7 +10,7 @@ from django.http import HttpResponseRedirect, JsonResponse
 from django.urls import reverse, reverse_lazy
 from .mixs_metadata_standards import MIXS_METADATA_STANDARDS
 from .forms import OrderForm, SampleForm, SampleMetadataForm
-from .models import Order, Sample, Air_checklist, STATUS_CHOICES
+from .models import Order, Sample, STATUS_CHOICES
 from json.decoder import JSONDecodeError
 import importlib
 
@@ -83,8 +83,8 @@ def samples_view(request, order_id):
     order = get_object_or_404(Order, pk=order_id)
 
     checklist_structure = {
-        'Air': {'checklist_class_name': 'Air_checklist', 'unitchecklist_class_name': 'Air_unitchecklist'},
-        'Blah': {'checklist_class_name': 'Blah_checklist', 'unitchecklist_class_name': 'Blah_unitchecklist'},
+        'GSC_MIxS_wastewater_sludge': {'checklist_class_name': 'GSC_MIxS_wastewater_sludge', 'unitchecklist_class_name': 'GSC_MIxS_wastewater_sludge_unit'},
+        'GSC_MIxS_miscellaneous_natural_or_artificial_environment': {'checklist_class_name': 'GSC_MIxS_miscellaneous_natural_or_artificial_environment', 'unitchecklist_class_name': 'GSC_MIxS_miscellaneous_natural_or_artificial_environment_unit'},
     }
 
     if request.method == 'POST':
@@ -96,7 +96,7 @@ def samples_view(request, order_id):
         Sample.objects.filter(order=order).delete()
 
         # temporary - this needs to be passed through properly
-        checklists = ['Air', 'Blah']
+        checklists = ['GSC_MIxS_wastewater_sludge', 'GSC_MIxS_miscellaneous_natural_or_artificial_environment']
     
 
         # Create new samples based on the received data
@@ -123,7 +123,7 @@ def samples_view(request, order_id):
     print(f"Retrieved samples: {list(samples)}")
 
     # this needs to be passed through properly
-    checklists = ['Air', 'Blah']
+    checklists = ['GSC_MIxS_wastewater_sludge', 'GSC_MIxS_miscellaneous_natural_or_artificial_environment']
 
     inclusions = []
     exclusions = []

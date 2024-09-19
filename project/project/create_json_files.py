@@ -8,18 +8,185 @@ def get_next_node_id():
     node_id += 1
     return node_id
 
+def produceJqTree(data, jqtree_data): 
+    checklist = data['CHECKLIST_SET']['CHECKLIST']['DESCRIPTOR']
+    checklist_name = checklist['NAME']
+    jqtree_checklist = {}
+    jqtree_checklist['name'] = checklist_name
+    jqtree_checklist['id'] = get_next_node_id() 
+    jqtree_checklist['children'] = []
+    for fieldgroup in checklist['FIELD_GROUP']:
+        fieldgroup_name = fieldgroup['NAME']
+        jqtree_fieldgroup = {}
+        jqtree_fieldgroup['name'] = fieldgroup_name
+        jqtree_fieldgroup['id'] = get_next_node_id() 
+        jqtree_fieldgroup['children'] = []
+        for field in fieldgroup['FIELD']:
+            field_name = field['NAME']
+            field_description = field['DESCRIPTION']
+
+            # get units (if existing - could be multiple) and create as a choices option
+            # 
+
+
+            jqtree_field = {}
+            jqtree_field['name'] = field_name
+            jqtree_field['description'] = field_description
+            jqtree_field['id'] = get_next_node_id() 
+            jqtree_fieldgroup['children'].append(jqtree_field)
+        jqtree_checklist['children'].append(jqtree_fieldgroup)
+    jqtree_data.append(jqtree_checklist)
+
+def produceModels(data, model_data, field_names):
+
+    checklist = data['CHECKLIST_SET']['CHECKLIST']['DESCRIPTOR']
+    checklist_name = checklist['NAME'].replace(' ', '_').replace('(', '').replace(')', '').replace('/', '_').replace('-', '_')
+    model_name = checklist_name
+
+    checklist_output = ""
+    unitchecklist_output = ""
+    checklist_fields_output = ""
+    unitchecklist_fields_output = ""
+    validator_output = ""
+    choice_output = ""
+    unit_output = "" 
+
+    checklist_output = checklist_output + f"class {model_name}(SelfDescribingModel):\n"
+    checklist_output = checklist_output + f"\tsample = models.ForeignKey(Sample, on_delete=models.CASCADE)\n"
+
+    checklist_fields_output = f"\tfields = {{\n"
+
+    # unitchecklist_fields_output = f"\tfields = {{\n"
+
+    # unitchecklist_output = unitchecklist_output + f"class {model_name}_unit(SelfDescribingModel):\n"
+    # unitchecklist_output = unitchecklist_output + f"\tsample = models.ForeignKey(Sample, on_delete=models.CASCADE)\n"
+
+    for fieldgroup in checklist['FIELD_GROUP']:
+        fieldgroup_name = fieldgroup['NAME']
+        model_fieldgroup_name = fieldgroup_name
+        for field in fieldgroup['FIELD']:
+            field_name = model_name + "_" + field['NAME'].replace(' ', '_').replace('(', '').replace(')', '').replace('/', '_').replace('-', '_')
+
+            field_description = ''
+            try:
+                field_description = field['DESCRIPTION'][0:10]
+            except:
+                pass
+
+            field_synonym = ''
+            try:
+                field_synonym = field['SYNONYM']
+            except:
+                pass
+
+            field_units_name = ''
+            try:
+                if field['UNITS']:
+                    field_units = []
+                    for unit in field['UNITS']['UNIT']:
+                        field_units.append((unit, unit))
+                    field_units_name = f"{field_name}_units"
+            except:
+                pass
+
+            field_type = ''
+            field_validator = ''
+            try:
+                if field['FIELD_TYPE']['TEXT_FIELD'] is None:
+                    field_type = "TEXT"
+                else:
+                    field_type = "TEXT"
+                    if field['FIELD_TYPE']['TEXT_FIELD']['REGEX_VALUE']:
+                        # field_validator = field['FIELD_TYPE']['TEXT_FIELD']['REGEX_VALUE']
+                        field_validator = ".*"
+                        field_validator_name = f'{field_name}_validator'
+            except:
+                pass
+
+            try:
+                if field['FIELD_TYPE']['TEXT_AREA_FIELD'] is None:
+                    field_type = "TEXT"
+            except:
+                pass
+
+
+            try:
+                if field['FIELD_TYPE']['TEXT_CHOICE_FIELD']:
+                    field_type = "TEXT_CHOICES"
+                    field_choices = []
+                    field_choice_name = f'{field_name}_choice'
+                    for choice in field['FIELD_TYPE']['TEXT_CHOICE_FIELD']['TEXT_VALUE']:
+                        choice_value = choice['VALUE']
+                        field_choices.append((choice_value, choice_value))
+            except:
+                pass         
+
+            if  field_type == '':
+                print(f'Unknown field type: {field_name}')
+
+            if field['MANDATORY'] == 'optional':
+                field_blank = 'True'
+            else:
+                field_blank = 'False'
+
+            if field['MULTIPLICITY'] != 'multiple':
+                print(f"Multiplicity not multiple: {field_name}")
+
+            if field_name in field_names:
+                print(f"Field name {field_name} in {model_name} already exists in checklist {field_names[field_name]}")
+            else:
+                field_names[field_name] = model_name
+
+                checklist_output = checklist_output + f"\t{field_name }= "
+                if field_type == 'TEXT' or field_type == 'TEXT_CHOICES':
+                    checklist_output = checklist_output + f"models.CharField(max_length=100, blank={field_blank}"
+                if field_description:
+                    checklist_output = checklist_output + f",help_text=\"{field_description}\""
+                # if field_validator:
+                #     checklist_output = checklist_output + f", validators=[RegexValidator({field_validator_name})]"
+                #     validator_output = validator_output + f"{field_validator_name} = \"{field_validator}\"\n"
+                if field_type == 'TEXT_CHOICES':
+                    # checklist_output = checklist_output + f", choices={field_choice_name}"
+                    choice_output = choice_output + f"{field_choice_name} = {field_choices}\n"
+                checklist_output = checklist_output + f")\n"
+
+                checklist_fields_output = checklist_fields_output + f"\t\t'{field_name}': {field_name},\n"
+
+                # if field_units_name:
+                #     unitchecklist_output = unitchecklist_output + f"\t{field_name } = models.CharField(max_length=100, choices={field_units_name}, blank=False)\n"
+                    
+                #     unit_output = unit_output + f"{field_units_name} = {field_units}\n"
+
+                #     unitchecklist_fields_output = unitchecklist_fields_output + f"\t\t'{field_name}': {field_name},\n"
+
+    checklist_fields_output = checklist_fields_output + f"\t}}\n"
+    # unitchecklist_fields_output = unitchecklist_fields_output + f"\t}}\n"
+
+    model_data = f'{checklist_output}\n{checklist_fields_output}\n{unitchecklist_output}\n{unitchecklist_fields_output}\n{choice_output}\n{validator_output}\n{unit_output}\n'
+    return model_data
+
+
 # Path to the directory containing the XML files
 xml_dir = '/home/gary/git/django_ngs_metadata_collection/project/static/xml'
 
 # Path to the directory where the JSON files will be saved
 json_dir = '/home/gary/git/django_ngs_metadata_collection/project/static/json'
 
+models_dir = '/home/gary/git/django_ngs_metadata_collection/project/app'
+
 jqtree_path = os.path.join(json_dir, 'jqtree.json')
+
+models_template_path = os.path.join(models_dir, 'models_template.py')
+models_path = os.path.join(models_dir, 'models.py')
 
 # Create the JSON directory if it doesn't exist
 os.makedirs(json_dir, exist_ok=True)
 
 jqtree_data = []
+
+model_data = ""
+
+field_names = {}
 
 node_id = 0
 
@@ -35,43 +202,26 @@ for filename in os.listdir(xml_dir):
 
         data = xmltodict.parse(xml_contents, force_list={'FIELD'})
 
-        checklist = data['CHECKLIST_SET']['CHECKLIST']['DESCRIPTOR']
-        checklist_name = checklist['NAME']
-        jqtree_checklist = {}
-        jqtree_checklist['name'] = checklist_name
-        jqtree_checklist['id'] = get_next_node_id() 
-        jqtree_checklist['children'] = []
-        for fieldgroup in checklist['FIELD_GROUP']:
-            fieldgroup_name = fieldgroup['NAME']
-            jqtree_fieldgroup = {}
-            jqtree_fieldgroup['name'] = fieldgroup_name
-            jqtree_fieldgroup['id'] = get_next_node_id() 
-            jqtree_fieldgroup['children'] = []
-            for field in fieldgroup['FIELD']:
-                field_name = field['NAME']
-                field_description = field['DESCRIPTION']
-
-                # get units (if existing - could be multiple) and create as a choices option
-                # 
-
-
-                jqtree_field = {}
-                jqtree_field['name'] = field_name
-                jqtree_field['description'] = field_description
-                jqtree_field['id'] = get_next_node_id() 
-                jqtree_fieldgroup['children'].append(jqtree_field)
-                #print(f'{checklist_name}: {fieldgroup_name}: {field_name}')
-                print(f'{field_name} = models.CharField(max_length=100, choices=MIXS_METADATA_STANDARDS, null=True, blank=True), ')
-            jqtree_checklist['children'].append(jqtree_fieldgroup)
-        jqtree_data.append(jqtree_checklist)
-
-        with open(jqtree_path, 'w') as jqtree_file:
-            json.dump(jqtree_data, jqtree_file, indent=4)
-
-        # Show description in seperate panel
-        # drag to outside field
-
         # Save the data as JSON
         with open(json_path, 'w') as json_file:
             json.dump(data, json_file, indent=4)
+
+        produceJqTree(data, jqtree_data)
+
+        model_data = model_data + produceModels(data, model_data, field_names)
+
+with open(jqtree_path, 'w') as jqtree_file:
+    json.dump(jqtree_data, jqtree_file, indent=4)
+
+
+with open(models_template_path, 'r') as models_template_file:
+    models_template_contents = models_template_file.read()
+
+with open(models_path, 'w') as models_file:
+    print(models_template_contents, file = models_file)
+    print(model_data, file = models_file)
+
+
+
+
 
