@@ -92,12 +92,17 @@ def samples_view(request, order_id):
 
         print(f"Received sample_data: {sample_data}")
 
-         # Delete all existing samples for the order
-        Sample.objects.filter(order=order).delete()
-
-        # temporary - this needs to be passed through properly
+        # temporary - this needs to be passed through properl                           y
         checklists = ['GSC_MIxS_wastewater_sludge', 'GSC_MIxS_miscellaneous_natural_or_artificial_environment']
     
+        for checklist in checklists:
+            checklist_class_name = checklist_structure[checklist]['checklist_class_name']
+            checklist_item_class =  getattr(importlib.import_module("app.models"), checklist_class_name)
+            
+            checklist_item_class.objects.filter(order=order).delete()
+
+        # Delete all existing samples for the order
+        Sample.objects.filter(order=order).delete()
 
         # Create new samples based on the received data
         for sample_info in sample_data:
@@ -110,7 +115,7 @@ def samples_view(request, order_id):
             for checklist in checklists:
                 checklist_class_name = checklist_structure[checklist]['checklist_class_name']
                 checklist_item_class =  getattr(importlib.import_module("app.models"), checklist_class_name)
-                checklist_item_instance = checklist_item_class(sample = sample)
+                checklist_item_instance = checklist_item_class(sample = sample, order = order)
                 checklist_item_instance.setFieldsFromResponse(sample_info)
                 checklist_item_instance.save()
 
