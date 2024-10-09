@@ -108,8 +108,6 @@ class SelfDescribingModel(models.Model):
                 value = response[k]
             except:
                 value = ''
-            if k == 'checklists':
-                value= json.loads('["GSC_MIxS_wastewater_sludge", "GSC_MIxS_miscellaneous_natural_or_artificial_environment"]')
             setattr(self, k, value)
 
 class Order(models.Model):
@@ -136,10 +134,38 @@ class Order(models.Model):
     def __str__(self):
         return f"Order by {self.user.username}"
 
-class Sample(SelfDescribingModel):
+
+class Sampleset(SelfDescribingModel):
+
     order = models.ForeignKey(Order, on_delete=models.CASCADE)
 
-    checklists = models.JSONField()    
+    # list of checklists
+    checklists = models.JSONField()
+
+    # list of fields for this checklist, don't need to repeat anything from xml (ie. mandatory), perhaps need to record a type of null for mandatory when not given    
+    include = models.JSONField()
+
+    # probably not needed    
+    exclude = models.JSONField()
+
+    # any custom fields
+    custom = models.JSONField()
+
+    fields = {
+        'order': order,
+        'checklists': checklists,
+        'include': include,
+        'exclude': exclude,
+        'custom': custom,
+    }
+
+    def __str__(self):
+        return 'x'
+
+
+class Sample(SelfDescribingModel):
+    order = models.ForeignKey(Order, on_delete=models.CASCADE)
+    sampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE)
 
     # from ENA spreadsheet download
 
@@ -174,7 +200,6 @@ class Sample(SelfDescribingModel):
         'sample_alias': sample_alias,
         'sample_title': sample_title,
         'sample_description': sample_description,
-        'checklists': checklists,
     }
 
 
@@ -190,7 +215,7 @@ class Sample(SelfDescribingModel):
         
         output = ""
 
-        for checklist in json.loads(json.dumps(self.checklists)):
+        for checklist in json.loads(json.dumps(self.sampleset.checklists)):
             checklist_class_name = self.checklist_structure[checklist]['checklist_class_name']
             checklist_item_class =  getattr(importlib.import_module("app.models"), checklist_class_name)
             checklist_item_instance = checklist_item_class.objects.filter(sample = self, order=self.order).first()
@@ -275,3 +300,4 @@ class Blah_checklist(SelfDescribingModel):
   
 class Blah_unitchecklist(SelfDescribingModel):
     sample = models.ForeignKey(Sample, on_delete=models.CASCADE) """
+

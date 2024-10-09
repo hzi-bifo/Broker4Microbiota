@@ -27,7 +27,8 @@ class SampleAdmin(admin.ModelAdmin):
     list_display = (tuple(Sample().getFields().keys()))
 
     # temporary - this needs to be passed through properly
-    checklists = ['GSC_MIxS_wastewater_sludge', 'GSC_MIxS_miscellaneous_natural_or_artificial_environment']
+    # checklists = ['GSC_MIxS_wastewater_sludge']
+    # checklists = ['GSC_MIxS_wastewater_sludge', 'GSC_MIxS_miscellaneous_natural_or_artificial_environment']
 
     # get checklists used for this model (from the sample? - array of checklist names?)
     # get fields from each checklist

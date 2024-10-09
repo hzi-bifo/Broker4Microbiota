@@ -10,7 +10,7 @@ from django.http import HttpResponseRedirect, JsonResponse
 from django.urls import reverse, reverse_lazy
 from .mixs_metadata_standards import MIXS_METADATA_STANDARDS
 from .forms import OrderForm, SampleForm, SampleMetadataForm
-from .models import Order, Sample, STATUS_CHOICES
+from .models import Order, Sample, Sampleset, STATUS_CHOICES
 from json.decoder import JSONDecodeError
 import importlib
 
@@ -92,8 +92,15 @@ def samples_view(request, order_id):
 
         print(f"Received sample_data: {sample_data}")
 
+        # should only be one at this point
+        sample_sets = order.sampleset_set.all()
+        sample_set = sample_sets.first()
+
+        # this needs to be passed through properly
+        checklists = sample_set.checklists
+
         # temporary - this needs to be passed through properly
-        checklists = ['GSC_MIxS_wastewater_sludge', 'GSC_MIxS_miscellaneous_natural_or_artificial_environment']
+        # checklists = ['GSC_MIxS_wastewater_sludge', 'GSC_MIxS_miscellaneous_natural_or_artificial_environment']
     
         for checklist in checklists:
             checklist_class_name = checklist_structure[checklist]['checklist_class_name']
@@ -109,6 +116,7 @@ def samples_view(request, order_id):
 
             sample=Sample(order = order)
             sample.setFieldsFromResponse(sample_info)
+            sample.sampleset = sample_set
             sample.save()
 
             # for all checklists or just ones used (initially, latter)
@@ -129,8 +137,13 @@ def samples_view(request, order_id):
 
     print(f"Retrieved samples: {list(samples)}")
 
+    # should only be one at this point
+    sample_sets = order.sampleset_set.all()
+    sample_set = sample_sets.first()
+
     # this needs to be passed through properly
-    checklists = ['GSC_MIxS_wastewater_sludge', 'GSC_MIxS_miscellaneous_natural_or_artificial_environment']
+    checklists = sample_set.checklists
+    # ['GSC_MIxS_wastewater_sludge', 'GSC_MIxS_miscellaneous_natural_or_artificial_environment']
 
     inclusions = []
     exclusions = []
@@ -263,8 +276,11 @@ def order_view(request, order_id=None):
         if order_id:
             order = get_object_or_404(Order, pk=order_id, user=request.user)
             form = OrderForm(instance=order)
+            sample_set = Sampleset(order=order)
+           
         else:
             form = OrderForm()
+            sample_set = Sampleset()
 
         if request.method == 'POST':
             if order_id:
@@ -276,6 +292,20 @@ def order_view(request, order_id=None):
                 order = form.save(commit=False)
                 order.user = request.user
                 order.save()
+
+                # Create a new Sampleset instance and save it
+                sample_set = Sampleset(order=order)
+                # sample_set.checklists = form.cleaned_data['checklists']
+                sample_set.checklists = json.loads('["GSC_MIxS_wastewater_sludge"]')
+                # sample_set.checklists = json.loads('["GSC_MIxS_wastewater_sludge", "GSC_MIxS_miscellaneous_natural_or_artificial_environment"]')
+
+                # temporary
+                sample_set.include = json.loads('[]')
+                sample_set.exclude = json.loads('[]')
+                sample_set.custom = json.loads('[]')
+
+                sample_set.save()
+
                 return redirect('order_list')
 
         return render(request, 'order_form.html', {'form': form})
