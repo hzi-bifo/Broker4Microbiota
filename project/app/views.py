@@ -125,7 +125,7 @@ def samples_view(request, order_id):
 
         return JsonResponse({'success': True})
 
-    samples = order.sample_set.all().order_by('sample_name')
+    samples = order.sample_set.all().order_by('sample_id')
 
     print(f"Retrieved samples: {list(samples)}")
 
@@ -141,6 +141,11 @@ def samples_view(request, order_id):
 
     samples_headers = samples_headers + f"{{ title: 'Delete', renderer: deleteButtonRenderer }},\n{{ title: 'Unsaved', data: 'unsaved', readOnly: true }},\n"
     sample_headers_array = sample_headers_array + f"Delete: row[1],\nunsaved: row[1],\n"
+
+    sample=Sample(order = order)
+    samples_headers = samples_headers + sample.getHeaders(inclusions, exclusions)
+    (index, sample_headers_array_update) = sample.getHeadersArray(index, inclusions, exclusions)
+    sample_headers_array = sample_headers_array + sample_headers_array_update
 
     checklist_entries_list = []
     for checklist in checklists:
@@ -216,16 +221,16 @@ def mixs_view(request, order_id, mixs_standard):
             return JsonResponse({'error': 'Invalid JSON'}, status=400)
 
         for metadata in mixs_metadata:
-            sample_name = metadata.get('sample_name')
+            sample_id = metadata.get('sample_id')
             metadata_values = metadata.get('metadata')
-            print(f"Processing metadata for sample_name: {sample_name}")
+            print(f"Processing metadata for sample_id: {sample_id}")
             try:
-                sample = Sample.objects.get(sample_name=sample_name)
+                sample = Sample.objects.get(sample_id=sample_id)
                 sample.mixs_metadata = metadata_values
                 sample.save()
-                print(f"Updated mixs_metadata for sample_name: {sample_name}")
+                print(f"Updated mixs_metadata for sample_id: {sample_id}")
             except Sample.DoesNotExist:
-                print(f"Sample with sample_name {sample_name} does not exist.")
+                print(f"Sample with sample_id {sample_id} does not exist.")
                 continue
         return JsonResponse({'success': True})
     else:
@@ -233,7 +238,7 @@ def mixs_view(request, order_id, mixs_standard):
         
         for sample in samples:
             sample_data = {
-                'sample_name': sample.sample_name,
+                'sample_id': sample.sample_id,
             }
             if sample.mixs_metadata:
                 sample_data['mixs_metadata'] = sample.mixs_metadata

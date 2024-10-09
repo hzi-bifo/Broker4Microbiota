@@ -138,15 +138,19 @@ class Order(models.Model):
 
 class Sample(SelfDescribingModel):
     order = models.ForeignKey(Order, on_delete=models.CASCADE)
-    sample_name = models.CharField(max_length=100, null=True, blank=True)
 
     checklists = models.JSONField()    
-    
+
+    # from ENA spreadsheet download
+
+    sample_id = models.CharField(max_length=100, null=True, blank=True)
+    tax_id = models.CharField(max_length=100, null=True, blank=True)
+    scientific_name = models.CharField(max_length=100, null=True, blank=True)
+    sample_alias = models.CharField(max_length=100, null=True, blank=True)
+    sample_title = models.CharField(max_length=100, null=True, blank=True)
+    sample_description = models.CharField(max_length=100, null=True, blank=True)
+
     #     mixs_metadata_standard = models.CharField(max_length=100, choices=MIXS_METADATA_STANDARDS, null=True, blank=True)
-    #     alias = models.CharField(max_length=100, null=True, blank=True)
-    #     title = models.CharField(max_length=100, null=True, blank=True)
-    #     taxon_id = models.CharField(max_length=100, null=True, blank=True)
-    #     scientific_name = models.CharField(max_length=100, null=True, blank=True)
     #     investigation_type = models.CharField(max_length=100, null=True, blank=True)
     #     study_type = models.CharField(max_length=100, null=True, blank=True)
     #     platform = models.CharField(max_length=100, null=True, blank=True)
@@ -164,7 +168,12 @@ class Sample(SelfDescribingModel):
     #     nf_core_mag_outdir = models.CharField(max_length=255, null=True, blank=True)
 
     fields = {
-        'sample_name': sample_name,
+        'sample_id': sample_id,
+        'tax_id': tax_id,
+        'scientific_name': scientific_name,
+        'sample_alias': sample_alias,
+        'sample_title': sample_title,
+        'sample_description': sample_description,
         'checklists': checklists,
     }
 
@@ -196,7 +205,7 @@ class Sample(SelfDescribingModel):
         return output    
                 
     def __str__(self):
-        return self.sample_name or ''
+        return self.sample_id or ''
 
 class Submission(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE)

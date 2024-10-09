@@ -37,7 +37,7 @@ def export_to_excel():
     samples = Sample.objects.all()
     for sample in samples:
         internal_id = sample.internal_id.replace(tzinfo=None)  # Remove timezone information
-        row = [sample.order.user.username, sample.sample_name, sample.concentration, sample.volume,
+        row = [sample.order.user.username, sample.sample_id, sample.concentration, sample.volume,
                sample.ratio_260_280, sample.ratio_260_230, sample.comments, internal_id,
                sample.mixs_metadata_standard, json.dumps(sample.mixs_metadata)]
         samples_sheet.append(row)
@@ -66,7 +66,7 @@ def import_from_excel(file_path):
     for row in samples_rows:
         orders = Order.objects.filter(user__username=row[0])
         for order in orders:
-            sample = Sample(order=order, sample_name=row[1], concentration=row[2], volume=row[3],
+            sample = Sample(order=order, sample_id=row[1], concentration=row[2], volume=row[3],
                             ratio_260_280=row[4], ratio_260_230=row[5], comments=row[6],
                             internal_id=timezone.make_aware(row[7]),
                             mixs_metadata_standard=row[8], mixs_metadata=json.loads(row[9]))

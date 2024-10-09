@@ -1,23 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <SAMPLE_SET>
 {% for sample in samples %}
-  <SAMPLE alias="aaa{{ sample.sample_name }}">
-    <TITLE>aaa{{ sample.sample_name }}</TITLE>
-    <SAMPLE_NAME>
-      <TAXON_ID>111{{ sample.sample_name }}</TAXON_ID>
+  <SAMPLE alias="{{ sample.sample_alias }}">
+    <TITLE>{{ sample.sample_title }}</TITLE>
+    <sample_id>
+      <TAXON_ID>{{ sample.tax_id }}</TAXON_ID>
     </SAMPLE_NAME>
     <SAMPLE_ATTRIBUTES>   
       {% autoescape off %}
       {{ sample.getAttributes }}
       {% endautoescape %}
-        <SAMPLE_ATTRIBUTE>
-                <TAG>collection date</TAG>
-        <VALUE>2010</VALUE>
-        </SAMPLE_ATTRIBUTE>
-        <SAMPLE_ATTRIBUTE>
-                <TAG>geographic location (country and/or sea)</TAG>
-        <VALUE>Faroe Islands</VALUE>
-        </SAMPLE_ATTRIBUTE>
     </SAMPLE_ATTRIBUTES> 
   </SAMPLE>
 {% endfor %}

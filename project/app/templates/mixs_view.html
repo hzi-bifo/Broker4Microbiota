@@ -28,7 +28,7 @@ MixS {{ mixs_standard }} Samples for Order {{ order.id }}
         data: [
             {% for sample in samples %}
             {
-                sample_name: '{{ sample.sample_name }}',
+                sample_id: '{{ sample.sample_id }}',
                 {% if sample.mixs_metadata %}
                     {% for key, value in sample.mixs_metadata.items %}
                         '{{ key }}': '{{ value|default:"" }}',
@@ -38,7 +38,7 @@ MixS {{ mixs_standard }} Samples for Order {{ order.id }}
             {% endfor %}
         ],
         columns: [
-            { title: 'Sample name', data: 'sample_name', readOnly: true },
+            { title: 'Sample name', data: 'sample_id', readOnly: true },
             {% for field in form %}
                 { title: '{{ field.label }}', data: '{{ field.name }}' },
             {% endfor %}
@@ -56,7 +56,7 @@ MixS {{ mixs_standard }} Samples for Order {{ order.id }}
             metadata['{{ field.name }}'] = row[{{ forloop.counter }}];
             {% endfor %}
             return {
-                sample_name: sampleName,
+                sample_id: sampleName,
                 metadata: metadata
             };
         });
