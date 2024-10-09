@@ -4,6 +4,8 @@ from .mixs_metadata_standards import MIXS_METADATA_STANDARDS, MIXS_METADATA_STAN
 from phonenumber_field.modelfields import PhoneNumberField
 from django.db.models import JSONField
 from django.core.validators import RegexValidator
+import importlib
+import json
 
 LIBRARY_CHOICES = [
     ('choice1', 'Choice 1'),
@@ -28,6 +30,19 @@ class SelfDescribingModel(models.Model):
 
     class Meta:
         abstract = True
+
+    def getSubAttributes(self, exclude=[], include=[]):
+        output = ""
+        if include:
+            for k in self.fields.keys():
+                if k in include:
+                    output = output + f"<SAMPLE_ATTRIBUTE><TAG>{k}</TAG><VALUE>{getattr(self, k)}</VALUE></SAMPLE_ATTRIBUTE>\n"
+        else:
+            for k in self.fields.keys():
+                if k not in exclude:
+                    output = output + f"<SAMPLE_ATTRIBUTE><TAG>{k}</TAG><VALUE>{getattr(self, k)}</VALUE></SAMPLE_ATTRIBUTE>\n"
+        return output
+
 
     def getFields(self, exclude=[], include=[]):
         output = {}
@@ -93,6 +108,8 @@ class SelfDescribingModel(models.Model):
                 value = response[k]
             except:
                 value = ''
+            if k == 'checklists':
+                value= json.loads('["GSC_MIxS_wastewater_sludge", "GSC_MIxS_miscellaneous_natural_or_artificial_environment"]')
             setattr(self, k, value)
 
 class Order(models.Model):
@@ -123,6 +140,8 @@ class Sample(SelfDescribingModel):
     order = models.ForeignKey(Order, on_delete=models.CASCADE)
     sample_name = models.CharField(max_length=100, null=True, blank=True)
 
+    checklists = models.JSONField()    
+    
     #     mixs_metadata_standard = models.CharField(max_length=100, choices=MIXS_METADATA_STANDARDS, null=True, blank=True)
     #     alias = models.CharField(max_length=100, null=True, blank=True)
     #     title = models.CharField(max_length=100, null=True, blank=True)
@@ -146,7 +165,36 @@ class Sample(SelfDescribingModel):
 
     fields = {
         'sample_name': sample_name,
+        'checklists': checklists,
     }
+
+
+    checklist_structure = {
+        'GSC_MIxS_wastewater_sludge': {'checklist_class_name': 'GSC_MIxS_wastewater_sludge', 'unitchecklist_class_name': 'GSC_MIxS_wastewater_sludge_unit'},
+        'GSC_MIxS_miscellaneous_natural_or_artificial_environment': {'checklist_class_name': 'GSC_MIxS_miscellaneous_natural_or_artificial_environment', 'unitchecklist_class_name': 'GSC_MIxS_miscellaneous_natural_or_artificial_environment_unit'},
+    }
+
+    @property
+    def getAttributes(self):
+    	# go through each of the fields within eah of the checklists
+        # get the checklists for this sample    
+        
+        output = ""
+
+        for checklist in json.loads(json.dumps(self.checklists)):
+            checklist_class_name = self.checklist_structure[checklist]['checklist_class_name']
+            checklist_item_class =  getattr(importlib.import_module("app.models"), checklist_class_name)
+            checklist_item_instance = checklist_item_class.objects.filter(sample = self, order=self.order).first()
+            
+            include = []
+            exclude = []
+
+            attributes = checklist_item_instance.getSubAttributes(exclude, include)
+            
+            output = output + f'{attributes}\n'
+
+        return output    
+                
     def __str__(self):
         return self.sample_name or ''
 

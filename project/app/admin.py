@@ -26,6 +26,19 @@ admin.site.register(Order, OrderAdmin)
 class SampleAdmin(admin.ModelAdmin):
     list_display = (tuple(Sample().getFields().keys()))
 
+    # temporary - this needs to be passed through properly
+    checklists = ['GSC_MIxS_wastewater_sludge', 'GSC_MIxS_miscellaneous_natural_or_artificial_environment']
+
+    # get checklists used for this model (from the sample? - array of checklist names?)
+    # get fields from each checklist
+    # use the fields to create a list_display
+
+    # temporary: get fields named alias, name, taxon_id from the set in use
+
+    # Change XML template to use all attributes for each sample
+
+    # proper set of checklists for GMAK, ENA
+
     actions = ['generate_xml_and_create_submission', 'run_mag_pipeline']
 
     def run_mag_pipeline(self, request, queryset):
@@ -141,6 +154,17 @@ class SubmissionAdmin(admin.ModelAdmin):
                     files=files,
                     auth=auth
                 )
+
+                # how is checklist supposed to be passed in xml file? - as an attribute, per sample
+                # Just one checklist per sample / submission?
+                # use v2 rest api
+                # need concept of sample sets? Or just one checklist per order? The former, but start with the latter...
+                # all actual checklists include default checklist. GMAK is on top of that.
+                # so how would this work? Choose at least one checklist, and have any mandatory addtional ones on top from config (ie. GMAK)
+                # order passes through checklist names and records include, exclude fields. Units, etc. are in the checklist itself.
+                # need to tag checklist used as an attribute
+                # need to see what can actually be removed from GMAK
+                # or is GMAK the sample??? - no, it's a checklist
 
                 # Close the files
                 files['SUBMISSION'][1].close()

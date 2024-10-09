@@ -92,7 +92,7 @@ def samples_view(request, order_id):
 
         print(f"Received sample_data: {sample_data}")
 
-        # temporary - this needs to be passed through properl                           y
+        # temporary - this needs to be passed through properly
         checklists = ['GSC_MIxS_wastewater_sludge', 'GSC_MIxS_miscellaneous_natural_or_artificial_environment']
     
         for checklist in checklists:
@@ -120,6 +120,8 @@ def samples_view(request, order_id):
                 checklist_item_instance.save()
 
             print(f"Processing sample {sample.id}")
+
+            print(sample.getAttributes(inclusions, exclusions))
 
         return JsonResponse({'success': True})
 
