@@ -34,24 +34,24 @@ class SelfDescribingModel(models.Model):
     def getSubAttributes(self, exclude=[], include=[]):
         output = ""
         if include:
-            for k in self.fields.keys():
+            for k, v in self.fields.items():
                 if k in include:
-                    output = output + f"<SAMPLE_ATTRIBUTE><TAG>{k}</TAG><VALUE>{getattr(self, k)}</VALUE></SAMPLE_ATTRIBUTE>\n"
+                    output = output + f"<SAMPLE_ATTRIBUTE><TAG>{v}</TAG><VALUE>{getattr(self, k)}</VALUE></SAMPLE_ATTRIBUTE>\n"
         else:
-            for k in self.fields.keys():
+            for k, v in self.fields.items():
                 if k not in exclude:
-                    output = output + f"<SAMPLE_ATTRIBUTE><TAG>{k}</TAG><VALUE>{getattr(self, k)}</VALUE></SAMPLE_ATTRIBUTE>\n"
+                    output = output + f"<SAMPLE_ATTRIBUTE><TAG>{v}</TAG><VALUE>{getattr(self, k)}</VALUE></SAMPLE_ATTRIBUTE>\n"
         return output
 
 
     def getFields(self, exclude=[], include=[]):
         output = {}
         if include:
-            for k in self.fields.keys():
+            for k, v in self.fields.items():
                 if k in include:
                     output[k] = getattr(self, k) or ''
         else:
-            for k in self.fields.keys():
+            for k, v in self.fields.items():
                 if k not in exclude:
                     output[k] = getattr(self, k) or ''
 
@@ -103,7 +103,7 @@ class SelfDescribingModel(models.Model):
     
     def setFieldsFromResponse(self, response):
 
-        for k in self.fields.keys():
+        for k, v in self.fields.items():
             try:
                 value = response[k]
             except:
@@ -152,11 +152,11 @@ class Sampleset(SelfDescribingModel):
     custom = models.JSONField()
 
     fields = {
-        'order': order,
-        'checklists': checklists,
-        'include': include,
-        'exclude': exclude,
-        'custom': custom,
+        'order': 'order',
+        'checklists': 'checklists',
+        'include': 'include',
+        'exclude': 'exclude',
+        'custom': 'custom',
     }
 
     def __str__(self):
@@ -194,12 +194,12 @@ class Sample(SelfDescribingModel):
     #     nf_core_mag_outdir = models.CharField(max_length=255, null=True, blank=True)
 
     fields = {
-        'sample_id': sample_id,
-        'tax_id': tax_id,
-        'scientific_name': scientific_name,
-        'sample_alias': sample_alias,
-        'sample_title': sample_title,
-        'sample_description': sample_description,
+        'sample_id': 'sample_id',
+        'tax_id': 'tax_id',
+        'scientific_name': 'scientific_name',
+        'sample_alias': 'sample_alias',
+        'sample_title': 'sample_title',
+        'sample_description': 'sample_description',
     }
 
 
