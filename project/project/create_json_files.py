@@ -61,8 +61,8 @@ def produceModels(data, model_data, field_names):
 
     unitchecklist_fields_output = f"\tfields = {{\n"
 
-    unitchecklist_header = unitchecklist_header + f"class {model_name}_unit(SelfDescribingModel):\n"
-    unitchecklist_output = unitchecklist_output + f"\tsample = models.ForeignKey(Sample, on_delete=models.CASCADE)\n"
+    unitchecklist_header = unitchecklist_header + f"class {model_name}_unit(SelfDescribingUnitModel):\n"
+    # unitchecklist_output = unitchecklist_output + f"\tsample = models.ForeignKey(Sample, on_delete=models.CASCADE)\n"
     unitchecklist_output = unitchecklist_output + f"\torder = models.ForeignKey(Order, on_delete=models.CASCADE, default=1)\n"
 
     for fieldgroup in checklist['FIELD_GROUP']:
@@ -88,8 +88,9 @@ def produceModels(data, model_data, field_names):
             try:
                 if field['UNITS']:
                     field_units = []
-                    for unit in field['UNITS']['UNIT']:
-                        field_units.append((unit, unit))
+                    for units in field['UNITS']:
+                        for unit in units['UNIT']:
+                            field_units.append((unit, unit))
                     field_units_name = f"{field_name}_units"
             except:
                 pass
@@ -161,7 +162,7 @@ def produceModels(data, model_data, field_names):
                     
                     unit_output = unit_output + f"\t{field_units_name} = {field_units}\n"
 
-                    unitchecklist_fields_output = unitchecklist_fields_output + f"\t\t'{field_units_name}': {field_units_name},\n"
+                    unitchecklist_fields_output = unitchecklist_fields_output + f"\t\t'{field_name}': '{field_name}',\n"
 
     checklist_fields_output = checklist_fields_output + f"\t}}\n"
     unitchecklist_fields_output = unitchecklist_fields_output + f"\t}}\n"
@@ -204,7 +205,7 @@ for filename in os.listdir(xml_dir):
         with open(xml_path, 'r') as xml_file:
             xml_contents = xml_file.read()
 
-        data = xmltodict.parse(xml_contents, force_list={'FIELD'})
+        data = xmltodict.parse(xml_contents, force_list=('FIELD','UNITS','UNIT'))
 
         # Save the data as JSON
         with open(json_path, 'w') as json_file:

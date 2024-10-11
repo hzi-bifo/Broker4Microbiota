@@ -1,3 +1,4 @@
+.open db.sqlite3
 delete from app_ena_default_sample_checklist                                 ;
 delete from app_ena_default_sample_checklist_unit                            ;
 delete from app_gsc_mixs_air                                                 ;
@@ -32,6 +33,7 @@ delete from app_order                                                        ;
 delete from app_pipelines                                                    ;
 delete from app_pipelines_samples                                            ;
 delete from app_sample                                                       ;
+delete from app_sampleset;                                                    
 delete from app_submission                                                   ;
 delete from app_submission_samples          ;
 delete from myapp_order                                                      ;

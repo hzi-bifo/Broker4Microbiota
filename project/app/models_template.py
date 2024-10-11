@@ -32,15 +32,33 @@ class SelfDescribingModel(models.Model):
         abstract = True
 
     def getSubAttributes(self, exclude=[], include=[]):
+
+        class_name = type(self).__name__
+        unit_class_name = f"{class_name}_unit"
+        unitchecklist_class =  getattr(importlib.import_module("app.models"), unit_class_name)
+        unitchecklist_item_instance = unitchecklist_class.objects.filter(order=self.order).first()
+
         output = ""
         if include:
             for k, v in self.fields.items():
                 if k in include:
-                    output = output + f"<SAMPLE_ATTRIBUTE><TAG>{v}</TAG><VALUE>{getattr(self, k)}</VALUE></SAMPLE_ATTRIBUTE>\n"
+                    output = output + f"<SAMPLE_ATTRIBUTE><TAG>{v}</TAG><VALUE>{getattr(self, k)}</VALUE>"
+                    try:
+                        unitoptions_field_name = getattr(unitchecklist_item_instance, f"{k}")
+                        output = output + f"<UNITS>{unitoptions_field_name}</UNITS>\n"
+                    except:
+                        pass
+                    output = output + f"</SAMPLE_ATTRIBUTE>\n"                  
         else:
             for k, v in self.fields.items():
                 if k not in exclude:
-                    output = output + f"<SAMPLE_ATTRIBUTE><TAG>{v}</TAG><VALUE>{getattr(self, k)}</VALUE></SAMPLE_ATTRIBUTE>\n"
+                    output = output + f"<SAMPLE_ATTRIBUTE><TAG>{v}</TAG><VALUE>{getattr(self, k)}</VALUE>"
+                    try:
+                        unitoptions_field_name = getattr(unitchecklist_item_instance, f"{k}")
+                        output = output + f"<UNITS>{unitoptions_field_name}</UNITS>\n"
+                    except:
+                        pass
+                    output = output + f"</SAMPLE_ATTRIBUTE>\n"            
         return output
 
 
@@ -109,6 +127,20 @@ class SelfDescribingModel(models.Model):
             except:
                 value = ''
             setattr(self, k, value)
+
+
+
+class SelfDescribingUnitModel(SelfDescribingModel):
+
+    class Meta:
+        abstract = True
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        for field in self.fields.keys():
+            value = getattr(self, field+"_units")[0][0]
+            setattr(self, field, value)
 
 class Order(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -216,7 +248,9 @@ class Sample(SelfDescribingModel):
         output = ""
 
         for checklist in json.loads(json.dumps(self.sampleset.checklists)):
-            checklist_class_name = self.checklist_structure[checklist]['checklist_class_name']
+            checklist_name = checklist['checklist_name']
+            checklist_code = checklist['checklist_code']
+            checklist_class_name = self.checklist_structure[checklist_name]['checklist_class_name']
             checklist_item_class =  getattr(importlib.import_module("app.models"), checklist_class_name)
             checklist_item_instance = checklist_item_class.objects.filter(sample = self, order=self.order).first()
             
@@ -224,11 +258,13 @@ class Sample(SelfDescribingModel):
             exclude = []
 
             attributes = checklist_item_instance.getSubAttributes(exclude, include)
-            
+
+            attributes = attributes + f"<SAMPLE_ATTRIBUTE><TAG>ena-checklist</TAG><VALUE>{checklist_code}</VALUE></SAMPLE_ATTRIBUTE>\n"
+
             output = output + f'{attributes}\n'
 
         return output    
-                
+
     def __str__(self):
         return self.sample_id or ''
 

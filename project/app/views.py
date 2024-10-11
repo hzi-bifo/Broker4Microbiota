@@ -65,6 +65,7 @@ def order_view(request, order_id=None):
 def delete_order(request, order_id):
     order = get_object_or_404(Order, pk=order_id, user=request.user)
     order.delete()
+
     return redirect('order_list')   
 
 def register_view(request):
@@ -103,7 +104,9 @@ def samples_view(request, order_id):
         # checklists = ['GSC_MIxS_wastewater_sludge', 'GSC_MIxS_miscellaneous_natural_or_artificial_environment']
     
         for checklist in checklists:
-            checklist_class_name = checklist_structure[checklist]['checklist_class_name']
+            checklist_name = checklist['checklist_name']
+            checklist_code = checklist['checklist_code']  
+            checklist_class_name = checklist_structure[checklist_name]['checklist_class_name']
             checklist_item_class =  getattr(importlib.import_module("app.models"), checklist_class_name)
             
             checklist_item_class.objects.filter(order=order).delete()
@@ -121,7 +124,9 @@ def samples_view(request, order_id):
 
             # for all checklists or just ones used (initially, latter)
             for checklist in checklists:
-                checklist_class_name = checklist_structure[checklist]['checklist_class_name']
+                checklist_name = checklist['checklist_name']
+                checklist_code = checklist['checklist_code']  
+                checklist_class_name = checklist_structure[checklist_name]['checklist_class_name']
                 checklist_item_class =  getattr(importlib.import_module("app.models"), checklist_class_name)
                 checklist_item_instance = checklist_item_class(sample = sample, order = order)
                 checklist_item_instance.setFieldsFromResponse(sample_info)
@@ -163,8 +168,11 @@ def samples_view(request, order_id):
     checklist_entries_list = []
     for checklist in checklists:
 
+        checklist_name = checklist['checklist_name']
+        checklist_code = checklist['checklist_code']  
+
         # get the checklist model name from Checklist_structure 
-        checklist_class_name = checklist_structure[checklist]['checklist_class_name']
+        checklist_class_name = checklist_structure[checklist_name]['checklist_class_name']
 
         checklist_entries_class =  getattr(importlib.import_module("app.models"), checklist_class_name)
         samples_headers = samples_headers + checklist_entries_class().getHeaders(inclusions, exclusions)
@@ -296,8 +304,27 @@ def order_view(request, order_id=None):
                 # Create a new Sampleset instance and save it
                 sample_set = Sampleset(order=order)
                 # sample_set.checklists = form.cleaned_data['checklists']
-                sample_set.checklists = json.loads('["GSC_MIxS_wastewater_sludge"]')
+
+                # temporary
+                checklist_string = '[{"checklist_name": "GSC_MIxS_wastewater_sludge", "checklist_code" : "ERC000023"}]'
+
+                sample_set.checklists = json.loads(checklist_string)
                 # sample_set.checklists = json.loads('["GSC_MIxS_wastewater_sludge", "GSC_MIxS_miscellaneous_natural_or_artificial_environment"]')
+
+                checklist_structure = {
+                    'GSC_MIxS_wastewater_sludge': {'checklist_class_name': 'GSC_MIxS_wastewater_sludge', 'unitchecklist_class_name': 'GSC_MIxS_wastewater_sludge_unit'},
+                    'GSC_MIxS_miscellaneous_natural_or_artificial_environment': {'checklist_class_name': 'GSC_MIxS_miscellaneous_natural_or_artificial_environment', 'unitchecklist_class_name': 'GSC_MIxS_miscellaneous_natural_or_artificial_environment_unit'},
+                }
+
+
+                # temporary
+                for checklist in sample_set.checklists:
+                    checklist_name = checklist['checklist_name']
+                    checklist_code = checklist['checklist_code']  
+                    unitchecklist_class_name = checklist_structure[checklist_name]['unitchecklist_class_name']
+                    unitchecklist_item_class =  getattr(importlib.import_module("app.models"), unitchecklist_class_name)
+                    unitchecklist_item_instance = unitchecklist_item_class(order = order)
+                    unitchecklist_item_instance.save()
 
                 # temporary
                 sample_set.include = json.loads('[]')
@@ -305,6 +332,8 @@ def order_view(request, order_id=None):
                 sample_set.custom = json.loads('[]')
 
                 sample_set.save()
+
+                # create a 
 
                 return redirect('order_list')
 

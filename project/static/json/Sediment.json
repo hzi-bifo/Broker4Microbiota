@@ -106,14 +106,16 @@
                                 "LABEL": "sample volume or weight for DNA extraction",
                                 "NAME": "sample volume or weight for DNA extraction",
                                 "DESCRIPTION": "Volume (ml) or mass (g) of total collected sample processed for DNA extraction. Note: total sample collected should be entered under the term 'sample size'.",
-                                "UNITS": {
-                                    "UNIT": [
-                                        "g",
-                                        "mL",
-                                        "mg",
-                                        "ng"
-                                    ]
-                                },
+                                "UNITS": [
+                                    {
+                                        "UNIT": [
+                                            "g",
+                                            "mL",
+                                            "mg",
+                                            "ng"
+                                        ]
+                                    }
+                                ],
                                 "FIELD_TYPE": {
                                     "TEXT_FIELD": {
                                         "REGEX_VALUE": "(0|((0\\.)|([1-9][0-9]*\\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
@@ -366,9 +368,13 @@
                                 "SYNONYM": "geographic location (altitude)",
                                 "NAME": "altitude",
                                 "DESCRIPTION": "The altitude of the sample is the vertical distance between Earth's surface above Sea Level and the sampled position in the air.",
-                                "UNITS": {
-                                    "UNIT": "m"
-                                },
+                                "UNITS": [
+                                    {
+                                        "UNIT": [
+                                            "m"
+                                        ]
+                                    }
+                                ],
                                 "FIELD_TYPE": {
                                     "TEXT_FIELD": {
                                         "REGEX_VALUE": "(0|((0\\.)|([1-9][0-9]*\\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
@@ -1255,9 +1261,13 @@
                                 "LABEL": "geographic location (latitude)",
                                 "NAME": "geographic location (latitude)",
                                 "DESCRIPTION": "The geographical origin of the sample as defined by latitude. The values should be reported in decimal degrees and in WGS84 system",
-                                "UNITS": {
-                                    "UNIT": "DD"
-                                },
+                                "UNITS": [
+                                    {
+                                        "UNIT": [
+                                            "DD"
+                                        ]
+                                    }
+                                ],
                                 "FIELD_TYPE": {
                                     "TEXT_FIELD": {
                                         "REGEX_VALUE": "(^[+-]?[0-9]+.?[0-9]{0,8}$)|(^not collected$)|(^not provided$)|(^restricted access$)|(^missing: control sample$)|(^missing: sample group$)|(^missing: synthetic construct$)|(^missing: lab stock$)|(^missing: third party data$)|(^missing: data agreement established pre-2023$)|(^missing: endangered species$)|(^missing: human-identifiable$)"
@@ -1270,9 +1280,13 @@
                                 "LABEL": "geographic location (longitude)",
                                 "NAME": "geographic location (longitude)",
                                 "DESCRIPTION": "The geographical origin of the sample as defined by longitude. The values should be reported in decimal degrees and in WGS84 system",
-                                "UNITS": {
-                                    "UNIT": "DD"
-                                },
+                                "UNITS": [
+                                    {
+                                        "UNIT": [
+                                            "DD"
+                                        ]
+                                    }
+                                ],
                                 "FIELD_TYPE": {
                                     "TEXT_FIELD": {
                                         "REGEX_VALUE": "(^[+-]?[0-9]+.?[0-9]{0,8}$)|(^not collected$)|(^not provided$)|(^restricted access$)|(^missing: control sample$)|(^missing: sample group$)|(^missing: synthetic construct$)|(^missing: lab stock$)|(^missing: third party data$)|(^missing: data agreement established pre-2023$)|(^missing: endangered species$)|(^missing: human-identifiable$)"
@@ -1296,9 +1310,13 @@
                                 "SYNONYM": "geographic location (depth)",
                                 "NAME": "depth",
                                 "DESCRIPTION": "The vertical distance below local surface, e.g. for sediment or soil samples depth is measured from sediment or soil surface, respectively. Depth can be reported as an interval for subsurface samples.",
-                                "UNITS": {
-                                    "UNIT": "m"
-                                },
+                                "UNITS": [
+                                    {
+                                        "UNIT": [
+                                            "m"
+                                        ]
+                                    }
+                                ],
                                 "FIELD_TYPE": {
                                     "TEXT_FIELD": {
                                         "REGEX_VALUE": "(0|((0\\.)|([1-9][0-9]*\\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
@@ -1345,9 +1363,13 @@
                                 "SYNONYM": "geographic location (elevation)",
                                 "NAME": "elevation",
                                 "DESCRIPTION": "The elevation of the sampling site as measured by the vertical distance from mean sea level.",
-                                "UNITS": {
-                                    "UNIT": "m"
-                                },
+                                "UNITS": [
+                                    {
+                                        "UNIT": [
+                                            "m"
+                                        ]
+                                    }
+                                ],
                                 "FIELD_TYPE": {
                                     "TEXT_FIELD": {
                                         "REGEX_VALUE": "[+-]?(0|((0\\.)|([1-9][0-9]*\\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
@@ -1406,15 +1428,17 @@
                                 "LABEL": "amount or size of sample collected",
                                 "NAME": "amount or size of sample collected",
                                 "DESCRIPTION": "The total amount or size (volume (ml), mass (g) or area (m2) ) of sample collected.",
-                                "UNITS": {
-                                    "UNIT": [
-                                        "L",
-                                        "g",
-                                        "kg",
-                                        "m2",
-                                        "m3"
-                                    ]
-                                },
+                                "UNITS": [
+                                    {
+                                        "UNIT": [
+                                            "L",
+                                            "g",
+                                            "kg",
+                                            "m2",
+                                            "m3"
+                                        ]
+                                    }
+                                ],
                                 "FIELD_TYPE": {
                                     "TEXT_FIELD": {
                                         "REGEX_VALUE": "(0|((0\\.)|([1-9][0-9]*\\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
@@ -1427,13 +1451,15 @@
                                 "LABEL": "biomass",
                                 "NAME": "biomass",
                                 "DESCRIPTION": "amount of biomass; should include the name for the part of biomass measured, e.g. microbial, total. can include multiple measurements",
-                                "UNITS": {
-                                    "UNIT": [
-                                        "g",
-                                        "kg",
-                                        "t"
-                                    ]
-                                },
+                                "UNITS": [
+                                    {
+                                        "UNIT": [
+                                            "g",
+                                            "kg",
+                                            "t"
+                                        ]
+                                    }
+                                ],
                                 "FIELD_TYPE": {
                                     "TEXT_FIELD": null
                                 },
@@ -1444,9 +1470,13 @@
                                 "LABEL": "density",
                                 "NAME": "density",
                                 "DESCRIPTION": "density of sample",
-                                "UNITS": {
-                                    "UNIT": "g/m3"
-                                },
+                                "UNITS": [
+                                    {
+                                        "UNIT": [
+                                            "g/m3"
+                                        ]
+                                    }
+                                ],
                                 "FIELD_TYPE": {
                                     "TEXT_FIELD": {
                                         "REGEX_VALUE": "(0|((0\\.)|([1-9][0-9]*\\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
@@ -1488,15 +1518,17 @@
                                 "LABEL": "sample storage duration",
                                 "NAME": "sample storage duration",
                                 "DESCRIPTION": "duration for which sample was stored",
-                                "UNITS": {
-                                    "UNIT": [
-                                        "days",
-                                        "hours",
-                                        "months",
-                                        "weeks",
-                                        "years"
-                                    ]
-                                },
+                                "UNITS": [
+                                    {
+                                        "UNIT": [
+                                            "days",
+                                            "hours",
+                                            "months",
+                                            "weeks",
+                                            "years"
+                                        ]
+                                    }
+                                ],
                                 "FIELD_TYPE": {
                                     "TEXT_FIELD": {
                                         "REGEX_VALUE": "(0|((0\\.)|([1-9][0-9]*\\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
@@ -1509,9 +1541,13 @@
                                 "LABEL": "sample storage temperature",
                                 "NAME": "sample storage temperature",
                                 "DESCRIPTION": "temperature at which sample was stored, e.g. -80",
-                                "UNITS": {
-                                    "UNIT": "\u00b0C"
-                                },
+                                "UNITS": [
+                                    {
+                                        "UNIT": [
+                                            "\u00b0C"
+                                        ]
+                                    }
+                                ],
                                 "FIELD_TYPE": {
                                     "TEXT_FIELD": {
                                         "REGEX_VALUE": "[+-]?(0|((0\\.)|([1-9][0-9]*\\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
@@ -1594,12 +1630,14 @@
                                 "LABEL": "alkyl diethers",
                                 "NAME": "alkyl diethers",
                                 "DESCRIPTION": "concentration of alkyl diethers",
-                                "UNITS": {
-                                    "UNIT": [
-                                        "M/L",
-                                        "\u00b5g/L"
-                                    ]
-                                },
+                                "UNITS": [
+                                    {
+                                        "UNIT": [
+                                            "M/L",
+                                            "\u00b5g/L"
+                                        ]
+                                    }
+                                ],
                                 "FIELD_TYPE": {
                                     "TEXT_FIELD": {
                                         "REGEX_VALUE": "(0|((0\\.)|([1-9][0-9]*\\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
@@ -1612,9 +1650,13 @@
                                 "LABEL": "aminopeptidase activity",
                                 "NAME": "aminopeptidase activity",
                                 "DESCRIPTION": "measurement of aminopeptidase activity",
-                                "UNITS": {
-                                    "UNIT": "mol/L/h"
-                                },
+                                "UNITS": [
+                                    {
+                                        "UNIT": [
+                                            "mol/L/h"
+                                        ]
+                                    }
+                                ],
                                 "FIELD_TYPE": {
                                     "TEXT_FIELD": {
                                         "REGEX_VALUE": "(0|((0\\.)|([1-9][0-9]*\\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
@@ -1627,9 +1669,13 @@
                                 "LABEL": "ammonium",
                                 "NAME": "ammonium",
                                 "DESCRIPTION": "concentration of ammonium",
-                                "UNITS": {
-                                    "UNIT": "\u00b5mol/L"
-                                },
+                                "UNITS": [
+                                    {
+                                        "UNIT": [
+                                            "\u00b5mol/L"
+                                        ]
+                                    }
+                                ],
                                 "FIELD_TYPE": {
                                     "TEXT_FIELD": {
                                         "REGEX_VALUE": "(0|((0\\.)|([1-9][0-9]*\\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
@@ -1642,9 +1688,13 @@
                                 "LABEL": "bacterial carbon production",
                                 "NAME": "bacterial carbon production",
                                 "DESCRIPTION": "measurement of bacterial carbon production",
-                                "UNITS": {
-                                    "UNIT": "ng/h"
-                                },
+                                "UNITS": [
+                                    {
+                                        "UNIT": [
+                                            "ng/h"
+                                        ]
+                                    }
+                                ],
                                 "FIELD_TYPE": {
                                     "TEXT_FIELD": {
                                         "REGEX_VALUE": "(0|((0\\.)|([1-9][0-9]*\\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
@@ -1657,12 +1707,14 @@
                                 "LABEL": "bishomohopanol",
                                 "NAME": "bishomohopanol",
                                 "DESCRIPTION": "concentration of bishomohopanol",
-                                "UNITS": {
-                                    "UNIT": [
-                                        "\u00b5g/L",
-                                        "\u00b5g/g"
-                                    ]
-                                },
+                                "UNITS": [
+                                    {
+                                        "UNIT": [
+                                            "\u00b5g/L",
+                                            "\u00b5g/g"
+                                        ]
+                                    }
+                                ],
                                 "FIELD_TYPE": {
                                     "TEXT_FIELD": {
                                         "REGEX_VALUE": "(0|((0\\.)|([1-9][0-9]*\\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
@@ -1675,12 +1727,14 @@
                                 "LABEL": "bromide",
                                 "NAME": "bromide",
                                 "DESCRIPTION": "concentration of bromide",
-                                "UNITS": {
-                                    "UNIT": [
-                                        "parts/million",
-                                        "\u00b5mol/L"
-                                    ]
-                                },
+                                "UNITS": [
+                                    {
+                                        "UNIT": [
+                                            "parts/million",
+                                            "\u00b5mol/L"
+                                        ]
+                                    }
+                                ],
                                 "FIELD_TYPE": {
                                     "TEXT_FIELD": {
                                         "REGEX_VALUE": "(0|((0\\.)|([1-9][0-9]*\\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
@@ -1693,13 +1747,15 @@
                                 "LABEL": "calcium",
                                 "NAME": "calcium",
                                 "DESCRIPTION": "concentration of calcium",
-                                "UNITS": {
-                                    "UNIT": [
-                                        "mg/L",
-                                        "parts/million",
-                                        "\u00b5mol/L"
-                                    ]
-                                },
+                                "UNITS": [
+                                    {
+                                        "UNIT": [
+                                            "mg/L",
+                                            "parts/million",
+                                            "\u00b5mol/L"
+                                        ]
+                                    }
+                                ],
                                 "FIELD_TYPE": {
                                     "TEXT_FIELD": {
                                         "REGEX_VALUE": "(0|((0\\.)|([1-9][0-9]*\\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
@@ -1724,9 +1780,13 @@
                                 "LABEL": "chloride",
                                 "NAME": "chloride",
                                 "DESCRIPTION": "concentration of chloride",
-                                "UNITS": {
-                                    "UNIT": "mg/L"
-                                },
+                                "UNITS": [
+                                    {
+                                        "UNIT": [
+                                            "mg/L"
+                                        ]
+                                    }
+                                ],
                                 "FIELD_TYPE": {
                                     "TEXT_FIELD": {
                                         "REGEX_VALUE": "(0|((0\\.)|([1-9][0-9]*\\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
@@ -1739,12 +1799,14 @@
                                 "LABEL": "chlorophyll",
                                 "NAME": "chlorophyll",
                                 "DESCRIPTION": "concentration of chlorophyll",
-                                "UNITS": {
-                                    "UNIT": [
-                                        "mg/m3",
-                                        "\u00b5g/L"
-                                    ]
-                                },
+                                "UNITS": [
+                                    {
+                                        "UNIT": [
+                                            "mg/m3",
+                                            "\u00b5g/L"
+                                        ]
+                                    }
+                                ],
                                 "FIELD_TYPE": {
                                     "TEXT_FIELD": {
                                         "REGEX_VALUE": "(0|((0\\.)|([1-9][0-9]*\\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
@@ -1757,9 +1819,13 @@
                                 "LABEL": "diether lipids",
                                 "NAME": "diether lipids",
                                 "DESCRIPTION": "concentration of diether lipids; can include multiple types of diether lipids",
-                                "UNITS": {
-                                    "UNIT": "ng/L"
-                                },
+                                "UNITS": [
+                                    {
+                                        "UNIT": [
+                                            "ng/L"
+                                        ]
+                                    }
+                                ],
                                 "FIELD_TYPE": {
                                     "TEXT_FIELD": {
                                         "REGEX_VALUE": "(0|((0\\.)|([1-9][0-9]*\\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
@@ -1772,9 +1838,13 @@
                                 "LABEL": "dissolved carbon dioxide",
                                 "NAME": "dissolved carbon dioxide",
                                 "DESCRIPTION": "concentration of dissolved carbon dioxide",
-                                "UNITS": {
-                                    "UNIT": "\u00b5mol/L"
-                                },
+                                "UNITS": [
+                                    {
+                                        "UNIT": [
+                                            "\u00b5mol/L"
+                                        ]
+                                    }
+                                ],
                                 "FIELD_TYPE": {
                                     "TEXT_FIELD": {
                                         "REGEX_VALUE": "(0|((0\\.)|([1-9][0-9]*\\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
@@ -1787,9 +1857,13 @@
                                 "LABEL": "dissolved hydrogen",
                                 "NAME": "dissolved hydrogen",
                                 "DESCRIPTION": "concentration of dissolved hydrogen",
-                                "UNITS": {
-                                    "UNIT": "\u00b5mol/L"
-                                },
+                                "UNITS": [
+                                    {
+                                        "UNIT": [
+                                            "\u00b5mol/L"
+                                        ]
+                                    }
+                                ],
                                 "FIELD_TYPE": {
                                     "TEXT_FIELD": {
                                         "REGEX_VALUE": "(0|((0\\.)|([1-9][0-9]*\\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
@@ -1802,9 +1876,13 @@
                                 "LABEL": "dissolved inorganic carbon",
                                 "NAME": "dissolved inorganic carbon",
                                 "DESCRIPTION": "dissolved inorganic carbon concentration",
-                                "UNITS": {
-                                    "UNIT": "\u00b5g/L"
-                                },
+                                "UNITS": [
+                                    {
+                                        "UNIT": [
+                                            "\u00b5g/L"
+                                        ]
+                                    }
+                                ],
                                 "FIELD_TYPE": {
                                     "TEXT_FIELD": {
                                         "REGEX_VALUE": "(0|((0\\.)|([1-9][0-9]*\\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
@@ -1817,9 +1895,13 @@
                                 "LABEL": "dissolved organic carbon",
                                 "NAME": "dissolved organic carbon",
                                 "DESCRIPTION": "concentration of dissolved organic carbon",
-                                "UNITS": {
-                                    "UNIT": "\u00b5mol/L"
-                                },
+                                "UNITS": [
+                                    {
+                                        "UNIT": [
+                                            "\u00b5mol/L"
+                                        ]
+                                    }
+                                ],
                                 "FIELD_TYPE": {
                                     "TEXT_FIELD": {
                                         "REGEX_VALUE": "(0|((0\\.)|([1-9][0-9]*\\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
@@ -1832,12 +1914,14 @@
                                 "LABEL": "dissolved organic nitrogen",
                                 "NAME": "dissolved organic nitrogen",
                                 "DESCRIPTION": "dissolved organic nitrogen concentration measured as; total dissolved nitrogen - NH4 - NO3 - NO2",
-                                "UNITS": {
-                                    "UNIT": [
-                                        "mg/L",
-                                        "\u00b5g/L"
-                                    ]
-                                },
+                                "UNITS": [
+                                    {
+                                        "UNIT": [
+                                            "mg/L",
+                                            "\u00b5g/L"
+                                        ]
+                                    }
+                                ],
                                 "FIELD_TYPE": {
                                     "TEXT_FIELD": {
                                         "REGEX_VALUE": "(0|((0\\.)|([1-9][0-9]*\\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
@@ -1850,9 +1934,13 @@
                                 "LABEL": "methane",
                                 "NAME": "methane",
                                 "DESCRIPTION": "methane (gas) amount or concentration at the time of sampling",
-                                "UNITS": {
-                                    "UNIT": "\u00b5M/L"
-                                },
+                                "UNITS": [
+                                    {
+                                        "UNIT": [
+                                            "\u00b5M/L"
+                                        ]
+                                    }
+                                ],
                                 "FIELD_TYPE": {
                                     "TEXT_FIELD": {
                                         "REGEX_VALUE": "(0|((0\\.)|([1-9][0-9]*\\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
@@ -1865,9 +1953,13 @@
                                 "LABEL": "dissolved oxygen",
                                 "NAME": "dissolved oxygen",
                                 "DESCRIPTION": "concentration of dissolved oxygen",
-                                "UNITS": {
-                                    "UNIT": "\u00b5mol/kg"
-                                },
+                                "UNITS": [
+                                    {
+                                        "UNIT": [
+                                            "\u00b5mol/kg"
+                                        ]
+                                    }
+                                ],
                                 "FIELD_TYPE": {
                                     "TEXT_FIELD": {
                                         "REGEX_VALUE": "(0|((0\\.)|([1-9][0-9]*\\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
@@ -1880,9 +1972,13 @@
                                 "LABEL": "glucosidase activity",
                                 "NAME": "glucosidase activity",
                                 "DESCRIPTION": "measurement of glucosidase activity",
-                                "UNITS": {
-                                    "UNIT": "mol/L/h"
-                                },
+                                "UNITS": [
+                                    {
+                                        "UNIT": [
+                                            "mol/L/h"
+                                        ]
+                                    }
+                                ],
                                 "FIELD_TYPE": {
                                     "TEXT_FIELD": {
                                         "REGEX_VALUE": "(0|((0\\.)|([1-9][0-9]*\\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
@@ -1895,13 +1991,15 @@
                                 "LABEL": "magnesium",
                                 "NAME": "magnesium",
                                 "DESCRIPTION": "concentration of magnesium",
-                                "UNITS": {
-                                    "UNIT": [
-                                        "mg/L",
-                                        "mol/L",
-                                        "parts/million"
-                                    ]
-                                },
+                                "UNITS": [
+                                    {
+                                        "UNIT": [
+                                            "mg/L",
+                                            "mol/L",
+                                            "parts/million"
+                                        ]
+                                    }
+                                ],
                                 "FIELD_TYPE": {
                                     "TEXT_FIELD": {
                                         "REGEX_VALUE": "(0|((0\\.)|([1-9][0-9]*\\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
@@ -1914,9 +2012,13 @@
                                 "LABEL": "n-alkanes",
                                 "NAME": "n-alkanes",
                                 "DESCRIPTION": "concentration of n-alkanes; can include multiple n-alkanes",
-                                "UNITS": {
-                                    "UNIT": "\u00b5mol/L"
-                                },
+                                "UNITS": [
+                                    {
+                                        "UNIT": [
+                                            "\u00b5mol/L"
+                                        ]
+                                    }
+                                ],
                                 "FIELD_TYPE": {
                                     "TEXT_FIELD": {
                                         "REGEX_VALUE": "(0|((0\\.)|([1-9][0-9]*\\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
@@ -1929,9 +2031,13 @@
                                 "LABEL": "nitrate",
                                 "NAME": "nitrate",
                                 "DESCRIPTION": "concentration of nitrate",
-                                "UNITS": {
-                                    "UNIT": "\u00b5mol/L"
-                                },
+                                "UNITS": [
+                                    {
+                                        "UNIT": [
+                                            "\u00b5mol/L"
+                                        ]
+                                    }
+                                ],
                                 "FIELD_TYPE": {
                                     "TEXT_FIELD": {
                                         "REGEX_VALUE": "(0|((0\\.)|([1-9][0-9]*\\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
@@ -1944,9 +2050,13 @@
                                 "LABEL": "nitrite",
                                 "NAME": "nitrite",
                                 "DESCRIPTION": "concentration of nitrite",
-                                "UNITS": {
-                                    "UNIT": "\u00b5mol/L"
-                                },
+                                "UNITS": [
+                                    {
+                                        "UNIT": [
+                                            "\u00b5mol/L"
+                                        ]
+                                    }
+                                ],
                                 "FIELD_TYPE": {
                                     "TEXT_FIELD": {
                                         "REGEX_VALUE": "(0|((0\\.)|([1-9][0-9]*\\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
@@ -1959,9 +2069,13 @@
                                 "LABEL": "nitrogen",
                                 "NAME": "nitrogen",
                                 "DESCRIPTION": "concentration of nitrogen (total)",
-                                "UNITS": {
-                                    "UNIT": "\u00b5mol/L"
-                                },
+                                "UNITS": [
+                                    {
+                                        "UNIT": [
+                                            "\u00b5mol/L"
+                                        ]
+                                    }
+                                ],
                                 "FIELD_TYPE": {
                                     "TEXT_FIELD": {
                                         "REGEX_VALUE": "(0|((0\\.)|([1-9][0-9]*\\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
@@ -1974,9 +2088,13 @@
                                 "LABEL": "organic carbon",
                                 "NAME": "organic carbon",
                                 "DESCRIPTION": "concentration of organic carbon",
-                                "UNITS": {
-                                    "UNIT": "\u00b5mol/L"
-                                },
+                                "UNITS": [
+                                    {
+                                        "UNIT": [
+                                            "\u00b5mol/L"
+                                        ]
+                                    }
+                                ],
                                 "FIELD_TYPE": {
                                     "TEXT_FIELD": {
                                         "REGEX_VALUE": "(0|((0\\.)|([1-9][0-9]*\\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
@@ -1989,9 +2107,13 @@
                                 "LABEL": "organic matter",
                                 "NAME": "organic matter",
                                 "DESCRIPTION": "concentration of organic matter",
-                                "UNITS": {
-                                    "UNIT": "\u00b5g/L"
-                                },
+                                "UNITS": [
+                                    {
+                                        "UNIT": [
+                                            "\u00b5g/L"
+                                        ]
+                                    }
+                                ],
                                 "FIELD_TYPE": {
                                     "TEXT_FIELD": {
                                         "REGEX_VALUE": "(0|((0\\.)|([1-9][0-9]*\\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
@@ -2004,9 +2126,13 @@
                                 "LABEL": "organic nitrogen",
                                 "NAME": "organic nitrogen",
                                 "DESCRIPTION": "concentration of organic nitrogen",
-                                "UNITS": {
-                                    "UNIT": "\u00b5g/L"
-                                },
+                                "UNITS": [
+                                    {
+                                        "UNIT": [
+                                            "\u00b5g/L"
+                                        ]
+                                    }
+                                ],
                                 "FIELD_TYPE": {
                                     "TEXT_FIELD": {
                                         "REGEX_VALUE": "(0|((0\\.)|([1-9][0-9]*\\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
@@ -2019,9 +2145,13 @@
                                 "LABEL": "particulate organic carbon",
                                 "NAME": "particulate organic carbon",
                                 "DESCRIPTION": "concentration of particulate organic carbon",
-                                "UNITS": {
-                                    "UNIT": "\u00b5g/L"
-                                },
+                                "UNITS": [
+                                    {
+                                        "UNIT": [
+                                            "\u00b5g/L"
+                                        ]
+                                    }
+                                ],
                                 "FIELD_TYPE": {
                                     "TEXT_FIELD": {
                                         "REGEX_VALUE": "(0|((0\\.)|([1-9][0-9]*\\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
@@ -2034,9 +2164,13 @@
                                 "LABEL": "petroleum hydrocarbon",
                                 "NAME": "petroleum hydrocarbon",
                                 "DESCRIPTION": "concentration of petroleum hydrocarbon",
-                                "UNITS": {
-                                    "UNIT": "\u00b5mol/L"
-                                },
+                                "UNITS": [
+                                    {
+                                        "UNIT": [
+                                            "\u00b5mol/L"
+                                        ]
+                                    }
+                                ],
                                 "FIELD_TYPE": {
                                     "TEXT_FIELD": {
                                         "REGEX_VALUE": "(0|((0\\.)|([1-9][0-9]*\\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
@@ -2049,12 +2183,14 @@
                                 "LABEL": "phaeopigments",
                                 "NAME": "phaeopigments",
                                 "DESCRIPTION": "concentration of phaeopigments; can include multiple phaeopigments",
-                                "UNITS": {
-                                    "UNIT": [
-                                        "mg/m3",
-                                        "\u00b5g/L"
-                                    ]
-                                },
+                                "UNITS": [
+                                    {
+                                        "UNIT": [
+                                            "mg/m3",
+                                            "\u00b5g/L"
+                                        ]
+                                    }
+                                ],
                                 "FIELD_TYPE": {
                                     "TEXT_FIELD": {
                                         "REGEX_VALUE": "(0|((0\\.)|([1-9][0-9]*\\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
@@ -2067,9 +2203,13 @@
                                 "LABEL": "phosphate",
                                 "NAME": "phosphate",
                                 "DESCRIPTION": "concentration of phosphate",
-                                "UNITS": {
-                                    "UNIT": "\u00b5mol/L"
-                                },
+                                "UNITS": [
+                                    {
+                                        "UNIT": [
+                                            "\u00b5mol/L"
+                                        ]
+                                    }
+                                ],
                                 "FIELD_TYPE": {
                                     "TEXT_FIELD": {
                                         "REGEX_VALUE": "(0|((0\\.)|([1-9][0-9]*\\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
@@ -2082,12 +2222,14 @@
                                 "LABEL": "phospholipid fatty acid",
                                 "NAME": "phospholipid fatty acid",
                                 "DESCRIPTION": "concentration of phospholipid fatty acids; can include multiple values",
-                                "UNITS": {
-                                    "UNIT": [
-                                        "mol/L",
-                                        "mol/g"
-                                    ]
-                                },
+                                "UNITS": [
+                                    {
+                                        "UNIT": [
+                                            "mol/L",
+                                            "mol/g"
+                                        ]
+                                    }
+                                ],
                                 "FIELD_TYPE": {
                                     "TEXT_FIELD": {
                                         "REGEX_VALUE": "(0|((0\\.)|([1-9][0-9]*\\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
@@ -2100,12 +2242,14 @@
                                 "LABEL": "potassium",
                                 "NAME": "potassium",
                                 "DESCRIPTION": "concentration of potassium",
-                                "UNITS": {
-                                    "UNIT": [
-                                        "parts/million",
-                                        "\u00b5mol/L"
-                                    ]
-                                },
+                                "UNITS": [
+                                    {
+                                        "UNIT": [
+                                            "parts/million",
+                                            "\u00b5mol/L"
+                                        ]
+                                    }
+                                ],
                                 "FIELD_TYPE": {
                                     "TEXT_FIELD": {
                                         "REGEX_VALUE": "(0|((0\\.)|([1-9][0-9]*\\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
@@ -2118,9 +2262,13 @@
                                 "LABEL": "redox potential",
                                 "NAME": "redox potential",
                                 "DESCRIPTION": "redox potential, measured relative to a hydrogen cell, indicating oxidation or reduction potential",
-                                "UNITS": {
-                                    "UNIT": "mV"
-                                },
+                                "UNITS": [
+                                    {
+                                        "UNIT": [
+                                            "mV"
+                                        ]
+                                    }
+                                ],
                                 "FIELD_TYPE": {
                                     "TEXT_FIELD": {
                                         "REGEX_VALUE": "(0|((0\\.)|([1-9][0-9]*\\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
@@ -2137,9 +2285,13 @@
                                 ],
                                 "NAME": "salinity",
                                 "DESCRIPTION": "The total concentration of all dissolved salts in a liquid or solid sample. While salinity can be measured by a complete chemical analysis, this method is difficult and time consuming. More often, it is instead derived from the conductivity measurement. This is known as practical salinity. These derivations compare the specific conductance of the sample to a salinity standard such as seawater.",
-                                "UNITS": {
-                                    "UNIT": "psu"
-                                },
+                                "UNITS": [
+                                    {
+                                        "UNIT": [
+                                            "psu"
+                                        ]
+                                    }
+                                ],
                                 "FIELD_TYPE": {
                                     "TEXT_FIELD": {
                                         "REGEX_VALUE": "(0|((0\\.)|([1-9][0-9]*\\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
@@ -2152,9 +2304,13 @@
                                 "LABEL": "total carbon",
                                 "NAME": "total carbon",
                                 "DESCRIPTION": "total carbon content",
-                                "UNITS": {
-                                    "UNIT": "\u00b5g/L"
-                                },
+                                "UNITS": [
+                                    {
+                                        "UNIT": [
+                                            "\u00b5g/L"
+                                        ]
+                                    }
+                                ],
                                 "FIELD_TYPE": {
                                     "TEXT_FIELD": {
                                         "REGEX_VALUE": "(0|((0\\.)|([1-9][0-9]*\\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
@@ -2167,9 +2323,13 @@
                                 "LABEL": "silicate",
                                 "NAME": "silicate",
                                 "DESCRIPTION": "concentration of silicate",
-                                "UNITS": {
-                                    "UNIT": "\u00b5mol/L"
-                                },
+                                "UNITS": [
+                                    {
+                                        "UNIT": [
+                                            "\u00b5mol/L"
+                                        ]
+                                    }
+                                ],
                                 "FIELD_TYPE": {
                                     "TEXT_FIELD": {
                                         "REGEX_VALUE": "(0|((0\\.)|([1-9][0-9]*\\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
@@ -2182,12 +2342,14 @@
                                 "LABEL": "sodium",
                                 "NAME": "sodium",
                                 "DESCRIPTION": "sodium concentration",
-                                "UNITS": {
-                                    "UNIT": [
-                                        "parts/million",
-                                        "\u00b5mol/L"
-                                    ]
-                                },
+                                "UNITS": [
+                                    {
+                                        "UNIT": [
+                                            "parts/million",
+                                            "\u00b5mol/L"
+                                        ]
+                                    }
+                                ],
                                 "FIELD_TYPE": {
                                     "TEXT_FIELD": {
                                         "REGEX_VALUE": "(0|((0\\.)|([1-9][0-9]*\\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
@@ -2200,9 +2362,13 @@
                                 "LABEL": "total organic carbon",
                                 "NAME": "total organic carbon",
                                 "DESCRIPTION": "Definition for soil: total organic C content of the soil units of g C/kg soil. Definition otherwise: total organic carbon content",
-                                "UNITS": {
-                                    "UNIT": "g/kg"
-                                },
+                                "UNITS": [
+                                    {
+                                        "UNIT": [
+                                            "g/kg"
+                                        ]
+                                    }
+                                ],
                                 "FIELD_TYPE": {
                                     "TEXT_FIELD": {
                                         "REGEX_VALUE": "(0|((0\\.)|([1-9][0-9]*\\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
@@ -2215,12 +2381,14 @@
                                 "LABEL": "water content",
                                 "NAME": "water content",
                                 "DESCRIPTION": "water content measurement",
-                                "UNITS": {
-                                    "UNIT": [
-                                        "cm3/cm3",
-                                        "g/g"
-                                    ]
-                                },
+                                "UNITS": [
+                                    {
+                                        "UNIT": [
+                                            "cm3/cm3",
+                                            "g/g"
+                                        ]
+                                    }
+                                ],
                                 "FIELD_TYPE": {
                                     "TEXT_FIELD": {
                                         "REGEX_VALUE": "(0|((0\\.)|([1-9][0-9]*\\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
@@ -2233,12 +2401,14 @@
                                 "LABEL": "sulfate",
                                 "NAME": "sulfate",
                                 "DESCRIPTION": "concentration of sulfate",
-                                "UNITS": {
-                                    "UNIT": [
-                                        "mg/L",
-                                        "\u00b5mol/L"
-                                    ]
-                                },
+                                "UNITS": [
+                                    {
+                                        "UNIT": [
+                                            "mg/L",
+                                            "\u00b5mol/L"
+                                        ]
+                                    }
+                                ],
                                 "FIELD_TYPE": {
                                     "TEXT_FIELD": {
                                         "REGEX_VALUE": "(0|((0\\.)|([1-9][0-9]*\\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
@@ -2251,12 +2421,14 @@
                                 "LABEL": "sulfide",
                                 "NAME": "sulfide",
                                 "DESCRIPTION": "concentration of sulfide",
-                                "UNITS": {
-                                    "UNIT": [
-                                        "mg/L",
-                                        "\u00b5mol/L"
-                                    ]
-                                },
+                                "UNITS": [
+                                    {
+                                        "UNIT": [
+                                            "mg/L",
+                                            "\u00b5mol/L"
+                                        ]
+                                    }
+                                ],
                                 "FIELD_TYPE": {
                                     "TEXT_FIELD": {
                                         "REGEX_VALUE": "(0|((0\\.)|([1-9][0-9]*\\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
@@ -2269,12 +2441,14 @@
                                 "LABEL": "total nitrogen",
                                 "NAME": "total nitrogen",
                                 "DESCRIPTION": "total nitrogen content of the sample",
-                                "UNITS": {
-                                    "UNIT": [
-                                        "\u00b5g/L",
-                                        "\u00b5mol/L"
-                                    ]
-                                },
+                                "UNITS": [
+                                    {
+                                        "UNIT": [
+                                            "\u00b5g/L",
+                                            "\u00b5mol/L"
+                                        ]
+                                    }
+                                ],
                                 "FIELD_TYPE": {
                                     "TEXT_FIELD": {
                                         "REGEX_VALUE": "(0|((0\\.)|([1-9][0-9]*\\.?))[0-9]*)([Ee][+-]?[0-9]+)?"

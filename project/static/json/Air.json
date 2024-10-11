@@ -106,14 +106,16 @@
                                 "LABEL": "sample volume or weight for DNA extraction",
                                 "NAME": "sample volume or weight for DNA extraction",
                                 "DESCRIPTION": "Volume (ml) or mass (g) of total collected sample processed for DNA extraction. Note: total sample collected should be entered under the term 'sample size'.",
-                                "UNITS": {
-                                    "UNIT": [
-                                        "g",
-                                        "mL",
-                                        "mg",
-                                        "ng"
-                                    ]
-                                },
+                                "UNITS": [
+                                    {
+                                        "UNIT": [
+                                            "g",
+                                            "mL",
+                                            "mg",
+                                            "ng"
+                                        ]
+                                    }
+                                ],
                                 "FIELD_TYPE": {
                                     "TEXT_FIELD": {
                                         "REGEX_VALUE": "(0|((0\\.)|([1-9][0-9]*\\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
@@ -366,9 +368,13 @@
                                 "SYNONYM": "geographic location (altitude)",
                                 "NAME": "altitude",
                                 "DESCRIPTION": "The altitude of the sample is the vertical distance between Earth's surface above Sea Level and the sampled position in the air.",
-                                "UNITS": {
-                                    "UNIT": "m"
-                                },
+                                "UNITS": [
+                                    {
+                                        "UNIT": [
+                                            "m"
+                                        ]
+                                    }
+                                ],
                                 "FIELD_TYPE": {
                                     "TEXT_FIELD": {
                                         "REGEX_VALUE": "(0|((0\\.)|([1-9][0-9]*\\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
@@ -1255,9 +1261,13 @@
                                 "LABEL": "geographic location (latitude)",
                                 "NAME": "geographic location (latitude)",
                                 "DESCRIPTION": "The geographical origin of the sample as defined by latitude. The values should be reported in decimal degrees and in WGS84 system",
-                                "UNITS": {
-                                    "UNIT": "DD"
-                                },
+                                "UNITS": [
+                                    {
+                                        "UNIT": [
+                                            "DD"
+                                        ]
+                                    }
+                                ],
                                 "FIELD_TYPE": {
                                     "TEXT_FIELD": {
                                         "REGEX_VALUE": "(^[+-]?[0-9]+.?[0-9]{0,8}$)|(^not collected$)|(^not provided$)|(^restricted access$)|(^missing: control sample$)|(^missing: sample group$)|(^missing: synthetic construct$)|(^missing: lab stock$)|(^missing: third party data$)|(^missing: data agreement established pre-2023$)|(^missing: endangered species$)|(^missing: human-identifiable$)"
@@ -1270,9 +1280,13 @@
                                 "LABEL": "geographic location (longitude)",
                                 "NAME": "geographic location (longitude)",
                                 "DESCRIPTION": "The geographical origin of the sample as defined by longitude. The values should be reported in decimal degrees and in WGS84 system",
-                                "UNITS": {
-                                    "UNIT": "DD"
-                                },
+                                "UNITS": [
+                                    {
+                                        "UNIT": [
+                                            "DD"
+                                        ]
+                                    }
+                                ],
                                 "FIELD_TYPE": {
                                     "TEXT_FIELD": {
                                         "REGEX_VALUE": "(^[+-]?[0-9]+.?[0-9]{0,8}$)|(^not collected$)|(^not provided$)|(^restricted access$)|(^missing: control sample$)|(^missing: sample group$)|(^missing: synthetic construct$)|(^missing: lab stock$)|(^missing: third party data$)|(^missing: data agreement established pre-2023$)|(^missing: endangered species$)|(^missing: human-identifiable$)"
@@ -1329,9 +1343,13 @@
                                 "SYNONYM": "geographic location (elevation)",
                                 "NAME": "elevation",
                                 "DESCRIPTION": "The elevation of the sampling site as measured by the vertical distance from mean sea level.",
-                                "UNITS": {
-                                    "UNIT": "m"
-                                },
+                                "UNITS": [
+                                    {
+                                        "UNIT": [
+                                            "m"
+                                        ]
+                                    }
+                                ],
                                 "FIELD_TYPE": {
                                     "TEXT_FIELD": {
                                         "REGEX_VALUE": "[+-]?(0|((0\\.)|([1-9][0-9]*\\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
@@ -1350,12 +1368,14 @@
                                 "LABEL": "ventilation rate",
                                 "NAME": "ventilation rate",
                                 "DESCRIPTION": "ventilation rate of the system in the sampled premises",
-                                "UNITS": {
-                                    "UNIT": [
-                                        "L/sec",
-                                        "m3/min"
-                                    ]
-                                },
+                                "UNITS": [
+                                    {
+                                        "UNIT": [
+                                            "L/sec",
+                                            "m3/min"
+                                        ]
+                                    }
+                                ],
                                 "FIELD_TYPE": {
                                     "TEXT_FIELD": {
                                         "REGEX_VALUE": "(0|((0\\.)|([1-9][0-9]*\\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
@@ -1436,15 +1456,17 @@
                                 "LABEL": "amount or size of sample collected",
                                 "NAME": "amount or size of sample collected",
                                 "DESCRIPTION": "The total amount or size (volume (ml), mass (g) or area (m2) ) of sample collected.",
-                                "UNITS": {
-                                    "UNIT": [
-                                        "L",
-                                        "g",
-                                        "kg",
-                                        "m2",
-                                        "m3"
-                                    ]
-                                },
+                                "UNITS": [
+                                    {
+                                        "UNIT": [
+                                            "L",
+                                            "g",
+                                            "kg",
+                                            "m2",
+                                            "m3"
+                                        ]
+                                    }
+                                ],
                                 "FIELD_TYPE": {
                                     "TEXT_FIELD": {
                                         "REGEX_VALUE": "(0|((0\\.)|([1-9][0-9]*\\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
@@ -1486,15 +1508,17 @@
                                 "LABEL": "sample storage duration",
                                 "NAME": "sample storage duration",
                                 "DESCRIPTION": "duration for which sample was stored",
-                                "UNITS": {
-                                    "UNIT": [
-                                        "days",
-                                        "hours",
-                                        "months",
-                                        "weeks",
-                                        "years"
-                                    ]
-                                },
+                                "UNITS": [
+                                    {
+                                        "UNIT": [
+                                            "days",
+                                            "hours",
+                                            "months",
+                                            "weeks",
+                                            "years"
+                                        ]
+                                    }
+                                ],
                                 "FIELD_TYPE": {
                                     "TEXT_FIELD": {
                                         "REGEX_VALUE": "(0|((0\\.)|([1-9][0-9]*\\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
@@ -1507,9 +1531,13 @@
                                 "LABEL": "sample storage temperature",
                                 "NAME": "sample storage temperature",
                                 "DESCRIPTION": "temperature at which sample was stored, e.g. -80",
-                                "UNITS": {
-                                    "UNIT": "\u00b0C"
-                                },
+                                "UNITS": [
+                                    {
+                                        "UNIT": [
+                                            "\u00b0C"
+                                        ]
+                                    }
+                                ],
                                 "FIELD_TYPE": {
                                     "TEXT_FIELD": {
                                         "REGEX_VALUE": "[+-]?(0|((0\\.)|([1-9][0-9]*\\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
@@ -1592,14 +1620,16 @@
                                 "LABEL": "barometric pressure",
                                 "NAME": "barometric pressure",
                                 "DESCRIPTION": "force per unit area exerted against a surface by the weight of air above that surface",
-                                "UNITS": {
-                                    "UNIT": [
-                                        "Torr",
-                                        "in. Hg",
-                                        "millibar(hPa)",
-                                        "mm Hg"
-                                    ]
-                                },
+                                "UNITS": [
+                                    {
+                                        "UNIT": [
+                                            "Torr",
+                                            "in. Hg",
+                                            "millibar(hPa)",
+                                            "mm Hg"
+                                        ]
+                                    }
+                                ],
                                 "FIELD_TYPE": {
                                     "TEXT_FIELD": {
                                         "REGEX_VALUE": "(0|((0\\.)|([1-9][0-9]*\\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
@@ -1612,12 +1642,14 @@
                                 "LABEL": "humidity",
                                 "NAME": "humidity",
                                 "DESCRIPTION": "amount of water vapour in the air, at the time of sampling",
-                                "UNITS": {
-                                    "UNIT": [
-                                        "%",
-                                        "g/m3"
-                                    ]
-                                },
+                                "UNITS": [
+                                    {
+                                        "UNIT": [
+                                            "%",
+                                            "g/m3"
+                                        ]
+                                    }
+                                ],
                                 "FIELD_TYPE": {
                                     "TEXT_FIELD": {
                                         "REGEX_VALUE": "(0|((0\\.)|([1-9][0-9]*\\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
@@ -1630,13 +1662,15 @@
                                 "LABEL": "pollutants",
                                 "NAME": "pollutants",
                                 "DESCRIPTION": "pollutant types and, amount or concentrations measured at the time of sampling; can report multiple pollutants by entering numeric values preceded by name of pollutant",
-                                "UNITS": {
-                                    "UNIT": [
-                                        "M/L",
-                                        "g",
-                                        "mg/L"
-                                    ]
-                                },
+                                "UNITS": [
+                                    {
+                                        "UNIT": [
+                                            "M/L",
+                                            "g",
+                                            "mg/L"
+                                        ]
+                                    }
+                                ],
                                 "FIELD_TYPE": {
                                     "TEXT_FIELD": null
                                 },
@@ -1647,9 +1681,13 @@
                                 "LABEL": "solar irradiance",
                                 "NAME": "solar irradiance",
                                 "DESCRIPTION": "the amount of solar energy that arrives at a specific area of a surface during a specific time interval",
-                                "UNITS": {
-                                    "UNIT": "W/m2"
-                                },
+                                "UNITS": [
+                                    {
+                                        "UNIT": [
+                                            "W/m2"
+                                        ]
+                                    }
+                                ],
                                 "FIELD_TYPE": {
                                     "TEXT_FIELD": {
                                         "REGEX_VALUE": "(0|((0\\.)|([1-9][0-9]*\\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
@@ -1672,12 +1710,14 @@
                                 "LABEL": "wind speed",
                                 "NAME": "wind speed",
                                 "DESCRIPTION": "speed of wind measured at the time of sampling",
-                                "UNITS": {
-                                    "UNIT": [
-                                        "km/h",
-                                        "m/s"
-                                    ]
-                                },
+                                "UNITS": [
+                                    {
+                                        "UNIT": [
+                                            "km/h",
+                                            "m/s"
+                                        ]
+                                    }
+                                ],
                                 "FIELD_TYPE": {
                                     "TEXT_FIELD": {
                                         "REGEX_VALUE": "(0|((0\\.)|([1-9][0-9]*\\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
@@ -1690,9 +1730,13 @@
                                 "LABEL": "temperature",
                                 "NAME": "temperature",
                                 "DESCRIPTION": "temperature of the sample at time of sampling",
-                                "UNITS": {
-                                    "UNIT": "\u00baC"
-                                },
+                                "UNITS": [
+                                    {
+                                        "UNIT": [
+                                            "\u00baC"
+                                        ]
+                                    }
+                                ],
                                 "FIELD_TYPE": {
                                     "TEXT_FIELD": {
                                         "REGEX_VALUE": "[+-]?(0|((0\\.)|([1-9][0-9]*\\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
@@ -1711,9 +1755,13 @@
                                 "LABEL": "carbon dioxide",
                                 "NAME": "carbon dioxide",
                                 "DESCRIPTION": "carbon dioxide (gas) amount or concentration at the time of sampling",
-                                "UNITS": {
-                                    "UNIT": "\u00b5mol/L"
-                                },
+                                "UNITS": [
+                                    {
+                                        "UNIT": [
+                                            "\u00b5mol/L"
+                                        ]
+                                    }
+                                ],
                                 "FIELD_TYPE": {
                                     "TEXT_FIELD": {
                                         "REGEX_VALUE": "(0|((0\\.)|([1-9][0-9]*\\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
@@ -1726,9 +1774,13 @@
                                 "LABEL": "carbon monoxide",
                                 "NAME": "carbon monoxide",
                                 "DESCRIPTION": "carbon monoxide (gas) amount or concentration at the time of sampling",
-                                "UNITS": {
-                                    "UNIT": "\u00b5M/L"
-                                },
+                                "UNITS": [
+                                    {
+                                        "UNIT": [
+                                            "\u00b5M/L"
+                                        ]
+                                    }
+                                ],
                                 "FIELD_TYPE": {
                                     "TEXT_FIELD": {
                                         "REGEX_VALUE": "(0|((0\\.)|([1-9][0-9]*\\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
@@ -1741,12 +1793,14 @@
                                 "LABEL": "oxygen",
                                 "NAME": "oxygen",
                                 "DESCRIPTION": "oxygen (gas) amount or concentration at the time of sampling",
-                                "UNITS": {
-                                    "UNIT": [
-                                        "mg/L",
-                                        "parts/million"
-                                    ]
-                                },
+                                "UNITS": [
+                                    {
+                                        "UNIT": [
+                                            "mg/L",
+                                            "parts/million"
+                                        ]
+                                    }
+                                ],
                                 "FIELD_TYPE": {
                                     "TEXT_FIELD": {
                                         "REGEX_VALUE": "(0|((0\\.)|([1-9][0-9]*\\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
@@ -1760,9 +1814,13 @@
                                 "SYNONYM": "respirable particulate matter",
                                 "NAME": "air particulate matter concentration",
                                 "DESCRIPTION": "Concentration of substances that remain suspended in the air, and comprise mixtures of organic and inorganic substances (PM10 and PM2.5); can report multiple PM's by entering numeric values preceded by name of PM",
-                                "UNITS": {
-                                    "UNIT": "\u00b5g/m3"
-                                },
+                                "UNITS": [
+                                    {
+                                        "UNIT": [
+                                            "\u00b5g/m3"
+                                        ]
+                                    }
+                                ],
                                 "FIELD_TYPE": {
                                     "TEXT_FIELD": {
                                         "REGEX_VALUE": "(0|((0\\.)|([1-9][0-9]*\\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
@@ -1775,12 +1833,14 @@
                                 "LABEL": "volatile organic compounds",
                                 "NAME": "volatile organic compounds",
                                 "DESCRIPTION": "concentration of carbon-based chemicals that easily evaporate at room temperature; can report multiple volatile organic compounds by entering numeric values preceded by name of compound",
-                                "UNITS": {
-                                    "UNIT": [
-                                        "parts/million",
-                                        "\u00b5g/m3"
-                                    ]
-                                },
+                                "UNITS": [
+                                    {
+                                        "UNIT": [
+                                            "parts/million",
+                                            "\u00b5g/m3"
+                                        ]
+                                    }
+                                ],
                                 "FIELD_TYPE": {
                                     "TEXT_FIELD": null
                                 },
@@ -1791,9 +1851,13 @@
                                 "LABEL": "methane",
                                 "NAME": "methane",
                                 "DESCRIPTION": "methane (gas) amount or concentration at the time of sampling",
-                                "UNITS": {
-                                    "UNIT": "\u00b5M/L"
-                                },
+                                "UNITS": [
+                                    {
+                                        "UNIT": [
+                                            "\u00b5M/L"
+                                        ]
+                                    }
+                                ],
                                 "FIELD_TYPE": {
                                     "TEXT_FIELD": {
                                         "REGEX_VALUE": "(0|((0\\.)|([1-9][0-9]*\\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
@@ -1810,9 +1874,13 @@
                                 ],
                                 "NAME": "salinity",
                                 "DESCRIPTION": "The total concentration of all dissolved salts in a liquid or solid sample. While salinity can be measured by a complete chemical analysis, this method is difficult and time consuming. More often, it is instead derived from the conductivity measurement. This is known as practical salinity. These derivations compare the specific conductance of the sample to a salinity standard such as seawater.",
-                                "UNITS": {
-                                    "UNIT": "psu"
-                                },
+                                "UNITS": [
+                                    {
+                                        "UNIT": [
+                                            "psu"
+                                        ]
+                                    }
+                                ],
                                 "FIELD_TYPE": {
                                     "TEXT_FIELD": {
                                         "REGEX_VALUE": "(0|((0\\.)|([1-9][0-9]*\\.?))[0-9]*)([Ee][+-]?[0-9]+)?"

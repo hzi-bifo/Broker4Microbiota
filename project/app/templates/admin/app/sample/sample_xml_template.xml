@@ -3,7 +3,7 @@
 {% for sample in samples %}
   <SAMPLE alias="{{ sample.sample_alias }}">
     <TITLE>{{ sample.sample_title }}</TITLE>
-    <sample_id>
+    <SAMPLE_NAME>
       <TAXON_ID>{{ sample.tax_id }}</TAXON_ID>
     </SAMPLE_NAME>
     <SAMPLE_ATTRIBUTES>   
