@@ -70,7 +70,7 @@ def produceModels(data, model_data, field_names):
         model_fieldgroup_name = fieldgroup_name
         for field in fieldgroup['FIELD']:
             field_name = model_name + "_" + field['NAME'].replace(' ', '_').replace('(', '').replace(')', '').replace('/', '_').replace('-', '_')
-            original_field_name = field['NAME'].replace(' ', '_').replace('(', '').replace(')', '').replace('/', '_').replace('-', '_')
+            original_field_name = field['NAME'] # .replace(' ', '_').replace('(', '').replace(')', '').replace('/', '_').replace('-', '_')
 
             field_description = ''
             try:
@@ -162,7 +162,7 @@ def produceModels(data, model_data, field_names):
                     
                     unit_output = unit_output + f"\t{field_units_name} = {field_units}\n"
 
-                    unitchecklist_fields_output = unitchecklist_fields_output + f"\t\t'{field_name}': '{field_name}',\n"
+                    unitchecklist_fields_output = unitchecklist_fields_output + f"\t\t'{field_name}': '{original_field_name}',\n"
 
     checklist_fields_output = checklist_fields_output + f"\t}}\n"
     unitchecklist_fields_output = unitchecklist_fields_output + f"\t}}\n"
