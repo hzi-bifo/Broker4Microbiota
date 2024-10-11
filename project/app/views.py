@@ -324,6 +324,9 @@ def order_view(request, order_id=None):
                     unitchecklist_class_name = checklist_structure[checklist_name]['unitchecklist_class_name']
                     unitchecklist_item_class =  getattr(importlib.import_module("app.models"), unitchecklist_class_name)
                     unitchecklist_item_instance = unitchecklist_item_class(order = order)
+                    # temporary
+                    if unitchecklist_class_name == 'GSC_MIxS_wastewater_sludge_unit':
+                        unitchecklist_item_instance.GSC_MIxS_wastewater_sludge_sample_volume_or_weight_for_DNA_extraction = 'ng'                    
                     unitchecklist_item_instance.save()
 
                 # temporary
