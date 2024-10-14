@@ -136,10 +136,10 @@ class SelfDescribingModel(models.Model):
 
 
 
-class SelfDescribingUnitModel(SelfDescribingModel):
+# class SelfDescribingUnitModel(SelfDescribingModel):
 
-    class Meta:
-        abstract = True
+#     class Meta:
+#         abstract = True
 
     # def __init__(self, *args, **kwargs):
     #     super().__init__(*args, **kwargs)
@@ -197,6 +197,11 @@ class Sampleset(SelfDescribingModel):
         'custom': 'custom',
     }
 
+    checklist_structure = {
+        'GSC_MIxS_wastewater_sludge': {"checklist_code" : "ERC000023", 'checklist_class_name': 'GSC_MIxS_wastewater_sludge', 'unitchecklist_class_name': 'GSC_MIxS_wastewater_sludge_unit'},
+        'GSC_MIxS_miscellaneous_natural_or_artificial_environment': {"checklist_code" : "ERC0000xx", 'checklist_class_name': 'GSC_MIxS_miscellaneous_natural_or_artificial_environment', 'unitchecklist_class_name': 'GSC_MIxS_miscellaneous_natural_or_artificial_environment_unit'},
+    }
+
     def __str__(self):
         return 'x'
 
@@ -240,12 +245,6 @@ class Sample(SelfDescribingModel):
         'sample_description': 'sample_description',
     }
 
-
-    checklist_structure = {
-        'GSC_MIxS_wastewater_sludge': {'checklist_class_name': 'GSC_MIxS_wastewater_sludge', 'unitchecklist_class_name': 'GSC_MIxS_wastewater_sludge_unit'},
-        'GSC_MIxS_miscellaneous_natural_or_artificial_environment': {'checklist_class_name': 'GSC_MIxS_miscellaneous_natural_or_artificial_environment', 'unitchecklist_class_name': 'GSC_MIxS_miscellaneous_natural_or_artificial_environment_unit'},
-    }
-
     @property
     def getAttributes(self):
     	# go through each of the fields within eah of the checklists
@@ -254,9 +253,9 @@ class Sample(SelfDescribingModel):
         output = ""
 
         for checklist in json.loads(json.dumps(self.sampleset.checklists)):
-            checklist_name = checklist['checklist_name']
-            checklist_code = checklist['checklist_code']
-            checklist_class_name = self.checklist_structure[checklist_name]['checklist_class_name']
+            checklist_name = checklist
+            checklist_code = Sampleset.checklist_structure[checklist_name]['checklist_code']  
+            checklist_class_name = Sampleset.checklist_structure[checklist_name]['checklist_class_name']
             checklist_item_class =  getattr(importlib.import_module("app.models"), checklist_class_name)
             checklist_item_instance = checklist_item_class.objects.filter(sample = self, order=self.order).first()
             
@@ -570,7 +569,7 @@ class GSC_MIxS_wastewater_sludge(SelfDescribingModel):
 		'GSC_MIxS_wastewater_sludge_perturbation': 'perturbation',
 	}
 
-class GSC_MIxS_wastewater_sludge_unit(SelfDescribingUnitModel):
+class GSC_MIxS_wastewater_sludge_unit(SelfDescribingModel):
 
 	GSC_MIxS_wastewater_sludge_sample_volume_or_weight_for_DNA_extraction_units = [('g', 'g'), ('mL', 'mL'), ('mg', 'mg'), ('ng', 'ng')]
 	GSC_MIxS_wastewater_sludge_geographic_location_latitude_units = [('DD', 'DD')]
@@ -909,7 +908,7 @@ class GSC_MIxS_miscellaneous_natural_or_artificial_environment(SelfDescribingMod
 		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_perturbation': 'perturbation',
 	}
 
-class GSC_MIxS_miscellaneous_natural_or_artificial_environment_unit(SelfDescribingUnitModel):
+class GSC_MIxS_miscellaneous_natural_or_artificial_environment_unit(SelfDescribingModel):
 
 	GSC_MIxS_miscellaneous_natural_or_artificial_environment_sample_volume_or_weight_for_DNA_extraction_units = [('g', 'g'), ('mL', 'mL'), ('mg', 'mg'), ('ng', 'ng')]
 	GSC_MIxS_miscellaneous_natural_or_artificial_environment_altitude_units = [('m', 'm')]
@@ -1243,7 +1242,7 @@ class GSC_MIxS_human_skin(SelfDescribingModel):
 		'GSC_MIxS_human_skin_perturbation': 'perturbation',
 	}
 
-class GSC_MIxS_human_skin_unit(SelfDescribingUnitModel):
+class GSC_MIxS_human_skin_unit(SelfDescribingModel):
 
 	GSC_MIxS_human_skin_sample_volume_or_weight_for_DNA_extraction_units = [('g', 'g'), ('mL', 'mL'), ('mg', 'mg'), ('ng', 'ng')]
 	GSC_MIxS_human_skin_geographic_location_latitude_units = [('DD', 'DD')]
@@ -1369,7 +1368,7 @@ class ENA_default_sample_checklist(SelfDescribingModel):
 		'ENA_default_sample_checklist_strain': 'strain',
 	}
 
-class ENA_default_sample_checklist_unit(SelfDescribingUnitModel):
+class ENA_default_sample_checklist_unit(SelfDescribingModel):
 
 
 	fields = {
@@ -1621,7 +1620,7 @@ class GSC_MIxS_plant_associated(SelfDescribingModel):
 		'GSC_MIxS_plant_associated_perturbation': 'perturbation',
 	}
 
-class GSC_MIxS_plant_associated_unit(SelfDescribingUnitModel):
+class GSC_MIxS_plant_associated_unit(SelfDescribingModel):
 
 	GSC_MIxS_plant_associated_sample_volume_or_weight_for_DNA_extraction_units = [('g', 'g'), ('mL', 'mL'), ('mg', 'mg'), ('ng', 'ng')]
 	GSC_MIxS_plant_associated_altitude_units = [('m', 'm')]
@@ -2037,7 +2036,7 @@ class GSC_MIxS_water(SelfDescribingModel):
 		'GSC_MIxS_water_perturbation': 'perturbation',
 	}
 
-class GSC_MIxS_water_unit(SelfDescribingUnitModel):
+class GSC_MIxS_water_unit(SelfDescribingModel):
 
 	GSC_MIxS_water_sample_volume_or_weight_for_DNA_extraction_units = [('g', 'g'), ('mL', 'mL'), ('mg', 'mg'), ('ng', 'ng')]
 	GSC_MIxS_water_altitude_units = [('m', 'm')]
@@ -2521,7 +2520,7 @@ class GSC_MIxS_soil(SelfDescribingModel):
 		'GSC_MIxS_soil_perturbation': 'perturbation',
 	}
 
-class GSC_MIxS_soil_unit(SelfDescribingUnitModel):
+class GSC_MIxS_soil_unit(SelfDescribingModel):
 
 	GSC_MIxS_soil_slope_gradient_units = [('%', '%')]
 	GSC_MIxS_soil_sample_volume_or_weight_for_DNA_extraction_units = [('g', 'g'), ('mL', 'mL'), ('mg', 'mg'), ('ng', 'ng')]
@@ -2790,7 +2789,7 @@ class GSC_MIxS_human_gut(SelfDescribingModel):
 		'GSC_MIxS_human_gut_perturbation': 'perturbation',
 	}
 
-class GSC_MIxS_human_gut_unit(SelfDescribingUnitModel):
+class GSC_MIxS_human_gut_unit(SelfDescribingModel):
 
 	GSC_MIxS_human_gut_sample_volume_or_weight_for_DNA_extraction_units = [('g', 'g'), ('mL', 'mL'), ('mg', 'mg'), ('ng', 'ng')]
 	GSC_MIxS_human_gut_geographic_location_latitude_units = [('DD', 'DD')]
@@ -3061,7 +3060,7 @@ class GSC_MIxS_host_associated(SelfDescribingModel):
 		'GSC_MIxS_host_associated_perturbation': 'perturbation',
 	}
 
-class GSC_MIxS_host_associated_unit(SelfDescribingUnitModel):
+class GSC_MIxS_host_associated_unit(SelfDescribingModel):
 
 	GSC_MIxS_host_associated_sample_volume_or_weight_for_DNA_extraction_units = [('g', 'g'), ('mL', 'mL'), ('mg', 'mg'), ('ng', 'ng')]
 	GSC_MIxS_host_associated_altitude_units = [('m', 'm')]
@@ -3345,7 +3344,7 @@ class GSC_MIxS_human_vaginal(SelfDescribingModel):
 		'GSC_MIxS_human_vaginal_perturbation': 'perturbation',
 	}
 
-class GSC_MIxS_human_vaginal_unit(SelfDescribingUnitModel):
+class GSC_MIxS_human_vaginal_unit(SelfDescribingModel):
 
 	GSC_MIxS_human_vaginal_sample_volume_or_weight_for_DNA_extraction_units = [('g', 'g'), ('mL', 'mL'), ('mg', 'mg'), ('ng', 'ng')]
 	GSC_MIxS_human_vaginal_geographic_location_latitude_units = [('DD', 'DD')]
@@ -3598,7 +3597,7 @@ class GSC_MIxS_human_oral(SelfDescribingModel):
 		'GSC_MIxS_human_oral_perturbation': 'perturbation',
 	}
 
-class GSC_MIxS_human_oral_unit(SelfDescribingUnitModel):
+class GSC_MIxS_human_oral_unit(SelfDescribingModel):
 
 	GSC_MIxS_human_oral_sample_volume_or_weight_for_DNA_extraction_units = [('g', 'g'), ('mL', 'mL'), ('mg', 'mg'), ('ng', 'ng')]
 	GSC_MIxS_human_oral_geographic_location_latitude_units = [('DD', 'DD')]
@@ -3940,7 +3939,7 @@ class GSC_MIxS_sediment(SelfDescribingModel):
 		'GSC_MIxS_sediment_perturbation': 'perturbation',
 	}
 
-class GSC_MIxS_sediment_unit(SelfDescribingUnitModel):
+class GSC_MIxS_sediment_unit(SelfDescribingModel):
 
 	GSC_MIxS_sediment_sample_volume_or_weight_for_DNA_extraction_units = [('g', 'g'), ('mL', 'mL'), ('mg', 'mg'), ('ng', 'ng')]
 	GSC_MIxS_sediment_altitude_units = [('m', 'm')]
@@ -4349,7 +4348,7 @@ class GSC_MIxS_human_associated(SelfDescribingModel):
 		'GSC_MIxS_human_associated_perturbation': 'perturbation',
 	}
 
-class GSC_MIxS_human_associated_unit(SelfDescribingUnitModel):
+class GSC_MIxS_human_associated_unit(SelfDescribingModel):
 
 	GSC_MIxS_human_associated_sample_volume_or_weight_for_DNA_extraction_units = [('g', 'g'), ('mL', 'mL'), ('mg', 'mg'), ('ng', 'ng')]
 	GSC_MIxS_human_associated_geographic_location_latitude_units = [('DD', 'DD')]
@@ -4599,7 +4598,7 @@ class GSC_MIxS_air(SelfDescribingModel):
 		'GSC_MIxS_air_perturbation': 'perturbation',
 	}
 
-class GSC_MIxS_air_unit(SelfDescribingUnitModel):
+class GSC_MIxS_air_unit(SelfDescribingModel):
 
 	GSC_MIxS_air_sample_volume_or_weight_for_DNA_extraction_units = [('g', 'g'), ('mL', 'mL'), ('mg', 'mg'), ('ng', 'ng')]
 	GSC_MIxS_air_altitude_units = [('m', 'm')]
@@ -4980,7 +4979,7 @@ class GSC_MIxS_microbial_mat_biolfilm(SelfDescribingModel):
 		'GSC_MIxS_microbial_mat_biolfilm_perturbation': 'perturbation',
 	}
 
-class GSC_MIxS_microbial_mat_biolfilm_unit(SelfDescribingUnitModel):
+class GSC_MIxS_microbial_mat_biolfilm_unit(SelfDescribingModel):
 
 	GSC_MIxS_microbial_mat_biolfilm_sample_volume_or_weight_for_DNA_extraction_units = [('g', 'g'), ('mL', 'mL'), ('mg', 'mg'), ('ng', 'ng')]
 	GSC_MIxS_microbial_mat_biolfilm_altitude_units = [('m', 'm')]

@@ -9,7 +9,7 @@ from django.forms import CheckboxSelectMultiple, CheckboxInput, DateInput, model
 from django.http import HttpResponseRedirect, JsonResponse
 from django.urls import reverse, reverse_lazy
 from .mixs_metadata_standards import MIXS_METADATA_STANDARDS
-from .forms import OrderForm, SampleForm, SampleMetadataForm
+from .forms import OrderForm, SampleForm, SamplesetForm, SampleMetadataForm
 from .models import Order, Sample, Sampleset, STATUS_CHOICES
 from json.decoder import JSONDecodeError
 import importlib
@@ -83,11 +83,6 @@ def samples_view(request, order_id):
     print("Received POST request")
     order = get_object_or_404(Order, pk=order_id)
 
-    checklist_structure = {
-        'GSC_MIxS_wastewater_sludge': {'checklist_class_name': 'GSC_MIxS_wastewater_sludge', 'unitchecklist_class_name': 'GSC_MIxS_wastewater_sludge_unit'},
-        'GSC_MIxS_miscellaneous_natural_or_artificial_environment': {'checklist_class_name': 'GSC_MIxS_miscellaneous_natural_or_artificial_environment', 'unitchecklist_class_name': 'GSC_MIxS_miscellaneous_natural_or_artificial_environment_unit'},
-    }
-
     if request.method == 'POST':
         sample_data = json.loads(request.POST.get('sample_data'))
 
@@ -104,9 +99,9 @@ def samples_view(request, order_id):
         # checklists = ['GSC_MIxS_wastewater_sludge', 'GSC_MIxS_miscellaneous_natural_or_artificial_environment']
     
         for checklist in checklists:
-            checklist_name = checklist['checklist_name']
-            checklist_code = checklist['checklist_code']  
-            checklist_class_name = checklist_structure[checklist_name]['checklist_class_name']
+            checklist_name = checklist
+            checklist_code = Sampleset.checklist_structure[checklist_name]['checklist_code']  
+            checklist_class_name = Sampleset.checklist_structure[checklist_name]['checklist_class_name']
             checklist_item_class =  getattr(importlib.import_module("app.models"), checklist_class_name)
             
             checklist_item_class.objects.filter(order=order).delete()
@@ -124,9 +119,9 @@ def samples_view(request, order_id):
 
             # for all checklists or just ones used (initially, latter)
             for checklist in checklists:
-                checklist_name = checklist['checklist_name']
-                checklist_code = checklist['checklist_code']  
-                checklist_class_name = checklist_structure[checklist_name]['checklist_class_name']
+                checklist_name = checklist
+                checklist_code = Sampleset.checklist_structure[checklist_name]['checklist_code']  
+                checklist_class_name = Sampleset.checklist_structure[checklist_name]['checklist_class_name']
                 checklist_item_class =  getattr(importlib.import_module("app.models"), checklist_class_name)
                 checklist_item_instance = checklist_item_class(sample = sample, order = order)
                 checklist_item_instance.setFieldsFromResponse(sample_info)
@@ -168,11 +163,11 @@ def samples_view(request, order_id):
     checklist_entries_list = []
     for checklist in checklists:
 
-        checklist_name = checklist['checklist_name']
-        checklist_code = checklist['checklist_code']  
+        checklist_name = checklist
+        checklist_code = Sampleset.checklist_structure[checklist_name]['checklist_code']  
 
         # get the checklist model name from Checklist_structure 
-        checklist_class_name = checklist_structure[checklist_name]['checklist_class_name']
+        checklist_class_name = Sampleset.checklist_structure[checklist_name]['checklist_class_name']
 
         checklist_entries_class =  getattr(importlib.import_module("app.models"), checklist_class_name)
         samples_headers = samples_headers + checklist_entries_class().getHeaders(inclusions, exclusions)
@@ -301,40 +296,34 @@ def order_view(request, order_id=None):
                 order.user = request.user
                 order.save()
 
-                # Create a new Sampleset instance and save it
-                sample_set = Sampleset(order=order)
-                # sample_set.checklists = form.cleaned_data['checklists']
+                # # Create a new Sampleset instance and save it
+                # sample_set = Sampleset(order=order)
+                # # sample_set.checklists = form.cleaned_data['checklists']
 
-                # temporary
-                checklist_string = '[{"checklist_name": "GSC_MIxS_wastewater_sludge", "checklist_code" : "ERC000023"}]'
+                # # temporary
+                # checklist_string = '[{"checklist_name": "GSC_MIxS_wastewater_sludge", "checklist_code" : "ERC000023"}]'
 
-                sample_set.checklists = json.loads(checklist_string)
-                # sample_set.checklists = json.loads('["GSC_MIxS_wastewater_sludge", "GSC_MIxS_miscellaneous_natural_or_artificial_environment"]')
+                # sample_set.checklists = json.loads(checklist_string)
+                # # sample_set.checklists = json.loads('["GSC_MIxS_wastewater_sludge", "GSC_MIxS_miscellaneous_natural_or_artificial_environment"]')
 
-                checklist_structure = {
-                    'GSC_MIxS_wastewater_sludge': {'checklist_class_name': 'GSC_MIxS_wastewater_sludge', 'unitchecklist_class_name': 'GSC_MIxS_wastewater_sludge_unit'},
-                    'GSC_MIxS_miscellaneous_natural_or_artificial_environment': {'checklist_class_name': 'GSC_MIxS_miscellaneous_natural_or_artificial_environment', 'unitchecklist_class_name': 'GSC_MIxS_miscellaneous_natural_or_artificial_environment_unit'},
-                }
+                # # temporary
+                # for checklist in sample_set.checklists:
+                #     checklist_name = checklist['checklist_name']
+                #     checklist_code = checklist['checklist_code']  
+                #     unitchecklist_class_name = Sampleset.checklist_structure[checklist_name]['unitchecklist_class_name']
+                #     unitchecklist_item_class =  getattr(importlib.import_module("app.models"), unitchecklist_class_name)
+                #     unitchecklist_item_instance = unitchecklist_item_class(order = order)
+                #     # temporary
+                #     if unitchecklist_class_name == 'GSC_MIxS_wastewater_sludge_unit':
+                #         unitchecklist_item_instance.GSC_MIxS_wastewater_sludge_sample_volume_or_weight_for_DNA_extraction = 'ng'                    
+                #     unitchecklist_item_instance.save()
 
+                # # temporary
+                # sample_set.include = json.loads('[]')
+                # sample_set.exclude = json.loads('[]')
+                # sample_set.custom = json.loads('[]')
 
-                # temporary
-                for checklist in sample_set.checklists:
-                    checklist_name = checklist['checklist_name']
-                    checklist_code = checklist['checklist_code']  
-                    unitchecklist_class_name = checklist_structure[checklist_name]['unitchecklist_class_name']
-                    unitchecklist_item_class =  getattr(importlib.import_module("app.models"), unitchecklist_class_name)
-                    unitchecklist_item_instance = unitchecklist_item_class(order = order)
-                    # temporary
-                    if unitchecklist_class_name == 'GSC_MIxS_wastewater_sludge_unit':
-                        unitchecklist_item_instance.GSC_MIxS_wastewater_sludge_sample_volume_or_weight_for_DNA_extraction = 'ng'                    
-                    unitchecklist_item_instance.save()
-
-                # temporary
-                sample_set.include = json.loads('[]')
-                sample_set.exclude = json.loads('[]')
-                sample_set.custom = json.loads('[]')
-
-                sample_set.save()
+                # sample_set.save()
 
                 # create a 
 
@@ -344,5 +333,54 @@ def order_view(request, order_id=None):
     else:
         return redirect('login')
 
-def metadata_view(request):
-    return render(request, 'metadata.html', {})
+def metadata_view(request, order_id):
+    
+    if request.user.is_authenticated:
+        order = get_object_or_404(Order, pk=order_id, user=request.user)
+        sample_set = order.sampleset_set.first()
+        if not sample_set:
+            sample_set = Sampleset(order=order) 
+        form = SamplesetForm(instance=sample_set)
+        
+        if request.method == 'POST':
+            if order_id:
+                form = SamplesetForm(request.POST, instance=sample_set)
+            else:
+                form = SamplesetForm(request.POST)
+
+            if form.is_valid():
+                sample_set = form.save(commit=False)
+                sample_set.user = request.user
+                # temporary
+                checklist_string = '["GSC_MIxS_wastewater_sludge"]'
+                sample_set.checklists = json.loads(checklist_string)
+                sample_set.include = json.loads('[]')
+                sample_set.exclude = json.loads('[]')
+                sample_set.custom = json.loads('[]')
+                sample_set.save()
+
+                # temporary
+                for checklist in sample_set.checklists:
+                    checklist_name = checklist
+                    checklist_code = Sampleset.checklist_structure[checklist_name]['checklist_code']  
+                    unitchecklist_class_name = Sampleset.checklist_structure[checklist_name]['unitchecklist_class_name']
+                    unitchecklist_item_class =  getattr(importlib.import_module("app.models"), unitchecklist_class_name)
+                    unitchecklist_item_instance = unitchecklist_item_class(order = order)
+                    # temporary
+                    if unitchecklist_class_name == 'GSC_MIxS_wastewater_sludge_unit':
+                        unitchecklist_item_instance.GSC_MIxS_wastewater_sludge_sample_volume_or_weight_for_DNA_extraction = 'ng'                    
+                    unitchecklist_item_instance.save()
+
+                return redirect('order_list')
+            
+        return render(request, 'metadata.html', {'form': form})
+    else:
+        return redirect('login')
+
+
+
+
+
+
+
+    

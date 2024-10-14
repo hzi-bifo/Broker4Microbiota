@@ -9,6 +9,8 @@ Metadata List
 <section class="section">
   <div class="container">
     <h2 class="title has-text-centered">Metadata checklists / extensions</h2>
+    <form method="post" class="box">
+    {% csrf_token %}
     <p class="has-text-centered">
       Search for and select the appropriate checklists / extensions for the samples.
     </p>
@@ -23,10 +25,16 @@ Metadata List
           <p id="description-content">Select a node to see the description here.</p>
       </div>
     </div>
-    <textarea id="selected-nodes" rows="4" cols="50" placeholder="Selected nodes will appear here..."></textarea>
+    <textarea id="checklists" name="checklists" rows="4" cols="50" placeholder="Selected nodes will appear here..."></textarea>
+    <textarea id="include" name="include" rows="4" cols="50" placeholder=""></textarea>
+    <textarea id="exclude" name="exclude" rows="4" cols="50" placeholder=""></textarea>
+    <textarea id="custom" name="custom" rows="4" cols="50" placeholder=""></textarea>
     <div class="has-text-centered mt-4">
-      <a href="{% url 'order_create' %}" class="button is-primary">Select checklists</a>
+        <button type="submit" class="button is-primary">Save</button>
+
+      <a href="{% url 'order_list' %}" class="button is-primary">Cancel</a>
     </div>
+</form>
   </div>
 </section>
 
@@ -99,7 +107,7 @@ Metadata List
 
       if (node) {
           // Find the textarea and append the node name
-          var $textarea = $('#selected-nodes');
+          var $textarea = $('#checklists');
           var currentText = $textarea.val();
 
           // Add the selected node's name to the textarea, separated by a newline

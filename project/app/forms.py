@@ -1,8 +1,9 @@
 from django import forms
-from .models import Order, Sample
+from .models import Order, Sample, Sampleset
 from django.conf import settings
 import os
 import xml.etree.ElementTree as ET
+import json
 
 class OrderForm(forms.ModelForm):
     class Meta:
@@ -30,6 +31,35 @@ class SampleForm(forms.ModelForm):
     class Meta:
         model = Sample
         exclude = ['order']
+
+class SamplesetForm(forms.ModelForm):
+    class Meta:
+        model = Sampleset
+        exclude = ['order']
+
+        # self.fields['checklists'] = json.loads('[]')
+        # self.fields['include'] = json.loads('[]')
+        # self.fields['exclude'] = json.loads('[]')
+        # self.fields['custom'] = json.loads('[]')
+ 
+
+        # self.fields['checklists'] = forms.ModelMultipleChoiceField(
+        #     queryset=Checklist.objects.all(),
+        #     widget=forms.CheckboxSelectMultiple(),
+        #     required=False
+        # )
+        # self.fields['include'] = forms.CharField(  # A hidden field for the include field
+        #     widget=forms.HiddenInput(),
+        #     required=False
+        # )
+        # self.fields['exclude'] = forms.CharField(  # A hidden field for the exclude field
+        #     widget=forms.HiddenInput(),
+        #     required=False
+        # )
+        # self.fields['custom'] = forms.CharField(  # A hidden field for the custom field          
+        #     widget=forms.HiddenInput(),
+        #     required=False
+        # )
 
 
 class SampleMetadataForm(forms.Form):

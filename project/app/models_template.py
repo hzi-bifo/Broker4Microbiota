@@ -136,10 +136,10 @@ class SelfDescribingModel(models.Model):
 
 
 
-class SelfDescribingUnitModel(SelfDescribingModel):
+# class SelfDescribingUnitModel(SelfDescribingModel):
 
-    class Meta:
-        abstract = True
+#     class Meta:
+#         abstract = True
 
     # def __init__(self, *args, **kwargs):
     #     super().__init__(*args, **kwargs)
@@ -197,6 +197,11 @@ class Sampleset(SelfDescribingModel):
         'custom': 'custom',
     }
 
+    checklist_structure = {
+        'GSC_MIxS_wastewater_sludge': {"checklist_code" : "ERC000023", 'checklist_class_name': 'GSC_MIxS_wastewater_sludge', 'unitchecklist_class_name': 'GSC_MIxS_wastewater_sludge_unit'},
+        'GSC_MIxS_miscellaneous_natural_or_artificial_environment': {"checklist_code" : "ERC0000xx", 'checklist_class_name': 'GSC_MIxS_miscellaneous_natural_or_artificial_environment', 'unitchecklist_class_name': 'GSC_MIxS_miscellaneous_natural_or_artificial_environment_unit'},
+    }
+
     def __str__(self):
         return 'x'
 
@@ -240,12 +245,6 @@ class Sample(SelfDescribingModel):
         'sample_description': 'sample_description',
     }
 
-
-    checklist_structure = {
-        'GSC_MIxS_wastewater_sludge': {'checklist_class_name': 'GSC_MIxS_wastewater_sludge', 'unitchecklist_class_name': 'GSC_MIxS_wastewater_sludge_unit'},
-        'GSC_MIxS_miscellaneous_natural_or_artificial_environment': {'checklist_class_name': 'GSC_MIxS_miscellaneous_natural_or_artificial_environment', 'unitchecklist_class_name': 'GSC_MIxS_miscellaneous_natural_or_artificial_environment_unit'},
-    }
-
     @property
     def getAttributes(self):
     	# go through each of the fields within eah of the checklists
@@ -254,9 +253,9 @@ class Sample(SelfDescribingModel):
         output = ""
 
         for checklist in json.loads(json.dumps(self.sampleset.checklists)):
-            checklist_name = checklist['checklist_name']
-            checklist_code = checklist['checklist_code']
-            checklist_class_name = self.checklist_structure[checklist_name]['checklist_class_name']
+            checklist_name = checklist
+            checklist_code = Sampleset.checklist_structure[checklist_name]['checklist_code']  
+            checklist_class_name = Sampleset.checklist_structure[checklist_name]['checklist_class_name']
             checklist_item_class =  getattr(importlib.import_module("app.models"), checklist_class_name)
             checklist_item_instance = checklist_item_class.objects.filter(sample = self, order=self.order).first()
             
