@@ -4,6 +4,8 @@ from .mixs_metadata_standards import MIXS_METADATA_STANDARDS, MIXS_METADATA_STAN
 from phonenumber_field.modelfields import PhoneNumberField
 from django.db.models import JSONField
 from django.core.validators import RegexValidator
+import importlib
+import json
 
 LIBRARY_CHOICES = [
     ('choice1', 'Choice 1'),
@@ -29,14 +31,51 @@ class SelfDescribingModel(models.Model):
     class Meta:
         abstract = True
 
+    def getSubAttributes(self, exclude=[], include=[]):
+
+        class_name = type(self).__name__
+        unit_class_name = f"{class_name}_unit"
+        unitchecklist_class =  getattr(importlib.import_module("app.models"), unit_class_name)
+        unitchecklist_item_instance = unitchecklist_class.objects.filter(order=self.order).first()
+
+        output = ""
+        if include:
+            for k, v in self.fields.items():
+                if k in include:
+                    output = output + f"<SAMPLE_ATTRIBUTE><TAG>{v}</TAG><VALUE>{getattr(self, k)}</VALUE>"
+                    try:
+                        unitoption = getattr(unitchecklist_item_instance, k + "_units")[0][0]
+                        current_unitoption = getattr(unitchecklist_item_instance, f"{k}")
+                        if current_unitoption != '':
+                            unitoption = current_unitoption   
+                        output = output + f"<UNITS>{unitoption}</UNITS>\n"
+                    except:
+                        pass
+                    output = output + f"</SAMPLE_ATTRIBUTE>\n"            
+        else:
+            for k, v in self.fields.items():
+                if k not in exclude:
+                    output = output + f"<SAMPLE_ATTRIBUTE><TAG>{v}</TAG><VALUE>{getattr(self, k)}</VALUE>"
+                    try:
+                        unitoption = getattr(unitchecklist_item_instance, k + "_units")[0][0]
+                        current_unitoption = getattr(unitchecklist_item_instance, f"{k}")
+                        if current_unitoption != '':
+                            unitoption = current_unitoption   
+                        output = output + f"<UNITS>{unitoption}</UNITS>\n"
+                    except:
+                        pass
+                    output = output + f"</SAMPLE_ATTRIBUTE>\n"            
+        return output
+
+
     def getFields(self, exclude=[], include=[]):
         output = {}
         if include:
-            for k in self.fields.keys():
+            for k, v in self.fields.items():
                 if k in include:
                     output[k] = getattr(self, k) or ''
         else:
-            for k in self.fields.keys():
+            for k, v in self.fields.items():
                 if k not in exclude:
                     output[k] = getattr(self, k) or ''
 
@@ -88,12 +127,26 @@ class SelfDescribingModel(models.Model):
     
     def setFieldsFromResponse(self, response):
 
-        for k in self.fields.keys():
+        for k, v in self.fields.items():
             try:
                 value = response[k]
             except:
                 value = ''
             setattr(self, k, value)
+
+
+
+class SelfDescribingUnitModel(SelfDescribingModel):
+
+    class Meta:
+        abstract = True
+
+    # def __init__(self, *args, **kwargs):
+    #     super().__init__(*args, **kwargs)
+
+    #     for field in self.fields.keys():
+    #         value = getattr(self, field+"_units")[0][0]
+    #         setattr(self, field, value)
 
 class Order(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -119,15 +172,49 @@ class Order(models.Model):
     def __str__(self):
         return f"Order by {self.user.username}"
 
+
+class Sampleset(SelfDescribingModel):
+
+    order = models.ForeignKey(Order, on_delete=models.CASCADE)
+
+    # list of checklists
+    checklists = models.JSONField()
+
+    # list of fields for this checklist, don't need to repeat anything from xml (ie. mandatory), perhaps need to record a type of null for mandatory when not given    
+    include = models.JSONField()
+
+    # probably not needed    
+    exclude = models.JSONField()
+
+    # any custom fields
+    custom = models.JSONField()
+
+    fields = {
+        'order': 'order',
+        'checklists': 'checklists',
+        'include': 'include',
+        'exclude': 'exclude',
+        'custom': 'custom',
+    }
+
+    def __str__(self):
+        return 'x'
+
+
 class Sample(SelfDescribingModel):
     order = models.ForeignKey(Order, on_delete=models.CASCADE)
-    sample_name = models.CharField(max_length=100, null=True, blank=True)
+    sampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE)
+
+    # from ENA spreadsheet download
+
+    sample_id = models.CharField(max_length=100, null=True, blank=True)
+    tax_id = models.CharField(max_length=100, null=True, blank=True)
+    scientific_name = models.CharField(max_length=100, null=True, blank=True)
+    sample_alias = models.CharField(max_length=100, null=True, blank=True)
+    sample_title = models.CharField(max_length=100, null=True, blank=True)
+    sample_description = models.CharField(max_length=100, null=True, blank=True)
 
     #     mixs_metadata_standard = models.CharField(max_length=100, choices=MIXS_METADATA_STANDARDS, null=True, blank=True)
-    #     alias = models.CharField(max_length=100, null=True, blank=True)
-    #     title = models.CharField(max_length=100, null=True, blank=True)
-    #     taxon_id = models.CharField(max_length=100, null=True, blank=True)
-    #     scientific_name = models.CharField(max_length=100, null=True, blank=True)
     #     investigation_type = models.CharField(max_length=100, null=True, blank=True)
     #     study_type = models.CharField(max_length=100, null=True, blank=True)
     #     platform = models.CharField(max_length=100, null=True, blank=True)
@@ -145,10 +232,47 @@ class Sample(SelfDescribingModel):
     #     nf_core_mag_outdir = models.CharField(max_length=255, null=True, blank=True)
 
     fields = {
-        'sample_name': sample_name,
+        'sample_id': 'sample_id',
+        'tax_id': 'tax_id',
+        'scientific_name': 'scientific_name',
+        'sample_alias': 'sample_alias',
+        'sample_title': 'sample_title',
+        'sample_description': 'sample_description',
     }
+
+
+    checklist_structure = {
+        'GSC_MIxS_wastewater_sludge': {'checklist_class_name': 'GSC_MIxS_wastewater_sludge', 'unitchecklist_class_name': 'GSC_MIxS_wastewater_sludge_unit'},
+        'GSC_MIxS_miscellaneous_natural_or_artificial_environment': {'checklist_class_name': 'GSC_MIxS_miscellaneous_natural_or_artificial_environment', 'unitchecklist_class_name': 'GSC_MIxS_miscellaneous_natural_or_artificial_environment_unit'},
+    }
+
+    @property
+    def getAttributes(self):
+    	# go through each of the fields within eah of the checklists
+        # get the checklists for this sample    
+        
+        output = ""
+
+        for checklist in json.loads(json.dumps(self.sampleset.checklists)):
+            checklist_name = checklist['checklist_name']
+            checklist_code = checklist['checklist_code']
+            checklist_class_name = self.checklist_structure[checklist_name]['checklist_class_name']
+            checklist_item_class =  getattr(importlib.import_module("app.models"), checklist_class_name)
+            checklist_item_instance = checklist_item_class.objects.filter(sample = self, order=self.order).first()
+            
+            include = []
+            exclude = []
+
+            attributes = checklist_item_instance.getSubAttributes(exclude, include)
+
+            attributes = attributes + f"<SAMPLE_ATTRIBUTE><TAG>ena-checklist</TAG><VALUE>{checklist_code}</VALUE></SAMPLE_ATTRIBUTE>\n"
+
+            output = output + f'{attributes}\n'
+
+        return output    
+
     def __str__(self):
-        return self.sample_name or ''
+        return self.sample_id or ''
 
 class Submission(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE)
@@ -218,6 +342,7 @@ class Blah_checklist(SelfDescribingModel):
   
 class Blah_unitchecklist(SelfDescribingModel):
     sample = models.ForeignKey(Sample, on_delete=models.CASCADE) """
+
 
 class GSC_MIxS_wastewater_sludge(SelfDescribingModel):
 
@@ -355,157 +480,156 @@ class GSC_MIxS_wastewater_sludge(SelfDescribingModel):
 	GSC_MIxS_wastewater_sludge_perturbation= models.CharField(max_length=100, blank=True,help_text="type of pe")
 
 	fields = {
-		'GSC_MIxS_wastewater_sludge_project_name': GSC_MIxS_wastewater_sludge_project_name,
-		'GSC_MIxS_wastewater_sludge_experimental_factor': GSC_MIxS_wastewater_sludge_experimental_factor,
-		'GSC_MIxS_wastewater_sludge_ploidy': GSC_MIxS_wastewater_sludge_ploidy,
-		'GSC_MIxS_wastewater_sludge_number_of_replicons': GSC_MIxS_wastewater_sludge_number_of_replicons,
-		'GSC_MIxS_wastewater_sludge_extrachromosomal_elements': GSC_MIxS_wastewater_sludge_extrachromosomal_elements,
-		'GSC_MIxS_wastewater_sludge_estimated_size': GSC_MIxS_wastewater_sludge_estimated_size,
-		'GSC_MIxS_wastewater_sludge_reference_for_biomaterial': GSC_MIxS_wastewater_sludge_reference_for_biomaterial,
-		'GSC_MIxS_wastewater_sludge_annotation_source': GSC_MIxS_wastewater_sludge_annotation_source,
-		'GSC_MIxS_wastewater_sludge_sample_volume_or_weight_for_DNA_extraction': GSC_MIxS_wastewater_sludge_sample_volume_or_weight_for_DNA_extraction,
-		'GSC_MIxS_wastewater_sludge_nucleic_acid_extraction': GSC_MIxS_wastewater_sludge_nucleic_acid_extraction,
-		'GSC_MIxS_wastewater_sludge_nucleic_acid_amplification': GSC_MIxS_wastewater_sludge_nucleic_acid_amplification,
-		'GSC_MIxS_wastewater_sludge_library_size': GSC_MIxS_wastewater_sludge_library_size,
-		'GSC_MIxS_wastewater_sludge_library_reads_sequenced': GSC_MIxS_wastewater_sludge_library_reads_sequenced,
-		'GSC_MIxS_wastewater_sludge_library_construction_method': GSC_MIxS_wastewater_sludge_library_construction_method,
-		'GSC_MIxS_wastewater_sludge_library_vector': GSC_MIxS_wastewater_sludge_library_vector,
-		'GSC_MIxS_wastewater_sludge_library_screening_strategy': GSC_MIxS_wastewater_sludge_library_screening_strategy,
-		'GSC_MIxS_wastewater_sludge_target_gene': GSC_MIxS_wastewater_sludge_target_gene,
-		'GSC_MIxS_wastewater_sludge_target_subfragment': GSC_MIxS_wastewater_sludge_target_subfragment,
-		'GSC_MIxS_wastewater_sludge_pcr_primers': GSC_MIxS_wastewater_sludge_pcr_primers,
-		'GSC_MIxS_wastewater_sludge_multiplex_identifiers': GSC_MIxS_wastewater_sludge_multiplex_identifiers,
-		'GSC_MIxS_wastewater_sludge_adapters': GSC_MIxS_wastewater_sludge_adapters,
-		'GSC_MIxS_wastewater_sludge_pcr_conditions': GSC_MIxS_wastewater_sludge_pcr_conditions,
-		'GSC_MIxS_wastewater_sludge_sequencing_method': GSC_MIxS_wastewater_sludge_sequencing_method,
-		'GSC_MIxS_wastewater_sludge_sequence_quality_check': GSC_MIxS_wastewater_sludge_sequence_quality_check,
-		'GSC_MIxS_wastewater_sludge_chimera_check_software': GSC_MIxS_wastewater_sludge_chimera_check_software,
-		'GSC_MIxS_wastewater_sludge_relevant_electronic_resources': GSC_MIxS_wastewater_sludge_relevant_electronic_resources,
-		'GSC_MIxS_wastewater_sludge_relevant_standard_operating_procedures': GSC_MIxS_wastewater_sludge_relevant_standard_operating_procedures,
-		'GSC_MIxS_wastewater_sludge_negative_control_type': GSC_MIxS_wastewater_sludge_negative_control_type,
-		'GSC_MIxS_wastewater_sludge_positive_control_type': GSC_MIxS_wastewater_sludge_positive_control_type,
-		'GSC_MIxS_wastewater_sludge_collection_date': GSC_MIxS_wastewater_sludge_collection_date,
-		'GSC_MIxS_wastewater_sludge_geographic_location_country_and_or_sea': GSC_MIxS_wastewater_sludge_geographic_location_country_and_or_sea,
-		'GSC_MIxS_wastewater_sludge_geographic_location_latitude': GSC_MIxS_wastewater_sludge_geographic_location_latitude,
-		'GSC_MIxS_wastewater_sludge_geographic_location_longitude': GSC_MIxS_wastewater_sludge_geographic_location_longitude,
-		'GSC_MIxS_wastewater_sludge_geographic_location_region_and_locality': GSC_MIxS_wastewater_sludge_geographic_location_region_and_locality,
-		'GSC_MIxS_wastewater_sludge_depth': GSC_MIxS_wastewater_sludge_depth,
-		'GSC_MIxS_wastewater_sludge_broad_scale_environmental_context': GSC_MIxS_wastewater_sludge_broad_scale_environmental_context,
-		'GSC_MIxS_wastewater_sludge_local_environmental_context': GSC_MIxS_wastewater_sludge_local_environmental_context,
-		'GSC_MIxS_wastewater_sludge_environmental_medium': GSC_MIxS_wastewater_sludge_environmental_medium,
-		'GSC_MIxS_wastewater_sludge_source_material_identifiers': GSC_MIxS_wastewater_sludge_source_material_identifiers,
-		'GSC_MIxS_wastewater_sludge_sample_material_processing': GSC_MIxS_wastewater_sludge_sample_material_processing,
-		'GSC_MIxS_wastewater_sludge_isolation_and_growth_condition': GSC_MIxS_wastewater_sludge_isolation_and_growth_condition,
-		'GSC_MIxS_wastewater_sludge_propagation': GSC_MIxS_wastewater_sludge_propagation,
-		'GSC_MIxS_wastewater_sludge_amount_or_size_of_sample_collected': GSC_MIxS_wastewater_sludge_amount_or_size_of_sample_collected,
-		'GSC_MIxS_wastewater_sludge_oxygenation_status_of_sample': GSC_MIxS_wastewater_sludge_oxygenation_status_of_sample,
-		'GSC_MIxS_wastewater_sludge_organism_count': GSC_MIxS_wastewater_sludge_organism_count,
-		'GSC_MIxS_wastewater_sludge_sample_storage_duration': GSC_MIxS_wastewater_sludge_sample_storage_duration,
-		'GSC_MIxS_wastewater_sludge_sample_storage_temperature': GSC_MIxS_wastewater_sludge_sample_storage_temperature,
-		'GSC_MIxS_wastewater_sludge_sample_storage_location': GSC_MIxS_wastewater_sludge_sample_storage_location,
-		'GSC_MIxS_wastewater_sludge_sample_collection_device': GSC_MIxS_wastewater_sludge_sample_collection_device,
-		'GSC_MIxS_wastewater_sludge_sample_collection_method': GSC_MIxS_wastewater_sludge_sample_collection_method,
-		'GSC_MIxS_wastewater_sludge_biochemical_oxygen_demand': GSC_MIxS_wastewater_sludge_biochemical_oxygen_demand,
-		'GSC_MIxS_wastewater_sludge_chemical_oxygen_demand': GSC_MIxS_wastewater_sludge_chemical_oxygen_demand,
-		'GSC_MIxS_wastewater_sludge_pre_treatment': GSC_MIxS_wastewater_sludge_pre_treatment,
-		'GSC_MIxS_wastewater_sludge_primary_treatment': GSC_MIxS_wastewater_sludge_primary_treatment,
-		'GSC_MIxS_wastewater_sludge_reactor_type': GSC_MIxS_wastewater_sludge_reactor_type,
-		'GSC_MIxS_wastewater_sludge_secondary_treatment': GSC_MIxS_wastewater_sludge_secondary_treatment,
-		'GSC_MIxS_wastewater_sludge_sludge_retention_time': GSC_MIxS_wastewater_sludge_sludge_retention_time,
-		'GSC_MIxS_wastewater_sludge_tertiary_treatment': GSC_MIxS_wastewater_sludge_tertiary_treatment,
-		'GSC_MIxS_wastewater_sludge_host_disease_status': GSC_MIxS_wastewater_sludge_host_disease_status,
-		'GSC_MIxS_wastewater_sludge_host_scientific_name': GSC_MIxS_wastewater_sludge_host_scientific_name,
-		'GSC_MIxS_wastewater_sludge_alkalinity': GSC_MIxS_wastewater_sludge_alkalinity,
-		'GSC_MIxS_wastewater_sludge_industrial_effluent_percent': GSC_MIxS_wastewater_sludge_industrial_effluent_percent,
-		'GSC_MIxS_wastewater_sludge_sewage_type': GSC_MIxS_wastewater_sludge_sewage_type,
-		'GSC_MIxS_wastewater_sludge_wastewater_type': GSC_MIxS_wastewater_sludge_wastewater_type,
-		'GSC_MIxS_wastewater_sludge_temperature': GSC_MIxS_wastewater_sludge_temperature,
-		'GSC_MIxS_wastewater_sludge_pH': GSC_MIxS_wastewater_sludge_pH,
-		'GSC_MIxS_wastewater_sludge_efficiency_percent': GSC_MIxS_wastewater_sludge_efficiency_percent,
-		'GSC_MIxS_wastewater_sludge_emulsions': GSC_MIxS_wastewater_sludge_emulsions,
-		'GSC_MIxS_wastewater_sludge_gaseous_substances': GSC_MIxS_wastewater_sludge_gaseous_substances,
-		'GSC_MIxS_wastewater_sludge_inorganic_particles': GSC_MIxS_wastewater_sludge_inorganic_particles,
-		'GSC_MIxS_wastewater_sludge_organic_particles': GSC_MIxS_wastewater_sludge_organic_particles,
-		'GSC_MIxS_wastewater_sludge_soluble_inorganic_material': GSC_MIxS_wastewater_sludge_soluble_inorganic_material,
-		'GSC_MIxS_wastewater_sludge_soluble_organic_material': GSC_MIxS_wastewater_sludge_soluble_organic_material,
-		'GSC_MIxS_wastewater_sludge_suspended_solids': GSC_MIxS_wastewater_sludge_suspended_solids,
-		'GSC_MIxS_wastewater_sludge_total_phosphate': GSC_MIxS_wastewater_sludge_total_phosphate,
-		'GSC_MIxS_wastewater_sludge_nitrate': GSC_MIxS_wastewater_sludge_nitrate,
-		'GSC_MIxS_wastewater_sludge_phosphate': GSC_MIxS_wastewater_sludge_phosphate,
-		'GSC_MIxS_wastewater_sludge_salinity': GSC_MIxS_wastewater_sludge_salinity,
-		'GSC_MIxS_wastewater_sludge_sodium': GSC_MIxS_wastewater_sludge_sodium,
-		'GSC_MIxS_wastewater_sludge_total_nitrogen': GSC_MIxS_wastewater_sludge_total_nitrogen,
-		'GSC_MIxS_wastewater_sludge_subspecific_genetic_lineage': GSC_MIxS_wastewater_sludge_subspecific_genetic_lineage,
-		'GSC_MIxS_wastewater_sludge_trophic_level': GSC_MIxS_wastewater_sludge_trophic_level,
-		'GSC_MIxS_wastewater_sludge_relationship_to_oxygen': GSC_MIxS_wastewater_sludge_relationship_to_oxygen,
-		'GSC_MIxS_wastewater_sludge_known_pathogenicity': GSC_MIxS_wastewater_sludge_known_pathogenicity,
-		'GSC_MIxS_wastewater_sludge_encoded_traits': GSC_MIxS_wastewater_sludge_encoded_traits,
-		'GSC_MIxS_wastewater_sludge_observed_biotic_relationship': GSC_MIxS_wastewater_sludge_observed_biotic_relationship,
-		'GSC_MIxS_wastewater_sludge_chemical_administration': GSC_MIxS_wastewater_sludge_chemical_administration,
-		'GSC_MIxS_wastewater_sludge_perturbation': GSC_MIxS_wastewater_sludge_perturbation,
+		'GSC_MIxS_wastewater_sludge_project_name': 'project name',
+		'GSC_MIxS_wastewater_sludge_experimental_factor': 'experimental factor',
+		'GSC_MIxS_wastewater_sludge_ploidy': 'ploidy',
+		'GSC_MIxS_wastewater_sludge_number_of_replicons': 'number of replicons',
+		'GSC_MIxS_wastewater_sludge_extrachromosomal_elements': 'extrachromosomal elements',
+		'GSC_MIxS_wastewater_sludge_estimated_size': 'estimated size',
+		'GSC_MIxS_wastewater_sludge_reference_for_biomaterial': 'reference for biomaterial',
+		'GSC_MIxS_wastewater_sludge_annotation_source': 'annotation source',
+		'GSC_MIxS_wastewater_sludge_sample_volume_or_weight_for_DNA_extraction': 'sample volume or weight for DNA extraction',
+		'GSC_MIxS_wastewater_sludge_nucleic_acid_extraction': 'nucleic acid extraction',
+		'GSC_MIxS_wastewater_sludge_nucleic_acid_amplification': 'nucleic acid amplification',
+		'GSC_MIxS_wastewater_sludge_library_size': 'library size',
+		'GSC_MIxS_wastewater_sludge_library_reads_sequenced': 'library reads sequenced',
+		'GSC_MIxS_wastewater_sludge_library_construction_method': 'library construction method',
+		'GSC_MIxS_wastewater_sludge_library_vector': 'library vector',
+		'GSC_MIxS_wastewater_sludge_library_screening_strategy': 'library screening strategy',
+		'GSC_MIxS_wastewater_sludge_target_gene': 'target gene',
+		'GSC_MIxS_wastewater_sludge_target_subfragment': 'target subfragment',
+		'GSC_MIxS_wastewater_sludge_pcr_primers': 'pcr primers',
+		'GSC_MIxS_wastewater_sludge_multiplex_identifiers': 'multiplex identifiers',
+		'GSC_MIxS_wastewater_sludge_adapters': 'adapters',
+		'GSC_MIxS_wastewater_sludge_pcr_conditions': 'pcr conditions',
+		'GSC_MIxS_wastewater_sludge_sequencing_method': 'sequencing method',
+		'GSC_MIxS_wastewater_sludge_sequence_quality_check': 'sequence quality check',
+		'GSC_MIxS_wastewater_sludge_chimera_check_software': 'chimera check software',
+		'GSC_MIxS_wastewater_sludge_relevant_electronic_resources': 'relevant electronic resources',
+		'GSC_MIxS_wastewater_sludge_relevant_standard_operating_procedures': 'relevant standard operating procedures',
+		'GSC_MIxS_wastewater_sludge_negative_control_type': 'negative control type',
+		'GSC_MIxS_wastewater_sludge_positive_control_type': 'positive control type',
+		'GSC_MIxS_wastewater_sludge_collection_date': 'collection date',
+		'GSC_MIxS_wastewater_sludge_geographic_location_country_and_or_sea': 'geographic location (country and/or sea)',
+		'GSC_MIxS_wastewater_sludge_geographic_location_latitude': 'geographic location (latitude)',
+		'GSC_MIxS_wastewater_sludge_geographic_location_longitude': 'geographic location (longitude)',
+		'GSC_MIxS_wastewater_sludge_geographic_location_region_and_locality': 'geographic location (region and locality)',
+		'GSC_MIxS_wastewater_sludge_depth': 'depth',
+		'GSC_MIxS_wastewater_sludge_broad_scale_environmental_context': 'broad-scale environmental context',
+		'GSC_MIxS_wastewater_sludge_local_environmental_context': 'local environmental context',
+		'GSC_MIxS_wastewater_sludge_environmental_medium': 'environmental medium',
+		'GSC_MIxS_wastewater_sludge_source_material_identifiers': 'source material identifiers',
+		'GSC_MIxS_wastewater_sludge_sample_material_processing': 'sample material processing',
+		'GSC_MIxS_wastewater_sludge_isolation_and_growth_condition': 'isolation and growth condition',
+		'GSC_MIxS_wastewater_sludge_propagation': 'propagation',
+		'GSC_MIxS_wastewater_sludge_amount_or_size_of_sample_collected': 'amount or size of sample collected',
+		'GSC_MIxS_wastewater_sludge_oxygenation_status_of_sample': 'oxygenation status of sample',
+		'GSC_MIxS_wastewater_sludge_organism_count': 'organism count',
+		'GSC_MIxS_wastewater_sludge_sample_storage_duration': 'sample storage duration',
+		'GSC_MIxS_wastewater_sludge_sample_storage_temperature': 'sample storage temperature',
+		'GSC_MIxS_wastewater_sludge_sample_storage_location': 'sample storage location',
+		'GSC_MIxS_wastewater_sludge_sample_collection_device': 'sample collection device',
+		'GSC_MIxS_wastewater_sludge_sample_collection_method': 'sample collection method',
+		'GSC_MIxS_wastewater_sludge_biochemical_oxygen_demand': 'biochemical oxygen demand',
+		'GSC_MIxS_wastewater_sludge_chemical_oxygen_demand': 'chemical oxygen demand',
+		'GSC_MIxS_wastewater_sludge_pre_treatment': 'pre-treatment',
+		'GSC_MIxS_wastewater_sludge_primary_treatment': 'primary treatment',
+		'GSC_MIxS_wastewater_sludge_reactor_type': 'reactor type',
+		'GSC_MIxS_wastewater_sludge_secondary_treatment': 'secondary treatment',
+		'GSC_MIxS_wastewater_sludge_sludge_retention_time': 'sludge retention time',
+		'GSC_MIxS_wastewater_sludge_tertiary_treatment': 'tertiary treatment',
+		'GSC_MIxS_wastewater_sludge_host_disease_status': 'host disease status',
+		'GSC_MIxS_wastewater_sludge_host_scientific_name': 'host scientific name',
+		'GSC_MIxS_wastewater_sludge_alkalinity': 'alkalinity',
+		'GSC_MIxS_wastewater_sludge_industrial_effluent_percent': 'industrial effluent percent',
+		'GSC_MIxS_wastewater_sludge_sewage_type': 'sewage type',
+		'GSC_MIxS_wastewater_sludge_wastewater_type': 'wastewater type',
+		'GSC_MIxS_wastewater_sludge_temperature': 'temperature',
+		'GSC_MIxS_wastewater_sludge_pH': 'pH',
+		'GSC_MIxS_wastewater_sludge_efficiency_percent': 'efficiency percent',
+		'GSC_MIxS_wastewater_sludge_emulsions': 'emulsions',
+		'GSC_MIxS_wastewater_sludge_gaseous_substances': 'gaseous substances',
+		'GSC_MIxS_wastewater_sludge_inorganic_particles': 'inorganic particles',
+		'GSC_MIxS_wastewater_sludge_organic_particles': 'organic particles',
+		'GSC_MIxS_wastewater_sludge_soluble_inorganic_material': 'soluble inorganic material',
+		'GSC_MIxS_wastewater_sludge_soluble_organic_material': 'soluble organic material',
+		'GSC_MIxS_wastewater_sludge_suspended_solids': 'suspended solids',
+		'GSC_MIxS_wastewater_sludge_total_phosphate': 'total phosphate',
+		'GSC_MIxS_wastewater_sludge_nitrate': 'nitrate',
+		'GSC_MIxS_wastewater_sludge_phosphate': 'phosphate',
+		'GSC_MIxS_wastewater_sludge_salinity': 'salinity',
+		'GSC_MIxS_wastewater_sludge_sodium': 'sodium',
+		'GSC_MIxS_wastewater_sludge_total_nitrogen': 'total nitrogen',
+		'GSC_MIxS_wastewater_sludge_subspecific_genetic_lineage': 'subspecific genetic lineage',
+		'GSC_MIxS_wastewater_sludge_trophic_level': 'trophic level',
+		'GSC_MIxS_wastewater_sludge_relationship_to_oxygen': 'relationship to oxygen',
+		'GSC_MIxS_wastewater_sludge_known_pathogenicity': 'known pathogenicity',
+		'GSC_MIxS_wastewater_sludge_encoded_traits': 'encoded traits',
+		'GSC_MIxS_wastewater_sludge_observed_biotic_relationship': 'observed biotic relationship',
+		'GSC_MIxS_wastewater_sludge_chemical_administration': 'chemical administration',
+		'GSC_MIxS_wastewater_sludge_perturbation': 'perturbation',
 	}
 
-class GSC_MIxS_wastewater_sludge_unit(SelfDescribingModel):
+class GSC_MIxS_wastewater_sludge_unit(SelfDescribingUnitModel):
 
 	GSC_MIxS_wastewater_sludge_sample_volume_or_weight_for_DNA_extraction_units = [('g', 'g'), ('mL', 'mL'), ('mg', 'mg'), ('ng', 'ng')]
-	GSC_MIxS_wastewater_sludge_geographic_location_latitude_units = [('D', 'D'), ('D', 'D')]
-	GSC_MIxS_wastewater_sludge_geographic_location_longitude_units = [('D', 'D'), ('D', 'D')]
+	GSC_MIxS_wastewater_sludge_geographic_location_latitude_units = [('DD', 'DD')]
+	GSC_MIxS_wastewater_sludge_geographic_location_longitude_units = [('DD', 'DD')]
 	GSC_MIxS_wastewater_sludge_depth_units = [('m', 'm')]
 	GSC_MIxS_wastewater_sludge_amount_or_size_of_sample_collected_units = [('L', 'L'), ('g', 'g'), ('kg', 'kg'), ('m2', 'm2'), ('m3', 'm3')]
 	GSC_MIxS_wastewater_sludge_sample_storage_duration_units = [('days', 'days'), ('hours', 'hours'), ('months', 'months'), ('weeks', 'weeks'), ('years', 'years')]
-	GSC_MIxS_wastewater_sludge_sample_storage_temperature_units = [('°', '°'), ('C', 'C')]
-	GSC_MIxS_wastewater_sludge_biochemical_oxygen_demand_units = [('m', 'm'), ('g', 'g'), ('/', '/'), ('L', 'L'), (' ', ' '), ('(', '('), ('o', 'o'), ('v', 'v'), ('e', 'e'), ('r', 'r'), (' ', ' '), ('5', '5'), (' ', ' '), ('d', 'd'), ('a', 'a'), ('y', 'y'), ('s', 's'), (' ', ' '), ('a', 'a'), ('t', 't'), (' ', ' '), ('2', '2'), ('0', '0'), ('C', 'C'), (')', ')')]
-	GSC_MIxS_wastewater_sludge_chemical_oxygen_demand_units = [('m', 'm'), ('g', 'g'), ('/', '/'), ('L', 'L'), (' ', ' '), ('(', '('), ('o', 'o'), ('v', 'v'), ('e', 'e'), ('r', 'r'), (' ', ' '), ('5', '5'), (' ', ' '), ('d', 'd'), ('a', 'a'), ('y', 'y'), ('s', 's'), (' ', ' '), ('a', 'a'), ('t', 't'), (' ', ' '), ('2', '2'), ('0', '0'), ('C', 'C'), (')', ')')]
+	GSC_MIxS_wastewater_sludge_sample_storage_temperature_units = [('°C', '°C')]
+	GSC_MIxS_wastewater_sludge_biochemical_oxygen_demand_units = [('mg/L (over 5 days at 20C)', 'mg/L (over 5 days at 20C)')]
+	GSC_MIxS_wastewater_sludge_chemical_oxygen_demand_units = [('mg/L (over 5 days at 20C)', 'mg/L (over 5 days at 20C)')]
 	GSC_MIxS_wastewater_sludge_sludge_retention_time_units = [('days', 'days'), ('hours', 'hours'), ('minutes', 'minutes'), ('weeks', 'weeks')]
-	GSC_MIxS_wastewater_sludge_alkalinity_units = [('m', 'm'), ('E', 'E'), ('q', 'q'), ('/', '/'), ('L', 'L')]
+	GSC_MIxS_wastewater_sludge_alkalinity_units = [('mEq/L', 'mEq/L')]
 	GSC_MIxS_wastewater_sludge_industrial_effluent_percent_units = [('%', '%')]
-	GSC_MIxS_wastewater_sludge_temperature_units = [('º', 'º'), ('C', 'C')]
+	GSC_MIxS_wastewater_sludge_temperature_units = [('ºC', 'ºC')]
 	GSC_MIxS_wastewater_sludge_efficiency_percent_units = [('%', '%')]
 	GSC_MIxS_wastewater_sludge_emulsions_units = [('g/L', 'g/L'), ('ng/L', 'ng/L'), ('µg/L', 'µg/L')]
-	GSC_MIxS_wastewater_sludge_gaseous_substances_units = [('µ', 'µ'), ('m', 'm'), ('o', 'o'), ('l', 'l'), ('/', '/'), ('L', 'L')]
+	GSC_MIxS_wastewater_sludge_gaseous_substances_units = [('µmol/L', 'µmol/L')]
 	GSC_MIxS_wastewater_sludge_inorganic_particles_units = [('mg/L', 'mg/L'), ('mol/L', 'mol/L')]
-	GSC_MIxS_wastewater_sludge_organic_particles_units = [('g', 'g'), ('/', '/'), ('L', 'L')]
+	GSC_MIxS_wastewater_sludge_organic_particles_units = [('g/L', 'g/L')]
 	GSC_MIxS_wastewater_sludge_soluble_inorganic_material_units = [('g/L', 'g/L'), ('mol/L', 'mol/L'), ('parts/million', 'parts/million')]
 	GSC_MIxS_wastewater_sludge_soluble_organic_material_units = [('g/L', 'g/L'), ('mol/L', 'mol/L'), ('parts/million', 'parts/million')]
 	GSC_MIxS_wastewater_sludge_suspended_solids_units = [('g/L', 'g/L'), ('mol/L', 'mol/L'), ('parts/million', 'parts/million')]
 	GSC_MIxS_wastewater_sludge_total_phosphate_units = [('µg/L', 'µg/L'), ('µmol/L', 'µmol/L')]
-	GSC_MIxS_wastewater_sludge_nitrate_units = [('µ', 'µ'), ('m', 'm'), ('o', 'o'), ('l', 'l'), ('/', '/'), ('L', 'L')]
-	GSC_MIxS_wastewater_sludge_phosphate_units = [('µ', 'µ'), ('m', 'm'), ('o', 'o'), ('l', 'l'), ('/', '/'), ('L', 'L')]
-	GSC_MIxS_wastewater_sludge_salinity_units = [('p', 'p'), ('s', 's'), ('u', 'u')]
+	GSC_MIxS_wastewater_sludge_nitrate_units = [('µmol/L', 'µmol/L')]
+	GSC_MIxS_wastewater_sludge_phosphate_units = [('µmol/L', 'µmol/L')]
+	GSC_MIxS_wastewater_sludge_salinity_units = [('psu', 'psu')]
 	GSC_MIxS_wastewater_sludge_sodium_units = [('parts/million', 'parts/million'), ('µmol/L', 'µmol/L')]
 	GSC_MIxS_wastewater_sludge_total_nitrogen_units = [('µg/L', 'µg/L'), ('µmol/L', 'µmol/L')]
 
 	fields = {
-		'GSC_MIxS_wastewater_sludge_sample_volume_or_weight_for_DNA_extraction_units': GSC_MIxS_wastewater_sludge_sample_volume_or_weight_for_DNA_extraction_units,
-		'GSC_MIxS_wastewater_sludge_geographic_location_latitude_units': GSC_MIxS_wastewater_sludge_geographic_location_latitude_units,
-		'GSC_MIxS_wastewater_sludge_geographic_location_longitude_units': GSC_MIxS_wastewater_sludge_geographic_location_longitude_units,
-		'GSC_MIxS_wastewater_sludge_depth_units': GSC_MIxS_wastewater_sludge_depth_units,
-		'GSC_MIxS_wastewater_sludge_amount_or_size_of_sample_collected_units': GSC_MIxS_wastewater_sludge_amount_or_size_of_sample_collected_units,
-		'GSC_MIxS_wastewater_sludge_sample_storage_duration_units': GSC_MIxS_wastewater_sludge_sample_storage_duration_units,
-		'GSC_MIxS_wastewater_sludge_sample_storage_temperature_units': GSC_MIxS_wastewater_sludge_sample_storage_temperature_units,
-		'GSC_MIxS_wastewater_sludge_biochemical_oxygen_demand_units': GSC_MIxS_wastewater_sludge_biochemical_oxygen_demand_units,
-		'GSC_MIxS_wastewater_sludge_chemical_oxygen_demand_units': GSC_MIxS_wastewater_sludge_chemical_oxygen_demand_units,
-		'GSC_MIxS_wastewater_sludge_sludge_retention_time_units': GSC_MIxS_wastewater_sludge_sludge_retention_time_units,
-		'GSC_MIxS_wastewater_sludge_alkalinity_units': GSC_MIxS_wastewater_sludge_alkalinity_units,
-		'GSC_MIxS_wastewater_sludge_industrial_effluent_percent_units': GSC_MIxS_wastewater_sludge_industrial_effluent_percent_units,
-		'GSC_MIxS_wastewater_sludge_temperature_units': GSC_MIxS_wastewater_sludge_temperature_units,
-		'GSC_MIxS_wastewater_sludge_efficiency_percent_units': GSC_MIxS_wastewater_sludge_efficiency_percent_units,
-		'GSC_MIxS_wastewater_sludge_emulsions_units': GSC_MIxS_wastewater_sludge_emulsions_units,
-		'GSC_MIxS_wastewater_sludge_gaseous_substances_units': GSC_MIxS_wastewater_sludge_gaseous_substances_units,
-		'GSC_MIxS_wastewater_sludge_inorganic_particles_units': GSC_MIxS_wastewater_sludge_inorganic_particles_units,
-		'GSC_MIxS_wastewater_sludge_organic_particles_units': GSC_MIxS_wastewater_sludge_organic_particles_units,
-		'GSC_MIxS_wastewater_sludge_soluble_inorganic_material_units': GSC_MIxS_wastewater_sludge_soluble_inorganic_material_units,
-		'GSC_MIxS_wastewater_sludge_soluble_organic_material_units': GSC_MIxS_wastewater_sludge_soluble_organic_material_units,
-		'GSC_MIxS_wastewater_sludge_suspended_solids_units': GSC_MIxS_wastewater_sludge_suspended_solids_units,
-		'GSC_MIxS_wastewater_sludge_total_phosphate_units': GSC_MIxS_wastewater_sludge_total_phosphate_units,
-		'GSC_MIxS_wastewater_sludge_nitrate_units': GSC_MIxS_wastewater_sludge_nitrate_units,
-		'GSC_MIxS_wastewater_sludge_phosphate_units': GSC_MIxS_wastewater_sludge_phosphate_units,
-		'GSC_MIxS_wastewater_sludge_salinity_units': GSC_MIxS_wastewater_sludge_salinity_units,
-		'GSC_MIxS_wastewater_sludge_sodium_units': GSC_MIxS_wastewater_sludge_sodium_units,
-		'GSC_MIxS_wastewater_sludge_total_nitrogen_units': GSC_MIxS_wastewater_sludge_total_nitrogen_units,
+		'GSC_MIxS_wastewater_sludge_sample_volume_or_weight_for_DNA_extraction': 'sample volume or weight for DNA extraction',
+		'GSC_MIxS_wastewater_sludge_geographic_location_latitude': 'geographic location (latitude)',
+		'GSC_MIxS_wastewater_sludge_geographic_location_longitude': 'geographic location (longitude)',
+		'GSC_MIxS_wastewater_sludge_depth': 'depth',
+		'GSC_MIxS_wastewater_sludge_amount_or_size_of_sample_collected': 'amount or size of sample collected',
+		'GSC_MIxS_wastewater_sludge_sample_storage_duration': 'sample storage duration',
+		'GSC_MIxS_wastewater_sludge_sample_storage_temperature': 'sample storage temperature',
+		'GSC_MIxS_wastewater_sludge_biochemical_oxygen_demand': 'biochemical oxygen demand',
+		'GSC_MIxS_wastewater_sludge_chemical_oxygen_demand': 'chemical oxygen demand',
+		'GSC_MIxS_wastewater_sludge_sludge_retention_time': 'sludge retention time',
+		'GSC_MIxS_wastewater_sludge_alkalinity': 'alkalinity',
+		'GSC_MIxS_wastewater_sludge_industrial_effluent_percent': 'industrial effluent percent',
+		'GSC_MIxS_wastewater_sludge_temperature': 'temperature',
+		'GSC_MIxS_wastewater_sludge_efficiency_percent': 'efficiency percent',
+		'GSC_MIxS_wastewater_sludge_emulsions': 'emulsions',
+		'GSC_MIxS_wastewater_sludge_gaseous_substances': 'gaseous substances',
+		'GSC_MIxS_wastewater_sludge_inorganic_particles': 'inorganic particles',
+		'GSC_MIxS_wastewater_sludge_organic_particles': 'organic particles',
+		'GSC_MIxS_wastewater_sludge_soluble_inorganic_material': 'soluble inorganic material',
+		'GSC_MIxS_wastewater_sludge_soluble_organic_material': 'soluble organic material',
+		'GSC_MIxS_wastewater_sludge_suspended_solids': 'suspended solids',
+		'GSC_MIxS_wastewater_sludge_total_phosphate': 'total phosphate',
+		'GSC_MIxS_wastewater_sludge_nitrate': 'nitrate',
+		'GSC_MIxS_wastewater_sludge_phosphate': 'phosphate',
+		'GSC_MIxS_wastewater_sludge_salinity': 'salinity',
+		'GSC_MIxS_wastewater_sludge_sodium': 'sodium',
+		'GSC_MIxS_wastewater_sludge_total_nitrogen': 'total nitrogen',
 	}
 
-	sample = models.ForeignKey(Sample, on_delete=models.CASCADE)
 	order = models.ForeignKey(Order, on_delete=models.CASCADE, default=1)
 	GSC_MIxS_wastewater_sludge_sample_volume_or_weight_for_DNA_extraction = models.CharField(max_length=100, choices=GSC_MIxS_wastewater_sludge_sample_volume_or_weight_for_DNA_extraction_units, blank=False)
 	GSC_MIxS_wastewater_sludge_geographic_location_latitude = models.CharField(max_length=100, choices=GSC_MIxS_wastewater_sludge_geographic_location_latitude_units, blank=False)
@@ -689,189 +813,188 @@ class GSC_MIxS_miscellaneous_natural_or_artificial_environment(SelfDescribingMod
 	GSC_MIxS_miscellaneous_natural_or_artificial_environment_perturbation= models.CharField(max_length=100, blank=True,help_text="type of pe")
 
 	fields = {
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_project_name': GSC_MIxS_miscellaneous_natural_or_artificial_environment_project_name,
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_experimental_factor': GSC_MIxS_miscellaneous_natural_or_artificial_environment_experimental_factor,
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_ploidy': GSC_MIxS_miscellaneous_natural_or_artificial_environment_ploidy,
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_number_of_replicons': GSC_MIxS_miscellaneous_natural_or_artificial_environment_number_of_replicons,
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_extrachromosomal_elements': GSC_MIxS_miscellaneous_natural_or_artificial_environment_extrachromosomal_elements,
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_estimated_size': GSC_MIxS_miscellaneous_natural_or_artificial_environment_estimated_size,
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_reference_for_biomaterial': GSC_MIxS_miscellaneous_natural_or_artificial_environment_reference_for_biomaterial,
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_annotation_source': GSC_MIxS_miscellaneous_natural_or_artificial_environment_annotation_source,
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_sample_volume_or_weight_for_DNA_extraction': GSC_MIxS_miscellaneous_natural_or_artificial_environment_sample_volume_or_weight_for_DNA_extraction,
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_nucleic_acid_extraction': GSC_MIxS_miscellaneous_natural_or_artificial_environment_nucleic_acid_extraction,
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_nucleic_acid_amplification': GSC_MIxS_miscellaneous_natural_or_artificial_environment_nucleic_acid_amplification,
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_library_size': GSC_MIxS_miscellaneous_natural_or_artificial_environment_library_size,
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_library_reads_sequenced': GSC_MIxS_miscellaneous_natural_or_artificial_environment_library_reads_sequenced,
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_library_construction_method': GSC_MIxS_miscellaneous_natural_or_artificial_environment_library_construction_method,
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_library_vector': GSC_MIxS_miscellaneous_natural_or_artificial_environment_library_vector,
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_library_screening_strategy': GSC_MIxS_miscellaneous_natural_or_artificial_environment_library_screening_strategy,
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_target_gene': GSC_MIxS_miscellaneous_natural_or_artificial_environment_target_gene,
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_target_subfragment': GSC_MIxS_miscellaneous_natural_or_artificial_environment_target_subfragment,
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_pcr_primers': GSC_MIxS_miscellaneous_natural_or_artificial_environment_pcr_primers,
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_multiplex_identifiers': GSC_MIxS_miscellaneous_natural_or_artificial_environment_multiplex_identifiers,
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_adapters': GSC_MIxS_miscellaneous_natural_or_artificial_environment_adapters,
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_pcr_conditions': GSC_MIxS_miscellaneous_natural_or_artificial_environment_pcr_conditions,
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_sequencing_method': GSC_MIxS_miscellaneous_natural_or_artificial_environment_sequencing_method,
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_sequence_quality_check': GSC_MIxS_miscellaneous_natural_or_artificial_environment_sequence_quality_check,
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_chimera_check_software': GSC_MIxS_miscellaneous_natural_or_artificial_environment_chimera_check_software,
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_relevant_electronic_resources': GSC_MIxS_miscellaneous_natural_or_artificial_environment_relevant_electronic_resources,
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_relevant_standard_operating_procedures': GSC_MIxS_miscellaneous_natural_or_artificial_environment_relevant_standard_operating_procedures,
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_negative_control_type': GSC_MIxS_miscellaneous_natural_or_artificial_environment_negative_control_type,
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_positive_control_type': GSC_MIxS_miscellaneous_natural_or_artificial_environment_positive_control_type,
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_collection_date': GSC_MIxS_miscellaneous_natural_or_artificial_environment_collection_date,
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_altitude': GSC_MIxS_miscellaneous_natural_or_artificial_environment_altitude,
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_geographic_location_country_and_or_sea': GSC_MIxS_miscellaneous_natural_or_artificial_environment_geographic_location_country_and_or_sea,
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_geographic_location_latitude': GSC_MIxS_miscellaneous_natural_or_artificial_environment_geographic_location_latitude,
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_geographic_location_longitude': GSC_MIxS_miscellaneous_natural_or_artificial_environment_geographic_location_longitude,
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_geographic_location_region_and_locality': GSC_MIxS_miscellaneous_natural_or_artificial_environment_geographic_location_region_and_locality,
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_depth': GSC_MIxS_miscellaneous_natural_or_artificial_environment_depth,
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_broad_scale_environmental_context': GSC_MIxS_miscellaneous_natural_or_artificial_environment_broad_scale_environmental_context,
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_local_environmental_context': GSC_MIxS_miscellaneous_natural_or_artificial_environment_local_environmental_context,
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_environmental_medium': GSC_MIxS_miscellaneous_natural_or_artificial_environment_environmental_medium,
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_elevation': GSC_MIxS_miscellaneous_natural_or_artificial_environment_elevation,
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_source_material_identifiers': GSC_MIxS_miscellaneous_natural_or_artificial_environment_source_material_identifiers,
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_sample_material_processing': GSC_MIxS_miscellaneous_natural_or_artificial_environment_sample_material_processing,
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_isolation_and_growth_condition': GSC_MIxS_miscellaneous_natural_or_artificial_environment_isolation_and_growth_condition,
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_propagation': GSC_MIxS_miscellaneous_natural_or_artificial_environment_propagation,
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_amount_or_size_of_sample_collected': GSC_MIxS_miscellaneous_natural_or_artificial_environment_amount_or_size_of_sample_collected,
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_biomass': GSC_MIxS_miscellaneous_natural_or_artificial_environment_biomass,
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_density': GSC_MIxS_miscellaneous_natural_or_artificial_environment_density,
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_oxygenation_status_of_sample': GSC_MIxS_miscellaneous_natural_or_artificial_environment_oxygenation_status_of_sample,
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_organism_count': GSC_MIxS_miscellaneous_natural_or_artificial_environment_organism_count,
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_sample_storage_duration': GSC_MIxS_miscellaneous_natural_or_artificial_environment_sample_storage_duration,
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_sample_storage_temperature': GSC_MIxS_miscellaneous_natural_or_artificial_environment_sample_storage_temperature,
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_sample_storage_location': GSC_MIxS_miscellaneous_natural_or_artificial_environment_sample_storage_location,
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_sample_collection_device': GSC_MIxS_miscellaneous_natural_or_artificial_environment_sample_collection_device,
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_sample_collection_method': GSC_MIxS_miscellaneous_natural_or_artificial_environment_sample_collection_method,
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_host_disease_status': GSC_MIxS_miscellaneous_natural_or_artificial_environment_host_disease_status,
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_host_scientific_name': GSC_MIxS_miscellaneous_natural_or_artificial_environment_host_scientific_name,
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_alkalinity': GSC_MIxS_miscellaneous_natural_or_artificial_environment_alkalinity,
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_water_current': GSC_MIxS_miscellaneous_natural_or_artificial_environment_water_current,
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_pressure': GSC_MIxS_miscellaneous_natural_or_artificial_environment_pressure,
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_temperature': GSC_MIxS_miscellaneous_natural_or_artificial_environment_temperature,
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_pH': GSC_MIxS_miscellaneous_natural_or_artificial_environment_pH,
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_ammonium': GSC_MIxS_miscellaneous_natural_or_artificial_environment_ammonium,
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_bromide': GSC_MIxS_miscellaneous_natural_or_artificial_environment_bromide,
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_calcium': GSC_MIxS_miscellaneous_natural_or_artificial_environment_calcium,
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_chloride': GSC_MIxS_miscellaneous_natural_or_artificial_environment_chloride,
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_chlorophyll': GSC_MIxS_miscellaneous_natural_or_artificial_environment_chlorophyll,
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_diether_lipids': GSC_MIxS_miscellaneous_natural_or_artificial_environment_diether_lipids,
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_dissolved_carbon_dioxide': GSC_MIxS_miscellaneous_natural_or_artificial_environment_dissolved_carbon_dioxide,
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_dissolved_hydrogen': GSC_MIxS_miscellaneous_natural_or_artificial_environment_dissolved_hydrogen,
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_dissolved_inorganic_carbon': GSC_MIxS_miscellaneous_natural_or_artificial_environment_dissolved_inorganic_carbon,
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_dissolved_organic_nitrogen': GSC_MIxS_miscellaneous_natural_or_artificial_environment_dissolved_organic_nitrogen,
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_dissolved_oxygen': GSC_MIxS_miscellaneous_natural_or_artificial_environment_dissolved_oxygen,
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_nitrate': GSC_MIxS_miscellaneous_natural_or_artificial_environment_nitrate,
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_nitrite': GSC_MIxS_miscellaneous_natural_or_artificial_environment_nitrite,
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_nitrogen': GSC_MIxS_miscellaneous_natural_or_artificial_environment_nitrogen,
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_organic_carbon': GSC_MIxS_miscellaneous_natural_or_artificial_environment_organic_carbon,
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_organic_matter': GSC_MIxS_miscellaneous_natural_or_artificial_environment_organic_matter,
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_organic_nitrogen': GSC_MIxS_miscellaneous_natural_or_artificial_environment_organic_nitrogen,
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_phosphate': GSC_MIxS_miscellaneous_natural_or_artificial_environment_phosphate,
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_phospholipid_fatty_acid': GSC_MIxS_miscellaneous_natural_or_artificial_environment_phospholipid_fatty_acid,
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_potassium': GSC_MIxS_miscellaneous_natural_or_artificial_environment_potassium,
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_salinity': GSC_MIxS_miscellaneous_natural_or_artificial_environment_salinity,
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_silicate': GSC_MIxS_miscellaneous_natural_or_artificial_environment_silicate,
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_sodium': GSC_MIxS_miscellaneous_natural_or_artificial_environment_sodium,
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_sulfate': GSC_MIxS_miscellaneous_natural_or_artificial_environment_sulfate,
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_sulfide': GSC_MIxS_miscellaneous_natural_or_artificial_environment_sulfide,
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_subspecific_genetic_lineage': GSC_MIxS_miscellaneous_natural_or_artificial_environment_subspecific_genetic_lineage,
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_trophic_level': GSC_MIxS_miscellaneous_natural_or_artificial_environment_trophic_level,
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_relationship_to_oxygen': GSC_MIxS_miscellaneous_natural_or_artificial_environment_relationship_to_oxygen,
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_known_pathogenicity': GSC_MIxS_miscellaneous_natural_or_artificial_environment_known_pathogenicity,
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_encoded_traits': GSC_MIxS_miscellaneous_natural_or_artificial_environment_encoded_traits,
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_observed_biotic_relationship': GSC_MIxS_miscellaneous_natural_or_artificial_environment_observed_biotic_relationship,
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_chemical_administration': GSC_MIxS_miscellaneous_natural_or_artificial_environment_chemical_administration,
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_perturbation': GSC_MIxS_miscellaneous_natural_or_artificial_environment_perturbation,
+		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_project_name': 'project name',
+		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_experimental_factor': 'experimental factor',
+		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_ploidy': 'ploidy',
+		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_number_of_replicons': 'number of replicons',
+		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_extrachromosomal_elements': 'extrachromosomal elements',
+		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_estimated_size': 'estimated size',
+		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_reference_for_biomaterial': 'reference for biomaterial',
+		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_annotation_source': 'annotation source',
+		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_sample_volume_or_weight_for_DNA_extraction': 'sample volume or weight for DNA extraction',
+		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_nucleic_acid_extraction': 'nucleic acid extraction',
+		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_nucleic_acid_amplification': 'nucleic acid amplification',
+		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_library_size': 'library size',
+		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_library_reads_sequenced': 'library reads sequenced',
+		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_library_construction_method': 'library construction method',
+		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_library_vector': 'library vector',
+		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_library_screening_strategy': 'library screening strategy',
+		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_target_gene': 'target gene',
+		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_target_subfragment': 'target subfragment',
+		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_pcr_primers': 'pcr primers',
+		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_multiplex_identifiers': 'multiplex identifiers',
+		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_adapters': 'adapters',
+		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_pcr_conditions': 'pcr conditions',
+		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_sequencing_method': 'sequencing method',
+		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_sequence_quality_check': 'sequence quality check',
+		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_chimera_check_software': 'chimera check software',
+		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_relevant_electronic_resources': 'relevant electronic resources',
+		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_relevant_standard_operating_procedures': 'relevant standard operating procedures',
+		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_negative_control_type': 'negative control type',
+		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_positive_control_type': 'positive control type',
+		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_collection_date': 'collection date',
+		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_altitude': 'altitude',
+		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_geographic_location_country_and_or_sea': 'geographic location (country and/or sea)',
+		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_geographic_location_latitude': 'geographic location (latitude)',
+		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_geographic_location_longitude': 'geographic location (longitude)',
+		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_geographic_location_region_and_locality': 'geographic location (region and locality)',
+		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_depth': 'depth',
+		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_broad_scale_environmental_context': 'broad-scale environmental context',
+		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_local_environmental_context': 'local environmental context',
+		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_environmental_medium': 'environmental medium',
+		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_elevation': 'elevation',
+		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_source_material_identifiers': 'source material identifiers',
+		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_sample_material_processing': 'sample material processing',
+		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_isolation_and_growth_condition': 'isolation and growth condition',
+		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_propagation': 'propagation',
+		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_amount_or_size_of_sample_collected': 'amount or size of sample collected',
+		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_biomass': 'biomass',
+		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_density': 'density',
+		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_oxygenation_status_of_sample': 'oxygenation status of sample',
+		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_organism_count': 'organism count',
+		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_sample_storage_duration': 'sample storage duration',
+		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_sample_storage_temperature': 'sample storage temperature',
+		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_sample_storage_location': 'sample storage location',
+		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_sample_collection_device': 'sample collection device',
+		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_sample_collection_method': 'sample collection method',
+		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_host_disease_status': 'host disease status',
+		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_host_scientific_name': 'host scientific name',
+		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_alkalinity': 'alkalinity',
+		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_water_current': 'water current',
+		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_pressure': 'pressure',
+		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_temperature': 'temperature',
+		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_pH': 'pH',
+		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_ammonium': 'ammonium',
+		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_bromide': 'bromide',
+		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_calcium': 'calcium',
+		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_chloride': 'chloride',
+		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_chlorophyll': 'chlorophyll',
+		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_diether_lipids': 'diether lipids',
+		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_dissolved_carbon_dioxide': 'dissolved carbon dioxide',
+		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_dissolved_hydrogen': 'dissolved hydrogen',
+		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_dissolved_inorganic_carbon': 'dissolved inorganic carbon',
+		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_dissolved_organic_nitrogen': 'dissolved organic nitrogen',
+		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_dissolved_oxygen': 'dissolved oxygen',
+		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_nitrate': 'nitrate',
+		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_nitrite': 'nitrite',
+		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_nitrogen': 'nitrogen',
+		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_organic_carbon': 'organic carbon',
+		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_organic_matter': 'organic matter',
+		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_organic_nitrogen': 'organic nitrogen',
+		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_phosphate': 'phosphate',
+		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_phospholipid_fatty_acid': 'phospholipid fatty acid',
+		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_potassium': 'potassium',
+		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_salinity': 'salinity',
+		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_silicate': 'silicate',
+		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_sodium': 'sodium',
+		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_sulfate': 'sulfate',
+		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_sulfide': 'sulfide',
+		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_subspecific_genetic_lineage': 'subspecific genetic lineage',
+		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_trophic_level': 'trophic level',
+		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_relationship_to_oxygen': 'relationship to oxygen',
+		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_known_pathogenicity': 'known pathogenicity',
+		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_encoded_traits': 'encoded traits',
+		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_observed_biotic_relationship': 'observed biotic relationship',
+		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_chemical_administration': 'chemical administration',
+		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_perturbation': 'perturbation',
 	}
 
-class GSC_MIxS_miscellaneous_natural_or_artificial_environment_unit(SelfDescribingModel):
+class GSC_MIxS_miscellaneous_natural_or_artificial_environment_unit(SelfDescribingUnitModel):
 
 	GSC_MIxS_miscellaneous_natural_or_artificial_environment_sample_volume_or_weight_for_DNA_extraction_units = [('g', 'g'), ('mL', 'mL'), ('mg', 'mg'), ('ng', 'ng')]
 	GSC_MIxS_miscellaneous_natural_or_artificial_environment_altitude_units = [('m', 'm')]
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_geographic_location_latitude_units = [('D', 'D'), ('D', 'D')]
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_geographic_location_longitude_units = [('D', 'D'), ('D', 'D')]
+	GSC_MIxS_miscellaneous_natural_or_artificial_environment_geographic_location_latitude_units = [('DD', 'DD')]
+	GSC_MIxS_miscellaneous_natural_or_artificial_environment_geographic_location_longitude_units = [('DD', 'DD')]
 	GSC_MIxS_miscellaneous_natural_or_artificial_environment_depth_units = [('m', 'm')]
 	GSC_MIxS_miscellaneous_natural_or_artificial_environment_elevation_units = [('m', 'm')]
 	GSC_MIxS_miscellaneous_natural_or_artificial_environment_amount_or_size_of_sample_collected_units = [('L', 'L'), ('g', 'g'), ('kg', 'kg'), ('m2', 'm2'), ('m3', 'm3')]
 	GSC_MIxS_miscellaneous_natural_or_artificial_environment_biomass_units = [('g', 'g'), ('kg', 'kg'), ('t', 't')]
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_density_units = [('g', 'g'), ('/', '/'), ('m', 'm'), ('3', '3')]
+	GSC_MIxS_miscellaneous_natural_or_artificial_environment_density_units = [('g/m3', 'g/m3')]
 	GSC_MIxS_miscellaneous_natural_or_artificial_environment_sample_storage_duration_units = [('days', 'days'), ('hours', 'hours'), ('months', 'months'), ('weeks', 'weeks'), ('years', 'years')]
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_sample_storage_temperature_units = [('°', '°'), ('C', 'C')]
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_alkalinity_units = [('m', 'm'), ('E', 'E'), ('q', 'q'), ('/', '/'), ('L', 'L')]
+	GSC_MIxS_miscellaneous_natural_or_artificial_environment_sample_storage_temperature_units = [('°C', '°C')]
+	GSC_MIxS_miscellaneous_natural_or_artificial_environment_alkalinity_units = [('mEq/L', 'mEq/L')]
 	GSC_MIxS_miscellaneous_natural_or_artificial_environment_water_current_units = [('knot', 'knot'), ('m3/s', 'm3/s')]
 	GSC_MIxS_miscellaneous_natural_or_artificial_environment_pressure_units = [('atm', 'atm'), ('bar', 'bar')]
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_temperature_units = [('º', 'º'), ('C', 'C')]
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_ammonium_units = [('µ', 'µ'), ('m', 'm'), ('o', 'o'), ('l', 'l'), ('/', '/'), ('L', 'L')]
+	GSC_MIxS_miscellaneous_natural_or_artificial_environment_temperature_units = [('ºC', 'ºC')]
+	GSC_MIxS_miscellaneous_natural_or_artificial_environment_ammonium_units = [('µmol/L', 'µmol/L')]
 	GSC_MIxS_miscellaneous_natural_or_artificial_environment_bromide_units = [('parts/million', 'parts/million'), ('µmol/L', 'µmol/L')]
 	GSC_MIxS_miscellaneous_natural_or_artificial_environment_calcium_units = [('mg/L', 'mg/L'), ('parts/million', 'parts/million'), ('µmol/L', 'µmol/L')]
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_chloride_units = [('m', 'm'), ('g', 'g'), ('/', '/'), ('L', 'L')]
+	GSC_MIxS_miscellaneous_natural_or_artificial_environment_chloride_units = [('mg/L', 'mg/L')]
 	GSC_MIxS_miscellaneous_natural_or_artificial_environment_chlorophyll_units = [('mg/m3', 'mg/m3'), ('µg/L', 'µg/L')]
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_diether_lipids_units = [('n', 'n'), ('g', 'g'), ('/', '/'), ('L', 'L')]
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_dissolved_carbon_dioxide_units = [('µ', 'µ'), ('m', 'm'), ('o', 'o'), ('l', 'l'), ('/', '/'), ('L', 'L')]
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_dissolved_hydrogen_units = [('µ', 'µ'), ('m', 'm'), ('o', 'o'), ('l', 'l'), ('/', '/'), ('L', 'L')]
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_dissolved_inorganic_carbon_units = [('µ', 'µ'), ('g', 'g'), ('/', '/'), ('L', 'L')]
+	GSC_MIxS_miscellaneous_natural_or_artificial_environment_diether_lipids_units = [('ng/L', 'ng/L')]
+	GSC_MIxS_miscellaneous_natural_or_artificial_environment_dissolved_carbon_dioxide_units = [('µmol/L', 'µmol/L')]
+	GSC_MIxS_miscellaneous_natural_or_artificial_environment_dissolved_hydrogen_units = [('µmol/L', 'µmol/L')]
+	GSC_MIxS_miscellaneous_natural_or_artificial_environment_dissolved_inorganic_carbon_units = [('µg/L', 'µg/L')]
 	GSC_MIxS_miscellaneous_natural_or_artificial_environment_dissolved_organic_nitrogen_units = [('mg/L', 'mg/L'), ('µg/L', 'µg/L')]
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_dissolved_oxygen_units = [('µ', 'µ'), ('m', 'm'), ('o', 'o'), ('l', 'l'), ('/', '/'), ('k', 'k'), ('g', 'g')]
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_nitrate_units = [('µ', 'µ'), ('m', 'm'), ('o', 'o'), ('l', 'l'), ('/', '/'), ('L', 'L')]
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_nitrite_units = [('µ', 'µ'), ('m', 'm'), ('o', 'o'), ('l', 'l'), ('/', '/'), ('L', 'L')]
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_nitrogen_units = [('µ', 'µ'), ('m', 'm'), ('o', 'o'), ('l', 'l'), ('/', '/'), ('L', 'L')]
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_organic_carbon_units = [('µ', 'µ'), ('m', 'm'), ('o', 'o'), ('l', 'l'), ('/', '/'), ('L', 'L')]
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_organic_matter_units = [('µ', 'µ'), ('g', 'g'), ('/', '/'), ('L', 'L')]
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_organic_nitrogen_units = [('µ', 'µ'), ('g', 'g'), ('/', '/'), ('L', 'L')]
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_phosphate_units = [('µ', 'µ'), ('m', 'm'), ('o', 'o'), ('l', 'l'), ('/', '/'), ('L', 'L')]
+	GSC_MIxS_miscellaneous_natural_or_artificial_environment_dissolved_oxygen_units = [('µmol/kg', 'µmol/kg')]
+	GSC_MIxS_miscellaneous_natural_or_artificial_environment_nitrate_units = [('µmol/L', 'µmol/L')]
+	GSC_MIxS_miscellaneous_natural_or_artificial_environment_nitrite_units = [('µmol/L', 'µmol/L')]
+	GSC_MIxS_miscellaneous_natural_or_artificial_environment_nitrogen_units = [('µmol/L', 'µmol/L')]
+	GSC_MIxS_miscellaneous_natural_or_artificial_environment_organic_carbon_units = [('µmol/L', 'µmol/L')]
+	GSC_MIxS_miscellaneous_natural_or_artificial_environment_organic_matter_units = [('µg/L', 'µg/L')]
+	GSC_MIxS_miscellaneous_natural_or_artificial_environment_organic_nitrogen_units = [('µg/L', 'µg/L')]
+	GSC_MIxS_miscellaneous_natural_or_artificial_environment_phosphate_units = [('µmol/L', 'µmol/L')]
 	GSC_MIxS_miscellaneous_natural_or_artificial_environment_phospholipid_fatty_acid_units = [('mol/L', 'mol/L'), ('mol/g', 'mol/g')]
 	GSC_MIxS_miscellaneous_natural_or_artificial_environment_potassium_units = [('parts/million', 'parts/million'), ('µmol/L', 'µmol/L')]
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_salinity_units = [('p', 'p'), ('s', 's'), ('u', 'u')]
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_silicate_units = [('µ', 'µ'), ('m', 'm'), ('o', 'o'), ('l', 'l'), ('/', '/'), ('L', 'L')]
+	GSC_MIxS_miscellaneous_natural_or_artificial_environment_salinity_units = [('psu', 'psu')]
+	GSC_MIxS_miscellaneous_natural_or_artificial_environment_silicate_units = [('µmol/L', 'µmol/L')]
 	GSC_MIxS_miscellaneous_natural_or_artificial_environment_sodium_units = [('parts/million', 'parts/million'), ('µmol/L', 'µmol/L')]
 	GSC_MIxS_miscellaneous_natural_or_artificial_environment_sulfate_units = [('mg/L', 'mg/L'), ('µmol/L', 'µmol/L')]
 	GSC_MIxS_miscellaneous_natural_or_artificial_environment_sulfide_units = [('mg/L', 'mg/L'), ('µmol/L', 'µmol/L')]
 
 	fields = {
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_sample_volume_or_weight_for_DNA_extraction_units': GSC_MIxS_miscellaneous_natural_or_artificial_environment_sample_volume_or_weight_for_DNA_extraction_units,
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_altitude_units': GSC_MIxS_miscellaneous_natural_or_artificial_environment_altitude_units,
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_geographic_location_latitude_units': GSC_MIxS_miscellaneous_natural_or_artificial_environment_geographic_location_latitude_units,
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_geographic_location_longitude_units': GSC_MIxS_miscellaneous_natural_or_artificial_environment_geographic_location_longitude_units,
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_depth_units': GSC_MIxS_miscellaneous_natural_or_artificial_environment_depth_units,
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_elevation_units': GSC_MIxS_miscellaneous_natural_or_artificial_environment_elevation_units,
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_amount_or_size_of_sample_collected_units': GSC_MIxS_miscellaneous_natural_or_artificial_environment_amount_or_size_of_sample_collected_units,
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_biomass_units': GSC_MIxS_miscellaneous_natural_or_artificial_environment_biomass_units,
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_density_units': GSC_MIxS_miscellaneous_natural_or_artificial_environment_density_units,
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_sample_storage_duration_units': GSC_MIxS_miscellaneous_natural_or_artificial_environment_sample_storage_duration_units,
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_sample_storage_temperature_units': GSC_MIxS_miscellaneous_natural_or_artificial_environment_sample_storage_temperature_units,
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_alkalinity_units': GSC_MIxS_miscellaneous_natural_or_artificial_environment_alkalinity_units,
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_water_current_units': GSC_MIxS_miscellaneous_natural_or_artificial_environment_water_current_units,
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_pressure_units': GSC_MIxS_miscellaneous_natural_or_artificial_environment_pressure_units,
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_temperature_units': GSC_MIxS_miscellaneous_natural_or_artificial_environment_temperature_units,
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_ammonium_units': GSC_MIxS_miscellaneous_natural_or_artificial_environment_ammonium_units,
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_bromide_units': GSC_MIxS_miscellaneous_natural_or_artificial_environment_bromide_units,
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_calcium_units': GSC_MIxS_miscellaneous_natural_or_artificial_environment_calcium_units,
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_chloride_units': GSC_MIxS_miscellaneous_natural_or_artificial_environment_chloride_units,
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_chlorophyll_units': GSC_MIxS_miscellaneous_natural_or_artificial_environment_chlorophyll_units,
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_diether_lipids_units': GSC_MIxS_miscellaneous_natural_or_artificial_environment_diether_lipids_units,
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_dissolved_carbon_dioxide_units': GSC_MIxS_miscellaneous_natural_or_artificial_environment_dissolved_carbon_dioxide_units,
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_dissolved_hydrogen_units': GSC_MIxS_miscellaneous_natural_or_artificial_environment_dissolved_hydrogen_units,
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_dissolved_inorganic_carbon_units': GSC_MIxS_miscellaneous_natural_or_artificial_environment_dissolved_inorganic_carbon_units,
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_dissolved_organic_nitrogen_units': GSC_MIxS_miscellaneous_natural_or_artificial_environment_dissolved_organic_nitrogen_units,
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_dissolved_oxygen_units': GSC_MIxS_miscellaneous_natural_or_artificial_environment_dissolved_oxygen_units,
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_nitrate_units': GSC_MIxS_miscellaneous_natural_or_artificial_environment_nitrate_units,
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_nitrite_units': GSC_MIxS_miscellaneous_natural_or_artificial_environment_nitrite_units,
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_nitrogen_units': GSC_MIxS_miscellaneous_natural_or_artificial_environment_nitrogen_units,
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_organic_carbon_units': GSC_MIxS_miscellaneous_natural_or_artificial_environment_organic_carbon_units,
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_organic_matter_units': GSC_MIxS_miscellaneous_natural_or_artificial_environment_organic_matter_units,
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_organic_nitrogen_units': GSC_MIxS_miscellaneous_natural_or_artificial_environment_organic_nitrogen_units,
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_phosphate_units': GSC_MIxS_miscellaneous_natural_or_artificial_environment_phosphate_units,
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_phospholipid_fatty_acid_units': GSC_MIxS_miscellaneous_natural_or_artificial_environment_phospholipid_fatty_acid_units,
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_potassium_units': GSC_MIxS_miscellaneous_natural_or_artificial_environment_potassium_units,
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_salinity_units': GSC_MIxS_miscellaneous_natural_or_artificial_environment_salinity_units,
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_silicate_units': GSC_MIxS_miscellaneous_natural_or_artificial_environment_silicate_units,
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_sodium_units': GSC_MIxS_miscellaneous_natural_or_artificial_environment_sodium_units,
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_sulfate_units': GSC_MIxS_miscellaneous_natural_or_artificial_environment_sulfate_units,
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_sulfide_units': GSC_MIxS_miscellaneous_natural_or_artificial_environment_sulfide_units,
+		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_sample_volume_or_weight_for_DNA_extraction': 'sample volume or weight for DNA extraction',
+		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_altitude': 'altitude',
+		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_geographic_location_latitude': 'geographic location (latitude)',
+		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_geographic_location_longitude': 'geographic location (longitude)',
+		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_depth': 'depth',
+		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_elevation': 'elevation',
+		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_amount_or_size_of_sample_collected': 'amount or size of sample collected',
+		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_biomass': 'biomass',
+		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_density': 'density',
+		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_sample_storage_duration': 'sample storage duration',
+		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_sample_storage_temperature': 'sample storage temperature',
+		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_alkalinity': 'alkalinity',
+		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_water_current': 'water current',
+		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_pressure': 'pressure',
+		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_temperature': 'temperature',
+		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_ammonium': 'ammonium',
+		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_bromide': 'bromide',
+		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_calcium': 'calcium',
+		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_chloride': 'chloride',
+		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_chlorophyll': 'chlorophyll',
+		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_diether_lipids': 'diether lipids',
+		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_dissolved_carbon_dioxide': 'dissolved carbon dioxide',
+		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_dissolved_hydrogen': 'dissolved hydrogen',
+		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_dissolved_inorganic_carbon': 'dissolved inorganic carbon',
+		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_dissolved_organic_nitrogen': 'dissolved organic nitrogen',
+		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_dissolved_oxygen': 'dissolved oxygen',
+		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_nitrate': 'nitrate',
+		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_nitrite': 'nitrite',
+		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_nitrogen': 'nitrogen',
+		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_organic_carbon': 'organic carbon',
+		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_organic_matter': 'organic matter',
+		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_organic_nitrogen': 'organic nitrogen',
+		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_phosphate': 'phosphate',
+		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_phospholipid_fatty_acid': 'phospholipid fatty acid',
+		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_potassium': 'potassium',
+		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_salinity': 'salinity',
+		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_silicate': 'silicate',
+		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_sodium': 'sodium',
+		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_sulfate': 'sulfate',
+		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_sulfide': 'sulfide',
 	}
 
-	sample = models.ForeignKey(Sample, on_delete=models.CASCADE)
 	order = models.ForeignKey(Order, on_delete=models.CASCADE, default=1)
 	GSC_MIxS_miscellaneous_natural_or_artificial_environment_sample_volume_or_weight_for_DNA_extraction = models.CharField(max_length=100, choices=GSC_MIxS_miscellaneous_natural_or_artificial_environment_sample_volume_or_weight_for_DNA_extraction_units, blank=False)
 	GSC_MIxS_miscellaneous_natural_or_artificial_environment_altitude = models.CharField(max_length=100, choices=GSC_MIxS_miscellaneous_natural_or_artificial_environment_altitude_units, blank=False)
@@ -1036,127 +1159,126 @@ class GSC_MIxS_human_skin(SelfDescribingModel):
 	GSC_MIxS_human_skin_perturbation= models.CharField(max_length=100, blank=True,help_text="type of pe")
 
 	fields = {
-		'GSC_MIxS_human_skin_project_name': GSC_MIxS_human_skin_project_name,
-		'GSC_MIxS_human_skin_experimental_factor': GSC_MIxS_human_skin_experimental_factor,
-		'GSC_MIxS_human_skin_ploidy': GSC_MIxS_human_skin_ploidy,
-		'GSC_MIxS_human_skin_number_of_replicons': GSC_MIxS_human_skin_number_of_replicons,
-		'GSC_MIxS_human_skin_extrachromosomal_elements': GSC_MIxS_human_skin_extrachromosomal_elements,
-		'GSC_MIxS_human_skin_estimated_size': GSC_MIxS_human_skin_estimated_size,
-		'GSC_MIxS_human_skin_reference_for_biomaterial': GSC_MIxS_human_skin_reference_for_biomaterial,
-		'GSC_MIxS_human_skin_annotation_source': GSC_MIxS_human_skin_annotation_source,
-		'GSC_MIxS_human_skin_sample_volume_or_weight_for_DNA_extraction': GSC_MIxS_human_skin_sample_volume_or_weight_for_DNA_extraction,
-		'GSC_MIxS_human_skin_nucleic_acid_extraction': GSC_MIxS_human_skin_nucleic_acid_extraction,
-		'GSC_MIxS_human_skin_nucleic_acid_amplification': GSC_MIxS_human_skin_nucleic_acid_amplification,
-		'GSC_MIxS_human_skin_library_size': GSC_MIxS_human_skin_library_size,
-		'GSC_MIxS_human_skin_library_reads_sequenced': GSC_MIxS_human_skin_library_reads_sequenced,
-		'GSC_MIxS_human_skin_library_construction_method': GSC_MIxS_human_skin_library_construction_method,
-		'GSC_MIxS_human_skin_library_vector': GSC_MIxS_human_skin_library_vector,
-		'GSC_MIxS_human_skin_library_screening_strategy': GSC_MIxS_human_skin_library_screening_strategy,
-		'GSC_MIxS_human_skin_target_gene': GSC_MIxS_human_skin_target_gene,
-		'GSC_MIxS_human_skin_target_subfragment': GSC_MIxS_human_skin_target_subfragment,
-		'GSC_MIxS_human_skin_pcr_primers': GSC_MIxS_human_skin_pcr_primers,
-		'GSC_MIxS_human_skin_multiplex_identifiers': GSC_MIxS_human_skin_multiplex_identifiers,
-		'GSC_MIxS_human_skin_adapters': GSC_MIxS_human_skin_adapters,
-		'GSC_MIxS_human_skin_pcr_conditions': GSC_MIxS_human_skin_pcr_conditions,
-		'GSC_MIxS_human_skin_sequencing_method': GSC_MIxS_human_skin_sequencing_method,
-		'GSC_MIxS_human_skin_sequence_quality_check': GSC_MIxS_human_skin_sequence_quality_check,
-		'GSC_MIxS_human_skin_chimera_check_software': GSC_MIxS_human_skin_chimera_check_software,
-		'GSC_MIxS_human_skin_relevant_electronic_resources': GSC_MIxS_human_skin_relevant_electronic_resources,
-		'GSC_MIxS_human_skin_relevant_standard_operating_procedures': GSC_MIxS_human_skin_relevant_standard_operating_procedures,
-		'GSC_MIxS_human_skin_negative_control_type': GSC_MIxS_human_skin_negative_control_type,
-		'GSC_MIxS_human_skin_positive_control_type': GSC_MIxS_human_skin_positive_control_type,
-		'GSC_MIxS_human_skin_collection_date': GSC_MIxS_human_skin_collection_date,
-		'GSC_MIxS_human_skin_geographic_location_country_and_or_sea': GSC_MIxS_human_skin_geographic_location_country_and_or_sea,
-		'GSC_MIxS_human_skin_geographic_location_latitude': GSC_MIxS_human_skin_geographic_location_latitude,
-		'GSC_MIxS_human_skin_geographic_location_longitude': GSC_MIxS_human_skin_geographic_location_longitude,
-		'GSC_MIxS_human_skin_geographic_location_region_and_locality': GSC_MIxS_human_skin_geographic_location_region_and_locality,
-		'GSC_MIxS_human_skin_broad_scale_environmental_context': GSC_MIxS_human_skin_broad_scale_environmental_context,
-		'GSC_MIxS_human_skin_local_environmental_context': GSC_MIxS_human_skin_local_environmental_context,
-		'GSC_MIxS_human_skin_environmental_medium': GSC_MIxS_human_skin_environmental_medium,
-		'GSC_MIxS_human_skin_source_material_identifiers': GSC_MIxS_human_skin_source_material_identifiers,
-		'GSC_MIxS_human_skin_sample_material_processing': GSC_MIxS_human_skin_sample_material_processing,
-		'GSC_MIxS_human_skin_isolation_and_growth_condition': GSC_MIxS_human_skin_isolation_and_growth_condition,
-		'GSC_MIxS_human_skin_propagation': GSC_MIxS_human_skin_propagation,
-		'GSC_MIxS_human_skin_amount_or_size_of_sample_collected': GSC_MIxS_human_skin_amount_or_size_of_sample_collected,
-		'GSC_MIxS_human_skin_host_body_product': GSC_MIxS_human_skin_host_body_product,
-		'GSC_MIxS_human_skin_medical_history_performed': GSC_MIxS_human_skin_medical_history_performed,
-		'GSC_MIxS_human_skin_oxygenation_status_of_sample': GSC_MIxS_human_skin_oxygenation_status_of_sample,
-		'GSC_MIxS_human_skin_organism_count': GSC_MIxS_human_skin_organism_count,
-		'GSC_MIxS_human_skin_sample_storage_duration': GSC_MIxS_human_skin_sample_storage_duration,
-		'GSC_MIxS_human_skin_sample_storage_temperature': GSC_MIxS_human_skin_sample_storage_temperature,
-		'GSC_MIxS_human_skin_sample_storage_location': GSC_MIxS_human_skin_sample_storage_location,
-		'GSC_MIxS_human_skin_sample_collection_device': GSC_MIxS_human_skin_sample_collection_device,
-		'GSC_MIxS_human_skin_sample_collection_method': GSC_MIxS_human_skin_sample_collection_method,
-		'GSC_MIxS_human_skin_dermatology_disorder': GSC_MIxS_human_skin_dermatology_disorder,
-		'GSC_MIxS_human_skin_host_disease_status': GSC_MIxS_human_skin_host_disease_status,
-		'GSC_MIxS_human_skin_host_subject_id': GSC_MIxS_human_skin_host_subject_id,
-		'GSC_MIxS_human_skin_IHMC_medication_code': GSC_MIxS_human_skin_IHMC_medication_code,
-		'GSC_MIxS_human_skin_host_age': GSC_MIxS_human_skin_host_age,
-		'GSC_MIxS_human_skin_host_body_site': GSC_MIxS_human_skin_host_body_site,
-		'GSC_MIxS_human_skin_host_height': GSC_MIxS_human_skin_host_height,
-		'GSC_MIxS_human_skin_host_body_mass_index': GSC_MIxS_human_skin_host_body_mass_index,
-		'GSC_MIxS_human_skin_ethnicity': GSC_MIxS_human_skin_ethnicity,
-		'GSC_MIxS_human_skin_host_occupation': GSC_MIxS_human_skin_host_occupation,
-		'GSC_MIxS_human_skin_host_total_mass': GSC_MIxS_human_skin_host_total_mass,
-		'GSC_MIxS_human_skin_host_phenotype': GSC_MIxS_human_skin_host_phenotype,
-		'GSC_MIxS_human_skin_host_body_temperature': GSC_MIxS_human_skin_host_body_temperature,
-		'GSC_MIxS_human_skin_host_sex': GSC_MIxS_human_skin_host_sex,
-		'GSC_MIxS_human_skin_temperature': GSC_MIxS_human_skin_temperature,
-		'GSC_MIxS_human_skin_salinity': GSC_MIxS_human_skin_salinity,
-		'GSC_MIxS_human_skin_time_since_last_wash': GSC_MIxS_human_skin_time_since_last_wash,
-		'GSC_MIxS_human_skin_dominant_hand': GSC_MIxS_human_skin_dominant_hand,
-		'GSC_MIxS_human_skin_host_diet': GSC_MIxS_human_skin_host_diet,
-		'GSC_MIxS_human_skin_host_last_meal': GSC_MIxS_human_skin_host_last_meal,
-		'GSC_MIxS_human_skin_host_family_relationship': GSC_MIxS_human_skin_host_family_relationship,
-		'GSC_MIxS_human_skin_host_genotype': GSC_MIxS_human_skin_host_genotype,
-		'GSC_MIxS_human_skin_host_pulse': GSC_MIxS_human_skin_host_pulse,
-		'GSC_MIxS_human_skin_subspecific_genetic_lineage': GSC_MIxS_human_skin_subspecific_genetic_lineage,
-		'GSC_MIxS_human_skin_trophic_level': GSC_MIxS_human_skin_trophic_level,
-		'GSC_MIxS_human_skin_relationship_to_oxygen': GSC_MIxS_human_skin_relationship_to_oxygen,
-		'GSC_MIxS_human_skin_known_pathogenicity': GSC_MIxS_human_skin_known_pathogenicity,
-		'GSC_MIxS_human_skin_encoded_traits': GSC_MIxS_human_skin_encoded_traits,
-		'GSC_MIxS_human_skin_observed_biotic_relationship': GSC_MIxS_human_skin_observed_biotic_relationship,
-		'GSC_MIxS_human_skin_chemical_administration': GSC_MIxS_human_skin_chemical_administration,
-		'GSC_MIxS_human_skin_perturbation': GSC_MIxS_human_skin_perturbation,
+		'GSC_MIxS_human_skin_project_name': 'project name',
+		'GSC_MIxS_human_skin_experimental_factor': 'experimental factor',
+		'GSC_MIxS_human_skin_ploidy': 'ploidy',
+		'GSC_MIxS_human_skin_number_of_replicons': 'number of replicons',
+		'GSC_MIxS_human_skin_extrachromosomal_elements': 'extrachromosomal elements',
+		'GSC_MIxS_human_skin_estimated_size': 'estimated size',
+		'GSC_MIxS_human_skin_reference_for_biomaterial': 'reference for biomaterial',
+		'GSC_MIxS_human_skin_annotation_source': 'annotation source',
+		'GSC_MIxS_human_skin_sample_volume_or_weight_for_DNA_extraction': 'sample volume or weight for DNA extraction',
+		'GSC_MIxS_human_skin_nucleic_acid_extraction': 'nucleic acid extraction',
+		'GSC_MIxS_human_skin_nucleic_acid_amplification': 'nucleic acid amplification',
+		'GSC_MIxS_human_skin_library_size': 'library size',
+		'GSC_MIxS_human_skin_library_reads_sequenced': 'library reads sequenced',
+		'GSC_MIxS_human_skin_library_construction_method': 'library construction method',
+		'GSC_MIxS_human_skin_library_vector': 'library vector',
+		'GSC_MIxS_human_skin_library_screening_strategy': 'library screening strategy',
+		'GSC_MIxS_human_skin_target_gene': 'target gene',
+		'GSC_MIxS_human_skin_target_subfragment': 'target subfragment',
+		'GSC_MIxS_human_skin_pcr_primers': 'pcr primers',
+		'GSC_MIxS_human_skin_multiplex_identifiers': 'multiplex identifiers',
+		'GSC_MIxS_human_skin_adapters': 'adapters',
+		'GSC_MIxS_human_skin_pcr_conditions': 'pcr conditions',
+		'GSC_MIxS_human_skin_sequencing_method': 'sequencing method',
+		'GSC_MIxS_human_skin_sequence_quality_check': 'sequence quality check',
+		'GSC_MIxS_human_skin_chimera_check_software': 'chimera check software',
+		'GSC_MIxS_human_skin_relevant_electronic_resources': 'relevant electronic resources',
+		'GSC_MIxS_human_skin_relevant_standard_operating_procedures': 'relevant standard operating procedures',
+		'GSC_MIxS_human_skin_negative_control_type': 'negative control type',
+		'GSC_MIxS_human_skin_positive_control_type': 'positive control type',
+		'GSC_MIxS_human_skin_collection_date': 'collection date',
+		'GSC_MIxS_human_skin_geographic_location_country_and_or_sea': 'geographic location (country and/or sea)',
+		'GSC_MIxS_human_skin_geographic_location_latitude': 'geographic location (latitude)',
+		'GSC_MIxS_human_skin_geographic_location_longitude': 'geographic location (longitude)',
+		'GSC_MIxS_human_skin_geographic_location_region_and_locality': 'geographic location (region and locality)',
+		'GSC_MIxS_human_skin_broad_scale_environmental_context': 'broad-scale environmental context',
+		'GSC_MIxS_human_skin_local_environmental_context': 'local environmental context',
+		'GSC_MIxS_human_skin_environmental_medium': 'environmental medium',
+		'GSC_MIxS_human_skin_source_material_identifiers': 'source material identifiers',
+		'GSC_MIxS_human_skin_sample_material_processing': 'sample material processing',
+		'GSC_MIxS_human_skin_isolation_and_growth_condition': 'isolation and growth condition',
+		'GSC_MIxS_human_skin_propagation': 'propagation',
+		'GSC_MIxS_human_skin_amount_or_size_of_sample_collected': 'amount or size of sample collected',
+		'GSC_MIxS_human_skin_host_body_product': 'host body product',
+		'GSC_MIxS_human_skin_medical_history_performed': 'medical history performed',
+		'GSC_MIxS_human_skin_oxygenation_status_of_sample': 'oxygenation status of sample',
+		'GSC_MIxS_human_skin_organism_count': 'organism count',
+		'GSC_MIxS_human_skin_sample_storage_duration': 'sample storage duration',
+		'GSC_MIxS_human_skin_sample_storage_temperature': 'sample storage temperature',
+		'GSC_MIxS_human_skin_sample_storage_location': 'sample storage location',
+		'GSC_MIxS_human_skin_sample_collection_device': 'sample collection device',
+		'GSC_MIxS_human_skin_sample_collection_method': 'sample collection method',
+		'GSC_MIxS_human_skin_dermatology_disorder': 'dermatology disorder',
+		'GSC_MIxS_human_skin_host_disease_status': 'host disease status',
+		'GSC_MIxS_human_skin_host_subject_id': 'host subject id',
+		'GSC_MIxS_human_skin_IHMC_medication_code': 'IHMC medication code',
+		'GSC_MIxS_human_skin_host_age': 'host age',
+		'GSC_MIxS_human_skin_host_body_site': 'host body site',
+		'GSC_MIxS_human_skin_host_height': 'host height',
+		'GSC_MIxS_human_skin_host_body_mass_index': 'host body-mass index',
+		'GSC_MIxS_human_skin_ethnicity': 'ethnicity',
+		'GSC_MIxS_human_skin_host_occupation': 'host occupation',
+		'GSC_MIxS_human_skin_host_total_mass': 'host total mass',
+		'GSC_MIxS_human_skin_host_phenotype': 'host phenotype',
+		'GSC_MIxS_human_skin_host_body_temperature': 'host body temperature',
+		'GSC_MIxS_human_skin_host_sex': 'host sex',
+		'GSC_MIxS_human_skin_temperature': 'temperature',
+		'GSC_MIxS_human_skin_salinity': 'salinity',
+		'GSC_MIxS_human_skin_time_since_last_wash': 'time since last wash',
+		'GSC_MIxS_human_skin_dominant_hand': 'dominant hand',
+		'GSC_MIxS_human_skin_host_diet': 'host diet',
+		'GSC_MIxS_human_skin_host_last_meal': 'host last meal',
+		'GSC_MIxS_human_skin_host_family_relationship': 'host family relationship',
+		'GSC_MIxS_human_skin_host_genotype': 'host genotype',
+		'GSC_MIxS_human_skin_host_pulse': 'host pulse',
+		'GSC_MIxS_human_skin_subspecific_genetic_lineage': 'subspecific genetic lineage',
+		'GSC_MIxS_human_skin_trophic_level': 'trophic level',
+		'GSC_MIxS_human_skin_relationship_to_oxygen': 'relationship to oxygen',
+		'GSC_MIxS_human_skin_known_pathogenicity': 'known pathogenicity',
+		'GSC_MIxS_human_skin_encoded_traits': 'encoded traits',
+		'GSC_MIxS_human_skin_observed_biotic_relationship': 'observed biotic relationship',
+		'GSC_MIxS_human_skin_chemical_administration': 'chemical administration',
+		'GSC_MIxS_human_skin_perturbation': 'perturbation',
 	}
 
-class GSC_MIxS_human_skin_unit(SelfDescribingModel):
+class GSC_MIxS_human_skin_unit(SelfDescribingUnitModel):
 
 	GSC_MIxS_human_skin_sample_volume_or_weight_for_DNA_extraction_units = [('g', 'g'), ('mL', 'mL'), ('mg', 'mg'), ('ng', 'ng')]
-	GSC_MIxS_human_skin_geographic_location_latitude_units = [('D', 'D'), ('D', 'D')]
-	GSC_MIxS_human_skin_geographic_location_longitude_units = [('D', 'D'), ('D', 'D')]
+	GSC_MIxS_human_skin_geographic_location_latitude_units = [('DD', 'DD')]
+	GSC_MIxS_human_skin_geographic_location_longitude_units = [('DD', 'DD')]
 	GSC_MIxS_human_skin_amount_or_size_of_sample_collected_units = [('L', 'L'), ('g', 'g'), ('kg', 'kg'), ('m2', 'm2'), ('m3', 'm3')]
 	GSC_MIxS_human_skin_sample_storage_duration_units = [('days', 'days'), ('hours', 'hours'), ('months', 'months'), ('weeks', 'weeks'), ('years', 'years')]
-	GSC_MIxS_human_skin_sample_storage_temperature_units = [('°', '°'), ('C', 'C')]
+	GSC_MIxS_human_skin_sample_storage_temperature_units = [('°C', '°C')]
 	GSC_MIxS_human_skin_host_age_units = [('centuries', 'centuries'), ('days', 'days'), ('decades', 'decades'), ('hours', 'hours'), ('minutes', 'minutes'), ('months', 'months'), ('seconds', 'seconds'), ('weeks', 'weeks'), ('years', 'years')]
 	GSC_MIxS_human_skin_host_height_units = [('cm', 'cm'), ('m', 'm'), ('mm', 'mm')]
-	GSC_MIxS_human_skin_host_body_mass_index_units = [('k', 'k'), ('g', 'g'), ('/', '/'), ('m', 'm'), ('2', '2')]
+	GSC_MIxS_human_skin_host_body_mass_index_units = [('kg/m2', 'kg/m2')]
 	GSC_MIxS_human_skin_host_total_mass_units = [('g', 'g'), ('kg', 'kg')]
-	GSC_MIxS_human_skin_host_body_temperature_units = [('º', 'º'), ('C', 'C')]
-	GSC_MIxS_human_skin_temperature_units = [('º', 'º'), ('C', 'C')]
-	GSC_MIxS_human_skin_salinity_units = [('p', 'p'), ('s', 's'), ('u', 'u')]
+	GSC_MIxS_human_skin_host_body_temperature_units = [('ºC', 'ºC')]
+	GSC_MIxS_human_skin_temperature_units = [('ºC', 'ºC')]
+	GSC_MIxS_human_skin_salinity_units = [('psu', 'psu')]
 	GSC_MIxS_human_skin_time_since_last_wash_units = [('hours', 'hours'), ('minutes', 'minutes')]
-	GSC_MIxS_human_skin_host_pulse_units = [('b', 'b'), ('p', 'p'), ('m', 'm')]
+	GSC_MIxS_human_skin_host_pulse_units = [('bpm', 'bpm')]
 
 	fields = {
-		'GSC_MIxS_human_skin_sample_volume_or_weight_for_DNA_extraction_units': GSC_MIxS_human_skin_sample_volume_or_weight_for_DNA_extraction_units,
-		'GSC_MIxS_human_skin_geographic_location_latitude_units': GSC_MIxS_human_skin_geographic_location_latitude_units,
-		'GSC_MIxS_human_skin_geographic_location_longitude_units': GSC_MIxS_human_skin_geographic_location_longitude_units,
-		'GSC_MIxS_human_skin_amount_or_size_of_sample_collected_units': GSC_MIxS_human_skin_amount_or_size_of_sample_collected_units,
-		'GSC_MIxS_human_skin_sample_storage_duration_units': GSC_MIxS_human_skin_sample_storage_duration_units,
-		'GSC_MIxS_human_skin_sample_storage_temperature_units': GSC_MIxS_human_skin_sample_storage_temperature_units,
-		'GSC_MIxS_human_skin_host_age_units': GSC_MIxS_human_skin_host_age_units,
-		'GSC_MIxS_human_skin_host_height_units': GSC_MIxS_human_skin_host_height_units,
-		'GSC_MIxS_human_skin_host_body_mass_index_units': GSC_MIxS_human_skin_host_body_mass_index_units,
-		'GSC_MIxS_human_skin_host_total_mass_units': GSC_MIxS_human_skin_host_total_mass_units,
-		'GSC_MIxS_human_skin_host_body_temperature_units': GSC_MIxS_human_skin_host_body_temperature_units,
-		'GSC_MIxS_human_skin_temperature_units': GSC_MIxS_human_skin_temperature_units,
-		'GSC_MIxS_human_skin_salinity_units': GSC_MIxS_human_skin_salinity_units,
-		'GSC_MIxS_human_skin_time_since_last_wash_units': GSC_MIxS_human_skin_time_since_last_wash_units,
-		'GSC_MIxS_human_skin_host_pulse_units': GSC_MIxS_human_skin_host_pulse_units,
+		'GSC_MIxS_human_skin_sample_volume_or_weight_for_DNA_extraction': 'sample volume or weight for DNA extraction',
+		'GSC_MIxS_human_skin_geographic_location_latitude': 'geographic location (latitude)',
+		'GSC_MIxS_human_skin_geographic_location_longitude': 'geographic location (longitude)',
+		'GSC_MIxS_human_skin_amount_or_size_of_sample_collected': 'amount or size of sample collected',
+		'GSC_MIxS_human_skin_sample_storage_duration': 'sample storage duration',
+		'GSC_MIxS_human_skin_sample_storage_temperature': 'sample storage temperature',
+		'GSC_MIxS_human_skin_host_age': 'host age',
+		'GSC_MIxS_human_skin_host_height': 'host height',
+		'GSC_MIxS_human_skin_host_body_mass_index': 'host body-mass index',
+		'GSC_MIxS_human_skin_host_total_mass': 'host total mass',
+		'GSC_MIxS_human_skin_host_body_temperature': 'host body temperature',
+		'GSC_MIxS_human_skin_temperature': 'temperature',
+		'GSC_MIxS_human_skin_salinity': 'salinity',
+		'GSC_MIxS_human_skin_time_since_last_wash': 'time since last wash',
+		'GSC_MIxS_human_skin_host_pulse': 'host pulse',
 	}
 
-	sample = models.ForeignKey(Sample, on_delete=models.CASCADE)
 	order = models.ForeignKey(Order, on_delete=models.CASCADE, default=1)
 	GSC_MIxS_human_skin_sample_volume_or_weight_for_DNA_extraction = models.CharField(max_length=100, choices=GSC_MIxS_human_skin_sample_volume_or_weight_for_DNA_extraction_units, blank=False)
 	GSC_MIxS_human_skin_geographic_location_latitude = models.CharField(max_length=100, choices=GSC_MIxS_human_skin_geographic_location_latitude_units, blank=False)
@@ -1215,45 +1337,44 @@ class ENA_default_sample_checklist(SelfDescribingModel):
 	ENA_default_sample_checklist_strain= models.CharField(max_length=100, blank=True,help_text="Name of th")
 
 	fields = {
-		'ENA_default_sample_checklist_cell_type': ENA_default_sample_checklist_cell_type,
-		'ENA_default_sample_checklist_dev_stage': ENA_default_sample_checklist_dev_stage,
-		'ENA_default_sample_checklist_germline': ENA_default_sample_checklist_germline,
-		'ENA_default_sample_checklist_tissue_lib': ENA_default_sample_checklist_tissue_lib,
-		'ENA_default_sample_checklist_tissue_type': ENA_default_sample_checklist_tissue_type,
-		'ENA_default_sample_checklist_isolation_source': ENA_default_sample_checklist_isolation_source,
-		'ENA_default_sample_checklist_lat_lon': ENA_default_sample_checklist_lat_lon,
-		'ENA_default_sample_checklist_collected_by': ENA_default_sample_checklist_collected_by,
-		'ENA_default_sample_checklist_collection_date': ENA_default_sample_checklist_collection_date,
-		'ENA_default_sample_checklist_geographic_location_country_and_or_sea': ENA_default_sample_checklist_geographic_location_country_and_or_sea,
-		'ENA_default_sample_checklist_geographic_location_region_and_locality': ENA_default_sample_checklist_geographic_location_region_and_locality,
-		'ENA_default_sample_checklist_identified_by': ENA_default_sample_checklist_identified_by,
-		'ENA_default_sample_checklist_environmental_sample': ENA_default_sample_checklist_environmental_sample,
-		'ENA_default_sample_checklist_mating_type': ENA_default_sample_checklist_mating_type,
-		'ENA_default_sample_checklist_sex': ENA_default_sample_checklist_sex,
-		'ENA_default_sample_checklist_lab_host': ENA_default_sample_checklist_lab_host,
-		'ENA_default_sample_checklist_host_scientific_name': ENA_default_sample_checklist_host_scientific_name,
-		'ENA_default_sample_checklist_bio_material': ENA_default_sample_checklist_bio_material,
-		'ENA_default_sample_checklist_culture_collection': ENA_default_sample_checklist_culture_collection,
-		'ENA_default_sample_checklist_specimen_voucher': ENA_default_sample_checklist_specimen_voucher,
-		'ENA_default_sample_checklist_cultivar': ENA_default_sample_checklist_cultivar,
-		'ENA_default_sample_checklist_ecotype': ENA_default_sample_checklist_ecotype,
-		'ENA_default_sample_checklist_isolate': ENA_default_sample_checklist_isolate,
-		'ENA_default_sample_checklist_sub_species': ENA_default_sample_checklist_sub_species,
-		'ENA_default_sample_checklist_variety': ENA_default_sample_checklist_variety,
-		'ENA_default_sample_checklist_sub_strain': ENA_default_sample_checklist_sub_strain,
-		'ENA_default_sample_checklist_cell_line': ENA_default_sample_checklist_cell_line,
-		'ENA_default_sample_checklist_serotype': ENA_default_sample_checklist_serotype,
-		'ENA_default_sample_checklist_serovar': ENA_default_sample_checklist_serovar,
-		'ENA_default_sample_checklist_strain': ENA_default_sample_checklist_strain,
+		'ENA_default_sample_checklist_cell_type': 'cell_type',
+		'ENA_default_sample_checklist_dev_stage': 'dev_stage',
+		'ENA_default_sample_checklist_germline': 'germline',
+		'ENA_default_sample_checklist_tissue_lib': 'tissue_lib',
+		'ENA_default_sample_checklist_tissue_type': 'tissue_type',
+		'ENA_default_sample_checklist_isolation_source': 'isolation_source',
+		'ENA_default_sample_checklist_lat_lon': 'lat_lon',
+		'ENA_default_sample_checklist_collected_by': 'collected_by',
+		'ENA_default_sample_checklist_collection_date': 'collection date',
+		'ENA_default_sample_checklist_geographic_location_country_and_or_sea': 'geographic location (country and/or sea)',
+		'ENA_default_sample_checklist_geographic_location_region_and_locality': 'geographic location (region and locality)',
+		'ENA_default_sample_checklist_identified_by': 'identified_by',
+		'ENA_default_sample_checklist_environmental_sample': 'environmental_sample',
+		'ENA_default_sample_checklist_mating_type': 'mating_type',
+		'ENA_default_sample_checklist_sex': 'sex',
+		'ENA_default_sample_checklist_lab_host': 'lab_host',
+		'ENA_default_sample_checklist_host_scientific_name': 'host scientific name',
+		'ENA_default_sample_checklist_bio_material': 'bio_material',
+		'ENA_default_sample_checklist_culture_collection': 'culture_collection',
+		'ENA_default_sample_checklist_specimen_voucher': 'specimen_voucher',
+		'ENA_default_sample_checklist_cultivar': 'cultivar',
+		'ENA_default_sample_checklist_ecotype': 'ecotype',
+		'ENA_default_sample_checklist_isolate': 'isolate',
+		'ENA_default_sample_checklist_sub_species': 'sub_species',
+		'ENA_default_sample_checklist_variety': 'variety',
+		'ENA_default_sample_checklist_sub_strain': 'sub_strain',
+		'ENA_default_sample_checklist_cell_line': 'cell_line',
+		'ENA_default_sample_checklist_serotype': 'serotype',
+		'ENA_default_sample_checklist_serovar': 'serovar',
+		'ENA_default_sample_checklist_strain': 'strain',
 	}
 
-class ENA_default_sample_checklist_unit(SelfDescribingModel):
+class ENA_default_sample_checklist_unit(SelfDescribingUnitModel):
 
 
 	fields = {
 	}
 
-	sample = models.ForeignKey(Sample, on_delete=models.CASCADE)
 	order = models.ForeignKey(Order, on_delete=models.CASCADE, default=1)
 
 class GSC_MIxS_plant_associated(SelfDescribingModel):
@@ -1396,151 +1517,150 @@ class GSC_MIxS_plant_associated(SelfDescribingModel):
 	GSC_MIxS_plant_associated_perturbation= models.CharField(max_length=100, blank=True,help_text="type of pe")
 
 	fields = {
-		'GSC_MIxS_plant_associated_project_name': GSC_MIxS_plant_associated_project_name,
-		'GSC_MIxS_plant_associated_experimental_factor': GSC_MIxS_plant_associated_experimental_factor,
-		'GSC_MIxS_plant_associated_ploidy': GSC_MIxS_plant_associated_ploidy,
-		'GSC_MIxS_plant_associated_number_of_replicons': GSC_MIxS_plant_associated_number_of_replicons,
-		'GSC_MIxS_plant_associated_extrachromosomal_elements': GSC_MIxS_plant_associated_extrachromosomal_elements,
-		'GSC_MIxS_plant_associated_estimated_size': GSC_MIxS_plant_associated_estimated_size,
-		'GSC_MIxS_plant_associated_reference_for_biomaterial': GSC_MIxS_plant_associated_reference_for_biomaterial,
-		'GSC_MIxS_plant_associated_annotation_source': GSC_MIxS_plant_associated_annotation_source,
-		'GSC_MIxS_plant_associated_sample_volume_or_weight_for_DNA_extraction': GSC_MIxS_plant_associated_sample_volume_or_weight_for_DNA_extraction,
-		'GSC_MIxS_plant_associated_nucleic_acid_extraction': GSC_MIxS_plant_associated_nucleic_acid_extraction,
-		'GSC_MIxS_plant_associated_nucleic_acid_amplification': GSC_MIxS_plant_associated_nucleic_acid_amplification,
-		'GSC_MIxS_plant_associated_library_size': GSC_MIxS_plant_associated_library_size,
-		'GSC_MIxS_plant_associated_library_reads_sequenced': GSC_MIxS_plant_associated_library_reads_sequenced,
-		'GSC_MIxS_plant_associated_library_construction_method': GSC_MIxS_plant_associated_library_construction_method,
-		'GSC_MIxS_plant_associated_library_vector': GSC_MIxS_plant_associated_library_vector,
-		'GSC_MIxS_plant_associated_library_screening_strategy': GSC_MIxS_plant_associated_library_screening_strategy,
-		'GSC_MIxS_plant_associated_target_gene': GSC_MIxS_plant_associated_target_gene,
-		'GSC_MIxS_plant_associated_target_subfragment': GSC_MIxS_plant_associated_target_subfragment,
-		'GSC_MIxS_plant_associated_pcr_primers': GSC_MIxS_plant_associated_pcr_primers,
-		'GSC_MIxS_plant_associated_multiplex_identifiers': GSC_MIxS_plant_associated_multiplex_identifiers,
-		'GSC_MIxS_plant_associated_adapters': GSC_MIxS_plant_associated_adapters,
-		'GSC_MIxS_plant_associated_pcr_conditions': GSC_MIxS_plant_associated_pcr_conditions,
-		'GSC_MIxS_plant_associated_sequencing_method': GSC_MIxS_plant_associated_sequencing_method,
-		'GSC_MIxS_plant_associated_sequence_quality_check': GSC_MIxS_plant_associated_sequence_quality_check,
-		'GSC_MIxS_plant_associated_chimera_check_software': GSC_MIxS_plant_associated_chimera_check_software,
-		'GSC_MIxS_plant_associated_relevant_electronic_resources': GSC_MIxS_plant_associated_relevant_electronic_resources,
-		'GSC_MIxS_plant_associated_relevant_standard_operating_procedures': GSC_MIxS_plant_associated_relevant_standard_operating_procedures,
-		'GSC_MIxS_plant_associated_negative_control_type': GSC_MIxS_plant_associated_negative_control_type,
-		'GSC_MIxS_plant_associated_positive_control_type': GSC_MIxS_plant_associated_positive_control_type,
-		'GSC_MIxS_plant_associated_collection_date': GSC_MIxS_plant_associated_collection_date,
-		'GSC_MIxS_plant_associated_altitude': GSC_MIxS_plant_associated_altitude,
-		'GSC_MIxS_plant_associated_geographic_location_country_and_or_sea': GSC_MIxS_plant_associated_geographic_location_country_and_or_sea,
-		'GSC_MIxS_plant_associated_geographic_location_latitude': GSC_MIxS_plant_associated_geographic_location_latitude,
-		'GSC_MIxS_plant_associated_geographic_location_longitude': GSC_MIxS_plant_associated_geographic_location_longitude,
-		'GSC_MIxS_plant_associated_geographic_location_region_and_locality': GSC_MIxS_plant_associated_geographic_location_region_and_locality,
-		'GSC_MIxS_plant_associated_depth': GSC_MIxS_plant_associated_depth,
-		'GSC_MIxS_plant_associated_broad_scale_environmental_context': GSC_MIxS_plant_associated_broad_scale_environmental_context,
-		'GSC_MIxS_plant_associated_local_environmental_context': GSC_MIxS_plant_associated_local_environmental_context,
-		'GSC_MIxS_plant_associated_environmental_medium': GSC_MIxS_plant_associated_environmental_medium,
-		'GSC_MIxS_plant_associated_elevation': GSC_MIxS_plant_associated_elevation,
-		'GSC_MIxS_plant_associated_source_material_identifiers': GSC_MIxS_plant_associated_source_material_identifiers,
-		'GSC_MIxS_plant_associated_sample_material_processing': GSC_MIxS_plant_associated_sample_material_processing,
-		'GSC_MIxS_plant_associated_isolation_and_growth_condition': GSC_MIxS_plant_associated_isolation_and_growth_condition,
-		'GSC_MIxS_plant_associated_propagation': GSC_MIxS_plant_associated_propagation,
-		'GSC_MIxS_plant_associated_amount_or_size_of_sample_collected': GSC_MIxS_plant_associated_amount_or_size_of_sample_collected,
-		'GSC_MIxS_plant_associated_host_dry_mass': GSC_MIxS_plant_associated_host_dry_mass,
-		'GSC_MIxS_plant_associated_oxygenation_status_of_sample': GSC_MIxS_plant_associated_oxygenation_status_of_sample,
-		'GSC_MIxS_plant_associated_plant_product': GSC_MIxS_plant_associated_plant_product,
-		'GSC_MIxS_plant_associated_organism_count': GSC_MIxS_plant_associated_organism_count,
-		'GSC_MIxS_plant_associated_sample_storage_duration': GSC_MIxS_plant_associated_sample_storage_duration,
-		'GSC_MIxS_plant_associated_sample_storage_temperature': GSC_MIxS_plant_associated_sample_storage_temperature,
-		'GSC_MIxS_plant_associated_host_wet_mass': GSC_MIxS_plant_associated_host_wet_mass,
-		'GSC_MIxS_plant_associated_sample_storage_location': GSC_MIxS_plant_associated_sample_storage_location,
-		'GSC_MIxS_plant_associated_sample_collection_device': GSC_MIxS_plant_associated_sample_collection_device,
-		'GSC_MIxS_plant_associated_sample_collection_method': GSC_MIxS_plant_associated_sample_collection_method,
-		'GSC_MIxS_plant_associated_host_disease_status': GSC_MIxS_plant_associated_host_disease_status,
-		'GSC_MIxS_plant_associated_host_common_name': GSC_MIxS_plant_associated_host_common_name,
-		'GSC_MIxS_plant_associated_host_age': GSC_MIxS_plant_associated_host_age,
-		'GSC_MIxS_plant_associated_host_taxid': GSC_MIxS_plant_associated_host_taxid,
-		'GSC_MIxS_plant_associated_host_life_stage': GSC_MIxS_plant_associated_host_life_stage,
-		'GSC_MIxS_plant_associated_host_height': GSC_MIxS_plant_associated_host_height,
-		'GSC_MIxS_plant_associated_host_length': GSC_MIxS_plant_associated_host_length,
-		'GSC_MIxS_plant_associated_plant_body_site': GSC_MIxS_plant_associated_plant_body_site,
-		'GSC_MIxS_plant_associated_host_total_mass': GSC_MIxS_plant_associated_host_total_mass,
-		'GSC_MIxS_plant_associated_host_phenotype': GSC_MIxS_plant_associated_host_phenotype,
-		'GSC_MIxS_plant_associated_host_subspecific_genetic_lineage': GSC_MIxS_plant_associated_host_subspecific_genetic_lineage,
-		'GSC_MIxS_plant_associated_climate_environment': GSC_MIxS_plant_associated_climate_environment,
-		'GSC_MIxS_plant_associated_gaseous_environment': GSC_MIxS_plant_associated_gaseous_environment,
-		'GSC_MIxS_plant_associated_seasonal_environment': GSC_MIxS_plant_associated_seasonal_environment,
-		'GSC_MIxS_plant_associated_temperature': GSC_MIxS_plant_associated_temperature,
-		'GSC_MIxS_plant_associated_salinity': GSC_MIxS_plant_associated_salinity,
-		'GSC_MIxS_plant_associated_host_genotype': GSC_MIxS_plant_associated_host_genotype,
-		'GSC_MIxS_plant_associated_subspecific_genetic_lineage': GSC_MIxS_plant_associated_subspecific_genetic_lineage,
-		'GSC_MIxS_plant_associated_trophic_level': GSC_MIxS_plant_associated_trophic_level,
-		'GSC_MIxS_plant_associated_relationship_to_oxygen': GSC_MIxS_plant_associated_relationship_to_oxygen,
-		'GSC_MIxS_plant_associated_known_pathogenicity': GSC_MIxS_plant_associated_known_pathogenicity,
-		'GSC_MIxS_plant_associated_encoded_traits': GSC_MIxS_plant_associated_encoded_traits,
-		'GSC_MIxS_plant_associated_observed_biotic_relationship': GSC_MIxS_plant_associated_observed_biotic_relationship,
-		'GSC_MIxS_plant_associated_air_temperature_regimen': GSC_MIxS_plant_associated_air_temperature_regimen,
-		'GSC_MIxS_plant_associated_antibiotic_regimen': GSC_MIxS_plant_associated_antibiotic_regimen,
-		'GSC_MIxS_plant_associated_chemical_mutagen': GSC_MIxS_plant_associated_chemical_mutagen,
-		'GSC_MIxS_plant_associated_fertilizer_regimen': GSC_MIxS_plant_associated_fertilizer_regimen,
-		'GSC_MIxS_plant_associated_fungicide_regimen': GSC_MIxS_plant_associated_fungicide_regimen,
-		'GSC_MIxS_plant_associated_gravity': GSC_MIxS_plant_associated_gravity,
-		'GSC_MIxS_plant_associated_growth_hormone_regimen': GSC_MIxS_plant_associated_growth_hormone_regimen,
-		'GSC_MIxS_plant_associated_growth_media': GSC_MIxS_plant_associated_growth_media,
-		'GSC_MIxS_plant_associated_herbicide_regimen': GSC_MIxS_plant_associated_herbicide_regimen,
-		'GSC_MIxS_plant_associated_humidity_regimen': GSC_MIxS_plant_associated_humidity_regimen,
-		'GSC_MIxS_plant_associated_mineral_nutrient_regimen': GSC_MIxS_plant_associated_mineral_nutrient_regimen,
-		'GSC_MIxS_plant_associated_non_mineral_nutrient_regimen': GSC_MIxS_plant_associated_non_mineral_nutrient_regimen,
-		'GSC_MIxS_plant_associated_pesticide_regimen': GSC_MIxS_plant_associated_pesticide_regimen,
-		'GSC_MIxS_plant_associated_pH_regimen': GSC_MIxS_plant_associated_pH_regimen,
-		'GSC_MIxS_plant_associated_radiation_regimen': GSC_MIxS_plant_associated_radiation_regimen,
-		'GSC_MIxS_plant_associated_rainfall_regimen': GSC_MIxS_plant_associated_rainfall_regimen,
-		'GSC_MIxS_plant_associated_salt_regimen': GSC_MIxS_plant_associated_salt_regimen,
-		'GSC_MIxS_plant_associated_standing_water_regimen': GSC_MIxS_plant_associated_standing_water_regimen,
-		'GSC_MIxS_plant_associated_tissue_culture_growth_media': GSC_MIxS_plant_associated_tissue_culture_growth_media,
-		'GSC_MIxS_plant_associated_watering_regimen': GSC_MIxS_plant_associated_watering_regimen,
-		'GSC_MIxS_plant_associated_water_temperature_regimen': GSC_MIxS_plant_associated_water_temperature_regimen,
-		'GSC_MIxS_plant_associated_mechanical_damage': GSC_MIxS_plant_associated_mechanical_damage,
-		'GSC_MIxS_plant_associated_chemical_administration': GSC_MIxS_plant_associated_chemical_administration,
-		'GSC_MIxS_plant_associated_perturbation': GSC_MIxS_plant_associated_perturbation,
+		'GSC_MIxS_plant_associated_project_name': 'project name',
+		'GSC_MIxS_plant_associated_experimental_factor': 'experimental factor',
+		'GSC_MIxS_plant_associated_ploidy': 'ploidy',
+		'GSC_MIxS_plant_associated_number_of_replicons': 'number of replicons',
+		'GSC_MIxS_plant_associated_extrachromosomal_elements': 'extrachromosomal elements',
+		'GSC_MIxS_plant_associated_estimated_size': 'estimated size',
+		'GSC_MIxS_plant_associated_reference_for_biomaterial': 'reference for biomaterial',
+		'GSC_MIxS_plant_associated_annotation_source': 'annotation source',
+		'GSC_MIxS_plant_associated_sample_volume_or_weight_for_DNA_extraction': 'sample volume or weight for DNA extraction',
+		'GSC_MIxS_plant_associated_nucleic_acid_extraction': 'nucleic acid extraction',
+		'GSC_MIxS_plant_associated_nucleic_acid_amplification': 'nucleic acid amplification',
+		'GSC_MIxS_plant_associated_library_size': 'library size',
+		'GSC_MIxS_plant_associated_library_reads_sequenced': 'library reads sequenced',
+		'GSC_MIxS_plant_associated_library_construction_method': 'library construction method',
+		'GSC_MIxS_plant_associated_library_vector': 'library vector',
+		'GSC_MIxS_plant_associated_library_screening_strategy': 'library screening strategy',
+		'GSC_MIxS_plant_associated_target_gene': 'target gene',
+		'GSC_MIxS_plant_associated_target_subfragment': 'target subfragment',
+		'GSC_MIxS_plant_associated_pcr_primers': 'pcr primers',
+		'GSC_MIxS_plant_associated_multiplex_identifiers': 'multiplex identifiers',
+		'GSC_MIxS_plant_associated_adapters': 'adapters',
+		'GSC_MIxS_plant_associated_pcr_conditions': 'pcr conditions',
+		'GSC_MIxS_plant_associated_sequencing_method': 'sequencing method',
+		'GSC_MIxS_plant_associated_sequence_quality_check': 'sequence quality check',
+		'GSC_MIxS_plant_associated_chimera_check_software': 'chimera check software',
+		'GSC_MIxS_plant_associated_relevant_electronic_resources': 'relevant electronic resources',
+		'GSC_MIxS_plant_associated_relevant_standard_operating_procedures': 'relevant standard operating procedures',
+		'GSC_MIxS_plant_associated_negative_control_type': 'negative control type',
+		'GSC_MIxS_plant_associated_positive_control_type': 'positive control type',
+		'GSC_MIxS_plant_associated_collection_date': 'collection date',
+		'GSC_MIxS_plant_associated_altitude': 'altitude',
+		'GSC_MIxS_plant_associated_geographic_location_country_and_or_sea': 'geographic location (country and/or sea)',
+		'GSC_MIxS_plant_associated_geographic_location_latitude': 'geographic location (latitude)',
+		'GSC_MIxS_plant_associated_geographic_location_longitude': 'geographic location (longitude)',
+		'GSC_MIxS_plant_associated_geographic_location_region_and_locality': 'geographic location (region and locality)',
+		'GSC_MIxS_plant_associated_depth': 'depth',
+		'GSC_MIxS_plant_associated_broad_scale_environmental_context': 'broad-scale environmental context',
+		'GSC_MIxS_plant_associated_local_environmental_context': 'local environmental context',
+		'GSC_MIxS_plant_associated_environmental_medium': 'environmental medium',
+		'GSC_MIxS_plant_associated_elevation': 'elevation',
+		'GSC_MIxS_plant_associated_source_material_identifiers': 'source material identifiers',
+		'GSC_MIxS_plant_associated_sample_material_processing': 'sample material processing',
+		'GSC_MIxS_plant_associated_isolation_and_growth_condition': 'isolation and growth condition',
+		'GSC_MIxS_plant_associated_propagation': 'propagation',
+		'GSC_MIxS_plant_associated_amount_or_size_of_sample_collected': 'amount or size of sample collected',
+		'GSC_MIxS_plant_associated_host_dry_mass': 'host dry mass',
+		'GSC_MIxS_plant_associated_oxygenation_status_of_sample': 'oxygenation status of sample',
+		'GSC_MIxS_plant_associated_plant_product': 'plant product',
+		'GSC_MIxS_plant_associated_organism_count': 'organism count',
+		'GSC_MIxS_plant_associated_sample_storage_duration': 'sample storage duration',
+		'GSC_MIxS_plant_associated_sample_storage_temperature': 'sample storage temperature',
+		'GSC_MIxS_plant_associated_host_wet_mass': 'host wet mass',
+		'GSC_MIxS_plant_associated_sample_storage_location': 'sample storage location',
+		'GSC_MIxS_plant_associated_sample_collection_device': 'sample collection device',
+		'GSC_MIxS_plant_associated_sample_collection_method': 'sample collection method',
+		'GSC_MIxS_plant_associated_host_disease_status': 'host disease status',
+		'GSC_MIxS_plant_associated_host_common_name': 'host common name',
+		'GSC_MIxS_plant_associated_host_age': 'host age',
+		'GSC_MIxS_plant_associated_host_taxid': 'host taxid',
+		'GSC_MIxS_plant_associated_host_life_stage': 'host life stage',
+		'GSC_MIxS_plant_associated_host_height': 'host height',
+		'GSC_MIxS_plant_associated_host_length': 'host length',
+		'GSC_MIxS_plant_associated_plant_body_site': 'plant body site',
+		'GSC_MIxS_plant_associated_host_total_mass': 'host total mass',
+		'GSC_MIxS_plant_associated_host_phenotype': 'host phenotype',
+		'GSC_MIxS_plant_associated_host_subspecific_genetic_lineage': 'host subspecific genetic lineage',
+		'GSC_MIxS_plant_associated_climate_environment': 'climate environment',
+		'GSC_MIxS_plant_associated_gaseous_environment': 'gaseous environment',
+		'GSC_MIxS_plant_associated_seasonal_environment': 'seasonal environment',
+		'GSC_MIxS_plant_associated_temperature': 'temperature',
+		'GSC_MIxS_plant_associated_salinity': 'salinity',
+		'GSC_MIxS_plant_associated_host_genotype': 'host genotype',
+		'GSC_MIxS_plant_associated_subspecific_genetic_lineage': 'subspecific genetic lineage',
+		'GSC_MIxS_plant_associated_trophic_level': 'trophic level',
+		'GSC_MIxS_plant_associated_relationship_to_oxygen': 'relationship to oxygen',
+		'GSC_MIxS_plant_associated_known_pathogenicity': 'known pathogenicity',
+		'GSC_MIxS_plant_associated_encoded_traits': 'encoded traits',
+		'GSC_MIxS_plant_associated_observed_biotic_relationship': 'observed biotic relationship',
+		'GSC_MIxS_plant_associated_air_temperature_regimen': 'air temperature regimen',
+		'GSC_MIxS_plant_associated_antibiotic_regimen': 'antibiotic regimen',
+		'GSC_MIxS_plant_associated_chemical_mutagen': 'chemical mutagen',
+		'GSC_MIxS_plant_associated_fertilizer_regimen': 'fertilizer regimen',
+		'GSC_MIxS_plant_associated_fungicide_regimen': 'fungicide regimen',
+		'GSC_MIxS_plant_associated_gravity': 'gravity',
+		'GSC_MIxS_plant_associated_growth_hormone_regimen': 'growth hormone regimen',
+		'GSC_MIxS_plant_associated_growth_media': 'growth media',
+		'GSC_MIxS_plant_associated_herbicide_regimen': 'herbicide regimen',
+		'GSC_MIxS_plant_associated_humidity_regimen': 'humidity regimen',
+		'GSC_MIxS_plant_associated_mineral_nutrient_regimen': 'mineral nutrient regimen',
+		'GSC_MIxS_plant_associated_non_mineral_nutrient_regimen': 'non-mineral nutrient regimen',
+		'GSC_MIxS_plant_associated_pesticide_regimen': 'pesticide regimen',
+		'GSC_MIxS_plant_associated_pH_regimen': 'pH regimen',
+		'GSC_MIxS_plant_associated_radiation_regimen': 'radiation regimen',
+		'GSC_MIxS_plant_associated_rainfall_regimen': 'rainfall regimen',
+		'GSC_MIxS_plant_associated_salt_regimen': 'salt regimen',
+		'GSC_MIxS_plant_associated_standing_water_regimen': 'standing water regimen',
+		'GSC_MIxS_plant_associated_tissue_culture_growth_media': 'tissue culture growth media',
+		'GSC_MIxS_plant_associated_watering_regimen': 'watering regimen',
+		'GSC_MIxS_plant_associated_water_temperature_regimen': 'water temperature regimen',
+		'GSC_MIxS_plant_associated_mechanical_damage': 'mechanical damage',
+		'GSC_MIxS_plant_associated_chemical_administration': 'chemical administration',
+		'GSC_MIxS_plant_associated_perturbation': 'perturbation',
 	}
 
-class GSC_MIxS_plant_associated_unit(SelfDescribingModel):
+class GSC_MIxS_plant_associated_unit(SelfDescribingUnitModel):
 
 	GSC_MIxS_plant_associated_sample_volume_or_weight_for_DNA_extraction_units = [('g', 'g'), ('mL', 'mL'), ('mg', 'mg'), ('ng', 'ng')]
 	GSC_MIxS_plant_associated_altitude_units = [('m', 'm')]
-	GSC_MIxS_plant_associated_geographic_location_latitude_units = [('D', 'D'), ('D', 'D')]
-	GSC_MIxS_plant_associated_geographic_location_longitude_units = [('D', 'D'), ('D', 'D')]
+	GSC_MIxS_plant_associated_geographic_location_latitude_units = [('DD', 'DD')]
+	GSC_MIxS_plant_associated_geographic_location_longitude_units = [('DD', 'DD')]
 	GSC_MIxS_plant_associated_depth_units = [('m', 'm')]
 	GSC_MIxS_plant_associated_elevation_units = [('m', 'm')]
 	GSC_MIxS_plant_associated_amount_or_size_of_sample_collected_units = [('L', 'L'), ('g', 'g'), ('kg', 'kg'), ('m2', 'm2'), ('m3', 'm3')]
 	GSC_MIxS_plant_associated_host_dry_mass_units = [('g', 'g'), ('kg', 'kg'), ('mg', 'mg')]
 	GSC_MIxS_plant_associated_sample_storage_duration_units = [('days', 'days'), ('hours', 'hours'), ('months', 'months'), ('weeks', 'weeks'), ('years', 'years')]
-	GSC_MIxS_plant_associated_sample_storage_temperature_units = [('°', '°'), ('C', 'C')]
+	GSC_MIxS_plant_associated_sample_storage_temperature_units = [('°C', '°C')]
 	GSC_MIxS_plant_associated_host_wet_mass_units = [('g', 'g'), ('kg', 'kg'), ('mg', 'mg')]
 	GSC_MIxS_plant_associated_host_age_units = [('centuries', 'centuries'), ('days', 'days'), ('decades', 'decades'), ('hours', 'hours'), ('minutes', 'minutes'), ('months', 'months'), ('seconds', 'seconds'), ('weeks', 'weeks'), ('years', 'years')]
 	GSC_MIxS_plant_associated_host_height_units = [('cm', 'cm'), ('m', 'm'), ('mm', 'mm')]
 	GSC_MIxS_plant_associated_host_length_units = [('cm', 'cm'), ('m', 'm'), ('mm', 'mm')]
 	GSC_MIxS_plant_associated_host_total_mass_units = [('g', 'g'), ('kg', 'kg')]
-	GSC_MIxS_plant_associated_temperature_units = [('º', 'º'), ('C', 'C')]
-	GSC_MIxS_plant_associated_salinity_units = [('p', 'p'), ('s', 's'), ('u', 'u')]
+	GSC_MIxS_plant_associated_temperature_units = [('ºC', 'ºC')]
+	GSC_MIxS_plant_associated_salinity_units = [('psu', 'psu')]
 
 	fields = {
-		'GSC_MIxS_plant_associated_sample_volume_or_weight_for_DNA_extraction_units': GSC_MIxS_plant_associated_sample_volume_or_weight_for_DNA_extraction_units,
-		'GSC_MIxS_plant_associated_altitude_units': GSC_MIxS_plant_associated_altitude_units,
-		'GSC_MIxS_plant_associated_geographic_location_latitude_units': GSC_MIxS_plant_associated_geographic_location_latitude_units,
-		'GSC_MIxS_plant_associated_geographic_location_longitude_units': GSC_MIxS_plant_associated_geographic_location_longitude_units,
-		'GSC_MIxS_plant_associated_depth_units': GSC_MIxS_plant_associated_depth_units,
-		'GSC_MIxS_plant_associated_elevation_units': GSC_MIxS_plant_associated_elevation_units,
-		'GSC_MIxS_plant_associated_amount_or_size_of_sample_collected_units': GSC_MIxS_plant_associated_amount_or_size_of_sample_collected_units,
-		'GSC_MIxS_plant_associated_host_dry_mass_units': GSC_MIxS_plant_associated_host_dry_mass_units,
-		'GSC_MIxS_plant_associated_sample_storage_duration_units': GSC_MIxS_plant_associated_sample_storage_duration_units,
-		'GSC_MIxS_plant_associated_sample_storage_temperature_units': GSC_MIxS_plant_associated_sample_storage_temperature_units,
-		'GSC_MIxS_plant_associated_host_wet_mass_units': GSC_MIxS_plant_associated_host_wet_mass_units,
-		'GSC_MIxS_plant_associated_host_age_units': GSC_MIxS_plant_associated_host_age_units,
-		'GSC_MIxS_plant_associated_host_height_units': GSC_MIxS_plant_associated_host_height_units,
-		'GSC_MIxS_plant_associated_host_length_units': GSC_MIxS_plant_associated_host_length_units,
-		'GSC_MIxS_plant_associated_host_total_mass_units': GSC_MIxS_plant_associated_host_total_mass_units,
-		'GSC_MIxS_plant_associated_temperature_units': GSC_MIxS_plant_associated_temperature_units,
-		'GSC_MIxS_plant_associated_salinity_units': GSC_MIxS_plant_associated_salinity_units,
+		'GSC_MIxS_plant_associated_sample_volume_or_weight_for_DNA_extraction': 'sample volume or weight for DNA extraction',
+		'GSC_MIxS_plant_associated_altitude': 'altitude',
+		'GSC_MIxS_plant_associated_geographic_location_latitude': 'geographic location (latitude)',
+		'GSC_MIxS_plant_associated_geographic_location_longitude': 'geographic location (longitude)',
+		'GSC_MIxS_plant_associated_depth': 'depth',
+		'GSC_MIxS_plant_associated_elevation': 'elevation',
+		'GSC_MIxS_plant_associated_amount_or_size_of_sample_collected': 'amount or size of sample collected',
+		'GSC_MIxS_plant_associated_host_dry_mass': 'host dry mass',
+		'GSC_MIxS_plant_associated_sample_storage_duration': 'sample storage duration',
+		'GSC_MIxS_plant_associated_sample_storage_temperature': 'sample storage temperature',
+		'GSC_MIxS_plant_associated_host_wet_mass': 'host wet mass',
+		'GSC_MIxS_plant_associated_host_age': 'host age',
+		'GSC_MIxS_plant_associated_host_height': 'host height',
+		'GSC_MIxS_plant_associated_host_length': 'host length',
+		'GSC_MIxS_plant_associated_host_total_mass': 'host total mass',
+		'GSC_MIxS_plant_associated_temperature': 'temperature',
+		'GSC_MIxS_plant_associated_salinity': 'salinity',
 	}
 
-	sample = models.ForeignKey(Sample, on_delete=models.CASCADE)
 	order = models.ForeignKey(Order, on_delete=models.CASCADE, default=1)
 	GSC_MIxS_plant_associated_sample_volume_or_weight_for_DNA_extraction = models.CharField(max_length=100, choices=GSC_MIxS_plant_associated_sample_volume_or_weight_for_DNA_extraction_units, blank=False)
 	GSC_MIxS_plant_associated_altitude = models.CharField(max_length=100, choices=GSC_MIxS_plant_associated_altitude_units, blank=False)
@@ -1785,291 +1905,290 @@ class GSC_MIxS_water(SelfDescribingModel):
 	GSC_MIxS_water_perturbation= models.CharField(max_length=100, blank=True,help_text="type of pe")
 
 	fields = {
-		'GSC_MIxS_water_project_name': GSC_MIxS_water_project_name,
-		'GSC_MIxS_water_experimental_factor': GSC_MIxS_water_experimental_factor,
-		'GSC_MIxS_water_ploidy': GSC_MIxS_water_ploidy,
-		'GSC_MIxS_water_number_of_replicons': GSC_MIxS_water_number_of_replicons,
-		'GSC_MIxS_water_extrachromosomal_elements': GSC_MIxS_water_extrachromosomal_elements,
-		'GSC_MIxS_water_estimated_size': GSC_MIxS_water_estimated_size,
-		'GSC_MIxS_water_reference_for_biomaterial': GSC_MIxS_water_reference_for_biomaterial,
-		'GSC_MIxS_water_annotation_source': GSC_MIxS_water_annotation_source,
-		'GSC_MIxS_water_sample_volume_or_weight_for_DNA_extraction': GSC_MIxS_water_sample_volume_or_weight_for_DNA_extraction,
-		'GSC_MIxS_water_nucleic_acid_extraction': GSC_MIxS_water_nucleic_acid_extraction,
-		'GSC_MIxS_water_nucleic_acid_amplification': GSC_MIxS_water_nucleic_acid_amplification,
-		'GSC_MIxS_water_library_size': GSC_MIxS_water_library_size,
-		'GSC_MIxS_water_library_reads_sequenced': GSC_MIxS_water_library_reads_sequenced,
-		'GSC_MIxS_water_library_construction_method': GSC_MIxS_water_library_construction_method,
-		'GSC_MIxS_water_library_vector': GSC_MIxS_water_library_vector,
-		'GSC_MIxS_water_library_screening_strategy': GSC_MIxS_water_library_screening_strategy,
-		'GSC_MIxS_water_target_gene': GSC_MIxS_water_target_gene,
-		'GSC_MIxS_water_target_subfragment': GSC_MIxS_water_target_subfragment,
-		'GSC_MIxS_water_pcr_primers': GSC_MIxS_water_pcr_primers,
-		'GSC_MIxS_water_multiplex_identifiers': GSC_MIxS_water_multiplex_identifiers,
-		'GSC_MIxS_water_adapters': GSC_MIxS_water_adapters,
-		'GSC_MIxS_water_pcr_conditions': GSC_MIxS_water_pcr_conditions,
-		'GSC_MIxS_water_sequencing_method': GSC_MIxS_water_sequencing_method,
-		'GSC_MIxS_water_sequence_quality_check': GSC_MIxS_water_sequence_quality_check,
-		'GSC_MIxS_water_chimera_check_software': GSC_MIxS_water_chimera_check_software,
-		'GSC_MIxS_water_relevant_electronic_resources': GSC_MIxS_water_relevant_electronic_resources,
-		'GSC_MIxS_water_relevant_standard_operating_procedures': GSC_MIxS_water_relevant_standard_operating_procedures,
-		'GSC_MIxS_water_negative_control_type': GSC_MIxS_water_negative_control_type,
-		'GSC_MIxS_water_positive_control_type': GSC_MIxS_water_positive_control_type,
-		'GSC_MIxS_water_collection_date': GSC_MIxS_water_collection_date,
-		'GSC_MIxS_water_altitude': GSC_MIxS_water_altitude,
-		'GSC_MIxS_water_geographic_location_country_and_or_sea': GSC_MIxS_water_geographic_location_country_and_or_sea,
-		'GSC_MIxS_water_geographic_location_latitude': GSC_MIxS_water_geographic_location_latitude,
-		'GSC_MIxS_water_geographic_location_longitude': GSC_MIxS_water_geographic_location_longitude,
-		'GSC_MIxS_water_geographic_location_region_and_locality': GSC_MIxS_water_geographic_location_region_and_locality,
-		'GSC_MIxS_water_depth': GSC_MIxS_water_depth,
-		'GSC_MIxS_water_broad_scale_environmental_context': GSC_MIxS_water_broad_scale_environmental_context,
-		'GSC_MIxS_water_local_environmental_context': GSC_MIxS_water_local_environmental_context,
-		'GSC_MIxS_water_environmental_medium': GSC_MIxS_water_environmental_medium,
-		'GSC_MIxS_water_elevation': GSC_MIxS_water_elevation,
-		'GSC_MIxS_water_source_material_identifiers': GSC_MIxS_water_source_material_identifiers,
-		'GSC_MIxS_water_sample_material_processing': GSC_MIxS_water_sample_material_processing,
-		'GSC_MIxS_water_isolation_and_growth_condition': GSC_MIxS_water_isolation_and_growth_condition,
-		'GSC_MIxS_water_propagation': GSC_MIxS_water_propagation,
-		'GSC_MIxS_water_amount_or_size_of_sample_collected': GSC_MIxS_water_amount_or_size_of_sample_collected,
-		'GSC_MIxS_water_biomass': GSC_MIxS_water_biomass,
-		'GSC_MIxS_water_density': GSC_MIxS_water_density,
-		'GSC_MIxS_water_oxygenation_status_of_sample': GSC_MIxS_water_oxygenation_status_of_sample,
-		'GSC_MIxS_water_organism_count': GSC_MIxS_water_organism_count,
-		'GSC_MIxS_water_sample_storage_duration': GSC_MIxS_water_sample_storage_duration,
-		'GSC_MIxS_water_sample_storage_temperature': GSC_MIxS_water_sample_storage_temperature,
-		'GSC_MIxS_water_sample_storage_location': GSC_MIxS_water_sample_storage_location,
-		'GSC_MIxS_water_sample_collection_device': GSC_MIxS_water_sample_collection_device,
-		'GSC_MIxS_water_sample_collection_method': GSC_MIxS_water_sample_collection_method,
-		'GSC_MIxS_water_host_disease_status': GSC_MIxS_water_host_disease_status,
-		'GSC_MIxS_water_host_scientific_name': GSC_MIxS_water_host_scientific_name,
-		'GSC_MIxS_water_alkalinity': GSC_MIxS_water_alkalinity,
-		'GSC_MIxS_water_atmospheric_data': GSC_MIxS_water_atmospheric_data,
-		'GSC_MIxS_water_conductivity': GSC_MIxS_water_conductivity,
-		'GSC_MIxS_water_water_current': GSC_MIxS_water_water_current,
-		'GSC_MIxS_water_fluorescence': GSC_MIxS_water_fluorescence,
-		'GSC_MIxS_water_light_intensity': GSC_MIxS_water_light_intensity,
-		'GSC_MIxS_water_mean_friction_velocity': GSC_MIxS_water_mean_friction_velocity,
-		'GSC_MIxS_water_mean_peak_friction_velocity': GSC_MIxS_water_mean_peak_friction_velocity,
-		'GSC_MIxS_water_downward_PAR': GSC_MIxS_water_downward_PAR,
-		'GSC_MIxS_water_photon_flux': GSC_MIxS_water_photon_flux,
-		'GSC_MIxS_water_pressure': GSC_MIxS_water_pressure,
-		'GSC_MIxS_water_temperature': GSC_MIxS_water_temperature,
-		'GSC_MIxS_water_tidal_stage': GSC_MIxS_water_tidal_stage,
-		'GSC_MIxS_water_pH': GSC_MIxS_water_pH,
-		'GSC_MIxS_water_total_depth_of_water_column': GSC_MIxS_water_total_depth_of_water_column,
-		'GSC_MIxS_water_alkyl_diethers': GSC_MIxS_water_alkyl_diethers,
-		'GSC_MIxS_water_aminopeptidase_activity': GSC_MIxS_water_aminopeptidase_activity,
-		'GSC_MIxS_water_ammonium': GSC_MIxS_water_ammonium,
-		'GSC_MIxS_water_bacterial_carbon_production': GSC_MIxS_water_bacterial_carbon_production,
-		'GSC_MIxS_water_bacterial_production': GSC_MIxS_water_bacterial_production,
-		'GSC_MIxS_water_bacterial_respiration': GSC_MIxS_water_bacterial_respiration,
-		'GSC_MIxS_water_bishomohopanol': GSC_MIxS_water_bishomohopanol,
-		'GSC_MIxS_water_bromide': GSC_MIxS_water_bromide,
-		'GSC_MIxS_water_calcium': GSC_MIxS_water_calcium,
-		'GSC_MIxS_water_carbon_nitrogen_ratio': GSC_MIxS_water_carbon_nitrogen_ratio,
-		'GSC_MIxS_water_chloride': GSC_MIxS_water_chloride,
-		'GSC_MIxS_water_chlorophyll': GSC_MIxS_water_chlorophyll,
-		'GSC_MIxS_water_diether_lipids': GSC_MIxS_water_diether_lipids,
-		'GSC_MIxS_water_dissolved_carbon_dioxide': GSC_MIxS_water_dissolved_carbon_dioxide,
-		'GSC_MIxS_water_dissolved_hydrogen': GSC_MIxS_water_dissolved_hydrogen,
-		'GSC_MIxS_water_dissolved_inorganic_carbon': GSC_MIxS_water_dissolved_inorganic_carbon,
-		'GSC_MIxS_water_dissolved_inorganic_nitrogen': GSC_MIxS_water_dissolved_inorganic_nitrogen,
-		'GSC_MIxS_water_dissolved_inorganic_phosphorus': GSC_MIxS_water_dissolved_inorganic_phosphorus,
-		'GSC_MIxS_water_dissolved_organic_carbon': GSC_MIxS_water_dissolved_organic_carbon,
-		'GSC_MIxS_water_dissolved_organic_nitrogen': GSC_MIxS_water_dissolved_organic_nitrogen,
-		'GSC_MIxS_water_dissolved_oxygen': GSC_MIxS_water_dissolved_oxygen,
-		'GSC_MIxS_water_glucosidase_activity': GSC_MIxS_water_glucosidase_activity,
-		'GSC_MIxS_water_magnesium': GSC_MIxS_water_magnesium,
-		'GSC_MIxS_water_n_alkanes': GSC_MIxS_water_n_alkanes,
-		'GSC_MIxS_water_nitrate': GSC_MIxS_water_nitrate,
-		'GSC_MIxS_water_nitrite': GSC_MIxS_water_nitrite,
-		'GSC_MIxS_water_nitrogen': GSC_MIxS_water_nitrogen,
-		'GSC_MIxS_water_organic_carbon': GSC_MIxS_water_organic_carbon,
-		'GSC_MIxS_water_organic_matter': GSC_MIxS_water_organic_matter,
-		'GSC_MIxS_water_organic_nitrogen': GSC_MIxS_water_organic_nitrogen,
-		'GSC_MIxS_water_particulate_organic_carbon': GSC_MIxS_water_particulate_organic_carbon,
-		'GSC_MIxS_water_particulate_organic_nitrogen': GSC_MIxS_water_particulate_organic_nitrogen,
-		'GSC_MIxS_water_petroleum_hydrocarbon': GSC_MIxS_water_petroleum_hydrocarbon,
-		'GSC_MIxS_water_phaeopigments': GSC_MIxS_water_phaeopigments,
-		'GSC_MIxS_water_phosphate': GSC_MIxS_water_phosphate,
-		'GSC_MIxS_water_phospholipid_fatty_acid': GSC_MIxS_water_phospholipid_fatty_acid,
-		'GSC_MIxS_water_potassium': GSC_MIxS_water_potassium,
-		'GSC_MIxS_water_primary_production': GSC_MIxS_water_primary_production,
-		'GSC_MIxS_water_redox_potential': GSC_MIxS_water_redox_potential,
-		'GSC_MIxS_water_salinity': GSC_MIxS_water_salinity,
-		'GSC_MIxS_water_silicate': GSC_MIxS_water_silicate,
-		'GSC_MIxS_water_sodium': GSC_MIxS_water_sodium,
-		'GSC_MIxS_water_soluble_reactive_phosphorus': GSC_MIxS_water_soluble_reactive_phosphorus,
-		'GSC_MIxS_water_sulfate': GSC_MIxS_water_sulfate,
-		'GSC_MIxS_water_sulfide': GSC_MIxS_water_sulfide,
-		'GSC_MIxS_water_suspended_particulate_matter': GSC_MIxS_water_suspended_particulate_matter,
-		'GSC_MIxS_water_total_dissolved_nitrogen': GSC_MIxS_water_total_dissolved_nitrogen,
-		'GSC_MIxS_water_total_inorganic_nitrogen': GSC_MIxS_water_total_inorganic_nitrogen,
-		'GSC_MIxS_water_total_nitrogen': GSC_MIxS_water_total_nitrogen,
-		'GSC_MIxS_water_total_particulate_carbon': GSC_MIxS_water_total_particulate_carbon,
-		'GSC_MIxS_water_total_phosphorus': GSC_MIxS_water_total_phosphorus,
-		'GSC_MIxS_water_subspecific_genetic_lineage': GSC_MIxS_water_subspecific_genetic_lineage,
-		'GSC_MIxS_water_trophic_level': GSC_MIxS_water_trophic_level,
-		'GSC_MIxS_water_relationship_to_oxygen': GSC_MIxS_water_relationship_to_oxygen,
-		'GSC_MIxS_water_known_pathogenicity': GSC_MIxS_water_known_pathogenicity,
-		'GSC_MIxS_water_encoded_traits': GSC_MIxS_water_encoded_traits,
-		'GSC_MIxS_water_observed_biotic_relationship': GSC_MIxS_water_observed_biotic_relationship,
-		'GSC_MIxS_water_chemical_administration': GSC_MIxS_water_chemical_administration,
-		'GSC_MIxS_water_perturbation': GSC_MIxS_water_perturbation,
+		'GSC_MIxS_water_project_name': 'project name',
+		'GSC_MIxS_water_experimental_factor': 'experimental factor',
+		'GSC_MIxS_water_ploidy': 'ploidy',
+		'GSC_MIxS_water_number_of_replicons': 'number of replicons',
+		'GSC_MIxS_water_extrachromosomal_elements': 'extrachromosomal elements',
+		'GSC_MIxS_water_estimated_size': 'estimated size',
+		'GSC_MIxS_water_reference_for_biomaterial': 'reference for biomaterial',
+		'GSC_MIxS_water_annotation_source': 'annotation source',
+		'GSC_MIxS_water_sample_volume_or_weight_for_DNA_extraction': 'sample volume or weight for DNA extraction',
+		'GSC_MIxS_water_nucleic_acid_extraction': 'nucleic acid extraction',
+		'GSC_MIxS_water_nucleic_acid_amplification': 'nucleic acid amplification',
+		'GSC_MIxS_water_library_size': 'library size',
+		'GSC_MIxS_water_library_reads_sequenced': 'library reads sequenced',
+		'GSC_MIxS_water_library_construction_method': 'library construction method',
+		'GSC_MIxS_water_library_vector': 'library vector',
+		'GSC_MIxS_water_library_screening_strategy': 'library screening strategy',
+		'GSC_MIxS_water_target_gene': 'target gene',
+		'GSC_MIxS_water_target_subfragment': 'target subfragment',
+		'GSC_MIxS_water_pcr_primers': 'pcr primers',
+		'GSC_MIxS_water_multiplex_identifiers': 'multiplex identifiers',
+		'GSC_MIxS_water_adapters': 'adapters',
+		'GSC_MIxS_water_pcr_conditions': 'pcr conditions',
+		'GSC_MIxS_water_sequencing_method': 'sequencing method',
+		'GSC_MIxS_water_sequence_quality_check': 'sequence quality check',
+		'GSC_MIxS_water_chimera_check_software': 'chimera check software',
+		'GSC_MIxS_water_relevant_electronic_resources': 'relevant electronic resources',
+		'GSC_MIxS_water_relevant_standard_operating_procedures': 'relevant standard operating procedures',
+		'GSC_MIxS_water_negative_control_type': 'negative control type',
+		'GSC_MIxS_water_positive_control_type': 'positive control type',
+		'GSC_MIxS_water_collection_date': 'collection date',
+		'GSC_MIxS_water_altitude': 'altitude',
+		'GSC_MIxS_water_geographic_location_country_and_or_sea': 'geographic location (country and/or sea)',
+		'GSC_MIxS_water_geographic_location_latitude': 'geographic location (latitude)',
+		'GSC_MIxS_water_geographic_location_longitude': 'geographic location (longitude)',
+		'GSC_MIxS_water_geographic_location_region_and_locality': 'geographic location (region and locality)',
+		'GSC_MIxS_water_depth': 'depth',
+		'GSC_MIxS_water_broad_scale_environmental_context': 'broad-scale environmental context',
+		'GSC_MIxS_water_local_environmental_context': 'local environmental context',
+		'GSC_MIxS_water_environmental_medium': 'environmental medium',
+		'GSC_MIxS_water_elevation': 'elevation',
+		'GSC_MIxS_water_source_material_identifiers': 'source material identifiers',
+		'GSC_MIxS_water_sample_material_processing': 'sample material processing',
+		'GSC_MIxS_water_isolation_and_growth_condition': 'isolation and growth condition',
+		'GSC_MIxS_water_propagation': 'propagation',
+		'GSC_MIxS_water_amount_or_size_of_sample_collected': 'amount or size of sample collected',
+		'GSC_MIxS_water_biomass': 'biomass',
+		'GSC_MIxS_water_density': 'density',
+		'GSC_MIxS_water_oxygenation_status_of_sample': 'oxygenation status of sample',
+		'GSC_MIxS_water_organism_count': 'organism count',
+		'GSC_MIxS_water_sample_storage_duration': 'sample storage duration',
+		'GSC_MIxS_water_sample_storage_temperature': 'sample storage temperature',
+		'GSC_MIxS_water_sample_storage_location': 'sample storage location',
+		'GSC_MIxS_water_sample_collection_device': 'sample collection device',
+		'GSC_MIxS_water_sample_collection_method': 'sample collection method',
+		'GSC_MIxS_water_host_disease_status': 'host disease status',
+		'GSC_MIxS_water_host_scientific_name': 'host scientific name',
+		'GSC_MIxS_water_alkalinity': 'alkalinity',
+		'GSC_MIxS_water_atmospheric_data': 'atmospheric data',
+		'GSC_MIxS_water_conductivity': 'conductivity',
+		'GSC_MIxS_water_water_current': 'water current',
+		'GSC_MIxS_water_fluorescence': 'fluorescence',
+		'GSC_MIxS_water_light_intensity': 'light intensity',
+		'GSC_MIxS_water_mean_friction_velocity': 'mean friction velocity',
+		'GSC_MIxS_water_mean_peak_friction_velocity': 'mean peak friction velocity',
+		'GSC_MIxS_water_downward_PAR': 'downward PAR',
+		'GSC_MIxS_water_photon_flux': 'photon flux',
+		'GSC_MIxS_water_pressure': 'pressure',
+		'GSC_MIxS_water_temperature': 'temperature',
+		'GSC_MIxS_water_tidal_stage': 'tidal stage',
+		'GSC_MIxS_water_pH': 'pH',
+		'GSC_MIxS_water_total_depth_of_water_column': 'total depth of water column',
+		'GSC_MIxS_water_alkyl_diethers': 'alkyl diethers',
+		'GSC_MIxS_water_aminopeptidase_activity': 'aminopeptidase activity',
+		'GSC_MIxS_water_ammonium': 'ammonium',
+		'GSC_MIxS_water_bacterial_carbon_production': 'bacterial carbon production',
+		'GSC_MIxS_water_bacterial_production': 'bacterial production',
+		'GSC_MIxS_water_bacterial_respiration': 'bacterial respiration',
+		'GSC_MIxS_water_bishomohopanol': 'bishomohopanol',
+		'GSC_MIxS_water_bromide': 'bromide',
+		'GSC_MIxS_water_calcium': 'calcium',
+		'GSC_MIxS_water_carbon_nitrogen_ratio': 'carbon/nitrogen ratio',
+		'GSC_MIxS_water_chloride': 'chloride',
+		'GSC_MIxS_water_chlorophyll': 'chlorophyll',
+		'GSC_MIxS_water_diether_lipids': 'diether lipids',
+		'GSC_MIxS_water_dissolved_carbon_dioxide': 'dissolved carbon dioxide',
+		'GSC_MIxS_water_dissolved_hydrogen': 'dissolved hydrogen',
+		'GSC_MIxS_water_dissolved_inorganic_carbon': 'dissolved inorganic carbon',
+		'GSC_MIxS_water_dissolved_inorganic_nitrogen': 'dissolved inorganic nitrogen',
+		'GSC_MIxS_water_dissolved_inorganic_phosphorus': 'dissolved inorganic phosphorus',
+		'GSC_MIxS_water_dissolved_organic_carbon': 'dissolved organic carbon',
+		'GSC_MIxS_water_dissolved_organic_nitrogen': 'dissolved organic nitrogen',
+		'GSC_MIxS_water_dissolved_oxygen': 'dissolved oxygen',
+		'GSC_MIxS_water_glucosidase_activity': 'glucosidase activity',
+		'GSC_MIxS_water_magnesium': 'magnesium',
+		'GSC_MIxS_water_n_alkanes': 'n-alkanes',
+		'GSC_MIxS_water_nitrate': 'nitrate',
+		'GSC_MIxS_water_nitrite': 'nitrite',
+		'GSC_MIxS_water_nitrogen': 'nitrogen',
+		'GSC_MIxS_water_organic_carbon': 'organic carbon',
+		'GSC_MIxS_water_organic_matter': 'organic matter',
+		'GSC_MIxS_water_organic_nitrogen': 'organic nitrogen',
+		'GSC_MIxS_water_particulate_organic_carbon': 'particulate organic carbon',
+		'GSC_MIxS_water_particulate_organic_nitrogen': 'particulate organic nitrogen',
+		'GSC_MIxS_water_petroleum_hydrocarbon': 'petroleum hydrocarbon',
+		'GSC_MIxS_water_phaeopigments': 'phaeopigments',
+		'GSC_MIxS_water_phosphate': 'phosphate',
+		'GSC_MIxS_water_phospholipid_fatty_acid': 'phospholipid fatty acid',
+		'GSC_MIxS_water_potassium': 'potassium',
+		'GSC_MIxS_water_primary_production': 'primary production',
+		'GSC_MIxS_water_redox_potential': 'redox potential',
+		'GSC_MIxS_water_salinity': 'salinity',
+		'GSC_MIxS_water_silicate': 'silicate',
+		'GSC_MIxS_water_sodium': 'sodium',
+		'GSC_MIxS_water_soluble_reactive_phosphorus': 'soluble reactive phosphorus',
+		'GSC_MIxS_water_sulfate': 'sulfate',
+		'GSC_MIxS_water_sulfide': 'sulfide',
+		'GSC_MIxS_water_suspended_particulate_matter': 'suspended particulate matter',
+		'GSC_MIxS_water_total_dissolved_nitrogen': 'total dissolved nitrogen',
+		'GSC_MIxS_water_total_inorganic_nitrogen': 'total inorganic nitrogen',
+		'GSC_MIxS_water_total_nitrogen': 'total nitrogen',
+		'GSC_MIxS_water_total_particulate_carbon': 'total particulate carbon',
+		'GSC_MIxS_water_total_phosphorus': 'total phosphorus',
+		'GSC_MIxS_water_subspecific_genetic_lineage': 'subspecific genetic lineage',
+		'GSC_MIxS_water_trophic_level': 'trophic level',
+		'GSC_MIxS_water_relationship_to_oxygen': 'relationship to oxygen',
+		'GSC_MIxS_water_known_pathogenicity': 'known pathogenicity',
+		'GSC_MIxS_water_encoded_traits': 'encoded traits',
+		'GSC_MIxS_water_observed_biotic_relationship': 'observed biotic relationship',
+		'GSC_MIxS_water_chemical_administration': 'chemical administration',
+		'GSC_MIxS_water_perturbation': 'perturbation',
 	}
 
-class GSC_MIxS_water_unit(SelfDescribingModel):
+class GSC_MIxS_water_unit(SelfDescribingUnitModel):
 
 	GSC_MIxS_water_sample_volume_or_weight_for_DNA_extraction_units = [('g', 'g'), ('mL', 'mL'), ('mg', 'mg'), ('ng', 'ng')]
 	GSC_MIxS_water_altitude_units = [('m', 'm')]
-	GSC_MIxS_water_geographic_location_latitude_units = [('D', 'D'), ('D', 'D')]
-	GSC_MIxS_water_geographic_location_longitude_units = [('D', 'D'), ('D', 'D')]
+	GSC_MIxS_water_geographic_location_latitude_units = [('DD', 'DD')]
+	GSC_MIxS_water_geographic_location_longitude_units = [('DD', 'DD')]
 	GSC_MIxS_water_depth_units = [('m', 'm')]
 	GSC_MIxS_water_elevation_units = [('m', 'm')]
 	GSC_MIxS_water_amount_or_size_of_sample_collected_units = [('L', 'L'), ('g', 'g'), ('kg', 'kg'), ('m2', 'm2'), ('m3', 'm3')]
 	GSC_MIxS_water_biomass_units = [('g', 'g'), ('kg', 'kg'), ('t', 't')]
-	GSC_MIxS_water_density_units = [('g', 'g'), ('/', '/'), ('m', 'm'), ('3', '3')]
+	GSC_MIxS_water_density_units = [('g/m3', 'g/m3')]
 	GSC_MIxS_water_sample_storage_duration_units = [('days', 'days'), ('hours', 'hours'), ('months', 'months'), ('weeks', 'weeks'), ('years', 'years')]
-	GSC_MIxS_water_sample_storage_temperature_units = [('°', '°'), ('C', 'C')]
-	GSC_MIxS_water_alkalinity_units = [('m', 'm'), ('E', 'E'), ('q', 'q'), ('/', '/'), ('L', 'L')]
-	GSC_MIxS_water_conductivity_units = [('m', 'm'), ('S', 'S'), ('/', '/'), ('c', 'c'), ('m', 'm')]
+	GSC_MIxS_water_sample_storage_temperature_units = [('°C', '°C')]
+	GSC_MIxS_water_alkalinity_units = [('mEq/L', 'mEq/L')]
+	GSC_MIxS_water_conductivity_units = [('mS/cm', 'mS/cm')]
 	GSC_MIxS_water_water_current_units = [('knot', 'knot'), ('m3/s', 'm3/s')]
 	GSC_MIxS_water_fluorescence_units = [('V', 'V'), ('mg Chla/m3', 'mg Chla/m3')]
-	GSC_MIxS_water_light_intensity_units = [('l', 'l'), ('u', 'u'), ('x', 'x')]
-	GSC_MIxS_water_mean_friction_velocity_units = [('m', 'm'), ('/', '/'), ('s', 's')]
-	GSC_MIxS_water_mean_peak_friction_velocity_units = [('m', 'm'), ('/', '/'), ('s', 's')]
-	GSC_MIxS_water_downward_PAR_units = [('µ', 'µ'), ('E', 'E'), ('/', '/'), ('m', 'm'), ('2', '2'), ('/', '/'), ('s', 's')]
-	GSC_MIxS_water_photon_flux_units = [('µ', 'µ'), ('m', 'm'), ('o', 'o'), ('l', 'l'), ('/', '/'), ('m', 'm'), ('2', '2'), ('/', '/'), ('s', 's')]
+	GSC_MIxS_water_light_intensity_units = [('lux', 'lux')]
+	GSC_MIxS_water_mean_friction_velocity_units = [('m/s', 'm/s')]
+	GSC_MIxS_water_mean_peak_friction_velocity_units = [('m/s', 'm/s')]
+	GSC_MIxS_water_downward_PAR_units = [('µE/m2/s', 'µE/m2/s')]
+	GSC_MIxS_water_photon_flux_units = [('µmol/m2/s', 'µmol/m2/s')]
 	GSC_MIxS_water_pressure_units = [('atm', 'atm'), ('bar', 'bar')]
-	GSC_MIxS_water_temperature_units = [('º', 'º'), ('C', 'C')]
+	GSC_MIxS_water_temperature_units = [('ºC', 'ºC')]
 	GSC_MIxS_water_total_depth_of_water_column_units = [('m', 'm')]
 	GSC_MIxS_water_alkyl_diethers_units = [('M/L', 'M/L'), ('µg/L', 'µg/L')]
-	GSC_MIxS_water_aminopeptidase_activity_units = [('m', 'm'), ('o', 'o'), ('l', 'l'), ('/', '/'), ('L', 'L'), ('/', '/'), ('h', 'h')]
-	GSC_MIxS_water_ammonium_units = [('µ', 'µ'), ('m', 'm'), ('o', 'o'), ('l', 'l'), ('/', '/'), ('L', 'L')]
-	GSC_MIxS_water_bacterial_carbon_production_units = [('n', 'n'), ('g', 'g'), ('/', '/'), ('h', 'h')]
-	GSC_MIxS_water_bacterial_production_units = [('m', 'm'), ('g', 'g'), ('/', '/'), ('m', 'm'), ('3', '3'), ('/', '/'), ('d', 'd')]
-	GSC_MIxS_water_bacterial_respiration_units = [('m', 'm'), ('g', 'g'), ('/', '/'), ('m', 'm'), ('3', '3'), ('/', '/'), ('d', 'd')]
+	GSC_MIxS_water_aminopeptidase_activity_units = [('mol/L/h', 'mol/L/h')]
+	GSC_MIxS_water_ammonium_units = [('µmol/L', 'µmol/L')]
+	GSC_MIxS_water_bacterial_carbon_production_units = [('ng/h', 'ng/h')]
+	GSC_MIxS_water_bacterial_production_units = [('mg/m3/d', 'mg/m3/d')]
+	GSC_MIxS_water_bacterial_respiration_units = [('mg/m3/d', 'mg/m3/d')]
 	GSC_MIxS_water_bishomohopanol_units = [('µg/L', 'µg/L'), ('µg/g', 'µg/g')]
 	GSC_MIxS_water_bromide_units = [('parts/million', 'parts/million'), ('µmol/L', 'µmol/L')]
 	GSC_MIxS_water_calcium_units = [('mg/L', 'mg/L'), ('parts/million', 'parts/million'), ('µmol/L', 'µmol/L')]
-	GSC_MIxS_water_chloride_units = [('m', 'm'), ('g', 'g'), ('/', '/'), ('L', 'L')]
+	GSC_MIxS_water_chloride_units = [('mg/L', 'mg/L')]
 	GSC_MIxS_water_chlorophyll_units = [('mg/m3', 'mg/m3'), ('µg/L', 'µg/L')]
-	GSC_MIxS_water_diether_lipids_units = [('n', 'n'), ('g', 'g'), ('/', '/'), ('L', 'L')]
-	GSC_MIxS_water_dissolved_carbon_dioxide_units = [('µ', 'µ'), ('m', 'm'), ('o', 'o'), ('l', 'l'), ('/', '/'), ('L', 'L')]
-	GSC_MIxS_water_dissolved_hydrogen_units = [('µ', 'µ'), ('m', 'm'), ('o', 'o'), ('l', 'l'), ('/', '/'), ('L', 'L')]
-	GSC_MIxS_water_dissolved_inorganic_carbon_units = [('µ', 'µ'), ('g', 'g'), ('/', '/'), ('L', 'L')]
-	GSC_MIxS_water_dissolved_inorganic_nitrogen_units = [('µ', 'µ'), ('g', 'g'), ('/', '/'), ('L', 'L')]
-	GSC_MIxS_water_dissolved_inorganic_phosphorus_units = [('µ', 'µ'), ('g', 'g'), ('/', '/'), ('L', 'L')]
-	GSC_MIxS_water_dissolved_organic_carbon_units = [('µ', 'µ'), ('m', 'm'), ('o', 'o'), ('l', 'l'), ('/', '/'), ('L', 'L')]
+	GSC_MIxS_water_diether_lipids_units = [('ng/L', 'ng/L')]
+	GSC_MIxS_water_dissolved_carbon_dioxide_units = [('µmol/L', 'µmol/L')]
+	GSC_MIxS_water_dissolved_hydrogen_units = [('µmol/L', 'µmol/L')]
+	GSC_MIxS_water_dissolved_inorganic_carbon_units = [('µg/L', 'µg/L')]
+	GSC_MIxS_water_dissolved_inorganic_nitrogen_units = [('µg/L', 'µg/L')]
+	GSC_MIxS_water_dissolved_inorganic_phosphorus_units = [('µg/L', 'µg/L')]
+	GSC_MIxS_water_dissolved_organic_carbon_units = [('µmol/L', 'µmol/L')]
 	GSC_MIxS_water_dissolved_organic_nitrogen_units = [('mg/L', 'mg/L'), ('µg/L', 'µg/L')]
-	GSC_MIxS_water_dissolved_oxygen_units = [('µ', 'µ'), ('m', 'm'), ('o', 'o'), ('l', 'l'), ('/', '/'), ('k', 'k'), ('g', 'g')]
-	GSC_MIxS_water_glucosidase_activity_units = [('m', 'm'), ('o', 'o'), ('l', 'l'), ('/', '/'), ('L', 'L'), ('/', '/'), ('h', 'h')]
+	GSC_MIxS_water_dissolved_oxygen_units = [('µmol/kg', 'µmol/kg')]
+	GSC_MIxS_water_glucosidase_activity_units = [('mol/L/h', 'mol/L/h')]
 	GSC_MIxS_water_magnesium_units = [('mg/L', 'mg/L'), ('mol/L', 'mol/L'), ('parts/million', 'parts/million')]
-	GSC_MIxS_water_n_alkanes_units = [('µ', 'µ'), ('m', 'm'), ('o', 'o'), ('l', 'l'), ('/', '/'), ('L', 'L')]
-	GSC_MIxS_water_nitrate_units = [('µ', 'µ'), ('m', 'm'), ('o', 'o'), ('l', 'l'), ('/', '/'), ('L', 'L')]
-	GSC_MIxS_water_nitrite_units = [('µ', 'µ'), ('m', 'm'), ('o', 'o'), ('l', 'l'), ('/', '/'), ('L', 'L')]
-	GSC_MIxS_water_nitrogen_units = [('µ', 'µ'), ('m', 'm'), ('o', 'o'), ('l', 'l'), ('/', '/'), ('L', 'L')]
-	GSC_MIxS_water_organic_carbon_units = [('µ', 'µ'), ('m', 'm'), ('o', 'o'), ('l', 'l'), ('/', '/'), ('L', 'L')]
-	GSC_MIxS_water_organic_matter_units = [('µ', 'µ'), ('g', 'g'), ('/', '/'), ('L', 'L')]
-	GSC_MIxS_water_organic_nitrogen_units = [('µ', 'µ'), ('g', 'g'), ('/', '/'), ('L', 'L')]
-	GSC_MIxS_water_particulate_organic_carbon_units = [('µ', 'µ'), ('g', 'g'), ('/', '/'), ('L', 'L')]
-	GSC_MIxS_water_particulate_organic_nitrogen_units = [('µ', 'µ'), ('g', 'g'), ('/', '/'), ('L', 'L')]
-	GSC_MIxS_water_petroleum_hydrocarbon_units = [('µ', 'µ'), ('m', 'm'), ('o', 'o'), ('l', 'l'), ('/', '/'), ('L', 'L')]
+	GSC_MIxS_water_n_alkanes_units = [('µmol/L', 'µmol/L')]
+	GSC_MIxS_water_nitrate_units = [('µmol/L', 'µmol/L')]
+	GSC_MIxS_water_nitrite_units = [('µmol/L', 'µmol/L')]
+	GSC_MIxS_water_nitrogen_units = [('µmol/L', 'µmol/L')]
+	GSC_MIxS_water_organic_carbon_units = [('µmol/L', 'µmol/L')]
+	GSC_MIxS_water_organic_matter_units = [('µg/L', 'µg/L')]
+	GSC_MIxS_water_organic_nitrogen_units = [('µg/L', 'µg/L')]
+	GSC_MIxS_water_particulate_organic_carbon_units = [('µg/L', 'µg/L')]
+	GSC_MIxS_water_particulate_organic_nitrogen_units = [('µg/L', 'µg/L')]
+	GSC_MIxS_water_petroleum_hydrocarbon_units = [('µmol/L', 'µmol/L')]
 	GSC_MIxS_water_phaeopigments_units = [('mg/m3', 'mg/m3'), ('µg/L', 'µg/L')]
-	GSC_MIxS_water_phosphate_units = [('µ', 'µ'), ('m', 'm'), ('o', 'o'), ('l', 'l'), ('/', '/'), ('L', 'L')]
+	GSC_MIxS_water_phosphate_units = [('µmol/L', 'µmol/L')]
 	GSC_MIxS_water_phospholipid_fatty_acid_units = [('mol/L', 'mol/L'), ('mol/g', 'mol/g')]
 	GSC_MIxS_water_potassium_units = [('parts/million', 'parts/million'), ('µmol/L', 'µmol/L')]
 	GSC_MIxS_water_primary_production_units = [('g/m2/day', 'g/m2/day'), ('mg/m3/day', 'mg/m3/day')]
-	GSC_MIxS_water_redox_potential_units = [('m', 'm'), ('V', 'V')]
-	GSC_MIxS_water_salinity_units = [('p', 'p'), ('s', 's'), ('u', 'u')]
-	GSC_MIxS_water_silicate_units = [('µ', 'µ'), ('m', 'm'), ('o', 'o'), ('l', 'l'), ('/', '/'), ('L', 'L')]
+	GSC_MIxS_water_redox_potential_units = [('mV', 'mV')]
+	GSC_MIxS_water_salinity_units = [('psu', 'psu')]
+	GSC_MIxS_water_silicate_units = [('µmol/L', 'µmol/L')]
 	GSC_MIxS_water_sodium_units = [('parts/million', 'parts/million'), ('µmol/L', 'µmol/L')]
-	GSC_MIxS_water_soluble_reactive_phosphorus_units = [('µ', 'µ'), ('m', 'm'), ('o', 'o'), ('l', 'l'), ('/', '/'), ('L', 'L')]
+	GSC_MIxS_water_soluble_reactive_phosphorus_units = [('µmol/L', 'µmol/L')]
 	GSC_MIxS_water_sulfate_units = [('mg/L', 'mg/L'), ('µmol/L', 'µmol/L')]
 	GSC_MIxS_water_sulfide_units = [('mg/L', 'mg/L'), ('µmol/L', 'µmol/L')]
-	GSC_MIxS_water_suspended_particulate_matter_units = [('m', 'm'), ('g', 'g'), ('/', '/'), ('L', 'L')]
-	GSC_MIxS_water_total_dissolved_nitrogen_units = [('µ', 'µ'), ('g', 'g'), ('/', '/'), ('L', 'L')]
-	GSC_MIxS_water_total_inorganic_nitrogen_units = [('µ', 'µ'), ('g', 'g'), ('/', '/'), ('L', 'L')]
+	GSC_MIxS_water_suspended_particulate_matter_units = [('mg/L', 'mg/L')]
+	GSC_MIxS_water_total_dissolved_nitrogen_units = [('µg/L', 'µg/L')]
+	GSC_MIxS_water_total_inorganic_nitrogen_units = [('µg/L', 'µg/L')]
 	GSC_MIxS_water_total_nitrogen_units = [('µg/L', 'µg/L'), ('µmol/L', 'µmol/L')]
 	GSC_MIxS_water_total_particulate_carbon_units = [('µg/L', 'µg/L'), ('µmol/L', 'µmol/L')]
-	GSC_MIxS_water_total_phosphorus_units = [('µ', 'µ'), ('m', 'm'), ('o', 'o'), ('l', 'l'), ('/', '/'), ('L', 'L')]
+	GSC_MIxS_water_total_phosphorus_units = [('µmol/L', 'µmol/L')]
 
 	fields = {
-		'GSC_MIxS_water_sample_volume_or_weight_for_DNA_extraction_units': GSC_MIxS_water_sample_volume_or_weight_for_DNA_extraction_units,
-		'GSC_MIxS_water_altitude_units': GSC_MIxS_water_altitude_units,
-		'GSC_MIxS_water_geographic_location_latitude_units': GSC_MIxS_water_geographic_location_latitude_units,
-		'GSC_MIxS_water_geographic_location_longitude_units': GSC_MIxS_water_geographic_location_longitude_units,
-		'GSC_MIxS_water_depth_units': GSC_MIxS_water_depth_units,
-		'GSC_MIxS_water_elevation_units': GSC_MIxS_water_elevation_units,
-		'GSC_MIxS_water_amount_or_size_of_sample_collected_units': GSC_MIxS_water_amount_or_size_of_sample_collected_units,
-		'GSC_MIxS_water_biomass_units': GSC_MIxS_water_biomass_units,
-		'GSC_MIxS_water_density_units': GSC_MIxS_water_density_units,
-		'GSC_MIxS_water_sample_storage_duration_units': GSC_MIxS_water_sample_storage_duration_units,
-		'GSC_MIxS_water_sample_storage_temperature_units': GSC_MIxS_water_sample_storage_temperature_units,
-		'GSC_MIxS_water_alkalinity_units': GSC_MIxS_water_alkalinity_units,
-		'GSC_MIxS_water_conductivity_units': GSC_MIxS_water_conductivity_units,
-		'GSC_MIxS_water_water_current_units': GSC_MIxS_water_water_current_units,
-		'GSC_MIxS_water_fluorescence_units': GSC_MIxS_water_fluorescence_units,
-		'GSC_MIxS_water_light_intensity_units': GSC_MIxS_water_light_intensity_units,
-		'GSC_MIxS_water_mean_friction_velocity_units': GSC_MIxS_water_mean_friction_velocity_units,
-		'GSC_MIxS_water_mean_peak_friction_velocity_units': GSC_MIxS_water_mean_peak_friction_velocity_units,
-		'GSC_MIxS_water_downward_PAR_units': GSC_MIxS_water_downward_PAR_units,
-		'GSC_MIxS_water_photon_flux_units': GSC_MIxS_water_photon_flux_units,
-		'GSC_MIxS_water_pressure_units': GSC_MIxS_water_pressure_units,
-		'GSC_MIxS_water_temperature_units': GSC_MIxS_water_temperature_units,
-		'GSC_MIxS_water_total_depth_of_water_column_units': GSC_MIxS_water_total_depth_of_water_column_units,
-		'GSC_MIxS_water_alkyl_diethers_units': GSC_MIxS_water_alkyl_diethers_units,
-		'GSC_MIxS_water_aminopeptidase_activity_units': GSC_MIxS_water_aminopeptidase_activity_units,
-		'GSC_MIxS_water_ammonium_units': GSC_MIxS_water_ammonium_units,
-		'GSC_MIxS_water_bacterial_carbon_production_units': GSC_MIxS_water_bacterial_carbon_production_units,
-		'GSC_MIxS_water_bacterial_production_units': GSC_MIxS_water_bacterial_production_units,
-		'GSC_MIxS_water_bacterial_respiration_units': GSC_MIxS_water_bacterial_respiration_units,
-		'GSC_MIxS_water_bishomohopanol_units': GSC_MIxS_water_bishomohopanol_units,
-		'GSC_MIxS_water_bromide_units': GSC_MIxS_water_bromide_units,
-		'GSC_MIxS_water_calcium_units': GSC_MIxS_water_calcium_units,
-		'GSC_MIxS_water_chloride_units': GSC_MIxS_water_chloride_units,
-		'GSC_MIxS_water_chlorophyll_units': GSC_MIxS_water_chlorophyll_units,
-		'GSC_MIxS_water_diether_lipids_units': GSC_MIxS_water_diether_lipids_units,
-		'GSC_MIxS_water_dissolved_carbon_dioxide_units': GSC_MIxS_water_dissolved_carbon_dioxide_units,
-		'GSC_MIxS_water_dissolved_hydrogen_units': GSC_MIxS_water_dissolved_hydrogen_units,
-		'GSC_MIxS_water_dissolved_inorganic_carbon_units': GSC_MIxS_water_dissolved_inorganic_carbon_units,
-		'GSC_MIxS_water_dissolved_inorganic_nitrogen_units': GSC_MIxS_water_dissolved_inorganic_nitrogen_units,
-		'GSC_MIxS_water_dissolved_inorganic_phosphorus_units': GSC_MIxS_water_dissolved_inorganic_phosphorus_units,
-		'GSC_MIxS_water_dissolved_organic_carbon_units': GSC_MIxS_water_dissolved_organic_carbon_units,
-		'GSC_MIxS_water_dissolved_organic_nitrogen_units': GSC_MIxS_water_dissolved_organic_nitrogen_units,
-		'GSC_MIxS_water_dissolved_oxygen_units': GSC_MIxS_water_dissolved_oxygen_units,
-		'GSC_MIxS_water_glucosidase_activity_units': GSC_MIxS_water_glucosidase_activity_units,
-		'GSC_MIxS_water_magnesium_units': GSC_MIxS_water_magnesium_units,
-		'GSC_MIxS_water_n_alkanes_units': GSC_MIxS_water_n_alkanes_units,
-		'GSC_MIxS_water_nitrate_units': GSC_MIxS_water_nitrate_units,
-		'GSC_MIxS_water_nitrite_units': GSC_MIxS_water_nitrite_units,
-		'GSC_MIxS_water_nitrogen_units': GSC_MIxS_water_nitrogen_units,
-		'GSC_MIxS_water_organic_carbon_units': GSC_MIxS_water_organic_carbon_units,
-		'GSC_MIxS_water_organic_matter_units': GSC_MIxS_water_organic_matter_units,
-		'GSC_MIxS_water_organic_nitrogen_units': GSC_MIxS_water_organic_nitrogen_units,
-		'GSC_MIxS_water_particulate_organic_carbon_units': GSC_MIxS_water_particulate_organic_carbon_units,
-		'GSC_MIxS_water_particulate_organic_nitrogen_units': GSC_MIxS_water_particulate_organic_nitrogen_units,
-		'GSC_MIxS_water_petroleum_hydrocarbon_units': GSC_MIxS_water_petroleum_hydrocarbon_units,
-		'GSC_MIxS_water_phaeopigments_units': GSC_MIxS_water_phaeopigments_units,
-		'GSC_MIxS_water_phosphate_units': GSC_MIxS_water_phosphate_units,
-		'GSC_MIxS_water_phospholipid_fatty_acid_units': GSC_MIxS_water_phospholipid_fatty_acid_units,
-		'GSC_MIxS_water_potassium_units': GSC_MIxS_water_potassium_units,
-		'GSC_MIxS_water_primary_production_units': GSC_MIxS_water_primary_production_units,
-		'GSC_MIxS_water_redox_potential_units': GSC_MIxS_water_redox_potential_units,
-		'GSC_MIxS_water_salinity_units': GSC_MIxS_water_salinity_units,
-		'GSC_MIxS_water_silicate_units': GSC_MIxS_water_silicate_units,
-		'GSC_MIxS_water_sodium_units': GSC_MIxS_water_sodium_units,
-		'GSC_MIxS_water_soluble_reactive_phosphorus_units': GSC_MIxS_water_soluble_reactive_phosphorus_units,
-		'GSC_MIxS_water_sulfate_units': GSC_MIxS_water_sulfate_units,
-		'GSC_MIxS_water_sulfide_units': GSC_MIxS_water_sulfide_units,
-		'GSC_MIxS_water_suspended_particulate_matter_units': GSC_MIxS_water_suspended_particulate_matter_units,
-		'GSC_MIxS_water_total_dissolved_nitrogen_units': GSC_MIxS_water_total_dissolved_nitrogen_units,
-		'GSC_MIxS_water_total_inorganic_nitrogen_units': GSC_MIxS_water_total_inorganic_nitrogen_units,
-		'GSC_MIxS_water_total_nitrogen_units': GSC_MIxS_water_total_nitrogen_units,
-		'GSC_MIxS_water_total_particulate_carbon_units': GSC_MIxS_water_total_particulate_carbon_units,
-		'GSC_MIxS_water_total_phosphorus_units': GSC_MIxS_water_total_phosphorus_units,
+		'GSC_MIxS_water_sample_volume_or_weight_for_DNA_extraction': 'sample volume or weight for DNA extraction',
+		'GSC_MIxS_water_altitude': 'altitude',
+		'GSC_MIxS_water_geographic_location_latitude': 'geographic location (latitude)',
+		'GSC_MIxS_water_geographic_location_longitude': 'geographic location (longitude)',
+		'GSC_MIxS_water_depth': 'depth',
+		'GSC_MIxS_water_elevation': 'elevation',
+		'GSC_MIxS_water_amount_or_size_of_sample_collected': 'amount or size of sample collected',
+		'GSC_MIxS_water_biomass': 'biomass',
+		'GSC_MIxS_water_density': 'density',
+		'GSC_MIxS_water_sample_storage_duration': 'sample storage duration',
+		'GSC_MIxS_water_sample_storage_temperature': 'sample storage temperature',
+		'GSC_MIxS_water_alkalinity': 'alkalinity',
+		'GSC_MIxS_water_conductivity': 'conductivity',
+		'GSC_MIxS_water_water_current': 'water current',
+		'GSC_MIxS_water_fluorescence': 'fluorescence',
+		'GSC_MIxS_water_light_intensity': 'light intensity',
+		'GSC_MIxS_water_mean_friction_velocity': 'mean friction velocity',
+		'GSC_MIxS_water_mean_peak_friction_velocity': 'mean peak friction velocity',
+		'GSC_MIxS_water_downward_PAR': 'downward PAR',
+		'GSC_MIxS_water_photon_flux': 'photon flux',
+		'GSC_MIxS_water_pressure': 'pressure',
+		'GSC_MIxS_water_temperature': 'temperature',
+		'GSC_MIxS_water_total_depth_of_water_column': 'total depth of water column',
+		'GSC_MIxS_water_alkyl_diethers': 'alkyl diethers',
+		'GSC_MIxS_water_aminopeptidase_activity': 'aminopeptidase activity',
+		'GSC_MIxS_water_ammonium': 'ammonium',
+		'GSC_MIxS_water_bacterial_carbon_production': 'bacterial carbon production',
+		'GSC_MIxS_water_bacterial_production': 'bacterial production',
+		'GSC_MIxS_water_bacterial_respiration': 'bacterial respiration',
+		'GSC_MIxS_water_bishomohopanol': 'bishomohopanol',
+		'GSC_MIxS_water_bromide': 'bromide',
+		'GSC_MIxS_water_calcium': 'calcium',
+		'GSC_MIxS_water_chloride': 'chloride',
+		'GSC_MIxS_water_chlorophyll': 'chlorophyll',
+		'GSC_MIxS_water_diether_lipids': 'diether lipids',
+		'GSC_MIxS_water_dissolved_carbon_dioxide': 'dissolved carbon dioxide',
+		'GSC_MIxS_water_dissolved_hydrogen': 'dissolved hydrogen',
+		'GSC_MIxS_water_dissolved_inorganic_carbon': 'dissolved inorganic carbon',
+		'GSC_MIxS_water_dissolved_inorganic_nitrogen': 'dissolved inorganic nitrogen',
+		'GSC_MIxS_water_dissolved_inorganic_phosphorus': 'dissolved inorganic phosphorus',
+		'GSC_MIxS_water_dissolved_organic_carbon': 'dissolved organic carbon',
+		'GSC_MIxS_water_dissolved_organic_nitrogen': 'dissolved organic nitrogen',
+		'GSC_MIxS_water_dissolved_oxygen': 'dissolved oxygen',
+		'GSC_MIxS_water_glucosidase_activity': 'glucosidase activity',
+		'GSC_MIxS_water_magnesium': 'magnesium',
+		'GSC_MIxS_water_n_alkanes': 'n-alkanes',
+		'GSC_MIxS_water_nitrate': 'nitrate',
+		'GSC_MIxS_water_nitrite': 'nitrite',
+		'GSC_MIxS_water_nitrogen': 'nitrogen',
+		'GSC_MIxS_water_organic_carbon': 'organic carbon',
+		'GSC_MIxS_water_organic_matter': 'organic matter',
+		'GSC_MIxS_water_organic_nitrogen': 'organic nitrogen',
+		'GSC_MIxS_water_particulate_organic_carbon': 'particulate organic carbon',
+		'GSC_MIxS_water_particulate_organic_nitrogen': 'particulate organic nitrogen',
+		'GSC_MIxS_water_petroleum_hydrocarbon': 'petroleum hydrocarbon',
+		'GSC_MIxS_water_phaeopigments': 'phaeopigments',
+		'GSC_MIxS_water_phosphate': 'phosphate',
+		'GSC_MIxS_water_phospholipid_fatty_acid': 'phospholipid fatty acid',
+		'GSC_MIxS_water_potassium': 'potassium',
+		'GSC_MIxS_water_primary_production': 'primary production',
+		'GSC_MIxS_water_redox_potential': 'redox potential',
+		'GSC_MIxS_water_salinity': 'salinity',
+		'GSC_MIxS_water_silicate': 'silicate',
+		'GSC_MIxS_water_sodium': 'sodium',
+		'GSC_MIxS_water_soluble_reactive_phosphorus': 'soluble reactive phosphorus',
+		'GSC_MIxS_water_sulfate': 'sulfate',
+		'GSC_MIxS_water_sulfide': 'sulfide',
+		'GSC_MIxS_water_suspended_particulate_matter': 'suspended particulate matter',
+		'GSC_MIxS_water_total_dissolved_nitrogen': 'total dissolved nitrogen',
+		'GSC_MIxS_water_total_inorganic_nitrogen': 'total inorganic nitrogen',
+		'GSC_MIxS_water_total_nitrogen': 'total nitrogen',
+		'GSC_MIxS_water_total_particulate_carbon': 'total particulate carbon',
+		'GSC_MIxS_water_total_phosphorus': 'total phosphorus',
 	}
 
-	sample = models.ForeignKey(Sample, on_delete=models.CASCADE)
 	order = models.ForeignKey(Order, on_delete=models.CASCADE, default=1)
 	GSC_MIxS_water_sample_volume_or_weight_for_DNA_extraction = models.CharField(max_length=100, choices=GSC_MIxS_water_sample_volume_or_weight_for_DNA_extraction_units, blank=False)
 	GSC_MIxS_water_altitude = models.CharField(max_length=100, choices=GSC_MIxS_water_altitude_units, blank=False)
@@ -2294,159 +2413,158 @@ class GSC_MIxS_soil(SelfDescribingModel):
 	GSC_MIxS_soil_perturbation= models.CharField(max_length=100, blank=True,help_text="type of pe")
 
 	fields = {
-		'GSC_MIxS_soil_slope_gradient': GSC_MIxS_soil_slope_gradient,
-		'GSC_MIxS_soil_slope_aspect': GSC_MIxS_soil_slope_aspect,
-		'GSC_MIxS_soil_profile_position': GSC_MIxS_soil_profile_position,
-		'GSC_MIxS_soil_project_name': GSC_MIxS_soil_project_name,
-		'GSC_MIxS_soil_experimental_factor': GSC_MIxS_soil_experimental_factor,
-		'GSC_MIxS_soil_ploidy': GSC_MIxS_soil_ploidy,
-		'GSC_MIxS_soil_number_of_replicons': GSC_MIxS_soil_number_of_replicons,
-		'GSC_MIxS_soil_extrachromosomal_elements': GSC_MIxS_soil_extrachromosomal_elements,
-		'GSC_MIxS_soil_estimated_size': GSC_MIxS_soil_estimated_size,
-		'GSC_MIxS_soil_reference_for_biomaterial': GSC_MIxS_soil_reference_for_biomaterial,
-		'GSC_MIxS_soil_annotation_source': GSC_MIxS_soil_annotation_source,
-		'GSC_MIxS_soil_sample_volume_or_weight_for_DNA_extraction': GSC_MIxS_soil_sample_volume_or_weight_for_DNA_extraction,
-		'GSC_MIxS_soil_nucleic_acid_extraction': GSC_MIxS_soil_nucleic_acid_extraction,
-		'GSC_MIxS_soil_nucleic_acid_amplification': GSC_MIxS_soil_nucleic_acid_amplification,
-		'GSC_MIxS_soil_library_size': GSC_MIxS_soil_library_size,
-		'GSC_MIxS_soil_library_reads_sequenced': GSC_MIxS_soil_library_reads_sequenced,
-		'GSC_MIxS_soil_library_construction_method': GSC_MIxS_soil_library_construction_method,
-		'GSC_MIxS_soil_library_vector': GSC_MIxS_soil_library_vector,
-		'GSC_MIxS_soil_library_screening_strategy': GSC_MIxS_soil_library_screening_strategy,
-		'GSC_MIxS_soil_target_gene': GSC_MIxS_soil_target_gene,
-		'GSC_MIxS_soil_target_subfragment': GSC_MIxS_soil_target_subfragment,
-		'GSC_MIxS_soil_pcr_primers': GSC_MIxS_soil_pcr_primers,
-		'GSC_MIxS_soil_multiplex_identifiers': GSC_MIxS_soil_multiplex_identifiers,
-		'GSC_MIxS_soil_adapters': GSC_MIxS_soil_adapters,
-		'GSC_MIxS_soil_pcr_conditions': GSC_MIxS_soil_pcr_conditions,
-		'GSC_MIxS_soil_sequencing_method': GSC_MIxS_soil_sequencing_method,
-		'GSC_MIxS_soil_sequence_quality_check': GSC_MIxS_soil_sequence_quality_check,
-		'GSC_MIxS_soil_chimera_check_software': GSC_MIxS_soil_chimera_check_software,
-		'GSC_MIxS_soil_relevant_electronic_resources': GSC_MIxS_soil_relevant_electronic_resources,
-		'GSC_MIxS_soil_relevant_standard_operating_procedures': GSC_MIxS_soil_relevant_standard_operating_procedures,
-		'GSC_MIxS_soil_pooling_of_DNA_extracts_if_done': GSC_MIxS_soil_pooling_of_DNA_extracts_if_done,
-		'GSC_MIxS_soil_negative_control_type': GSC_MIxS_soil_negative_control_type,
-		'GSC_MIxS_soil_positive_control_type': GSC_MIxS_soil_positive_control_type,
-		'GSC_MIxS_soil_collection_date': GSC_MIxS_soil_collection_date,
-		'GSC_MIxS_soil_altitude': GSC_MIxS_soil_altitude,
-		'GSC_MIxS_soil_geographic_location_country_and_or_sea': GSC_MIxS_soil_geographic_location_country_and_or_sea,
-		'GSC_MIxS_soil_geographic_location_latitude': GSC_MIxS_soil_geographic_location_latitude,
-		'GSC_MIxS_soil_geographic_location_longitude': GSC_MIxS_soil_geographic_location_longitude,
-		'GSC_MIxS_soil_geographic_location_region_and_locality': GSC_MIxS_soil_geographic_location_region_and_locality,
-		'GSC_MIxS_soil_depth': GSC_MIxS_soil_depth,
-		'GSC_MIxS_soil_broad_scale_environmental_context': GSC_MIxS_soil_broad_scale_environmental_context,
-		'GSC_MIxS_soil_local_environmental_context': GSC_MIxS_soil_local_environmental_context,
-		'GSC_MIxS_soil_environmental_medium': GSC_MIxS_soil_environmental_medium,
-		'GSC_MIxS_soil_elevation': GSC_MIxS_soil_elevation,
-		'GSC_MIxS_soil_source_material_identifiers': GSC_MIxS_soil_source_material_identifiers,
-		'GSC_MIxS_soil_sample_material_processing': GSC_MIxS_soil_sample_material_processing,
-		'GSC_MIxS_soil_isolation_and_growth_condition': GSC_MIxS_soil_isolation_and_growth_condition,
-		'GSC_MIxS_soil_propagation': GSC_MIxS_soil_propagation,
-		'GSC_MIxS_soil_amount_or_size_of_sample_collected': GSC_MIxS_soil_amount_or_size_of_sample_collected,
-		'GSC_MIxS_soil_composite_design_sieving_if_any': GSC_MIxS_soil_composite_design_sieving_if_any,
-		'GSC_MIxS_soil_sample_weight_for_DNA_extraction': GSC_MIxS_soil_sample_weight_for_DNA_extraction,
-		'GSC_MIxS_soil_storage_conditions_fresh_frozen_other': GSC_MIxS_soil_storage_conditions_fresh_frozen_other,
-		'GSC_MIxS_soil_microbial_biomass': GSC_MIxS_soil_microbial_biomass,
-		'GSC_MIxS_soil_microbial_biomass_method': GSC_MIxS_soil_microbial_biomass_method,
-		'GSC_MIxS_soil_sample_collection_device': GSC_MIxS_soil_sample_collection_device,
-		'GSC_MIxS_soil_sample_collection_method': GSC_MIxS_soil_sample_collection_method,
-		'GSC_MIxS_soil_salinity_method': GSC_MIxS_soil_salinity_method,
-		'GSC_MIxS_soil_extreme_unusual_properties_heavy_metals': GSC_MIxS_soil_extreme_unusual_properties_heavy_metals,
-		'GSC_MIxS_soil_extreme_unusual_properties_heavy_metals_method': GSC_MIxS_soil_extreme_unusual_properties_heavy_metals_method,
-		'GSC_MIxS_soil_extreme_unusual_properties_Al_saturation': GSC_MIxS_soil_extreme_unusual_properties_Al_saturation,
-		'GSC_MIxS_soil_extreme_unusual_properties_Al_saturation_method': GSC_MIxS_soil_extreme_unusual_properties_Al_saturation_method,
-		'GSC_MIxS_soil_host_disease_status': GSC_MIxS_soil_host_disease_status,
-		'GSC_MIxS_soil_host_scientific_name': GSC_MIxS_soil_host_scientific_name,
-		'GSC_MIxS_soil_link_to_climate_information': GSC_MIxS_soil_link_to_climate_information,
-		'GSC_MIxS_soil_link_to_classification_information': GSC_MIxS_soil_link_to_classification_information,
-		'GSC_MIxS_soil_links_to_additional_analysis': GSC_MIxS_soil_links_to_additional_analysis,
-		'GSC_MIxS_soil_current_land_use': GSC_MIxS_soil_current_land_use,
-		'GSC_MIxS_soil_current_vegetation': GSC_MIxS_soil_current_vegetation,
-		'GSC_MIxS_soil_current_vegetation_method': GSC_MIxS_soil_current_vegetation_method,
-		'GSC_MIxS_soil_soil_horizon': GSC_MIxS_soil_soil_horizon,
-		'GSC_MIxS_soil_soil_horizon_method': GSC_MIxS_soil_soil_horizon_method,
-		'GSC_MIxS_soil_mean_annual_and_seasonal_temperature': GSC_MIxS_soil_mean_annual_and_seasonal_temperature,
-		'GSC_MIxS_soil_mean_annual_and_seasonal_precipitation': GSC_MIxS_soil_mean_annual_and_seasonal_precipitation,
-		'GSC_MIxS_soil_soil_taxonomic_FAO_classification': GSC_MIxS_soil_soil_taxonomic_FAO_classification,
-		'GSC_MIxS_soil_soil_taxonomic_local_classification': GSC_MIxS_soil_soil_taxonomic_local_classification,
-		'GSC_MIxS_soil_soil_taxonomic_local_classification_method': GSC_MIxS_soil_soil_taxonomic_local_classification_method,
-		'GSC_MIxS_soil_soil_type': GSC_MIxS_soil_soil_type,
-		'GSC_MIxS_soil_soil_type_method': GSC_MIxS_soil_soil_type_method,
-		'GSC_MIxS_soil_drainage_classification': GSC_MIxS_soil_drainage_classification,
-		'GSC_MIxS_soil_temperature': GSC_MIxS_soil_temperature,
-		'GSC_MIxS_soil_soil_texture_measurement': GSC_MIxS_soil_soil_texture_measurement,
-		'GSC_MIxS_soil_soil_texture_method': GSC_MIxS_soil_soil_texture_method,
-		'GSC_MIxS_soil_pH': GSC_MIxS_soil_pH,
-		'GSC_MIxS_soil_pH_method': GSC_MIxS_soil_pH_method,
-		'GSC_MIxS_soil_water_content_method': GSC_MIxS_soil_water_content_method,
-		'GSC_MIxS_soil_total_organic_C_method': GSC_MIxS_soil_total_organic_C_method,
-		'GSC_MIxS_soil_total_nitrogen_method': GSC_MIxS_soil_total_nitrogen_method,
-		'GSC_MIxS_soil_organic_matter': GSC_MIxS_soil_organic_matter,
-		'GSC_MIxS_soil_total_organic_carbon': GSC_MIxS_soil_total_organic_carbon,
-		'GSC_MIxS_soil_water_content': GSC_MIxS_soil_water_content,
-		'GSC_MIxS_soil_total_nitrogen': GSC_MIxS_soil_total_nitrogen,
-		'GSC_MIxS_soil_history_previous_land_use': GSC_MIxS_soil_history_previous_land_use,
-		'GSC_MIxS_soil_history_previous_land_use_method': GSC_MIxS_soil_history_previous_land_use_method,
-		'GSC_MIxS_soil_history_crop_rotation': GSC_MIxS_soil_history_crop_rotation,
-		'GSC_MIxS_soil_history_agrochemical_additions': GSC_MIxS_soil_history_agrochemical_additions,
-		'GSC_MIxS_soil_history_tillage': GSC_MIxS_soil_history_tillage,
-		'GSC_MIxS_soil_history_fire': GSC_MIxS_soil_history_fire,
-		'GSC_MIxS_soil_history_flooding': GSC_MIxS_soil_history_flooding,
-		'GSC_MIxS_soil_history_extreme_events': GSC_MIxS_soil_history_extreme_events,
-		'GSC_MIxS_soil_subspecific_genetic_lineage': GSC_MIxS_soil_subspecific_genetic_lineage,
-		'GSC_MIxS_soil_trophic_level': GSC_MIxS_soil_trophic_level,
-		'GSC_MIxS_soil_relationship_to_oxygen': GSC_MIxS_soil_relationship_to_oxygen,
-		'GSC_MIxS_soil_known_pathogenicity': GSC_MIxS_soil_known_pathogenicity,
-		'GSC_MIxS_soil_encoded_traits': GSC_MIxS_soil_encoded_traits,
-		'GSC_MIxS_soil_observed_biotic_relationship': GSC_MIxS_soil_observed_biotic_relationship,
-		'GSC_MIxS_soil_perturbation': GSC_MIxS_soil_perturbation,
+		'GSC_MIxS_soil_slope_gradient': 'slope gradient',
+		'GSC_MIxS_soil_slope_aspect': 'slope aspect',
+		'GSC_MIxS_soil_profile_position': 'profile position',
+		'GSC_MIxS_soil_project_name': 'project name',
+		'GSC_MIxS_soil_experimental_factor': 'experimental factor',
+		'GSC_MIxS_soil_ploidy': 'ploidy',
+		'GSC_MIxS_soil_number_of_replicons': 'number of replicons',
+		'GSC_MIxS_soil_extrachromosomal_elements': 'extrachromosomal elements',
+		'GSC_MIxS_soil_estimated_size': 'estimated size',
+		'GSC_MIxS_soil_reference_for_biomaterial': 'reference for biomaterial',
+		'GSC_MIxS_soil_annotation_source': 'annotation source',
+		'GSC_MIxS_soil_sample_volume_or_weight_for_DNA_extraction': 'sample volume or weight for DNA extraction',
+		'GSC_MIxS_soil_nucleic_acid_extraction': 'nucleic acid extraction',
+		'GSC_MIxS_soil_nucleic_acid_amplification': 'nucleic acid amplification',
+		'GSC_MIxS_soil_library_size': 'library size',
+		'GSC_MIxS_soil_library_reads_sequenced': 'library reads sequenced',
+		'GSC_MIxS_soil_library_construction_method': 'library construction method',
+		'GSC_MIxS_soil_library_vector': 'library vector',
+		'GSC_MIxS_soil_library_screening_strategy': 'library screening strategy',
+		'GSC_MIxS_soil_target_gene': 'target gene',
+		'GSC_MIxS_soil_target_subfragment': 'target subfragment',
+		'GSC_MIxS_soil_pcr_primers': 'pcr primers',
+		'GSC_MIxS_soil_multiplex_identifiers': 'multiplex identifiers',
+		'GSC_MIxS_soil_adapters': 'adapters',
+		'GSC_MIxS_soil_pcr_conditions': 'pcr conditions',
+		'GSC_MIxS_soil_sequencing_method': 'sequencing method',
+		'GSC_MIxS_soil_sequence_quality_check': 'sequence quality check',
+		'GSC_MIxS_soil_chimera_check_software': 'chimera check software',
+		'GSC_MIxS_soil_relevant_electronic_resources': 'relevant electronic resources',
+		'GSC_MIxS_soil_relevant_standard_operating_procedures': 'relevant standard operating procedures',
+		'GSC_MIxS_soil_pooling_of_DNA_extracts_if_done': 'pooling of DNA extracts (if done)',
+		'GSC_MIxS_soil_negative_control_type': 'negative control type',
+		'GSC_MIxS_soil_positive_control_type': 'positive control type',
+		'GSC_MIxS_soil_collection_date': 'collection date',
+		'GSC_MIxS_soil_altitude': 'altitude',
+		'GSC_MIxS_soil_geographic_location_country_and_or_sea': 'geographic location (country and/or sea)',
+		'GSC_MIxS_soil_geographic_location_latitude': 'geographic location (latitude)',
+		'GSC_MIxS_soil_geographic_location_longitude': 'geographic location (longitude)',
+		'GSC_MIxS_soil_geographic_location_region_and_locality': 'geographic location (region and locality)',
+		'GSC_MIxS_soil_depth': 'depth',
+		'GSC_MIxS_soil_broad_scale_environmental_context': 'broad-scale environmental context',
+		'GSC_MIxS_soil_local_environmental_context': 'local environmental context',
+		'GSC_MIxS_soil_environmental_medium': 'environmental medium',
+		'GSC_MIxS_soil_elevation': 'elevation',
+		'GSC_MIxS_soil_source_material_identifiers': 'source material identifiers',
+		'GSC_MIxS_soil_sample_material_processing': 'sample material processing',
+		'GSC_MIxS_soil_isolation_and_growth_condition': 'isolation and growth condition',
+		'GSC_MIxS_soil_propagation': 'propagation',
+		'GSC_MIxS_soil_amount_or_size_of_sample_collected': 'amount or size of sample collected',
+		'GSC_MIxS_soil_composite_design_sieving_if_any': 'composite design/sieving (if any)',
+		'GSC_MIxS_soil_sample_weight_for_DNA_extraction': 'sample weight for DNA extraction',
+		'GSC_MIxS_soil_storage_conditions_fresh_frozen_other': 'storage conditions (fresh/frozen/other)',
+		'GSC_MIxS_soil_microbial_biomass': 'microbial biomass',
+		'GSC_MIxS_soil_microbial_biomass_method': 'microbial biomass method',
+		'GSC_MIxS_soil_sample_collection_device': 'sample collection device',
+		'GSC_MIxS_soil_sample_collection_method': 'sample collection method',
+		'GSC_MIxS_soil_salinity_method': 'salinity method',
+		'GSC_MIxS_soil_extreme_unusual_properties_heavy_metals': 'extreme_unusual_properties/heavy metals',
+		'GSC_MIxS_soil_extreme_unusual_properties_heavy_metals_method': 'extreme_unusual_properties/heavy metals method',
+		'GSC_MIxS_soil_extreme_unusual_properties_Al_saturation': 'extreme_unusual_properties/Al saturation',
+		'GSC_MIxS_soil_extreme_unusual_properties_Al_saturation_method': 'extreme_unusual_properties/Al saturation method',
+		'GSC_MIxS_soil_host_disease_status': 'host disease status',
+		'GSC_MIxS_soil_host_scientific_name': 'host scientific name',
+		'GSC_MIxS_soil_link_to_climate_information': 'link to climate information',
+		'GSC_MIxS_soil_link_to_classification_information': 'link to classification information',
+		'GSC_MIxS_soil_links_to_additional_analysis': 'links to additional analysis',
+		'GSC_MIxS_soil_current_land_use': 'current land use',
+		'GSC_MIxS_soil_current_vegetation': 'current vegetation',
+		'GSC_MIxS_soil_current_vegetation_method': 'current vegetation method',
+		'GSC_MIxS_soil_soil_horizon': 'soil horizon',
+		'GSC_MIxS_soil_soil_horizon_method': 'soil horizon method',
+		'GSC_MIxS_soil_mean_annual_and_seasonal_temperature': 'mean annual and seasonal temperature',
+		'GSC_MIxS_soil_mean_annual_and_seasonal_precipitation': 'mean annual and seasonal precipitation',
+		'GSC_MIxS_soil_soil_taxonomic_FAO_classification': 'soil_taxonomic/FAO classification',
+		'GSC_MIxS_soil_soil_taxonomic_local_classification': 'soil_taxonomic/local classification',
+		'GSC_MIxS_soil_soil_taxonomic_local_classification_method': 'soil_taxonomic/local classification method',
+		'GSC_MIxS_soil_soil_type': 'soil type',
+		'GSC_MIxS_soil_soil_type_method': 'soil type method',
+		'GSC_MIxS_soil_drainage_classification': 'drainage classification',
+		'GSC_MIxS_soil_temperature': 'temperature',
+		'GSC_MIxS_soil_soil_texture_measurement': 'soil texture measurement',
+		'GSC_MIxS_soil_soil_texture_method': 'soil texture method',
+		'GSC_MIxS_soil_pH': 'pH',
+		'GSC_MIxS_soil_pH_method': 'pH method',
+		'GSC_MIxS_soil_water_content_method': 'water content method',
+		'GSC_MIxS_soil_total_organic_C_method': 'total organic C method',
+		'GSC_MIxS_soil_total_nitrogen_method': 'total nitrogen method',
+		'GSC_MIxS_soil_organic_matter': 'organic matter',
+		'GSC_MIxS_soil_total_organic_carbon': 'total organic carbon',
+		'GSC_MIxS_soil_water_content': 'water content',
+		'GSC_MIxS_soil_total_nitrogen': 'total nitrogen',
+		'GSC_MIxS_soil_history_previous_land_use': 'history/previous land use',
+		'GSC_MIxS_soil_history_previous_land_use_method': 'history/previous land use method',
+		'GSC_MIxS_soil_history_crop_rotation': 'history/crop rotation',
+		'GSC_MIxS_soil_history_agrochemical_additions': 'history/agrochemical additions',
+		'GSC_MIxS_soil_history_tillage': 'history/tillage',
+		'GSC_MIxS_soil_history_fire': 'history/fire',
+		'GSC_MIxS_soil_history_flooding': 'history/flooding',
+		'GSC_MIxS_soil_history_extreme_events': 'history/extreme events',
+		'GSC_MIxS_soil_subspecific_genetic_lineage': 'subspecific genetic lineage',
+		'GSC_MIxS_soil_trophic_level': 'trophic level',
+		'GSC_MIxS_soil_relationship_to_oxygen': 'relationship to oxygen',
+		'GSC_MIxS_soil_known_pathogenicity': 'known pathogenicity',
+		'GSC_MIxS_soil_encoded_traits': 'encoded traits',
+		'GSC_MIxS_soil_observed_biotic_relationship': 'observed biotic relationship',
+		'GSC_MIxS_soil_perturbation': 'perturbation',
 	}
 
-class GSC_MIxS_soil_unit(SelfDescribingModel):
+class GSC_MIxS_soil_unit(SelfDescribingUnitModel):
 
 	GSC_MIxS_soil_slope_gradient_units = [('%', '%')]
 	GSC_MIxS_soil_sample_volume_or_weight_for_DNA_extraction_units = [('g', 'g'), ('mL', 'mL'), ('mg', 'mg'), ('ng', 'ng')]
 	GSC_MIxS_soil_altitude_units = [('m', 'm')]
-	GSC_MIxS_soil_geographic_location_latitude_units = [('D', 'D'), ('D', 'D')]
-	GSC_MIxS_soil_geographic_location_longitude_units = [('D', 'D'), ('D', 'D')]
+	GSC_MIxS_soil_geographic_location_latitude_units = [('DD', 'DD')]
+	GSC_MIxS_soil_geographic_location_longitude_units = [('DD', 'DD')]
 	GSC_MIxS_soil_depth_units = [('m', 'm')]
 	GSC_MIxS_soil_elevation_units = [('m', 'm')]
 	GSC_MIxS_soil_amount_or_size_of_sample_collected_units = [('L', 'L'), ('g', 'g'), ('kg', 'kg'), ('m2', 'm2'), ('m3', 'm3')]
 	GSC_MIxS_soil_sample_weight_for_DNA_extraction_units = [('g', 'g')]
-	GSC_MIxS_soil_microbial_biomass_units = [('g', 'g'), ('/', '/'), ('k', 'k'), ('g', 'g')]
+	GSC_MIxS_soil_microbial_biomass_units = [('g/kg', 'g/kg')]
 	GSC_MIxS_soil_extreme_unusual_properties_Al_saturation_units = [('%', '%')]
-	GSC_MIxS_soil_mean_annual_and_seasonal_temperature_units = [('º', 'º'), ('C', 'C')]
-	GSC_MIxS_soil_mean_annual_and_seasonal_precipitation_units = [('m', 'm'), ('m', 'm')]
-	GSC_MIxS_soil_temperature_units = [('º', 'º'), ('C', 'C')]
-	GSC_MIxS_soil_soil_texture_measurement_units = [('%', '%'), (' ', ' '), ('s', 's'), ('a', 'a'), ('n', 'n'), ('d', 'd'), ('/', '/'), ('s', 's'), ('i', 'i'), ('l', 'l'), ('t', 't'), ('/', '/'), ('c', 'c'), ('l', 'l'), ('a', 'a'), ('y', 'y')]
-	GSC_MIxS_soil_organic_matter_units = [('µ', 'µ'), ('g', 'g'), ('/', '/'), ('L', 'L')]
-	GSC_MIxS_soil_total_organic_carbon_units = [('g', 'g'), ('/', '/'), ('k', 'k'), ('g', 'g')]
+	GSC_MIxS_soil_mean_annual_and_seasonal_temperature_units = [('ºC', 'ºC')]
+	GSC_MIxS_soil_mean_annual_and_seasonal_precipitation_units = [('mm', 'mm')]
+	GSC_MIxS_soil_temperature_units = [('ºC', 'ºC')]
+	GSC_MIxS_soil_soil_texture_measurement_units = [('% sand/silt/clay', '% sand/silt/clay')]
+	GSC_MIxS_soil_organic_matter_units = [('µg/L', 'µg/L')]
+	GSC_MIxS_soil_total_organic_carbon_units = [('g/kg', 'g/kg')]
 	GSC_MIxS_soil_water_content_units = [('cm3/cm3', 'cm3/cm3'), ('g/g', 'g/g')]
 	GSC_MIxS_soil_total_nitrogen_units = [('µg/L', 'µg/L'), ('µmol/L', 'µmol/L')]
 
 	fields = {
-		'GSC_MIxS_soil_slope_gradient_units': GSC_MIxS_soil_slope_gradient_units,
-		'GSC_MIxS_soil_sample_volume_or_weight_for_DNA_extraction_units': GSC_MIxS_soil_sample_volume_or_weight_for_DNA_extraction_units,
-		'GSC_MIxS_soil_altitude_units': GSC_MIxS_soil_altitude_units,
-		'GSC_MIxS_soil_geographic_location_latitude_units': GSC_MIxS_soil_geographic_location_latitude_units,
-		'GSC_MIxS_soil_geographic_location_longitude_units': GSC_MIxS_soil_geographic_location_longitude_units,
-		'GSC_MIxS_soil_depth_units': GSC_MIxS_soil_depth_units,
-		'GSC_MIxS_soil_elevation_units': GSC_MIxS_soil_elevation_units,
-		'GSC_MIxS_soil_amount_or_size_of_sample_collected_units': GSC_MIxS_soil_amount_or_size_of_sample_collected_units,
-		'GSC_MIxS_soil_sample_weight_for_DNA_extraction_units': GSC_MIxS_soil_sample_weight_for_DNA_extraction_units,
-		'GSC_MIxS_soil_microbial_biomass_units': GSC_MIxS_soil_microbial_biomass_units,
-		'GSC_MIxS_soil_extreme_unusual_properties_Al_saturation_units': GSC_MIxS_soil_extreme_unusual_properties_Al_saturation_units,
-		'GSC_MIxS_soil_mean_annual_and_seasonal_temperature_units': GSC_MIxS_soil_mean_annual_and_seasonal_temperature_units,
-		'GSC_MIxS_soil_mean_annual_and_seasonal_precipitation_units': GSC_MIxS_soil_mean_annual_and_seasonal_precipitation_units,
-		'GSC_MIxS_soil_temperature_units': GSC_MIxS_soil_temperature_units,
-		'GSC_MIxS_soil_soil_texture_measurement_units': GSC_MIxS_soil_soil_texture_measurement_units,
-		'GSC_MIxS_soil_organic_matter_units': GSC_MIxS_soil_organic_matter_units,
-		'GSC_MIxS_soil_total_organic_carbon_units': GSC_MIxS_soil_total_organic_carbon_units,
-		'GSC_MIxS_soil_water_content_units': GSC_MIxS_soil_water_content_units,
-		'GSC_MIxS_soil_total_nitrogen_units': GSC_MIxS_soil_total_nitrogen_units,
+		'GSC_MIxS_soil_slope_gradient': 'slope gradient',
+		'GSC_MIxS_soil_sample_volume_or_weight_for_DNA_extraction': 'sample volume or weight for DNA extraction',
+		'GSC_MIxS_soil_altitude': 'altitude',
+		'GSC_MIxS_soil_geographic_location_latitude': 'geographic location (latitude)',
+		'GSC_MIxS_soil_geographic_location_longitude': 'geographic location (longitude)',
+		'GSC_MIxS_soil_depth': 'depth',
+		'GSC_MIxS_soil_elevation': 'elevation',
+		'GSC_MIxS_soil_amount_or_size_of_sample_collected': 'amount or size of sample collected',
+		'GSC_MIxS_soil_sample_weight_for_DNA_extraction': 'sample weight for DNA extraction',
+		'GSC_MIxS_soil_microbial_biomass': 'microbial biomass',
+		'GSC_MIxS_soil_extreme_unusual_properties_Al_saturation': 'extreme_unusual_properties/Al saturation',
+		'GSC_MIxS_soil_mean_annual_and_seasonal_temperature': 'mean annual and seasonal temperature',
+		'GSC_MIxS_soil_mean_annual_and_seasonal_precipitation': 'mean annual and seasonal precipitation',
+		'GSC_MIxS_soil_temperature': 'temperature',
+		'GSC_MIxS_soil_soil_texture_measurement': 'soil texture measurement',
+		'GSC_MIxS_soil_organic_matter': 'organic matter',
+		'GSC_MIxS_soil_total_organic_carbon': 'total organic carbon',
+		'GSC_MIxS_soil_water_content': 'water content',
+		'GSC_MIxS_soil_total_nitrogen': 'total nitrogen',
 	}
 
-	sample = models.ForeignKey(Sample, on_delete=models.CASCADE)
 	order = models.ForeignKey(Order, on_delete=models.CASCADE, default=1)
 	GSC_MIxS_soil_slope_gradient = models.CharField(max_length=100, choices=GSC_MIxS_soil_slope_gradient_units, blank=False)
 	GSC_MIxS_soil_sample_volume_or_weight_for_DNA_extraction = models.CharField(max_length=100, choices=GSC_MIxS_soil_sample_volume_or_weight_for_DNA_extraction_units, blank=False)
@@ -2588,125 +2706,124 @@ class GSC_MIxS_human_gut(SelfDescribingModel):
 	GSC_MIxS_human_gut_perturbation= models.CharField(max_length=100, blank=True,help_text="type of pe")
 
 	fields = {
-		'GSC_MIxS_human_gut_project_name': GSC_MIxS_human_gut_project_name,
-		'GSC_MIxS_human_gut_experimental_factor': GSC_MIxS_human_gut_experimental_factor,
-		'GSC_MIxS_human_gut_ploidy': GSC_MIxS_human_gut_ploidy,
-		'GSC_MIxS_human_gut_number_of_replicons': GSC_MIxS_human_gut_number_of_replicons,
-		'GSC_MIxS_human_gut_extrachromosomal_elements': GSC_MIxS_human_gut_extrachromosomal_elements,
-		'GSC_MIxS_human_gut_estimated_size': GSC_MIxS_human_gut_estimated_size,
-		'GSC_MIxS_human_gut_reference_for_biomaterial': GSC_MIxS_human_gut_reference_for_biomaterial,
-		'GSC_MIxS_human_gut_annotation_source': GSC_MIxS_human_gut_annotation_source,
-		'GSC_MIxS_human_gut_sample_volume_or_weight_for_DNA_extraction': GSC_MIxS_human_gut_sample_volume_or_weight_for_DNA_extraction,
-		'GSC_MIxS_human_gut_nucleic_acid_extraction': GSC_MIxS_human_gut_nucleic_acid_extraction,
-		'GSC_MIxS_human_gut_nucleic_acid_amplification': GSC_MIxS_human_gut_nucleic_acid_amplification,
-		'GSC_MIxS_human_gut_library_size': GSC_MIxS_human_gut_library_size,
-		'GSC_MIxS_human_gut_library_reads_sequenced': GSC_MIxS_human_gut_library_reads_sequenced,
-		'GSC_MIxS_human_gut_library_construction_method': GSC_MIxS_human_gut_library_construction_method,
-		'GSC_MIxS_human_gut_library_vector': GSC_MIxS_human_gut_library_vector,
-		'GSC_MIxS_human_gut_library_screening_strategy': GSC_MIxS_human_gut_library_screening_strategy,
-		'GSC_MIxS_human_gut_target_gene': GSC_MIxS_human_gut_target_gene,
-		'GSC_MIxS_human_gut_target_subfragment': GSC_MIxS_human_gut_target_subfragment,
-		'GSC_MIxS_human_gut_pcr_primers': GSC_MIxS_human_gut_pcr_primers,
-		'GSC_MIxS_human_gut_multiplex_identifiers': GSC_MIxS_human_gut_multiplex_identifiers,
-		'GSC_MIxS_human_gut_adapters': GSC_MIxS_human_gut_adapters,
-		'GSC_MIxS_human_gut_pcr_conditions': GSC_MIxS_human_gut_pcr_conditions,
-		'GSC_MIxS_human_gut_sequencing_method': GSC_MIxS_human_gut_sequencing_method,
-		'GSC_MIxS_human_gut_sequence_quality_check': GSC_MIxS_human_gut_sequence_quality_check,
-		'GSC_MIxS_human_gut_chimera_check_software': GSC_MIxS_human_gut_chimera_check_software,
-		'GSC_MIxS_human_gut_relevant_electronic_resources': GSC_MIxS_human_gut_relevant_electronic_resources,
-		'GSC_MIxS_human_gut_relevant_standard_operating_procedures': GSC_MIxS_human_gut_relevant_standard_operating_procedures,
-		'GSC_MIxS_human_gut_negative_control_type': GSC_MIxS_human_gut_negative_control_type,
-		'GSC_MIxS_human_gut_positive_control_type': GSC_MIxS_human_gut_positive_control_type,
-		'GSC_MIxS_human_gut_collection_date': GSC_MIxS_human_gut_collection_date,
-		'GSC_MIxS_human_gut_geographic_location_country_and_or_sea': GSC_MIxS_human_gut_geographic_location_country_and_or_sea,
-		'GSC_MIxS_human_gut_geographic_location_latitude': GSC_MIxS_human_gut_geographic_location_latitude,
-		'GSC_MIxS_human_gut_geographic_location_longitude': GSC_MIxS_human_gut_geographic_location_longitude,
-		'GSC_MIxS_human_gut_geographic_location_region_and_locality': GSC_MIxS_human_gut_geographic_location_region_and_locality,
-		'GSC_MIxS_human_gut_broad_scale_environmental_context': GSC_MIxS_human_gut_broad_scale_environmental_context,
-		'GSC_MIxS_human_gut_local_environmental_context': GSC_MIxS_human_gut_local_environmental_context,
-		'GSC_MIxS_human_gut_environmental_medium': GSC_MIxS_human_gut_environmental_medium,
-		'GSC_MIxS_human_gut_source_material_identifiers': GSC_MIxS_human_gut_source_material_identifiers,
-		'GSC_MIxS_human_gut_sample_material_processing': GSC_MIxS_human_gut_sample_material_processing,
-		'GSC_MIxS_human_gut_isolation_and_growth_condition': GSC_MIxS_human_gut_isolation_and_growth_condition,
-		'GSC_MIxS_human_gut_propagation': GSC_MIxS_human_gut_propagation,
-		'GSC_MIxS_human_gut_amount_or_size_of_sample_collected': GSC_MIxS_human_gut_amount_or_size_of_sample_collected,
-		'GSC_MIxS_human_gut_host_body_product': GSC_MIxS_human_gut_host_body_product,
-		'GSC_MIxS_human_gut_medical_history_performed': GSC_MIxS_human_gut_medical_history_performed,
-		'GSC_MIxS_human_gut_oxygenation_status_of_sample': GSC_MIxS_human_gut_oxygenation_status_of_sample,
-		'GSC_MIxS_human_gut_organism_count': GSC_MIxS_human_gut_organism_count,
-		'GSC_MIxS_human_gut_sample_storage_duration': GSC_MIxS_human_gut_sample_storage_duration,
-		'GSC_MIxS_human_gut_sample_storage_temperature': GSC_MIxS_human_gut_sample_storage_temperature,
-		'GSC_MIxS_human_gut_sample_storage_location': GSC_MIxS_human_gut_sample_storage_location,
-		'GSC_MIxS_human_gut_sample_collection_device': GSC_MIxS_human_gut_sample_collection_device,
-		'GSC_MIxS_human_gut_sample_collection_method': GSC_MIxS_human_gut_sample_collection_method,
-		'GSC_MIxS_human_gut_gastrointestinal_tract_disorder': GSC_MIxS_human_gut_gastrointestinal_tract_disorder,
-		'GSC_MIxS_human_gut_liver_disorder': GSC_MIxS_human_gut_liver_disorder,
-		'GSC_MIxS_human_gut_host_disease_status': GSC_MIxS_human_gut_host_disease_status,
-		'GSC_MIxS_human_gut_host_subject_id': GSC_MIxS_human_gut_host_subject_id,
-		'GSC_MIxS_human_gut_IHMC_medication_code': GSC_MIxS_human_gut_IHMC_medication_code,
-		'GSC_MIxS_human_gut_host_age': GSC_MIxS_human_gut_host_age,
-		'GSC_MIxS_human_gut_host_body_site': GSC_MIxS_human_gut_host_body_site,
-		'GSC_MIxS_human_gut_host_height': GSC_MIxS_human_gut_host_height,
-		'GSC_MIxS_human_gut_host_body_mass_index': GSC_MIxS_human_gut_host_body_mass_index,
-		'GSC_MIxS_human_gut_ethnicity': GSC_MIxS_human_gut_ethnicity,
-		'GSC_MIxS_human_gut_host_occupation': GSC_MIxS_human_gut_host_occupation,
-		'GSC_MIxS_human_gut_host_total_mass': GSC_MIxS_human_gut_host_total_mass,
-		'GSC_MIxS_human_gut_host_phenotype': GSC_MIxS_human_gut_host_phenotype,
-		'GSC_MIxS_human_gut_host_body_temperature': GSC_MIxS_human_gut_host_body_temperature,
-		'GSC_MIxS_human_gut_host_sex': GSC_MIxS_human_gut_host_sex,
-		'GSC_MIxS_human_gut_temperature': GSC_MIxS_human_gut_temperature,
-		'GSC_MIxS_human_gut_salinity': GSC_MIxS_human_gut_salinity,
-		'GSC_MIxS_human_gut_special_diet': GSC_MIxS_human_gut_special_diet,
-		'GSC_MIxS_human_gut_host_diet': GSC_MIxS_human_gut_host_diet,
-		'GSC_MIxS_human_gut_host_last_meal': GSC_MIxS_human_gut_host_last_meal,
-		'GSC_MIxS_human_gut_host_family_relationship': GSC_MIxS_human_gut_host_family_relationship,
-		'GSC_MIxS_human_gut_host_genotype': GSC_MIxS_human_gut_host_genotype,
-		'GSC_MIxS_human_gut_host_pulse': GSC_MIxS_human_gut_host_pulse,
-		'GSC_MIxS_human_gut_subspecific_genetic_lineage': GSC_MIxS_human_gut_subspecific_genetic_lineage,
-		'GSC_MIxS_human_gut_trophic_level': GSC_MIxS_human_gut_trophic_level,
-		'GSC_MIxS_human_gut_relationship_to_oxygen': GSC_MIxS_human_gut_relationship_to_oxygen,
-		'GSC_MIxS_human_gut_known_pathogenicity': GSC_MIxS_human_gut_known_pathogenicity,
-		'GSC_MIxS_human_gut_encoded_traits': GSC_MIxS_human_gut_encoded_traits,
-		'GSC_MIxS_human_gut_observed_biotic_relationship': GSC_MIxS_human_gut_observed_biotic_relationship,
-		'GSC_MIxS_human_gut_chemical_administration': GSC_MIxS_human_gut_chemical_administration,
-		'GSC_MIxS_human_gut_perturbation': GSC_MIxS_human_gut_perturbation,
+		'GSC_MIxS_human_gut_project_name': 'project name',
+		'GSC_MIxS_human_gut_experimental_factor': 'experimental factor',
+		'GSC_MIxS_human_gut_ploidy': 'ploidy',
+		'GSC_MIxS_human_gut_number_of_replicons': 'number of replicons',
+		'GSC_MIxS_human_gut_extrachromosomal_elements': 'extrachromosomal elements',
+		'GSC_MIxS_human_gut_estimated_size': 'estimated size',
+		'GSC_MIxS_human_gut_reference_for_biomaterial': 'reference for biomaterial',
+		'GSC_MIxS_human_gut_annotation_source': 'annotation source',
+		'GSC_MIxS_human_gut_sample_volume_or_weight_for_DNA_extraction': 'sample volume or weight for DNA extraction',
+		'GSC_MIxS_human_gut_nucleic_acid_extraction': 'nucleic acid extraction',
+		'GSC_MIxS_human_gut_nucleic_acid_amplification': 'nucleic acid amplification',
+		'GSC_MIxS_human_gut_library_size': 'library size',
+		'GSC_MIxS_human_gut_library_reads_sequenced': 'library reads sequenced',
+		'GSC_MIxS_human_gut_library_construction_method': 'library construction method',
+		'GSC_MIxS_human_gut_library_vector': 'library vector',
+		'GSC_MIxS_human_gut_library_screening_strategy': 'library screening strategy',
+		'GSC_MIxS_human_gut_target_gene': 'target gene',
+		'GSC_MIxS_human_gut_target_subfragment': 'target subfragment',
+		'GSC_MIxS_human_gut_pcr_primers': 'pcr primers',
+		'GSC_MIxS_human_gut_multiplex_identifiers': 'multiplex identifiers',
+		'GSC_MIxS_human_gut_adapters': 'adapters',
+		'GSC_MIxS_human_gut_pcr_conditions': 'pcr conditions',
+		'GSC_MIxS_human_gut_sequencing_method': 'sequencing method',
+		'GSC_MIxS_human_gut_sequence_quality_check': 'sequence quality check',
+		'GSC_MIxS_human_gut_chimera_check_software': 'chimera check software',
+		'GSC_MIxS_human_gut_relevant_electronic_resources': 'relevant electronic resources',
+		'GSC_MIxS_human_gut_relevant_standard_operating_procedures': 'relevant standard operating procedures',
+		'GSC_MIxS_human_gut_negative_control_type': 'negative control type',
+		'GSC_MIxS_human_gut_positive_control_type': 'positive control type',
+		'GSC_MIxS_human_gut_collection_date': 'collection date',
+		'GSC_MIxS_human_gut_geographic_location_country_and_or_sea': 'geographic location (country and/or sea)',
+		'GSC_MIxS_human_gut_geographic_location_latitude': 'geographic location (latitude)',
+		'GSC_MIxS_human_gut_geographic_location_longitude': 'geographic location (longitude)',
+		'GSC_MIxS_human_gut_geographic_location_region_and_locality': 'geographic location (region and locality)',
+		'GSC_MIxS_human_gut_broad_scale_environmental_context': 'broad-scale environmental context',
+		'GSC_MIxS_human_gut_local_environmental_context': 'local environmental context',
+		'GSC_MIxS_human_gut_environmental_medium': 'environmental medium',
+		'GSC_MIxS_human_gut_source_material_identifiers': 'source material identifiers',
+		'GSC_MIxS_human_gut_sample_material_processing': 'sample material processing',
+		'GSC_MIxS_human_gut_isolation_and_growth_condition': 'isolation and growth condition',
+		'GSC_MIxS_human_gut_propagation': 'propagation',
+		'GSC_MIxS_human_gut_amount_or_size_of_sample_collected': 'amount or size of sample collected',
+		'GSC_MIxS_human_gut_host_body_product': 'host body product',
+		'GSC_MIxS_human_gut_medical_history_performed': 'medical history performed',
+		'GSC_MIxS_human_gut_oxygenation_status_of_sample': 'oxygenation status of sample',
+		'GSC_MIxS_human_gut_organism_count': 'organism count',
+		'GSC_MIxS_human_gut_sample_storage_duration': 'sample storage duration',
+		'GSC_MIxS_human_gut_sample_storage_temperature': 'sample storage temperature',
+		'GSC_MIxS_human_gut_sample_storage_location': 'sample storage location',
+		'GSC_MIxS_human_gut_sample_collection_device': 'sample collection device',
+		'GSC_MIxS_human_gut_sample_collection_method': 'sample collection method',
+		'GSC_MIxS_human_gut_gastrointestinal_tract_disorder': 'gastrointestinal tract disorder',
+		'GSC_MIxS_human_gut_liver_disorder': 'liver disorder',
+		'GSC_MIxS_human_gut_host_disease_status': 'host disease status',
+		'GSC_MIxS_human_gut_host_subject_id': 'host subject id',
+		'GSC_MIxS_human_gut_IHMC_medication_code': 'IHMC medication code',
+		'GSC_MIxS_human_gut_host_age': 'host age',
+		'GSC_MIxS_human_gut_host_body_site': 'host body site',
+		'GSC_MIxS_human_gut_host_height': 'host height',
+		'GSC_MIxS_human_gut_host_body_mass_index': 'host body-mass index',
+		'GSC_MIxS_human_gut_ethnicity': 'ethnicity',
+		'GSC_MIxS_human_gut_host_occupation': 'host occupation',
+		'GSC_MIxS_human_gut_host_total_mass': 'host total mass',
+		'GSC_MIxS_human_gut_host_phenotype': 'host phenotype',
+		'GSC_MIxS_human_gut_host_body_temperature': 'host body temperature',
+		'GSC_MIxS_human_gut_host_sex': 'host sex',
+		'GSC_MIxS_human_gut_temperature': 'temperature',
+		'GSC_MIxS_human_gut_salinity': 'salinity',
+		'GSC_MIxS_human_gut_special_diet': 'special diet',
+		'GSC_MIxS_human_gut_host_diet': 'host diet',
+		'GSC_MIxS_human_gut_host_last_meal': 'host last meal',
+		'GSC_MIxS_human_gut_host_family_relationship': 'host family relationship',
+		'GSC_MIxS_human_gut_host_genotype': 'host genotype',
+		'GSC_MIxS_human_gut_host_pulse': 'host pulse',
+		'GSC_MIxS_human_gut_subspecific_genetic_lineage': 'subspecific genetic lineage',
+		'GSC_MIxS_human_gut_trophic_level': 'trophic level',
+		'GSC_MIxS_human_gut_relationship_to_oxygen': 'relationship to oxygen',
+		'GSC_MIxS_human_gut_known_pathogenicity': 'known pathogenicity',
+		'GSC_MIxS_human_gut_encoded_traits': 'encoded traits',
+		'GSC_MIxS_human_gut_observed_biotic_relationship': 'observed biotic relationship',
+		'GSC_MIxS_human_gut_chemical_administration': 'chemical administration',
+		'GSC_MIxS_human_gut_perturbation': 'perturbation',
 	}
 
-class GSC_MIxS_human_gut_unit(SelfDescribingModel):
+class GSC_MIxS_human_gut_unit(SelfDescribingUnitModel):
 
 	GSC_MIxS_human_gut_sample_volume_or_weight_for_DNA_extraction_units = [('g', 'g'), ('mL', 'mL'), ('mg', 'mg'), ('ng', 'ng')]
-	GSC_MIxS_human_gut_geographic_location_latitude_units = [('D', 'D'), ('D', 'D')]
-	GSC_MIxS_human_gut_geographic_location_longitude_units = [('D', 'D'), ('D', 'D')]
+	GSC_MIxS_human_gut_geographic_location_latitude_units = [('DD', 'DD')]
+	GSC_MIxS_human_gut_geographic_location_longitude_units = [('DD', 'DD')]
 	GSC_MIxS_human_gut_amount_or_size_of_sample_collected_units = [('L', 'L'), ('g', 'g'), ('kg', 'kg'), ('m2', 'm2'), ('m3', 'm3')]
 	GSC_MIxS_human_gut_sample_storage_duration_units = [('days', 'days'), ('hours', 'hours'), ('months', 'months'), ('weeks', 'weeks'), ('years', 'years')]
-	GSC_MIxS_human_gut_sample_storage_temperature_units = [('°', '°'), ('C', 'C')]
+	GSC_MIxS_human_gut_sample_storage_temperature_units = [('°C', '°C')]
 	GSC_MIxS_human_gut_host_age_units = [('centuries', 'centuries'), ('days', 'days'), ('decades', 'decades'), ('hours', 'hours'), ('minutes', 'minutes'), ('months', 'months'), ('seconds', 'seconds'), ('weeks', 'weeks'), ('years', 'years')]
 	GSC_MIxS_human_gut_host_height_units = [('cm', 'cm'), ('m', 'm'), ('mm', 'mm')]
-	GSC_MIxS_human_gut_host_body_mass_index_units = [('k', 'k'), ('g', 'g'), ('/', '/'), ('m', 'm'), ('2', '2')]
+	GSC_MIxS_human_gut_host_body_mass_index_units = [('kg/m2', 'kg/m2')]
 	GSC_MIxS_human_gut_host_total_mass_units = [('g', 'g'), ('kg', 'kg')]
-	GSC_MIxS_human_gut_host_body_temperature_units = [('º', 'º'), ('C', 'C')]
-	GSC_MIxS_human_gut_temperature_units = [('º', 'º'), ('C', 'C')]
-	GSC_MIxS_human_gut_salinity_units = [('p', 'p'), ('s', 's'), ('u', 'u')]
-	GSC_MIxS_human_gut_host_pulse_units = [('b', 'b'), ('p', 'p'), ('m', 'm')]
+	GSC_MIxS_human_gut_host_body_temperature_units = [('ºC', 'ºC')]
+	GSC_MIxS_human_gut_temperature_units = [('ºC', 'ºC')]
+	GSC_MIxS_human_gut_salinity_units = [('psu', 'psu')]
+	GSC_MIxS_human_gut_host_pulse_units = [('bpm', 'bpm')]
 
 	fields = {
-		'GSC_MIxS_human_gut_sample_volume_or_weight_for_DNA_extraction_units': GSC_MIxS_human_gut_sample_volume_or_weight_for_DNA_extraction_units,
-		'GSC_MIxS_human_gut_geographic_location_latitude_units': GSC_MIxS_human_gut_geographic_location_latitude_units,
-		'GSC_MIxS_human_gut_geographic_location_longitude_units': GSC_MIxS_human_gut_geographic_location_longitude_units,
-		'GSC_MIxS_human_gut_amount_or_size_of_sample_collected_units': GSC_MIxS_human_gut_amount_or_size_of_sample_collected_units,
-		'GSC_MIxS_human_gut_sample_storage_duration_units': GSC_MIxS_human_gut_sample_storage_duration_units,
-		'GSC_MIxS_human_gut_sample_storage_temperature_units': GSC_MIxS_human_gut_sample_storage_temperature_units,
-		'GSC_MIxS_human_gut_host_age_units': GSC_MIxS_human_gut_host_age_units,
-		'GSC_MIxS_human_gut_host_height_units': GSC_MIxS_human_gut_host_height_units,
-		'GSC_MIxS_human_gut_host_body_mass_index_units': GSC_MIxS_human_gut_host_body_mass_index_units,
-		'GSC_MIxS_human_gut_host_total_mass_units': GSC_MIxS_human_gut_host_total_mass_units,
-		'GSC_MIxS_human_gut_host_body_temperature_units': GSC_MIxS_human_gut_host_body_temperature_units,
-		'GSC_MIxS_human_gut_temperature_units': GSC_MIxS_human_gut_temperature_units,
-		'GSC_MIxS_human_gut_salinity_units': GSC_MIxS_human_gut_salinity_units,
-		'GSC_MIxS_human_gut_host_pulse_units': GSC_MIxS_human_gut_host_pulse_units,
+		'GSC_MIxS_human_gut_sample_volume_or_weight_for_DNA_extraction': 'sample volume or weight for DNA extraction',
+		'GSC_MIxS_human_gut_geographic_location_latitude': 'geographic location (latitude)',
+		'GSC_MIxS_human_gut_geographic_location_longitude': 'geographic location (longitude)',
+		'GSC_MIxS_human_gut_amount_or_size_of_sample_collected': 'amount or size of sample collected',
+		'GSC_MIxS_human_gut_sample_storage_duration': 'sample storage duration',
+		'GSC_MIxS_human_gut_sample_storage_temperature': 'sample storage temperature',
+		'GSC_MIxS_human_gut_host_age': 'host age',
+		'GSC_MIxS_human_gut_host_height': 'host height',
+		'GSC_MIxS_human_gut_host_body_mass_index': 'host body-mass index',
+		'GSC_MIxS_human_gut_host_total_mass': 'host total mass',
+		'GSC_MIxS_human_gut_host_body_temperature': 'host body temperature',
+		'GSC_MIxS_human_gut_temperature': 'temperature',
+		'GSC_MIxS_human_gut_salinity': 'salinity',
+		'GSC_MIxS_human_gut_host_pulse': 'host pulse',
 	}
 
-	sample = models.ForeignKey(Sample, on_delete=models.CASCADE)
 	order = models.ForeignKey(Order, on_delete=models.CASCADE, default=1)
 	GSC_MIxS_human_gut_sample_volume_or_weight_for_DNA_extraction = models.CharField(max_length=100, choices=GSC_MIxS_human_gut_sample_volume_or_weight_for_DNA_extraction_units, blank=False)
 	GSC_MIxS_human_gut_geographic_location_latitude = models.CharField(max_length=100, choices=GSC_MIxS_human_gut_geographic_location_latitude_units, blank=False)
@@ -2853,142 +2970,141 @@ class GSC_MIxS_host_associated(SelfDescribingModel):
 	GSC_MIxS_host_associated_perturbation= models.CharField(max_length=100, blank=True,help_text="type of pe")
 
 	fields = {
-		'GSC_MIxS_host_associated_project_name': GSC_MIxS_host_associated_project_name,
-		'GSC_MIxS_host_associated_experimental_factor': GSC_MIxS_host_associated_experimental_factor,
-		'GSC_MIxS_host_associated_ploidy': GSC_MIxS_host_associated_ploidy,
-		'GSC_MIxS_host_associated_number_of_replicons': GSC_MIxS_host_associated_number_of_replicons,
-		'GSC_MIxS_host_associated_extrachromosomal_elements': GSC_MIxS_host_associated_extrachromosomal_elements,
-		'GSC_MIxS_host_associated_estimated_size': GSC_MIxS_host_associated_estimated_size,
-		'GSC_MIxS_host_associated_reference_for_biomaterial': GSC_MIxS_host_associated_reference_for_biomaterial,
-		'GSC_MIxS_host_associated_annotation_source': GSC_MIxS_host_associated_annotation_source,
-		'GSC_MIxS_host_associated_sample_volume_or_weight_for_DNA_extraction': GSC_MIxS_host_associated_sample_volume_or_weight_for_DNA_extraction,
-		'GSC_MIxS_host_associated_nucleic_acid_extraction': GSC_MIxS_host_associated_nucleic_acid_extraction,
-		'GSC_MIxS_host_associated_nucleic_acid_amplification': GSC_MIxS_host_associated_nucleic_acid_amplification,
-		'GSC_MIxS_host_associated_library_size': GSC_MIxS_host_associated_library_size,
-		'GSC_MIxS_host_associated_library_reads_sequenced': GSC_MIxS_host_associated_library_reads_sequenced,
-		'GSC_MIxS_host_associated_library_construction_method': GSC_MIxS_host_associated_library_construction_method,
-		'GSC_MIxS_host_associated_library_vector': GSC_MIxS_host_associated_library_vector,
-		'GSC_MIxS_host_associated_library_screening_strategy': GSC_MIxS_host_associated_library_screening_strategy,
-		'GSC_MIxS_host_associated_target_gene': GSC_MIxS_host_associated_target_gene,
-		'GSC_MIxS_host_associated_target_subfragment': GSC_MIxS_host_associated_target_subfragment,
-		'GSC_MIxS_host_associated_pcr_primers': GSC_MIxS_host_associated_pcr_primers,
-		'GSC_MIxS_host_associated_multiplex_identifiers': GSC_MIxS_host_associated_multiplex_identifiers,
-		'GSC_MIxS_host_associated_adapters': GSC_MIxS_host_associated_adapters,
-		'GSC_MIxS_host_associated_pcr_conditions': GSC_MIxS_host_associated_pcr_conditions,
-		'GSC_MIxS_host_associated_sequencing_method': GSC_MIxS_host_associated_sequencing_method,
-		'GSC_MIxS_host_associated_sequence_quality_check': GSC_MIxS_host_associated_sequence_quality_check,
-		'GSC_MIxS_host_associated_chimera_check_software': GSC_MIxS_host_associated_chimera_check_software,
-		'GSC_MIxS_host_associated_relevant_electronic_resources': GSC_MIxS_host_associated_relevant_electronic_resources,
-		'GSC_MIxS_host_associated_relevant_standard_operating_procedures': GSC_MIxS_host_associated_relevant_standard_operating_procedures,
-		'GSC_MIxS_host_associated_negative_control_type': GSC_MIxS_host_associated_negative_control_type,
-		'GSC_MIxS_host_associated_positive_control_type': GSC_MIxS_host_associated_positive_control_type,
-		'GSC_MIxS_host_associated_collection_date': GSC_MIxS_host_associated_collection_date,
-		'GSC_MIxS_host_associated_altitude': GSC_MIxS_host_associated_altitude,
-		'GSC_MIxS_host_associated_geographic_location_country_and_or_sea': GSC_MIxS_host_associated_geographic_location_country_and_or_sea,
-		'GSC_MIxS_host_associated_geographic_location_latitude': GSC_MIxS_host_associated_geographic_location_latitude,
-		'GSC_MIxS_host_associated_geographic_location_longitude': GSC_MIxS_host_associated_geographic_location_longitude,
-		'GSC_MIxS_host_associated_geographic_location_region_and_locality': GSC_MIxS_host_associated_geographic_location_region_and_locality,
-		'GSC_MIxS_host_associated_depth': GSC_MIxS_host_associated_depth,
-		'GSC_MIxS_host_associated_broad_scale_environmental_context': GSC_MIxS_host_associated_broad_scale_environmental_context,
-		'GSC_MIxS_host_associated_local_environmental_context': GSC_MIxS_host_associated_local_environmental_context,
-		'GSC_MIxS_host_associated_environmental_medium': GSC_MIxS_host_associated_environmental_medium,
-		'GSC_MIxS_host_associated_elevation': GSC_MIxS_host_associated_elevation,
-		'GSC_MIxS_host_associated_source_material_identifiers': GSC_MIxS_host_associated_source_material_identifiers,
-		'GSC_MIxS_host_associated_sample_material_processing': GSC_MIxS_host_associated_sample_material_processing,
-		'GSC_MIxS_host_associated_isolation_and_growth_condition': GSC_MIxS_host_associated_isolation_and_growth_condition,
-		'GSC_MIxS_host_associated_propagation': GSC_MIxS_host_associated_propagation,
-		'GSC_MIxS_host_associated_amount_or_size_of_sample_collected': GSC_MIxS_host_associated_amount_or_size_of_sample_collected,
-		'GSC_MIxS_host_associated_host_body_product': GSC_MIxS_host_associated_host_body_product,
-		'GSC_MIxS_host_associated_host_dry_mass': GSC_MIxS_host_associated_host_dry_mass,
-		'GSC_MIxS_host_associated_oxygenation_status_of_sample': GSC_MIxS_host_associated_oxygenation_status_of_sample,
-		'GSC_MIxS_host_associated_organism_count': GSC_MIxS_host_associated_organism_count,
-		'GSC_MIxS_host_associated_sample_storage_duration': GSC_MIxS_host_associated_sample_storage_duration,
-		'GSC_MIxS_host_associated_sample_storage_temperature': GSC_MIxS_host_associated_sample_storage_temperature,
-		'GSC_MIxS_host_associated_sample_storage_location': GSC_MIxS_host_associated_sample_storage_location,
-		'GSC_MIxS_host_associated_host_disease_status': GSC_MIxS_host_associated_host_disease_status,
-		'GSC_MIxS_host_associated_host_common_name': GSC_MIxS_host_associated_host_common_name,
-		'GSC_MIxS_host_associated_host_subject_id': GSC_MIxS_host_associated_host_subject_id,
-		'GSC_MIxS_host_associated_host_age': GSC_MIxS_host_associated_host_age,
-		'GSC_MIxS_host_associated_host_taxid': GSC_MIxS_host_associated_host_taxid,
-		'GSC_MIxS_host_associated_host_body_habitat': GSC_MIxS_host_associated_host_body_habitat,
-		'GSC_MIxS_host_associated_host_body_site': GSC_MIxS_host_associated_host_body_site,
-		'GSC_MIxS_host_associated_host_life_stage': GSC_MIxS_host_associated_host_life_stage,
-		'GSC_MIxS_host_associated_host_height': GSC_MIxS_host_associated_host_height,
-		'GSC_MIxS_host_associated_host_length': GSC_MIxS_host_associated_host_length,
-		'GSC_MIxS_host_associated_host_growth_conditions': GSC_MIxS_host_associated_host_growth_conditions,
-		'GSC_MIxS_host_associated_host_substrate': GSC_MIxS_host_associated_host_substrate,
-		'GSC_MIxS_host_associated_host_total_mass': GSC_MIxS_host_associated_host_total_mass,
-		'GSC_MIxS_host_associated_host_phenotype': GSC_MIxS_host_associated_host_phenotype,
-		'GSC_MIxS_host_associated_host_body_temperature': GSC_MIxS_host_associated_host_body_temperature,
-		'GSC_MIxS_host_associated_host_color': GSC_MIxS_host_associated_host_color,
-		'GSC_MIxS_host_associated_host_shape': GSC_MIxS_host_associated_host_shape,
-		'GSC_MIxS_host_associated_host_sex': GSC_MIxS_host_associated_host_sex,
-		'GSC_MIxS_host_associated_host_scientific_name': GSC_MIxS_host_associated_host_scientific_name,
-		'GSC_MIxS_host_associated_host_subspecific_genetic_lineage': GSC_MIxS_host_associated_host_subspecific_genetic_lineage,
-		'GSC_MIxS_host_associated_temperature': GSC_MIxS_host_associated_temperature,
-		'GSC_MIxS_host_associated_salinity': GSC_MIxS_host_associated_salinity,
-		'GSC_MIxS_host_associated_host_blood_pressure_diastolic': GSC_MIxS_host_associated_host_blood_pressure_diastolic,
-		'GSC_MIxS_host_associated_host_blood_pressure_systolic': GSC_MIxS_host_associated_host_blood_pressure_systolic,
-		'GSC_MIxS_host_associated_host_diet': GSC_MIxS_host_associated_host_diet,
-		'GSC_MIxS_host_associated_host_last_meal': GSC_MIxS_host_associated_host_last_meal,
-		'GSC_MIxS_host_associated_host_family_relationship': GSC_MIxS_host_associated_host_family_relationship,
-		'GSC_MIxS_host_associated_host_genotype': GSC_MIxS_host_associated_host_genotype,
-		'GSC_MIxS_host_associated_gravidity': GSC_MIxS_host_associated_gravidity,
-		'GSC_MIxS_host_associated_subspecific_genetic_lineage': GSC_MIxS_host_associated_subspecific_genetic_lineage,
-		'GSC_MIxS_host_associated_trophic_level': GSC_MIxS_host_associated_trophic_level,
-		'GSC_MIxS_host_associated_relationship_to_oxygen': GSC_MIxS_host_associated_relationship_to_oxygen,
-		'GSC_MIxS_host_associated_known_pathogenicity': GSC_MIxS_host_associated_known_pathogenicity,
-		'GSC_MIxS_host_associated_encoded_traits': GSC_MIxS_host_associated_encoded_traits,
-		'GSC_MIxS_host_associated_observed_biotic_relationship': GSC_MIxS_host_associated_observed_biotic_relationship,
-		'GSC_MIxS_host_associated_chemical_administration': GSC_MIxS_host_associated_chemical_administration,
-		'GSC_MIxS_host_associated_perturbation': GSC_MIxS_host_associated_perturbation,
+		'GSC_MIxS_host_associated_project_name': 'project name',
+		'GSC_MIxS_host_associated_experimental_factor': 'experimental factor',
+		'GSC_MIxS_host_associated_ploidy': 'ploidy',
+		'GSC_MIxS_host_associated_number_of_replicons': 'number of replicons',
+		'GSC_MIxS_host_associated_extrachromosomal_elements': 'extrachromosomal elements',
+		'GSC_MIxS_host_associated_estimated_size': 'estimated size',
+		'GSC_MIxS_host_associated_reference_for_biomaterial': 'reference for biomaterial',
+		'GSC_MIxS_host_associated_annotation_source': 'annotation source',
+		'GSC_MIxS_host_associated_sample_volume_or_weight_for_DNA_extraction': 'sample volume or weight for DNA extraction',
+		'GSC_MIxS_host_associated_nucleic_acid_extraction': 'nucleic acid extraction',
+		'GSC_MIxS_host_associated_nucleic_acid_amplification': 'nucleic acid amplification',
+		'GSC_MIxS_host_associated_library_size': 'library size',
+		'GSC_MIxS_host_associated_library_reads_sequenced': 'library reads sequenced',
+		'GSC_MIxS_host_associated_library_construction_method': 'library construction method',
+		'GSC_MIxS_host_associated_library_vector': 'library vector',
+		'GSC_MIxS_host_associated_library_screening_strategy': 'library screening strategy',
+		'GSC_MIxS_host_associated_target_gene': 'target gene',
+		'GSC_MIxS_host_associated_target_subfragment': 'target subfragment',
+		'GSC_MIxS_host_associated_pcr_primers': 'pcr primers',
+		'GSC_MIxS_host_associated_multiplex_identifiers': 'multiplex identifiers',
+		'GSC_MIxS_host_associated_adapters': 'adapters',
+		'GSC_MIxS_host_associated_pcr_conditions': 'pcr conditions',
+		'GSC_MIxS_host_associated_sequencing_method': 'sequencing method',
+		'GSC_MIxS_host_associated_sequence_quality_check': 'sequence quality check',
+		'GSC_MIxS_host_associated_chimera_check_software': 'chimera check software',
+		'GSC_MIxS_host_associated_relevant_electronic_resources': 'relevant electronic resources',
+		'GSC_MIxS_host_associated_relevant_standard_operating_procedures': 'relevant standard operating procedures',
+		'GSC_MIxS_host_associated_negative_control_type': 'negative control type',
+		'GSC_MIxS_host_associated_positive_control_type': 'positive control type',
+		'GSC_MIxS_host_associated_collection_date': 'collection date',
+		'GSC_MIxS_host_associated_altitude': 'altitude',
+		'GSC_MIxS_host_associated_geographic_location_country_and_or_sea': 'geographic location (country and/or sea)',
+		'GSC_MIxS_host_associated_geographic_location_latitude': 'geographic location (latitude)',
+		'GSC_MIxS_host_associated_geographic_location_longitude': 'geographic location (longitude)',
+		'GSC_MIxS_host_associated_geographic_location_region_and_locality': 'geographic location (region and locality)',
+		'GSC_MIxS_host_associated_depth': 'depth',
+		'GSC_MIxS_host_associated_broad_scale_environmental_context': 'broad-scale environmental context',
+		'GSC_MIxS_host_associated_local_environmental_context': 'local environmental context',
+		'GSC_MIxS_host_associated_environmental_medium': 'environmental medium',
+		'GSC_MIxS_host_associated_elevation': 'elevation',
+		'GSC_MIxS_host_associated_source_material_identifiers': 'source material identifiers',
+		'GSC_MIxS_host_associated_sample_material_processing': 'sample material processing',
+		'GSC_MIxS_host_associated_isolation_and_growth_condition': 'isolation and growth condition',
+		'GSC_MIxS_host_associated_propagation': 'propagation',
+		'GSC_MIxS_host_associated_amount_or_size_of_sample_collected': 'amount or size of sample collected',
+		'GSC_MIxS_host_associated_host_body_product': 'host body product',
+		'GSC_MIxS_host_associated_host_dry_mass': 'host dry mass',
+		'GSC_MIxS_host_associated_oxygenation_status_of_sample': 'oxygenation status of sample',
+		'GSC_MIxS_host_associated_organism_count': 'organism count',
+		'GSC_MIxS_host_associated_sample_storage_duration': 'sample storage duration',
+		'GSC_MIxS_host_associated_sample_storage_temperature': 'sample storage temperature',
+		'GSC_MIxS_host_associated_sample_storage_location': 'sample storage location',
+		'GSC_MIxS_host_associated_host_disease_status': 'host disease status',
+		'GSC_MIxS_host_associated_host_common_name': 'host common name',
+		'GSC_MIxS_host_associated_host_subject_id': 'host subject id',
+		'GSC_MIxS_host_associated_host_age': 'host age',
+		'GSC_MIxS_host_associated_host_taxid': 'host taxid',
+		'GSC_MIxS_host_associated_host_body_habitat': 'host body habitat',
+		'GSC_MIxS_host_associated_host_body_site': 'host body site',
+		'GSC_MIxS_host_associated_host_life_stage': 'host life stage',
+		'GSC_MIxS_host_associated_host_height': 'host height',
+		'GSC_MIxS_host_associated_host_length': 'host length',
+		'GSC_MIxS_host_associated_host_growth_conditions': 'host growth conditions',
+		'GSC_MIxS_host_associated_host_substrate': 'host substrate',
+		'GSC_MIxS_host_associated_host_total_mass': 'host total mass',
+		'GSC_MIxS_host_associated_host_phenotype': 'host phenotype',
+		'GSC_MIxS_host_associated_host_body_temperature': 'host body temperature',
+		'GSC_MIxS_host_associated_host_color': 'host color',
+		'GSC_MIxS_host_associated_host_shape': 'host shape',
+		'GSC_MIxS_host_associated_host_sex': 'host sex',
+		'GSC_MIxS_host_associated_host_scientific_name': 'host scientific name',
+		'GSC_MIxS_host_associated_host_subspecific_genetic_lineage': 'host subspecific genetic lineage',
+		'GSC_MIxS_host_associated_temperature': 'temperature',
+		'GSC_MIxS_host_associated_salinity': 'salinity',
+		'GSC_MIxS_host_associated_host_blood_pressure_diastolic': 'host blood pressure diastolic',
+		'GSC_MIxS_host_associated_host_blood_pressure_systolic': 'host blood pressure systolic',
+		'GSC_MIxS_host_associated_host_diet': 'host diet',
+		'GSC_MIxS_host_associated_host_last_meal': 'host last meal',
+		'GSC_MIxS_host_associated_host_family_relationship': 'host family relationship',
+		'GSC_MIxS_host_associated_host_genotype': 'host genotype',
+		'GSC_MIxS_host_associated_gravidity': 'gravidity',
+		'GSC_MIxS_host_associated_subspecific_genetic_lineage': 'subspecific genetic lineage',
+		'GSC_MIxS_host_associated_trophic_level': 'trophic level',
+		'GSC_MIxS_host_associated_relationship_to_oxygen': 'relationship to oxygen',
+		'GSC_MIxS_host_associated_known_pathogenicity': 'known pathogenicity',
+		'GSC_MIxS_host_associated_encoded_traits': 'encoded traits',
+		'GSC_MIxS_host_associated_observed_biotic_relationship': 'observed biotic relationship',
+		'GSC_MIxS_host_associated_chemical_administration': 'chemical administration',
+		'GSC_MIxS_host_associated_perturbation': 'perturbation',
 	}
 
-class GSC_MIxS_host_associated_unit(SelfDescribingModel):
+class GSC_MIxS_host_associated_unit(SelfDescribingUnitModel):
 
 	GSC_MIxS_host_associated_sample_volume_or_weight_for_DNA_extraction_units = [('g', 'g'), ('mL', 'mL'), ('mg', 'mg'), ('ng', 'ng')]
 	GSC_MIxS_host_associated_altitude_units = [('m', 'm')]
-	GSC_MIxS_host_associated_geographic_location_latitude_units = [('D', 'D'), ('D', 'D')]
-	GSC_MIxS_host_associated_geographic_location_longitude_units = [('D', 'D'), ('D', 'D')]
+	GSC_MIxS_host_associated_geographic_location_latitude_units = [('DD', 'DD')]
+	GSC_MIxS_host_associated_geographic_location_longitude_units = [('DD', 'DD')]
 	GSC_MIxS_host_associated_depth_units = [('m', 'm')]
 	GSC_MIxS_host_associated_elevation_units = [('m', 'm')]
 	GSC_MIxS_host_associated_amount_or_size_of_sample_collected_units = [('L', 'L'), ('g', 'g'), ('kg', 'kg'), ('m2', 'm2'), ('m3', 'm3')]
 	GSC_MIxS_host_associated_host_dry_mass_units = [('g', 'g'), ('kg', 'kg'), ('mg', 'mg')]
 	GSC_MIxS_host_associated_sample_storage_duration_units = [('days', 'days'), ('hours', 'hours'), ('months', 'months'), ('weeks', 'weeks'), ('years', 'years')]
-	GSC_MIxS_host_associated_sample_storage_temperature_units = [('°', '°'), ('C', 'C')]
+	GSC_MIxS_host_associated_sample_storage_temperature_units = [('°C', '°C')]
 	GSC_MIxS_host_associated_host_age_units = [('centuries', 'centuries'), ('days', 'days'), ('decades', 'decades'), ('hours', 'hours'), ('minutes', 'minutes'), ('months', 'months'), ('seconds', 'seconds'), ('weeks', 'weeks'), ('years', 'years')]
 	GSC_MIxS_host_associated_host_height_units = [('cm', 'cm'), ('m', 'm'), ('mm', 'mm')]
 	GSC_MIxS_host_associated_host_length_units = [('cm', 'cm'), ('m', 'm'), ('mm', 'mm')]
 	GSC_MIxS_host_associated_host_total_mass_units = [('g', 'g'), ('kg', 'kg')]
-	GSC_MIxS_host_associated_host_body_temperature_units = [('º', 'º'), ('C', 'C')]
-	GSC_MIxS_host_associated_temperature_units = [('º', 'º'), ('C', 'C')]
-	GSC_MIxS_host_associated_salinity_units = [('p', 'p'), ('s', 's'), ('u', 'u')]
-	GSC_MIxS_host_associated_host_blood_pressure_diastolic_units = [('m', 'm'), ('m', 'm'), (' ', ' '), ('H', 'H'), ('g', 'g')]
-	GSC_MIxS_host_associated_host_blood_pressure_systolic_units = [('m', 'm'), ('m', 'm'), (' ', ' '), ('H', 'H'), ('g', 'g')]
+	GSC_MIxS_host_associated_host_body_temperature_units = [('ºC', 'ºC')]
+	GSC_MIxS_host_associated_temperature_units = [('ºC', 'ºC')]
+	GSC_MIxS_host_associated_salinity_units = [('psu', 'psu')]
+	GSC_MIxS_host_associated_host_blood_pressure_diastolic_units = [('mm Hg', 'mm Hg')]
+	GSC_MIxS_host_associated_host_blood_pressure_systolic_units = [('mm Hg', 'mm Hg')]
 
 	fields = {
-		'GSC_MIxS_host_associated_sample_volume_or_weight_for_DNA_extraction_units': GSC_MIxS_host_associated_sample_volume_or_weight_for_DNA_extraction_units,
-		'GSC_MIxS_host_associated_altitude_units': GSC_MIxS_host_associated_altitude_units,
-		'GSC_MIxS_host_associated_geographic_location_latitude_units': GSC_MIxS_host_associated_geographic_location_latitude_units,
-		'GSC_MIxS_host_associated_geographic_location_longitude_units': GSC_MIxS_host_associated_geographic_location_longitude_units,
-		'GSC_MIxS_host_associated_depth_units': GSC_MIxS_host_associated_depth_units,
-		'GSC_MIxS_host_associated_elevation_units': GSC_MIxS_host_associated_elevation_units,
-		'GSC_MIxS_host_associated_amount_or_size_of_sample_collected_units': GSC_MIxS_host_associated_amount_or_size_of_sample_collected_units,
-		'GSC_MIxS_host_associated_host_dry_mass_units': GSC_MIxS_host_associated_host_dry_mass_units,
-		'GSC_MIxS_host_associated_sample_storage_duration_units': GSC_MIxS_host_associated_sample_storage_duration_units,
-		'GSC_MIxS_host_associated_sample_storage_temperature_units': GSC_MIxS_host_associated_sample_storage_temperature_units,
-		'GSC_MIxS_host_associated_host_age_units': GSC_MIxS_host_associated_host_age_units,
-		'GSC_MIxS_host_associated_host_height_units': GSC_MIxS_host_associated_host_height_units,
-		'GSC_MIxS_host_associated_host_length_units': GSC_MIxS_host_associated_host_length_units,
-		'GSC_MIxS_host_associated_host_total_mass_units': GSC_MIxS_host_associated_host_total_mass_units,
-		'GSC_MIxS_host_associated_host_body_temperature_units': GSC_MIxS_host_associated_host_body_temperature_units,
-		'GSC_MIxS_host_associated_temperature_units': GSC_MIxS_host_associated_temperature_units,
-		'GSC_MIxS_host_associated_salinity_units': GSC_MIxS_host_associated_salinity_units,
-		'GSC_MIxS_host_associated_host_blood_pressure_diastolic_units': GSC_MIxS_host_associated_host_blood_pressure_diastolic_units,
-		'GSC_MIxS_host_associated_host_blood_pressure_systolic_units': GSC_MIxS_host_associated_host_blood_pressure_systolic_units,
+		'GSC_MIxS_host_associated_sample_volume_or_weight_for_DNA_extraction': 'sample volume or weight for DNA extraction',
+		'GSC_MIxS_host_associated_altitude': 'altitude',
+		'GSC_MIxS_host_associated_geographic_location_latitude': 'geographic location (latitude)',
+		'GSC_MIxS_host_associated_geographic_location_longitude': 'geographic location (longitude)',
+		'GSC_MIxS_host_associated_depth': 'depth',
+		'GSC_MIxS_host_associated_elevation': 'elevation',
+		'GSC_MIxS_host_associated_amount_or_size_of_sample_collected': 'amount or size of sample collected',
+		'GSC_MIxS_host_associated_host_dry_mass': 'host dry mass',
+		'GSC_MIxS_host_associated_sample_storage_duration': 'sample storage duration',
+		'GSC_MIxS_host_associated_sample_storage_temperature': 'sample storage temperature',
+		'GSC_MIxS_host_associated_host_age': 'host age',
+		'GSC_MIxS_host_associated_host_height': 'host height',
+		'GSC_MIxS_host_associated_host_length': 'host length',
+		'GSC_MIxS_host_associated_host_total_mass': 'host total mass',
+		'GSC_MIxS_host_associated_host_body_temperature': 'host body temperature',
+		'GSC_MIxS_host_associated_temperature': 'temperature',
+		'GSC_MIxS_host_associated_salinity': 'salinity',
+		'GSC_MIxS_host_associated_host_blood_pressure_diastolic': 'host blood pressure diastolic',
+		'GSC_MIxS_host_associated_host_blood_pressure_systolic': 'host blood pressure systolic',
 	}
 
-	sample = models.ForeignKey(Sample, on_delete=models.CASCADE)
 	order = models.ForeignKey(Order, on_delete=models.CASCADE, default=1)
 	GSC_MIxS_host_associated_sample_volume_or_weight_for_DNA_extraction = models.CharField(max_length=100, choices=GSC_MIxS_host_associated_sample_volume_or_weight_for_DNA_extraction_units, blank=False)
 	GSC_MIxS_host_associated_altitude = models.CharField(max_length=100, choices=GSC_MIxS_host_associated_altitude_units, blank=False)
@@ -3138,132 +3254,131 @@ class GSC_MIxS_human_vaginal(SelfDescribingModel):
 	GSC_MIxS_human_vaginal_perturbation= models.CharField(max_length=100, blank=True,help_text="type of pe")
 
 	fields = {
-		'GSC_MIxS_human_vaginal_project_name': GSC_MIxS_human_vaginal_project_name,
-		'GSC_MIxS_human_vaginal_experimental_factor': GSC_MIxS_human_vaginal_experimental_factor,
-		'GSC_MIxS_human_vaginal_ploidy': GSC_MIxS_human_vaginal_ploidy,
-		'GSC_MIxS_human_vaginal_number_of_replicons': GSC_MIxS_human_vaginal_number_of_replicons,
-		'GSC_MIxS_human_vaginal_extrachromosomal_elements': GSC_MIxS_human_vaginal_extrachromosomal_elements,
-		'GSC_MIxS_human_vaginal_estimated_size': GSC_MIxS_human_vaginal_estimated_size,
-		'GSC_MIxS_human_vaginal_reference_for_biomaterial': GSC_MIxS_human_vaginal_reference_for_biomaterial,
-		'GSC_MIxS_human_vaginal_annotation_source': GSC_MIxS_human_vaginal_annotation_source,
-		'GSC_MIxS_human_vaginal_sample_volume_or_weight_for_DNA_extraction': GSC_MIxS_human_vaginal_sample_volume_or_weight_for_DNA_extraction,
-		'GSC_MIxS_human_vaginal_nucleic_acid_extraction': GSC_MIxS_human_vaginal_nucleic_acid_extraction,
-		'GSC_MIxS_human_vaginal_nucleic_acid_amplification': GSC_MIxS_human_vaginal_nucleic_acid_amplification,
-		'GSC_MIxS_human_vaginal_library_size': GSC_MIxS_human_vaginal_library_size,
-		'GSC_MIxS_human_vaginal_library_reads_sequenced': GSC_MIxS_human_vaginal_library_reads_sequenced,
-		'GSC_MIxS_human_vaginal_library_construction_method': GSC_MIxS_human_vaginal_library_construction_method,
-		'GSC_MIxS_human_vaginal_library_vector': GSC_MIxS_human_vaginal_library_vector,
-		'GSC_MIxS_human_vaginal_library_screening_strategy': GSC_MIxS_human_vaginal_library_screening_strategy,
-		'GSC_MIxS_human_vaginal_target_gene': GSC_MIxS_human_vaginal_target_gene,
-		'GSC_MIxS_human_vaginal_target_subfragment': GSC_MIxS_human_vaginal_target_subfragment,
-		'GSC_MIxS_human_vaginal_pcr_primers': GSC_MIxS_human_vaginal_pcr_primers,
-		'GSC_MIxS_human_vaginal_multiplex_identifiers': GSC_MIxS_human_vaginal_multiplex_identifiers,
-		'GSC_MIxS_human_vaginal_adapters': GSC_MIxS_human_vaginal_adapters,
-		'GSC_MIxS_human_vaginal_pcr_conditions': GSC_MIxS_human_vaginal_pcr_conditions,
-		'GSC_MIxS_human_vaginal_sequencing_method': GSC_MIxS_human_vaginal_sequencing_method,
-		'GSC_MIxS_human_vaginal_sequence_quality_check': GSC_MIxS_human_vaginal_sequence_quality_check,
-		'GSC_MIxS_human_vaginal_chimera_check_software': GSC_MIxS_human_vaginal_chimera_check_software,
-		'GSC_MIxS_human_vaginal_relevant_electronic_resources': GSC_MIxS_human_vaginal_relevant_electronic_resources,
-		'GSC_MIxS_human_vaginal_relevant_standard_operating_procedures': GSC_MIxS_human_vaginal_relevant_standard_operating_procedures,
-		'GSC_MIxS_human_vaginal_negative_control_type': GSC_MIxS_human_vaginal_negative_control_type,
-		'GSC_MIxS_human_vaginal_positive_control_type': GSC_MIxS_human_vaginal_positive_control_type,
-		'GSC_MIxS_human_vaginal_collection_date': GSC_MIxS_human_vaginal_collection_date,
-		'GSC_MIxS_human_vaginal_geographic_location_country_and_or_sea': GSC_MIxS_human_vaginal_geographic_location_country_and_or_sea,
-		'GSC_MIxS_human_vaginal_geographic_location_latitude': GSC_MIxS_human_vaginal_geographic_location_latitude,
-		'GSC_MIxS_human_vaginal_geographic_location_longitude': GSC_MIxS_human_vaginal_geographic_location_longitude,
-		'GSC_MIxS_human_vaginal_geographic_location_region_and_locality': GSC_MIxS_human_vaginal_geographic_location_region_and_locality,
-		'GSC_MIxS_human_vaginal_broad_scale_environmental_context': GSC_MIxS_human_vaginal_broad_scale_environmental_context,
-		'GSC_MIxS_human_vaginal_local_environmental_context': GSC_MIxS_human_vaginal_local_environmental_context,
-		'GSC_MIxS_human_vaginal_environmental_medium': GSC_MIxS_human_vaginal_environmental_medium,
-		'GSC_MIxS_human_vaginal_source_material_identifiers': GSC_MIxS_human_vaginal_source_material_identifiers,
-		'GSC_MIxS_human_vaginal_sample_material_processing': GSC_MIxS_human_vaginal_sample_material_processing,
-		'GSC_MIxS_human_vaginal_isolation_and_growth_condition': GSC_MIxS_human_vaginal_isolation_and_growth_condition,
-		'GSC_MIxS_human_vaginal_propagation': GSC_MIxS_human_vaginal_propagation,
-		'GSC_MIxS_human_vaginal_amount_or_size_of_sample_collected': GSC_MIxS_human_vaginal_amount_or_size_of_sample_collected,
-		'GSC_MIxS_human_vaginal_host_body_product': GSC_MIxS_human_vaginal_host_body_product,
-		'GSC_MIxS_human_vaginal_medical_history_performed': GSC_MIxS_human_vaginal_medical_history_performed,
-		'GSC_MIxS_human_vaginal_oxygenation_status_of_sample': GSC_MIxS_human_vaginal_oxygenation_status_of_sample,
-		'GSC_MIxS_human_vaginal_organism_count': GSC_MIxS_human_vaginal_organism_count,
-		'GSC_MIxS_human_vaginal_sample_storage_duration': GSC_MIxS_human_vaginal_sample_storage_duration,
-		'GSC_MIxS_human_vaginal_sample_storage_temperature': GSC_MIxS_human_vaginal_sample_storage_temperature,
-		'GSC_MIxS_human_vaginal_sample_storage_location': GSC_MIxS_human_vaginal_sample_storage_location,
-		'GSC_MIxS_human_vaginal_sample_collection_device': GSC_MIxS_human_vaginal_sample_collection_device,
-		'GSC_MIxS_human_vaginal_sample_collection_method': GSC_MIxS_human_vaginal_sample_collection_method,
-		'GSC_MIxS_human_vaginal_gynecological_disorder': GSC_MIxS_human_vaginal_gynecological_disorder,
-		'GSC_MIxS_human_vaginal_urogenital_disorder': GSC_MIxS_human_vaginal_urogenital_disorder,
-		'GSC_MIxS_human_vaginal_host_disease_status': GSC_MIxS_human_vaginal_host_disease_status,
-		'GSC_MIxS_human_vaginal_host_subject_id': GSC_MIxS_human_vaginal_host_subject_id,
-		'GSC_MIxS_human_vaginal_IHMC_medication_code': GSC_MIxS_human_vaginal_IHMC_medication_code,
-		'GSC_MIxS_human_vaginal_host_age': GSC_MIxS_human_vaginal_host_age,
-		'GSC_MIxS_human_vaginal_host_body_site': GSC_MIxS_human_vaginal_host_body_site,
-		'GSC_MIxS_human_vaginal_host_height': GSC_MIxS_human_vaginal_host_height,
-		'GSC_MIxS_human_vaginal_host_body_mass_index': GSC_MIxS_human_vaginal_host_body_mass_index,
-		'GSC_MIxS_human_vaginal_ethnicity': GSC_MIxS_human_vaginal_ethnicity,
-		'GSC_MIxS_human_vaginal_host_occupation': GSC_MIxS_human_vaginal_host_occupation,
-		'GSC_MIxS_human_vaginal_host_total_mass': GSC_MIxS_human_vaginal_host_total_mass,
-		'GSC_MIxS_human_vaginal_host_phenotype': GSC_MIxS_human_vaginal_host_phenotype,
-		'GSC_MIxS_human_vaginal_host_body_temperature': GSC_MIxS_human_vaginal_host_body_temperature,
-		'GSC_MIxS_human_vaginal_host_sex': GSC_MIxS_human_vaginal_host_sex,
-		'GSC_MIxS_human_vaginal_temperature': GSC_MIxS_human_vaginal_temperature,
-		'GSC_MIxS_human_vaginal_salinity': GSC_MIxS_human_vaginal_salinity,
-		'GSC_MIxS_human_vaginal_menarche': GSC_MIxS_human_vaginal_menarche,
-		'GSC_MIxS_human_vaginal_sexual_activity': GSC_MIxS_human_vaginal_sexual_activity,
-		'GSC_MIxS_human_vaginal_pregnancy': GSC_MIxS_human_vaginal_pregnancy,
-		'GSC_MIxS_human_vaginal_douche': GSC_MIxS_human_vaginal_douche,
-		'GSC_MIxS_human_vaginal_birth_control': GSC_MIxS_human_vaginal_birth_control,
-		'GSC_MIxS_human_vaginal_menopause': GSC_MIxS_human_vaginal_menopause,
-		'GSC_MIxS_human_vaginal_HRT': GSC_MIxS_human_vaginal_HRT,
-		'GSC_MIxS_human_vaginal_hysterectomy': GSC_MIxS_human_vaginal_hysterectomy,
-		'GSC_MIxS_human_vaginal_host_diet': GSC_MIxS_human_vaginal_host_diet,
-		'GSC_MIxS_human_vaginal_host_last_meal': GSC_MIxS_human_vaginal_host_last_meal,
-		'GSC_MIxS_human_vaginal_host_family_relationship': GSC_MIxS_human_vaginal_host_family_relationship,
-		'GSC_MIxS_human_vaginal_host_genotype': GSC_MIxS_human_vaginal_host_genotype,
-		'GSC_MIxS_human_vaginal_host_pulse': GSC_MIxS_human_vaginal_host_pulse,
-		'GSC_MIxS_human_vaginal_subspecific_genetic_lineage': GSC_MIxS_human_vaginal_subspecific_genetic_lineage,
-		'GSC_MIxS_human_vaginal_trophic_level': GSC_MIxS_human_vaginal_trophic_level,
-		'GSC_MIxS_human_vaginal_relationship_to_oxygen': GSC_MIxS_human_vaginal_relationship_to_oxygen,
-		'GSC_MIxS_human_vaginal_known_pathogenicity': GSC_MIxS_human_vaginal_known_pathogenicity,
-		'GSC_MIxS_human_vaginal_encoded_traits': GSC_MIxS_human_vaginal_encoded_traits,
-		'GSC_MIxS_human_vaginal_observed_biotic_relationship': GSC_MIxS_human_vaginal_observed_biotic_relationship,
-		'GSC_MIxS_human_vaginal_chemical_administration': GSC_MIxS_human_vaginal_chemical_administration,
-		'GSC_MIxS_human_vaginal_perturbation': GSC_MIxS_human_vaginal_perturbation,
+		'GSC_MIxS_human_vaginal_project_name': 'project name',
+		'GSC_MIxS_human_vaginal_experimental_factor': 'experimental factor',
+		'GSC_MIxS_human_vaginal_ploidy': 'ploidy',
+		'GSC_MIxS_human_vaginal_number_of_replicons': 'number of replicons',
+		'GSC_MIxS_human_vaginal_extrachromosomal_elements': 'extrachromosomal elements',
+		'GSC_MIxS_human_vaginal_estimated_size': 'estimated size',
+		'GSC_MIxS_human_vaginal_reference_for_biomaterial': 'reference for biomaterial',
+		'GSC_MIxS_human_vaginal_annotation_source': 'annotation source',
+		'GSC_MIxS_human_vaginal_sample_volume_or_weight_for_DNA_extraction': 'sample volume or weight for DNA extraction',
+		'GSC_MIxS_human_vaginal_nucleic_acid_extraction': 'nucleic acid extraction',
+		'GSC_MIxS_human_vaginal_nucleic_acid_amplification': 'nucleic acid amplification',
+		'GSC_MIxS_human_vaginal_library_size': 'library size',
+		'GSC_MIxS_human_vaginal_library_reads_sequenced': 'library reads sequenced',
+		'GSC_MIxS_human_vaginal_library_construction_method': 'library construction method',
+		'GSC_MIxS_human_vaginal_library_vector': 'library vector',
+		'GSC_MIxS_human_vaginal_library_screening_strategy': 'library screening strategy',
+		'GSC_MIxS_human_vaginal_target_gene': 'target gene',
+		'GSC_MIxS_human_vaginal_target_subfragment': 'target subfragment',
+		'GSC_MIxS_human_vaginal_pcr_primers': 'pcr primers',
+		'GSC_MIxS_human_vaginal_multiplex_identifiers': 'multiplex identifiers',
+		'GSC_MIxS_human_vaginal_adapters': 'adapters',
+		'GSC_MIxS_human_vaginal_pcr_conditions': 'pcr conditions',
+		'GSC_MIxS_human_vaginal_sequencing_method': 'sequencing method',
+		'GSC_MIxS_human_vaginal_sequence_quality_check': 'sequence quality check',
+		'GSC_MIxS_human_vaginal_chimera_check_software': 'chimera check software',
+		'GSC_MIxS_human_vaginal_relevant_electronic_resources': 'relevant electronic resources',
+		'GSC_MIxS_human_vaginal_relevant_standard_operating_procedures': 'relevant standard operating procedures',
+		'GSC_MIxS_human_vaginal_negative_control_type': 'negative control type',
+		'GSC_MIxS_human_vaginal_positive_control_type': 'positive control type',
+		'GSC_MIxS_human_vaginal_collection_date': 'collection date',
+		'GSC_MIxS_human_vaginal_geographic_location_country_and_or_sea': 'geographic location (country and/or sea)',
+		'GSC_MIxS_human_vaginal_geographic_location_latitude': 'geographic location (latitude)',
+		'GSC_MIxS_human_vaginal_geographic_location_longitude': 'geographic location (longitude)',
+		'GSC_MIxS_human_vaginal_geographic_location_region_and_locality': 'geographic location (region and locality)',
+		'GSC_MIxS_human_vaginal_broad_scale_environmental_context': 'broad-scale environmental context',
+		'GSC_MIxS_human_vaginal_local_environmental_context': 'local environmental context',
+		'GSC_MIxS_human_vaginal_environmental_medium': 'environmental medium',
+		'GSC_MIxS_human_vaginal_source_material_identifiers': 'source material identifiers',
+		'GSC_MIxS_human_vaginal_sample_material_processing': 'sample material processing',
+		'GSC_MIxS_human_vaginal_isolation_and_growth_condition': 'isolation and growth condition',
+		'GSC_MIxS_human_vaginal_propagation': 'propagation',
+		'GSC_MIxS_human_vaginal_amount_or_size_of_sample_collected': 'amount or size of sample collected',
+		'GSC_MIxS_human_vaginal_host_body_product': 'host body product',
+		'GSC_MIxS_human_vaginal_medical_history_performed': 'medical history performed',
+		'GSC_MIxS_human_vaginal_oxygenation_status_of_sample': 'oxygenation status of sample',
+		'GSC_MIxS_human_vaginal_organism_count': 'organism count',
+		'GSC_MIxS_human_vaginal_sample_storage_duration': 'sample storage duration',
+		'GSC_MIxS_human_vaginal_sample_storage_temperature': 'sample storage temperature',
+		'GSC_MIxS_human_vaginal_sample_storage_location': 'sample storage location',
+		'GSC_MIxS_human_vaginal_sample_collection_device': 'sample collection device',
+		'GSC_MIxS_human_vaginal_sample_collection_method': 'sample collection method',
+		'GSC_MIxS_human_vaginal_gynecological_disorder': 'gynecological disorder',
+		'GSC_MIxS_human_vaginal_urogenital_disorder': 'urogenital disorder',
+		'GSC_MIxS_human_vaginal_host_disease_status': 'host disease status',
+		'GSC_MIxS_human_vaginal_host_subject_id': 'host subject id',
+		'GSC_MIxS_human_vaginal_IHMC_medication_code': 'IHMC medication code',
+		'GSC_MIxS_human_vaginal_host_age': 'host age',
+		'GSC_MIxS_human_vaginal_host_body_site': 'host body site',
+		'GSC_MIxS_human_vaginal_host_height': 'host height',
+		'GSC_MIxS_human_vaginal_host_body_mass_index': 'host body-mass index',
+		'GSC_MIxS_human_vaginal_ethnicity': 'ethnicity',
+		'GSC_MIxS_human_vaginal_host_occupation': 'host occupation',
+		'GSC_MIxS_human_vaginal_host_total_mass': 'host total mass',
+		'GSC_MIxS_human_vaginal_host_phenotype': 'host phenotype',
+		'GSC_MIxS_human_vaginal_host_body_temperature': 'host body temperature',
+		'GSC_MIxS_human_vaginal_host_sex': 'host sex',
+		'GSC_MIxS_human_vaginal_temperature': 'temperature',
+		'GSC_MIxS_human_vaginal_salinity': 'salinity',
+		'GSC_MIxS_human_vaginal_menarche': 'menarche',
+		'GSC_MIxS_human_vaginal_sexual_activity': 'sexual activity',
+		'GSC_MIxS_human_vaginal_pregnancy': 'pregnancy',
+		'GSC_MIxS_human_vaginal_douche': 'douche',
+		'GSC_MIxS_human_vaginal_birth_control': 'birth control',
+		'GSC_MIxS_human_vaginal_menopause': 'menopause',
+		'GSC_MIxS_human_vaginal_HRT': 'HRT',
+		'GSC_MIxS_human_vaginal_hysterectomy': 'hysterectomy',
+		'GSC_MIxS_human_vaginal_host_diet': 'host diet',
+		'GSC_MIxS_human_vaginal_host_last_meal': 'host last meal',
+		'GSC_MIxS_human_vaginal_host_family_relationship': 'host family relationship',
+		'GSC_MIxS_human_vaginal_host_genotype': 'host genotype',
+		'GSC_MIxS_human_vaginal_host_pulse': 'host pulse',
+		'GSC_MIxS_human_vaginal_subspecific_genetic_lineage': 'subspecific genetic lineage',
+		'GSC_MIxS_human_vaginal_trophic_level': 'trophic level',
+		'GSC_MIxS_human_vaginal_relationship_to_oxygen': 'relationship to oxygen',
+		'GSC_MIxS_human_vaginal_known_pathogenicity': 'known pathogenicity',
+		'GSC_MIxS_human_vaginal_encoded_traits': 'encoded traits',
+		'GSC_MIxS_human_vaginal_observed_biotic_relationship': 'observed biotic relationship',
+		'GSC_MIxS_human_vaginal_chemical_administration': 'chemical administration',
+		'GSC_MIxS_human_vaginal_perturbation': 'perturbation',
 	}
 
-class GSC_MIxS_human_vaginal_unit(SelfDescribingModel):
+class GSC_MIxS_human_vaginal_unit(SelfDescribingUnitModel):
 
 	GSC_MIxS_human_vaginal_sample_volume_or_weight_for_DNA_extraction_units = [('g', 'g'), ('mL', 'mL'), ('mg', 'mg'), ('ng', 'ng')]
-	GSC_MIxS_human_vaginal_geographic_location_latitude_units = [('D', 'D'), ('D', 'D')]
-	GSC_MIxS_human_vaginal_geographic_location_longitude_units = [('D', 'D'), ('D', 'D')]
+	GSC_MIxS_human_vaginal_geographic_location_latitude_units = [('DD', 'DD')]
+	GSC_MIxS_human_vaginal_geographic_location_longitude_units = [('DD', 'DD')]
 	GSC_MIxS_human_vaginal_amount_or_size_of_sample_collected_units = [('L', 'L'), ('g', 'g'), ('kg', 'kg'), ('m2', 'm2'), ('m3', 'm3')]
 	GSC_MIxS_human_vaginal_sample_storage_duration_units = [('days', 'days'), ('hours', 'hours'), ('months', 'months'), ('weeks', 'weeks'), ('years', 'years')]
-	GSC_MIxS_human_vaginal_sample_storage_temperature_units = [('°', '°'), ('C', 'C')]
+	GSC_MIxS_human_vaginal_sample_storage_temperature_units = [('°C', '°C')]
 	GSC_MIxS_human_vaginal_host_age_units = [('centuries', 'centuries'), ('days', 'days'), ('decades', 'decades'), ('hours', 'hours'), ('minutes', 'minutes'), ('months', 'months'), ('seconds', 'seconds'), ('weeks', 'weeks'), ('years', 'years')]
 	GSC_MIxS_human_vaginal_host_height_units = [('cm', 'cm'), ('m', 'm'), ('mm', 'mm')]
-	GSC_MIxS_human_vaginal_host_body_mass_index_units = [('k', 'k'), ('g', 'g'), ('/', '/'), ('m', 'm'), ('2', '2')]
+	GSC_MIxS_human_vaginal_host_body_mass_index_units = [('kg/m2', 'kg/m2')]
 	GSC_MIxS_human_vaginal_host_total_mass_units = [('g', 'g'), ('kg', 'kg')]
-	GSC_MIxS_human_vaginal_host_body_temperature_units = [('º', 'º'), ('C', 'C')]
-	GSC_MIxS_human_vaginal_temperature_units = [('º', 'º'), ('C', 'C')]
-	GSC_MIxS_human_vaginal_salinity_units = [('p', 'p'), ('s', 's'), ('u', 'u')]
-	GSC_MIxS_human_vaginal_host_pulse_units = [('b', 'b'), ('p', 'p'), ('m', 'm')]
+	GSC_MIxS_human_vaginal_host_body_temperature_units = [('ºC', 'ºC')]
+	GSC_MIxS_human_vaginal_temperature_units = [('ºC', 'ºC')]
+	GSC_MIxS_human_vaginal_salinity_units = [('psu', 'psu')]
+	GSC_MIxS_human_vaginal_host_pulse_units = [('bpm', 'bpm')]
 
 	fields = {
-		'GSC_MIxS_human_vaginal_sample_volume_or_weight_for_DNA_extraction_units': GSC_MIxS_human_vaginal_sample_volume_or_weight_for_DNA_extraction_units,
-		'GSC_MIxS_human_vaginal_geographic_location_latitude_units': GSC_MIxS_human_vaginal_geographic_location_latitude_units,
-		'GSC_MIxS_human_vaginal_geographic_location_longitude_units': GSC_MIxS_human_vaginal_geographic_location_longitude_units,
-		'GSC_MIxS_human_vaginal_amount_or_size_of_sample_collected_units': GSC_MIxS_human_vaginal_amount_or_size_of_sample_collected_units,
-		'GSC_MIxS_human_vaginal_sample_storage_duration_units': GSC_MIxS_human_vaginal_sample_storage_duration_units,
-		'GSC_MIxS_human_vaginal_sample_storage_temperature_units': GSC_MIxS_human_vaginal_sample_storage_temperature_units,
-		'GSC_MIxS_human_vaginal_host_age_units': GSC_MIxS_human_vaginal_host_age_units,
-		'GSC_MIxS_human_vaginal_host_height_units': GSC_MIxS_human_vaginal_host_height_units,
-		'GSC_MIxS_human_vaginal_host_body_mass_index_units': GSC_MIxS_human_vaginal_host_body_mass_index_units,
-		'GSC_MIxS_human_vaginal_host_total_mass_units': GSC_MIxS_human_vaginal_host_total_mass_units,
-		'GSC_MIxS_human_vaginal_host_body_temperature_units': GSC_MIxS_human_vaginal_host_body_temperature_units,
-		'GSC_MIxS_human_vaginal_temperature_units': GSC_MIxS_human_vaginal_temperature_units,
-		'GSC_MIxS_human_vaginal_salinity_units': GSC_MIxS_human_vaginal_salinity_units,
-		'GSC_MIxS_human_vaginal_host_pulse_units': GSC_MIxS_human_vaginal_host_pulse_units,
+		'GSC_MIxS_human_vaginal_sample_volume_or_weight_for_DNA_extraction': 'sample volume or weight for DNA extraction',
+		'GSC_MIxS_human_vaginal_geographic_location_latitude': 'geographic location (latitude)',
+		'GSC_MIxS_human_vaginal_geographic_location_longitude': 'geographic location (longitude)',
+		'GSC_MIxS_human_vaginal_amount_or_size_of_sample_collected': 'amount or size of sample collected',
+		'GSC_MIxS_human_vaginal_sample_storage_duration': 'sample storage duration',
+		'GSC_MIxS_human_vaginal_sample_storage_temperature': 'sample storage temperature',
+		'GSC_MIxS_human_vaginal_host_age': 'host age',
+		'GSC_MIxS_human_vaginal_host_height': 'host height',
+		'GSC_MIxS_human_vaginal_host_body_mass_index': 'host body-mass index',
+		'GSC_MIxS_human_vaginal_host_total_mass': 'host total mass',
+		'GSC_MIxS_human_vaginal_host_body_temperature': 'host body temperature',
+		'GSC_MIxS_human_vaginal_temperature': 'temperature',
+		'GSC_MIxS_human_vaginal_salinity': 'salinity',
+		'GSC_MIxS_human_vaginal_host_pulse': 'host pulse',
 	}
 
-	sample = models.ForeignKey(Sample, on_delete=models.CASCADE)
 	order = models.ForeignKey(Order, on_delete=models.CASCADE, default=1)
 	GSC_MIxS_human_vaginal_sample_volume_or_weight_for_DNA_extraction = models.CharField(max_length=100, choices=GSC_MIxS_human_vaginal_sample_volume_or_weight_for_DNA_extraction_units, blank=False)
 	GSC_MIxS_human_vaginal_geographic_location_latitude = models.CharField(max_length=100, choices=GSC_MIxS_human_vaginal_geographic_location_latitude_units, blank=False)
@@ -3400,126 +3515,125 @@ class GSC_MIxS_human_oral(SelfDescribingModel):
 	GSC_MIxS_human_oral_perturbation= models.CharField(max_length=100, blank=True,help_text="type of pe")
 
 	fields = {
-		'GSC_MIxS_human_oral_project_name': GSC_MIxS_human_oral_project_name,
-		'GSC_MIxS_human_oral_experimental_factor': GSC_MIxS_human_oral_experimental_factor,
-		'GSC_MIxS_human_oral_ploidy': GSC_MIxS_human_oral_ploidy,
-		'GSC_MIxS_human_oral_number_of_replicons': GSC_MIxS_human_oral_number_of_replicons,
-		'GSC_MIxS_human_oral_extrachromosomal_elements': GSC_MIxS_human_oral_extrachromosomal_elements,
-		'GSC_MIxS_human_oral_estimated_size': GSC_MIxS_human_oral_estimated_size,
-		'GSC_MIxS_human_oral_reference_for_biomaterial': GSC_MIxS_human_oral_reference_for_biomaterial,
-		'GSC_MIxS_human_oral_annotation_source': GSC_MIxS_human_oral_annotation_source,
-		'GSC_MIxS_human_oral_sample_volume_or_weight_for_DNA_extraction': GSC_MIxS_human_oral_sample_volume_or_weight_for_DNA_extraction,
-		'GSC_MIxS_human_oral_nucleic_acid_extraction': GSC_MIxS_human_oral_nucleic_acid_extraction,
-		'GSC_MIxS_human_oral_nucleic_acid_amplification': GSC_MIxS_human_oral_nucleic_acid_amplification,
-		'GSC_MIxS_human_oral_library_size': GSC_MIxS_human_oral_library_size,
-		'GSC_MIxS_human_oral_library_reads_sequenced': GSC_MIxS_human_oral_library_reads_sequenced,
-		'GSC_MIxS_human_oral_library_construction_method': GSC_MIxS_human_oral_library_construction_method,
-		'GSC_MIxS_human_oral_library_vector': GSC_MIxS_human_oral_library_vector,
-		'GSC_MIxS_human_oral_library_screening_strategy': GSC_MIxS_human_oral_library_screening_strategy,
-		'GSC_MIxS_human_oral_target_gene': GSC_MIxS_human_oral_target_gene,
-		'GSC_MIxS_human_oral_target_subfragment': GSC_MIxS_human_oral_target_subfragment,
-		'GSC_MIxS_human_oral_pcr_primers': GSC_MIxS_human_oral_pcr_primers,
-		'GSC_MIxS_human_oral_multiplex_identifiers': GSC_MIxS_human_oral_multiplex_identifiers,
-		'GSC_MIxS_human_oral_adapters': GSC_MIxS_human_oral_adapters,
-		'GSC_MIxS_human_oral_pcr_conditions': GSC_MIxS_human_oral_pcr_conditions,
-		'GSC_MIxS_human_oral_sequencing_method': GSC_MIxS_human_oral_sequencing_method,
-		'GSC_MIxS_human_oral_sequence_quality_check': GSC_MIxS_human_oral_sequence_quality_check,
-		'GSC_MIxS_human_oral_chimera_check_software': GSC_MIxS_human_oral_chimera_check_software,
-		'GSC_MIxS_human_oral_relevant_electronic_resources': GSC_MIxS_human_oral_relevant_electronic_resources,
-		'GSC_MIxS_human_oral_relevant_standard_operating_procedures': GSC_MIxS_human_oral_relevant_standard_operating_procedures,
-		'GSC_MIxS_human_oral_negative_control_type': GSC_MIxS_human_oral_negative_control_type,
-		'GSC_MIxS_human_oral_positive_control_type': GSC_MIxS_human_oral_positive_control_type,
-		'GSC_MIxS_human_oral_collection_date': GSC_MIxS_human_oral_collection_date,
-		'GSC_MIxS_human_oral_geographic_location_country_and_or_sea': GSC_MIxS_human_oral_geographic_location_country_and_or_sea,
-		'GSC_MIxS_human_oral_geographic_location_latitude': GSC_MIxS_human_oral_geographic_location_latitude,
-		'GSC_MIxS_human_oral_geographic_location_longitude': GSC_MIxS_human_oral_geographic_location_longitude,
-		'GSC_MIxS_human_oral_geographic_location_region_and_locality': GSC_MIxS_human_oral_geographic_location_region_and_locality,
-		'GSC_MIxS_human_oral_broad_scale_environmental_context': GSC_MIxS_human_oral_broad_scale_environmental_context,
-		'GSC_MIxS_human_oral_local_environmental_context': GSC_MIxS_human_oral_local_environmental_context,
-		'GSC_MIxS_human_oral_environmental_medium': GSC_MIxS_human_oral_environmental_medium,
-		'GSC_MIxS_human_oral_source_material_identifiers': GSC_MIxS_human_oral_source_material_identifiers,
-		'GSC_MIxS_human_oral_sample_material_processing': GSC_MIxS_human_oral_sample_material_processing,
-		'GSC_MIxS_human_oral_isolation_and_growth_condition': GSC_MIxS_human_oral_isolation_and_growth_condition,
-		'GSC_MIxS_human_oral_propagation': GSC_MIxS_human_oral_propagation,
-		'GSC_MIxS_human_oral_amount_or_size_of_sample_collected': GSC_MIxS_human_oral_amount_or_size_of_sample_collected,
-		'GSC_MIxS_human_oral_host_body_product': GSC_MIxS_human_oral_host_body_product,
-		'GSC_MIxS_human_oral_medical_history_performed': GSC_MIxS_human_oral_medical_history_performed,
-		'GSC_MIxS_human_oral_oxygenation_status_of_sample': GSC_MIxS_human_oral_oxygenation_status_of_sample,
-		'GSC_MIxS_human_oral_organism_count': GSC_MIxS_human_oral_organism_count,
-		'GSC_MIxS_human_oral_sample_storage_duration': GSC_MIxS_human_oral_sample_storage_duration,
-		'GSC_MIxS_human_oral_sample_storage_temperature': GSC_MIxS_human_oral_sample_storage_temperature,
-		'GSC_MIxS_human_oral_sample_storage_location': GSC_MIxS_human_oral_sample_storage_location,
-		'GSC_MIxS_human_oral_sample_collection_device': GSC_MIxS_human_oral_sample_collection_device,
-		'GSC_MIxS_human_oral_sample_collection_method': GSC_MIxS_human_oral_sample_collection_method,
-		'GSC_MIxS_human_oral_nose_mouth_teeth_throat_disorder': GSC_MIxS_human_oral_nose_mouth_teeth_throat_disorder,
-		'GSC_MIxS_human_oral_host_disease_status': GSC_MIxS_human_oral_host_disease_status,
-		'GSC_MIxS_human_oral_host_subject_id': GSC_MIxS_human_oral_host_subject_id,
-		'GSC_MIxS_human_oral_IHMC_medication_code': GSC_MIxS_human_oral_IHMC_medication_code,
-		'GSC_MIxS_human_oral_host_age': GSC_MIxS_human_oral_host_age,
-		'GSC_MIxS_human_oral_host_body_site': GSC_MIxS_human_oral_host_body_site,
-		'GSC_MIxS_human_oral_host_height': GSC_MIxS_human_oral_host_height,
-		'GSC_MIxS_human_oral_host_body_mass_index': GSC_MIxS_human_oral_host_body_mass_index,
-		'GSC_MIxS_human_oral_ethnicity': GSC_MIxS_human_oral_ethnicity,
-		'GSC_MIxS_human_oral_host_occupation': GSC_MIxS_human_oral_host_occupation,
-		'GSC_MIxS_human_oral_host_total_mass': GSC_MIxS_human_oral_host_total_mass,
-		'GSC_MIxS_human_oral_host_phenotype': GSC_MIxS_human_oral_host_phenotype,
-		'GSC_MIxS_human_oral_host_body_temperature': GSC_MIxS_human_oral_host_body_temperature,
-		'GSC_MIxS_human_oral_host_sex': GSC_MIxS_human_oral_host_sex,
-		'GSC_MIxS_human_oral_temperature': GSC_MIxS_human_oral_temperature,
-		'GSC_MIxS_human_oral_salinity': GSC_MIxS_human_oral_salinity,
-		'GSC_MIxS_human_oral_time_since_last_toothbrushing': GSC_MIxS_human_oral_time_since_last_toothbrushing,
-		'GSC_MIxS_human_oral_host_diet': GSC_MIxS_human_oral_host_diet,
-		'GSC_MIxS_human_oral_host_last_meal': GSC_MIxS_human_oral_host_last_meal,
-		'GSC_MIxS_human_oral_host_family_relationship': GSC_MIxS_human_oral_host_family_relationship,
-		'GSC_MIxS_human_oral_host_genotype': GSC_MIxS_human_oral_host_genotype,
-		'GSC_MIxS_human_oral_host_pulse': GSC_MIxS_human_oral_host_pulse,
-		'GSC_MIxS_human_oral_subspecific_genetic_lineage': GSC_MIxS_human_oral_subspecific_genetic_lineage,
-		'GSC_MIxS_human_oral_trophic_level': GSC_MIxS_human_oral_trophic_level,
-		'GSC_MIxS_human_oral_relationship_to_oxygen': GSC_MIxS_human_oral_relationship_to_oxygen,
-		'GSC_MIxS_human_oral_known_pathogenicity': GSC_MIxS_human_oral_known_pathogenicity,
-		'GSC_MIxS_human_oral_encoded_traits': GSC_MIxS_human_oral_encoded_traits,
-		'GSC_MIxS_human_oral_observed_biotic_relationship': GSC_MIxS_human_oral_observed_biotic_relationship,
-		'GSC_MIxS_human_oral_chemical_administration': GSC_MIxS_human_oral_chemical_administration,
-		'GSC_MIxS_human_oral_perturbation': GSC_MIxS_human_oral_perturbation,
+		'GSC_MIxS_human_oral_project_name': 'project name',
+		'GSC_MIxS_human_oral_experimental_factor': 'experimental factor',
+		'GSC_MIxS_human_oral_ploidy': 'ploidy',
+		'GSC_MIxS_human_oral_number_of_replicons': 'number of replicons',
+		'GSC_MIxS_human_oral_extrachromosomal_elements': 'extrachromosomal elements',
+		'GSC_MIxS_human_oral_estimated_size': 'estimated size',
+		'GSC_MIxS_human_oral_reference_for_biomaterial': 'reference for biomaterial',
+		'GSC_MIxS_human_oral_annotation_source': 'annotation source',
+		'GSC_MIxS_human_oral_sample_volume_or_weight_for_DNA_extraction': 'sample volume or weight for DNA extraction',
+		'GSC_MIxS_human_oral_nucleic_acid_extraction': 'nucleic acid extraction',
+		'GSC_MIxS_human_oral_nucleic_acid_amplification': 'nucleic acid amplification',
+		'GSC_MIxS_human_oral_library_size': 'library size',
+		'GSC_MIxS_human_oral_library_reads_sequenced': 'library reads sequenced',
+		'GSC_MIxS_human_oral_library_construction_method': 'library construction method',
+		'GSC_MIxS_human_oral_library_vector': 'library vector',
+		'GSC_MIxS_human_oral_library_screening_strategy': 'library screening strategy',
+		'GSC_MIxS_human_oral_target_gene': 'target gene',
+		'GSC_MIxS_human_oral_target_subfragment': 'target subfragment',
+		'GSC_MIxS_human_oral_pcr_primers': 'pcr primers',
+		'GSC_MIxS_human_oral_multiplex_identifiers': 'multiplex identifiers',
+		'GSC_MIxS_human_oral_adapters': 'adapters',
+		'GSC_MIxS_human_oral_pcr_conditions': 'pcr conditions',
+		'GSC_MIxS_human_oral_sequencing_method': 'sequencing method',
+		'GSC_MIxS_human_oral_sequence_quality_check': 'sequence quality check',
+		'GSC_MIxS_human_oral_chimera_check_software': 'chimera check software',
+		'GSC_MIxS_human_oral_relevant_electronic_resources': 'relevant electronic resources',
+		'GSC_MIxS_human_oral_relevant_standard_operating_procedures': 'relevant standard operating procedures',
+		'GSC_MIxS_human_oral_negative_control_type': 'negative control type',
+		'GSC_MIxS_human_oral_positive_control_type': 'positive control type',
+		'GSC_MIxS_human_oral_collection_date': 'collection date',
+		'GSC_MIxS_human_oral_geographic_location_country_and_or_sea': 'geographic location (country and/or sea)',
+		'GSC_MIxS_human_oral_geographic_location_latitude': 'geographic location (latitude)',
+		'GSC_MIxS_human_oral_geographic_location_longitude': 'geographic location (longitude)',
+		'GSC_MIxS_human_oral_geographic_location_region_and_locality': 'geographic location (region and locality)',
+		'GSC_MIxS_human_oral_broad_scale_environmental_context': 'broad-scale environmental context',
+		'GSC_MIxS_human_oral_local_environmental_context': 'local environmental context',
+		'GSC_MIxS_human_oral_environmental_medium': 'environmental medium',
+		'GSC_MIxS_human_oral_source_material_identifiers': 'source material identifiers',
+		'GSC_MIxS_human_oral_sample_material_processing': 'sample material processing',
+		'GSC_MIxS_human_oral_isolation_and_growth_condition': 'isolation and growth condition',
+		'GSC_MIxS_human_oral_propagation': 'propagation',
+		'GSC_MIxS_human_oral_amount_or_size_of_sample_collected': 'amount or size of sample collected',
+		'GSC_MIxS_human_oral_host_body_product': 'host body product',
+		'GSC_MIxS_human_oral_medical_history_performed': 'medical history performed',
+		'GSC_MIxS_human_oral_oxygenation_status_of_sample': 'oxygenation status of sample',
+		'GSC_MIxS_human_oral_organism_count': 'organism count',
+		'GSC_MIxS_human_oral_sample_storage_duration': 'sample storage duration',
+		'GSC_MIxS_human_oral_sample_storage_temperature': 'sample storage temperature',
+		'GSC_MIxS_human_oral_sample_storage_location': 'sample storage location',
+		'GSC_MIxS_human_oral_sample_collection_device': 'sample collection device',
+		'GSC_MIxS_human_oral_sample_collection_method': 'sample collection method',
+		'GSC_MIxS_human_oral_nose_mouth_teeth_throat_disorder': 'nose/mouth/teeth/throat disorder',
+		'GSC_MIxS_human_oral_host_disease_status': 'host disease status',
+		'GSC_MIxS_human_oral_host_subject_id': 'host subject id',
+		'GSC_MIxS_human_oral_IHMC_medication_code': 'IHMC medication code',
+		'GSC_MIxS_human_oral_host_age': 'host age',
+		'GSC_MIxS_human_oral_host_body_site': 'host body site',
+		'GSC_MIxS_human_oral_host_height': 'host height',
+		'GSC_MIxS_human_oral_host_body_mass_index': 'host body-mass index',
+		'GSC_MIxS_human_oral_ethnicity': 'ethnicity',
+		'GSC_MIxS_human_oral_host_occupation': 'host occupation',
+		'GSC_MIxS_human_oral_host_total_mass': 'host total mass',
+		'GSC_MIxS_human_oral_host_phenotype': 'host phenotype',
+		'GSC_MIxS_human_oral_host_body_temperature': 'host body temperature',
+		'GSC_MIxS_human_oral_host_sex': 'host sex',
+		'GSC_MIxS_human_oral_temperature': 'temperature',
+		'GSC_MIxS_human_oral_salinity': 'salinity',
+		'GSC_MIxS_human_oral_time_since_last_toothbrushing': 'time since last toothbrushing',
+		'GSC_MIxS_human_oral_host_diet': 'host diet',
+		'GSC_MIxS_human_oral_host_last_meal': 'host last meal',
+		'GSC_MIxS_human_oral_host_family_relationship': 'host family relationship',
+		'GSC_MIxS_human_oral_host_genotype': 'host genotype',
+		'GSC_MIxS_human_oral_host_pulse': 'host pulse',
+		'GSC_MIxS_human_oral_subspecific_genetic_lineage': 'subspecific genetic lineage',
+		'GSC_MIxS_human_oral_trophic_level': 'trophic level',
+		'GSC_MIxS_human_oral_relationship_to_oxygen': 'relationship to oxygen',
+		'GSC_MIxS_human_oral_known_pathogenicity': 'known pathogenicity',
+		'GSC_MIxS_human_oral_encoded_traits': 'encoded traits',
+		'GSC_MIxS_human_oral_observed_biotic_relationship': 'observed biotic relationship',
+		'GSC_MIxS_human_oral_chemical_administration': 'chemical administration',
+		'GSC_MIxS_human_oral_perturbation': 'perturbation',
 	}
 
-class GSC_MIxS_human_oral_unit(SelfDescribingModel):
+class GSC_MIxS_human_oral_unit(SelfDescribingUnitModel):
 
 	GSC_MIxS_human_oral_sample_volume_or_weight_for_DNA_extraction_units = [('g', 'g'), ('mL', 'mL'), ('mg', 'mg'), ('ng', 'ng')]
-	GSC_MIxS_human_oral_geographic_location_latitude_units = [('D', 'D'), ('D', 'D')]
-	GSC_MIxS_human_oral_geographic_location_longitude_units = [('D', 'D'), ('D', 'D')]
+	GSC_MIxS_human_oral_geographic_location_latitude_units = [('DD', 'DD')]
+	GSC_MIxS_human_oral_geographic_location_longitude_units = [('DD', 'DD')]
 	GSC_MIxS_human_oral_amount_or_size_of_sample_collected_units = [('L', 'L'), ('g', 'g'), ('kg', 'kg'), ('m2', 'm2'), ('m3', 'm3')]
 	GSC_MIxS_human_oral_sample_storage_duration_units = [('days', 'days'), ('hours', 'hours'), ('months', 'months'), ('weeks', 'weeks'), ('years', 'years')]
-	GSC_MIxS_human_oral_sample_storage_temperature_units = [('°', '°'), ('C', 'C')]
+	GSC_MIxS_human_oral_sample_storage_temperature_units = [('°C', '°C')]
 	GSC_MIxS_human_oral_host_age_units = [('centuries', 'centuries'), ('days', 'days'), ('decades', 'decades'), ('hours', 'hours'), ('minutes', 'minutes'), ('months', 'months'), ('seconds', 'seconds'), ('weeks', 'weeks'), ('years', 'years')]
 	GSC_MIxS_human_oral_host_height_units = [('cm', 'cm'), ('m', 'm'), ('mm', 'mm')]
-	GSC_MIxS_human_oral_host_body_mass_index_units = [('k', 'k'), ('g', 'g'), ('/', '/'), ('m', 'm'), ('2', '2')]
+	GSC_MIxS_human_oral_host_body_mass_index_units = [('kg/m2', 'kg/m2')]
 	GSC_MIxS_human_oral_host_total_mass_units = [('g', 'g'), ('kg', 'kg')]
-	GSC_MIxS_human_oral_host_body_temperature_units = [('º', 'º'), ('C', 'C')]
-	GSC_MIxS_human_oral_temperature_units = [('º', 'º'), ('C', 'C')]
-	GSC_MIxS_human_oral_salinity_units = [('p', 'p'), ('s', 's'), ('u', 'u')]
+	GSC_MIxS_human_oral_host_body_temperature_units = [('ºC', 'ºC')]
+	GSC_MIxS_human_oral_temperature_units = [('ºC', 'ºC')]
+	GSC_MIxS_human_oral_salinity_units = [('psu', 'psu')]
 	GSC_MIxS_human_oral_time_since_last_toothbrushing_units = [('hours', 'hours'), ('minutes', 'minutes')]
-	GSC_MIxS_human_oral_host_pulse_units = [('b', 'b'), ('p', 'p'), ('m', 'm')]
+	GSC_MIxS_human_oral_host_pulse_units = [('bpm', 'bpm')]
 
 	fields = {
-		'GSC_MIxS_human_oral_sample_volume_or_weight_for_DNA_extraction_units': GSC_MIxS_human_oral_sample_volume_or_weight_for_DNA_extraction_units,
-		'GSC_MIxS_human_oral_geographic_location_latitude_units': GSC_MIxS_human_oral_geographic_location_latitude_units,
-		'GSC_MIxS_human_oral_geographic_location_longitude_units': GSC_MIxS_human_oral_geographic_location_longitude_units,
-		'GSC_MIxS_human_oral_amount_or_size_of_sample_collected_units': GSC_MIxS_human_oral_amount_or_size_of_sample_collected_units,
-		'GSC_MIxS_human_oral_sample_storage_duration_units': GSC_MIxS_human_oral_sample_storage_duration_units,
-		'GSC_MIxS_human_oral_sample_storage_temperature_units': GSC_MIxS_human_oral_sample_storage_temperature_units,
-		'GSC_MIxS_human_oral_host_age_units': GSC_MIxS_human_oral_host_age_units,
-		'GSC_MIxS_human_oral_host_height_units': GSC_MIxS_human_oral_host_height_units,
-		'GSC_MIxS_human_oral_host_body_mass_index_units': GSC_MIxS_human_oral_host_body_mass_index_units,
-		'GSC_MIxS_human_oral_host_total_mass_units': GSC_MIxS_human_oral_host_total_mass_units,
-		'GSC_MIxS_human_oral_host_body_temperature_units': GSC_MIxS_human_oral_host_body_temperature_units,
-		'GSC_MIxS_human_oral_temperature_units': GSC_MIxS_human_oral_temperature_units,
-		'GSC_MIxS_human_oral_salinity_units': GSC_MIxS_human_oral_salinity_units,
-		'GSC_MIxS_human_oral_time_since_last_toothbrushing_units': GSC_MIxS_human_oral_time_since_last_toothbrushing_units,
-		'GSC_MIxS_human_oral_host_pulse_units': GSC_MIxS_human_oral_host_pulse_units,
+		'GSC_MIxS_human_oral_sample_volume_or_weight_for_DNA_extraction': 'sample volume or weight for DNA extraction',
+		'GSC_MIxS_human_oral_geographic_location_latitude': 'geographic location (latitude)',
+		'GSC_MIxS_human_oral_geographic_location_longitude': 'geographic location (longitude)',
+		'GSC_MIxS_human_oral_amount_or_size_of_sample_collected': 'amount or size of sample collected',
+		'GSC_MIxS_human_oral_sample_storage_duration': 'sample storage duration',
+		'GSC_MIxS_human_oral_sample_storage_temperature': 'sample storage temperature',
+		'GSC_MIxS_human_oral_host_age': 'host age',
+		'GSC_MIxS_human_oral_host_height': 'host height',
+		'GSC_MIxS_human_oral_host_body_mass_index': 'host body-mass index',
+		'GSC_MIxS_human_oral_host_total_mass': 'host total mass',
+		'GSC_MIxS_human_oral_host_body_temperature': 'host body temperature',
+		'GSC_MIxS_human_oral_temperature': 'temperature',
+		'GSC_MIxS_human_oral_salinity': 'salinity',
+		'GSC_MIxS_human_oral_time_since_last_toothbrushing': 'time since last toothbrushing',
+		'GSC_MIxS_human_oral_host_pulse': 'host pulse',
 	}
 
-	sample = models.ForeignKey(Sample, on_delete=models.CASCADE)
 	order = models.ForeignKey(Order, on_delete=models.CASCADE, default=1)
 	GSC_MIxS_human_oral_sample_volume_or_weight_for_DNA_extraction = models.CharField(max_length=100, choices=GSC_MIxS_human_oral_sample_volume_or_weight_for_DNA_extraction_units, blank=False)
 	GSC_MIxS_human_oral_geographic_location_latitude = models.CharField(max_length=100, choices=GSC_MIxS_human_oral_geographic_location_latitude_units, blank=False)
@@ -3717,228 +3831,227 @@ class GSC_MIxS_sediment(SelfDescribingModel):
 	GSC_MIxS_sediment_perturbation= models.CharField(max_length=100, blank=True,help_text="type of pe")
 
 	fields = {
-		'GSC_MIxS_sediment_project_name': GSC_MIxS_sediment_project_name,
-		'GSC_MIxS_sediment_experimental_factor': GSC_MIxS_sediment_experimental_factor,
-		'GSC_MIxS_sediment_ploidy': GSC_MIxS_sediment_ploidy,
-		'GSC_MIxS_sediment_number_of_replicons': GSC_MIxS_sediment_number_of_replicons,
-		'GSC_MIxS_sediment_extrachromosomal_elements': GSC_MIxS_sediment_extrachromosomal_elements,
-		'GSC_MIxS_sediment_estimated_size': GSC_MIxS_sediment_estimated_size,
-		'GSC_MIxS_sediment_reference_for_biomaterial': GSC_MIxS_sediment_reference_for_biomaterial,
-		'GSC_MIxS_sediment_annotation_source': GSC_MIxS_sediment_annotation_source,
-		'GSC_MIxS_sediment_sample_volume_or_weight_for_DNA_extraction': GSC_MIxS_sediment_sample_volume_or_weight_for_DNA_extraction,
-		'GSC_MIxS_sediment_nucleic_acid_extraction': GSC_MIxS_sediment_nucleic_acid_extraction,
-		'GSC_MIxS_sediment_nucleic_acid_amplification': GSC_MIxS_sediment_nucleic_acid_amplification,
-		'GSC_MIxS_sediment_library_size': GSC_MIxS_sediment_library_size,
-		'GSC_MIxS_sediment_library_reads_sequenced': GSC_MIxS_sediment_library_reads_sequenced,
-		'GSC_MIxS_sediment_library_construction_method': GSC_MIxS_sediment_library_construction_method,
-		'GSC_MIxS_sediment_library_vector': GSC_MIxS_sediment_library_vector,
-		'GSC_MIxS_sediment_library_screening_strategy': GSC_MIxS_sediment_library_screening_strategy,
-		'GSC_MIxS_sediment_target_gene': GSC_MIxS_sediment_target_gene,
-		'GSC_MIxS_sediment_target_subfragment': GSC_MIxS_sediment_target_subfragment,
-		'GSC_MIxS_sediment_pcr_primers': GSC_MIxS_sediment_pcr_primers,
-		'GSC_MIxS_sediment_multiplex_identifiers': GSC_MIxS_sediment_multiplex_identifiers,
-		'GSC_MIxS_sediment_adapters': GSC_MIxS_sediment_adapters,
-		'GSC_MIxS_sediment_pcr_conditions': GSC_MIxS_sediment_pcr_conditions,
-		'GSC_MIxS_sediment_sequencing_method': GSC_MIxS_sediment_sequencing_method,
-		'GSC_MIxS_sediment_sequence_quality_check': GSC_MIxS_sediment_sequence_quality_check,
-		'GSC_MIxS_sediment_chimera_check_software': GSC_MIxS_sediment_chimera_check_software,
-		'GSC_MIxS_sediment_relevant_electronic_resources': GSC_MIxS_sediment_relevant_electronic_resources,
-		'GSC_MIxS_sediment_relevant_standard_operating_procedures': GSC_MIxS_sediment_relevant_standard_operating_procedures,
-		'GSC_MIxS_sediment_negative_control_type': GSC_MIxS_sediment_negative_control_type,
-		'GSC_MIxS_sediment_positive_control_type': GSC_MIxS_sediment_positive_control_type,
-		'GSC_MIxS_sediment_collection_date': GSC_MIxS_sediment_collection_date,
-		'GSC_MIxS_sediment_altitude': GSC_MIxS_sediment_altitude,
-		'GSC_MIxS_sediment_geographic_location_country_and_or_sea': GSC_MIxS_sediment_geographic_location_country_and_or_sea,
-		'GSC_MIxS_sediment_geographic_location_latitude': GSC_MIxS_sediment_geographic_location_latitude,
-		'GSC_MIxS_sediment_geographic_location_longitude': GSC_MIxS_sediment_geographic_location_longitude,
-		'GSC_MIxS_sediment_geographic_location_region_and_locality': GSC_MIxS_sediment_geographic_location_region_and_locality,
-		'GSC_MIxS_sediment_depth': GSC_MIxS_sediment_depth,
-		'GSC_MIxS_sediment_broad_scale_environmental_context': GSC_MIxS_sediment_broad_scale_environmental_context,
-		'GSC_MIxS_sediment_local_environmental_context': GSC_MIxS_sediment_local_environmental_context,
-		'GSC_MIxS_sediment_environmental_medium': GSC_MIxS_sediment_environmental_medium,
-		'GSC_MIxS_sediment_elevation': GSC_MIxS_sediment_elevation,
-		'GSC_MIxS_sediment_source_material_identifiers': GSC_MIxS_sediment_source_material_identifiers,
-		'GSC_MIxS_sediment_sample_material_processing': GSC_MIxS_sediment_sample_material_processing,
-		'GSC_MIxS_sediment_isolation_and_growth_condition': GSC_MIxS_sediment_isolation_and_growth_condition,
-		'GSC_MIxS_sediment_propagation': GSC_MIxS_sediment_propagation,
-		'GSC_MIxS_sediment_amount_or_size_of_sample_collected': GSC_MIxS_sediment_amount_or_size_of_sample_collected,
-		'GSC_MIxS_sediment_biomass': GSC_MIxS_sediment_biomass,
-		'GSC_MIxS_sediment_density': GSC_MIxS_sediment_density,
-		'GSC_MIxS_sediment_oxygenation_status_of_sample': GSC_MIxS_sediment_oxygenation_status_of_sample,
-		'GSC_MIxS_sediment_organism_count': GSC_MIxS_sediment_organism_count,
-		'GSC_MIxS_sediment_sample_storage_duration': GSC_MIxS_sediment_sample_storage_duration,
-		'GSC_MIxS_sediment_sample_storage_temperature': GSC_MIxS_sediment_sample_storage_temperature,
-		'GSC_MIxS_sediment_sample_storage_location': GSC_MIxS_sediment_sample_storage_location,
-		'GSC_MIxS_sediment_sample_collection_device': GSC_MIxS_sediment_sample_collection_device,
-		'GSC_MIxS_sediment_sample_collection_method': GSC_MIxS_sediment_sample_collection_method,
-		'GSC_MIxS_sediment_host_disease_status': GSC_MIxS_sediment_host_disease_status,
-		'GSC_MIxS_sediment_host_scientific_name': GSC_MIxS_sediment_host_scientific_name,
-		'GSC_MIxS_sediment_alkyl_diethers': GSC_MIxS_sediment_alkyl_diethers,
-		'GSC_MIxS_sediment_aminopeptidase_activity': GSC_MIxS_sediment_aminopeptidase_activity,
-		'GSC_MIxS_sediment_ammonium': GSC_MIxS_sediment_ammonium,
-		'GSC_MIxS_sediment_bacterial_carbon_production': GSC_MIxS_sediment_bacterial_carbon_production,
-		'GSC_MIxS_sediment_bishomohopanol': GSC_MIxS_sediment_bishomohopanol,
-		'GSC_MIxS_sediment_bromide': GSC_MIxS_sediment_bromide,
-		'GSC_MIxS_sediment_calcium': GSC_MIxS_sediment_calcium,
-		'GSC_MIxS_sediment_carbon_nitrogen_ratio': GSC_MIxS_sediment_carbon_nitrogen_ratio,
-		'GSC_MIxS_sediment_chloride': GSC_MIxS_sediment_chloride,
-		'GSC_MIxS_sediment_chlorophyll': GSC_MIxS_sediment_chlorophyll,
-		'GSC_MIxS_sediment_diether_lipids': GSC_MIxS_sediment_diether_lipids,
-		'GSC_MIxS_sediment_dissolved_carbon_dioxide': GSC_MIxS_sediment_dissolved_carbon_dioxide,
-		'GSC_MIxS_sediment_dissolved_hydrogen': GSC_MIxS_sediment_dissolved_hydrogen,
-		'GSC_MIxS_sediment_dissolved_inorganic_carbon': GSC_MIxS_sediment_dissolved_inorganic_carbon,
-		'GSC_MIxS_sediment_dissolved_organic_carbon': GSC_MIxS_sediment_dissolved_organic_carbon,
-		'GSC_MIxS_sediment_dissolved_organic_nitrogen': GSC_MIxS_sediment_dissolved_organic_nitrogen,
-		'GSC_MIxS_sediment_methane': GSC_MIxS_sediment_methane,
-		'GSC_MIxS_sediment_dissolved_oxygen': GSC_MIxS_sediment_dissolved_oxygen,
-		'GSC_MIxS_sediment_glucosidase_activity': GSC_MIxS_sediment_glucosidase_activity,
-		'GSC_MIxS_sediment_magnesium': GSC_MIxS_sediment_magnesium,
-		'GSC_MIxS_sediment_n_alkanes': GSC_MIxS_sediment_n_alkanes,
-		'GSC_MIxS_sediment_nitrate': GSC_MIxS_sediment_nitrate,
-		'GSC_MIxS_sediment_nitrite': GSC_MIxS_sediment_nitrite,
-		'GSC_MIxS_sediment_nitrogen': GSC_MIxS_sediment_nitrogen,
-		'GSC_MIxS_sediment_organic_carbon': GSC_MIxS_sediment_organic_carbon,
-		'GSC_MIxS_sediment_organic_matter': GSC_MIxS_sediment_organic_matter,
-		'GSC_MIxS_sediment_organic_nitrogen': GSC_MIxS_sediment_organic_nitrogen,
-		'GSC_MIxS_sediment_particulate_organic_carbon': GSC_MIxS_sediment_particulate_organic_carbon,
-		'GSC_MIxS_sediment_petroleum_hydrocarbon': GSC_MIxS_sediment_petroleum_hydrocarbon,
-		'GSC_MIxS_sediment_phaeopigments': GSC_MIxS_sediment_phaeopigments,
-		'GSC_MIxS_sediment_phosphate': GSC_MIxS_sediment_phosphate,
-		'GSC_MIxS_sediment_phospholipid_fatty_acid': GSC_MIxS_sediment_phospholipid_fatty_acid,
-		'GSC_MIxS_sediment_potassium': GSC_MIxS_sediment_potassium,
-		'GSC_MIxS_sediment_redox_potential': GSC_MIxS_sediment_redox_potential,
-		'GSC_MIxS_sediment_salinity': GSC_MIxS_sediment_salinity,
-		'GSC_MIxS_sediment_total_carbon': GSC_MIxS_sediment_total_carbon,
-		'GSC_MIxS_sediment_silicate': GSC_MIxS_sediment_silicate,
-		'GSC_MIxS_sediment_sodium': GSC_MIxS_sediment_sodium,
-		'GSC_MIxS_sediment_total_organic_carbon': GSC_MIxS_sediment_total_organic_carbon,
-		'GSC_MIxS_sediment_water_content': GSC_MIxS_sediment_water_content,
-		'GSC_MIxS_sediment_sulfate': GSC_MIxS_sediment_sulfate,
-		'GSC_MIxS_sediment_sulfide': GSC_MIxS_sediment_sulfide,
-		'GSC_MIxS_sediment_total_nitrogen': GSC_MIxS_sediment_total_nitrogen,
-		'GSC_MIxS_sediment_subspecific_genetic_lineage': GSC_MIxS_sediment_subspecific_genetic_lineage,
-		'GSC_MIxS_sediment_trophic_level': GSC_MIxS_sediment_trophic_level,
-		'GSC_MIxS_sediment_relationship_to_oxygen': GSC_MIxS_sediment_relationship_to_oxygen,
-		'GSC_MIxS_sediment_known_pathogenicity': GSC_MIxS_sediment_known_pathogenicity,
-		'GSC_MIxS_sediment_encoded_traits': GSC_MIxS_sediment_encoded_traits,
-		'GSC_MIxS_sediment_observed_biotic_relationship': GSC_MIxS_sediment_observed_biotic_relationship,
-		'GSC_MIxS_sediment_chemical_administration': GSC_MIxS_sediment_chemical_administration,
-		'GSC_MIxS_sediment_perturbation': GSC_MIxS_sediment_perturbation,
+		'GSC_MIxS_sediment_project_name': 'project name',
+		'GSC_MIxS_sediment_experimental_factor': 'experimental factor',
+		'GSC_MIxS_sediment_ploidy': 'ploidy',
+		'GSC_MIxS_sediment_number_of_replicons': 'number of replicons',
+		'GSC_MIxS_sediment_extrachromosomal_elements': 'extrachromosomal elements',
+		'GSC_MIxS_sediment_estimated_size': 'estimated size',
+		'GSC_MIxS_sediment_reference_for_biomaterial': 'reference for biomaterial',
+		'GSC_MIxS_sediment_annotation_source': 'annotation source',
+		'GSC_MIxS_sediment_sample_volume_or_weight_for_DNA_extraction': 'sample volume or weight for DNA extraction',
+		'GSC_MIxS_sediment_nucleic_acid_extraction': 'nucleic acid extraction',
+		'GSC_MIxS_sediment_nucleic_acid_amplification': 'nucleic acid amplification',
+		'GSC_MIxS_sediment_library_size': 'library size',
+		'GSC_MIxS_sediment_library_reads_sequenced': 'library reads sequenced',
+		'GSC_MIxS_sediment_library_construction_method': 'library construction method',
+		'GSC_MIxS_sediment_library_vector': 'library vector',
+		'GSC_MIxS_sediment_library_screening_strategy': 'library screening strategy',
+		'GSC_MIxS_sediment_target_gene': 'target gene',
+		'GSC_MIxS_sediment_target_subfragment': 'target subfragment',
+		'GSC_MIxS_sediment_pcr_primers': 'pcr primers',
+		'GSC_MIxS_sediment_multiplex_identifiers': 'multiplex identifiers',
+		'GSC_MIxS_sediment_adapters': 'adapters',
+		'GSC_MIxS_sediment_pcr_conditions': 'pcr conditions',
+		'GSC_MIxS_sediment_sequencing_method': 'sequencing method',
+		'GSC_MIxS_sediment_sequence_quality_check': 'sequence quality check',
+		'GSC_MIxS_sediment_chimera_check_software': 'chimera check software',
+		'GSC_MIxS_sediment_relevant_electronic_resources': 'relevant electronic resources',
+		'GSC_MIxS_sediment_relevant_standard_operating_procedures': 'relevant standard operating procedures',
+		'GSC_MIxS_sediment_negative_control_type': 'negative control type',
+		'GSC_MIxS_sediment_positive_control_type': 'positive control type',
+		'GSC_MIxS_sediment_collection_date': 'collection date',
+		'GSC_MIxS_sediment_altitude': 'altitude',
+		'GSC_MIxS_sediment_geographic_location_country_and_or_sea': 'geographic location (country and/or sea)',
+		'GSC_MIxS_sediment_geographic_location_latitude': 'geographic location (latitude)',
+		'GSC_MIxS_sediment_geographic_location_longitude': 'geographic location (longitude)',
+		'GSC_MIxS_sediment_geographic_location_region_and_locality': 'geographic location (region and locality)',
+		'GSC_MIxS_sediment_depth': 'depth',
+		'GSC_MIxS_sediment_broad_scale_environmental_context': 'broad-scale environmental context',
+		'GSC_MIxS_sediment_local_environmental_context': 'local environmental context',
+		'GSC_MIxS_sediment_environmental_medium': 'environmental medium',
+		'GSC_MIxS_sediment_elevation': 'elevation',
+		'GSC_MIxS_sediment_source_material_identifiers': 'source material identifiers',
+		'GSC_MIxS_sediment_sample_material_processing': 'sample material processing',
+		'GSC_MIxS_sediment_isolation_and_growth_condition': 'isolation and growth condition',
+		'GSC_MIxS_sediment_propagation': 'propagation',
+		'GSC_MIxS_sediment_amount_or_size_of_sample_collected': 'amount or size of sample collected',
+		'GSC_MIxS_sediment_biomass': 'biomass',
+		'GSC_MIxS_sediment_density': 'density',
+		'GSC_MIxS_sediment_oxygenation_status_of_sample': 'oxygenation status of sample',
+		'GSC_MIxS_sediment_organism_count': 'organism count',
+		'GSC_MIxS_sediment_sample_storage_duration': 'sample storage duration',
+		'GSC_MIxS_sediment_sample_storage_temperature': 'sample storage temperature',
+		'GSC_MIxS_sediment_sample_storage_location': 'sample storage location',
+		'GSC_MIxS_sediment_sample_collection_device': 'sample collection device',
+		'GSC_MIxS_sediment_sample_collection_method': 'sample collection method',
+		'GSC_MIxS_sediment_host_disease_status': 'host disease status',
+		'GSC_MIxS_sediment_host_scientific_name': 'host scientific name',
+		'GSC_MIxS_sediment_alkyl_diethers': 'alkyl diethers',
+		'GSC_MIxS_sediment_aminopeptidase_activity': 'aminopeptidase activity',
+		'GSC_MIxS_sediment_ammonium': 'ammonium',
+		'GSC_MIxS_sediment_bacterial_carbon_production': 'bacterial carbon production',
+		'GSC_MIxS_sediment_bishomohopanol': 'bishomohopanol',
+		'GSC_MIxS_sediment_bromide': 'bromide',
+		'GSC_MIxS_sediment_calcium': 'calcium',
+		'GSC_MIxS_sediment_carbon_nitrogen_ratio': 'carbon/nitrogen ratio',
+		'GSC_MIxS_sediment_chloride': 'chloride',
+		'GSC_MIxS_sediment_chlorophyll': 'chlorophyll',
+		'GSC_MIxS_sediment_diether_lipids': 'diether lipids',
+		'GSC_MIxS_sediment_dissolved_carbon_dioxide': 'dissolved carbon dioxide',
+		'GSC_MIxS_sediment_dissolved_hydrogen': 'dissolved hydrogen',
+		'GSC_MIxS_sediment_dissolved_inorganic_carbon': 'dissolved inorganic carbon',
+		'GSC_MIxS_sediment_dissolved_organic_carbon': 'dissolved organic carbon',
+		'GSC_MIxS_sediment_dissolved_organic_nitrogen': 'dissolved organic nitrogen',
+		'GSC_MIxS_sediment_methane': 'methane',
+		'GSC_MIxS_sediment_dissolved_oxygen': 'dissolved oxygen',
+		'GSC_MIxS_sediment_glucosidase_activity': 'glucosidase activity',
+		'GSC_MIxS_sediment_magnesium': 'magnesium',
+		'GSC_MIxS_sediment_n_alkanes': 'n-alkanes',
+		'GSC_MIxS_sediment_nitrate': 'nitrate',
+		'GSC_MIxS_sediment_nitrite': 'nitrite',
+		'GSC_MIxS_sediment_nitrogen': 'nitrogen',
+		'GSC_MIxS_sediment_organic_carbon': 'organic carbon',
+		'GSC_MIxS_sediment_organic_matter': 'organic matter',
+		'GSC_MIxS_sediment_organic_nitrogen': 'organic nitrogen',
+		'GSC_MIxS_sediment_particulate_organic_carbon': 'particulate organic carbon',
+		'GSC_MIxS_sediment_petroleum_hydrocarbon': 'petroleum hydrocarbon',
+		'GSC_MIxS_sediment_phaeopigments': 'phaeopigments',
+		'GSC_MIxS_sediment_phosphate': 'phosphate',
+		'GSC_MIxS_sediment_phospholipid_fatty_acid': 'phospholipid fatty acid',
+		'GSC_MIxS_sediment_potassium': 'potassium',
+		'GSC_MIxS_sediment_redox_potential': 'redox potential',
+		'GSC_MIxS_sediment_salinity': 'salinity',
+		'GSC_MIxS_sediment_total_carbon': 'total carbon',
+		'GSC_MIxS_sediment_silicate': 'silicate',
+		'GSC_MIxS_sediment_sodium': 'sodium',
+		'GSC_MIxS_sediment_total_organic_carbon': 'total organic carbon',
+		'GSC_MIxS_sediment_water_content': 'water content',
+		'GSC_MIxS_sediment_sulfate': 'sulfate',
+		'GSC_MIxS_sediment_sulfide': 'sulfide',
+		'GSC_MIxS_sediment_total_nitrogen': 'total nitrogen',
+		'GSC_MIxS_sediment_subspecific_genetic_lineage': 'subspecific genetic lineage',
+		'GSC_MIxS_sediment_trophic_level': 'trophic level',
+		'GSC_MIxS_sediment_relationship_to_oxygen': 'relationship to oxygen',
+		'GSC_MIxS_sediment_known_pathogenicity': 'known pathogenicity',
+		'GSC_MIxS_sediment_encoded_traits': 'encoded traits',
+		'GSC_MIxS_sediment_observed_biotic_relationship': 'observed biotic relationship',
+		'GSC_MIxS_sediment_chemical_administration': 'chemical administration',
+		'GSC_MIxS_sediment_perturbation': 'perturbation',
 	}
 
-class GSC_MIxS_sediment_unit(SelfDescribingModel):
+class GSC_MIxS_sediment_unit(SelfDescribingUnitModel):
 
 	GSC_MIxS_sediment_sample_volume_or_weight_for_DNA_extraction_units = [('g', 'g'), ('mL', 'mL'), ('mg', 'mg'), ('ng', 'ng')]
 	GSC_MIxS_sediment_altitude_units = [('m', 'm')]
-	GSC_MIxS_sediment_geographic_location_latitude_units = [('D', 'D'), ('D', 'D')]
-	GSC_MIxS_sediment_geographic_location_longitude_units = [('D', 'D'), ('D', 'D')]
+	GSC_MIxS_sediment_geographic_location_latitude_units = [('DD', 'DD')]
+	GSC_MIxS_sediment_geographic_location_longitude_units = [('DD', 'DD')]
 	GSC_MIxS_sediment_depth_units = [('m', 'm')]
 	GSC_MIxS_sediment_elevation_units = [('m', 'm')]
 	GSC_MIxS_sediment_amount_or_size_of_sample_collected_units = [('L', 'L'), ('g', 'g'), ('kg', 'kg'), ('m2', 'm2'), ('m3', 'm3')]
 	GSC_MIxS_sediment_biomass_units = [('g', 'g'), ('kg', 'kg'), ('t', 't')]
-	GSC_MIxS_sediment_density_units = [('g', 'g'), ('/', '/'), ('m', 'm'), ('3', '3')]
+	GSC_MIxS_sediment_density_units = [('g/m3', 'g/m3')]
 	GSC_MIxS_sediment_sample_storage_duration_units = [('days', 'days'), ('hours', 'hours'), ('months', 'months'), ('weeks', 'weeks'), ('years', 'years')]
-	GSC_MIxS_sediment_sample_storage_temperature_units = [('°', '°'), ('C', 'C')]
+	GSC_MIxS_sediment_sample_storage_temperature_units = [('°C', '°C')]
 	GSC_MIxS_sediment_alkyl_diethers_units = [('M/L', 'M/L'), ('µg/L', 'µg/L')]
-	GSC_MIxS_sediment_aminopeptidase_activity_units = [('m', 'm'), ('o', 'o'), ('l', 'l'), ('/', '/'), ('L', 'L'), ('/', '/'), ('h', 'h')]
-	GSC_MIxS_sediment_ammonium_units = [('µ', 'µ'), ('m', 'm'), ('o', 'o'), ('l', 'l'), ('/', '/'), ('L', 'L')]
-	GSC_MIxS_sediment_bacterial_carbon_production_units = [('n', 'n'), ('g', 'g'), ('/', '/'), ('h', 'h')]
+	GSC_MIxS_sediment_aminopeptidase_activity_units = [('mol/L/h', 'mol/L/h')]
+	GSC_MIxS_sediment_ammonium_units = [('µmol/L', 'µmol/L')]
+	GSC_MIxS_sediment_bacterial_carbon_production_units = [('ng/h', 'ng/h')]
 	GSC_MIxS_sediment_bishomohopanol_units = [('µg/L', 'µg/L'), ('µg/g', 'µg/g')]
 	GSC_MIxS_sediment_bromide_units = [('parts/million', 'parts/million'), ('µmol/L', 'µmol/L')]
 	GSC_MIxS_sediment_calcium_units = [('mg/L', 'mg/L'), ('parts/million', 'parts/million'), ('µmol/L', 'µmol/L')]
-	GSC_MIxS_sediment_chloride_units = [('m', 'm'), ('g', 'g'), ('/', '/'), ('L', 'L')]
+	GSC_MIxS_sediment_chloride_units = [('mg/L', 'mg/L')]
 	GSC_MIxS_sediment_chlorophyll_units = [('mg/m3', 'mg/m3'), ('µg/L', 'µg/L')]
-	GSC_MIxS_sediment_diether_lipids_units = [('n', 'n'), ('g', 'g'), ('/', '/'), ('L', 'L')]
-	GSC_MIxS_sediment_dissolved_carbon_dioxide_units = [('µ', 'µ'), ('m', 'm'), ('o', 'o'), ('l', 'l'), ('/', '/'), ('L', 'L')]
-	GSC_MIxS_sediment_dissolved_hydrogen_units = [('µ', 'µ'), ('m', 'm'), ('o', 'o'), ('l', 'l'), ('/', '/'), ('L', 'L')]
-	GSC_MIxS_sediment_dissolved_inorganic_carbon_units = [('µ', 'µ'), ('g', 'g'), ('/', '/'), ('L', 'L')]
-	GSC_MIxS_sediment_dissolved_organic_carbon_units = [('µ', 'µ'), ('m', 'm'), ('o', 'o'), ('l', 'l'), ('/', '/'), ('L', 'L')]
+	GSC_MIxS_sediment_diether_lipids_units = [('ng/L', 'ng/L')]
+	GSC_MIxS_sediment_dissolved_carbon_dioxide_units = [('µmol/L', 'µmol/L')]
+	GSC_MIxS_sediment_dissolved_hydrogen_units = [('µmol/L', 'µmol/L')]
+	GSC_MIxS_sediment_dissolved_inorganic_carbon_units = [('µg/L', 'µg/L')]
+	GSC_MIxS_sediment_dissolved_organic_carbon_units = [('µmol/L', 'µmol/L')]
 	GSC_MIxS_sediment_dissolved_organic_nitrogen_units = [('mg/L', 'mg/L'), ('µg/L', 'µg/L')]
-	GSC_MIxS_sediment_methane_units = [('µ', 'µ'), ('M', 'M'), ('/', '/'), ('L', 'L')]
-	GSC_MIxS_sediment_dissolved_oxygen_units = [('µ', 'µ'), ('m', 'm'), ('o', 'o'), ('l', 'l'), ('/', '/'), ('k', 'k'), ('g', 'g')]
-	GSC_MIxS_sediment_glucosidase_activity_units = [('m', 'm'), ('o', 'o'), ('l', 'l'), ('/', '/'), ('L', 'L'), ('/', '/'), ('h', 'h')]
+	GSC_MIxS_sediment_methane_units = [('µM/L', 'µM/L')]
+	GSC_MIxS_sediment_dissolved_oxygen_units = [('µmol/kg', 'µmol/kg')]
+	GSC_MIxS_sediment_glucosidase_activity_units = [('mol/L/h', 'mol/L/h')]
 	GSC_MIxS_sediment_magnesium_units = [('mg/L', 'mg/L'), ('mol/L', 'mol/L'), ('parts/million', 'parts/million')]
-	GSC_MIxS_sediment_n_alkanes_units = [('µ', 'µ'), ('m', 'm'), ('o', 'o'), ('l', 'l'), ('/', '/'), ('L', 'L')]
-	GSC_MIxS_sediment_nitrate_units = [('µ', 'µ'), ('m', 'm'), ('o', 'o'), ('l', 'l'), ('/', '/'), ('L', 'L')]
-	GSC_MIxS_sediment_nitrite_units = [('µ', 'µ'), ('m', 'm'), ('o', 'o'), ('l', 'l'), ('/', '/'), ('L', 'L')]
-	GSC_MIxS_sediment_nitrogen_units = [('µ', 'µ'), ('m', 'm'), ('o', 'o'), ('l', 'l'), ('/', '/'), ('L', 'L')]
-	GSC_MIxS_sediment_organic_carbon_units = [('µ', 'µ'), ('m', 'm'), ('o', 'o'), ('l', 'l'), ('/', '/'), ('L', 'L')]
-	GSC_MIxS_sediment_organic_matter_units = [('µ', 'µ'), ('g', 'g'), ('/', '/'), ('L', 'L')]
-	GSC_MIxS_sediment_organic_nitrogen_units = [('µ', 'µ'), ('g', 'g'), ('/', '/'), ('L', 'L')]
-	GSC_MIxS_sediment_particulate_organic_carbon_units = [('µ', 'µ'), ('g', 'g'), ('/', '/'), ('L', 'L')]
-	GSC_MIxS_sediment_petroleum_hydrocarbon_units = [('µ', 'µ'), ('m', 'm'), ('o', 'o'), ('l', 'l'), ('/', '/'), ('L', 'L')]
+	GSC_MIxS_sediment_n_alkanes_units = [('µmol/L', 'µmol/L')]
+	GSC_MIxS_sediment_nitrate_units = [('µmol/L', 'µmol/L')]
+	GSC_MIxS_sediment_nitrite_units = [('µmol/L', 'µmol/L')]
+	GSC_MIxS_sediment_nitrogen_units = [('µmol/L', 'µmol/L')]
+	GSC_MIxS_sediment_organic_carbon_units = [('µmol/L', 'µmol/L')]
+	GSC_MIxS_sediment_organic_matter_units = [('µg/L', 'µg/L')]
+	GSC_MIxS_sediment_organic_nitrogen_units = [('µg/L', 'µg/L')]
+	GSC_MIxS_sediment_particulate_organic_carbon_units = [('µg/L', 'µg/L')]
+	GSC_MIxS_sediment_petroleum_hydrocarbon_units = [('µmol/L', 'µmol/L')]
 	GSC_MIxS_sediment_phaeopigments_units = [('mg/m3', 'mg/m3'), ('µg/L', 'µg/L')]
-	GSC_MIxS_sediment_phosphate_units = [('µ', 'µ'), ('m', 'm'), ('o', 'o'), ('l', 'l'), ('/', '/'), ('L', 'L')]
+	GSC_MIxS_sediment_phosphate_units = [('µmol/L', 'µmol/L')]
 	GSC_MIxS_sediment_phospholipid_fatty_acid_units = [('mol/L', 'mol/L'), ('mol/g', 'mol/g')]
 	GSC_MIxS_sediment_potassium_units = [('parts/million', 'parts/million'), ('µmol/L', 'µmol/L')]
-	GSC_MIxS_sediment_redox_potential_units = [('m', 'm'), ('V', 'V')]
-	GSC_MIxS_sediment_salinity_units = [('p', 'p'), ('s', 's'), ('u', 'u')]
-	GSC_MIxS_sediment_total_carbon_units = [('µ', 'µ'), ('g', 'g'), ('/', '/'), ('L', 'L')]
-	GSC_MIxS_sediment_silicate_units = [('µ', 'µ'), ('m', 'm'), ('o', 'o'), ('l', 'l'), ('/', '/'), ('L', 'L')]
+	GSC_MIxS_sediment_redox_potential_units = [('mV', 'mV')]
+	GSC_MIxS_sediment_salinity_units = [('psu', 'psu')]
+	GSC_MIxS_sediment_total_carbon_units = [('µg/L', 'µg/L')]
+	GSC_MIxS_sediment_silicate_units = [('µmol/L', 'µmol/L')]
 	GSC_MIxS_sediment_sodium_units = [('parts/million', 'parts/million'), ('µmol/L', 'µmol/L')]
-	GSC_MIxS_sediment_total_organic_carbon_units = [('g', 'g'), ('/', '/'), ('k', 'k'), ('g', 'g')]
+	GSC_MIxS_sediment_total_organic_carbon_units = [('g/kg', 'g/kg')]
 	GSC_MIxS_sediment_water_content_units = [('cm3/cm3', 'cm3/cm3'), ('g/g', 'g/g')]
 	GSC_MIxS_sediment_sulfate_units = [('mg/L', 'mg/L'), ('µmol/L', 'µmol/L')]
 	GSC_MIxS_sediment_sulfide_units = [('mg/L', 'mg/L'), ('µmol/L', 'µmol/L')]
 	GSC_MIxS_sediment_total_nitrogen_units = [('µg/L', 'µg/L'), ('µmol/L', 'µmol/L')]
 
 	fields = {
-		'GSC_MIxS_sediment_sample_volume_or_weight_for_DNA_extraction_units': GSC_MIxS_sediment_sample_volume_or_weight_for_DNA_extraction_units,
-		'GSC_MIxS_sediment_altitude_units': GSC_MIxS_sediment_altitude_units,
-		'GSC_MIxS_sediment_geographic_location_latitude_units': GSC_MIxS_sediment_geographic_location_latitude_units,
-		'GSC_MIxS_sediment_geographic_location_longitude_units': GSC_MIxS_sediment_geographic_location_longitude_units,
-		'GSC_MIxS_sediment_depth_units': GSC_MIxS_sediment_depth_units,
-		'GSC_MIxS_sediment_elevation_units': GSC_MIxS_sediment_elevation_units,
-		'GSC_MIxS_sediment_amount_or_size_of_sample_collected_units': GSC_MIxS_sediment_amount_or_size_of_sample_collected_units,
-		'GSC_MIxS_sediment_biomass_units': GSC_MIxS_sediment_biomass_units,
-		'GSC_MIxS_sediment_density_units': GSC_MIxS_sediment_density_units,
-		'GSC_MIxS_sediment_sample_storage_duration_units': GSC_MIxS_sediment_sample_storage_duration_units,
-		'GSC_MIxS_sediment_sample_storage_temperature_units': GSC_MIxS_sediment_sample_storage_temperature_units,
-		'GSC_MIxS_sediment_alkyl_diethers_units': GSC_MIxS_sediment_alkyl_diethers_units,
-		'GSC_MIxS_sediment_aminopeptidase_activity_units': GSC_MIxS_sediment_aminopeptidase_activity_units,
-		'GSC_MIxS_sediment_ammonium_units': GSC_MIxS_sediment_ammonium_units,
-		'GSC_MIxS_sediment_bacterial_carbon_production_units': GSC_MIxS_sediment_bacterial_carbon_production_units,
-		'GSC_MIxS_sediment_bishomohopanol_units': GSC_MIxS_sediment_bishomohopanol_units,
-		'GSC_MIxS_sediment_bromide_units': GSC_MIxS_sediment_bromide_units,
-		'GSC_MIxS_sediment_calcium_units': GSC_MIxS_sediment_calcium_units,
-		'GSC_MIxS_sediment_chloride_units': GSC_MIxS_sediment_chloride_units,
-		'GSC_MIxS_sediment_chlorophyll_units': GSC_MIxS_sediment_chlorophyll_units,
-		'GSC_MIxS_sediment_diether_lipids_units': GSC_MIxS_sediment_diether_lipids_units,
-		'GSC_MIxS_sediment_dissolved_carbon_dioxide_units': GSC_MIxS_sediment_dissolved_carbon_dioxide_units,
-		'GSC_MIxS_sediment_dissolved_hydrogen_units': GSC_MIxS_sediment_dissolved_hydrogen_units,
-		'GSC_MIxS_sediment_dissolved_inorganic_carbon_units': GSC_MIxS_sediment_dissolved_inorganic_carbon_units,
-		'GSC_MIxS_sediment_dissolved_organic_carbon_units': GSC_MIxS_sediment_dissolved_organic_carbon_units,
-		'GSC_MIxS_sediment_dissolved_organic_nitrogen_units': GSC_MIxS_sediment_dissolved_organic_nitrogen_units,
-		'GSC_MIxS_sediment_methane_units': GSC_MIxS_sediment_methane_units,
-		'GSC_MIxS_sediment_dissolved_oxygen_units': GSC_MIxS_sediment_dissolved_oxygen_units,
-		'GSC_MIxS_sediment_glucosidase_activity_units': GSC_MIxS_sediment_glucosidase_activity_units,
-		'GSC_MIxS_sediment_magnesium_units': GSC_MIxS_sediment_magnesium_units,
-		'GSC_MIxS_sediment_n_alkanes_units': GSC_MIxS_sediment_n_alkanes_units,
-		'GSC_MIxS_sediment_nitrate_units': GSC_MIxS_sediment_nitrate_units,
-		'GSC_MIxS_sediment_nitrite_units': GSC_MIxS_sediment_nitrite_units,
-		'GSC_MIxS_sediment_nitrogen_units': GSC_MIxS_sediment_nitrogen_units,
-		'GSC_MIxS_sediment_organic_carbon_units': GSC_MIxS_sediment_organic_carbon_units,
-		'GSC_MIxS_sediment_organic_matter_units': GSC_MIxS_sediment_organic_matter_units,
-		'GSC_MIxS_sediment_organic_nitrogen_units': GSC_MIxS_sediment_organic_nitrogen_units,
-		'GSC_MIxS_sediment_particulate_organic_carbon_units': GSC_MIxS_sediment_particulate_organic_carbon_units,
-		'GSC_MIxS_sediment_petroleum_hydrocarbon_units': GSC_MIxS_sediment_petroleum_hydrocarbon_units,
-		'GSC_MIxS_sediment_phaeopigments_units': GSC_MIxS_sediment_phaeopigments_units,
-		'GSC_MIxS_sediment_phosphate_units': GSC_MIxS_sediment_phosphate_units,
-		'GSC_MIxS_sediment_phospholipid_fatty_acid_units': GSC_MIxS_sediment_phospholipid_fatty_acid_units,
-		'GSC_MIxS_sediment_potassium_units': GSC_MIxS_sediment_potassium_units,
-		'GSC_MIxS_sediment_redox_potential_units': GSC_MIxS_sediment_redox_potential_units,
-		'GSC_MIxS_sediment_salinity_units': GSC_MIxS_sediment_salinity_units,
-		'GSC_MIxS_sediment_total_carbon_units': GSC_MIxS_sediment_total_carbon_units,
-		'GSC_MIxS_sediment_silicate_units': GSC_MIxS_sediment_silicate_units,
-		'GSC_MIxS_sediment_sodium_units': GSC_MIxS_sediment_sodium_units,
-		'GSC_MIxS_sediment_total_organic_carbon_units': GSC_MIxS_sediment_total_organic_carbon_units,
-		'GSC_MIxS_sediment_water_content_units': GSC_MIxS_sediment_water_content_units,
-		'GSC_MIxS_sediment_sulfate_units': GSC_MIxS_sediment_sulfate_units,
-		'GSC_MIxS_sediment_sulfide_units': GSC_MIxS_sediment_sulfide_units,
-		'GSC_MIxS_sediment_total_nitrogen_units': GSC_MIxS_sediment_total_nitrogen_units,
+		'GSC_MIxS_sediment_sample_volume_or_weight_for_DNA_extraction': 'sample volume or weight for DNA extraction',
+		'GSC_MIxS_sediment_altitude': 'altitude',
+		'GSC_MIxS_sediment_geographic_location_latitude': 'geographic location (latitude)',
+		'GSC_MIxS_sediment_geographic_location_longitude': 'geographic location (longitude)',
+		'GSC_MIxS_sediment_depth': 'depth',
+		'GSC_MIxS_sediment_elevation': 'elevation',
+		'GSC_MIxS_sediment_amount_or_size_of_sample_collected': 'amount or size of sample collected',
+		'GSC_MIxS_sediment_biomass': 'biomass',
+		'GSC_MIxS_sediment_density': 'density',
+		'GSC_MIxS_sediment_sample_storage_duration': 'sample storage duration',
+		'GSC_MIxS_sediment_sample_storage_temperature': 'sample storage temperature',
+		'GSC_MIxS_sediment_alkyl_diethers': 'alkyl diethers',
+		'GSC_MIxS_sediment_aminopeptidase_activity': 'aminopeptidase activity',
+		'GSC_MIxS_sediment_ammonium': 'ammonium',
+		'GSC_MIxS_sediment_bacterial_carbon_production': 'bacterial carbon production',
+		'GSC_MIxS_sediment_bishomohopanol': 'bishomohopanol',
+		'GSC_MIxS_sediment_bromide': 'bromide',
+		'GSC_MIxS_sediment_calcium': 'calcium',
+		'GSC_MIxS_sediment_chloride': 'chloride',
+		'GSC_MIxS_sediment_chlorophyll': 'chlorophyll',
+		'GSC_MIxS_sediment_diether_lipids': 'diether lipids',
+		'GSC_MIxS_sediment_dissolved_carbon_dioxide': 'dissolved carbon dioxide',
+		'GSC_MIxS_sediment_dissolved_hydrogen': 'dissolved hydrogen',
+		'GSC_MIxS_sediment_dissolved_inorganic_carbon': 'dissolved inorganic carbon',
+		'GSC_MIxS_sediment_dissolved_organic_carbon': 'dissolved organic carbon',
+		'GSC_MIxS_sediment_dissolved_organic_nitrogen': 'dissolved organic nitrogen',
+		'GSC_MIxS_sediment_methane': 'methane',
+		'GSC_MIxS_sediment_dissolved_oxygen': 'dissolved oxygen',
+		'GSC_MIxS_sediment_glucosidase_activity': 'glucosidase activity',
+		'GSC_MIxS_sediment_magnesium': 'magnesium',
+		'GSC_MIxS_sediment_n_alkanes': 'n-alkanes',
+		'GSC_MIxS_sediment_nitrate': 'nitrate',
+		'GSC_MIxS_sediment_nitrite': 'nitrite',
+		'GSC_MIxS_sediment_nitrogen': 'nitrogen',
+		'GSC_MIxS_sediment_organic_carbon': 'organic carbon',
+		'GSC_MIxS_sediment_organic_matter': 'organic matter',
+		'GSC_MIxS_sediment_organic_nitrogen': 'organic nitrogen',
+		'GSC_MIxS_sediment_particulate_organic_carbon': 'particulate organic carbon',
+		'GSC_MIxS_sediment_petroleum_hydrocarbon': 'petroleum hydrocarbon',
+		'GSC_MIxS_sediment_phaeopigments': 'phaeopigments',
+		'GSC_MIxS_sediment_phosphate': 'phosphate',
+		'GSC_MIxS_sediment_phospholipid_fatty_acid': 'phospholipid fatty acid',
+		'GSC_MIxS_sediment_potassium': 'potassium',
+		'GSC_MIxS_sediment_redox_potential': 'redox potential',
+		'GSC_MIxS_sediment_salinity': 'salinity',
+		'GSC_MIxS_sediment_total_carbon': 'total carbon',
+		'GSC_MIxS_sediment_silicate': 'silicate',
+		'GSC_MIxS_sediment_sodium': 'sodium',
+		'GSC_MIxS_sediment_total_organic_carbon': 'total organic carbon',
+		'GSC_MIxS_sediment_water_content': 'water content',
+		'GSC_MIxS_sediment_sulfate': 'sulfate',
+		'GSC_MIxS_sediment_sulfide': 'sulfide',
+		'GSC_MIxS_sediment_total_nitrogen': 'total nitrogen',
 	}
 
-	sample = models.ForeignKey(Sample, on_delete=models.CASCADE)
 	order = models.ForeignKey(Order, on_delete=models.CASCADE, default=1)
 	GSC_MIxS_sediment_sample_volume_or_weight_for_DNA_extraction = models.CharField(max_length=100, choices=GSC_MIxS_sediment_sample_volume_or_weight_for_DNA_extraction_units, blank=False)
 	GSC_MIxS_sediment_altitude = models.CharField(max_length=100, choices=GSC_MIxS_sediment_altitude_units, blank=False)
@@ -4135,144 +4248,143 @@ class GSC_MIxS_human_associated(SelfDescribingModel):
 	GSC_MIxS_human_associated_perturbation= models.CharField(max_length=100, blank=True,help_text="type of pe")
 
 	fields = {
-		'GSC_MIxS_human_associated_project_name': GSC_MIxS_human_associated_project_name,
-		'GSC_MIxS_human_associated_experimental_factor': GSC_MIxS_human_associated_experimental_factor,
-		'GSC_MIxS_human_associated_ploidy': GSC_MIxS_human_associated_ploidy,
-		'GSC_MIxS_human_associated_number_of_replicons': GSC_MIxS_human_associated_number_of_replicons,
-		'GSC_MIxS_human_associated_extrachromosomal_elements': GSC_MIxS_human_associated_extrachromosomal_elements,
-		'GSC_MIxS_human_associated_estimated_size': GSC_MIxS_human_associated_estimated_size,
-		'GSC_MIxS_human_associated_reference_for_biomaterial': GSC_MIxS_human_associated_reference_for_biomaterial,
-		'GSC_MIxS_human_associated_annotation_source': GSC_MIxS_human_associated_annotation_source,
-		'GSC_MIxS_human_associated_sample_volume_or_weight_for_DNA_extraction': GSC_MIxS_human_associated_sample_volume_or_weight_for_DNA_extraction,
-		'GSC_MIxS_human_associated_nucleic_acid_extraction': GSC_MIxS_human_associated_nucleic_acid_extraction,
-		'GSC_MIxS_human_associated_nucleic_acid_amplification': GSC_MIxS_human_associated_nucleic_acid_amplification,
-		'GSC_MIxS_human_associated_library_size': GSC_MIxS_human_associated_library_size,
-		'GSC_MIxS_human_associated_library_reads_sequenced': GSC_MIxS_human_associated_library_reads_sequenced,
-		'GSC_MIxS_human_associated_library_construction_method': GSC_MIxS_human_associated_library_construction_method,
-		'GSC_MIxS_human_associated_library_vector': GSC_MIxS_human_associated_library_vector,
-		'GSC_MIxS_human_associated_library_screening_strategy': GSC_MIxS_human_associated_library_screening_strategy,
-		'GSC_MIxS_human_associated_target_gene': GSC_MIxS_human_associated_target_gene,
-		'GSC_MIxS_human_associated_target_subfragment': GSC_MIxS_human_associated_target_subfragment,
-		'GSC_MIxS_human_associated_pcr_primers': GSC_MIxS_human_associated_pcr_primers,
-		'GSC_MIxS_human_associated_multiplex_identifiers': GSC_MIxS_human_associated_multiplex_identifiers,
-		'GSC_MIxS_human_associated_adapters': GSC_MIxS_human_associated_adapters,
-		'GSC_MIxS_human_associated_pcr_conditions': GSC_MIxS_human_associated_pcr_conditions,
-		'GSC_MIxS_human_associated_sequencing_method': GSC_MIxS_human_associated_sequencing_method,
-		'GSC_MIxS_human_associated_sequence_quality_check': GSC_MIxS_human_associated_sequence_quality_check,
-		'GSC_MIxS_human_associated_chimera_check_software': GSC_MIxS_human_associated_chimera_check_software,
-		'GSC_MIxS_human_associated_relevant_electronic_resources': GSC_MIxS_human_associated_relevant_electronic_resources,
-		'GSC_MIxS_human_associated_relevant_standard_operating_procedures': GSC_MIxS_human_associated_relevant_standard_operating_procedures,
-		'GSC_MIxS_human_associated_study_completion_status': GSC_MIxS_human_associated_study_completion_status,
-		'GSC_MIxS_human_associated_negative_control_type': GSC_MIxS_human_associated_negative_control_type,
-		'GSC_MIxS_human_associated_positive_control_type': GSC_MIxS_human_associated_positive_control_type,
-		'GSC_MIxS_human_associated_collection_date': GSC_MIxS_human_associated_collection_date,
-		'GSC_MIxS_human_associated_geographic_location_country_and_or_sea': GSC_MIxS_human_associated_geographic_location_country_and_or_sea,
-		'GSC_MIxS_human_associated_geographic_location_latitude': GSC_MIxS_human_associated_geographic_location_latitude,
-		'GSC_MIxS_human_associated_geographic_location_longitude': GSC_MIxS_human_associated_geographic_location_longitude,
-		'GSC_MIxS_human_associated_geographic_location_region_and_locality': GSC_MIxS_human_associated_geographic_location_region_and_locality,
-		'GSC_MIxS_human_associated_broad_scale_environmental_context': GSC_MIxS_human_associated_broad_scale_environmental_context,
-		'GSC_MIxS_human_associated_local_environmental_context': GSC_MIxS_human_associated_local_environmental_context,
-		'GSC_MIxS_human_associated_environmental_medium': GSC_MIxS_human_associated_environmental_medium,
-		'GSC_MIxS_human_associated_source_material_identifiers': GSC_MIxS_human_associated_source_material_identifiers,
-		'GSC_MIxS_human_associated_sample_material_processing': GSC_MIxS_human_associated_sample_material_processing,
-		'GSC_MIxS_human_associated_isolation_and_growth_condition': GSC_MIxS_human_associated_isolation_and_growth_condition,
-		'GSC_MIxS_human_associated_propagation': GSC_MIxS_human_associated_propagation,
-		'GSC_MIxS_human_associated_amount_or_size_of_sample_collected': GSC_MIxS_human_associated_amount_or_size_of_sample_collected,
-		'GSC_MIxS_human_associated_host_body_product': GSC_MIxS_human_associated_host_body_product,
-		'GSC_MIxS_human_associated_medical_history_performed': GSC_MIxS_human_associated_medical_history_performed,
-		'GSC_MIxS_human_associated_urine_collection_method': GSC_MIxS_human_associated_urine_collection_method,
-		'GSC_MIxS_human_associated_oxygenation_status_of_sample': GSC_MIxS_human_associated_oxygenation_status_of_sample,
-		'GSC_MIxS_human_associated_organism_count': GSC_MIxS_human_associated_organism_count,
-		'GSC_MIxS_human_associated_sample_storage_duration': GSC_MIxS_human_associated_sample_storage_duration,
-		'GSC_MIxS_human_associated_sample_storage_temperature': GSC_MIxS_human_associated_sample_storage_temperature,
-		'GSC_MIxS_human_associated_sample_storage_location': GSC_MIxS_human_associated_sample_storage_location,
-		'GSC_MIxS_human_associated_sample_collection_device': GSC_MIxS_human_associated_sample_collection_device,
-		'GSC_MIxS_human_associated_sample_collection_method': GSC_MIxS_human_associated_sample_collection_method,
-		'GSC_MIxS_human_associated_host_HIV_status': GSC_MIxS_human_associated_host_HIV_status,
-		'GSC_MIxS_human_associated_host_disease_status': GSC_MIxS_human_associated_host_disease_status,
-		'GSC_MIxS_human_associated_lung_pulmonary_disorder': GSC_MIxS_human_associated_lung_pulmonary_disorder,
-		'GSC_MIxS_human_associated_lung_nose_throat_disorder': GSC_MIxS_human_associated_lung_nose_throat_disorder,
-		'GSC_MIxS_human_associated_blood_blood_disorder': GSC_MIxS_human_associated_blood_blood_disorder,
-		'GSC_MIxS_human_associated_urine_kidney_disorder': GSC_MIxS_human_associated_urine_kidney_disorder,
-		'GSC_MIxS_human_associated_urine_urogenital_tract_disorder': GSC_MIxS_human_associated_urine_urogenital_tract_disorder,
-		'GSC_MIxS_human_associated_host_subject_id': GSC_MIxS_human_associated_host_subject_id,
-		'GSC_MIxS_human_associated_IHMC_medication_code': GSC_MIxS_human_associated_IHMC_medication_code,
-		'GSC_MIxS_human_associated_host_age': GSC_MIxS_human_associated_host_age,
-		'GSC_MIxS_human_associated_host_body_site': GSC_MIxS_human_associated_host_body_site,
-		'GSC_MIxS_human_associated_drug_usage': GSC_MIxS_human_associated_drug_usage,
-		'GSC_MIxS_human_associated_host_height': GSC_MIxS_human_associated_host_height,
-		'GSC_MIxS_human_associated_host_body_mass_index': GSC_MIxS_human_associated_host_body_mass_index,
-		'GSC_MIxS_human_associated_ethnicity': GSC_MIxS_human_associated_ethnicity,
-		'GSC_MIxS_human_associated_host_occupation': GSC_MIxS_human_associated_host_occupation,
-		'GSC_MIxS_human_associated_host_total_mass': GSC_MIxS_human_associated_host_total_mass,
-		'GSC_MIxS_human_associated_host_phenotype': GSC_MIxS_human_associated_host_phenotype,
-		'GSC_MIxS_human_associated_host_body_temperature': GSC_MIxS_human_associated_host_body_temperature,
-		'GSC_MIxS_human_associated_host_sex': GSC_MIxS_human_associated_host_sex,
-		'GSC_MIxS_human_associated_host_scientific_name': GSC_MIxS_human_associated_host_scientific_name,
-		'GSC_MIxS_human_associated_presence_of_pets_or_farm_animals': GSC_MIxS_human_associated_presence_of_pets_or_farm_animals,
-		'GSC_MIxS_human_associated_temperature': GSC_MIxS_human_associated_temperature,
-		'GSC_MIxS_human_associated_salinity': GSC_MIxS_human_associated_salinity,
-		'GSC_MIxS_human_associated_smoker': GSC_MIxS_human_associated_smoker,
-		'GSC_MIxS_human_associated_major_diet_change_in_last_six_months': GSC_MIxS_human_associated_major_diet_change_in_last_six_months,
-		'GSC_MIxS_human_associated_weight_loss_in_last_three_months': GSC_MIxS_human_associated_weight_loss_in_last_three_months,
-		'GSC_MIxS_human_associated_travel_outside_the_country_in_last_six_months': GSC_MIxS_human_associated_travel_outside_the_country_in_last_six_months,
-		'GSC_MIxS_human_associated_host_diet': GSC_MIxS_human_associated_host_diet,
-		'GSC_MIxS_human_associated_twin_sibling_presence': GSC_MIxS_human_associated_twin_sibling_presence,
-		'GSC_MIxS_human_associated_host_last_meal': GSC_MIxS_human_associated_host_last_meal,
-		'GSC_MIxS_human_associated_amniotic_fluid_gestation_state': GSC_MIxS_human_associated_amniotic_fluid_gestation_state,
-		'GSC_MIxS_human_associated_host_family_relationship': GSC_MIxS_human_associated_host_family_relationship,
-		'GSC_MIxS_human_associated_amniotic_fluid_maternal_health_status': GSC_MIxS_human_associated_amniotic_fluid_maternal_health_status,
-		'GSC_MIxS_human_associated_host_genotype': GSC_MIxS_human_associated_host_genotype,
-		'GSC_MIxS_human_associated_amniotic_fluid_foetal_health_status': GSC_MIxS_human_associated_amniotic_fluid_foetal_health_status,
-		'GSC_MIxS_human_associated_host_pulse': GSC_MIxS_human_associated_host_pulse,
-		'GSC_MIxS_human_associated_amniotic_fluid_color': GSC_MIxS_human_associated_amniotic_fluid_color,
-		'GSC_MIxS_human_associated_subspecific_genetic_lineage': GSC_MIxS_human_associated_subspecific_genetic_lineage,
-		'GSC_MIxS_human_associated_trophic_level': GSC_MIxS_human_associated_trophic_level,
-		'GSC_MIxS_human_associated_relationship_to_oxygen': GSC_MIxS_human_associated_relationship_to_oxygen,
-		'GSC_MIxS_human_associated_known_pathogenicity': GSC_MIxS_human_associated_known_pathogenicity,
-		'GSC_MIxS_human_associated_encoded_traits': GSC_MIxS_human_associated_encoded_traits,
-		'GSC_MIxS_human_associated_observed_biotic_relationship': GSC_MIxS_human_associated_observed_biotic_relationship,
-		'GSC_MIxS_human_associated_chemical_administration': GSC_MIxS_human_associated_chemical_administration,
-		'GSC_MIxS_human_associated_perturbation': GSC_MIxS_human_associated_perturbation,
+		'GSC_MIxS_human_associated_project_name': 'project name',
+		'GSC_MIxS_human_associated_experimental_factor': 'experimental factor',
+		'GSC_MIxS_human_associated_ploidy': 'ploidy',
+		'GSC_MIxS_human_associated_number_of_replicons': 'number of replicons',
+		'GSC_MIxS_human_associated_extrachromosomal_elements': 'extrachromosomal elements',
+		'GSC_MIxS_human_associated_estimated_size': 'estimated size',
+		'GSC_MIxS_human_associated_reference_for_biomaterial': 'reference for biomaterial',
+		'GSC_MIxS_human_associated_annotation_source': 'annotation source',
+		'GSC_MIxS_human_associated_sample_volume_or_weight_for_DNA_extraction': 'sample volume or weight for DNA extraction',
+		'GSC_MIxS_human_associated_nucleic_acid_extraction': 'nucleic acid extraction',
+		'GSC_MIxS_human_associated_nucleic_acid_amplification': 'nucleic acid amplification',
+		'GSC_MIxS_human_associated_library_size': 'library size',
+		'GSC_MIxS_human_associated_library_reads_sequenced': 'library reads sequenced',
+		'GSC_MIxS_human_associated_library_construction_method': 'library construction method',
+		'GSC_MIxS_human_associated_library_vector': 'library vector',
+		'GSC_MIxS_human_associated_library_screening_strategy': 'library screening strategy',
+		'GSC_MIxS_human_associated_target_gene': 'target gene',
+		'GSC_MIxS_human_associated_target_subfragment': 'target subfragment',
+		'GSC_MIxS_human_associated_pcr_primers': 'pcr primers',
+		'GSC_MIxS_human_associated_multiplex_identifiers': 'multiplex identifiers',
+		'GSC_MIxS_human_associated_adapters': 'adapters',
+		'GSC_MIxS_human_associated_pcr_conditions': 'pcr conditions',
+		'GSC_MIxS_human_associated_sequencing_method': 'sequencing method',
+		'GSC_MIxS_human_associated_sequence_quality_check': 'sequence quality check',
+		'GSC_MIxS_human_associated_chimera_check_software': 'chimera check software',
+		'GSC_MIxS_human_associated_relevant_electronic_resources': 'relevant electronic resources',
+		'GSC_MIxS_human_associated_relevant_standard_operating_procedures': 'relevant standard operating procedures',
+		'GSC_MIxS_human_associated_study_completion_status': 'study completion status',
+		'GSC_MIxS_human_associated_negative_control_type': 'negative control type',
+		'GSC_MIxS_human_associated_positive_control_type': 'positive control type',
+		'GSC_MIxS_human_associated_collection_date': 'collection date',
+		'GSC_MIxS_human_associated_geographic_location_country_and_or_sea': 'geographic location (country and/or sea)',
+		'GSC_MIxS_human_associated_geographic_location_latitude': 'geographic location (latitude)',
+		'GSC_MIxS_human_associated_geographic_location_longitude': 'geographic location (longitude)',
+		'GSC_MIxS_human_associated_geographic_location_region_and_locality': 'geographic location (region and locality)',
+		'GSC_MIxS_human_associated_broad_scale_environmental_context': 'broad-scale environmental context',
+		'GSC_MIxS_human_associated_local_environmental_context': 'local environmental context',
+		'GSC_MIxS_human_associated_environmental_medium': 'environmental medium',
+		'GSC_MIxS_human_associated_source_material_identifiers': 'source material identifiers',
+		'GSC_MIxS_human_associated_sample_material_processing': 'sample material processing',
+		'GSC_MIxS_human_associated_isolation_and_growth_condition': 'isolation and growth condition',
+		'GSC_MIxS_human_associated_propagation': 'propagation',
+		'GSC_MIxS_human_associated_amount_or_size_of_sample_collected': 'amount or size of sample collected',
+		'GSC_MIxS_human_associated_host_body_product': 'host body product',
+		'GSC_MIxS_human_associated_medical_history_performed': 'medical history performed',
+		'GSC_MIxS_human_associated_urine_collection_method': 'urine/collection method',
+		'GSC_MIxS_human_associated_oxygenation_status_of_sample': 'oxygenation status of sample',
+		'GSC_MIxS_human_associated_organism_count': 'organism count',
+		'GSC_MIxS_human_associated_sample_storage_duration': 'sample storage duration',
+		'GSC_MIxS_human_associated_sample_storage_temperature': 'sample storage temperature',
+		'GSC_MIxS_human_associated_sample_storage_location': 'sample storage location',
+		'GSC_MIxS_human_associated_sample_collection_device': 'sample collection device',
+		'GSC_MIxS_human_associated_sample_collection_method': 'sample collection method',
+		'GSC_MIxS_human_associated_host_HIV_status': 'host HIV status',
+		'GSC_MIxS_human_associated_host_disease_status': 'host disease status',
+		'GSC_MIxS_human_associated_lung_pulmonary_disorder': 'lung/pulmonary disorder',
+		'GSC_MIxS_human_associated_lung_nose_throat_disorder': 'lung/nose-throat disorder',
+		'GSC_MIxS_human_associated_blood_blood_disorder': 'blood/blood disorder',
+		'GSC_MIxS_human_associated_urine_kidney_disorder': 'urine/kidney disorder',
+		'GSC_MIxS_human_associated_urine_urogenital_tract_disorder': 'urine/urogenital tract disorder',
+		'GSC_MIxS_human_associated_host_subject_id': 'host subject id',
+		'GSC_MIxS_human_associated_IHMC_medication_code': 'IHMC medication code',
+		'GSC_MIxS_human_associated_host_age': 'host age',
+		'GSC_MIxS_human_associated_host_body_site': 'host body site',
+		'GSC_MIxS_human_associated_drug_usage': 'drug usage',
+		'GSC_MIxS_human_associated_host_height': 'host height',
+		'GSC_MIxS_human_associated_host_body_mass_index': 'host body-mass index',
+		'GSC_MIxS_human_associated_ethnicity': 'ethnicity',
+		'GSC_MIxS_human_associated_host_occupation': 'host occupation',
+		'GSC_MIxS_human_associated_host_total_mass': 'host total mass',
+		'GSC_MIxS_human_associated_host_phenotype': 'host phenotype',
+		'GSC_MIxS_human_associated_host_body_temperature': 'host body temperature',
+		'GSC_MIxS_human_associated_host_sex': 'host sex',
+		'GSC_MIxS_human_associated_host_scientific_name': 'host scientific name',
+		'GSC_MIxS_human_associated_presence_of_pets_or_farm_animals': 'presence of pets or farm animals',
+		'GSC_MIxS_human_associated_temperature': 'temperature',
+		'GSC_MIxS_human_associated_salinity': 'salinity',
+		'GSC_MIxS_human_associated_smoker': 'smoker',
+		'GSC_MIxS_human_associated_major_diet_change_in_last_six_months': 'major diet change in last six months',
+		'GSC_MIxS_human_associated_weight_loss_in_last_three_months': 'weight loss in last three months',
+		'GSC_MIxS_human_associated_travel_outside_the_country_in_last_six_months': 'travel outside the country in last six months',
+		'GSC_MIxS_human_associated_host_diet': 'host diet',
+		'GSC_MIxS_human_associated_twin_sibling_presence': 'twin sibling presence',
+		'GSC_MIxS_human_associated_host_last_meal': 'host last meal',
+		'GSC_MIxS_human_associated_amniotic_fluid_gestation_state': 'amniotic fluid/gestation state',
+		'GSC_MIxS_human_associated_host_family_relationship': 'host family relationship',
+		'GSC_MIxS_human_associated_amniotic_fluid_maternal_health_status': 'amniotic fluid/maternal health status',
+		'GSC_MIxS_human_associated_host_genotype': 'host genotype',
+		'GSC_MIxS_human_associated_amniotic_fluid_foetal_health_status': 'amniotic fluid/foetal health status',
+		'GSC_MIxS_human_associated_host_pulse': 'host pulse',
+		'GSC_MIxS_human_associated_amniotic_fluid_color': 'amniotic fluid/color',
+		'GSC_MIxS_human_associated_subspecific_genetic_lineage': 'subspecific genetic lineage',
+		'GSC_MIxS_human_associated_trophic_level': 'trophic level',
+		'GSC_MIxS_human_associated_relationship_to_oxygen': 'relationship to oxygen',
+		'GSC_MIxS_human_associated_known_pathogenicity': 'known pathogenicity',
+		'GSC_MIxS_human_associated_encoded_traits': 'encoded traits',
+		'GSC_MIxS_human_associated_observed_biotic_relationship': 'observed biotic relationship',
+		'GSC_MIxS_human_associated_chemical_administration': 'chemical administration',
+		'GSC_MIxS_human_associated_perturbation': 'perturbation',
 	}
 
-class GSC_MIxS_human_associated_unit(SelfDescribingModel):
+class GSC_MIxS_human_associated_unit(SelfDescribingUnitModel):
 
 	GSC_MIxS_human_associated_sample_volume_or_weight_for_DNA_extraction_units = [('g', 'g'), ('mL', 'mL'), ('mg', 'mg'), ('ng', 'ng')]
-	GSC_MIxS_human_associated_geographic_location_latitude_units = [('D', 'D'), ('D', 'D')]
-	GSC_MIxS_human_associated_geographic_location_longitude_units = [('D', 'D'), ('D', 'D')]
+	GSC_MIxS_human_associated_geographic_location_latitude_units = [('DD', 'DD')]
+	GSC_MIxS_human_associated_geographic_location_longitude_units = [('DD', 'DD')]
 	GSC_MIxS_human_associated_amount_or_size_of_sample_collected_units = [('L', 'L'), ('g', 'g'), ('kg', 'kg'), ('m2', 'm2'), ('m3', 'm3')]
 	GSC_MIxS_human_associated_sample_storage_duration_units = [('days', 'days'), ('hours', 'hours'), ('months', 'months'), ('weeks', 'weeks'), ('years', 'years')]
-	GSC_MIxS_human_associated_sample_storage_temperature_units = [('°', '°'), ('C', 'C')]
+	GSC_MIxS_human_associated_sample_storage_temperature_units = [('°C', '°C')]
 	GSC_MIxS_human_associated_host_age_units = [('centuries', 'centuries'), ('days', 'days'), ('decades', 'decades'), ('hours', 'hours'), ('minutes', 'minutes'), ('months', 'months'), ('seconds', 'seconds'), ('weeks', 'weeks'), ('years', 'years')]
 	GSC_MIxS_human_associated_host_height_units = [('cm', 'cm'), ('m', 'm'), ('mm', 'mm')]
-	GSC_MIxS_human_associated_host_body_mass_index_units = [('k', 'k'), ('g', 'g'), ('/', '/'), ('m', 'm'), ('2', '2')]
+	GSC_MIxS_human_associated_host_body_mass_index_units = [('kg/m2', 'kg/m2')]
 	GSC_MIxS_human_associated_host_total_mass_units = [('g', 'g'), ('kg', 'kg')]
-	GSC_MIxS_human_associated_host_body_temperature_units = [('º', 'º'), ('C', 'C')]
-	GSC_MIxS_human_associated_temperature_units = [('º', 'º'), ('C', 'C')]
-	GSC_MIxS_human_associated_salinity_units = [('p', 'p'), ('s', 's'), ('u', 'u')]
+	GSC_MIxS_human_associated_host_body_temperature_units = [('ºC', 'ºC')]
+	GSC_MIxS_human_associated_temperature_units = [('ºC', 'ºC')]
+	GSC_MIxS_human_associated_salinity_units = [('psu', 'psu')]
 	GSC_MIxS_human_associated_weight_loss_in_last_three_months_units = [('g', 'g'), ('kg', 'kg')]
-	GSC_MIxS_human_associated_host_pulse_units = [('b', 'b'), ('p', 'p'), ('m', 'm')]
+	GSC_MIxS_human_associated_host_pulse_units = [('bpm', 'bpm')]
 
 	fields = {
-		'GSC_MIxS_human_associated_sample_volume_or_weight_for_DNA_extraction_units': GSC_MIxS_human_associated_sample_volume_or_weight_for_DNA_extraction_units,
-		'GSC_MIxS_human_associated_geographic_location_latitude_units': GSC_MIxS_human_associated_geographic_location_latitude_units,
-		'GSC_MIxS_human_associated_geographic_location_longitude_units': GSC_MIxS_human_associated_geographic_location_longitude_units,
-		'GSC_MIxS_human_associated_amount_or_size_of_sample_collected_units': GSC_MIxS_human_associated_amount_or_size_of_sample_collected_units,
-		'GSC_MIxS_human_associated_sample_storage_duration_units': GSC_MIxS_human_associated_sample_storage_duration_units,
-		'GSC_MIxS_human_associated_sample_storage_temperature_units': GSC_MIxS_human_associated_sample_storage_temperature_units,
-		'GSC_MIxS_human_associated_host_age_units': GSC_MIxS_human_associated_host_age_units,
-		'GSC_MIxS_human_associated_host_height_units': GSC_MIxS_human_associated_host_height_units,
-		'GSC_MIxS_human_associated_host_body_mass_index_units': GSC_MIxS_human_associated_host_body_mass_index_units,
-		'GSC_MIxS_human_associated_host_total_mass_units': GSC_MIxS_human_associated_host_total_mass_units,
-		'GSC_MIxS_human_associated_host_body_temperature_units': GSC_MIxS_human_associated_host_body_temperature_units,
-		'GSC_MIxS_human_associated_temperature_units': GSC_MIxS_human_associated_temperature_units,
-		'GSC_MIxS_human_associated_salinity_units': GSC_MIxS_human_associated_salinity_units,
-		'GSC_MIxS_human_associated_weight_loss_in_last_three_months_units': GSC_MIxS_human_associated_weight_loss_in_last_three_months_units,
-		'GSC_MIxS_human_associated_host_pulse_units': GSC_MIxS_human_associated_host_pulse_units,
+		'GSC_MIxS_human_associated_sample_volume_or_weight_for_DNA_extraction': 'sample volume or weight for DNA extraction',
+		'GSC_MIxS_human_associated_geographic_location_latitude': 'geographic location (latitude)',
+		'GSC_MIxS_human_associated_geographic_location_longitude': 'geographic location (longitude)',
+		'GSC_MIxS_human_associated_amount_or_size_of_sample_collected': 'amount or size of sample collected',
+		'GSC_MIxS_human_associated_sample_storage_duration': 'sample storage duration',
+		'GSC_MIxS_human_associated_sample_storage_temperature': 'sample storage temperature',
+		'GSC_MIxS_human_associated_host_age': 'host age',
+		'GSC_MIxS_human_associated_host_height': 'host height',
+		'GSC_MIxS_human_associated_host_body_mass_index': 'host body-mass index',
+		'GSC_MIxS_human_associated_host_total_mass': 'host total mass',
+		'GSC_MIxS_human_associated_host_body_temperature': 'host body temperature',
+		'GSC_MIxS_human_associated_temperature': 'temperature',
+		'GSC_MIxS_human_associated_salinity': 'salinity',
+		'GSC_MIxS_human_associated_weight_loss_in_last_three_months': 'weight loss in last three months',
+		'GSC_MIxS_human_associated_host_pulse': 'host pulse',
 	}
 
-	sample = models.ForeignKey(Sample, on_delete=models.CASCADE)
 	order = models.ForeignKey(Order, on_delete=models.CASCADE, default=1)
 	GSC_MIxS_human_associated_sample_volume_or_weight_for_DNA_extraction = models.CharField(max_length=100, choices=GSC_MIxS_human_associated_sample_volume_or_weight_for_DNA_extraction_units, blank=False)
 	GSC_MIxS_human_associated_geographic_location_latitude = models.CharField(max_length=100, choices=GSC_MIxS_human_associated_geographic_location_latitude_units, blank=False)
@@ -4408,136 +4520,135 @@ class GSC_MIxS_air(SelfDescribingModel):
 	GSC_MIxS_air_perturbation= models.CharField(max_length=100, blank=True,help_text="type of pe")
 
 	fields = {
-		'GSC_MIxS_air_project_name': GSC_MIxS_air_project_name,
-		'GSC_MIxS_air_experimental_factor': GSC_MIxS_air_experimental_factor,
-		'GSC_MIxS_air_ploidy': GSC_MIxS_air_ploidy,
-		'GSC_MIxS_air_number_of_replicons': GSC_MIxS_air_number_of_replicons,
-		'GSC_MIxS_air_extrachromosomal_elements': GSC_MIxS_air_extrachromosomal_elements,
-		'GSC_MIxS_air_estimated_size': GSC_MIxS_air_estimated_size,
-		'GSC_MIxS_air_reference_for_biomaterial': GSC_MIxS_air_reference_for_biomaterial,
-		'GSC_MIxS_air_annotation_source': GSC_MIxS_air_annotation_source,
-		'GSC_MIxS_air_sample_volume_or_weight_for_DNA_extraction': GSC_MIxS_air_sample_volume_or_weight_for_DNA_extraction,
-		'GSC_MIxS_air_nucleic_acid_extraction': GSC_MIxS_air_nucleic_acid_extraction,
-		'GSC_MIxS_air_nucleic_acid_amplification': GSC_MIxS_air_nucleic_acid_amplification,
-		'GSC_MIxS_air_library_size': GSC_MIxS_air_library_size,
-		'GSC_MIxS_air_library_reads_sequenced': GSC_MIxS_air_library_reads_sequenced,
-		'GSC_MIxS_air_library_construction_method': GSC_MIxS_air_library_construction_method,
-		'GSC_MIxS_air_library_vector': GSC_MIxS_air_library_vector,
-		'GSC_MIxS_air_library_screening_strategy': GSC_MIxS_air_library_screening_strategy,
-		'GSC_MIxS_air_target_gene': GSC_MIxS_air_target_gene,
-		'GSC_MIxS_air_target_subfragment': GSC_MIxS_air_target_subfragment,
-		'GSC_MIxS_air_pcr_primers': GSC_MIxS_air_pcr_primers,
-		'GSC_MIxS_air_multiplex_identifiers': GSC_MIxS_air_multiplex_identifiers,
-		'GSC_MIxS_air_adapters': GSC_MIxS_air_adapters,
-		'GSC_MIxS_air_pcr_conditions': GSC_MIxS_air_pcr_conditions,
-		'GSC_MIxS_air_sequencing_method': GSC_MIxS_air_sequencing_method,
-		'GSC_MIxS_air_sequence_quality_check': GSC_MIxS_air_sequence_quality_check,
-		'GSC_MIxS_air_chimera_check_software': GSC_MIxS_air_chimera_check_software,
-		'GSC_MIxS_air_relevant_electronic_resources': GSC_MIxS_air_relevant_electronic_resources,
-		'GSC_MIxS_air_relevant_standard_operating_procedures': GSC_MIxS_air_relevant_standard_operating_procedures,
-		'GSC_MIxS_air_negative_control_type': GSC_MIxS_air_negative_control_type,
-		'GSC_MIxS_air_positive_control_type': GSC_MIxS_air_positive_control_type,
-		'GSC_MIxS_air_collection_date': GSC_MIxS_air_collection_date,
-		'GSC_MIxS_air_altitude': GSC_MIxS_air_altitude,
-		'GSC_MIxS_air_geographic_location_country_and_or_sea': GSC_MIxS_air_geographic_location_country_and_or_sea,
-		'GSC_MIxS_air_geographic_location_latitude': GSC_MIxS_air_geographic_location_latitude,
-		'GSC_MIxS_air_geographic_location_longitude': GSC_MIxS_air_geographic_location_longitude,
-		'GSC_MIxS_air_geographic_location_region_and_locality': GSC_MIxS_air_geographic_location_region_and_locality,
-		'GSC_MIxS_air_broad_scale_environmental_context': GSC_MIxS_air_broad_scale_environmental_context,
-		'GSC_MIxS_air_local_environmental_context': GSC_MIxS_air_local_environmental_context,
-		'GSC_MIxS_air_environmental_medium': GSC_MIxS_air_environmental_medium,
-		'GSC_MIxS_air_elevation': GSC_MIxS_air_elevation,
-		'GSC_MIxS_air_ventilation_rate': GSC_MIxS_air_ventilation_rate,
-		'GSC_MIxS_air_ventilation_type': GSC_MIxS_air_ventilation_type,
-		'GSC_MIxS_air_source_material_identifiers': GSC_MIxS_air_source_material_identifiers,
-		'GSC_MIxS_air_sample_material_processing': GSC_MIxS_air_sample_material_processing,
-		'GSC_MIxS_air_isolation_and_growth_condition': GSC_MIxS_air_isolation_and_growth_condition,
-		'GSC_MIxS_air_propagation': GSC_MIxS_air_propagation,
-		'GSC_MIxS_air_amount_or_size_of_sample_collected': GSC_MIxS_air_amount_or_size_of_sample_collected,
-		'GSC_MIxS_air_oxygenation_status_of_sample': GSC_MIxS_air_oxygenation_status_of_sample,
-		'GSC_MIxS_air_organism_count': GSC_MIxS_air_organism_count,
-		'GSC_MIxS_air_sample_storage_duration': GSC_MIxS_air_sample_storage_duration,
-		'GSC_MIxS_air_sample_storage_temperature': GSC_MIxS_air_sample_storage_temperature,
-		'GSC_MIxS_air_sample_storage_location': GSC_MIxS_air_sample_storage_location,
-		'GSC_MIxS_air_sample_collection_device': GSC_MIxS_air_sample_collection_device,
-		'GSC_MIxS_air_sample_collection_method': GSC_MIxS_air_sample_collection_method,
-		'GSC_MIxS_air_host_disease_status': GSC_MIxS_air_host_disease_status,
-		'GSC_MIxS_air_host_scientific_name': GSC_MIxS_air_host_scientific_name,
-		'GSC_MIxS_air_barometric_pressure': GSC_MIxS_air_barometric_pressure,
-		'GSC_MIxS_air_humidity': GSC_MIxS_air_humidity,
-		'GSC_MIxS_air_pollutants': GSC_MIxS_air_pollutants,
-		'GSC_MIxS_air_solar_irradiance': GSC_MIxS_air_solar_irradiance,
-		'GSC_MIxS_air_wind_direction': GSC_MIxS_air_wind_direction,
-		'GSC_MIxS_air_wind_speed': GSC_MIxS_air_wind_speed,
-		'GSC_MIxS_air_temperature': GSC_MIxS_air_temperature,
-		'GSC_MIxS_air_carbon_dioxide': GSC_MIxS_air_carbon_dioxide,
-		'GSC_MIxS_air_carbon_monoxide': GSC_MIxS_air_carbon_monoxide,
-		'GSC_MIxS_air_oxygen': GSC_MIxS_air_oxygen,
-		'GSC_MIxS_air_air_particulate_matter_concentration': GSC_MIxS_air_air_particulate_matter_concentration,
-		'GSC_MIxS_air_volatile_organic_compounds': GSC_MIxS_air_volatile_organic_compounds,
-		'GSC_MIxS_air_methane': GSC_MIxS_air_methane,
-		'GSC_MIxS_air_salinity': GSC_MIxS_air_salinity,
-		'GSC_MIxS_air_subspecific_genetic_lineage': GSC_MIxS_air_subspecific_genetic_lineage,
-		'GSC_MIxS_air_trophic_level': GSC_MIxS_air_trophic_level,
-		'GSC_MIxS_air_relationship_to_oxygen': GSC_MIxS_air_relationship_to_oxygen,
-		'GSC_MIxS_air_known_pathogenicity': GSC_MIxS_air_known_pathogenicity,
-		'GSC_MIxS_air_encoded_traits': GSC_MIxS_air_encoded_traits,
-		'GSC_MIxS_air_observed_biotic_relationship': GSC_MIxS_air_observed_biotic_relationship,
-		'GSC_MIxS_air_chemical_administration': GSC_MIxS_air_chemical_administration,
-		'GSC_MIxS_air_perturbation': GSC_MIxS_air_perturbation,
+		'GSC_MIxS_air_project_name': 'project name',
+		'GSC_MIxS_air_experimental_factor': 'experimental factor',
+		'GSC_MIxS_air_ploidy': 'ploidy',
+		'GSC_MIxS_air_number_of_replicons': 'number of replicons',
+		'GSC_MIxS_air_extrachromosomal_elements': 'extrachromosomal elements',
+		'GSC_MIxS_air_estimated_size': 'estimated size',
+		'GSC_MIxS_air_reference_for_biomaterial': 'reference for biomaterial',
+		'GSC_MIxS_air_annotation_source': 'annotation source',
+		'GSC_MIxS_air_sample_volume_or_weight_for_DNA_extraction': 'sample volume or weight for DNA extraction',
+		'GSC_MIxS_air_nucleic_acid_extraction': 'nucleic acid extraction',
+		'GSC_MIxS_air_nucleic_acid_amplification': 'nucleic acid amplification',
+		'GSC_MIxS_air_library_size': 'library size',
+		'GSC_MIxS_air_library_reads_sequenced': 'library reads sequenced',
+		'GSC_MIxS_air_library_construction_method': 'library construction method',
+		'GSC_MIxS_air_library_vector': 'library vector',
+		'GSC_MIxS_air_library_screening_strategy': 'library screening strategy',
+		'GSC_MIxS_air_target_gene': 'target gene',
+		'GSC_MIxS_air_target_subfragment': 'target subfragment',
+		'GSC_MIxS_air_pcr_primers': 'pcr primers',
+		'GSC_MIxS_air_multiplex_identifiers': 'multiplex identifiers',
+		'GSC_MIxS_air_adapters': 'adapters',
+		'GSC_MIxS_air_pcr_conditions': 'pcr conditions',
+		'GSC_MIxS_air_sequencing_method': 'sequencing method',
+		'GSC_MIxS_air_sequence_quality_check': 'sequence quality check',
+		'GSC_MIxS_air_chimera_check_software': 'chimera check software',
+		'GSC_MIxS_air_relevant_electronic_resources': 'relevant electronic resources',
+		'GSC_MIxS_air_relevant_standard_operating_procedures': 'relevant standard operating procedures',
+		'GSC_MIxS_air_negative_control_type': 'negative control type',
+		'GSC_MIxS_air_positive_control_type': 'positive control type',
+		'GSC_MIxS_air_collection_date': 'collection date',
+		'GSC_MIxS_air_altitude': 'altitude',
+		'GSC_MIxS_air_geographic_location_country_and_or_sea': 'geographic location (country and/or sea)',
+		'GSC_MIxS_air_geographic_location_latitude': 'geographic location (latitude)',
+		'GSC_MIxS_air_geographic_location_longitude': 'geographic location (longitude)',
+		'GSC_MIxS_air_geographic_location_region_and_locality': 'geographic location (region and locality)',
+		'GSC_MIxS_air_broad_scale_environmental_context': 'broad-scale environmental context',
+		'GSC_MIxS_air_local_environmental_context': 'local environmental context',
+		'GSC_MIxS_air_environmental_medium': 'environmental medium',
+		'GSC_MIxS_air_elevation': 'elevation',
+		'GSC_MIxS_air_ventilation_rate': 'ventilation rate',
+		'GSC_MIxS_air_ventilation_type': 'ventilation type',
+		'GSC_MIxS_air_source_material_identifiers': 'source material identifiers',
+		'GSC_MIxS_air_sample_material_processing': 'sample material processing',
+		'GSC_MIxS_air_isolation_and_growth_condition': 'isolation and growth condition',
+		'GSC_MIxS_air_propagation': 'propagation',
+		'GSC_MIxS_air_amount_or_size_of_sample_collected': 'amount or size of sample collected',
+		'GSC_MIxS_air_oxygenation_status_of_sample': 'oxygenation status of sample',
+		'GSC_MIxS_air_organism_count': 'organism count',
+		'GSC_MIxS_air_sample_storage_duration': 'sample storage duration',
+		'GSC_MIxS_air_sample_storage_temperature': 'sample storage temperature',
+		'GSC_MIxS_air_sample_storage_location': 'sample storage location',
+		'GSC_MIxS_air_sample_collection_device': 'sample collection device',
+		'GSC_MIxS_air_sample_collection_method': 'sample collection method',
+		'GSC_MIxS_air_host_disease_status': 'host disease status',
+		'GSC_MIxS_air_host_scientific_name': 'host scientific name',
+		'GSC_MIxS_air_barometric_pressure': 'barometric pressure',
+		'GSC_MIxS_air_humidity': 'humidity',
+		'GSC_MIxS_air_pollutants': 'pollutants',
+		'GSC_MIxS_air_solar_irradiance': 'solar irradiance',
+		'GSC_MIxS_air_wind_direction': 'wind direction',
+		'GSC_MIxS_air_wind_speed': 'wind speed',
+		'GSC_MIxS_air_temperature': 'temperature',
+		'GSC_MIxS_air_carbon_dioxide': 'carbon dioxide',
+		'GSC_MIxS_air_carbon_monoxide': 'carbon monoxide',
+		'GSC_MIxS_air_oxygen': 'oxygen',
+		'GSC_MIxS_air_air_particulate_matter_concentration': 'air particulate matter concentration',
+		'GSC_MIxS_air_volatile_organic_compounds': 'volatile organic compounds',
+		'GSC_MIxS_air_methane': 'methane',
+		'GSC_MIxS_air_salinity': 'salinity',
+		'GSC_MIxS_air_subspecific_genetic_lineage': 'subspecific genetic lineage',
+		'GSC_MIxS_air_trophic_level': 'trophic level',
+		'GSC_MIxS_air_relationship_to_oxygen': 'relationship to oxygen',
+		'GSC_MIxS_air_known_pathogenicity': 'known pathogenicity',
+		'GSC_MIxS_air_encoded_traits': 'encoded traits',
+		'GSC_MIxS_air_observed_biotic_relationship': 'observed biotic relationship',
+		'GSC_MIxS_air_chemical_administration': 'chemical administration',
+		'GSC_MIxS_air_perturbation': 'perturbation',
 	}
 
-class GSC_MIxS_air_unit(SelfDescribingModel):
+class GSC_MIxS_air_unit(SelfDescribingUnitModel):
 
 	GSC_MIxS_air_sample_volume_or_weight_for_DNA_extraction_units = [('g', 'g'), ('mL', 'mL'), ('mg', 'mg'), ('ng', 'ng')]
 	GSC_MIxS_air_altitude_units = [('m', 'm')]
-	GSC_MIxS_air_geographic_location_latitude_units = [('D', 'D'), ('D', 'D')]
-	GSC_MIxS_air_geographic_location_longitude_units = [('D', 'D'), ('D', 'D')]
+	GSC_MIxS_air_geographic_location_latitude_units = [('DD', 'DD')]
+	GSC_MIxS_air_geographic_location_longitude_units = [('DD', 'DD')]
 	GSC_MIxS_air_elevation_units = [('m', 'm')]
 	GSC_MIxS_air_ventilation_rate_units = [('L/sec', 'L/sec'), ('m3/min', 'm3/min')]
 	GSC_MIxS_air_amount_or_size_of_sample_collected_units = [('L', 'L'), ('g', 'g'), ('kg', 'kg'), ('m2', 'm2'), ('m3', 'm3')]
 	GSC_MIxS_air_sample_storage_duration_units = [('days', 'days'), ('hours', 'hours'), ('months', 'months'), ('weeks', 'weeks'), ('years', 'years')]
-	GSC_MIxS_air_sample_storage_temperature_units = [('°', '°'), ('C', 'C')]
+	GSC_MIxS_air_sample_storage_temperature_units = [('°C', '°C')]
 	GSC_MIxS_air_barometric_pressure_units = [('Torr', 'Torr'), ('in. Hg', 'in. Hg'), ('millibar(hPa)', 'millibar(hPa)'), ('mm Hg', 'mm Hg')]
 	GSC_MIxS_air_humidity_units = [('%', '%'), ('g/m3', 'g/m3')]
 	GSC_MIxS_air_pollutants_units = [('M/L', 'M/L'), ('g', 'g'), ('mg/L', 'mg/L')]
-	GSC_MIxS_air_solar_irradiance_units = [('W', 'W'), ('/', '/'), ('m', 'm'), ('2', '2')]
+	GSC_MIxS_air_solar_irradiance_units = [('W/m2', 'W/m2')]
 	GSC_MIxS_air_wind_speed_units = [('km/h', 'km/h'), ('m/s', 'm/s')]
-	GSC_MIxS_air_temperature_units = [('º', 'º'), ('C', 'C')]
-	GSC_MIxS_air_carbon_dioxide_units = [('µ', 'µ'), ('m', 'm'), ('o', 'o'), ('l', 'l'), ('/', '/'), ('L', 'L')]
-	GSC_MIxS_air_carbon_monoxide_units = [('µ', 'µ'), ('M', 'M'), ('/', '/'), ('L', 'L')]
+	GSC_MIxS_air_temperature_units = [('ºC', 'ºC')]
+	GSC_MIxS_air_carbon_dioxide_units = [('µmol/L', 'µmol/L')]
+	GSC_MIxS_air_carbon_monoxide_units = [('µM/L', 'µM/L')]
 	GSC_MIxS_air_oxygen_units = [('mg/L', 'mg/L'), ('parts/million', 'parts/million')]
-	GSC_MIxS_air_air_particulate_matter_concentration_units = [('µ', 'µ'), ('g', 'g'), ('/', '/'), ('m', 'm'), ('3', '3')]
+	GSC_MIxS_air_air_particulate_matter_concentration_units = [('µg/m3', 'µg/m3')]
 	GSC_MIxS_air_volatile_organic_compounds_units = [('parts/million', 'parts/million'), ('µg/m3', 'µg/m3')]
-	GSC_MIxS_air_methane_units = [('µ', 'µ'), ('M', 'M'), ('/', '/'), ('L', 'L')]
-	GSC_MIxS_air_salinity_units = [('p', 'p'), ('s', 's'), ('u', 'u')]
+	GSC_MIxS_air_methane_units = [('µM/L', 'µM/L')]
+	GSC_MIxS_air_salinity_units = [('psu', 'psu')]
 
 	fields = {
-		'GSC_MIxS_air_sample_volume_or_weight_for_DNA_extraction_units': GSC_MIxS_air_sample_volume_or_weight_for_DNA_extraction_units,
-		'GSC_MIxS_air_altitude_units': GSC_MIxS_air_altitude_units,
-		'GSC_MIxS_air_geographic_location_latitude_units': GSC_MIxS_air_geographic_location_latitude_units,
-		'GSC_MIxS_air_geographic_location_longitude_units': GSC_MIxS_air_geographic_location_longitude_units,
-		'GSC_MIxS_air_elevation_units': GSC_MIxS_air_elevation_units,
-		'GSC_MIxS_air_ventilation_rate_units': GSC_MIxS_air_ventilation_rate_units,
-		'GSC_MIxS_air_amount_or_size_of_sample_collected_units': GSC_MIxS_air_amount_or_size_of_sample_collected_units,
-		'GSC_MIxS_air_sample_storage_duration_units': GSC_MIxS_air_sample_storage_duration_units,
-		'GSC_MIxS_air_sample_storage_temperature_units': GSC_MIxS_air_sample_storage_temperature_units,
-		'GSC_MIxS_air_barometric_pressure_units': GSC_MIxS_air_barometric_pressure_units,
-		'GSC_MIxS_air_humidity_units': GSC_MIxS_air_humidity_units,
-		'GSC_MIxS_air_pollutants_units': GSC_MIxS_air_pollutants_units,
-		'GSC_MIxS_air_solar_irradiance_units': GSC_MIxS_air_solar_irradiance_units,
-		'GSC_MIxS_air_wind_speed_units': GSC_MIxS_air_wind_speed_units,
-		'GSC_MIxS_air_temperature_units': GSC_MIxS_air_temperature_units,
-		'GSC_MIxS_air_carbon_dioxide_units': GSC_MIxS_air_carbon_dioxide_units,
-		'GSC_MIxS_air_carbon_monoxide_units': GSC_MIxS_air_carbon_monoxide_units,
-		'GSC_MIxS_air_oxygen_units': GSC_MIxS_air_oxygen_units,
-		'GSC_MIxS_air_air_particulate_matter_concentration_units': GSC_MIxS_air_air_particulate_matter_concentration_units,
-		'GSC_MIxS_air_volatile_organic_compounds_units': GSC_MIxS_air_volatile_organic_compounds_units,
-		'GSC_MIxS_air_methane_units': GSC_MIxS_air_methane_units,
-		'GSC_MIxS_air_salinity_units': GSC_MIxS_air_salinity_units,
+		'GSC_MIxS_air_sample_volume_or_weight_for_DNA_extraction': 'sample volume or weight for DNA extraction',
+		'GSC_MIxS_air_altitude': 'altitude',
+		'GSC_MIxS_air_geographic_location_latitude': 'geographic location (latitude)',
+		'GSC_MIxS_air_geographic_location_longitude': 'geographic location (longitude)',
+		'GSC_MIxS_air_elevation': 'elevation',
+		'GSC_MIxS_air_ventilation_rate': 'ventilation rate',
+		'GSC_MIxS_air_amount_or_size_of_sample_collected': 'amount or size of sample collected',
+		'GSC_MIxS_air_sample_storage_duration': 'sample storage duration',
+		'GSC_MIxS_air_sample_storage_temperature': 'sample storage temperature',
+		'GSC_MIxS_air_barometric_pressure': 'barometric pressure',
+		'GSC_MIxS_air_humidity': 'humidity',
+		'GSC_MIxS_air_pollutants': 'pollutants',
+		'GSC_MIxS_air_solar_irradiance': 'solar irradiance',
+		'GSC_MIxS_air_wind_speed': 'wind speed',
+		'GSC_MIxS_air_temperature': 'temperature',
+		'GSC_MIxS_air_carbon_dioxide': 'carbon dioxide',
+		'GSC_MIxS_air_carbon_monoxide': 'carbon monoxide',
+		'GSC_MIxS_air_oxygen': 'oxygen',
+		'GSC_MIxS_air_air_particulate_matter_concentration': 'air particulate matter concentration',
+		'GSC_MIxS_air_volatile_organic_compounds': 'volatile organic compounds',
+		'GSC_MIxS_air_methane': 'methane',
+		'GSC_MIxS_air_salinity': 'salinity',
 	}
 
-	sample = models.ForeignKey(Sample, on_delete=models.CASCADE)
 	order = models.ForeignKey(Order, on_delete=models.CASCADE, default=1)
 	GSC_MIxS_air_sample_volume_or_weight_for_DNA_extraction = models.CharField(max_length=100, choices=GSC_MIxS_air_sample_volume_or_weight_for_DNA_extraction_units, blank=False)
 	GSC_MIxS_air_altitude = models.CharField(max_length=100, choices=GSC_MIxS_air_altitude_units, blank=False)
@@ -4754,244 +4865,243 @@ class GSC_MIxS_microbial_mat_biolfilm(SelfDescribingModel):
 	GSC_MIxS_microbial_mat_biolfilm_perturbation= models.CharField(max_length=100, blank=True,help_text="type of pe")
 
 	fields = {
-		'GSC_MIxS_microbial_mat_biolfilm_project_name': GSC_MIxS_microbial_mat_biolfilm_project_name,
-		'GSC_MIxS_microbial_mat_biolfilm_experimental_factor': GSC_MIxS_microbial_mat_biolfilm_experimental_factor,
-		'GSC_MIxS_microbial_mat_biolfilm_ploidy': GSC_MIxS_microbial_mat_biolfilm_ploidy,
-		'GSC_MIxS_microbial_mat_biolfilm_number_of_replicons': GSC_MIxS_microbial_mat_biolfilm_number_of_replicons,
-		'GSC_MIxS_microbial_mat_biolfilm_extrachromosomal_elements': GSC_MIxS_microbial_mat_biolfilm_extrachromosomal_elements,
-		'GSC_MIxS_microbial_mat_biolfilm_estimated_size': GSC_MIxS_microbial_mat_biolfilm_estimated_size,
-		'GSC_MIxS_microbial_mat_biolfilm_reference_for_biomaterial': GSC_MIxS_microbial_mat_biolfilm_reference_for_biomaterial,
-		'GSC_MIxS_microbial_mat_biolfilm_annotation_source': GSC_MIxS_microbial_mat_biolfilm_annotation_source,
-		'GSC_MIxS_microbial_mat_biolfilm_sample_volume_or_weight_for_DNA_extraction': GSC_MIxS_microbial_mat_biolfilm_sample_volume_or_weight_for_DNA_extraction,
-		'GSC_MIxS_microbial_mat_biolfilm_nucleic_acid_extraction': GSC_MIxS_microbial_mat_biolfilm_nucleic_acid_extraction,
-		'GSC_MIxS_microbial_mat_biolfilm_nucleic_acid_amplification': GSC_MIxS_microbial_mat_biolfilm_nucleic_acid_amplification,
-		'GSC_MIxS_microbial_mat_biolfilm_library_size': GSC_MIxS_microbial_mat_biolfilm_library_size,
-		'GSC_MIxS_microbial_mat_biolfilm_library_reads_sequenced': GSC_MIxS_microbial_mat_biolfilm_library_reads_sequenced,
-		'GSC_MIxS_microbial_mat_biolfilm_library_construction_method': GSC_MIxS_microbial_mat_biolfilm_library_construction_method,
-		'GSC_MIxS_microbial_mat_biolfilm_library_vector': GSC_MIxS_microbial_mat_biolfilm_library_vector,
-		'GSC_MIxS_microbial_mat_biolfilm_library_screening_strategy': GSC_MIxS_microbial_mat_biolfilm_library_screening_strategy,
-		'GSC_MIxS_microbial_mat_biolfilm_target_gene': GSC_MIxS_microbial_mat_biolfilm_target_gene,
-		'GSC_MIxS_microbial_mat_biolfilm_target_subfragment': GSC_MIxS_microbial_mat_biolfilm_target_subfragment,
-		'GSC_MIxS_microbial_mat_biolfilm_pcr_primers': GSC_MIxS_microbial_mat_biolfilm_pcr_primers,
-		'GSC_MIxS_microbial_mat_biolfilm_multiplex_identifiers': GSC_MIxS_microbial_mat_biolfilm_multiplex_identifiers,
-		'GSC_MIxS_microbial_mat_biolfilm_adapters': GSC_MIxS_microbial_mat_biolfilm_adapters,
-		'GSC_MIxS_microbial_mat_biolfilm_pcr_conditions': GSC_MIxS_microbial_mat_biolfilm_pcr_conditions,
-		'GSC_MIxS_microbial_mat_biolfilm_sequencing_method': GSC_MIxS_microbial_mat_biolfilm_sequencing_method,
-		'GSC_MIxS_microbial_mat_biolfilm_sequence_quality_check': GSC_MIxS_microbial_mat_biolfilm_sequence_quality_check,
-		'GSC_MIxS_microbial_mat_biolfilm_chimera_check_software': GSC_MIxS_microbial_mat_biolfilm_chimera_check_software,
-		'GSC_MIxS_microbial_mat_biolfilm_relevant_electronic_resources': GSC_MIxS_microbial_mat_biolfilm_relevant_electronic_resources,
-		'GSC_MIxS_microbial_mat_biolfilm_relevant_standard_operating_procedures': GSC_MIxS_microbial_mat_biolfilm_relevant_standard_operating_procedures,
-		'GSC_MIxS_microbial_mat_biolfilm_negative_control_type': GSC_MIxS_microbial_mat_biolfilm_negative_control_type,
-		'GSC_MIxS_microbial_mat_biolfilm_positive_control_type': GSC_MIxS_microbial_mat_biolfilm_positive_control_type,
-		'GSC_MIxS_microbial_mat_biolfilm_collection_date': GSC_MIxS_microbial_mat_biolfilm_collection_date,
-		'GSC_MIxS_microbial_mat_biolfilm_altitude': GSC_MIxS_microbial_mat_biolfilm_altitude,
-		'GSC_MIxS_microbial_mat_biolfilm_geographic_location_country_and_or_sea': GSC_MIxS_microbial_mat_biolfilm_geographic_location_country_and_or_sea,
-		'GSC_MIxS_microbial_mat_biolfilm_geographic_location_latitude': GSC_MIxS_microbial_mat_biolfilm_geographic_location_latitude,
-		'GSC_MIxS_microbial_mat_biolfilm_geographic_location_longitude': GSC_MIxS_microbial_mat_biolfilm_geographic_location_longitude,
-		'GSC_MIxS_microbial_mat_biolfilm_geographic_location_region_and_locality': GSC_MIxS_microbial_mat_biolfilm_geographic_location_region_and_locality,
-		'GSC_MIxS_microbial_mat_biolfilm_depth': GSC_MIxS_microbial_mat_biolfilm_depth,
-		'GSC_MIxS_microbial_mat_biolfilm_broad_scale_environmental_context': GSC_MIxS_microbial_mat_biolfilm_broad_scale_environmental_context,
-		'GSC_MIxS_microbial_mat_biolfilm_local_environmental_context': GSC_MIxS_microbial_mat_biolfilm_local_environmental_context,
-		'GSC_MIxS_microbial_mat_biolfilm_environmental_medium': GSC_MIxS_microbial_mat_biolfilm_environmental_medium,
-		'GSC_MIxS_microbial_mat_biolfilm_elevation': GSC_MIxS_microbial_mat_biolfilm_elevation,
-		'GSC_MIxS_microbial_mat_biolfilm_source_material_identifiers': GSC_MIxS_microbial_mat_biolfilm_source_material_identifiers,
-		'GSC_MIxS_microbial_mat_biolfilm_sample_material_processing': GSC_MIxS_microbial_mat_biolfilm_sample_material_processing,
-		'GSC_MIxS_microbial_mat_biolfilm_isolation_and_growth_condition': GSC_MIxS_microbial_mat_biolfilm_isolation_and_growth_condition,
-		'GSC_MIxS_microbial_mat_biolfilm_propagation': GSC_MIxS_microbial_mat_biolfilm_propagation,
-		'GSC_MIxS_microbial_mat_biolfilm_amount_or_size_of_sample_collected': GSC_MIxS_microbial_mat_biolfilm_amount_or_size_of_sample_collected,
-		'GSC_MIxS_microbial_mat_biolfilm_biomass': GSC_MIxS_microbial_mat_biolfilm_biomass,
-		'GSC_MIxS_microbial_mat_biolfilm_oxygenation_status_of_sample': GSC_MIxS_microbial_mat_biolfilm_oxygenation_status_of_sample,
-		'GSC_MIxS_microbial_mat_biolfilm_organism_count': GSC_MIxS_microbial_mat_biolfilm_organism_count,
-		'GSC_MIxS_microbial_mat_biolfilm_sample_storage_duration': GSC_MIxS_microbial_mat_biolfilm_sample_storage_duration,
-		'GSC_MIxS_microbial_mat_biolfilm_sample_storage_temperature': GSC_MIxS_microbial_mat_biolfilm_sample_storage_temperature,
-		'GSC_MIxS_microbial_mat_biolfilm_sample_storage_location': GSC_MIxS_microbial_mat_biolfilm_sample_storage_location,
-		'GSC_MIxS_microbial_mat_biolfilm_sample_collection_device': GSC_MIxS_microbial_mat_biolfilm_sample_collection_device,
-		'GSC_MIxS_microbial_mat_biolfilm_sample_collection_method': GSC_MIxS_microbial_mat_biolfilm_sample_collection_method,
-		'GSC_MIxS_microbial_mat_biolfilm_host_disease_status': GSC_MIxS_microbial_mat_biolfilm_host_disease_status,
-		'GSC_MIxS_microbial_mat_biolfilm_host_scientific_name': GSC_MIxS_microbial_mat_biolfilm_host_scientific_name,
-		'GSC_MIxS_microbial_mat_biolfilm_alkalinity': GSC_MIxS_microbial_mat_biolfilm_alkalinity,
-		'GSC_MIxS_microbial_mat_biolfilm_mean_friction_velocity': GSC_MIxS_microbial_mat_biolfilm_mean_friction_velocity,
-		'GSC_MIxS_microbial_mat_biolfilm_mean_peak_friction_velocity': GSC_MIxS_microbial_mat_biolfilm_mean_peak_friction_velocity,
-		'GSC_MIxS_microbial_mat_biolfilm_pressure': GSC_MIxS_microbial_mat_biolfilm_pressure,
-		'GSC_MIxS_microbial_mat_biolfilm_temperature': GSC_MIxS_microbial_mat_biolfilm_temperature,
-		'GSC_MIxS_microbial_mat_biolfilm_turbidity': GSC_MIxS_microbial_mat_biolfilm_turbidity,
-		'GSC_MIxS_microbial_mat_biolfilm_pH': GSC_MIxS_microbial_mat_biolfilm_pH,
-		'GSC_MIxS_microbial_mat_biolfilm_alkyl_diethers': GSC_MIxS_microbial_mat_biolfilm_alkyl_diethers,
-		'GSC_MIxS_microbial_mat_biolfilm_aminopeptidase_activity': GSC_MIxS_microbial_mat_biolfilm_aminopeptidase_activity,
-		'GSC_MIxS_microbial_mat_biolfilm_ammonium': GSC_MIxS_microbial_mat_biolfilm_ammonium,
-		'GSC_MIxS_microbial_mat_biolfilm_bacterial_carbon_production': GSC_MIxS_microbial_mat_biolfilm_bacterial_carbon_production,
-		'GSC_MIxS_microbial_mat_biolfilm_bishomohopanol': GSC_MIxS_microbial_mat_biolfilm_bishomohopanol,
-		'GSC_MIxS_microbial_mat_biolfilm_bromide': GSC_MIxS_microbial_mat_biolfilm_bromide,
-		'GSC_MIxS_microbial_mat_biolfilm_calcium': GSC_MIxS_microbial_mat_biolfilm_calcium,
-		'GSC_MIxS_microbial_mat_biolfilm_carbon_nitrogen_ratio': GSC_MIxS_microbial_mat_biolfilm_carbon_nitrogen_ratio,
-		'GSC_MIxS_microbial_mat_biolfilm_chloride': GSC_MIxS_microbial_mat_biolfilm_chloride,
-		'GSC_MIxS_microbial_mat_biolfilm_chlorophyll': GSC_MIxS_microbial_mat_biolfilm_chlorophyll,
-		'GSC_MIxS_microbial_mat_biolfilm_diether_lipids': GSC_MIxS_microbial_mat_biolfilm_diether_lipids,
-		'GSC_MIxS_microbial_mat_biolfilm_dissolved_carbon_dioxide': GSC_MIxS_microbial_mat_biolfilm_dissolved_carbon_dioxide,
-		'GSC_MIxS_microbial_mat_biolfilm_dissolved_hydrogen': GSC_MIxS_microbial_mat_biolfilm_dissolved_hydrogen,
-		'GSC_MIxS_microbial_mat_biolfilm_dissolved_inorganic_carbon': GSC_MIxS_microbial_mat_biolfilm_dissolved_inorganic_carbon,
-		'GSC_MIxS_microbial_mat_biolfilm_dissolved_organic_carbon': GSC_MIxS_microbial_mat_biolfilm_dissolved_organic_carbon,
-		'GSC_MIxS_microbial_mat_biolfilm_dissolved_organic_nitrogen': GSC_MIxS_microbial_mat_biolfilm_dissolved_organic_nitrogen,
-		'GSC_MIxS_microbial_mat_biolfilm_methane': GSC_MIxS_microbial_mat_biolfilm_methane,
-		'GSC_MIxS_microbial_mat_biolfilm_dissolved_oxygen': GSC_MIxS_microbial_mat_biolfilm_dissolved_oxygen,
-		'GSC_MIxS_microbial_mat_biolfilm_glucosidase_activity': GSC_MIxS_microbial_mat_biolfilm_glucosidase_activity,
-		'GSC_MIxS_microbial_mat_biolfilm_magnesium': GSC_MIxS_microbial_mat_biolfilm_magnesium,
-		'GSC_MIxS_microbial_mat_biolfilm_n_alkanes': GSC_MIxS_microbial_mat_biolfilm_n_alkanes,
-		'GSC_MIxS_microbial_mat_biolfilm_nitrate': GSC_MIxS_microbial_mat_biolfilm_nitrate,
-		'GSC_MIxS_microbial_mat_biolfilm_nitrite': GSC_MIxS_microbial_mat_biolfilm_nitrite,
-		'GSC_MIxS_microbial_mat_biolfilm_nitrogen': GSC_MIxS_microbial_mat_biolfilm_nitrogen,
-		'GSC_MIxS_microbial_mat_biolfilm_organic_carbon': GSC_MIxS_microbial_mat_biolfilm_organic_carbon,
-		'GSC_MIxS_microbial_mat_biolfilm_organic_matter': GSC_MIxS_microbial_mat_biolfilm_organic_matter,
-		'GSC_MIxS_microbial_mat_biolfilm_organic_nitrogen': GSC_MIxS_microbial_mat_biolfilm_organic_nitrogen,
-		'GSC_MIxS_microbial_mat_biolfilm_particulate_organic_carbon': GSC_MIxS_microbial_mat_biolfilm_particulate_organic_carbon,
-		'GSC_MIxS_microbial_mat_biolfilm_petroleum_hydrocarbon': GSC_MIxS_microbial_mat_biolfilm_petroleum_hydrocarbon,
-		'GSC_MIxS_microbial_mat_biolfilm_phaeopigments': GSC_MIxS_microbial_mat_biolfilm_phaeopigments,
-		'GSC_MIxS_microbial_mat_biolfilm_phosphate': GSC_MIxS_microbial_mat_biolfilm_phosphate,
-		'GSC_MIxS_microbial_mat_biolfilm_phospholipid_fatty_acid': GSC_MIxS_microbial_mat_biolfilm_phospholipid_fatty_acid,
-		'GSC_MIxS_microbial_mat_biolfilm_potassium': GSC_MIxS_microbial_mat_biolfilm_potassium,
-		'GSC_MIxS_microbial_mat_biolfilm_redox_potential': GSC_MIxS_microbial_mat_biolfilm_redox_potential,
-		'GSC_MIxS_microbial_mat_biolfilm_salinity': GSC_MIxS_microbial_mat_biolfilm_salinity,
-		'GSC_MIxS_microbial_mat_biolfilm_total_carbon': GSC_MIxS_microbial_mat_biolfilm_total_carbon,
-		'GSC_MIxS_microbial_mat_biolfilm_silicate': GSC_MIxS_microbial_mat_biolfilm_silicate,
-		'GSC_MIxS_microbial_mat_biolfilm_sodium': GSC_MIxS_microbial_mat_biolfilm_sodium,
-		'GSC_MIxS_microbial_mat_biolfilm_total_organic_carbon': GSC_MIxS_microbial_mat_biolfilm_total_organic_carbon,
-		'GSC_MIxS_microbial_mat_biolfilm_water_content': GSC_MIxS_microbial_mat_biolfilm_water_content,
-		'GSC_MIxS_microbial_mat_biolfilm_sulfate': GSC_MIxS_microbial_mat_biolfilm_sulfate,
-		'GSC_MIxS_microbial_mat_biolfilm_sulfide': GSC_MIxS_microbial_mat_biolfilm_sulfide,
-		'GSC_MIxS_microbial_mat_biolfilm_total_nitrogen': GSC_MIxS_microbial_mat_biolfilm_total_nitrogen,
-		'GSC_MIxS_microbial_mat_biolfilm_subspecific_genetic_lineage': GSC_MIxS_microbial_mat_biolfilm_subspecific_genetic_lineage,
-		'GSC_MIxS_microbial_mat_biolfilm_trophic_level': GSC_MIxS_microbial_mat_biolfilm_trophic_level,
-		'GSC_MIxS_microbial_mat_biolfilm_relationship_to_oxygen': GSC_MIxS_microbial_mat_biolfilm_relationship_to_oxygen,
-		'GSC_MIxS_microbial_mat_biolfilm_known_pathogenicity': GSC_MIxS_microbial_mat_biolfilm_known_pathogenicity,
-		'GSC_MIxS_microbial_mat_biolfilm_encoded_traits': GSC_MIxS_microbial_mat_biolfilm_encoded_traits,
-		'GSC_MIxS_microbial_mat_biolfilm_observed_biotic_relationship': GSC_MIxS_microbial_mat_biolfilm_observed_biotic_relationship,
-		'GSC_MIxS_microbial_mat_biolfilm_chemical_administration': GSC_MIxS_microbial_mat_biolfilm_chemical_administration,
-		'GSC_MIxS_microbial_mat_biolfilm_perturbation': GSC_MIxS_microbial_mat_biolfilm_perturbation,
+		'GSC_MIxS_microbial_mat_biolfilm_project_name': 'project name',
+		'GSC_MIxS_microbial_mat_biolfilm_experimental_factor': 'experimental factor',
+		'GSC_MIxS_microbial_mat_biolfilm_ploidy': 'ploidy',
+		'GSC_MIxS_microbial_mat_biolfilm_number_of_replicons': 'number of replicons',
+		'GSC_MIxS_microbial_mat_biolfilm_extrachromosomal_elements': 'extrachromosomal elements',
+		'GSC_MIxS_microbial_mat_biolfilm_estimated_size': 'estimated size',
+		'GSC_MIxS_microbial_mat_biolfilm_reference_for_biomaterial': 'reference for biomaterial',
+		'GSC_MIxS_microbial_mat_biolfilm_annotation_source': 'annotation source',
+		'GSC_MIxS_microbial_mat_biolfilm_sample_volume_or_weight_for_DNA_extraction': 'sample volume or weight for DNA extraction',
+		'GSC_MIxS_microbial_mat_biolfilm_nucleic_acid_extraction': 'nucleic acid extraction',
+		'GSC_MIxS_microbial_mat_biolfilm_nucleic_acid_amplification': 'nucleic acid amplification',
+		'GSC_MIxS_microbial_mat_biolfilm_library_size': 'library size',
+		'GSC_MIxS_microbial_mat_biolfilm_library_reads_sequenced': 'library reads sequenced',
+		'GSC_MIxS_microbial_mat_biolfilm_library_construction_method': 'library construction method',
+		'GSC_MIxS_microbial_mat_biolfilm_library_vector': 'library vector',
+		'GSC_MIxS_microbial_mat_biolfilm_library_screening_strategy': 'library screening strategy',
+		'GSC_MIxS_microbial_mat_biolfilm_target_gene': 'target gene',
+		'GSC_MIxS_microbial_mat_biolfilm_target_subfragment': 'target subfragment',
+		'GSC_MIxS_microbial_mat_biolfilm_pcr_primers': 'pcr primers',
+		'GSC_MIxS_microbial_mat_biolfilm_multiplex_identifiers': 'multiplex identifiers',
+		'GSC_MIxS_microbial_mat_biolfilm_adapters': 'adapters',
+		'GSC_MIxS_microbial_mat_biolfilm_pcr_conditions': 'pcr conditions',
+		'GSC_MIxS_microbial_mat_biolfilm_sequencing_method': 'sequencing method',
+		'GSC_MIxS_microbial_mat_biolfilm_sequence_quality_check': 'sequence quality check',
+		'GSC_MIxS_microbial_mat_biolfilm_chimera_check_software': 'chimera check software',
+		'GSC_MIxS_microbial_mat_biolfilm_relevant_electronic_resources': 'relevant electronic resources',
+		'GSC_MIxS_microbial_mat_biolfilm_relevant_standard_operating_procedures': 'relevant standard operating procedures',
+		'GSC_MIxS_microbial_mat_biolfilm_negative_control_type': 'negative control type',
+		'GSC_MIxS_microbial_mat_biolfilm_positive_control_type': 'positive control type',
+		'GSC_MIxS_microbial_mat_biolfilm_collection_date': 'collection date',
+		'GSC_MIxS_microbial_mat_biolfilm_altitude': 'altitude',
+		'GSC_MIxS_microbial_mat_biolfilm_geographic_location_country_and_or_sea': 'geographic location (country and/or sea)',
+		'GSC_MIxS_microbial_mat_biolfilm_geographic_location_latitude': 'geographic location (latitude)',
+		'GSC_MIxS_microbial_mat_biolfilm_geographic_location_longitude': 'geographic location (longitude)',
+		'GSC_MIxS_microbial_mat_biolfilm_geographic_location_region_and_locality': 'geographic location (region and locality)',
+		'GSC_MIxS_microbial_mat_biolfilm_depth': 'depth',
+		'GSC_MIxS_microbial_mat_biolfilm_broad_scale_environmental_context': 'broad-scale environmental context',
+		'GSC_MIxS_microbial_mat_biolfilm_local_environmental_context': 'local environmental context',
+		'GSC_MIxS_microbial_mat_biolfilm_environmental_medium': 'environmental medium',
+		'GSC_MIxS_microbial_mat_biolfilm_elevation': 'elevation',
+		'GSC_MIxS_microbial_mat_biolfilm_source_material_identifiers': 'source material identifiers',
+		'GSC_MIxS_microbial_mat_biolfilm_sample_material_processing': 'sample material processing',
+		'GSC_MIxS_microbial_mat_biolfilm_isolation_and_growth_condition': 'isolation and growth condition',
+		'GSC_MIxS_microbial_mat_biolfilm_propagation': 'propagation',
+		'GSC_MIxS_microbial_mat_biolfilm_amount_or_size_of_sample_collected': 'amount or size of sample collected',
+		'GSC_MIxS_microbial_mat_biolfilm_biomass': 'biomass',
+		'GSC_MIxS_microbial_mat_biolfilm_oxygenation_status_of_sample': 'oxygenation status of sample',
+		'GSC_MIxS_microbial_mat_biolfilm_organism_count': 'organism count',
+		'GSC_MIxS_microbial_mat_biolfilm_sample_storage_duration': 'sample storage duration',
+		'GSC_MIxS_microbial_mat_biolfilm_sample_storage_temperature': 'sample storage temperature',
+		'GSC_MIxS_microbial_mat_biolfilm_sample_storage_location': 'sample storage location',
+		'GSC_MIxS_microbial_mat_biolfilm_sample_collection_device': 'sample collection device',
+		'GSC_MIxS_microbial_mat_biolfilm_sample_collection_method': 'sample collection method',
+		'GSC_MIxS_microbial_mat_biolfilm_host_disease_status': 'host disease status',
+		'GSC_MIxS_microbial_mat_biolfilm_host_scientific_name': 'host scientific name',
+		'GSC_MIxS_microbial_mat_biolfilm_alkalinity': 'alkalinity',
+		'GSC_MIxS_microbial_mat_biolfilm_mean_friction_velocity': 'mean friction velocity',
+		'GSC_MIxS_microbial_mat_biolfilm_mean_peak_friction_velocity': 'mean peak friction velocity',
+		'GSC_MIxS_microbial_mat_biolfilm_pressure': 'pressure',
+		'GSC_MIxS_microbial_mat_biolfilm_temperature': 'temperature',
+		'GSC_MIxS_microbial_mat_biolfilm_turbidity': 'turbidity',
+		'GSC_MIxS_microbial_mat_biolfilm_pH': 'pH',
+		'GSC_MIxS_microbial_mat_biolfilm_alkyl_diethers': 'alkyl diethers',
+		'GSC_MIxS_microbial_mat_biolfilm_aminopeptidase_activity': 'aminopeptidase activity',
+		'GSC_MIxS_microbial_mat_biolfilm_ammonium': 'ammonium',
+		'GSC_MIxS_microbial_mat_biolfilm_bacterial_carbon_production': 'bacterial carbon production',
+		'GSC_MIxS_microbial_mat_biolfilm_bishomohopanol': 'bishomohopanol',
+		'GSC_MIxS_microbial_mat_biolfilm_bromide': 'bromide',
+		'GSC_MIxS_microbial_mat_biolfilm_calcium': 'calcium',
+		'GSC_MIxS_microbial_mat_biolfilm_carbon_nitrogen_ratio': 'carbon/nitrogen ratio',
+		'GSC_MIxS_microbial_mat_biolfilm_chloride': 'chloride',
+		'GSC_MIxS_microbial_mat_biolfilm_chlorophyll': 'chlorophyll',
+		'GSC_MIxS_microbial_mat_biolfilm_diether_lipids': 'diether lipids',
+		'GSC_MIxS_microbial_mat_biolfilm_dissolved_carbon_dioxide': 'dissolved carbon dioxide',
+		'GSC_MIxS_microbial_mat_biolfilm_dissolved_hydrogen': 'dissolved hydrogen',
+		'GSC_MIxS_microbial_mat_biolfilm_dissolved_inorganic_carbon': 'dissolved inorganic carbon',
+		'GSC_MIxS_microbial_mat_biolfilm_dissolved_organic_carbon': 'dissolved organic carbon',
+		'GSC_MIxS_microbial_mat_biolfilm_dissolved_organic_nitrogen': 'dissolved organic nitrogen',
+		'GSC_MIxS_microbial_mat_biolfilm_methane': 'methane',
+		'GSC_MIxS_microbial_mat_biolfilm_dissolved_oxygen': 'dissolved oxygen',
+		'GSC_MIxS_microbial_mat_biolfilm_glucosidase_activity': 'glucosidase activity',
+		'GSC_MIxS_microbial_mat_biolfilm_magnesium': 'magnesium',
+		'GSC_MIxS_microbial_mat_biolfilm_n_alkanes': 'n-alkanes',
+		'GSC_MIxS_microbial_mat_biolfilm_nitrate': 'nitrate',
+		'GSC_MIxS_microbial_mat_biolfilm_nitrite': 'nitrite',
+		'GSC_MIxS_microbial_mat_biolfilm_nitrogen': 'nitrogen',
+		'GSC_MIxS_microbial_mat_biolfilm_organic_carbon': 'organic carbon',
+		'GSC_MIxS_microbial_mat_biolfilm_organic_matter': 'organic matter',
+		'GSC_MIxS_microbial_mat_biolfilm_organic_nitrogen': 'organic nitrogen',
+		'GSC_MIxS_microbial_mat_biolfilm_particulate_organic_carbon': 'particulate organic carbon',
+		'GSC_MIxS_microbial_mat_biolfilm_petroleum_hydrocarbon': 'petroleum hydrocarbon',
+		'GSC_MIxS_microbial_mat_biolfilm_phaeopigments': 'phaeopigments',
+		'GSC_MIxS_microbial_mat_biolfilm_phosphate': 'phosphate',
+		'GSC_MIxS_microbial_mat_biolfilm_phospholipid_fatty_acid': 'phospholipid fatty acid',
+		'GSC_MIxS_microbial_mat_biolfilm_potassium': 'potassium',
+		'GSC_MIxS_microbial_mat_biolfilm_redox_potential': 'redox potential',
+		'GSC_MIxS_microbial_mat_biolfilm_salinity': 'salinity',
+		'GSC_MIxS_microbial_mat_biolfilm_total_carbon': 'total carbon',
+		'GSC_MIxS_microbial_mat_biolfilm_silicate': 'silicate',
+		'GSC_MIxS_microbial_mat_biolfilm_sodium': 'sodium',
+		'GSC_MIxS_microbial_mat_biolfilm_total_organic_carbon': 'total organic carbon',
+		'GSC_MIxS_microbial_mat_biolfilm_water_content': 'water content',
+		'GSC_MIxS_microbial_mat_biolfilm_sulfate': 'sulfate',
+		'GSC_MIxS_microbial_mat_biolfilm_sulfide': 'sulfide',
+		'GSC_MIxS_microbial_mat_biolfilm_total_nitrogen': 'total nitrogen',
+		'GSC_MIxS_microbial_mat_biolfilm_subspecific_genetic_lineage': 'subspecific genetic lineage',
+		'GSC_MIxS_microbial_mat_biolfilm_trophic_level': 'trophic level',
+		'GSC_MIxS_microbial_mat_biolfilm_relationship_to_oxygen': 'relationship to oxygen',
+		'GSC_MIxS_microbial_mat_biolfilm_known_pathogenicity': 'known pathogenicity',
+		'GSC_MIxS_microbial_mat_biolfilm_encoded_traits': 'encoded traits',
+		'GSC_MIxS_microbial_mat_biolfilm_observed_biotic_relationship': 'observed biotic relationship',
+		'GSC_MIxS_microbial_mat_biolfilm_chemical_administration': 'chemical administration',
+		'GSC_MIxS_microbial_mat_biolfilm_perturbation': 'perturbation',
 	}
 
-class GSC_MIxS_microbial_mat_biolfilm_unit(SelfDescribingModel):
+class GSC_MIxS_microbial_mat_biolfilm_unit(SelfDescribingUnitModel):
 
 	GSC_MIxS_microbial_mat_biolfilm_sample_volume_or_weight_for_DNA_extraction_units = [('g', 'g'), ('mL', 'mL'), ('mg', 'mg'), ('ng', 'ng')]
 	GSC_MIxS_microbial_mat_biolfilm_altitude_units = [('m', 'm')]
-	GSC_MIxS_microbial_mat_biolfilm_geographic_location_latitude_units = [('D', 'D'), ('D', 'D')]
-	GSC_MIxS_microbial_mat_biolfilm_geographic_location_longitude_units = [('D', 'D'), ('D', 'D')]
+	GSC_MIxS_microbial_mat_biolfilm_geographic_location_latitude_units = [('DD', 'DD')]
+	GSC_MIxS_microbial_mat_biolfilm_geographic_location_longitude_units = [('DD', 'DD')]
 	GSC_MIxS_microbial_mat_biolfilm_depth_units = [('m', 'm')]
 	GSC_MIxS_microbial_mat_biolfilm_elevation_units = [('m', 'm')]
 	GSC_MIxS_microbial_mat_biolfilm_amount_or_size_of_sample_collected_units = [('L', 'L'), ('g', 'g'), ('kg', 'kg'), ('m2', 'm2'), ('m3', 'm3')]
 	GSC_MIxS_microbial_mat_biolfilm_biomass_units = [('g', 'g'), ('kg', 'kg'), ('t', 't')]
 	GSC_MIxS_microbial_mat_biolfilm_sample_storage_duration_units = [('days', 'days'), ('hours', 'hours'), ('months', 'months'), ('weeks', 'weeks'), ('years', 'years')]
-	GSC_MIxS_microbial_mat_biolfilm_sample_storage_temperature_units = [('°', '°'), ('C', 'C')]
-	GSC_MIxS_microbial_mat_biolfilm_alkalinity_units = [('m', 'm'), ('E', 'E'), ('q', 'q'), ('/', '/'), ('L', 'L')]
-	GSC_MIxS_microbial_mat_biolfilm_mean_friction_velocity_units = [('m', 'm'), ('/', '/'), ('s', 's')]
-	GSC_MIxS_microbial_mat_biolfilm_mean_peak_friction_velocity_units = [('m', 'm'), ('/', '/'), ('s', 's')]
+	GSC_MIxS_microbial_mat_biolfilm_sample_storage_temperature_units = [('°C', '°C')]
+	GSC_MIxS_microbial_mat_biolfilm_alkalinity_units = [('mEq/L', 'mEq/L')]
+	GSC_MIxS_microbial_mat_biolfilm_mean_friction_velocity_units = [('m/s', 'm/s')]
+	GSC_MIxS_microbial_mat_biolfilm_mean_peak_friction_velocity_units = [('m/s', 'm/s')]
 	GSC_MIxS_microbial_mat_biolfilm_pressure_units = [('atm', 'atm'), ('bar', 'bar')]
-	GSC_MIxS_microbial_mat_biolfilm_temperature_units = [('º', 'º'), ('C', 'C')]
+	GSC_MIxS_microbial_mat_biolfilm_temperature_units = [('ºC', 'ºC')]
 	GSC_MIxS_microbial_mat_biolfilm_turbidity_units = [('FTU', 'FTU'), ('NTU', 'NTU')]
 	GSC_MIxS_microbial_mat_biolfilm_alkyl_diethers_units = [('M/L', 'M/L'), ('µg/L', 'µg/L')]
-	GSC_MIxS_microbial_mat_biolfilm_aminopeptidase_activity_units = [('m', 'm'), ('o', 'o'), ('l', 'l'), ('/', '/'), ('L', 'L'), ('/', '/'), ('h', 'h')]
-	GSC_MIxS_microbial_mat_biolfilm_ammonium_units = [('µ', 'µ'), ('m', 'm'), ('o', 'o'), ('l', 'l'), ('/', '/'), ('L', 'L')]
-	GSC_MIxS_microbial_mat_biolfilm_bacterial_carbon_production_units = [('n', 'n'), ('g', 'g'), ('/', '/'), ('h', 'h')]
+	GSC_MIxS_microbial_mat_biolfilm_aminopeptidase_activity_units = [('mol/L/h', 'mol/L/h')]
+	GSC_MIxS_microbial_mat_biolfilm_ammonium_units = [('µmol/L', 'µmol/L')]
+	GSC_MIxS_microbial_mat_biolfilm_bacterial_carbon_production_units = [('ng/h', 'ng/h')]
 	GSC_MIxS_microbial_mat_biolfilm_bishomohopanol_units = [('µg/L', 'µg/L'), ('µg/g', 'µg/g')]
 	GSC_MIxS_microbial_mat_biolfilm_bromide_units = [('parts/million', 'parts/million'), ('µmol/L', 'µmol/L')]
 	GSC_MIxS_microbial_mat_biolfilm_calcium_units = [('mg/L', 'mg/L'), ('parts/million', 'parts/million'), ('µmol/L', 'µmol/L')]
-	GSC_MIxS_microbial_mat_biolfilm_chloride_units = [('m', 'm'), ('g', 'g'), ('/', '/'), ('L', 'L')]
+	GSC_MIxS_microbial_mat_biolfilm_chloride_units = [('mg/L', 'mg/L')]
 	GSC_MIxS_microbial_mat_biolfilm_chlorophyll_units = [('mg/m3', 'mg/m3'), ('µg/L', 'µg/L')]
-	GSC_MIxS_microbial_mat_biolfilm_diether_lipids_units = [('n', 'n'), ('g', 'g'), ('/', '/'), ('L', 'L')]
-	GSC_MIxS_microbial_mat_biolfilm_dissolved_carbon_dioxide_units = [('µ', 'µ'), ('m', 'm'), ('o', 'o'), ('l', 'l'), ('/', '/'), ('L', 'L')]
-	GSC_MIxS_microbial_mat_biolfilm_dissolved_hydrogen_units = [('µ', 'µ'), ('m', 'm'), ('o', 'o'), ('l', 'l'), ('/', '/'), ('L', 'L')]
-	GSC_MIxS_microbial_mat_biolfilm_dissolved_inorganic_carbon_units = [('µ', 'µ'), ('g', 'g'), ('/', '/'), ('L', 'L')]
-	GSC_MIxS_microbial_mat_biolfilm_dissolved_organic_carbon_units = [('µ', 'µ'), ('m', 'm'), ('o', 'o'), ('l', 'l'), ('/', '/'), ('L', 'L')]
+	GSC_MIxS_microbial_mat_biolfilm_diether_lipids_units = [('ng/L', 'ng/L')]
+	GSC_MIxS_microbial_mat_biolfilm_dissolved_carbon_dioxide_units = [('µmol/L', 'µmol/L')]
+	GSC_MIxS_microbial_mat_biolfilm_dissolved_hydrogen_units = [('µmol/L', 'µmol/L')]
+	GSC_MIxS_microbial_mat_biolfilm_dissolved_inorganic_carbon_units = [('µg/L', 'µg/L')]
+	GSC_MIxS_microbial_mat_biolfilm_dissolved_organic_carbon_units = [('µmol/L', 'µmol/L')]
 	GSC_MIxS_microbial_mat_biolfilm_dissolved_organic_nitrogen_units = [('mg/L', 'mg/L'), ('µg/L', 'µg/L')]
-	GSC_MIxS_microbial_mat_biolfilm_methane_units = [('µ', 'µ'), ('M', 'M'), ('/', '/'), ('L', 'L')]
-	GSC_MIxS_microbial_mat_biolfilm_dissolved_oxygen_units = [('µ', 'µ'), ('m', 'm'), ('o', 'o'), ('l', 'l'), ('/', '/'), ('k', 'k'), ('g', 'g')]
-	GSC_MIxS_microbial_mat_biolfilm_glucosidase_activity_units = [('m', 'm'), ('o', 'o'), ('l', 'l'), ('/', '/'), ('L', 'L'), ('/', '/'), ('h', 'h')]
+	GSC_MIxS_microbial_mat_biolfilm_methane_units = [('µM/L', 'µM/L')]
+	GSC_MIxS_microbial_mat_biolfilm_dissolved_oxygen_units = [('µmol/kg', 'µmol/kg')]
+	GSC_MIxS_microbial_mat_biolfilm_glucosidase_activity_units = [('mol/L/h', 'mol/L/h')]
 	GSC_MIxS_microbial_mat_biolfilm_magnesium_units = [('mg/L', 'mg/L'), ('mol/L', 'mol/L'), ('parts/million', 'parts/million')]
-	GSC_MIxS_microbial_mat_biolfilm_n_alkanes_units = [('µ', 'µ'), ('m', 'm'), ('o', 'o'), ('l', 'l'), ('/', '/'), ('L', 'L')]
-	GSC_MIxS_microbial_mat_biolfilm_nitrate_units = [('µ', 'µ'), ('m', 'm'), ('o', 'o'), ('l', 'l'), ('/', '/'), ('L', 'L')]
-	GSC_MIxS_microbial_mat_biolfilm_nitrite_units = [('µ', 'µ'), ('m', 'm'), ('o', 'o'), ('l', 'l'), ('/', '/'), ('L', 'L')]
-	GSC_MIxS_microbial_mat_biolfilm_nitrogen_units = [('µ', 'µ'), ('m', 'm'), ('o', 'o'), ('l', 'l'), ('/', '/'), ('L', 'L')]
-	GSC_MIxS_microbial_mat_biolfilm_organic_carbon_units = [('µ', 'µ'), ('m', 'm'), ('o', 'o'), ('l', 'l'), ('/', '/'), ('L', 'L')]
-	GSC_MIxS_microbial_mat_biolfilm_organic_matter_units = [('µ', 'µ'), ('g', 'g'), ('/', '/'), ('L', 'L')]
-	GSC_MIxS_microbial_mat_biolfilm_organic_nitrogen_units = [('µ', 'µ'), ('g', 'g'), ('/', '/'), ('L', 'L')]
-	GSC_MIxS_microbial_mat_biolfilm_particulate_organic_carbon_units = [('µ', 'µ'), ('g', 'g'), ('/', '/'), ('L', 'L')]
-	GSC_MIxS_microbial_mat_biolfilm_petroleum_hydrocarbon_units = [('µ', 'µ'), ('m', 'm'), ('o', 'o'), ('l', 'l'), ('/', '/'), ('L', 'L')]
+	GSC_MIxS_microbial_mat_biolfilm_n_alkanes_units = [('µmol/L', 'µmol/L')]
+	GSC_MIxS_microbial_mat_biolfilm_nitrate_units = [('µmol/L', 'µmol/L')]
+	GSC_MIxS_microbial_mat_biolfilm_nitrite_units = [('µmol/L', 'µmol/L')]
+	GSC_MIxS_microbial_mat_biolfilm_nitrogen_units = [('µmol/L', 'µmol/L')]
+	GSC_MIxS_microbial_mat_biolfilm_organic_carbon_units = [('µmol/L', 'µmol/L')]
+	GSC_MIxS_microbial_mat_biolfilm_organic_matter_units = [('µg/L', 'µg/L')]
+	GSC_MIxS_microbial_mat_biolfilm_organic_nitrogen_units = [('µg/L', 'µg/L')]
+	GSC_MIxS_microbial_mat_biolfilm_particulate_organic_carbon_units = [('µg/L', 'µg/L')]
+	GSC_MIxS_microbial_mat_biolfilm_petroleum_hydrocarbon_units = [('µmol/L', 'µmol/L')]
 	GSC_MIxS_microbial_mat_biolfilm_phaeopigments_units = [('mg/m3', 'mg/m3'), ('µg/L', 'µg/L')]
-	GSC_MIxS_microbial_mat_biolfilm_phosphate_units = [('µ', 'µ'), ('m', 'm'), ('o', 'o'), ('l', 'l'), ('/', '/'), ('L', 'L')]
+	GSC_MIxS_microbial_mat_biolfilm_phosphate_units = [('µmol/L', 'µmol/L')]
 	GSC_MIxS_microbial_mat_biolfilm_phospholipid_fatty_acid_units = [('mol/L', 'mol/L'), ('mol/g', 'mol/g')]
 	GSC_MIxS_microbial_mat_biolfilm_potassium_units = [('parts/million', 'parts/million'), ('µmol/L', 'µmol/L')]
-	GSC_MIxS_microbial_mat_biolfilm_redox_potential_units = [('m', 'm'), ('V', 'V')]
-	GSC_MIxS_microbial_mat_biolfilm_salinity_units = [('p', 'p'), ('s', 's'), ('u', 'u')]
-	GSC_MIxS_microbial_mat_biolfilm_total_carbon_units = [('µ', 'µ'), ('g', 'g'), ('/', '/'), ('L', 'L')]
-	GSC_MIxS_microbial_mat_biolfilm_silicate_units = [('µ', 'µ'), ('m', 'm'), ('o', 'o'), ('l', 'l'), ('/', '/'), ('L', 'L')]
+	GSC_MIxS_microbial_mat_biolfilm_redox_potential_units = [('mV', 'mV')]
+	GSC_MIxS_microbial_mat_biolfilm_salinity_units = [('psu', 'psu')]
+	GSC_MIxS_microbial_mat_biolfilm_total_carbon_units = [('µg/L', 'µg/L')]
+	GSC_MIxS_microbial_mat_biolfilm_silicate_units = [('µmol/L', 'µmol/L')]
 	GSC_MIxS_microbial_mat_biolfilm_sodium_units = [('parts/million', 'parts/million'), ('µmol/L', 'µmol/L')]
-	GSC_MIxS_microbial_mat_biolfilm_total_organic_carbon_units = [('g', 'g'), ('/', '/'), ('k', 'k'), ('g', 'g')]
+	GSC_MIxS_microbial_mat_biolfilm_total_organic_carbon_units = [('g/kg', 'g/kg')]
 	GSC_MIxS_microbial_mat_biolfilm_water_content_units = [('cm3/cm3', 'cm3/cm3'), ('g/g', 'g/g')]
 	GSC_MIxS_microbial_mat_biolfilm_sulfate_units = [('mg/L', 'mg/L'), ('µmol/L', 'µmol/L')]
 	GSC_MIxS_microbial_mat_biolfilm_sulfide_units = [('mg/L', 'mg/L'), ('µmol/L', 'µmol/L')]
 	GSC_MIxS_microbial_mat_biolfilm_total_nitrogen_units = [('µg/L', 'µg/L'), ('µmol/L', 'µmol/L')]
 
 	fields = {
-		'GSC_MIxS_microbial_mat_biolfilm_sample_volume_or_weight_for_DNA_extraction_units': GSC_MIxS_microbial_mat_biolfilm_sample_volume_or_weight_for_DNA_extraction_units,
-		'GSC_MIxS_microbial_mat_biolfilm_altitude_units': GSC_MIxS_microbial_mat_biolfilm_altitude_units,
-		'GSC_MIxS_microbial_mat_biolfilm_geographic_location_latitude_units': GSC_MIxS_microbial_mat_biolfilm_geographic_location_latitude_units,
-		'GSC_MIxS_microbial_mat_biolfilm_geographic_location_longitude_units': GSC_MIxS_microbial_mat_biolfilm_geographic_location_longitude_units,
-		'GSC_MIxS_microbial_mat_biolfilm_depth_units': GSC_MIxS_microbial_mat_biolfilm_depth_units,
-		'GSC_MIxS_microbial_mat_biolfilm_elevation_units': GSC_MIxS_microbial_mat_biolfilm_elevation_units,
-		'GSC_MIxS_microbial_mat_biolfilm_amount_or_size_of_sample_collected_units': GSC_MIxS_microbial_mat_biolfilm_amount_or_size_of_sample_collected_units,
-		'GSC_MIxS_microbial_mat_biolfilm_biomass_units': GSC_MIxS_microbial_mat_biolfilm_biomass_units,
-		'GSC_MIxS_microbial_mat_biolfilm_sample_storage_duration_units': GSC_MIxS_microbial_mat_biolfilm_sample_storage_duration_units,
-		'GSC_MIxS_microbial_mat_biolfilm_sample_storage_temperature_units': GSC_MIxS_microbial_mat_biolfilm_sample_storage_temperature_units,
-		'GSC_MIxS_microbial_mat_biolfilm_alkalinity_units': GSC_MIxS_microbial_mat_biolfilm_alkalinity_units,
-		'GSC_MIxS_microbial_mat_biolfilm_mean_friction_velocity_units': GSC_MIxS_microbial_mat_biolfilm_mean_friction_velocity_units,
-		'GSC_MIxS_microbial_mat_biolfilm_mean_peak_friction_velocity_units': GSC_MIxS_microbial_mat_biolfilm_mean_peak_friction_velocity_units,
-		'GSC_MIxS_microbial_mat_biolfilm_pressure_units': GSC_MIxS_microbial_mat_biolfilm_pressure_units,
-		'GSC_MIxS_microbial_mat_biolfilm_temperature_units': GSC_MIxS_microbial_mat_biolfilm_temperature_units,
-		'GSC_MIxS_microbial_mat_biolfilm_turbidity_units': GSC_MIxS_microbial_mat_biolfilm_turbidity_units,
-		'GSC_MIxS_microbial_mat_biolfilm_alkyl_diethers_units': GSC_MIxS_microbial_mat_biolfilm_alkyl_diethers_units,
-		'GSC_MIxS_microbial_mat_biolfilm_aminopeptidase_activity_units': GSC_MIxS_microbial_mat_biolfilm_aminopeptidase_activity_units,
-		'GSC_MIxS_microbial_mat_biolfilm_ammonium_units': GSC_MIxS_microbial_mat_biolfilm_ammonium_units,
-		'GSC_MIxS_microbial_mat_biolfilm_bacterial_carbon_production_units': GSC_MIxS_microbial_mat_biolfilm_bacterial_carbon_production_units,
-		'GSC_MIxS_microbial_mat_biolfilm_bishomohopanol_units': GSC_MIxS_microbial_mat_biolfilm_bishomohopanol_units,
-		'GSC_MIxS_microbial_mat_biolfilm_bromide_units': GSC_MIxS_microbial_mat_biolfilm_bromide_units,
-		'GSC_MIxS_microbial_mat_biolfilm_calcium_units': GSC_MIxS_microbial_mat_biolfilm_calcium_units,
-		'GSC_MIxS_microbial_mat_biolfilm_chloride_units': GSC_MIxS_microbial_mat_biolfilm_chloride_units,
-		'GSC_MIxS_microbial_mat_biolfilm_chlorophyll_units': GSC_MIxS_microbial_mat_biolfilm_chlorophyll_units,
-		'GSC_MIxS_microbial_mat_biolfilm_diether_lipids_units': GSC_MIxS_microbial_mat_biolfilm_diether_lipids_units,
-		'GSC_MIxS_microbial_mat_biolfilm_dissolved_carbon_dioxide_units': GSC_MIxS_microbial_mat_biolfilm_dissolved_carbon_dioxide_units,
-		'GSC_MIxS_microbial_mat_biolfilm_dissolved_hydrogen_units': GSC_MIxS_microbial_mat_biolfilm_dissolved_hydrogen_units,
-		'GSC_MIxS_microbial_mat_biolfilm_dissolved_inorganic_carbon_units': GSC_MIxS_microbial_mat_biolfilm_dissolved_inorganic_carbon_units,
-		'GSC_MIxS_microbial_mat_biolfilm_dissolved_organic_carbon_units': GSC_MIxS_microbial_mat_biolfilm_dissolved_organic_carbon_units,
-		'GSC_MIxS_microbial_mat_biolfilm_dissolved_organic_nitrogen_units': GSC_MIxS_microbial_mat_biolfilm_dissolved_organic_nitrogen_units,
-		'GSC_MIxS_microbial_mat_biolfilm_methane_units': GSC_MIxS_microbial_mat_biolfilm_methane_units,
-		'GSC_MIxS_microbial_mat_biolfilm_dissolved_oxygen_units': GSC_MIxS_microbial_mat_biolfilm_dissolved_oxygen_units,
-		'GSC_MIxS_microbial_mat_biolfilm_glucosidase_activity_units': GSC_MIxS_microbial_mat_biolfilm_glucosidase_activity_units,
-		'GSC_MIxS_microbial_mat_biolfilm_magnesium_units': GSC_MIxS_microbial_mat_biolfilm_magnesium_units,
-		'GSC_MIxS_microbial_mat_biolfilm_n_alkanes_units': GSC_MIxS_microbial_mat_biolfilm_n_alkanes_units,
-		'GSC_MIxS_microbial_mat_biolfilm_nitrate_units': GSC_MIxS_microbial_mat_biolfilm_nitrate_units,
-		'GSC_MIxS_microbial_mat_biolfilm_nitrite_units': GSC_MIxS_microbial_mat_biolfilm_nitrite_units,
-		'GSC_MIxS_microbial_mat_biolfilm_nitrogen_units': GSC_MIxS_microbial_mat_biolfilm_nitrogen_units,
-		'GSC_MIxS_microbial_mat_biolfilm_organic_carbon_units': GSC_MIxS_microbial_mat_biolfilm_organic_carbon_units,
-		'GSC_MIxS_microbial_mat_biolfilm_organic_matter_units': GSC_MIxS_microbial_mat_biolfilm_organic_matter_units,
-		'GSC_MIxS_microbial_mat_biolfilm_organic_nitrogen_units': GSC_MIxS_microbial_mat_biolfilm_organic_nitrogen_units,
-		'GSC_MIxS_microbial_mat_biolfilm_particulate_organic_carbon_units': GSC_MIxS_microbial_mat_biolfilm_particulate_organic_carbon_units,
-		'GSC_MIxS_microbial_mat_biolfilm_petroleum_hydrocarbon_units': GSC_MIxS_microbial_mat_biolfilm_petroleum_hydrocarbon_units,
-		'GSC_MIxS_microbial_mat_biolfilm_phaeopigments_units': GSC_MIxS_microbial_mat_biolfilm_phaeopigments_units,
-		'GSC_MIxS_microbial_mat_biolfilm_phosphate_units': GSC_MIxS_microbial_mat_biolfilm_phosphate_units,
-		'GSC_MIxS_microbial_mat_biolfilm_phospholipid_fatty_acid_units': GSC_MIxS_microbial_mat_biolfilm_phospholipid_fatty_acid_units,
-		'GSC_MIxS_microbial_mat_biolfilm_potassium_units': GSC_MIxS_microbial_mat_biolfilm_potassium_units,
-		'GSC_MIxS_microbial_mat_biolfilm_redox_potential_units': GSC_MIxS_microbial_mat_biolfilm_redox_potential_units,
-		'GSC_MIxS_microbial_mat_biolfilm_salinity_units': GSC_MIxS_microbial_mat_biolfilm_salinity_units,
-		'GSC_MIxS_microbial_mat_biolfilm_total_carbon_units': GSC_MIxS_microbial_mat_biolfilm_total_carbon_units,
-		'GSC_MIxS_microbial_mat_biolfilm_silicate_units': GSC_MIxS_microbial_mat_biolfilm_silicate_units,
-		'GSC_MIxS_microbial_mat_biolfilm_sodium_units': GSC_MIxS_microbial_mat_biolfilm_sodium_units,
-		'GSC_MIxS_microbial_mat_biolfilm_total_organic_carbon_units': GSC_MIxS_microbial_mat_biolfilm_total_organic_carbon_units,
-		'GSC_MIxS_microbial_mat_biolfilm_water_content_units': GSC_MIxS_microbial_mat_biolfilm_water_content_units,
-		'GSC_MIxS_microbial_mat_biolfilm_sulfate_units': GSC_MIxS_microbial_mat_biolfilm_sulfate_units,
-		'GSC_MIxS_microbial_mat_biolfilm_sulfide_units': GSC_MIxS_microbial_mat_biolfilm_sulfide_units,
-		'GSC_MIxS_microbial_mat_biolfilm_total_nitrogen_units': GSC_MIxS_microbial_mat_biolfilm_total_nitrogen_units,
+		'GSC_MIxS_microbial_mat_biolfilm_sample_volume_or_weight_for_DNA_extraction': 'sample volume or weight for DNA extraction',
+		'GSC_MIxS_microbial_mat_biolfilm_altitude': 'altitude',
+		'GSC_MIxS_microbial_mat_biolfilm_geographic_location_latitude': 'geographic location (latitude)',
+		'GSC_MIxS_microbial_mat_biolfilm_geographic_location_longitude': 'geographic location (longitude)',
+		'GSC_MIxS_microbial_mat_biolfilm_depth': 'depth',
+		'GSC_MIxS_microbial_mat_biolfilm_elevation': 'elevation',
+		'GSC_MIxS_microbial_mat_biolfilm_amount_or_size_of_sample_collected': 'amount or size of sample collected',
+		'GSC_MIxS_microbial_mat_biolfilm_biomass': 'biomass',
+		'GSC_MIxS_microbial_mat_biolfilm_sample_storage_duration': 'sample storage duration',
+		'GSC_MIxS_microbial_mat_biolfilm_sample_storage_temperature': 'sample storage temperature',
+		'GSC_MIxS_microbial_mat_biolfilm_alkalinity': 'alkalinity',
+		'GSC_MIxS_microbial_mat_biolfilm_mean_friction_velocity': 'mean friction velocity',
+		'GSC_MIxS_microbial_mat_biolfilm_mean_peak_friction_velocity': 'mean peak friction velocity',
+		'GSC_MIxS_microbial_mat_biolfilm_pressure': 'pressure',
+		'GSC_MIxS_microbial_mat_biolfilm_temperature': 'temperature',
+		'GSC_MIxS_microbial_mat_biolfilm_turbidity': 'turbidity',
+		'GSC_MIxS_microbial_mat_biolfilm_alkyl_diethers': 'alkyl diethers',
+		'GSC_MIxS_microbial_mat_biolfilm_aminopeptidase_activity': 'aminopeptidase activity',
+		'GSC_MIxS_microbial_mat_biolfilm_ammonium': 'ammonium',
+		'GSC_MIxS_microbial_mat_biolfilm_bacterial_carbon_production': 'bacterial carbon production',
+		'GSC_MIxS_microbial_mat_biolfilm_bishomohopanol': 'bishomohopanol',
+		'GSC_MIxS_microbial_mat_biolfilm_bromide': 'bromide',
+		'GSC_MIxS_microbial_mat_biolfilm_calcium': 'calcium',
+		'GSC_MIxS_microbial_mat_biolfilm_chloride': 'chloride',
+		'GSC_MIxS_microbial_mat_biolfilm_chlorophyll': 'chlorophyll',
+		'GSC_MIxS_microbial_mat_biolfilm_diether_lipids': 'diether lipids',
+		'GSC_MIxS_microbial_mat_biolfilm_dissolved_carbon_dioxide': 'dissolved carbon dioxide',
+		'GSC_MIxS_microbial_mat_biolfilm_dissolved_hydrogen': 'dissolved hydrogen',
+		'GSC_MIxS_microbial_mat_biolfilm_dissolved_inorganic_carbon': 'dissolved inorganic carbon',
+		'GSC_MIxS_microbial_mat_biolfilm_dissolved_organic_carbon': 'dissolved organic carbon',
+		'GSC_MIxS_microbial_mat_biolfilm_dissolved_organic_nitrogen': 'dissolved organic nitrogen',
+		'GSC_MIxS_microbial_mat_biolfilm_methane': 'methane',
+		'GSC_MIxS_microbial_mat_biolfilm_dissolved_oxygen': 'dissolved oxygen',
+		'GSC_MIxS_microbial_mat_biolfilm_glucosidase_activity': 'glucosidase activity',
+		'GSC_MIxS_microbial_mat_biolfilm_magnesium': 'magnesium',
+		'GSC_MIxS_microbial_mat_biolfilm_n_alkanes': 'n-alkanes',
+		'GSC_MIxS_microbial_mat_biolfilm_nitrate': 'nitrate',
+		'GSC_MIxS_microbial_mat_biolfilm_nitrite': 'nitrite',
+		'GSC_MIxS_microbial_mat_biolfilm_nitrogen': 'nitrogen',
+		'GSC_MIxS_microbial_mat_biolfilm_organic_carbon': 'organic carbon',
+		'GSC_MIxS_microbial_mat_biolfilm_organic_matter': 'organic matter',
+		'GSC_MIxS_microbial_mat_biolfilm_organic_nitrogen': 'organic nitrogen',
+		'GSC_MIxS_microbial_mat_biolfilm_particulate_organic_carbon': 'particulate organic carbon',
+		'GSC_MIxS_microbial_mat_biolfilm_petroleum_hydrocarbon': 'petroleum hydrocarbon',
+		'GSC_MIxS_microbial_mat_biolfilm_phaeopigments': 'phaeopigments',
+		'GSC_MIxS_microbial_mat_biolfilm_phosphate': 'phosphate',
+		'GSC_MIxS_microbial_mat_biolfilm_phospholipid_fatty_acid': 'phospholipid fatty acid',
+		'GSC_MIxS_microbial_mat_biolfilm_potassium': 'potassium',
+		'GSC_MIxS_microbial_mat_biolfilm_redox_potential': 'redox potential',
+		'GSC_MIxS_microbial_mat_biolfilm_salinity': 'salinity',
+		'GSC_MIxS_microbial_mat_biolfilm_total_carbon': 'total carbon',
+		'GSC_MIxS_microbial_mat_biolfilm_silicate': 'silicate',
+		'GSC_MIxS_microbial_mat_biolfilm_sodium': 'sodium',
+		'GSC_MIxS_microbial_mat_biolfilm_total_organic_carbon': 'total organic carbon',
+		'GSC_MIxS_microbial_mat_biolfilm_water_content': 'water content',
+		'GSC_MIxS_microbial_mat_biolfilm_sulfate': 'sulfate',
+		'GSC_MIxS_microbial_mat_biolfilm_sulfide': 'sulfide',
+		'GSC_MIxS_microbial_mat_biolfilm_total_nitrogen': 'total nitrogen',
 	}
 
-	sample = models.ForeignKey(Sample, on_delete=models.CASCADE)
 	order = models.ForeignKey(Order, on_delete=models.CASCADE, default=1)
 	GSC_MIxS_microbial_mat_biolfilm_sample_volume_or_weight_for_DNA_extraction = models.CharField(max_length=100, choices=GSC_MIxS_microbial_mat_biolfilm_sample_volume_or_weight_for_DNA_extraction_units, blank=False)
 	GSC_MIxS_microbial_mat_biolfilm_altitude = models.CharField(max_length=100, choices=GSC_MIxS_microbial_mat_biolfilm_altitude_units, blank=False)

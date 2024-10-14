@@ -44,18 +44,24 @@ class SelfDescribingModel(models.Model):
                 if k in include:
                     output = output + f"<SAMPLE_ATTRIBUTE><TAG>{v}</TAG><VALUE>{getattr(self, k)}</VALUE>"
                     try:
-                        unitoptions_field_name = getattr(unitchecklist_item_instance, f"{k}")
-                        output = output + f"<UNITS>{unitoptions_field_name}</UNITS>\n"
+                        unitoption = getattr(unitchecklist_item_instance, k + "_units")[0][0]
+                        current_unitoption = getattr(unitchecklist_item_instance, f"{k}")
+                        if current_unitoption != '':
+                            unitoption = current_unitoption   
+                        output = output + f"<UNITS>{unitoption}</UNITS>\n"
                     except:
                         pass
-                    output = output + f"</SAMPLE_ATTRIBUTE>\n"                  
+                    output = output + f"</SAMPLE_ATTRIBUTE>\n"            
         else:
             for k, v in self.fields.items():
                 if k not in exclude:
                     output = output + f"<SAMPLE_ATTRIBUTE><TAG>{v}</TAG><VALUE>{getattr(self, k)}</VALUE>"
                     try:
-                        unitoptions_field_name = getattr(unitchecklist_item_instance, f"{k}")
-                        output = output + f"<UNITS>{unitoptions_field_name}</UNITS>\n"
+                        unitoption = getattr(unitchecklist_item_instance, k + "_units")[0][0]
+                        current_unitoption = getattr(unitchecklist_item_instance, f"{k}")
+                        if current_unitoption != '':
+                            unitoption = current_unitoption   
+                        output = output + f"<UNITS>{unitoption}</UNITS>\n"
                     except:
                         pass
                     output = output + f"</SAMPLE_ATTRIBUTE>\n"            
@@ -135,12 +141,12 @@ class SelfDescribingUnitModel(SelfDescribingModel):
     class Meta:
         abstract = True
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    # def __init__(self, *args, **kwargs):
+    #     super().__init__(*args, **kwargs)
 
-        for field in self.fields.keys():
-            value = getattr(self, field+"_units")[0][0]
-            setattr(self, field, value)
+    #     for field in self.fields.keys():
+    #         value = getattr(self, field+"_units")[0][0]
+    #         setattr(self, field, value)
 
 class Order(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
