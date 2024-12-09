@@ -23,6 +23,8 @@ def login_view(request):
             user = form.get_user()
             login(request, user)
             return redirect('order_list')
+        else:
+            return render(request, 'login.html', {'form': form})
     else:
         if request.user.is_authenticated:
             return redirect('order_list')
