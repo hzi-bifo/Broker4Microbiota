@@ -25,10 +25,10 @@ Metadata List
           <p id="description-content">Select a node to see the description here.</p>
       </div>
     </div>
-    <textarea id="checklists" name="checklists" rows="4" cols="50" placeholder="Selected nodes will appear here..."></textarea>
-    <textarea id="include" name="include" rows="4" cols="50" placeholder=""></textarea>
-    <textarea id="exclude" name="exclude" rows="4" cols="50" placeholder=""></textarea>
-    <textarea id="custom" name="custom" rows="4" cols="50" placeholder=""></textarea>
+    <textarea id="checklists" name="checklists" rows="4" cols="50" placeholder="Selected nodes will appear here...">{{ sample_set.checklists }}</textarea>
+    <textarea id="include" name="include" rows="4" cols="50" placeholder="">{{ sample_set.include }}</textarea>
+    <textarea id="exclude" name="exclude" rows="4" cols="50" placeholder="">{{ sample_set.exclude }}</textarea>
+    <textarea id="custom" name="custom" rows="4" cols="50" placeholder="">{{ sample_set.custom }}</textarea>
     <div class="has-text-centered mt-4">
         <button type="submit" class="button is-primary">Save</button>
 
@@ -111,7 +111,26 @@ Metadata List
           var currentText = $textarea.val();
 
           // Add the selected node's name to the textarea, separated by a newline
-          $textarea.val(currentText + (currentText ? '\n' : '') + node.name);
+          $textarea.val('["' + node.name.replace(/ /g, "_") + '"]');
+
+          // temporary
+          var $textarea = $('#include');
+          var currentText = $textarea.val();
+
+          // Add the selected node's name to the textarea, separated by a newline
+          $textarea.val('["' + node.name.replace(/ /g, "_") + '"]');
+
+          var $textarea = $('#exclude');
+          var currentText = $textarea.val();
+
+          // Add the selected node's name to the textarea, separated by a newline
+          $textarea.val('["' + node.name.replace(/ /g, "_") + '"]');
+
+          var $textarea = $('#custom');
+          var currentText = $textarea.val();
+
+          // Add the selected node's name to the textarea, separated by a newline
+          $textarea.val('["' + node.name.replace(/ /g, "_") + '"]');
       }
   });
 

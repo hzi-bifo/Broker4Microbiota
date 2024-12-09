@@ -24,8 +24,11 @@ def login_view(request):
             login(request, user)
             return redirect('order_list')
     else:
-        form = AuthenticationForm()
-    return render(request, 'login.html', {'form': form})
+        if request.user.is_authenticated:
+            return redirect('order_list')
+        else:
+            form = AuthenticationForm()
+            return render(request, 'login.html', {'form': form})
 
 def logout_view(request):
     logout(request)
@@ -351,18 +354,13 @@ def metadata_view(request, order_id):
             if form.is_valid():
                 sample_set = form.save(commit=False)
                 sample_set.user = request.user
-                # temporary
-                checklist_string = '["GSC_MIxS_wastewater_sludge"]'
-                sample_set.checklists = json.loads(checklist_string)
-                sample_set.include = json.loads('[]')
-                sample_set.exclude = json.loads('[]')
-                sample_set.custom = json.loads('[]')
                 sample_set.save()
 
                 # temporary
                 for checklist in sample_set.checklists:
                     checklist_name = checklist
-                    checklist_code = Sampleset.checklist_structure[checklist_name]['checklist_code']  
+                    checklist_item = Sampleset.checklist_structure[checklist_name]
+                    checklist_code = checklist_item['checklist_code']  
                     unitchecklist_class_name = Sampleset.checklist_structure[checklist_name]['unitchecklist_class_name']
                     unitchecklist_item_class =  getattr(importlib.import_module("app.models"), unitchecklist_class_name)
                     unitchecklist_item_instance = unitchecklist_item_class(order = order)
@@ -371,9 +369,10 @@ def metadata_view(request, order_id):
                         unitchecklist_item_instance.GSC_MIxS_wastewater_sludge_sample_volume_or_weight_for_DNA_extraction = 'ng'                    
                     unitchecklist_item_instance.save()
 
+                order.save()
                 return redirect('order_list')
             
-        return render(request, 'metadata.html', {'form': form})
+        return render(request, 'metadata.html', {'sample_set': sample_set})
     else:
         return redirect('login')
 
