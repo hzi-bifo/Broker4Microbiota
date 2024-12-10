@@ -62,31 +62,5 @@ class SamplesetForm(forms.ModelForm):
         # )
 
 
-class SampleMetadataForm(forms.Form):
-    def __init__(self, *args, **kwargs):
-        mixs_metadata_standard = kwargs.pop('mixs_metadata_standard', None)
-        super().__init__(*args, **kwargs)
-
-        if mixs_metadata_standard:
-            xml_file = os.path.join(settings.BASE_DIR, 'static', 'xml', f'{mixs_metadata_standard}.xml')
-            tree = ET.parse(xml_file)
-            root = tree.getroot()
-
-            for field in root.findall('.//FIELD'):
-                label = field.find('LABEL').text
-                name = field.find('NAME').text
-                description = field.find('DESCRIPTION').text
-                field_type = field.find('FIELD_TYPE')
-                mandatory = field.find('MANDATORY').text
-                multiplicity = field.find('MULTIPLICITY').text
-
-                if field_type.find('TEXT_FIELD') is not None:
-                    self.fields[name] = forms.CharField(
-                        label=label,
-                        required=mandatory == 'mandatory',
-                        help_text=description,
-                        widget=forms.TextInput(attrs={'class': 'form-control'})
-                    )
-
 class CreateGZForm(forms.Form):
     compression_level = forms.IntegerField(min_value=1, max_value=9, initial=9, help_text="Enter the compression level (1-9).")

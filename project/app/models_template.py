@@ -1,6 +1,5 @@
 from django.db import models
 from django.contrib.auth.models import User
-from .mixs_metadata_standards import MIXS_METADATA_STANDARDS, MIXS_METADATA_STANDARDS_FULL
 from phonenumber_field.modelfields import PhoneNumberField
 from django.db.models import JSONField
 from django.core.validators import RegexValidator
@@ -219,7 +218,6 @@ class Sample(SelfDescribingModel):
     sample_title = models.CharField(max_length=100, null=True, blank=True)
     sample_description = models.CharField(max_length=100, null=True, blank=True)
 
-    #     mixs_metadata_standard = models.CharField(max_length=100, choices=MIXS_METADATA_STANDARDS, null=True, blank=True)
     #     investigation_type = models.CharField(max_length=100, null=True, blank=True)
     #     study_type = models.CharField(max_length=100, null=True, blank=True)
     #     platform = models.CharField(max_length=100, null=True, blank=True)
@@ -231,7 +229,6 @@ class Sample(SelfDescribingModel):
     #     comments = models.TextField(null=True, blank=True)
     #     status = models.CharField(max_length=20, choices=STATUS_CHOICES, null=True, blank=True)
     #     date = models.DateTimeField(auto_now_add=True)
-    #     mixs_metadata = JSONField(null=True, blank=True)
     #     filename_forward = models.CharField(max_length=255, null=True, blank=True, verbose_name="Filename (Forward, R1)")
     #     filename_reverse = models.CharField(max_length=255, null=True, blank=True, verbose_name="Filename (Reverse, R2)")
     #     nf_core_mag_outdir = models.CharField(max_length=255, null=True, blank=True)

@@ -8,8 +8,7 @@ from django.views.generic import ListView
 from django.forms import CheckboxSelectMultiple, CheckboxInput, DateInput, modelformset_factory
 from django.http import HttpResponseRedirect, JsonResponse
 from django.urls import reverse, reverse_lazy
-from .mixs_metadata_standards import MIXS_METADATA_STANDARDS
-from .forms import OrderForm, SampleForm, SamplesetForm, SampleMetadataForm
+from .forms import OrderForm, SampleForm, SamplesetForm
 from .models import Order, Sample, Sampleset, STATUS_CHOICES
 from json.decoder import JSONDecodeError
 import importlib
@@ -134,7 +133,7 @@ def samples_view(request, order_id):
 
             print(f"Processing sample {sample.id}")
 
-            print(sample.getAttributes(inclusions, exclusions))
+            # print(sample.getAttributes(inclusions, exclusions))
 
         return JsonResponse({'success': True})
 
@@ -213,68 +212,6 @@ def samples_view(request, order_id):
             'status_choices': status_choices,
         })
 
-    
-def mixs_view(request, order_id, mixs_standard):
-    print(f"Received request for order_id: {order_id} with mixs_standard: {mixs_standard}")
-    order = Order.objects.get(id=order_id)
-
-    # Find the tuple in MIXS_METADATA_STANDARDS where the first element matches mixs_standard
-    mixs_metadata_standard = next((item[0] for item in MIXS_METADATA_STANDARDS if item[0] == mixs_standard), None)
-    print(f"Mixs metadata standard: {mixs_metadata_standard}")
-
-    if not mixs_metadata_standard:
-        return JsonResponse({'error': 'Invalid MIXS metadata standard'}, status=400)
-  
-    # Convert the mixs_standard to the format with spaces for display purposes
-    mixs_standard_display = next((item[1] for item in MIXS_METADATA_STANDARDS if item[0] == mixs_standard), mixs_standard)
-    print(f"Mixs standard display: {mixs_standard_display}")
-
-    # Filter the samples based on the order and mixs_metadata_standard
-    samples = Sample.objects.filter(order=order, mixs_metadata_standard=mixs_standard_display)
-    print(f"Found {samples.count()} samples for order_id: {order_id}")
-    
-    if request.method == 'POST':
-        try:
-            mixs_metadata = json.loads(request.body)
-            print(f"Received POST data: {mixs_metadata}")
-        except json.JSONDecodeError as e:
-            print(f"Error decoding JSON: {e}")
-            return JsonResponse({'error': 'Invalid JSON'}, status=400)
-
-        for metadata in mixs_metadata:
-            sample_id = metadata.get('sample_id')
-            metadata_values = metadata.get('metadata')
-            print(f"Processing metadata for sample_id: {sample_id}")
-            try:
-                sample = Sample.objects.get(sample_id=sample_id)
-                sample.mixs_metadata = metadata_values
-                sample.save()
-                print(f"Updated mixs_metadata for sample_id: {sample_id}")
-            except Sample.DoesNotExist:
-                print(f"Sample with sample_id {sample_id} does not exist.")
-                continue
-        return JsonResponse({'success': True})
-    else:
-        initial_data = []
-        
-        for sample in samples:
-            sample_data = {
-                'sample_id': sample.sample_id,
-            }
-            if sample.mixs_metadata:
-                sample_data['mixs_metadata'] = sample.mixs_metadata
-        
-            initial_data.append(sample_data)
-        print(f"Preparing initial data for form: {initial_data}")
-        form = SampleMetadataForm(mixs_metadata_standard=mixs_metadata_standard, initial=initial_data)
-    context = {
-        'order': order,
-        'samples': samples,
-        'form': form,
-        'mixs_standard': mixs_standard_display, 
-    }
-    return render(request, 'mixs_view.html', context)
-    
 def order_list_view(request):
     orders = Order.objects.filter(user=request.user)
     return render(request, 'order_list.html', {'orders': orders, 'user': request.user})
