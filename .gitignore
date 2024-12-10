@@ -1,8 +1,14 @@
 **/*.pyc
+**/*.bak
+**/.env
+**/__pycache__
 myenv/
+project/.nextflow
+project/app/migrations
 project/staticfiles/
+**/debug.log
+**/db.sqlite3
+output.xlsx
 sample*.xml
 submission*.xml
-project/debug.log
-debug.log
-project/db.sqlite3
+
