@@ -32,9 +32,23 @@ delete from app_gsc_mixs_water_unit                                          ;
 delete from app_order                                                        ;
 delete from app_pipelines                                                    ;
 delete from app_pipelines_samples                                            ;
+delete from app_readsubmission;                                               
+delete from app_readsubmission_samples; 
 delete from app_sample                                                       ;
 delete from app_sampleset;                                                    
+delete from app_sequence;                                                     
+delete from app_sequencetemplate;         
 delete from app_submission                                                   ;
 delete from app_submission_samples          ;
-delete from myapp_order                                                      ;
-delete from myapp_sample           ;
+
+
+
+NAME {{ sequence_template.name }} # test
+PLATFORM {{ sequence_template.platform }} # OXFORD_NANOPORE
+INSERT_SIZE {{ sequence_template.insert_size }} # 2
+LIBRARY_NAME {{ sequence_template.library_name }} # PCRtest
+LIBRARY_SOURCE {{ sequence_template.library_source }} # GENOMIC
+LIBRARY_SELECTION {{ sequence_template.library_selection }} # PCR
+LIBRARY_STRATEGY {{ sequence_template.library_strategy }} # WGS
+FASTQ {{ sample.sample_alias }}_1.fastq.gz
+FASTQ {{ sample.sample_alias }}_2.fastq.gz

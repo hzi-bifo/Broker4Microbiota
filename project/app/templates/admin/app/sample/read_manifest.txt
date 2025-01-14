@@ -1,0 +1,11 @@
+STUDY {{ order.study_accession_id }}
+SAMPLE {{ sample.sample_accession_number }}
+NAME {{ sequence_template.name }}{{ sample.sample_id }}
+PLATFORM {{ sequence_template.platform }}
+INSERT_SIZE {{ sequence_template.insert_size }}
+LIBRARY_NAME {{ sequence_template.library_name }}
+LIBRARY_SOURCE {{ sequence_template.library_source }}
+LIBRARY_SELECTION {{ sequence_template.library_selection }}
+LIBRARY_STRATEGY {{ sequence_template.library_strategy }}
+FASTQ {{ sample.sample_alias }}_1.fastq.gz
+FASTQ {{ sample.sample_alias }}_2.fastq.gz

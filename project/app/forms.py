@@ -18,12 +18,14 @@ class OrderForm(forms.ModelForm):
             'email': forms.EmailInput(attrs={'class': 'input'}),
             'library': forms.Select(attrs={'class': 'select'}),
             'isolation_method': forms.Select(attrs={'class': 'select'}),
+            'study_accession_id': forms.TextInput(attrs={'class': 'input'}),
             # Add widgets for other fields as needed
         }
         help_texts = {
             'name': 'Enter your full name as it appears on your billing information.',
             'billing_address': 'Provide the complete billing address for invoicing purposes.',
             'ag_and_hzi': 'Enter the AG and HZI information, if applicable.',
+            'study_accession_id': 'Enter the study accession ID, if applicable.',
             # Add help texts for other fields as needed
         }
 

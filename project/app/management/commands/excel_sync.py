@@ -13,7 +13,7 @@ def export_to_excel():
     # Write headers for the "Orders" sheet
     orders_headers = ['User', 'Name', 'Billing Address', 'AG and HZI', 'Date', 'Quote No', 'Contact Phone', 'Email',
                       'Data Delivery', 'Signature', 'Experiment Title', 'DNA', 'RNA', 'Library', 'Method', 'Buffer',
-                      'Organism', 'Isolated From', 'Isolation Method']
+                      'Organism', 'Isolated From', 'Isolation Method', 'study_accession_id']
     orders_sheet.append(orders_headers)
 
     # Write data from Order model
@@ -22,7 +22,7 @@ def export_to_excel():
         row = [order.user.username, order.name, order.billing_address, order.ag_and_hzi, order.date, order.quote_no,
                str(order.contact_phone), order.email, order.data_delivery, order.signature, order.experiment_title,
                order.dna, order.rna, order.library, order.method, order.buffer, order.organism, order.isolated_from,
-               order.isolation_method]
+               order.isolation_method, order.study_accession_id]
         orders_sheet.append(row)
 
     # Write data to the "Samples" sheet
@@ -57,7 +57,7 @@ def import_from_excel(file_path):
                       quote_no=row[5], contact_phone=row[6], email=row[7], data_delivery=row[8],
                       signature=row[9], experiment_title=row[10], dna=row[11], rna=row[12], library=row[13],
                       method=row[14], buffer=row[15], organism=row[16], isolated_from=row[17],
-                      isolation_method=row[18])
+                      isolation_method=row[18], study_accession_id=row[19])
         order.save()
 
     samples_sheet = workbook["Samples"]

@@ -167,6 +167,7 @@ class Order(models.Model):
     organism = models.CharField(max_length=100, null=True, blank=True)
     isolated_from = models.CharField(max_length=100, null=True, blank=True)
     isolation_method = models.CharField(max_length=100, choices=ISOLATION_METHOD_CHOICES, null=True, blank=True)
+    study_accession_id = models.CharField(max_length=100, null=True, blank=True)
 
     def __str__(self):
         return f"Order by {self.user.username}"
@@ -208,7 +209,6 @@ class Sampleset(SelfDescribingModel):
 class Sample(SelfDescribingModel):
     order = models.ForeignKey(Order, on_delete=models.CASCADE)
     sampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE)
-
     # from ENA spreadsheet download
 
     sample_id = models.CharField(max_length=100, null=True, blank=True)
@@ -217,6 +217,9 @@ class Sample(SelfDescribingModel):
     sample_alias = models.CharField(max_length=100, null=True, blank=True)
     sample_title = models.CharField(max_length=100, null=True, blank=True)
     sample_description = models.CharField(max_length=100, null=True, blank=True)
+    sample_accession_number = models.CharField(max_length=100, null=True, blank=True)
+    sample_biosample_number = models.CharField(max_length=100, null=True, blank=True)
+
 
     #     investigation_type = models.CharField(max_length=100, null=True, blank=True)
     #     study_type = models.CharField(max_length=100, null=True, blank=True)
@@ -270,18 +273,45 @@ class Sample(SelfDescribingModel):
     def __str__(self):
         return self.sample_id or ''
 
+class SequenceTemplate(models.Model):
+    template_id = models.CharField(max_length=100, null=True, blank=True)
+    name = models.CharField(max_length=100, null=True, blank=True)
+    platform = models.CharField(max_length=100, null=True, blank=True)
+    insert_size = models.CharField(max_length=100, null=True, blank=True)
+    library_name = models.CharField(max_length=100, null=True, blank=True)
+    library_source = models.CharField(max_length=100, null=True, blank=True)
+    library_selection = models.CharField(max_length=100, null=True, blank=True)
+    library_strategy = models.CharField(max_length=100, null=True, blank=True)
+
+class Sequence(models.Model):
+    sample = models.ForeignKey(Sample, on_delete=models.CASCADE)
+    sequence_template = models.ForeignKey(SequenceTemplate, on_delete=models.CASCADE)
+    file_1 = models.CharField(max_length=255, null=True, blank=True)
+    file_2 = models.CharField(max_length=255, null=True, blank=True)
+    experiment_accession_number = models.CharField(max_length=100, null=True, blank=True)
+    run_accession_number = models.CharField(max_length=100, null=True, blank=True)
+
 class Submission(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE)
     samples = models.ManyToManyField(Sample)
     sample_object_xml = models.TextField(null=True, blank=True)
     submission_object_xml = models.TextField(null=True, blank=True)
     receipt_xml = models.TextField(null=True, blank=True)
-    sample_accession_number = models.CharField(max_length=100, null=True, blank=True)
-    samea_accession_number = models.CharField(max_length=100, null=True, blank=True)
     accession_status = models.CharField(max_length=100, null=True, blank=True)
 
     def __str__(self):
         return f"Submission for Order {self.order.id}"
+
+class ReadSubmission(models.Model):
+    order = models.ForeignKey(Order, on_delete=models.CASCADE)
+    name = models.CharField(max_length=100, null=True, blank=True)
+    samples = models.ManyToManyField(Sample)
+    read_object_txt_list = models.JSONField()
+    receipt_xml = models.TextField(null=True, blank=True)
+    accession_status = models.CharField(max_length=100, null=True, blank=True)
+
+    def __str__(self):
+        return f"Read Submission for Order {self.order.id}"
 
 class Pipelines(models.Model):
     run_id = models.CharField(max_length=100, unique=True)
