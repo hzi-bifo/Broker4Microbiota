@@ -10,7 +10,7 @@ from django.core.files.base import ContentFile
 from django.conf import settings
 from Bio import SeqIO
 from io import StringIO
-from .models import Order, Sample, Submission, ReadSubmission, Pipelines, Sequence, SequenceTemplate
+from .models import Order, Sample, Submission, ReadSubmission, Pipelines, Sequence, SequenceTemplate, Project, ProjectSubmission
 from .forms import CreateGZForm
 from django.template.loader import render_to_string
 from xml.etree import ElementTree as ET
@@ -20,7 +20,7 @@ import json
 logger = logging.getLogger(__name__)
 
 class OrderAdmin(admin.ModelAdmin):
-    list_display = ('user', 'name', 'date', 'quote_no', 'billing_address', 'ag_and_hzi', 'contact_phone', 'email', 'data_delivery', 'signature', 'experiment_title', 'dna', 'rna', 'library', 'method', 'buffer', 'organism', 'isolated_from', 'isolation_method', 'study_accession_id')
+    list_display = ('name', 'date', 'quote_no', 'billing_address', 'ag_and_hzi', 'contact_phone', 'email', 'data_delivery', 'signature', 'experiment_title', 'dna', 'rna', 'library', 'method', 'buffer', 'organism', 'isolated_from', 'isolation_method')
 
 admin.site.register(Order, OrderAdmin)
 
@@ -36,8 +36,40 @@ admin.site.register(SequenceTemplate, SequenceTemplateAdmin)
 class SequenceAdmin(admin.ModelAdmin):
     list_display = ('sample', 'sequence_template', 'file_1', 'file_2')
 
+    actions = ['generate_xml_and_create_read_submission']
+
+    def generate_xml_and_create_read_submission(self, request, queryset):
+        selected_sequences = queryset
+
+        read_submission = ReadSubmission.objects.create(read_object_txt_list=json.dumps([]))
+
+        txt_list = {}
+        for sequence in selected_sequences:
+            context = {
+                'sequence': sequence,
+                'sequence_template': sequence.sequence_template,
+            }
+            read_txt_content = render_to_string('admin/app/sample/read_manifest.txt', context)
+            txt_list[sequence.sample_id] = read_txt_content
+        read_submission.read_object_txt_list = json.dumps(txt_list)
+        read_submission.name = f"{sequence.sample_id}"
+
+        read_submission.save()
+
+        self.message_user(request, f'Successfully created ReadSubmission {read_submission.id} with {selected_sequences.count()} samples')
+
+
+    generate_xml_and_create_read_submission.short_description = 'Generate XML and create Read Submission'
+
 admin.site.register(Sequence, SequenceAdmin)
 
+
+class ProjectAdmin(admin.ModelAdmin):
+    list_display = ('user', 'study_accession_id', 'study_title')
+
+    actions = ['generate_xmls_and_register_project']
+
+admin.site.register(Project, ProjectAdmin)
 
 
 class SampleAdmin(admin.ModelAdmin):
@@ -57,7 +89,7 @@ class SampleAdmin(admin.ModelAdmin):
 
     # proper set of checklists for GMAK, ENA
 
-    actions = ['generate_xml_and_create_submission', 'generate_xml_and_create_read_submission', 'run_mag_pipeline', 'create_sequences']
+    actions = ['generate_xml_and_create_submission', 'run_mag_pipeline', 'create_sequences']
 
     def run_mag_pipeline(self, request, queryset):
         
@@ -120,9 +152,8 @@ class SampleAdmin(admin.ModelAdmin):
 
     def generate_xml_and_create_submission(self, request, queryset):
         selected_samples = queryset
-        order = selected_samples.first().order
 
-        submission = Submission.objects.create(order=order)
+        submission = Submission.objects.create()
         submission.samples.set(selected_samples)
 
         context = {
@@ -145,30 +176,7 @@ class SampleAdmin(admin.ModelAdmin):
 
     generate_xml_and_create_submission.short_description = 'Generate XML and create Submission'
 
-    def generate_xml_and_create_read_submission(self, request, queryset):
-        selected_samples = queryset
-        order = selected_samples.first().order
-
-        read_submission = ReadSubmission.objects.create(order=order, read_object_txt_list=json.dumps([]))
-
-        txt_list = {}
-        for sample in selected_samples:
-            context = {
-                'sample': sample,
-                'order': order,
-                'sequence_template': sample.sequence_set.first().sequence_template,
-            }
-            read_txt_content = render_to_string('admin/app/sample/read_manifest.txt', context)
-            txt_list[sample.sample_id] = read_txt_content
-        read_submission.read_object_txt_list = json.dumps(txt_list)
-        read_submission.name = f"{sample.sequence_set.first().sequence_template.name}{sample.sample_id}"
-
-        read_submission.save()
-
-        self.message_user(request, f'Successfully created ReadSubmission {read_submission.id} with {selected_samples.count()} samples')
-
-
-    generate_xml_and_create_read_submission.short_description = 'Generate XML and create Read Submission'
+ 
 
 
 admin.site.register(Sample, SampleAdmin)
@@ -176,7 +184,7 @@ admin.site.register(Sample, SampleAdmin)
 
 
 class SubmissionAdmin(admin.ModelAdmin):
-    list_display = ('id', 'order', 'sample_count', 'accession_status', 'submission_object_xml')
+    list_display = ('id', 'sample_count', 'accession_status', 'submission_object_xml')
     
     actions = ['register_sample']
 
@@ -258,7 +266,7 @@ class SubmissionAdmin(admin.ModelAdmin):
 admin.site.register(Submission, SubmissionAdmin)
 
 class ReadSubmissionAdmin(admin.ModelAdmin):
-    list_display = ('id', 'order', 'sample_count', 'accession_status', 'read_object_txt_list')
+    list_display = ('id', 'sample_count', 'accession_status', 'read_object_txt_list')
     
     actions = ['register_sample']
 
@@ -270,9 +278,9 @@ class ReadSubmissionAdmin(admin.ModelAdmin):
         for read_submission in queryset:
             count = 0
             read_object_txt_list = json.loads(read_submission.read_object_txt_list)
-            for sample_id in read_object_txt_list.keys():
-                sample = Sample.objects.get(sample_id=sample_id)
-                read_object_txt = read_object_txt_list[sample_id]
+            for sequence_id in read_object_txt_list.keys():
+                sequence = Sequence.objects.get(sequence_id=sequence_id)
+                read_object_txt = read_object_txt_list[sequence_id]
                 # Save the read manifest to a file
                 read_manifest_filename = f"{settings.LOCAL_DIR}/read_manifest_{read_submission.id}{count}.txt"
                 with open(read_manifest_filename, 'w') as read_manifest_file:
@@ -335,6 +343,14 @@ class ReadSubmissionAdmin(admin.ModelAdmin):
     register_sample.short_description = "Register sample with ENA"
 
 admin.site.register(ReadSubmission, ReadSubmissionAdmin)
+
+
+class ProjectSubmissionAdmin(admin.ModelAdmin):
+    list_display = ('project', 'project_object_xml', 'receipt_xml', 'submission_object_xml', 'accession_status')
+    
+    actions = ['register_project']
+
+admin.site.register(ProjectSubmission, ProjectSubmissionAdmin)
 
 
 class PipelinesAdmin(admin.ModelAdmin):

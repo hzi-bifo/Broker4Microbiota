@@ -147,8 +147,23 @@ class SelfDescribingModel(models.Model):
     #         value = getattr(self, field+"_units")[0][0]
     #         setattr(self, field, value)
 
-class Order(models.Model):
+class Project(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+    study_accession_id = models.CharField(max_length=100, null=True, blank=True)
+    study_title = models.CharField(max_length=100, null=True, blank=True)
+
+class ProjectSubmission(models.Model):
+    project = models.ForeignKey(Project, on_delete=models.CASCADE)
+    project_object_xml = models.TextField(null=True, blank=True)
+    submission_object_xml = models.TextField(null=True, blank=True)
+    receipt_xml = models.TextField(null=True, blank=True)
+    accession_status = models.CharField(max_length=100, null=True, blank=True)
+
+    def __str__(self):
+        return f"Submission for Project {self.project.id}"
+
+class Order(models.Model):
+    project = models.ForeignKey(Project, on_delete=models.CASCADE)
     name = models.CharField(max_length=100, null=True, blank=True)
     billing_address = models.TextField(null=True, blank=True)
     ag_and_hzi = models.CharField(max_length=100, null=True, blank=True)
@@ -167,7 +182,6 @@ class Order(models.Model):
     organism = models.CharField(max_length=100, null=True, blank=True)
     isolated_from = models.CharField(max_length=100, null=True, blank=True)
     isolation_method = models.CharField(max_length=100, choices=ISOLATION_METHOD_CHOICES, null=True, blank=True)
-    study_accession_id = models.CharField(max_length=100, null=True, blank=True)
 
     def __str__(self):
         return f"Order by {self.user.username}"
@@ -208,7 +222,6 @@ class Sampleset(SelfDescribingModel):
 
 class Sample(SelfDescribingModel):
     order = models.ForeignKey(Order, on_delete=models.CASCADE)
-    sampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE)
     # from ENA spreadsheet download
 
     sample_id = models.CharField(max_length=100, null=True, blank=True)
@@ -292,7 +305,6 @@ class Sequence(models.Model):
     run_accession_number = models.CharField(max_length=100, null=True, blank=True)
 
 class Submission(models.Model):
-    order = models.ForeignKey(Order, on_delete=models.CASCADE)
     samples = models.ManyToManyField(Sample)
     sample_object_xml = models.TextField(null=True, blank=True)
     submission_object_xml = models.TextField(null=True, blank=True)
@@ -303,7 +315,6 @@ class Submission(models.Model):
         return f"Submission for Order {self.order.id}"
 
 class ReadSubmission(models.Model):
-    order = models.ForeignKey(Order, on_delete=models.CASCADE)
     name = models.CharField(max_length=100, null=True, blank=True)
     samples = models.ManyToManyField(Sample)
     read_object_txt_list = models.JSONField()

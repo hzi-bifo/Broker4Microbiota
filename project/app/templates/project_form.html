@@ -1,13 +1,13 @@
 {% extends 'base.html' %}
 
 {% block title %}
-Order Form
+Project Form
 {% endblock title %}
 
 {% block content %}
 <section class="section">
   <div class="container">
-    <h2 class="title has-text-centered">Order Form</h2>
+    <h2 class="title has-text-centered">Project Form</h2>
     <form method="post" class="box">
       {% csrf_token %}
       <div class="columns">
@@ -28,7 +28,7 @@ Order Form
           <button type="submit" class="button is-primary">Save</button>
         </div>
         <div class="control">
-          <a href="{% url 'order_list' project_id %}" class="button is-link is-light">Cancel</a>
+          <a href="{% url 'project_list' %}" class="button is-link is-light">Cancel</a>
         </div>
       </div>
     </form>

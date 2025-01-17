@@ -28,15 +28,15 @@ Order List
                 <td>{{ order.id }}</td>
                 <td>
                   <div class="buttons">
-                    <a href="{% url 'order_edit' order_id=order.id %}" class="button is-small is-info">Edit</a>
-                    <a class="button is-small is-danger" onclick="deleteOrder('{% url 'delete_order' order_id=order.id %}')">Delete</a>
+                    <a href="{% url 'order_edit' project_id=project_id order_id=order.id %}" class="button is-small is-info">Edit</a>
+                    <a class="button is-small is-danger" onclick="deleteOrder('{% url 'delete_order' project_id=project_id order_id=order.id %}')">Delete</a>
                   </div>
                 </td>
                 <td>
-                  <a href="{% url 'metadata_view' order.id %}" class="button is-small is-primary">Checklists</a>
+                  <a href="{% url 'metadata_view' project_id=project_id order_id=order.id %}" class="button is-small is-primary">Checklists</a>
                 </td>
                 <td>
-                  <a href="{% url 'samples_view' order.id %}" class="button is-small is-primary">Edit Samples</a>
+                  <a href="{% url 'samples_view' project_id=project_id order_id=order.id %}" class="button is-small is-primary">Edit Samples</a>
                 </td>
               </tr>
             {% endfor %}
@@ -46,10 +46,16 @@ Order List
     {% else %}
       <p class="has-text-centered">No orders found.</p>
     {% endif %}
-    <div class="has-text-centered mt-4">
-      <a href="{% url 'order_create' %}" class="button is-primary">Request new order</a>
-    </div>
+
+    <div class="field is-grouped">
+      <div class="control">
+        <a href="{% url 'order_create' project_id %}" class="button is-primary">Request new order</a>
+      </div>
+      <div class="control">
+        <a href="{% url 'project_list' %}" class="button is-link is-light">Back to projects</a>
+      </div>
   </div>
+
 </section>
 
 <script>

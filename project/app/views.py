@@ -8,8 +8,8 @@ from django.views.generic import ListView
 from django.forms import CheckboxSelectMultiple, CheckboxInput, DateInput, modelformset_factory
 from django.http import HttpResponseRedirect, JsonResponse
 from django.urls import reverse, reverse_lazy
-from .forms import OrderForm, SampleForm, SamplesetForm
-from .models import Order, Sample, Sampleset, STATUS_CHOICES
+from .forms import OrderForm, SampleForm, SamplesetForm, ProjectForm
+from .models import Order, Sample, Sampleset, Project, STATUS_CHOICES
 from json.decoder import JSONDecodeError
 import importlib
 
@@ -21,12 +21,12 @@ def login_view(request):
         if form.is_valid():
             user = form.get_user()
             login(request, user)
-            return redirect('order_list')
+            return redirect('project_list')
         else:
             return render(request, 'login.html', {'form': form})
     else:
         if request.user.is_authenticated:
-            return redirect('order_list')
+            return redirect('project_list')
         else:
             form = AuthenticationForm()
             return render(request, 'login.html', {'form': form})
@@ -41,13 +41,55 @@ class OrderListView(ListView):
     context_object_name = 'orders'
 
     def get_queryset(self):
-        orders = Order.objects.filter(user=self.request.user)
+        project_id = self.kwargs['project_id']
+        project = Project.objects.get(pk=project_id)
+
+        orders = Order.objects.filter(project=project)
         return orders
 
-def order_view(request, order_id=None):
+    def get_context_data(self, **kwargs):
+        # Add project_id to the context
+        context = super().get_context_data(**kwargs)
+        context['project_id'] = self.kwargs['project_id']
+        return context
+
+class ProjectListView(ListView):
+    model = Project
+    template_name = 'project_list.html'
+    context_object_name = 'projects'
+
+    def get_queryset(self):
+        projects = Project.objects.filter(user=self.request.user)
+        return projects
+
+
+# def order_view(request, project_id=None):
+#     if request.user.is_authenticated:
+#         if request.method == 'POST':
+#             form = OrderForm(request.POST)
+#             if form.is_valid():
+#                 # Process the form data and save the order
+#                 # You can access the form data using form.cleaned_data
+#                 # For example:
+#                 # name = form.cleaned_data['name']
+#                 # billing_address = form.cleaned_data['billing_address']
+#                 # ag_and_hzi = form.cleaned_data['ag_and_hzi']
+#                 # Create a new Order instance and save it
+#                 project = Project.objects.get(pk=project_id)
+#                 order = Order(project=project)
+#                 order.save()
+#                 return redirect('order_list')
+#         else:
+#             form = OrderForm()
+
+#         return render(request, 'order_form.html', {'form': form})
+#     else:
+#         return redirect('login')
+
+def project_view(request, project_id=None):
     if request.user.is_authenticated:
         if request.method == 'POST':
-            form = OrderForm(request.POST)
+            form = ProjectForm(request.POST)
             if form.is_valid():
                 # Process the form data and save the order
                 # You can access the form data using form.cleaned_data
@@ -56,21 +98,29 @@ def order_view(request, order_id=None):
                 # billing_address = form.cleaned_data['billing_address']
                 # ag_and_hzi = form.cleaned_data['ag_and_hzi']
                 # Create a new Order instance and save it
-                order = Order(user=request.user)
-                order.save()
-                return redirect('order_list')
+                project = Project(user=request.user)
+                project.save()
+                return redirect('project_list')
         else:
-            form = OrderForm()
+            form = ProjectForm()
 
-        return render(request, 'order_form.html', {'form': form})
+        return render(request, 'project_form.html', {'form': form})
     else:
         return redirect('login')
+
 
 def delete_order(request, order_id):
     order = get_object_or_404(Order, pk=order_id, user=request.user)
     order.delete()
 
-    return redirect('order_list')   
+    return redirect('order_list', project_id=order.project.id)   
+
+def delete_project(request, project_id):
+    project = get_object_or_404(Project, pk=project_id, user=request.user)
+    project.delete()
+
+    return redirect('project_list')   
+
 
 def register_view(request):
     if request.method == 'POST':
@@ -78,12 +128,12 @@ def register_view(request):
         if form.is_valid():
             user = form.save()
             login(request, user)
-            return redirect('order_list')
+            return redirect('project_list')
     else:
         form = UserCreationForm()
     return render(request, 'register.html', {'form': form})
 
-def samples_view(request, order_id):
+def samples_view(request, project_id, order_id):
     print("Received POST request")
     order = get_object_or_404(Order, pk=order_id)
 
@@ -210,21 +260,32 @@ def samples_view(request, order_id):
             'samples_data': samples_data,
             'sample_headers_array': sample_headers_array,
             'status_choices': status_choices,
+            'project_id': project_id,
         })
 
-def order_list_view(request):
-    orders = Order.objects.filter(user=request.user)
-    return render(request, 'order_list.html', {'orders': orders, 'user': request.user})
+def order_list_view(request, project_id=None):
 
-def order_view(request, order_id=None):
+    orders = Order.objects.filter(user=request.user)
+    return render(request, 'order_list.html', {'orders': orders, 'project_id': project_id, 'user': request.user})
+
+def project_list_view(request):
+    projects = Project.objects.filter(user=request.user)
+    return render(request, 'project_list.html', {'projects': projects, 'user': request.user})
+
+
+
+def order_view(request, project_id=None, order_id=None):
     if request.user.is_authenticated:
+        project = get_object_or_404(Project, pk=project_id, user=request.user)
+
         if order_id:
-            order = get_object_or_404(Order, pk=order_id, user=request.user)
+            order = get_object_or_404(Order, pk=order_id)
             form = OrderForm(instance=order)
             sample_set = Sampleset(order=order)
            
         else:
             form = OrderForm()
+
             sample_set = Sampleset()
 
         if request.method == 'POST':
@@ -235,7 +296,7 @@ def order_view(request, order_id=None):
 
             if form.is_valid():
                 order = form.save(commit=False)
-                order.user = request.user
+                order.project = project
                 order.save()
 
                 # # Create a new Sampleset instance and save it
@@ -269,16 +330,75 @@ def order_view(request, order_id=None):
 
                 # create a 
 
-                return redirect('order_list')
+                return redirect('order_list', project_id=project_id)
 
-        return render(request, 'order_form.html', {'form': form})
+        return render(request, 'order_form.html', {'form': form, 'project_id': project_id})
     else:
         return redirect('login')
 
-def metadata_view(request, order_id):
+
+
+def project_view(request, project_id=None):
+    if request.user.is_authenticated:
+        if project_id:
+            project = get_object_or_404(Project, pk=project_id, user=request.user)
+            form = ProjectForm(instance=project)           
+        else:
+            form = ProjectForm()
+
+        if request.method == 'POST':
+            if project_id:
+                form = ProjectForm(request.POST, instance=project)
+            else:
+                form = ProjectForm(request.POST)
+
+            if form.is_valid():
+                project = form.save(commit=False)
+                project.user = request.user
+                project.save()
+
+                # # Create a new Sampleset instance and save it
+                # sample_set = Sampleset(order=order)
+                # # sample_set.checklists = form.cleaned_data['checklists']
+
+                # # temporary
+                # checklist_string = '[{"checklist_name": "GSC_MIxS_wastewater_sludge", "checklist_code" : "ERC000023"}]'
+
+                # sample_set.checklists = json.loads(checklist_string)
+                # # sample_set.checklists = json.loads('["GSC_MIxS_wastewater_sludge", "GSC_MIxS_miscellaneous_natural_or_artificial_environment"]')
+
+                # # temporary
+                # for checklist in sample_set.checklists:
+                #     checklist_name = checklist['checklist_name']
+                #     checklist_code = checklist['checklist_code']  
+                #     unitchecklist_class_name = Sampleset.checklist_structure[checklist_name]['unitchecklist_class_name']
+                #     unitchecklist_item_class =  getattr(importlib.import_module("app.models"), unitchecklist_class_name)
+                #     unitchecklist_item_instance = unitchecklist_item_class(order = order)
+                #     # temporary
+                #     if unitchecklist_class_name == 'GSC_MIxS_wastewater_sludge_unit':
+                #         unitchecklist_item_instance.GSC_MIxS_wastewater_sludge_sample_volume_or_weight_for_DNA_extraction = 'ng'                    
+                #     unitchecklist_item_instance.save()
+
+                # # temporary
+                # sample_set.include = json.loads('[]')
+                # sample_set.exclude = json.loads('[]')
+                # sample_set.custom = json.loads('[]')
+
+                # sample_set.save()
+
+                # create a 
+
+                return redirect('project_list')
+
+        return render(request, 'project_form.html', {'form': form})
+    else:
+        return redirect('login')
+
+
+def metadata_view(request, project_id, order_id):
     
     if request.user.is_authenticated:
-        order = get_object_or_404(Order, pk=order_id, user=request.user)
+        order = get_object_or_404(Order, pk=order_id)
         sample_set = order.sampleset_set.first()
         if not sample_set:
             sample_set = Sampleset(order=order) 
@@ -309,9 +429,9 @@ def metadata_view(request, order_id):
                     unitchecklist_item_instance.save()
 
                 order.save()
-                return redirect('order_list')
+                return redirect('order_list', project_id=project_id)
             
-        return render(request, 'metadata.html', {'sample_set': sample_set})
+        return render(request, 'metadata.html', {'sample_set': sample_set, 'project_id': project_id})
     else:
         return redirect('login')
 

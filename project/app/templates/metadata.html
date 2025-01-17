@@ -32,7 +32,7 @@ Metadata List
     <div class="has-text-centered mt-4">
         <button type="submit" class="button is-primary">Save</button>
 
-      <a href="{% url 'order_list' %}" class="button is-primary">Cancel</a>
+      <a href="{% url 'order_list' project_id=project_id %}" class="button is-primary">Cancel</a>
     </div>
 </form>
   </div>
@@ -192,14 +192,6 @@ Metadata List
 
       $tree.tree("refresh");
   });
-
-
-  
-  function deleteOrder(url, orderId) {
-        if (confirm('Are you sure you want to delete this order?')) {
-          window.location.href = url;
-        }
-    }
 
 </script>
 {% endblock content %}

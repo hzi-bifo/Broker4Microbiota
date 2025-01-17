@@ -1,5 +1,5 @@
 from django import forms
-from .models import Order, Sample, Sampleset
+from .models import Order, Sample, Sampleset, Project
 from django.conf import settings
 import os
 import xml.etree.ElementTree as ET
@@ -8,7 +8,7 @@ import json
 class OrderForm(forms.ModelForm):
     class Meta:
         model = Order
-        exclude = ['user']
+        exclude = ['project']
         widgets = {
             'name': forms.TextInput(attrs={'class': 'input'}),
             'billing_address': forms.Textarea(attrs={'class': 'textarea'}),
@@ -28,6 +28,19 @@ class OrderForm(forms.ModelForm):
             'study_accession_id': 'Enter the study accession ID, if applicable.',
             # Add help texts for other fields as needed
         }
+
+class ProjectForm(forms.ModelForm):
+    class Meta:
+        model = Project
+        exclude = ['user']
+        widgets = {
+            'name': forms.TextInput(attrs={'class': 'input'})
+        }
+        help_texts = {
+            'name': 'Enter your full name as it appears on your billing information.'
+            # Add help texts for other fields as needed
+        }
+
 
 class SampleForm(forms.ModelForm):
     class Meta:

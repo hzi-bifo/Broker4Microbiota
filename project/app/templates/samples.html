@@ -97,7 +97,7 @@ Comment out for 6.2.2 (MIT)
 
     console.log('Sending sample data:', sampleData);
 
-    fetch("{% url 'samples_view' order.id %}", {
+    fetch("{% url 'samples_view' project_id=project_id order_id=order.id %}", {
       method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
@@ -116,10 +116,10 @@ Comment out for 6.2.2 (MIT)
   function redirectToOrders() {
     if (unsaved) {
       if (confirm('You have unsaved changes. Are you sure you want to leave this page?')) {
-        window.location.href = "{% url 'order_list' %}";
+        window.location.href = "{% url 'order_list' project_id=project_id %}";
       }
     } else {
-      window.location.href = "{% url 'order_list' %}";
+      window.location.href = "{% url 'order_list' project_id=project_id %}";
     }
   }
 
