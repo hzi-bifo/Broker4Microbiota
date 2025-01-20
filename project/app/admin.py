@@ -65,9 +65,34 @@ admin.site.register(Sequence, SequenceAdmin)
 
 
 class ProjectAdmin(admin.ModelAdmin):
-    list_display = ('user', 'study_accession_id', 'study_title')
+    list_display = ('user', 'project_alias', 'project_title', 'project_description', 'study_accession_id', 'study_title')
 
-    actions = ['generate_xmls_and_register_project']
+    actions = ['generate_xml_and_create_project_submission']
+
+    def generate_xml_and_create_project_submission(self, request, queryset):
+        selected_projects = queryset
+
+        project_submission = ProjectSubmission.objects.create()
+
+        context = {
+            'projects': selected_projects
+        }
+
+        project_xml_content = render_to_string('admin/app/sample/project_xml_template.xml', context)
+        project_submission.project_object_xml = project_xml_content
+
+        file_path = os.path.join(settings.BASE_DIR, 'app', 'templates', 'admin', 'app', 'sample', 'submission_template.xml')
+        with open(file_path, 'r') as file:
+            submission_xml_content = file.read()
+            print(submission_xml_content)  # Debugging: Check the content
+
+        project_submission.submission_object_xml = submission_xml_content
+
+        project_submission.save()
+
+        self.message_user(request, f'Successfully created ProjectSubmission {project_submission.id} with {selected_projects.count()} projects')
+
+    generate_xml_and_create_project_submission.short_description = 'Generate XML and create Project Submission'
 
 admin.site.register(Project, ProjectAdmin)
 
@@ -346,9 +371,84 @@ admin.site.register(ReadSubmission, ReadSubmissionAdmin)
 
 
 class ProjectSubmissionAdmin(admin.ModelAdmin):
-    list_display = ('project', 'project_object_xml', 'receipt_xml', 'submission_object_xml', 'accession_status')
+    list_display = ('id', 'project_object_xml', 'receipt_xml', 'submission_object_xml', 'accession_status')
     
     actions = ['register_project']
+
+    def project_count(self, obj):
+        return obj.projects.count()
+    project_count.short_description = 'Number of Projects'
+
+    def register_project(self, request, queryset):
+        for project_submission in queryset:
+            try:
+                # Save XML content to files for debugging
+                project_xml_filename = f"project_{project_submission.id}.xml"
+                project_submission_xml_filename = f"submission_{project_submission.id}.xml"
+                with open(project_xml_filename, 'w') as project_file:
+                    project_file.write(project_submission.project_object_xml)
+                with open(project_submission_xml_filename, 'w') as project_submission_file:
+                    project_submission_file.write(project_submission.submission_object_xml)
+
+                # Prepare files for submission
+                files = {
+                    'SUBMISSION': (project_submission_xml_filename, open(project_submission_xml_filename, 'rb')),
+                    'PROJECT': (project_xml_filename, open(project_xml_filename, 'rb')),
+                }
+
+                # Prepare authentication
+                auth = (settings.ENA_USERNAME, settings.ENA_PASSWORD)
+                # Make the request
+                response = requests.post(
+                    "https://wwwdev.ebi.ac.uk/ena/submit/drop-box/submit/",
+                    files=files,
+                    auth=auth
+                )
+
+                # how is checklist supposed to be passed in xml file? - as an attribute, per sample
+                # Just one checklist per sample / submission?
+                # use v2 rest api
+                # need concept of sample sets? Or just one checklist per order? The former, but start with the latter...
+                # all actual checklists include default checklist. GMAK is on top of that.
+                # so how would this work? Choose at least one checklist, and have any mandatory addtional ones on top from config (ie. GMAK)
+                # order passes through checklist names and records include, exclude fields. Units, etc. are in the checklist itself.
+                # need to tag checklist used as an attribute
+                # need to see what can actually be removed from GMAK
+                # or is GMAK the sample??? - no, it's a checklist
+
+                # Close the files
+                files['SUBMISSION'][1].close()
+                files['PROJECT'][1].close()
+
+                if response.status_code == 200:
+                    # Parse the XML response
+                    root = ET.fromstring(response.content)
+                    receipt_xml = ET.tostring(root, encoding='unicode')
+                    project_submission.receipt_xml = receipt_xml
+                    if root.tag == 'RECEIPT':
+                        success = root.attrib['success']
+                        if success != 'true':
+                            raise Exception(f"Failed to register project submission {project_submission.id}. Response: {response.content}")
+                    for child in root:
+                        if child.tag == 'PROJECT':
+                                project_alias = child.attrib['alias']
+                                project_accession_number = child.attrib['accession']
+                                Project.objects.filter(project_alias=project_alias).update(study_accession_id=project_accession_number)
+                                for grandchild in child:
+                                    if grandchild.tag == 'EXT_ID':
+                                        alternative_accession_number = grandchild.attrib['accession']
+                                        Project.objects.filter(project_alias=project_alias).update(alternative_accession_id=alternative_accession_number)
+                    project_submission.accession_status = 'submitted'
+                    project_submission.save()
+                    self.message_user(request, "Project submission registered successfully.", messages.SUCCESS)
+                else:
+                    logger.error(f"Failed to register project submission {project_submission.id}. Response: {response.content}")
+                    self.message_user(request, "Failed to register project submission.", messages.ERROR)
+            except Exception as e:
+                logger.exception(f"Error registering project submission {project_submission.id}: {e}")
+                self.message_user(request, "An error occurred while registering the project submission.", messages.ERROR)
+
+    register_project.short_description = "Register sample with ENA"
 
 admin.site.register(ProjectSubmission, ProjectSubmissionAdmin)
 

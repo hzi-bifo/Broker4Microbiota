@@ -149,18 +149,22 @@ class SelfDescribingModel(models.Model):
 
 class Project(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+    project_title = models.CharField(max_length=100, null=True, blank=True)
+    project_alias = models.CharField(max_length=100, null=True, blank=True)
+    project_description = models.TextField(null=True, blank=True)
     study_accession_id = models.CharField(max_length=100, null=True, blank=True)
+    alternative_accession_id = models.CharField(max_length=100, null=True, blank=True)
     study_title = models.CharField(max_length=100, null=True, blank=True)
 
 class ProjectSubmission(models.Model):
-    project = models.ForeignKey(Project, on_delete=models.CASCADE)
+    projects = models.ManyToManyField(Project)
     project_object_xml = models.TextField(null=True, blank=True)
     submission_object_xml = models.TextField(null=True, blank=True)
     receipt_xml = models.TextField(null=True, blank=True)
     accession_status = models.CharField(max_length=100, null=True, blank=True)
 
     def __str__(self):
-        return f"Submission for Project {self.project.id}"
+        return f"Submission for Project" #  {self.project.id}
 
 class Order(models.Model):
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
@@ -317,6 +321,7 @@ class Submission(models.Model):
 class ReadSubmission(models.Model):
     name = models.CharField(max_length=100, null=True, blank=True)
     samples = models.ManyToManyField(Sample)
+    # Should be sequences???
     read_object_txt_list = models.JSONField()
     receipt_xml = models.TextField(null=True, blank=True)
     accession_status = models.CharField(max_length=100, null=True, blank=True)

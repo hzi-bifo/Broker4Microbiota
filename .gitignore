@@ -12,5 +12,6 @@ project/media/test/
 **/db.sqlite3
 output.xlsx
 sample*.xml
+project*.xml
 submission*.xml
 

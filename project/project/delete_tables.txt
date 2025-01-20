@@ -32,6 +32,8 @@ delete from app_gsc_mixs_water_unit                                          ;
 delete from app_order                                                        ;
 delete from app_pipelines                                                    ;
 delete from app_pipelines_samples                                            ;
+delete from app_project;
+delete from app_projectsubmission;    
 delete from app_readsubmission;                                               
 delete from app_readsubmission_samples; 
 delete from app_sample                                                       ;
