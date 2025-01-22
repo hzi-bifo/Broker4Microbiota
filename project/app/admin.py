@@ -170,10 +170,10 @@ class SampleAdmin(admin.ModelAdmin):
 
     def create_sequences(self, request, queryset):
         for sample in queryset:
-            paired_read_1 = os.path.join(settings.BASE_DIR, 'media', 'test', sample.sample_alias + '_1.fastq.gz')
-            paired_read_2 = os.path.join(settings.BASE_DIR, 'media', 'test', sample.sample_alias + '_2.fastq.gz')
-            template_1 = os.path.join(settings.BASE_DIR, 'media', 'test', 'template_1.fastq.gz')
-            template_2 = os.path.join(settings.BASE_DIR, 'media', 'test', 'template_2.fastq.gz')
+            paired_read_1 = os.path.join(settings.LOCAL_DIR, sample.sample_alias + '_1.fastq.gz')
+            paired_read_2 = os.path.join(settings.LOCAL_DIR, sample.sample_alias + '_2.fastq.gz')
+            template_1 = os.path.join(settings.LOCAL_DIR, 'template_1.fastq.gz')
+            template_2 = os.path.join(settings.LOCAL_DIR, 'template_2.fastq.gz')
 
             # temporary
             shutil.copyfile(template_1, paired_read_1)
@@ -232,8 +232,8 @@ class SubmissionAdmin(admin.ModelAdmin):
         for submission in queryset:
             try:
                 # Save XML content to files for debugging
-                sample_xml_filename = f"sample_{submission.id}.xml"
-                submission_xml_filename = f"submission_{submission.id}.xml"
+                sample_xml_filename = os.path.join(settings.LOCAL_DIR, f"sample_{submission.id}.xml")
+                submission_xml_filename = os.path.join(settings.LOCAL_DIR, f"submission_{submission.id}.xml")
                 with open(sample_xml_filename, 'w') as sample_file:
                     sample_file.write(submission.sample_object_xml)
                 with open(submission_xml_filename, 'w') as submission_file:
@@ -318,7 +318,7 @@ class ReadSubmissionAdmin(admin.ModelAdmin):
                 sequence = Sequence.objects.get(sample_id=sample_id)
                 read_object_txt = read_object_txt_list[sample_id]
                 # Save the read manifest to a file
-                read_manifest_filename = f"{settings.LOCAL_DIR}/read_manifest_{read_submission.id}{count}.txt"
+                read_manifest_filename = os.path.join(settings.LOCAL_DIR, f"read_manifest_{read_submission.id}{count}.txt")
                 with open(read_manifest_filename, 'w') as read_manifest_file:
                     read_manifest_file.write(read_object_txt)
 
@@ -349,7 +349,7 @@ class ReadSubmissionAdmin(admin.ModelAdmin):
                         raise Exception(f"Error registering read submission {read_submission.id}: {stderr}")
                     
                     # Parse the XML response   
-                    receipt_filename =  f"{settings.LOCAL_DIR}/reads/{read_submission.name}/submit/receipt.xml"
+                    receipt_filename =  os.path.join(settings.LOCAL_DIR, "reads", f"{read_submission.name}/submit/receipt.xml")
                     with open(receipt_filename, 'r') as receipt_file:
                         receipt_xml = receipt_file.read()
                         root = ET.fromstring(receipt_xml)
@@ -394,8 +394,8 @@ class ProjectSubmissionAdmin(admin.ModelAdmin):
         for project_submission in queryset:
             try:
                 # Save XML content to files for debugging
-                project_xml_filename = f"project_{project_submission.id}.xml"
-                project_submission_xml_filename = f"submission_{project_submission.id}.xml"
+                project_xml_filename = os.path.join(settings.LOCAL_DIR, f"project_{project_submission.id}.xml")
+                project_submission_xml_filename = os.path.join(settings.LOCAL_DIR, f"submission_{project_submission.id}.xml")
                 with open(project_xml_filename, 'w') as project_file:
                     project_file.write(project_submission.project_object_xml)
                 with open(project_submission_xml_filename, 'w') as project_submission_file:
