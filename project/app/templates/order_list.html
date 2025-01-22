@@ -9,7 +9,7 @@ Order List
   <div class="container">
     <h2 class="title has-text-centered">Order List</h2>
     <p class="has-text-centered">
-      Each order is associated with one or multiple samples. The MIxS standard for each sample can be defined in the "Samples" column. The corresponding MIxS standard questionnaires will appear in the "Metadata" column.
+      Each order is associated with one or more samples. The MIxS standard for each sample can be defined in the "Metadata" column. The corresponding MIxS standard questionnaire fields will appear in the "Samples" column.
     </p>
     {% if orders %}
       <div class="table-container">
@@ -18,8 +18,8 @@ Order List
             <tr>
               <th>Order ID</th>
               <th>Order Actions</th>
-              <th>Samples</th>
               <th>Metadata</th>
+              <th>Samples</th>
             </tr>
           </thead>
           <tbody>
@@ -47,13 +47,9 @@ Order List
       <p class="has-text-centered">No orders found.</p>
     {% endif %}
 
-    <div class="field is-grouped">
-      <div class="control">
+    <div class="has-text-centered mt-4">
         <a href="{% url 'order_create' project_id %}" class="button is-primary">Request new order</a>
-      </div>
-      <div class="control">
         <a href="{% url 'project_list' %}" class="button is-link is-light">Back to projects</a>
-      </div>
   </div>
 
 </section>

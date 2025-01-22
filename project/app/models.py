@@ -149,12 +149,11 @@ class SelfDescribingModel(models.Model):
 
 class Project(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    project_title = models.CharField(max_length=100, null=True, blank=True)
-    project_alias = models.CharField(max_length=100, null=True, blank=True)
-    project_description = models.TextField(null=True, blank=True)
+    title = models.CharField(max_length=100, null=True, blank=True)
+    alias = models.CharField(max_length=100, null=True, blank=True)
+    description = models.TextField(null=True, blank=True)
     study_accession_id = models.CharField(max_length=100, null=True, blank=True)
     alternative_accession_id = models.CharField(max_length=100, null=True, blank=True)
-    study_title = models.CharField(max_length=100, null=True, blank=True)
 
 class ProjectSubmission(models.Model):
     projects = models.ManyToManyField(Project)

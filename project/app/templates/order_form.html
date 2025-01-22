@@ -16,7 +16,7 @@ Order Form
           <div class="field">
             <label class="label">{{ field.label }}</label>
             <div class="control">
-              {{ field }}
+              {{ field }}{{ field.help_text }}
             </div>
           </div>
           {% endfor %}
@@ -37,23 +37,5 @@ Order Form
 {% endblock content %}
 
 {% block scripts %}
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-  const fields = document.querySelectorAll('.field input, .field select, .field textarea');
-  const explanationItems = document.querySelectorAll('.explanation-item');
 
-  fields.forEach(function(field) {
-    field.addEventListener('focus', function() {
-      const fieldId = field.id;
-      explanationItems.forEach(function(item) {
-        if (item.dataset.fieldId === fieldId) {
-          item.classList.add('active');
-        } else {
-          item.classList.remove('active');
-        }
-      });
-    });
-  });
-});
-</script>
 {% endblock scripts %}

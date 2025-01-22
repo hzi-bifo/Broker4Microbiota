@@ -149,22 +149,11 @@ class SelfDescribingModel(models.Model):
 
 class Project(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    project_title = models.CharField(max_length=100, null=True, blank=True)
-    project_alias = models.CharField(max_length=100, null=True, blank=True)
-    project_description = models.TextField(null=True, blank=True)
+    title = models.CharField(max_length=100, null=True, blank=True)
+    alias = models.CharField(max_length=100, null=True, blank=True)
+    description = models.TextField(null=True, blank=True)
     study_accession_id = models.CharField(max_length=100, null=True, blank=True)
     alternative_accession_id = models.CharField(max_length=100, null=True, blank=True)
-    study_title = models.CharField(max_length=100, null=True, blank=True)
-
-class ProjectSubmission(models.Model):
-    projects = models.ManyToManyField(Project)
-    project_object_xml = models.TextField(null=True, blank=True)
-    submission_object_xml = models.TextField(null=True, blank=True)
-    receipt_xml = models.TextField(null=True, blank=True)
-    accession_status = models.CharField(max_length=100, null=True, blank=True)
-
-    def __str__(self):
-        return f"Submission for Project" #  {self.project.id}
 
 class Order(models.Model):
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
@@ -187,8 +176,16 @@ class Order(models.Model):
     isolated_from = models.CharField(max_length=100, null=True, blank=True)
     isolation_method = models.CharField(max_length=100, choices=ISOLATION_METHOD_CHOICES, null=True, blank=True)
 
+class ProjectSubmission(models.Model):
+    projects = models.ManyToManyField(Project)
+    project_object_xml = models.TextField(null=True, blank=True)
+    submission_object_xml = models.TextField(null=True, blank=True)
+    receipt_xml = models.TextField(null=True, blank=True)
+    accession_status = models.CharField(max_length=100, null=True, blank=True)
+
     def __str__(self):
-        return f"Order by " # {self.user.username}
+        return f"Submission for Project" #  {self.project.id}
+
 
 
 class Sampleset(SelfDescribingModel):

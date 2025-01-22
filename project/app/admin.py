@@ -68,7 +68,7 @@ admin.site.register(Sequence, SequenceAdmin)
 
 
 class ProjectAdmin(admin.ModelAdmin):
-    list_display = ('user', 'project_alias', 'project_title', 'project_description', 'study_accession_id', 'study_title')
+    list_display = ('user', 'title', 'alias', 'description', 'study_accession_id', 'alternative_accession_id')
 
     actions = ['generate_xml_and_create_project_submission']
 
