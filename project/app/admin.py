@@ -16,6 +16,7 @@ from django.template.loader import render_to_string
 from xml.etree import ElementTree as ET
 import logging
 import json
+import shutil
 
 logger = logging.getLogger(__name__)
 
@@ -48,15 +49,17 @@ class SequenceAdmin(admin.ModelAdmin):
             context = {
                 'sequence': sequence,
                 'sequence_template': sequence.sequence_template,
+                'project': sequence.sample.order.project,
+                'sample': sequence.sample,
             }
             read_txt_content = render_to_string('admin/app/sample/read_manifest.txt', context)
             txt_list[sequence.sample_id] = read_txt_content
         read_submission.read_object_txt_list = json.dumps(txt_list)
-        read_submission.name = f"{sequence.sample_id}"
+        read_submission.name = f"{sequence.sample.sample_id}"
 
         read_submission.save()
 
-        self.message_user(request, f'Successfully created ReadSubmission {read_submission.id} with {selected_sequences.count()} samples')
+        self.message_user(request, f'Successfully created ReadSubmission {read_submission.name} with {selected_sequences.count()} samples')
 
 
     generate_xml_and_create_read_submission.short_description = 'Generate XML and create Read Submission'
@@ -165,15 +168,23 @@ class SampleAdmin(admin.ModelAdmin):
 
     run_mag_pipeline.short_description = 'Run MAG pipeline'
 
-    # def create_sequences(self, request, queryset):
-    #     for sample in queryset:
-    #         paired_read_1 = os.path.join(settings.BASE_DIR, 'media', 'test', sample.sample_alias + '_1.fastq.gz')
-    #         paired_read_2 = os.path.join(settings.BASE_DIR, 'media', 'test', sample.sample_alias + '_2.fastq.gz')
-    #         if os.path.isfile(paired_read_1) and os.path.isfile(paired_read_2):
-    #             sequence = Sequence.objects.create(sample=sample, file_1=paired_read_1, file_2=paired_read_2)
-    #             sequence.save()
+    def create_sequences(self, request, queryset):
+        for sample in queryset:
+            paired_read_1 = os.path.join(settings.BASE_DIR, 'media', 'test', sample.sample_alias + '_1.fastq.gz')
+            paired_read_2 = os.path.join(settings.BASE_DIR, 'media', 'test', sample.sample_alias + '_2.fastq.gz')
+            template_1 = os.path.join(settings.BASE_DIR, 'media', 'test', 'template_1.fastq.gz')
+            template_2 = os.path.join(settings.BASE_DIR, 'media', 'test', 'template_2.fastq.gz')
 
-    # create_sequences.short_description = 'Generate sequences'
+            # temporary
+            shutil.copyfile(template_1, paired_read_1)
+            shutil.copyfile(template_2, paired_read_2)
+
+            # takes first template object - temporary
+            if os.path.isfile(paired_read_1) and os.path.isfile(paired_read_2):
+                sequence = Sequence.objects.create(sample=sample, file_1=paired_read_1, file_2=paired_read_2, sequence_template=SequenceTemplate.objects.first())
+                sequence.save()
+
+    create_sequences.short_description = 'Generate sequences'
 
     def generate_xml_and_create_submission(self, request, queryset):
         selected_samples = queryset
@@ -303,9 +314,9 @@ class ReadSubmissionAdmin(admin.ModelAdmin):
         for read_submission in queryset:
             count = 0
             read_object_txt_list = json.loads(read_submission.read_object_txt_list)
-            for sequence_id in read_object_txt_list.keys():
-                sequence = Sequence.objects.get(sequence_id=sequence_id)
-                read_object_txt = read_object_txt_list[sequence_id]
+            for sample_id in read_object_txt_list.keys():
+                sequence = Sequence.objects.get(sample_id=sample_id)
+                read_object_txt = read_object_txt_list[sample_id]
                 # Save the read manifest to a file
                 read_manifest_filename = f"{settings.LOCAL_DIR}/read_manifest_{read_submission.id}{count}.txt"
                 with open(read_manifest_filename, 'w') as read_manifest_file:
@@ -350,11 +361,11 @@ class ReadSubmissionAdmin(admin.ModelAdmin):
                             if child.tag == 'RUN':
                                 run_accession_number = child.attrib['accession']
                                 # read_submission.samples.filter(sample_id=sample_id).first().sequences.filter(sample_id=sample_id).update(run_accession_number=run_accession_number)
-                                Sequence.objects.filter(sample=sample).update(run_accession_number=run_accession_number)
+                                Sequence.objects.filter(sample_id=sample_id).update(run_accession_number=run_accession_number)
                             if child.tag == "EXPERIMENT":
                                 experiment_accession_number = child.attrib['accession']
                                 # read_submission.samples.filter(sample_id=sample_id).first().sequences.filter(sample_id=sample_id).update(experiment_accession_number=experiment_accession_number)
-                                Sequence.objects.filter(sample=sample).update(experiment_accession_number=experiment_accession_number)
+                                Sequence.objects.filter(sample_id=sample_id).update(experiment_accession_number=experiment_accession_number)
                         read_submission.accession_status = 'submitted'
                         read_submission.save()
                         self.message_user(request, "Read submission registered successfully.", messages.SUCCESS)

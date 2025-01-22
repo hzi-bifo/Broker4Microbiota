@@ -1,6 +1,6 @@
-STUDY {{ order.study_accession_id }}
+STUDY {{ project.study_accession_id }}
 SAMPLE {{ sample.sample_accession_number }}
-NAME {{ sequence_template.name }}{{ sample.sample_id }}
+NAME {{ sample.sample_id }}
 PLATFORM {{ sequence_template.platform }}
 INSERT_SIZE {{ sequence_template.insert_size }}
 LIBRARY_NAME {{ sequence_template.library_name }}

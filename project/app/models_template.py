@@ -188,7 +188,7 @@ class Order(models.Model):
     isolation_method = models.CharField(max_length=100, choices=ISOLATION_METHOD_CHOICES, null=True, blank=True)
 
     def __str__(self):
-        return f"Order by {self.user.username}"
+        return f"Order by " # {self.user.username}
 
 
 class Sampleset(SelfDescribingModel):
@@ -268,8 +268,9 @@ class Sample(SelfDescribingModel):
         # get the checklists for this sample    
         
         output = ""
-
-        for checklist in json.loads(json.dumps(self.sampleset.checklists)):
+        checklists = Sampleset.objects.filter(order=self.order).first().checklists
+ 
+        for checklist in json.loads(json.dumps(checklists)):
             checklist_name = checklist
             checklist_code = Sampleset.checklist_structure[checklist_name]['checklist_code']  
             checklist_class_name = Sampleset.checklist_structure[checklist_name]['checklist_class_name']
@@ -316,7 +317,7 @@ class Submission(models.Model):
     accession_status = models.CharField(max_length=100, null=True, blank=True)
 
     def __str__(self):
-        return f"Submission for Order {self.order.id}"
+        return f"Submission for Order " # {self.order.id}
 
 class ReadSubmission(models.Model):
     name = models.CharField(max_length=100, null=True, blank=True)
@@ -327,7 +328,7 @@ class ReadSubmission(models.Model):
     accession_status = models.CharField(max_length=100, null=True, blank=True)
 
     def __str__(self):
-        return f"Read Submission for Order {self.order.id}"
+        return f"Read Submission for Order " # {self.order.id}
 
 class Pipelines(models.Model):
     run_id = models.CharField(max_length=100, unique=True)
