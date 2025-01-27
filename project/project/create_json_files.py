@@ -2,12 +2,16 @@ import os
 import json
 import xmltodict
 import pdb
+import sys
+os.environ['DJANGO_SETTINGS_MODULE'] = 'settings'
+from django.conf import settings
 
 def get_next_node_id():
     global node_id
     node_id += 1
     return node_id
 
+# Build up the jqtree data structure
 def produceJqTree(data, jqtree_data): 
     checklist = data['CHECKLIST_SET']['CHECKLIST']['DESCRIPTOR']
     checklist_name = checklist['NAME']
@@ -28,7 +32,6 @@ def produceJqTree(data, jqtree_data):
             # get units (if existing - could be multiple) and create as a choices option
             # 
 
-
             jqtree_field = {}
             jqtree_field['name'] = field_name
             jqtree_field['description'] = field_description
@@ -37,9 +40,11 @@ def produceJqTree(data, jqtree_data):
         jqtree_checklist['children'].append(jqtree_fieldgroup)
     jqtree_data.append(jqtree_checklist)
 
+# Produce models file
 def produceModels(data, model_data, field_names):
 
     checklist = data['CHECKLIST_SET']['CHECKLIST']['DESCRIPTOR']
+    # Replace those characters which are not allowed in a model name (by ?)
     checklist_name = checklist['NAME'].replace(' ', '_').replace('(', '').replace(')', '').replace('/', '_').replace('-', '_')
     model_name = checklist_name
 
@@ -54,16 +59,14 @@ def produceModels(data, model_data, field_names):
     unit_output = "" 
 
     checklist_header = checklist_header + f"class {model_name}(SelfDescribingModel):\n"
-    checklist_output = checklist_output + f"\tsample = models.ForeignKey(Sample, on_delete=models.CASCADE)\n"
-    checklist_output = checklist_output + f"\torder = models.ForeignKey(Order, on_delete=models.CASCADE, default=1)\n"
+    checklist_output = checklist_output + f"\tsampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE, default=1)\n"
 
     checklist_fields_output = f"\tfields = {{\n"
 
     unitchecklist_fields_output = f"\tfields = {{\n"
 
     unitchecklist_header = unitchecklist_header + f"class {model_name}_unit(SelfDescribingModel):\n"
-    # unitchecklist_output = unitchecklist_output + f"\tsample = models.ForeignKey(Sample, on_delete=models.CASCADE)\n"
-    unitchecklist_output = unitchecklist_output + f"\torder = models.ForeignKey(Order, on_delete=models.CASCADE, default=1)\n"
+    unitchecklist_output = unitchecklist_output + f"\tsampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE, default=1)\n"
 
     for fieldgroup in checklist['FIELD_GROUP']:
         fieldgroup_name = fieldgroup['NAME']
@@ -74,6 +77,7 @@ def produceModels(data, model_data, field_names):
 
             field_description = ''
             try:
+                # trimmed to ten chars
                 field_description = field['DESCRIPTION'][0:10]
             except:
                 pass
@@ -170,14 +174,13 @@ def produceModels(data, model_data, field_names):
     model_data = f'{checklist_header}\n{choice_output}\n{validator_output}\n{checklist_output}\n{checklist_fields_output}\n{unitchecklist_header}\n{unit_output}\n{unitchecklist_fields_output}\n{unitchecklist_output}\n'
     return model_data
 
-
 # Path to the directory containing the XML files
-xml_dir = '/home/gary/git/django_ngs_metadata_collection/project/static/xml'
+xml_dir = f"{settings.ROOT_DIR}/project/static/xml"
 
 # Path to the directory where the JSON files will be saved
-json_dir = '/home/gary/git/django_ngs_metadata_collection/project/static/json'
+json_dir = f"{settings.ROOT_DIR}/project/static/json"
 
-models_dir = '/home/gary/git/django_ngs_metadata_collection/project/app'
+models_dir = f"{settings.ROOT_DIR}/project/app"
 
 jqtree_path = os.path.join(json_dir, 'jqtree.json')
 

@@ -125,7 +125,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 ENA_USERNAME = os.environ.get('ENA_USERNAME')
 ENA_PASSWORD = os.environ.get('ENA_PASSWORD')
 
-LOCAL_DIR = '/home/gary/git/django_ngs_metadata_collection/project/media/test'
+ROOT_DIR = os.environ.get('ROOT_DIR')
+LOCAL_DIR = f"{ROOT_DIR}/project/media/test"
 JAR_LOCATION = '/home/gary/Downloads/webin-cli-8.1.0.jar'
 
 LOGGING = {

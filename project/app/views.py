@@ -158,147 +158,14 @@ def delete_order(request, project_id, order_id):
     else:
         return redirect('login')
 
-
-def samples_view(request, project_id, order_id):
-    print("Received POST request")
-    order = get_object_or_404(Order, pk=order_id)
-
-    if request.method == 'POST':
-        sample_data = json.loads(request.POST.get('sample_data'))
-
-        print(f"Received sample_data: {sample_data}")
-
-        # should only be one at this point
-        sample_sets = order.sampleset_set.all()
-        sample_set = sample_sets.first()
-
-        # this needs to be passed through properly
-        checklists = sample_set.checklists
-
-        # temporary - this needs to be passed through properly
-        # checklists = ['GSC_MIxS_wastewater_sludge', 'GSC_MIxS_miscellaneous_natural_or_artificial_environment']
-    
-        for checklist in checklists:
-            checklist_name = checklist
-            checklist_code = Sampleset.checklist_structure[checklist_name]['checklist_code']  
-            checklist_class_name = Sampleset.checklist_structure[checklist_name]['checklist_class_name']
-            checklist_item_class =  getattr(importlib.import_module("app.models"), checklist_class_name)
-            
-            checklist_item_class.objects.filter(order=order).delete()
-
-        # Delete all existing samples for the order
-        Sample.objects.filter(order=order).delete()
-
-        # Create new samples based on the received data
-        for sample_info in sample_data:
-
-            sample=Sample(order = order)
-            sample.setFieldsFromResponse(sample_info)
-            sample.sampleset = sample_set
-            sample.save()
-
-            # for all checklists or just ones used (initially, latter)
-            for checklist in checklists:
-                checklist_name = checklist
-                checklist_code = Sampleset.checklist_structure[checklist_name]['checklist_code']  
-                checklist_class_name = Sampleset.checklist_structure[checklist_name]['checklist_class_name']
-                checklist_item_class =  getattr(importlib.import_module("app.models"), checklist_class_name)
-                checklist_item_instance = checklist_item_class(sample = sample, order = order)
-                checklist_item_instance.setFieldsFromResponse(sample_info)
-                checklist_item_instance.save()
-
-            print(f"Processing sample {sample.id}")
-
-            # print(sample.getAttributes(inclusions, exclusions))
-
-        return JsonResponse({'success': True})
-
-    samples = order.sample_set.all().order_by('sample_id')
-
-    print(f"Retrieved samples: {list(samples)}")
-
-    # should only be one at this point
-    sample_sets = order.sampleset_set.all()
-    sample_set = sample_sets.first()
-
-    # this needs to be passed through properly
-    checklists = sample_set.checklists
-    # ['GSC_MIxS_wastewater_sludge', 'GSC_MIxS_miscellaneous_natural_or_artificial_environment']
-
-    inclusions = []
-    exclusions = []
-
-    samples_headers = f"[\n"
-    sample_headers_array = ""
-    index = 2 # make space for delete button and unsaved indicator
-
-    samples_headers = samples_headers + f"{{ title: 'Delete', renderer: deleteButtonRenderer }},\n{{ title: 'Unsaved', data: 'unsaved', readOnly: true }},\n"
-    sample_headers_array = sample_headers_array + f"Delete: row[1],\nunsaved: row[1],\n"
-
-    sample=Sample(order = order)
-    samples_headers = samples_headers + sample.getHeaders(inclusions, exclusions)
-    (index, sample_headers_array_update) = sample.getHeadersArray(index, inclusions, exclusions)
-    sample_headers_array = sample_headers_array + sample_headers_array_update
-
-    checklist_entries_list = []
-    for checklist in checklists:
-
-        checklist_name = checklist
-        checklist_code = Sampleset.checklist_structure[checklist_name]['checklist_code']  
-
-        # get the checklist model name from Checklist_structure 
-        checklist_class_name = Sampleset.checklist_structure[checklist_name]['checklist_class_name']
-
-        checklist_entries_class =  getattr(importlib.import_module("app.models"), checklist_class_name)
-        samples_headers = samples_headers + checklist_entries_class().getHeaders(inclusions, exclusions)
-        (index, sample_headers_array_update) = checklist_entries_class().getHeadersArray(index, inclusions, exclusions)
-        sample_headers_array = sample_headers_array + sample_headers_array_update
-
-        try:
-            checklist_entries = checklist_entries_class.objects.all() # filter on order or sample
-            checklist_entries_list.append(checklist_entries)
-        except:
-            pass
-    samples_headers = samples_headers + f"]"
-
-    samples_data = []
-
-    for sample in samples:
-        output = {}
-        fields = sample.getFields(inclusions, exclusions)
-        output.update(fields)
-
-        # get the checklists for this sample    
-        for checklist_type in checklist_entries_list:
-            for checklist in checklist_type.all().filter(sample=sample):
-                fields = checklist.getFields(inclusions, exclusions)
-                output.update(fields)    
-
-        samples_data.append(output)
-
-    status_choices = [choice[1] for choice in STATUS_CHOICES]
-
-    print(f"Sending samples_data to template: {samples_data}")
-
-    return render(request, 'samples.html', {
-            'order': order,
-            'samples_headers': samples_headers,
-            'samples_data': samples_data,
-            'sample_headers_array': sample_headers_array,
-            'status_choices': status_choices,
-            'project_id': project_id,
-        })
-
-
-
-
-
-
-
 def metadata_view(request, project_id, order_id):
     
     if request.user.is_authenticated:
-        order = get_object_or_404(Order, pk=order_id)
+        project = get_object_or_404(Project, pk=project_id, user=request.user)
+
+        order = get_object_or_404(Order, pk=order_id, project=project)
+
+        # should only be one
         sample_set = order.sampleset_set.first()
         if not sample_set:
             sample_set = Sampleset(order=order) 
@@ -316,24 +183,170 @@ def metadata_view(request, project_id, order_id):
                 sample_set.save()
 
                 # temporary
-                for checklist in sample_set.checklists:
-                    checklist_name = checklist
-                    checklist_item = Sampleset.checklist_structure[checklist_name]
-                    checklist_code = checklist_item['checklist_code']  
-                    unitchecklist_class_name = Sampleset.checklist_structure[checklist_name]['unitchecklist_class_name']
-                    unitchecklist_item_class =  getattr(importlib.import_module("app.models"), unitchecklist_class_name)
-                    unitchecklist_item_instance = unitchecklist_item_class(order = order)
-                    # temporary
-                    if unitchecklist_class_name == 'GSC_MIxS_wastewater_sludge_unit':
-                        unitchecklist_item_instance.GSC_MIxS_wastewater_sludge_sample_volume_or_weight_for_DNA_extraction = 'ng'                    
-                    unitchecklist_item_instance.save()
+                # for checklist in sample_set.checklists:
+                #     checklist_name = checklist
+                #     checklist_item = Sampleset.checklist_structure[checklist_name]
+                #     checklist_code = checklist_item['checklist_code']  
+                #     unitchecklist_class_name = checklist_item['unitchecklist_class_name']
+                #     unitchecklist_item_class =  getattr(importlib.import_module("app.models"), unitchecklist_class_name)
+                #     unitchecklist_item_instance = unitchecklist_item_class(order = order)
+                #     # temporary
+                #     if unitchecklist_class_name == 'GSC_MIxS_wastewater_sludge_unit':
+                #         unitchecklist_item_instance.GSC_MIxS_wastewater_sludge_sample_volume_or_weight_for_DNA_extraction = 'ng'                    
+                #         unitchecklist_item_instance.save()
 
-                order.save()
+                # order.save()
                 return redirect('order_list', project_id=project_id)
             
         return render(request, 'metadata.html', {'sample_set': sample_set, 'project_id': project_id})
     else:
         return redirect('login')
+
+def samples_view(request, project_id, order_id):
+
+    if request.user.is_authenticated:
+        project = get_object_or_404(Project, pk=project_id, user=request.user)
+
+        order = get_object_or_404(Order, pk=order_id, project=project)
+
+        if request.method == 'POST':
+            sample_data = json.loads(request.POST.get('sample_data'))
+
+            print(f"Received sample_data: {sample_data}")
+
+            # should only be one
+            sample_set = order.sampleset_set.first()
+
+            checklists = sample_set.checklists
+        
+            # Delete all existing checklists for the order
+            for checklist in checklists:
+                checklist_name = checklist
+                checklist_code = Sampleset.checklist_structure[checklist_name]['checklist_code']  
+                checklist_class_name = Sampleset.checklist_structure[checklist_name]['checklist_class_name']
+                checklist_item_class =  getattr(importlib.import_module("app.models"), checklist_class_name)
+                
+                try:
+                    checklist_item_class.objects.filter(order=order).delete()
+                except:
+                    pass
+
+            # Delete all existing samples for the order
+            try:
+                Sample.objects.filter(order=order).delete()
+            except: 
+                pass
+            
+            # Create new samples based on the received data
+            for sample_info in sample_data:
+
+                sample=Sample(order = order)
+                sample.setFieldsFromResponse(sample_info)
+                sample.sampleset = sample_set
+                sample.save()
+
+                # create new checklists based on the received data
+                for checklist in checklists:
+                    checklist_name = checklist
+                    checklist_code = Sampleset.checklist_structure[checklist_name]['checklist_code']  
+                    checklist_class_name = Sampleset.checklist_structure[checklist_name]['checklist_class_name']
+                    checklist_item_class =  getattr(importlib.import_module("app.models"), checklist_class_name)
+                    checklist_item_instance = checklist_item_class(sample = sample, order = order)
+                    checklist_item_instance.setFieldsFromResponse(sample_info)
+                    checklist_item_instance.save()
+
+                print(f"Processing sample {sample.id}")
+
+                # print(sample.getAttributes(inclusions, exclusions))
+
+            return JsonResponse({'success': True})
+
+        samples = order.sample_set.all().order_by('sample_id')
+
+        print(f"Retrieved samples: {list(samples)}")
+
+        # should only be one
+        sample_set = order.sampleset_set.first()
+
+        checklists = sample_set.checklists
+
+        inclusions = []
+        exclusions = []
+
+        # construct headers and array (to pass data back in POST) for HoT, for samples
+        samples_headers = f"[\n"
+        sample_headers_array = ""
+        index = 2 # make space for delete button and unsaved indicator
+
+        samples_headers = samples_headers + f"{{ title: 'Delete', renderer: deleteButtonRenderer }},\n{{ title: 'Unsaved', data: 'unsaved', readOnly: true }},\n"
+        sample_headers_array = sample_headers_array + f"Delete: row[1],\nunsaved: row[1],\n"
+
+        sample=Sample(order = order)
+
+        samples_headers = samples_headers + sample.getHeaders(inclusions, exclusions)
+        (index, sample_headers_array_update) = sample.getHeadersArray(index, inclusions, exclusions)
+        sample_headers_array = sample_headers_array + sample_headers_array_update
+
+        # construct headers and array (to pass data back in POST) for HoT, for checklists
+        checklist_entries_list = []
+        for checklist in checklists:
+
+            checklist_name = checklist
+            checklist_code = Sampleset.checklist_structure[checklist_name]['checklist_code']  
+
+            # get the checklist model name from Checklist_structure 
+            checklist_class_name = Sampleset.checklist_structure[checklist_name]['checklist_class_name']
+
+            checklist_entries_class =  getattr(importlib.import_module("app.models"), checklist_class_name)
+            samples_headers = samples_headers + checklist_entries_class().getHeaders(inclusions, exclusions)
+            (index, sample_headers_array_update) = checklist_entries_class().getHeadersArray(index, inclusions, exclusions)
+            sample_headers_array = sample_headers_array + sample_headers_array_update
+
+            # get the checklist objects for this sample_set
+            try:
+                checklist_entries = checklist_entries_class.objects.filter(sample_set=sample_set) 
+                checklist_entries_list.append(checklist_entries)
+            except:
+                pass
+        samples_headers = samples_headers + f"]"
+
+        samples_data = []
+
+        # Get the actual data for the sample
+        for sample in samples:
+            output = {}
+            fields = sample.getFields(inclusions, exclusions)
+            output.update(fields)
+
+            # get the actual data for the checklists for this sample    
+            for checklist_type in checklist_entries_list:
+                for checklist in checklist_type.all().filter(sample=sample):
+                    fields = checklist.getFields(inclusions, exclusions)
+                    output.update(fields)    
+
+            samples_data.append(output)
+
+        status_choices = [choice[1] for choice in STATUS_CHOICES]
+
+        print(f"Sending samples_data to template: {samples_data}")
+
+        return render(request, 'samples.html', {
+                'order': order,
+                'samples_headers': samples_headers,
+                'samples_data': samples_data,
+                'sample_headers_array': sample_headers_array,
+                'status_choices': status_choices,
+                'project_id': project_id,
+            })
+    else:
+        return redirect('login')
+
+
+
+
+
+
+
 
 
 

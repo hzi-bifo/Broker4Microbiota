@@ -8,6 +8,7 @@ Add and update Samples
 <section class="section">
   <div class="container">
     <h2 class="title has-text-centered">Update Samples</h2>
+
     <div class="has-text-centered mb-4">
       <button id="add" class="button is-primary" onclick="addNewRow()">Add New Row</button>
     </div>
@@ -18,6 +19,7 @@ Add and update Samples
       <button id="save" class="button is-success" onclick="saveSampleData()">Save Samples</button>
       <button id="cancel" class="button is-link" onclick="redirectToOrders()">Back to Order Overview</button>
     </div>
+
   </div>
 </section>
 
@@ -27,36 +29,35 @@ Comment out for 6.2.2 (MIT)
 <script src="https://cdn.jsdelivr.net/npm/handsontable/dist/handsontable.full.min.js"></script>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/handsontable/dist/handsontable.full.min.css">
 
-# todo - adjust columns for hidden cols etc
-
 <script>
   var unsaved = false;
   document.getElementById('save').disabled = true;
+
   var hotElement = document.querySelector('#handsontable-container');
   var hotSettings = {
     data: {{ samples_data | safe }},
-  columns: {{ samples_headers | safe }},
-  hiddenColumns: {
-        columns: [],
-        indicators: false  // Show a small indicator where columns are hidden
-      },
+    columns: {{ samples_headers | safe }},
+    hiddenColumns: {
+      columns: [],
+      indicators: false  // Show a small indicator where columns are hidden
+    },
     minSpareRows: 0,
-      rowHeaders: true,
-        contextMenu: true,
-        width: '100%',
-      height: 'auto',
-      stretchH: 'all', // Optionally stretch the columns to fit the width
-          licenseKey: 'non-commercial-and-evaluation',
-            afterChange: (changes) => {
-              changes?.forEach(([row, prop, oldValue, newValue]) => {
-                if (prop != "unsaved" && hot.getDataAtCell(row, 1) != "x") {
+    rowHeaders: true,
+    contextMenu: true,
+    width: '100%',
+    height: 'auto',
+    stretchH: 'all', // Optionally stretch the columns to fit the width
+    licenseKey: 'non-commercial-and-evaluation',
+    afterChange: (changes) => {
+      changes?.forEach(([row, prop, oldValue, newValue]) => {
+      if (prop != "unsaved" && hot.getDataAtCell(row, 1) != "x") {
                   hot.setDataAtCell(row, 1, "x");
                   unsaved = true;
                   document.getElementById('save').disabled = false;
-                }
-              });
-            }
-};
+      }
+      });
+    }
+  };
   var hot = new Handsontable(hotElement, hotSettings);
 
   function addNewRow() {
@@ -75,16 +76,11 @@ Comment out for 6.2.2 (MIT)
   }
 
   function saveSampleData() {
-
-
     var sampleData = hot.getData().map(function (row, index) {
       return {
-
         {{ sample_headers_array | safe }}
-
       };
     });
-
 
     unsaved = false;
     document.getElementById('save').disabled = true;
@@ -105,12 +101,12 @@ Comment out for 6.2.2 (MIT)
       },
       body: 'sample_data=' + JSON.stringify(sampleData)
     })
-      .then(function (response) {
-        console.log('Sample data saved successfully');
-      })
-      .catch(function (error) {
-        console.error('Error saving sample data:', error);
-      });
+    .then(function (response) {
+      console.log('Sample data saved successfully');
+    })
+    .catch(function (error) {
+      console.error('Error saving sample data:', error);
+    });
   }
 
   function redirectToOrders() {
@@ -137,19 +133,20 @@ Comment out for 6.2.2 (MIT)
 
     return td;
   }
-    // Utility function to generate a unique ID
-    function generateUniqueId() {
-      return 'id-' + Math.random().toString(36).substr(2, 16);
-    }
 
-       // Hook to handle new rows, adding a unique ID to each
-    hot.addHook('afterCreateRow', function(index, amount) {
-      for (let i = 0; i < amount; i++) {
-        let row = index + i;
-        // Ensure each new row gets a unique ID
-        hot.setDataAtRowProp(row, 'sample_id', generateUniqueId());
-      }
-    }); 
+  // Utility function to generate a unique ID
+  function generateUniqueId() {
+    return 'id-' + Math.random().toString(36).substr(2, 16);
+  }
+
+  // Hook to handle new rows, adding a unique ID to each
+  hot.addHook('afterCreateRow', function(index, amount) {
+    for (let i = 0; i < amount; i++) {
+      let row = index + i;
+      // Ensure each new row gets a unique ID
+      hot.setDataAtRowProp(row, 'sample_id', generateUniqueId());
+    }
+  }); 
 
 </script>
 

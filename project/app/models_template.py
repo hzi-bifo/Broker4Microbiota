@@ -66,7 +66,7 @@ class SelfDescribingModel(models.Model):
                     output = output + f"</SAMPLE_ATTRIBUTE>\n"            
         return output
 
-
+    # Get actual value for each field
     def getFields(self, exclude=[], include=[]):
         output = {}
         if include:
@@ -80,6 +80,7 @@ class SelfDescribingModel(models.Model):
 
         return output            
     
+    # Get the headers for the HoT (including choices)
     def getHeaders(self, exclude=[], include=[]):
 
         headers = ""
@@ -107,9 +108,9 @@ class SelfDescribingModel(models.Model):
 
         return headers + ""
 
+    # Get the headers for returning the data output from HoT
     def getHeadersArray(self, index, exclude=[], include=[]):
 
-        # string containing (comma-delimited)
         output = ""
         if include:
                 for k, v in self.fields.items():
@@ -124,6 +125,7 @@ class SelfDescribingModel(models.Model):
 
         return (index, output)    
     
+    # Populate instance fields from a response
     def setFieldsFromResponse(self, response):
 
         for k, v in self.fields.items():
@@ -176,50 +178,28 @@ class Order(models.Model):
     isolated_from = models.CharField(max_length=100, null=True, blank=True)
     isolation_method = models.CharField(max_length=100, choices=ISOLATION_METHOD_CHOICES, null=True, blank=True)
 
-class ProjectSubmission(models.Model):
-    projects = models.ManyToManyField(Project)
-    project_object_xml = models.TextField(null=True, blank=True)
-    submission_object_xml = models.TextField(null=True, blank=True)
-    receipt_xml = models.TextField(null=True, blank=True)
-    accession_status = models.CharField(max_length=100, null=True, blank=True)
-
-    def __str__(self):
-        return f"Submission for Project" #  {self.project.id}
-
-
-
-class Sampleset(SelfDescribingModel):
+class Sampleset(models.Model):
 
     order = models.ForeignKey(Order, on_delete=models.CASCADE)
 
     # list of checklists
     checklists = models.JSONField()
-
-    # list of fields for this checklist, don't need to repeat anything from xml (ie. mandatory), perhaps need to record a type of null for mandatory when not given    
     include = models.JSONField()
-
-    # probably not needed    
     exclude = models.JSONField()
-
-    # any custom fields
     custom = models.JSONField()
 
-    fields = {
-        'order': 'order',
-        'checklists': 'checklists',
-        'include': 'include',
-        'exclude': 'exclude',
-        'custom': 'custom',
-    }
+    # fields = {
+    #     'order': 'order',
+    #     'checklists': 'checklists',
+    #     'include': 'include',
+    #     'exclude': 'exclude',
+    #     'custom': 'custom',
+    # }
 
     checklist_structure = {
         'GSC_MIxS_wastewater_sludge': {"checklist_code" : "ERC000023", 'checklist_class_name': 'GSC_MIxS_wastewater_sludge', 'unitchecklist_class_name': 'GSC_MIxS_wastewater_sludge_unit'},
         'GSC_MIxS_miscellaneous_natural_or_artificial_environment': {"checklist_code" : "ERC0000xx", 'checklist_class_name': 'GSC_MIxS_miscellaneous_natural_or_artificial_environment', 'unitchecklist_class_name': 'GSC_MIxS_miscellaneous_natural_or_artificial_environment_unit'},
     }
-
-    def __str__(self):
-        return 'x'
-
 
 class Sample(SelfDescribingModel):
     order = models.ForeignKey(Order, on_delete=models.CASCADE)
@@ -257,36 +237,48 @@ class Sample(SelfDescribingModel):
         'sample_alias': 'sample_alias',
         'sample_title': 'sample_title',
         'sample_description': 'sample_description',
+        'sample_accession_number': 'sample_accession_number',
+        'sample_biosample_number': 'sample_biosample_number',
     }
 
-    @property
-    def getAttributes(self):
-    	# go through each of the fields within eah of the checklists
-        # get the checklists for this sample    
+    # @property
+    # def getAttributes(self):
+    # 	# go through each of the fields within eah of the checklists
+    #     # get the checklists for this sample    
         
-        output = ""
-        checklists = Sampleset.objects.filter(order=self.order).first().checklists
+    #     output = ""
+    #     checklists = Sampleset.objects.filter(order=self.order).first().checklists
  
-        for checklist in json.loads(json.dumps(checklists)):
-            checklist_name = checklist
-            checklist_code = Sampleset.checklist_structure[checklist_name]['checklist_code']  
-            checklist_class_name = Sampleset.checklist_structure[checklist_name]['checklist_class_name']
-            checklist_item_class =  getattr(importlib.import_module("app.models"), checklist_class_name)
-            checklist_item_instance = checklist_item_class.objects.filter(sample = self, order=self.order).first()
+    #     for checklist in json.loads(json.dumps(checklists)):
+    #         checklist_name = checklist
+    #         checklist_code = Sampleset.checklist_structure[checklist_name]['checklist_code']  
+    #         checklist_class_name = Sampleset.checklist_structure[checklist_name]['checklist_class_name']
+    #         checklist_item_class =  getattr(importlib.import_module("app.models"), checklist_class_name)
+    #         checklist_item_instance = checklist_item_class.objects.filter(sample = self, order=self.order).first()
             
-            include = []
-            exclude = []
+    #         include = []
+    #         exclude = []
 
-            attributes = checklist_item_instance.getSubAttributes(exclude, include)
+    #         attributes = checklist_item_instance.getSubAttributes(exclude, include)
 
-            attributes = attributes + f"<SAMPLE_ATTRIBUTE><TAG>ena-checklist</TAG><VALUE>{checklist_code}</VALUE></SAMPLE_ATTRIBUTE>\n"
+    #         attributes = attributes + f"<SAMPLE_ATTRIBUTE><TAG>ena-checklist</TAG><VALUE>{checklist_code}</VALUE></SAMPLE_ATTRIBUTE>\n"
 
-            output = output + f'{attributes}\n'
+    #         output = output + f'{attributes}\n'
 
-        return output    
+    #     return output    
+
+
+class ProjectSubmission(models.Model):
+    projects = models.ManyToManyField(Project)
+    project_object_xml = models.TextField(null=True, blank=True)
+    submission_object_xml = models.TextField(null=True, blank=True)
+    receipt_xml = models.TextField(null=True, blank=True)
+    accession_status = models.CharField(max_length=100, null=True, blank=True)
 
     def __str__(self):
-        return self.sample_id or ''
+        return f"Submission for Project" #  {self.project.id}
+
+
 
 class SequenceTemplate(models.Model):
     template_id = models.CharField(max_length=100, null=True, blank=True)

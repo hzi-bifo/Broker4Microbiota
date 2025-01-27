@@ -69,11 +69,6 @@ class OrderForm(forms.ModelForm):
             'isolation_method': 'Select the isolation method.'
         }
 
-class SampleForm(forms.ModelForm):
-    class Meta:
-        model = Sample
-        exclude = ['order']
-
 class SamplesetForm(forms.ModelForm):
     class Meta:
         model = Sampleset
@@ -102,6 +97,11 @@ class SamplesetForm(forms.ModelForm):
         #     widget=forms.HiddenInput(),
         #     required=False
         # )
+
+class SampleForm(forms.ModelForm):
+    class Meta:
+        model = Sample
+        exclude = ['order']
 
 
 class CreateGZForm(forms.Form):

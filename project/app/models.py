@@ -66,7 +66,7 @@ class SelfDescribingModel(models.Model):
                     output = output + f"</SAMPLE_ATTRIBUTE>\n"            
         return output
 
-
+    # Get actual value for each field
     def getFields(self, exclude=[], include=[]):
         output = {}
         if include:
@@ -80,6 +80,7 @@ class SelfDescribingModel(models.Model):
 
         return output            
     
+    # Get the headers for the HoT (including choices)
     def getHeaders(self, exclude=[], include=[]):
 
         headers = ""
@@ -107,9 +108,9 @@ class SelfDescribingModel(models.Model):
 
         return headers + ""
 
+    # Get the headers for returning the data output from HoT
     def getHeadersArray(self, index, exclude=[], include=[]):
 
-        # string containing (comma-delimited)
         output = ""
         if include:
                 for k, v in self.fields.items():
@@ -124,6 +125,7 @@ class SelfDescribingModel(models.Model):
 
         return (index, output)    
     
+    # Populate instance fields from a response
     def setFieldsFromResponse(self, response):
 
         for k, v in self.fields.items():
@@ -155,16 +157,6 @@ class Project(models.Model):
     study_accession_id = models.CharField(max_length=100, null=True, blank=True)
     alternative_accession_id = models.CharField(max_length=100, null=True, blank=True)
 
-class ProjectSubmission(models.Model):
-    projects = models.ManyToManyField(Project)
-    project_object_xml = models.TextField(null=True, blank=True)
-    submission_object_xml = models.TextField(null=True, blank=True)
-    receipt_xml = models.TextField(null=True, blank=True)
-    accession_status = models.CharField(max_length=100, null=True, blank=True)
-
-    def __str__(self):
-        return f"Submission for Project" #  {self.project.id}
-
 class Order(models.Model):
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
     name = models.CharField(max_length=100, null=True, blank=True)
@@ -186,42 +178,28 @@ class Order(models.Model):
     isolated_from = models.CharField(max_length=100, null=True, blank=True)
     isolation_method = models.CharField(max_length=100, choices=ISOLATION_METHOD_CHOICES, null=True, blank=True)
 
-    def __str__(self):
-        return f"Order by " # {self.user.username}
-
-
-class Sampleset(SelfDescribingModel):
+class Sampleset(models.Model):
 
     order = models.ForeignKey(Order, on_delete=models.CASCADE)
 
     # list of checklists
     checklists = models.JSONField()
-
-    # list of fields for this checklist, don't need to repeat anything from xml (ie. mandatory), perhaps need to record a type of null for mandatory when not given    
     include = models.JSONField()
-
-    # probably not needed    
     exclude = models.JSONField()
-
-    # any custom fields
     custom = models.JSONField()
 
-    fields = {
-        'order': 'order',
-        'checklists': 'checklists',
-        'include': 'include',
-        'exclude': 'exclude',
-        'custom': 'custom',
-    }
+    # fields = {
+    #     'order': 'order',
+    #     'checklists': 'checklists',
+    #     'include': 'include',
+    #     'exclude': 'exclude',
+    #     'custom': 'custom',
+    # }
 
     checklist_structure = {
         'GSC_MIxS_wastewater_sludge': {"checklist_code" : "ERC000023", 'checklist_class_name': 'GSC_MIxS_wastewater_sludge', 'unitchecklist_class_name': 'GSC_MIxS_wastewater_sludge_unit'},
         'GSC_MIxS_miscellaneous_natural_or_artificial_environment': {"checklist_code" : "ERC0000xx", 'checklist_class_name': 'GSC_MIxS_miscellaneous_natural_or_artificial_environment', 'unitchecklist_class_name': 'GSC_MIxS_miscellaneous_natural_or_artificial_environment_unit'},
     }
-
-    def __str__(self):
-        return 'x'
-
 
 class Sample(SelfDescribingModel):
     order = models.ForeignKey(Order, on_delete=models.CASCADE)
@@ -259,36 +237,48 @@ class Sample(SelfDescribingModel):
         'sample_alias': 'sample_alias',
         'sample_title': 'sample_title',
         'sample_description': 'sample_description',
+        'sample_accession_number': 'sample_accession_number',
+        'sample_biosample_number': 'sample_biosample_number',
     }
 
-    @property
-    def getAttributes(self):
-    	# go through each of the fields within eah of the checklists
-        # get the checklists for this sample    
+    # @property
+    # def getAttributes(self):
+    # 	# go through each of the fields within eah of the checklists
+    #     # get the checklists for this sample    
         
-        output = ""
-        checklists = Sampleset.objects.filter(order=self.order).first().checklists
+    #     output = ""
+    #     checklists = Sampleset.objects.filter(order=self.order).first().checklists
  
-        for checklist in json.loads(json.dumps(checklists)):
-            checklist_name = checklist
-            checklist_code = Sampleset.checklist_structure[checklist_name]['checklist_code']  
-            checklist_class_name = Sampleset.checklist_structure[checklist_name]['checklist_class_name']
-            checklist_item_class =  getattr(importlib.import_module("app.models"), checklist_class_name)
-            checklist_item_instance = checklist_item_class.objects.filter(sample = self, order=self.order).first()
+    #     for checklist in json.loads(json.dumps(checklists)):
+    #         checklist_name = checklist
+    #         checklist_code = Sampleset.checklist_structure[checklist_name]['checklist_code']  
+    #         checklist_class_name = Sampleset.checklist_structure[checklist_name]['checklist_class_name']
+    #         checklist_item_class =  getattr(importlib.import_module("app.models"), checklist_class_name)
+    #         checklist_item_instance = checklist_item_class.objects.filter(sample = self, order=self.order).first()
             
-            include = []
-            exclude = []
+    #         include = []
+    #         exclude = []
 
-            attributes = checklist_item_instance.getSubAttributes(exclude, include)
+    #         attributes = checklist_item_instance.getSubAttributes(exclude, include)
 
-            attributes = attributes + f"<SAMPLE_ATTRIBUTE><TAG>ena-checklist</TAG><VALUE>{checklist_code}</VALUE></SAMPLE_ATTRIBUTE>\n"
+    #         attributes = attributes + f"<SAMPLE_ATTRIBUTE><TAG>ena-checklist</TAG><VALUE>{checklist_code}</VALUE></SAMPLE_ATTRIBUTE>\n"
 
-            output = output + f'{attributes}\n'
+    #         output = output + f'{attributes}\n'
 
-        return output    
+    #     return output    
+
+
+class ProjectSubmission(models.Model):
+    projects = models.ManyToManyField(Project)
+    project_object_xml = models.TextField(null=True, blank=True)
+    submission_object_xml = models.TextField(null=True, blank=True)
+    receipt_xml = models.TextField(null=True, blank=True)
+    accession_status = models.CharField(max_length=100, null=True, blank=True)
 
     def __str__(self):
-        return self.sample_id or ''
+        return f"Submission for Project" #  {self.project.id}
+
+
 
 class SequenceTemplate(models.Model):
     template_id = models.CharField(max_length=100, null=True, blank=True)
@@ -430,8 +420,7 @@ class GSC_MIxS_wastewater_sludge(SelfDescribingModel):
 	GSC_MIxS_wastewater_sludge_sodium_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
 	GSC_MIxS_wastewater_sludge_total_nitrogen_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
 
-	sample = models.ForeignKey(Sample, on_delete=models.CASCADE)
-	order = models.ForeignKey(Order, on_delete=models.CASCADE, default=1)
+	sampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE, default=1)
 	GSC_MIxS_wastewater_sludge_project_name= models.CharField(max_length=100, blank=False,help_text="Name of th")
 	GSC_MIxS_wastewater_sludge_experimental_factor= models.CharField(max_length=100, blank=True,help_text="Experiment")
 	GSC_MIxS_wastewater_sludge_ploidy= models.CharField(max_length=100, blank=True,help_text="The ploidy")
@@ -672,7 +661,7 @@ class GSC_MIxS_wastewater_sludge_unit(SelfDescribingModel):
 		'GSC_MIxS_wastewater_sludge_total_nitrogen': 'total nitrogen',
 	}
 
-	order = models.ForeignKey(Order, on_delete=models.CASCADE, default=1)
+	sampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE, default=1)
 	GSC_MIxS_wastewater_sludge_sample_volume_or_weight_for_DNA_extraction = models.CharField(max_length=100, choices=GSC_MIxS_wastewater_sludge_sample_volume_or_weight_for_DNA_extraction_units, blank=False)
 	GSC_MIxS_wastewater_sludge_geographic_location_latitude = models.CharField(max_length=100, choices=GSC_MIxS_wastewater_sludge_geographic_location_latitude_units, blank=False)
 	GSC_MIxS_wastewater_sludge_geographic_location_longitude = models.CharField(max_length=100, choices=GSC_MIxS_wastewater_sludge_geographic_location_longitude_units, blank=False)
@@ -757,8 +746,7 @@ class GSC_MIxS_miscellaneous_natural_or_artificial_environment(SelfDescribingMod
 	GSC_MIxS_miscellaneous_natural_or_artificial_environment_sulfate_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
 	GSC_MIxS_miscellaneous_natural_or_artificial_environment_sulfide_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
 
-	sample = models.ForeignKey(Sample, on_delete=models.CASCADE)
-	order = models.ForeignKey(Order, on_delete=models.CASCADE, default=1)
+	sampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE, default=1)
 	GSC_MIxS_miscellaneous_natural_or_artificial_environment_project_name= models.CharField(max_length=100, blank=False,help_text="Name of th")
 	GSC_MIxS_miscellaneous_natural_or_artificial_environment_experimental_factor= models.CharField(max_length=100, blank=True,help_text="Experiment")
 	GSC_MIxS_miscellaneous_natural_or_artificial_environment_ploidy= models.CharField(max_length=100, blank=True,help_text="The ploidy")
@@ -1037,7 +1025,7 @@ class GSC_MIxS_miscellaneous_natural_or_artificial_environment_unit(SelfDescribi
 		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_sulfide': 'sulfide',
 	}
 
-	order = models.ForeignKey(Order, on_delete=models.CASCADE, default=1)
+	sampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE, default=1)
 	GSC_MIxS_miscellaneous_natural_or_artificial_environment_sample_volume_or_weight_for_DNA_extraction = models.CharField(max_length=100, choices=GSC_MIxS_miscellaneous_natural_or_artificial_environment_sample_volume_or_weight_for_DNA_extraction_units, blank=False)
 	GSC_MIxS_miscellaneous_natural_or_artificial_environment_altitude = models.CharField(max_length=100, choices=GSC_MIxS_miscellaneous_natural_or_artificial_environment_altitude_units, blank=False)
 	GSC_MIxS_miscellaneous_natural_or_artificial_environment_geographic_location_latitude = models.CharField(max_length=100, choices=GSC_MIxS_miscellaneous_natural_or_artificial_environment_geographic_location_latitude_units, blank=False)
@@ -1115,8 +1103,7 @@ class GSC_MIxS_human_skin(SelfDescribingModel):
 	GSC_MIxS_human_skin_time_since_last_wash_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
 	GSC_MIxS_human_skin_host_pulse_validator = "[+-]?[0-9]+"
 
-	sample = models.ForeignKey(Sample, on_delete=models.CASCADE)
-	order = models.ForeignKey(Order, on_delete=models.CASCADE, default=1)
+	sampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE, default=1)
 	GSC_MIxS_human_skin_project_name= models.CharField(max_length=100, blank=False,help_text="Name of th")
 	GSC_MIxS_human_skin_experimental_factor= models.CharField(max_length=100, blank=True,help_text="Experiment")
 	GSC_MIxS_human_skin_ploidy= models.CharField(max_length=100, blank=True,help_text="The ploidy")
@@ -1321,7 +1308,7 @@ class GSC_MIxS_human_skin_unit(SelfDescribingModel):
 		'GSC_MIxS_human_skin_host_pulse': 'host pulse',
 	}
 
-	order = models.ForeignKey(Order, on_delete=models.CASCADE, default=1)
+	sampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE, default=1)
 	GSC_MIxS_human_skin_sample_volume_or_weight_for_DNA_extraction = models.CharField(max_length=100, choices=GSC_MIxS_human_skin_sample_volume_or_weight_for_DNA_extraction_units, blank=False)
 	GSC_MIxS_human_skin_geographic_location_latitude = models.CharField(max_length=100, choices=GSC_MIxS_human_skin_geographic_location_latitude_units, blank=False)
 	GSC_MIxS_human_skin_geographic_location_longitude = models.CharField(max_length=100, choices=GSC_MIxS_human_skin_geographic_location_longitude_units, blank=False)
@@ -1345,8 +1332,7 @@ class ENA_default_sample_checklist(SelfDescribingModel):
 
 	ENA_default_sample_checklist_collection_date_validator = "(^[12][0-9]{3}(-(0[1-9]|1[0-2])(-(0[1-9]|[12][0-9]|3[01])(T[0-9]{2}:[0-9]{2}(:[0-9]{2})?Z?([+-][0-9]{1,2})?)?)?)?(/[0-9]{4}(-[0-9]{2}(-[0-9]{2}(T[0-9]{2}:[0-9]{2}(:[0-9]{2})?Z?([+-][0-9]{1,2})?)?)?)?)?$)|(^not collected$)|(^not provided$)|(^restricted access$)|(^missing: control sample$)|(^missing: sample group$)|(^missing: synthetic construct$)|(^missing: lab stock$)|(^missing: third party data$)|(^missing: data agreement established pre-2023$)|(^missing: endangered species$)|(^missing: human-identifiable$)"
 
-	sample = models.ForeignKey(Sample, on_delete=models.CASCADE)
-	order = models.ForeignKey(Order, on_delete=models.CASCADE, default=1)
+	sampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE, default=1)
 	ENA_default_sample_checklist_cell_type= models.CharField(max_length=100, blank=True,help_text="cell type ")
 	ENA_default_sample_checklist_dev_stage= models.CharField(max_length=100, blank=True,help_text="if the sam")
 	ENA_default_sample_checklist_germline= models.CharField(max_length=100, blank=True,help_text="the sample")
@@ -1417,7 +1403,7 @@ class ENA_default_sample_checklist_unit(SelfDescribingModel):
 	fields = {
 	}
 
-	order = models.ForeignKey(Order, on_delete=models.CASCADE, default=1)
+	sampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE, default=1)
 
 class GSC_MIxS_plant_associated(SelfDescribingModel):
 
@@ -1453,8 +1439,7 @@ class GSC_MIxS_plant_associated(SelfDescribingModel):
 	GSC_MIxS_plant_associated_temperature_validator = "[+-]?(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
 	GSC_MIxS_plant_associated_salinity_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
 
-	sample = models.ForeignKey(Sample, on_delete=models.CASCADE)
-	order = models.ForeignKey(Order, on_delete=models.CASCADE, default=1)
+	sampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE, default=1)
 	GSC_MIxS_plant_associated_project_name= models.CharField(max_length=100, blank=False,help_text="Name of th")
 	GSC_MIxS_plant_associated_experimental_factor= models.CharField(max_length=100, blank=True,help_text="Experiment")
 	GSC_MIxS_plant_associated_ploidy= models.CharField(max_length=100, blank=True,help_text="The ploidy")
@@ -1703,7 +1688,7 @@ class GSC_MIxS_plant_associated_unit(SelfDescribingModel):
 		'GSC_MIxS_plant_associated_salinity': 'salinity',
 	}
 
-	order = models.ForeignKey(Order, on_delete=models.CASCADE, default=1)
+	sampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE, default=1)
 	GSC_MIxS_plant_associated_sample_volume_or_weight_for_DNA_extraction = models.CharField(max_length=100, choices=GSC_MIxS_plant_associated_sample_volume_or_weight_for_DNA_extraction_units, blank=False)
 	GSC_MIxS_plant_associated_altitude = models.CharField(max_length=100, choices=GSC_MIxS_plant_associated_altitude_units, blank=False)
 	GSC_MIxS_plant_associated_geographic_location_latitude = models.CharField(max_length=100, choices=GSC_MIxS_plant_associated_geographic_location_latitude_units, blank=False)
@@ -1813,8 +1798,7 @@ class GSC_MIxS_water(SelfDescribingModel):
 	GSC_MIxS_water_total_particulate_carbon_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
 	GSC_MIxS_water_total_phosphorus_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
 
-	sample = models.ForeignKey(Sample, on_delete=models.CASCADE)
-	order = models.ForeignKey(Order, on_delete=models.CASCADE, default=1)
+	sampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE, default=1)
 	GSC_MIxS_water_project_name= models.CharField(max_length=100, blank=False,help_text="Name of th")
 	GSC_MIxS_water_experimental_factor= models.CharField(max_length=100, blank=True,help_text="Experiment")
 	GSC_MIxS_water_ploidy= models.CharField(max_length=100, blank=True,help_text="The ploidy")
@@ -2231,7 +2215,7 @@ class GSC_MIxS_water_unit(SelfDescribingModel):
 		'GSC_MIxS_water_total_phosphorus': 'total phosphorus',
 	}
 
-	order = models.ForeignKey(Order, on_delete=models.CASCADE, default=1)
+	sampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE, default=1)
 	GSC_MIxS_water_sample_volume_or_weight_for_DNA_extraction = models.CharField(max_length=100, choices=GSC_MIxS_water_sample_volume_or_weight_for_DNA_extraction_units, blank=False)
 	GSC_MIxS_water_altitude = models.CharField(max_length=100, choices=GSC_MIxS_water_altitude_units, blank=False)
 	GSC_MIxS_water_geographic_location_latitude = models.CharField(max_length=100, choices=GSC_MIxS_water_geographic_location_latitude_units, blank=False)
@@ -2345,8 +2329,7 @@ class GSC_MIxS_soil(SelfDescribingModel):
 	GSC_MIxS_soil_water_content_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
 	GSC_MIxS_soil_total_nitrogen_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
 
-	sample = models.ForeignKey(Sample, on_delete=models.CASCADE)
-	order = models.ForeignKey(Order, on_delete=models.CASCADE, default=1)
+	sampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE, default=1)
 	GSC_MIxS_soil_slope_gradient= models.CharField(max_length=100, blank=True,help_text="commonly c", validators=[RegexValidator(GSC_MIxS_soil_slope_gradient_validator)])
 	GSC_MIxS_soil_slope_aspect= models.CharField(max_length=100, blank=True,help_text="the direct")
 	GSC_MIxS_soil_profile_position= models.CharField(max_length=100, blank=True,help_text="cross-sect", choices=GSC_MIxS_soil_profile_position_choice)
@@ -2607,7 +2590,7 @@ class GSC_MIxS_soil_unit(SelfDescribingModel):
 		'GSC_MIxS_soil_total_nitrogen': 'total nitrogen',
 	}
 
-	order = models.ForeignKey(Order, on_delete=models.CASCADE, default=1)
+	sampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE, default=1)
 	GSC_MIxS_soil_slope_gradient = models.CharField(max_length=100, choices=GSC_MIxS_soil_slope_gradient_units, blank=False)
 	GSC_MIxS_soil_sample_volume_or_weight_for_DNA_extraction = models.CharField(max_length=100, choices=GSC_MIxS_soil_sample_volume_or_weight_for_DNA_extraction_units, blank=False)
 	GSC_MIxS_soil_altitude = models.CharField(max_length=100, choices=GSC_MIxS_soil_altitude_units, blank=False)
@@ -2662,8 +2645,7 @@ class GSC_MIxS_human_gut(SelfDescribingModel):
 	GSC_MIxS_human_gut_salinity_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
 	GSC_MIxS_human_gut_host_pulse_validator = "[+-]?[0-9]+"
 
-	sample = models.ForeignKey(Sample, on_delete=models.CASCADE)
-	order = models.ForeignKey(Order, on_delete=models.CASCADE, default=1)
+	sampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE, default=1)
 	GSC_MIxS_human_gut_project_name= models.CharField(max_length=100, blank=False,help_text="Name of th")
 	GSC_MIxS_human_gut_experimental_factor= models.CharField(max_length=100, blank=True,help_text="Experiment")
 	GSC_MIxS_human_gut_ploidy= models.CharField(max_length=100, blank=True,help_text="The ploidy")
@@ -2866,7 +2848,7 @@ class GSC_MIxS_human_gut_unit(SelfDescribingModel):
 		'GSC_MIxS_human_gut_host_pulse': 'host pulse',
 	}
 
-	order = models.ForeignKey(Order, on_delete=models.CASCADE, default=1)
+	sampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE, default=1)
 	GSC_MIxS_human_gut_sample_volume_or_weight_for_DNA_extraction = models.CharField(max_length=100, choices=GSC_MIxS_human_gut_sample_volume_or_weight_for_DNA_extraction_units, blank=False)
 	GSC_MIxS_human_gut_geographic_location_latitude = models.CharField(max_length=100, choices=GSC_MIxS_human_gut_geographic_location_latitude_units, blank=False)
 	GSC_MIxS_human_gut_geographic_location_longitude = models.CharField(max_length=100, choices=GSC_MIxS_human_gut_geographic_location_longitude_units, blank=False)
@@ -2919,8 +2901,7 @@ class GSC_MIxS_host_associated(SelfDescribingModel):
 	GSC_MIxS_host_associated_host_blood_pressure_diastolic_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
 	GSC_MIxS_host_associated_host_blood_pressure_systolic_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
 
-	sample = models.ForeignKey(Sample, on_delete=models.CASCADE)
-	order = models.ForeignKey(Order, on_delete=models.CASCADE, default=1)
+	sampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE, default=1)
 	GSC_MIxS_host_associated_project_name= models.CharField(max_length=100, blank=False,help_text="Name of th")
 	GSC_MIxS_host_associated_experimental_factor= models.CharField(max_length=100, blank=True,help_text="Experiment")
 	GSC_MIxS_host_associated_ploidy= models.CharField(max_length=100, blank=True,help_text="The ploidy")
@@ -3147,7 +3128,7 @@ class GSC_MIxS_host_associated_unit(SelfDescribingModel):
 		'GSC_MIxS_host_associated_host_blood_pressure_systolic': 'host blood pressure systolic',
 	}
 
-	order = models.ForeignKey(Order, on_delete=models.CASCADE, default=1)
+	sampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE, default=1)
 	GSC_MIxS_host_associated_sample_volume_or_weight_for_DNA_extraction = models.CharField(max_length=100, choices=GSC_MIxS_host_associated_sample_volume_or_weight_for_DNA_extraction_units, blank=False)
 	GSC_MIxS_host_associated_altitude = models.CharField(max_length=100, choices=GSC_MIxS_host_associated_altitude_units, blank=False)
 	GSC_MIxS_host_associated_geographic_location_latitude = models.CharField(max_length=100, choices=GSC_MIxS_host_associated_geographic_location_latitude_units, blank=False)
@@ -3203,8 +3184,7 @@ class GSC_MIxS_human_vaginal(SelfDescribingModel):
 	GSC_MIxS_human_vaginal_salinity_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
 	GSC_MIxS_human_vaginal_host_pulse_validator = "[+-]?[0-9]+"
 
-	sample = models.ForeignKey(Sample, on_delete=models.CASCADE)
-	order = models.ForeignKey(Order, on_delete=models.CASCADE, default=1)
+	sampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE, default=1)
 	GSC_MIxS_human_vaginal_project_name= models.CharField(max_length=100, blank=False,help_text="Name of th")
 	GSC_MIxS_human_vaginal_experimental_factor= models.CharField(max_length=100, blank=True,help_text="Experiment")
 	GSC_MIxS_human_vaginal_ploidy= models.CharField(max_length=100, blank=True,help_text="The ploidy")
@@ -3421,7 +3401,7 @@ class GSC_MIxS_human_vaginal_unit(SelfDescribingModel):
 		'GSC_MIxS_human_vaginal_host_pulse': 'host pulse',
 	}
 
-	order = models.ForeignKey(Order, on_delete=models.CASCADE, default=1)
+	sampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE, default=1)
 	GSC_MIxS_human_vaginal_sample_volume_or_weight_for_DNA_extraction = models.CharField(max_length=100, choices=GSC_MIxS_human_vaginal_sample_volume_or_weight_for_DNA_extraction_units, blank=False)
 	GSC_MIxS_human_vaginal_geographic_location_latitude = models.CharField(max_length=100, choices=GSC_MIxS_human_vaginal_geographic_location_latitude_units, blank=False)
 	GSC_MIxS_human_vaginal_geographic_location_longitude = models.CharField(max_length=100, choices=GSC_MIxS_human_vaginal_geographic_location_longitude_units, blank=False)
@@ -3472,8 +3452,7 @@ class GSC_MIxS_human_oral(SelfDescribingModel):
 	GSC_MIxS_human_oral_time_since_last_toothbrushing_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
 	GSC_MIxS_human_oral_host_pulse_validator = "[+-]?[0-9]+"
 
-	sample = models.ForeignKey(Sample, on_delete=models.CASCADE)
-	order = models.ForeignKey(Order, on_delete=models.CASCADE, default=1)
+	sampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE, default=1)
 	GSC_MIxS_human_oral_project_name= models.CharField(max_length=100, blank=False,help_text="Name of th")
 	GSC_MIxS_human_oral_experimental_factor= models.CharField(max_length=100, blank=True,help_text="Experiment")
 	GSC_MIxS_human_oral_ploidy= models.CharField(max_length=100, blank=True,help_text="The ploidy")
@@ -3676,7 +3655,7 @@ class GSC_MIxS_human_oral_unit(SelfDescribingModel):
 		'GSC_MIxS_human_oral_host_pulse': 'host pulse',
 	}
 
-	order = models.ForeignKey(Order, on_delete=models.CASCADE, default=1)
+	sampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE, default=1)
 	GSC_MIxS_human_oral_sample_volume_or_weight_for_DNA_extraction = models.CharField(max_length=100, choices=GSC_MIxS_human_oral_sample_volume_or_weight_for_DNA_extraction_units, blank=False)
 	GSC_MIxS_human_oral_geographic_location_latitude = models.CharField(max_length=100, choices=GSC_MIxS_human_oral_geographic_location_latitude_units, blank=False)
 	GSC_MIxS_human_oral_geographic_location_longitude = models.CharField(max_length=100, choices=GSC_MIxS_human_oral_geographic_location_longitude_units, blank=False)
@@ -3762,8 +3741,7 @@ class GSC_MIxS_sediment(SelfDescribingModel):
 	GSC_MIxS_sediment_sulfide_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
 	GSC_MIxS_sediment_total_nitrogen_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
 
-	sample = models.ForeignKey(Sample, on_delete=models.CASCADE)
-	order = models.ForeignKey(Order, on_delete=models.CASCADE, default=1)
+	sampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE, default=1)
 	GSC_MIxS_sediment_project_name= models.CharField(max_length=100, blank=False,help_text="Name of th")
 	GSC_MIxS_sediment_experimental_factor= models.CharField(max_length=100, blank=True,help_text="Experiment")
 	GSC_MIxS_sediment_ploidy= models.CharField(max_length=100, blank=True,help_text="The ploidy")
@@ -4094,7 +4072,7 @@ class GSC_MIxS_sediment_unit(SelfDescribingModel):
 		'GSC_MIxS_sediment_total_nitrogen': 'total nitrogen',
 	}
 
-	order = models.ForeignKey(Order, on_delete=models.CASCADE, default=1)
+	sampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE, default=1)
 	GSC_MIxS_sediment_sample_volume_or_weight_for_DNA_extraction = models.CharField(max_length=100, choices=GSC_MIxS_sediment_sample_volume_or_weight_for_DNA_extraction_units, blank=False)
 	GSC_MIxS_sediment_altitude = models.CharField(max_length=100, choices=GSC_MIxS_sediment_altitude_units, blank=False)
 	GSC_MIxS_sediment_geographic_location_latitude = models.CharField(max_length=100, choices=GSC_MIxS_sediment_geographic_location_latitude_units, blank=False)
@@ -4187,8 +4165,7 @@ class GSC_MIxS_human_associated(SelfDescribingModel):
 	GSC_MIxS_human_associated_salinity_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
 	GSC_MIxS_human_associated_host_pulse_validator = "[+-]?[0-9]+"
 
-	sample = models.ForeignKey(Sample, on_delete=models.CASCADE)
-	order = models.ForeignKey(Order, on_delete=models.CASCADE, default=1)
+	sampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE, default=1)
 	GSC_MIxS_human_associated_project_name= models.CharField(max_length=100, blank=False,help_text="Name of th")
 	GSC_MIxS_human_associated_experimental_factor= models.CharField(max_length=100, blank=True,help_text="Experiment")
 	GSC_MIxS_human_associated_ploidy= models.CharField(max_length=100, blank=True,help_text="The ploidy")
@@ -4427,7 +4404,7 @@ class GSC_MIxS_human_associated_unit(SelfDescribingModel):
 		'GSC_MIxS_human_associated_host_pulse': 'host pulse',
 	}
 
-	order = models.ForeignKey(Order, on_delete=models.CASCADE, default=1)
+	sampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE, default=1)
 	GSC_MIxS_human_associated_sample_volume_or_weight_for_DNA_extraction = models.CharField(max_length=100, choices=GSC_MIxS_human_associated_sample_volume_or_weight_for_DNA_extraction_units, blank=False)
 	GSC_MIxS_human_associated_geographic_location_latitude = models.CharField(max_length=100, choices=GSC_MIxS_human_associated_geographic_location_latitude_units, blank=False)
 	GSC_MIxS_human_associated_geographic_location_longitude = models.CharField(max_length=100, choices=GSC_MIxS_human_associated_geographic_location_longitude_units, blank=False)
@@ -4481,8 +4458,7 @@ class GSC_MIxS_air(SelfDescribingModel):
 	GSC_MIxS_air_methane_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
 	GSC_MIxS_air_salinity_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
 
-	sample = models.ForeignKey(Sample, on_delete=models.CASCADE)
-	order = models.ForeignKey(Order, on_delete=models.CASCADE, default=1)
+	sampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE, default=1)
 	GSC_MIxS_air_project_name= models.CharField(max_length=100, blank=False,help_text="Name of th")
 	GSC_MIxS_air_experimental_factor= models.CharField(max_length=100, blank=True,help_text="Experiment")
 	GSC_MIxS_air_ploidy= models.CharField(max_length=100, blank=True,help_text="The ploidy")
@@ -4691,7 +4667,7 @@ class GSC_MIxS_air_unit(SelfDescribingModel):
 		'GSC_MIxS_air_salinity': 'salinity',
 	}
 
-	order = models.ForeignKey(Order, on_delete=models.CASCADE, default=1)
+	sampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE, default=1)
 	GSC_MIxS_air_sample_volume_or_weight_for_DNA_extraction = models.CharField(max_length=100, choices=GSC_MIxS_air_sample_volume_or_weight_for_DNA_extraction_units, blank=False)
 	GSC_MIxS_air_altitude = models.CharField(max_length=100, choices=GSC_MIxS_air_altitude_units, blank=False)
 	GSC_MIxS_air_geographic_location_latitude = models.CharField(max_length=100, choices=GSC_MIxS_air_geographic_location_latitude_units, blank=False)
@@ -4790,8 +4766,7 @@ class GSC_MIxS_microbial_mat_biolfilm(SelfDescribingModel):
 	GSC_MIxS_microbial_mat_biolfilm_sulfide_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
 	GSC_MIxS_microbial_mat_biolfilm_total_nitrogen_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
 
-	sample = models.ForeignKey(Sample, on_delete=models.CASCADE)
-	order = models.ForeignKey(Order, on_delete=models.CASCADE, default=1)
+	sampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE, default=1)
 	GSC_MIxS_microbial_mat_biolfilm_project_name= models.CharField(max_length=100, blank=False,help_text="Name of th")
 	GSC_MIxS_microbial_mat_biolfilm_experimental_factor= models.CharField(max_length=100, blank=True,help_text="Experiment")
 	GSC_MIxS_microbial_mat_biolfilm_ploidy= models.CharField(max_length=100, blank=True,help_text="The ploidy")
@@ -5144,7 +5119,7 @@ class GSC_MIxS_microbial_mat_biolfilm_unit(SelfDescribingModel):
 		'GSC_MIxS_microbial_mat_biolfilm_total_nitrogen': 'total nitrogen',
 	}
 
-	order = models.ForeignKey(Order, on_delete=models.CASCADE, default=1)
+	sampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE, default=1)
 	GSC_MIxS_microbial_mat_biolfilm_sample_volume_or_weight_for_DNA_extraction = models.CharField(max_length=100, choices=GSC_MIxS_microbial_mat_biolfilm_sample_volume_or_weight_for_DNA_extraction_units, blank=False)
 	GSC_MIxS_microbial_mat_biolfilm_altitude = models.CharField(max_length=100, choices=GSC_MIxS_microbial_mat_biolfilm_altitude_units, blank=False)
 	GSC_MIxS_microbial_mat_biolfilm_geographic_location_latitude = models.CharField(max_length=100, choices=GSC_MIxS_microbial_mat_biolfilm_geographic_location_latitude_units, blank=False)

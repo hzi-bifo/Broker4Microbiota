@@ -15,8 +15,8 @@ Metadata List
       Search for and select the appropriate checklists / extensions for the samples.
     </p>
     <div>
-    <input id="search-term" autofocus></input>
-    <button id="search">Search</button>
+        <input id="search-term" autofocus></input>
+        <button id="search">Search</button>
     </div>
     <div id="tree-container" style="display: flex;">
       <div id="tree1"></div>
@@ -31,18 +31,17 @@ Metadata List
     <textarea id="custom" name="custom" rows="4" cols="50" placeholder="">{{ sample_set.custom }}</textarea>
     <div class="has-text-centered mt-4">
         <button type="submit" class="button is-primary">Save</button>
-
-      <a href="{% url 'order_list' project_id=project_id %}" class="button is-primary">Cancel</a>
+        <a href="{% url 'order_list' project_id=project_id %}" class="button is-primary">Cancel</a>
     </div>
-</form>
+    </form>
   </div>
 </section>
 
 <script>
   
-  const $tree = $("#tree1");
+    const $tree = $("#tree1");
 
-  let foundMatch = false;
+    let foundMatch = false;
 
     $.getJSON("{% static 'json/jqtree.json' %}", function(responseData) {
         var treeData = responseData;
@@ -51,40 +50,41 @@ Metadata List
             data: treeData,
             useContextMenu: false,
             onCreateLi: (node, $el) => {
-                          // Remove any existing whitespace from the element
-            $el.find('.jqtree-element').contents().filter(function() {
-                return this.nodeType === 3; // NodeType 3 is a text node (whitespace)
-            }).remove();
+                // Remove any existing whitespace from the element
+                $el.find('.jqtree-element').contents().filter(function() {
+                    return this.nodeType === 3; // NodeType 3 is a text node (whitespace)
+                }).remove();
 
                 let $actionLink;
                 // Check if the node is a top-level item (i.e., root node)
                 if (node.getLevel() === 1) {
-                  // Create the select link for top-level nodes
-                  $actionLink = $('<a>', {
-                      href: '#node-' + node.id,
-                      class: 'select',
-                      'data-node-id': node.id,
-                      text: ' select'
-                  });
+                    // Create the select link for top-level nodes
+                    $actionLink = $('<a>', {
+                        href: '#node-' + node.id,
+                        class: 'select',
+                        'data-node-id': node.id,
+                        text: ' select'
+                    });
                 } 
                 // Check if the node is a third-level item (i.e., grandchild node)
                 else if (node.getLevel() === 3) {
-                  $actionLink = $('<a>', {
+                    // Create the description link for third-level nodes
+                    $actionLink = $('<a>', {
                     href: '#node-' + node.id,
                     class: 'description',
                     'data-node-id': node.id,
                     text: ' description'
-                  });
+                    });
                 } else {  
                 }
 
-            // Remove all extra whitespace around the links
-            $el.contents().filter(function() {
-                return this.nodeType === 3; // Text node
-            }).remove();
+                // Remove all extra whitespace around the links
+                $el.contents().filter(function() {
+                    return this.nodeType === 3; // Text node
+                }).remove();
 
-            // Append the link with no extra text nodes
-            $el.find('.jqtree-element').append(document.createTextNode(' ')).append($actionLink);
+                // Append the link with no extra text nodes
+                $el.find('.jqtree-element').append(document.createTextNode(' ')).append($actionLink);
                 if (foundMatch && !node.openForMatch && !node.parent.matches) {
                     $el.addClass("hidden-node");
                 }
@@ -97,101 +97,101 @@ Metadata List
     });
 
 
-  // Click event for 'select' button to add the node name to the text box
-  $tree.on('click', '.select', function(e) {
-      e.preventDefault();  // Prevent the default link action
+    // Click event for 'select' button to add the node name to the text box
+    $tree.on('click', '.select', function(e) {
+        e.preventDefault();  // Prevent the default link action
 
-      // Get the node id from the clicked element
-      var node_id = $(e.target).data('node-id');
-      var node = $tree.tree('getNodeById', node_id);
+        // Get the node id from the clicked element
+        var node_id = $(e.target).data('node-id');
+        var node = $tree.tree('getNodeById', node_id);
 
-      if (node) {
-          // Find the textarea and append the node name
-          var $textarea = $('#checklists');
-          var currentText = $textarea.val();
+        if (node) {
+            // Find the textarea and append the node name
+            var $textarea = $('#checklists');
+            var currentText = $textarea.val();
 
-          // Add the selected node's name to the textarea, separated by a newline
-          $textarea.val('["' + node.name.replace(/ /g, "_") + '"]');
+            // Add the selected node's name to the textarea, separated by a newline
+            $textarea.val('["' + node.name.replace(/ /g, "_") + '"]');
 
-          // temporary
-          var $textarea = $('#include');
-          var currentText = $textarea.val();
+            // temporary
+            var $textarea = $('#include');
+            var currentText = $textarea.val();
 
-          // Add the selected node's name to the textarea, separated by a newline
-          $textarea.val('["' + node.name.replace(/ /g, "_") + '"]');
+            // Add the selected node's name to the textarea, separated by a newline
+            $textarea.val('["' + node.name.replace(/ /g, "_") + '"]');
 
-          var $textarea = $('#exclude');
-          var currentText = $textarea.val();
+            var $textarea = $('#exclude');
+            var currentText = $textarea.val();
 
-          // Add the selected node's name to the textarea, separated by a newline
-          $textarea.val('["' + node.name.replace(/ /g, "_") + '"]');
+            // Add the selected node's name to the textarea, separated by a newline
+            $textarea.val('["' + node.name.replace(/ /g, "_") + '"]');
 
-          var $textarea = $('#custom');
-          var currentText = $textarea.val();
+            var $textarea = $('#custom');
+            var currentText = $textarea.val();
 
-          // Add the selected node's name to the textarea, separated by a newline
-          $textarea.val('["' + node.name.replace(/ /g, "_") + '"]');
-      }
-  });
+            // Add the selected node's name to the textarea, separated by a newline
+            $textarea.val('["' + node.name.replace(/ /g, "_") + '"]');
+        }
+    });
 
-  // Click event for 'description' button to show the node description
-  $tree.on('click', '.description', function(e) {
-      e.preventDefault();  // Prevent default link action
+    // Click event for 'description' button to show the node description
+    $tree.on('click', '.description', function(e) {
+        e.preventDefault();  // Prevent default link action
 
-      // Get the node id from the clicked element
-      var node_id = $(e.target).data('node-id');
-      var node = $tree.tree('getNodeById', node_id);
+        // Get the node id from the clicked element
+        var node_id = $(e.target).data('node-id');
+        var node = $tree.tree('getNodeById', node_id);
 
-      if (node) {
-          // Display the node's description in the description box
-          $('#description-content').text(node.description || 'No description available.');
-      }
-  });
+        if (node) {
+            // Display the node's description in the description box
+            $('#description-content').text(node.description || 'No description available.');
+        }
+    });
 
-  $("#search").on("click", () => {
-      const searchTerm = $("#search-term").val().toLowerCase();
-      const tree = $tree.tree("getTree");
+    $("#search").on("click", () => {
+        const searchTerm = $("#search-term").val().toLowerCase();
+        const tree = $tree.tree("getTree");
 
-      if (!searchTerm) {
-          foundMatch = false;
+        if (!searchTerm) {
+            foundMatch = false;
 
-          tree.iterate((node) => {
-              node['openForMatch'] = false;
-              node["matches"] = false;
-              return true;
-          });
+            tree.iterate((node) => {
+                node['openForMatch'] = false;
+                node["matches"] = false;
+                return true;
+            });
 
-          $tree.tree("refresh");
-          return;
-      }
+            $tree.tree("refresh");
+            return;
+        }
 
-      foundMatch = false;
+        foundMatch = false;
 
-      tree.iterate((node) => {
-          const matches = node.name.toLowerCase().includes(searchTerm);
-          node["openForMatch"] = matches;
-          node["matches"] = matches;
+        tree.iterate((node) => {
+            const matches = node.name.toLowerCase().includes(searchTerm);
+            node["openForMatch"] = matches;
+            node["matches"] = matches;
 
-          if (matches) {
-              foundMatch = true;
+            if (matches) {
+                foundMatch = true;
 
-              if (node.isFolder()) {
-                  node.is_open = true;
-              }
+                if (node.isFolder()) {
+                    node.is_open = true;
+                }
 
-              let parent = node.parent;
-              while (parent) {
-                  parent["openForMatch"] = true;
-                  parent.is_open = true;
-                  parent = parent.parent;
-              }
-          }
+                let parent = node.parent;
+                while (parent) {
+                    parent["openForMatch"] = true;
+                    parent.is_open = true;
+                    parent = parent.parent;
+                }
+            }
 
-          return true;
-      });
+            return true;
+        });
 
-      $tree.tree("refresh");
-  });
+        $tree.tree("refresh");
+    });
 
 </script>
 {% endblock content %}
