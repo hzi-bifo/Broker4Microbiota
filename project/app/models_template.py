@@ -91,7 +91,8 @@ class SelfDescribingModel(models.Model):
                     headers = headers + f"{{title: '{k}', data: '{k}'"
                     try:
                         choices = getattr(self, f"{k}_choice")
-                        headers = headers + f", type: 'dropdown', source: {choices}"
+                        single_choice = [t[0] for t in choices]
+                        headers = headers + f", type: 'autocomplete', source: {single_choice}, strict: true, allowInvalid: false"
                     except:
                         pass      
                     headers = headers + f"}},\n"
@@ -101,7 +102,8 @@ class SelfDescribingModel(models.Model):
                     headers = headers + f"{{title: '{k}', data: '{k}'"
                     try:
                         choices = getattr(self, f"{k}_choice")
-                        headers = headers + f", type: 'dropdown', source: {choices}"
+                        single_choice = [t[0] for t in choices]
+                        headers = headers + f", type: 'autocomplete', source: {single_choice}, strict: true, allowInvalid: false"
                     except:
                         pass      
                     headers = headers + f"}},\n"
@@ -188,14 +190,6 @@ class Sampleset(models.Model):
     exclude = models.JSONField()
     custom = models.JSONField()
 
-    # fields = {
-    #     'order': 'order',
-    #     'checklists': 'checklists',
-    #     'include': 'include',
-    #     'exclude': 'exclude',
-    #     'custom': 'custom',
-    # }
-
     checklist_structure = {
         'GSC_MIxS_wastewater_sludge': {"checklist_code" : "ERC000023", 'checklist_class_name': 'GSC_MIxS_wastewater_sludge', 'unitchecklist_class_name': 'GSC_MIxS_wastewater_sludge_unit'},
         'GSC_MIxS_miscellaneous_natural_or_artificial_environment': {"checklist_code" : "ERC0000xx", 'checklist_class_name': 'GSC_MIxS_miscellaneous_natural_or_artificial_environment', 'unitchecklist_class_name': 'GSC_MIxS_miscellaneous_natural_or_artificial_environment_unit'},
@@ -237,8 +231,6 @@ class Sample(SelfDescribingModel):
         'sample_alias': 'sample_alias',
         'sample_title': 'sample_title',
         'sample_description': 'sample_description',
-        'sample_accession_number': 'sample_accession_number',
-        'sample_biosample_number': 'sample_biosample_number',
     }
 
     # @property

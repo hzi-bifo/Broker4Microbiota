@@ -26,10 +26,11 @@ Add and update Samples
 <!--
 Comment out for 6.2.2 (MIT)
 -->
-<script src="https://cdn.jsdelivr.net/npm/handsontable/dist/handsontable.full.min.js"></script>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/handsontable/dist/handsontable.full.min.css">
+<script src="https://cdn.jsdelivr.net/npm/handsontable/dist/handsontable.full.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/handsontable/dist/handsontable.full.css">
 
 <script>
+
   var unsaved = false;
   document.getElementById('save').disabled = true;
 
@@ -43,9 +44,9 @@ Comment out for 6.2.2 (MIT)
     },
     minSpareRows: 0,
     rowHeaders: true,
+    colWidths: 200,
     contextMenu: true,
     width: '100%',
-    height: 'auto',
     stretchH: 'all', // Optionally stretch the columns to fit the width
     licenseKey: 'non-commercial-and-evaluation',
     afterChange: (changes) => {
@@ -76,6 +77,19 @@ Comment out for 6.2.2 (MIT)
   }
 
   function saveSampleData() {
+    var abortSave = false
+
+    hot.validateCells((valid) => {
+    if (!valid) {
+      alert("At least one row failing validation");
+      abortSave = true;
+    }
+    })
+
+    if (abortSave) {
+      return;
+    } 
+
     var sampleData = hot.getData().map(function (row, index) {
       return {
         {{ sample_headers_array | safe }}

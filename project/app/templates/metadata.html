@@ -26,9 +26,9 @@ Metadata List
       </div>
     </div>
     <textarea id="checklists" name="checklists" rows="4" cols="50" placeholder="Selected nodes will appear here...">{{ sample_set.checklists }}</textarea>
-    <textarea id="include" name="include" rows="4" cols="50" placeholder="">{{ sample_set.include }}</textarea>
-    <textarea id="exclude" name="exclude" rows="4" cols="50" placeholder="">{{ sample_set.exclude }}</textarea>
-    <textarea id="custom" name="custom" rows="4" cols="50" placeholder="">{{ sample_set.custom }}</textarea>
+    <textarea id="include" name="include" rows="4" cols="50" placeholder=""  style="display:none;">{{ sample_set.include }}</textarea>
+    <textarea id="exclude" name="exclude" rows="4" cols="50" placeholder=""  style="display:none;">{{ sample_set.exclude }}</textarea>
+    <textarea id="custom" name="custom" rows="4" cols="50" placeholder=""  style="display:none;">{{ sample_set.custom }}</textarea>
     <div class="has-text-centered mt-4">
         <button type="submit" class="button is-primary">Save</button>
         <a href="{% url 'order_list' project_id=project_id %}" class="button is-primary">Cancel</a>
