@@ -92,9 +92,14 @@ class SelfDescribingModel(models.Model):
                     try:
                         choices = getattr(self, f"{k}_choice")
                         single_choice = [t[0] for t in choices]
-                        headers = headers + f", type: 'autocomplete', source: {single_choice}, strict: true, allowInvalid: false"
+                        headers = headers + f", type: 'autocomplete', source: {single_choice}, strict: true, allowInvalid: true"
                     except:
-                        pass      
+                        pass
+                    try:
+                        validator = getattr(self, f"validator: {k}_validator")
+                        headers = headers + f", validator: {k}_validator, allowInvalid: true"
+                    except:
+                        pass
                     headers = headers + f"}},\n"
         else:
             for k, v in self.fields.items():
@@ -103,9 +108,14 @@ class SelfDescribingModel(models.Model):
                     try:
                         choices = getattr(self, f"{k}_choice")
                         single_choice = [t[0] for t in choices]
-                        headers = headers + f", type: 'autocomplete', source: {single_choice}, strict: true, allowInvalid: false"
+                        headers = headers + f", type: 'autocomplete', source: {single_choice}, strict: true, allowInvalid: true"
                     except:
-                        pass      
+                        pass
+                    try:
+                        validator = getattr(self, f"{k}_validator")
+                        headers = headers + f", validator: {k}_validator, allowInvalid: true"
+                    except:
+                        pass
                     headers = headers + f"}},\n"
 
         return headers + ""
@@ -137,7 +147,31 @@ class SelfDescribingModel(models.Model):
                 value = ''
             setattr(self, k, value)
 
+    # Get the headers for the HoT (including choices)
+    def getValidators(self, exclude=[], include=[]):
 
+        validators = ""
+
+        if include:
+            for k, v in self.fields.items():
+                if k in include:
+                    try:
+                        validator_body = getattr(self, f"{k}_validator")
+                        validator = (f"{k}_validator", f"{validator_body}")
+                        validators = validators + f"const {k}_validator = /{validator_body}/;\n"
+                    except:
+                        pass
+        else:
+            for k, v in self.fields.items():
+                if k not in exclude:
+                    try:
+                        validator_body = getattr(self, f"{k}_validator")
+                        validator = (f"{k}_validator", f"{validator_body}")
+                        validators = validators + f"const {k}_validator = /{validator_body}/;\n"
+                    except:
+                        pass
+
+        return validators
 
 # class SelfDescribingUnitModel(SelfDescribingModel):
 

@@ -16,7 +16,7 @@ Add and update Samples
     <div id="handsontable-container"></div>
 
     <div class="has-text-centered mt-4">
-      <button id="save" class="button is-success" onclick="saveSampleData()">Save Samples</button>
+      <button id="save" class="button is-success" onclick="validateSampleData()">Save Samples</button>
       <button id="cancel" class="button is-link" onclick="redirectToOrders()">Back to Order Overview</button>
     </div>
 
@@ -31,7 +31,10 @@ Comment out for 6.2.2 (MIT)
 
 <script>
 
+  {{ validators }}
+
   var unsaved = false;
+  var first_failing_cell = null;
   document.getElementById('save').disabled = true;
 
   var hotElement = document.querySelector('#handsontable-container');
@@ -61,6 +64,15 @@ Comment out for 6.2.2 (MIT)
   };
   var hot = new Handsontable(hotElement, hotSettings);
 
+  hot.addHook('afterValidate', function(isValid, value, row, prop, source) {
+    if (!isValid) {
+      if (first_failing_cell == null) {
+        adjusted_row = row + 1
+        first_failing_cell = "Row:\n" + adjusted_row + "\n\nColumn:\n" + prop + "\n\nValue:\n" + value;
+      }
+    }
+});
+
   function addNewRow() {
     var newRow = ['', '']; // Adjust based on number of columns
 
@@ -76,19 +88,19 @@ Comment out for 6.2.2 (MIT)
     document.getElementById('save').disabled = false;
   }
 
-  function saveSampleData() {
-    var abortSave = false
+  function validateSampleData() {
 
     hot.validateCells((valid) => {
     if (!valid) {
-      alert("At least one row failing validation");
-      abortSave = true;
+      alert("At least one cell failing validation\n\nFirst failing cell:\n\n" + first_failing_cell);
+      first_failing_cell = null;
+    } else {
+      saveSampleData(); 
     }
     })
+  }
 
-    if (abortSave) {
-      return;
-    } 
+  function saveSampleData() {
 
     var sampleData = hot.getData().map(function (row, index) {
       return {

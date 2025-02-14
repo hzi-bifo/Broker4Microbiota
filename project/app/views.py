@@ -273,6 +273,8 @@ def samples_view(request, project_id, order_id):
         inclusions = []
         exclusions = []
 
+        validators = ""
+
         # construct headers and array (to pass data back in POST) for HoT, for samples
         samples_headers = f"[\n"
         sample_headers_array = ""
@@ -286,6 +288,8 @@ def samples_view(request, project_id, order_id):
         samples_headers = samples_headers + sample.getHeaders(inclusions, exclusions)
         (index, sample_headers_array_update) = sample.getHeadersArray(index, inclusions, exclusions)
         sample_headers_array = sample_headers_array + sample_headers_array_update
+
+        validators = validators + sample.getValidators(inclusions, exclusions)
 
         # construct headers and array (to pass data back in POST) for HoT, for checklists
         checklist_entries_list = []
@@ -301,6 +305,8 @@ def samples_view(request, project_id, order_id):
             samples_headers = samples_headers + checklist_entries_class().getHeaders(inclusions, exclusions)
             (index, sample_headers_array_update) = checklist_entries_class().getHeadersArray(index, inclusions, exclusions)
             sample_headers_array = sample_headers_array + sample_headers_array_update
+
+            validators = validators + checklist_entries_class().getValidators(inclusions, exclusions)
 
             # get the checklist objects for this sample_set
             try:
@@ -337,6 +343,7 @@ def samples_view(request, project_id, order_id):
                 'sample_headers_array': sample_headers_array,
                 'status_choices': status_choices,
                 'project_id': project_id,
+                'validators': validators,
             })
     else:
         return redirect('login')

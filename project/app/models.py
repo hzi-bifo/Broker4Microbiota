@@ -92,9 +92,14 @@ class SelfDescribingModel(models.Model):
                     try:
                         choices = getattr(self, f"{k}_choice")
                         single_choice = [t[0] for t in choices]
-                        headers = headers + f", type: 'autocomplete', source: {single_choice}, strict: true, allowInvalid: false"
+                        headers = headers + f", type: 'autocomplete', source: {single_choice}, strict: true, allowInvalid: true"
                     except:
-                        pass      
+                        pass
+                    try:
+                        validator = getattr(self, f"validator: {k}_validator")
+                        headers = headers + f", validator: {k}_validator, allowInvalid: true"
+                    except:
+                        pass
                     headers = headers + f"}},\n"
         else:
             for k, v in self.fields.items():
@@ -103,9 +108,14 @@ class SelfDescribingModel(models.Model):
                     try:
                         choices = getattr(self, f"{k}_choice")
                         single_choice = [t[0] for t in choices]
-                        headers = headers + f", type: 'autocomplete', source: {single_choice}, strict: true, allowInvalid: false"
+                        headers = headers + f", type: 'autocomplete', source: {single_choice}, strict: true, allowInvalid: true"
                     except:
-                        pass      
+                        pass
+                    try:
+                        validator = getattr(self, f"{k}_validator")
+                        headers = headers + f", validator: {k}_validator, allowInvalid: true"
+                    except:
+                        pass
                     headers = headers + f"}},\n"
 
         return headers + ""
@@ -137,7 +147,31 @@ class SelfDescribingModel(models.Model):
                 value = ''
             setattr(self, k, value)
 
+    # Get the headers for the HoT (including choices)
+    def getValidators(self, exclude=[], include=[]):
 
+        validators = ""
+
+        if include:
+            for k, v in self.fields.items():
+                if k in include:
+                    try:
+                        validator_body = getattr(self, f"{k}_validator")
+                        validator = (f"{k}_validator", f"{validator_body}")
+                        validators = validators + f"const {k}_validator = /{validator_body}/;\n"
+                    except:
+                        pass
+        else:
+            for k, v in self.fields.items():
+                if k not in exclude:
+                    try:
+                        validator_body = getattr(self, f"{k}_validator")
+                        validator = (f"{k}_validator", f"{validator_body}")
+                        validators = validators + f"const {k}_validator = /{validator_body}/;\n"
+                    except:
+                        pass
+
+        return validators
 
 # class SelfDescribingUnitModel(SelfDescribingModel):
 
@@ -383,7 +417,7 @@ class GSC_MIxS_wastewater_sludge(SelfDescribingModel):
 	GSC_MIxS_wastewater_sludge_sample_volume_or_weight_for_DNA_extraction_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
 	GSC_MIxS_wastewater_sludge_library_size_validator = "[+-]?[0-9]+"
 	GSC_MIxS_wastewater_sludge_library_reads_sequenced_validator = "[+-]?[0-9]+"
-	GSC_MIxS_wastewater_sludge_collection_date_validator = "(^[12][0-9]{3}(-(0[1-9]|1[0-2])(-(0[1-9]|[12][0-9]|3[01])(T[0-9]{2}:[0-9]{2}(:[0-9]{2})?Z?([+-][0-9]{1,2})?)?)?)?(/[0-9]{4}(-[0-9]{2}(-[0-9]{2}(T[0-9]{2}:[0-9]{2}(:[0-9]{2})?Z?([+-][0-9]{1,2})?)?)?)?)?$)|(^not collected$)|(^not provided$)|(^restricted access$)|(^missing: control sample$)|(^missing: sample group$)|(^missing: synthetic construct$)|(^missing: lab stock$)|(^missing: third party data$)|(^missing: data agreement established pre-2023$)|(^missing: endangered species$)|(^missing: human-identifiable$)"
+	GSC_MIxS_wastewater_sludge_collection_date_validator = "(^[12][0-9]{3}(-(0[1-9]|1[0-2])(-(0[1-9]|[12][0-9]|3[01])(T[0-9]{2}:[0-9]{2}(:[0-9]{2})?Z?([+-][0-9]{1,2})?)?)?)?(\/[0-9]{4}(-[0-9]{2}(-[0-9]{2}(T[0-9]{2}:[0-9]{2}(:[0-9]{2})?Z?([+-][0-9]{1,2})?)?)?)?)?$)|(^not collected$)|(^not provided$)|(^restricted access$)|(^missing: control sample$)|(^missing: sample group$)|(^missing: synthetic construct$)|(^missing: lab stock$)|(^missing: third party data$)|(^missing: data agreement established pre-2023$)|(^missing: endangered species$)|(^missing: human-identifiable$)"
 	GSC_MIxS_wastewater_sludge_geographic_location_latitude_validator = "(^[+-]?[0-9]+.?[0-9]{0,8}$)|(^not collected$)|(^not provided$)|(^restricted access$)|(^missing: control sample$)|(^missing: sample group$)|(^missing: synthetic construct$)|(^missing: lab stock$)|(^missing: third party data$)|(^missing: data agreement established pre-2023$)|(^missing: endangered species$)|(^missing: human-identifiable$)"
 	GSC_MIxS_wastewater_sludge_geographic_location_longitude_validator = "(^[+-]?[0-9]+.?[0-9]{0,8}$)|(^not collected$)|(^not provided$)|(^restricted access$)|(^missing: control sample$)|(^missing: sample group$)|(^missing: synthetic construct$)|(^missing: lab stock$)|(^missing: third party data$)|(^missing: data agreement established pre-2023$)|(^missing: endangered species$)|(^missing: human-identifiable$)"
 	GSC_MIxS_wastewater_sludge_depth_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
