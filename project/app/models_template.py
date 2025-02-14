@@ -225,8 +225,7 @@ class Sampleset(models.Model):
     custom = models.JSONField()
 
     checklist_structure = {
-        'GSC_MIxS_wastewater_sludge': {"checklist_code" : "ERC000023", 'checklist_class_name': 'GSC_MIxS_wastewater_sludge', 'unitchecklist_class_name': 'GSC_MIxS_wastewater_sludge_unit'},
-        'GSC_MIxS_miscellaneous_natural_or_artificial_environment': {"checklist_code" : "ERC0000xx", 'checklist_class_name': 'GSC_MIxS_miscellaneous_natural_or_artificial_environment', 'unitchecklist_class_name': 'GSC_MIxS_miscellaneous_natural_or_artificial_environment_unit'},
+        %CHECKLIST_STRUCTURE%
     }
 
 class Sample(SelfDescribingModel):

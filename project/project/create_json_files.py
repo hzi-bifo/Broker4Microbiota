@@ -5,6 +5,7 @@ import pdb
 import sys
 os.environ['DJANGO_SETTINGS_MODULE'] = 'settings'
 from django.conf import settings
+import re
 
 def get_next_node_id():
     global node_id
@@ -39,6 +40,23 @@ def produceJqTree(data, jqtree_data):
             jqtree_fieldgroup['children'].append(jqtree_field)
         jqtree_checklist['children'].append(jqtree_fieldgroup)
     jqtree_data.append(jqtree_checklist)
+
+# Produce checklist structure
+def produce_checklist_structure(data):
+
+    checklist_header = data['CHECKLIST_SET']['CHECKLIST']['DESCRIPTOR']
+    checklist_name = checklist_header['NAME']
+
+    checklist_header2 = data['CHECKLIST_SET']['CHECKLIST']['IDENTIFIERS']
+    checklist_code = checklist_header2['PRIMARY_ID']
+
+    checklist_class_name = checklist_name
+    unitchecklist_class_name = f"{checklist_name}_unit"
+
+    checklist_structure = f"'{checklist_name}': {{\"checklist_code\": \"{checklist_code}\", 'checklist_class_name': '{checklist_class_name}', 'unitchecklist_class_name': '{unitchecklist_class_name}'}},\n"
+
+    return checklist_structure
+
 
 # Produce models file
 def produceModels(data, model_data, field_names):
@@ -200,6 +218,8 @@ field_names = {}
 
 node_id = 0
 
+checklist_structure = ""
+
 # Iterate over each XML file in the XML directory
 for filename in os.listdir(xml_dir):
     if filename.endswith('.xml'):
@@ -220,15 +240,18 @@ for filename in os.listdir(xml_dir):
 
         model_data = model_data + produceModels(data, model_data, field_names)
 
+        checklist_structure = checklist_structure + produce_checklist_structure(data)
+
 with open(jqtree_path, 'w') as jqtree_file:
     json.dump(jqtree_data, jqtree_file, indent=4)
 
 
 with open(models_template_path, 'r') as models_template_file:
-    models_template_contents = models_template_file.read()
+    models_template_contents = models_template_file.readlines()
 
 with open(models_path, 'w') as models_file:
-    print(models_template_contents, file = models_file)
+    for line in models_template_contents:
+        models_file.write(re.sub(r'%CHECKLIST_STRUCTURE%', checklist_structure, line))
     print(model_data, file = models_file)
 
 

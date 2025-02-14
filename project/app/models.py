@@ -225,8 +225,22 @@ class Sampleset(models.Model):
     custom = models.JSONField()
 
     checklist_structure = {
-        'GSC_MIxS_wastewater_sludge': {"checklist_code" : "ERC000023", 'checklist_class_name': 'GSC_MIxS_wastewater_sludge', 'unitchecklist_class_name': 'GSC_MIxS_wastewater_sludge_unit'},
-        'GSC_MIxS_miscellaneous_natural_or_artificial_environment': {"checklist_code" : "ERC0000xx", 'checklist_class_name': 'GSC_MIxS_miscellaneous_natural_or_artificial_environment', 'unitchecklist_class_name': 'GSC_MIxS_miscellaneous_natural_or_artificial_environment_unit'},
+        'GSC MIxS wastewater sludge': {"checklist_code": "ERC000023", 'checklist_class_name': 'GSC MIxS wastewater sludge', 'unitchecklist_class_name': 'GSC MIxS wastewater sludge_unit'},
+'GSC MIxS miscellaneous natural or artificial environment': {"checklist_code": "ERC000025", 'checklist_class_name': 'GSC MIxS miscellaneous natural or artificial environment', 'unitchecklist_class_name': 'GSC MIxS miscellaneous natural or artificial environment_unit'},
+'GSC MIxS human skin': {"checklist_code": "ERC000017", 'checklist_class_name': 'GSC MIxS human skin', 'unitchecklist_class_name': 'GSC MIxS human skin_unit'},
+'ENA default sample checklist': {"checklist_code": "ERC000011", 'checklist_class_name': 'ENA default sample checklist', 'unitchecklist_class_name': 'ENA default sample checklist_unit'},
+'GSC MIxS plant associated': {"checklist_code": "ERC000020", 'checklist_class_name': 'GSC MIxS plant associated', 'unitchecklist_class_name': 'GSC MIxS plant associated_unit'},
+'GSC MIxS water': {"checklist_code": "ERC000024", 'checklist_class_name': 'GSC MIxS water', 'unitchecklist_class_name': 'GSC MIxS water_unit'},
+'GSC MIxS soil': {"checklist_code": "ERC000022", 'checklist_class_name': 'GSC MIxS soil', 'unitchecklist_class_name': 'GSC MIxS soil_unit'},
+'GSC MIxS human gut': {"checklist_code": "ERC000015", 'checklist_class_name': 'GSC MIxS human gut', 'unitchecklist_class_name': 'GSC MIxS human gut_unit'},
+'GSC MIxS host associated': {"checklist_code": "ERC000013", 'checklist_class_name': 'GSC MIxS host associated', 'unitchecklist_class_name': 'GSC MIxS host associated_unit'},
+'GSC MIxS human vaginal': {"checklist_code": "ERC000018", 'checklist_class_name': 'GSC MIxS human vaginal', 'unitchecklist_class_name': 'GSC MIxS human vaginal_unit'},
+'GSC MIxS human oral': {"checklist_code": "ERC000016", 'checklist_class_name': 'GSC MIxS human oral', 'unitchecklist_class_name': 'GSC MIxS human oral_unit'},
+'GSC MIxS sediment': {"checklist_code": "ERC000021", 'checklist_class_name': 'GSC MIxS sediment', 'unitchecklist_class_name': 'GSC MIxS sediment_unit'},
+'GSC MIxS human associated': {"checklist_code": "ERC000014", 'checklist_class_name': 'GSC MIxS human associated', 'unitchecklist_class_name': 'GSC MIxS human associated_unit'},
+'GSC MIxS air': {"checklist_code": "ERC000012", 'checklist_class_name': 'GSC MIxS air', 'unitchecklist_class_name': 'GSC MIxS air_unit'},
+'GSC MIxS microbial mat biolfilm': {"checklist_code": "ERC000019", 'checklist_class_name': 'GSC MIxS microbial mat biolfilm', 'unitchecklist_class_name': 'GSC MIxS microbial mat biolfilm_unit'},
+
     }
 
 class Sample(SelfDescribingModel):
@@ -400,7 +414,6 @@ class Blah_checklist(SelfDescribingModel):
   
 class Blah_unitchecklist(SelfDescribingModel):
     sample = models.ForeignKey(Sample, on_delete=models.CASCADE) """
-
 
 class GSC_MIxS_wastewater_sludge(SelfDescribingModel):
 
