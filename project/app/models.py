@@ -30,7 +30,7 @@ class SelfDescribingModel(models.Model):
     class Meta:
         abstract = True
 
-    def getSubAttributes(self, exclude=[], include=[]):
+    def getSubAttributes(self, include=[], exclude=[]):
 
         class_name = type(self).__name__
         unit_class_name = f"{class_name}_unit"
@@ -67,7 +67,7 @@ class SelfDescribingModel(models.Model):
         return output
 
     # Get actual value for each field
-    def getFields(self, exclude=[], include=[]):
+    def getFields(self, include=[], exclude=[]):
         output = {}
         if include:
             for k, v in self.fields.items():
@@ -81,7 +81,7 @@ class SelfDescribingModel(models.Model):
         return output            
     
     # Get the headers for the HoT (including choices)
-    def getHeaders(self, exclude=[], include=[]):
+    def getHeaders(self, include=[], exclude=[]):
 
         headers = ""
 
@@ -120,8 +120,24 @@ class SelfDescribingModel(models.Model):
 
         return headers + ""
 
+    def getHeaderNames(self, include=[], exclude=[]):
+
+        headerNames = []
+
+        if include:
+            for k, v in self.fields.items():
+                if k in include:
+                    headerNames.append(k)
+        else:
+            for k, v in self.fields.items():
+                if k not in exclude:
+                    headerNames.append(k)
+
+        return headerNames
+
+
     # Get the headers for returning the data output from HoT
-    def getHeadersArray(self, index, exclude=[], include=[]):
+    def getHeadersArray(self, index, include=[], exclude=[]):
 
         output = ""
         if include:
@@ -148,7 +164,7 @@ class SelfDescribingModel(models.Model):
             setattr(self, k, value)
 
     # Get the headers for the HoT (including choices)
-    def getValidators(self, exclude=[], include=[]):
+    def getValidators(self, include=[], exclude=[] ):
 
         validators = ""
 
@@ -172,6 +188,41 @@ class SelfDescribingModel(models.Model):
                         pass
 
         return validators
+
+    def getHeadersCount(self, include=[], exclude=[]):
+
+        count = 0
+
+        if include:
+            for k, v in self.fields.items():
+                if k in include:
+                    count = count + 1
+        else:
+            for k, v in self.fields.items():
+                if k not in exclude:
+                    count = count + 1
+
+        return count        
+
+    def getHeadersMaxSize(self, headers_max_size, include=[], exclude=[]):
+            
+        if include:
+            for k, v in self.fields.items():
+                if k in include:
+                    if len(v) > headers_max_size:
+                        headers_max_size = len(v)
+        else:
+            for k, v in self.fields.items():
+                if k not in exclude:
+                    if len(v) > headers_max_size:
+                        headers_max_size = len(v)
+        if self.name:
+            if len(self.name) > headers_max_size:
+                headers_max_size = len(self.name    )
+
+        return headers_max_size
+
+
 
 # class SelfDescribingUnitModel(SelfDescribingModel):
 
@@ -225,21 +276,21 @@ class Sampleset(models.Model):
     custom = models.JSONField()
 
     checklist_structure = {
-        'GSC MIxS wastewater sludge': {"checklist_code": "ERC000023", 'checklist_class_name': 'GSC MIxS wastewater sludge', 'unitchecklist_class_name': 'GSC MIxS wastewater sludge_unit'},
-'GSC MIxS miscellaneous natural or artificial environment': {"checklist_code": "ERC000025", 'checklist_class_name': 'GSC MIxS miscellaneous natural or artificial environment', 'unitchecklist_class_name': 'GSC MIxS miscellaneous natural or artificial environment_unit'},
-'GSC MIxS human skin': {"checklist_code": "ERC000017", 'checklist_class_name': 'GSC MIxS human skin', 'unitchecklist_class_name': 'GSC MIxS human skin_unit'},
-'ENA default sample checklist': {"checklist_code": "ERC000011", 'checklist_class_name': 'ENA default sample checklist', 'unitchecklist_class_name': 'ENA default sample checklist_unit'},
-'GSC MIxS plant associated': {"checklist_code": "ERC000020", 'checklist_class_name': 'GSC MIxS plant associated', 'unitchecklist_class_name': 'GSC MIxS plant associated_unit'},
-'GSC MIxS water': {"checklist_code": "ERC000024", 'checklist_class_name': 'GSC MIxS water', 'unitchecklist_class_name': 'GSC MIxS water_unit'},
-'GSC MIxS soil': {"checklist_code": "ERC000022", 'checklist_class_name': 'GSC MIxS soil', 'unitchecklist_class_name': 'GSC MIxS soil_unit'},
-'GSC MIxS human gut': {"checklist_code": "ERC000015", 'checklist_class_name': 'GSC MIxS human gut', 'unitchecklist_class_name': 'GSC MIxS human gut_unit'},
-'GSC MIxS host associated': {"checklist_code": "ERC000013", 'checklist_class_name': 'GSC MIxS host associated', 'unitchecklist_class_name': 'GSC MIxS host associated_unit'},
-'GSC MIxS human vaginal': {"checklist_code": "ERC000018", 'checklist_class_name': 'GSC MIxS human vaginal', 'unitchecklist_class_name': 'GSC MIxS human vaginal_unit'},
-'GSC MIxS human oral': {"checklist_code": "ERC000016", 'checklist_class_name': 'GSC MIxS human oral', 'unitchecklist_class_name': 'GSC MIxS human oral_unit'},
-'GSC MIxS sediment': {"checklist_code": "ERC000021", 'checklist_class_name': 'GSC MIxS sediment', 'unitchecklist_class_name': 'GSC MIxS sediment_unit'},
-'GSC MIxS human associated': {"checklist_code": "ERC000014", 'checklist_class_name': 'GSC MIxS human associated', 'unitchecklist_class_name': 'GSC MIxS human associated_unit'},
-'GSC MIxS air': {"checklist_code": "ERC000012", 'checklist_class_name': 'GSC MIxS air', 'unitchecklist_class_name': 'GSC MIxS air_unit'},
-'GSC MIxS microbial mat biolfilm': {"checklist_code": "ERC000019", 'checklist_class_name': 'GSC MIxS microbial mat biolfilm', 'unitchecklist_class_name': 'GSC MIxS microbial mat biolfilm_unit'},
+        'GSC_MIxS_wastewater_sludge': {"checklist_code": "ERC000023", 'checklist_class_name': 'GSC_MIxS_wastewater_sludge', 'unitchecklist_class_name': 'GSC_MIxS_wastewater_sludge_unit'},
+'GSC_MIxS_miscellaneous_natural_or_artificial_environment': {"checklist_code": "ERC000025", 'checklist_class_name': 'GSC_MIxS_miscellaneous_natural_or_artificial_environment', 'unitchecklist_class_name': 'GSC_MIxS_miscellaneous_natural_or_artificial_environment_unit'},
+'GSC_MIxS_human_skin': {"checklist_code": "ERC000017", 'checklist_class_name': 'GSC_MIxS_human_skin', 'unitchecklist_class_name': 'GSC_MIxS_human_skin_unit'},
+'ENA_default_sample_checklist': {"checklist_code": "ERC000011", 'checklist_class_name': 'ENA_default_sample_checklist', 'unitchecklist_class_name': 'ENA_default_sample_checklist_unit'},
+'GSC_MIxS_plant_associated': {"checklist_code": "ERC000020", 'checklist_class_name': 'GSC_MIxS_plant_associated', 'unitchecklist_class_name': 'GSC_MIxS_plant_associated_unit'},
+'GSC_MIxS_water': {"checklist_code": "ERC000024", 'checklist_class_name': 'GSC_MIxS_water', 'unitchecklist_class_name': 'GSC_MIxS_water_unit'},
+'GSC_MIxS_soil': {"checklist_code": "ERC000022", 'checklist_class_name': 'GSC_MIxS_soil', 'unitchecklist_class_name': 'GSC_MIxS_soil_unit'},
+'GSC_MIxS_human_gut': {"checklist_code": "ERC000015", 'checklist_class_name': 'GSC_MIxS_human_gut', 'unitchecklist_class_name': 'GSC_MIxS_human_gut_unit'},
+'GSC_MIxS_host_associated': {"checklist_code": "ERC000013", 'checklist_class_name': 'GSC_MIxS_host_associated', 'unitchecklist_class_name': 'GSC_MIxS_host_associated_unit'},
+'GSC_MIxS_human_vaginal': {"checklist_code": "ERC000018", 'checklist_class_name': 'GSC_MIxS_human_vaginal', 'unitchecklist_class_name': 'GSC_MIxS_human_vaginal_unit'},
+'GSC_MIxS_human_oral': {"checklist_code": "ERC000016", 'checklist_class_name': 'GSC_MIxS_human_oral', 'unitchecklist_class_name': 'GSC_MIxS_human_oral_unit'},
+'GSC_MIxS_sediment': {"checklist_code": "ERC000021", 'checklist_class_name': 'GSC_MIxS_sediment', 'unitchecklist_class_name': 'GSC_MIxS_sediment_unit'},
+'GSC_MIxS_human_associated': {"checklist_code": "ERC000014", 'checklist_class_name': 'GSC_MIxS_human_associated', 'unitchecklist_class_name': 'GSC_MIxS_human_associated_unit'},
+'GSC_MIxS_air': {"checklist_code": "ERC000012", 'checklist_class_name': 'GSC_MIxS_air', 'unitchecklist_class_name': 'GSC_MIxS_air_unit'},
+'GSC_MIxS_microbial_mat_biolfilm': {"checklist_code": "ERC000019", 'checklist_class_name': 'GSC_MIxS_microbial_mat_biolfilm', 'unitchecklist_class_name': 'GSC_MIxS_microbial_mat_biolfilm_unit'},
 
     }
 
@@ -281,6 +332,8 @@ class Sample(SelfDescribingModel):
         'sample_description': 'sample_description',
     }
 
+    name = 'Sample'
+
     # @property
     # def getAttributes(self):
     # 	# go through each of the fields within eah of the checklists
@@ -306,6 +359,7 @@ class Sample(SelfDescribingModel):
     #         output = output + f'{attributes}\n'
 
     #     return output    
+
 
 
 class ProjectSubmission(models.Model):
@@ -415,6 +469,47 @@ class Blah_checklist(SelfDescribingModel):
 class Blah_unitchecklist(SelfDescribingModel):
     sample = models.ForeignKey(Sample, on_delete=models.CASCADE) """
 
+class MagRun(models.Model):
+    sequence = models.ForeignKey(Sequence, on_delete=models.CASCADE)
+
+    magRun_id = models.CharField(max_length=100, null=True, blank=True)
+    status = models.CharField(max_length=100, null=True, blank=True)
+
+    # Output files
+
+class Assembly(models.Model):
+    magRun = models.ForeignKey(Sequence, on_delete=models.CASCADE)
+
+    magRun_assembly_id = models.CharField(max_length=100, null=True, blank=True) 
+    file = models.CharField(max_length=255, null=True, blank=True)
+
+class Bin(models.Model):
+    magRun = models.ForeignKey(Sequence, on_delete=models.CASCADE)
+
+    magRun_bin_id = models.CharField(max_length=100, null=True, blank=True)
+    file = models.CharField(max_length=255, null=True, blank=True)
+
+class SubMGRun(models.Model):
+    order = models.ForeignKey(Order, on_delete=models.CASCADE)
+
+    subMGRun_id = models.CharField(max_length=100, null=True, blank=True)
+
+    samples = models.ManyToManyField(Sample)
+    sequences = models.ManyToManyField(Sequence)
+    # assembly_samples = models.ManyToManyField(Sample)
+    # bin_samples = models.ManyToManyField(Sample)
+    # mag_samples = models.ManyToManyField(Sample)
+    assembly = models.ManyToManyField(Assembly)
+    bins = models.ManyToManyField(Bin)
+    # mags = models.ManyToManyField(Bin)
+
+    type = models.CharField(max_length=100, null=True, blank=True)
+    status = models.CharField(max_length=100, null=True, blank=True)
+
+    yaml = models.JSONField()
+
+    # Accession stuff
+    # Output files
 class GSC_MIxS_wastewater_sludge(SelfDescribingModel):
 
 	GSC_MIxS_wastewater_sludge_sequence_quality_check_choice = [('manual', 'manual'), ('none', 'none'), ('software', 'software')]
@@ -641,6 +736,8 @@ class GSC_MIxS_wastewater_sludge(SelfDescribingModel):
 		'GSC_MIxS_wastewater_sludge_perturbation': 'perturbation',
 	}
 
+	name = 'GSC_MIxS_wastewater_sludge'
+
 class GSC_MIxS_wastewater_sludge_unit(SelfDescribingModel):
 
 	GSC_MIxS_wastewater_sludge_sample_volume_or_weight_for_DNA_extraction_units = [('g', 'g'), ('mL', 'mL'), ('mg', 'mg'), ('ng', 'ng')]
@@ -700,6 +797,8 @@ class GSC_MIxS_wastewater_sludge_unit(SelfDescribingModel):
 		'GSC_MIxS_wastewater_sludge_sodium': 'sodium',
 		'GSC_MIxS_wastewater_sludge_total_nitrogen': 'total nitrogen',
 	}
+
+	name = 'GSC_MIxS_wastewater_sludge'
 
 	sampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE, default=1)
 	sample = models.ForeignKey(Sample, on_delete=models.CASCADE, default=1)
@@ -981,6 +1080,8 @@ class GSC_MIxS_miscellaneous_natural_or_artificial_environment(SelfDescribingMod
 		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_perturbation': 'perturbation',
 	}
 
+	name = 'GSC_MIxS_miscellaneous_natural_or_artificial_environment'
+
 class GSC_MIxS_miscellaneous_natural_or_artificial_environment_unit(SelfDescribingModel):
 
 	GSC_MIxS_miscellaneous_natural_or_artificial_environment_sample_volume_or_weight_for_DNA_extraction_units = [('g', 'g'), ('mL', 'mL'), ('mg', 'mg'), ('ng', 'ng')]
@@ -1066,6 +1167,8 @@ class GSC_MIxS_miscellaneous_natural_or_artificial_environment_unit(SelfDescribi
 		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_sulfate': 'sulfate',
 		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_sulfide': 'sulfide',
 	}
+
+	name = 'GSC_MIxS_miscellaneous_natural_or_artificial_environment'
 
 	sampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE, default=1)
 	sample = models.ForeignKey(Sample, on_delete=models.CASCADE, default=1)
@@ -1316,6 +1419,8 @@ class GSC_MIxS_human_skin(SelfDescribingModel):
 		'GSC_MIxS_human_skin_perturbation': 'perturbation',
 	}
 
+	name = 'GSC_MIxS_human_skin'
+
 class GSC_MIxS_human_skin_unit(SelfDescribingModel):
 
 	GSC_MIxS_human_skin_sample_volume_or_weight_for_DNA_extraction_units = [('g', 'g'), ('mL', 'mL'), ('mg', 'mg'), ('ng', 'ng')]
@@ -1351,6 +1456,8 @@ class GSC_MIxS_human_skin_unit(SelfDescribingModel):
 		'GSC_MIxS_human_skin_time_since_last_wash': 'time since last wash',
 		'GSC_MIxS_human_skin_host_pulse': 'host pulse',
 	}
+
+	name = 'GSC_MIxS_human_skin'
 
 	sampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE, default=1)
 	sample = models.ForeignKey(Sample, on_delete=models.CASCADE, default=1)
@@ -1443,11 +1550,15 @@ class ENA_default_sample_checklist(SelfDescribingModel):
 		'ENA_default_sample_checklist_strain': 'strain',
 	}
 
+	name = 'ENA_default_sample_checklist'
+
 class ENA_default_sample_checklist_unit(SelfDescribingModel):
 
 
 	fields = {
 	}
+
+	name = 'ENA_default_sample_checklist'
 
 	sampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE, default=1)
 	sample = models.ForeignKey(Sample, on_delete=models.CASCADE, default=1)
@@ -1696,6 +1807,8 @@ class GSC_MIxS_plant_associated(SelfDescribingModel):
 		'GSC_MIxS_plant_associated_perturbation': 'perturbation',
 	}
 
+	name = 'GSC_MIxS_plant_associated'
+
 class GSC_MIxS_plant_associated_unit(SelfDescribingModel):
 
 	GSC_MIxS_plant_associated_sample_volume_or_weight_for_DNA_extraction_units = [('g', 'g'), ('mL', 'mL'), ('mg', 'mg'), ('ng', 'ng')]
@@ -1735,6 +1848,8 @@ class GSC_MIxS_plant_associated_unit(SelfDescribingModel):
 		'GSC_MIxS_plant_associated_temperature': 'temperature',
 		'GSC_MIxS_plant_associated_salinity': 'salinity',
 	}
+
+	name = 'GSC_MIxS_plant_associated'
 
 	sampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE, default=1)
 	sample = models.ForeignKey(Sample, on_delete=models.CASCADE, default=1)
@@ -2113,6 +2228,8 @@ class GSC_MIxS_water(SelfDescribingModel):
 		'GSC_MIxS_water_perturbation': 'perturbation',
 	}
 
+	name = 'GSC_MIxS_water'
+
 class GSC_MIxS_water_unit(SelfDescribingModel):
 
 	GSC_MIxS_water_sample_volume_or_weight_for_DNA_extraction_units = [('g', 'g'), ('mL', 'mL'), ('mg', 'mg'), ('ng', 'ng')]
@@ -2264,6 +2381,8 @@ class GSC_MIxS_water_unit(SelfDescribingModel):
 		'GSC_MIxS_water_total_particulate_carbon': 'total particulate carbon',
 		'GSC_MIxS_water_total_phosphorus': 'total phosphorus',
 	}
+
+	name = 'GSC_MIxS_water'
 
 	sampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE, default=1)
 	sample = models.ForeignKey(Sample, on_delete=models.CASCADE, default=1)
@@ -2598,6 +2717,8 @@ class GSC_MIxS_soil(SelfDescribingModel):
 		'GSC_MIxS_soil_perturbation': 'perturbation',
 	}
 
+	name = 'GSC_MIxS_soil'
+
 class GSC_MIxS_soil_unit(SelfDescribingModel):
 
 	GSC_MIxS_soil_slope_gradient_units = [('%', '%')]
@@ -2641,6 +2762,8 @@ class GSC_MIxS_soil_unit(SelfDescribingModel):
 		'GSC_MIxS_soil_water_content': 'water content',
 		'GSC_MIxS_soil_total_nitrogen': 'total nitrogen',
 	}
+
+	name = 'GSC_MIxS_soil'
 
 	sampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE, default=1)
 	sample = models.ForeignKey(Sample, on_delete=models.CASCADE, default=1)
@@ -2868,6 +2991,8 @@ class GSC_MIxS_human_gut(SelfDescribingModel):
 		'GSC_MIxS_human_gut_perturbation': 'perturbation',
 	}
 
+	name = 'GSC_MIxS_human_gut'
+
 class GSC_MIxS_human_gut_unit(SelfDescribingModel):
 
 	GSC_MIxS_human_gut_sample_volume_or_weight_for_DNA_extraction_units = [('g', 'g'), ('mL', 'mL'), ('mg', 'mg'), ('ng', 'ng')]
@@ -2901,6 +3026,8 @@ class GSC_MIxS_human_gut_unit(SelfDescribingModel):
 		'GSC_MIxS_human_gut_salinity': 'salinity',
 		'GSC_MIxS_human_gut_host_pulse': 'host pulse',
 	}
+
+	name = 'GSC_MIxS_human_gut'
 
 	sampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE, default=1)
 	sample = models.ForeignKey(Sample, on_delete=models.CASCADE, default=1)
@@ -3140,6 +3267,8 @@ class GSC_MIxS_host_associated(SelfDescribingModel):
 		'GSC_MIxS_host_associated_perturbation': 'perturbation',
 	}
 
+	name = 'GSC_MIxS_host_associated'
+
 class GSC_MIxS_host_associated_unit(SelfDescribingModel):
 
 	GSC_MIxS_host_associated_sample_volume_or_weight_for_DNA_extraction_units = [('g', 'g'), ('mL', 'mL'), ('mg', 'mg'), ('ng', 'ng')]
@@ -3183,6 +3312,8 @@ class GSC_MIxS_host_associated_unit(SelfDescribingModel):
 		'GSC_MIxS_host_associated_host_blood_pressure_diastolic': 'host blood pressure diastolic',
 		'GSC_MIxS_host_associated_host_blood_pressure_systolic': 'host blood pressure systolic',
 	}
+
+	name = 'GSC_MIxS_host_associated'
 
 	sampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE, default=1)
 	sample = models.ForeignKey(Sample, on_delete=models.CASCADE, default=1)
@@ -3425,6 +3556,8 @@ class GSC_MIxS_human_vaginal(SelfDescribingModel):
 		'GSC_MIxS_human_vaginal_perturbation': 'perturbation',
 	}
 
+	name = 'GSC_MIxS_human_vaginal'
+
 class GSC_MIxS_human_vaginal_unit(SelfDescribingModel):
 
 	GSC_MIxS_human_vaginal_sample_volume_or_weight_for_DNA_extraction_units = [('g', 'g'), ('mL', 'mL'), ('mg', 'mg'), ('ng', 'ng')]
@@ -3458,6 +3591,8 @@ class GSC_MIxS_human_vaginal_unit(SelfDescribingModel):
 		'GSC_MIxS_human_vaginal_salinity': 'salinity',
 		'GSC_MIxS_human_vaginal_host_pulse': 'host pulse',
 	}
+
+	name = 'GSC_MIxS_human_vaginal'
 
 	sampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE, default=1)
 	sample = models.ForeignKey(Sample, on_delete=models.CASCADE, default=1)
@@ -3679,6 +3814,8 @@ class GSC_MIxS_human_oral(SelfDescribingModel):
 		'GSC_MIxS_human_oral_perturbation': 'perturbation',
 	}
 
+	name = 'GSC_MIxS_human_oral'
+
 class GSC_MIxS_human_oral_unit(SelfDescribingModel):
 
 	GSC_MIxS_human_oral_sample_volume_or_weight_for_DNA_extraction_units = [('g', 'g'), ('mL', 'mL'), ('mg', 'mg'), ('ng', 'ng')]
@@ -3714,6 +3851,8 @@ class GSC_MIxS_human_oral_unit(SelfDescribingModel):
 		'GSC_MIxS_human_oral_time_since_last_toothbrushing': 'time since last toothbrushing',
 		'GSC_MIxS_human_oral_host_pulse': 'host pulse',
 	}
+
+	name = 'GSC_MIxS_human_oral'
 
 	sampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE, default=1)
 	sample = models.ForeignKey(Sample, on_delete=models.CASCADE, default=1)
@@ -4022,6 +4161,8 @@ class GSC_MIxS_sediment(SelfDescribingModel):
 		'GSC_MIxS_sediment_perturbation': 'perturbation',
 	}
 
+	name = 'GSC_MIxS_sediment'
+
 class GSC_MIxS_sediment_unit(SelfDescribingModel):
 
 	GSC_MIxS_sediment_sample_volume_or_weight_for_DNA_extraction_units = [('g', 'g'), ('mL', 'mL'), ('mg', 'mg'), ('ng', 'ng')]
@@ -4133,6 +4274,8 @@ class GSC_MIxS_sediment_unit(SelfDescribingModel):
 		'GSC_MIxS_sediment_sulfide': 'sulfide',
 		'GSC_MIxS_sediment_total_nitrogen': 'total nitrogen',
 	}
+
+	name = 'GSC_MIxS_sediment'
 
 	sampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE, default=1)
 	sample = models.ForeignKey(Sample, on_delete=models.CASCADE, default=1)
@@ -4432,6 +4575,8 @@ class GSC_MIxS_human_associated(SelfDescribingModel):
 		'GSC_MIxS_human_associated_perturbation': 'perturbation',
 	}
 
+	name = 'GSC_MIxS_human_associated'
+
 class GSC_MIxS_human_associated_unit(SelfDescribingModel):
 
 	GSC_MIxS_human_associated_sample_volume_or_weight_for_DNA_extraction_units = [('g', 'g'), ('mL', 'mL'), ('mg', 'mg'), ('ng', 'ng')]
@@ -4467,6 +4612,8 @@ class GSC_MIxS_human_associated_unit(SelfDescribingModel):
 		'GSC_MIxS_human_associated_weight_loss_in_last_three_months': 'weight loss in last three months',
 		'GSC_MIxS_human_associated_host_pulse': 'host pulse',
 	}
+
+	name = 'GSC_MIxS_human_associated'
 
 	sampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE, default=1)
 	sample = models.ForeignKey(Sample, on_delete=models.CASCADE, default=1)
@@ -4683,6 +4830,8 @@ class GSC_MIxS_air(SelfDescribingModel):
 		'GSC_MIxS_air_perturbation': 'perturbation',
 	}
 
+	name = 'GSC_MIxS_air'
+
 class GSC_MIxS_air_unit(SelfDescribingModel):
 
 	GSC_MIxS_air_sample_volume_or_weight_for_DNA_extraction_units = [('g', 'g'), ('mL', 'mL'), ('mg', 'mg'), ('ng', 'ng')]
@@ -4732,6 +4881,8 @@ class GSC_MIxS_air_unit(SelfDescribingModel):
 		'GSC_MIxS_air_methane': 'methane',
 		'GSC_MIxS_air_salinity': 'salinity',
 	}
+
+	name = 'GSC_MIxS_air'
 
 	sampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE, default=1)
 	sample = models.ForeignKey(Sample, on_delete=models.CASCADE, default=1)
@@ -5065,6 +5216,8 @@ class GSC_MIxS_microbial_mat_biolfilm(SelfDescribingModel):
 		'GSC_MIxS_microbial_mat_biolfilm_perturbation': 'perturbation',
 	}
 
+	name = 'GSC_MIxS_microbial_mat_biolfilm'
+
 class GSC_MIxS_microbial_mat_biolfilm_unit(SelfDescribingModel):
 
 	GSC_MIxS_microbial_mat_biolfilm_sample_volume_or_weight_for_DNA_extraction_units = [('g', 'g'), ('mL', 'mL'), ('mg', 'mg'), ('ng', 'ng')]
@@ -5186,6 +5339,8 @@ class GSC_MIxS_microbial_mat_biolfilm_unit(SelfDescribingModel):
 		'GSC_MIxS_microbial_mat_biolfilm_sulfide': 'sulfide',
 		'GSC_MIxS_microbial_mat_biolfilm_total_nitrogen': 'total nitrogen',
 	}
+
+	name = 'GSC_MIxS_microbial_mat_biolfilm'
 
 	sampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE, default=1)
 	sample = models.ForeignKey(Sample, on_delete=models.CASCADE, default=1)

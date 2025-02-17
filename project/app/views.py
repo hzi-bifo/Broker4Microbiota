@@ -275,10 +275,19 @@ def samples_view(request, project_id, order_id):
 
         validators = ""
 
+        nested_headers = []
+        nested_headers_checklists = []
+        nested_headers_fields = []
+
+        headers_max_size = 0
+
         # construct headers and array (to pass data back in POST) for HoT, for samples
         samples_headers = f"[\n"
         sample_headers_array = ""
         index = 2 # make space for delete button and unsaved indicator
+
+        nested_headers_checklists.append({'label': '-', 'colspan': 2})
+        nested_headers_fields = ['Delete', 'Unsaved']
 
         samples_headers = samples_headers + f"{{ title: 'Delete', renderer: deleteButtonRenderer }},\n{{ title: 'Unsaved', data: 'unsaved', readOnly: true }},\n"
         sample_headers_array = sample_headers_array + f"Delete: row[1],\nunsaved: row[1],\n"
@@ -290,6 +299,12 @@ def samples_view(request, project_id, order_id):
         sample_headers_array = sample_headers_array + sample_headers_array_update
 
         validators = validators + sample.getValidators(inclusions, exclusions)
+
+        headers_count = sample.getHeadersCount(inclusions, exclusions)
+        nested_headers_checklists.append({'label': 'sample', 'colspan': headers_count})
+        nested_headers_fields.extend(sample.getHeaderNames(inclusions, exclusions))
+
+        headers_max_size = sample.getHeadersMaxSize(headers_max_size, inclusions, exclusions)
 
         # construct headers and array (to pass data back in POST) for HoT, for checklists
         checklist_entries_list = []
@@ -305,6 +320,12 @@ def samples_view(request, project_id, order_id):
             samples_headers = samples_headers + checklist_entries_class().getHeaders(inclusions, exclusions)
             (index, sample_headers_array_update) = checklist_entries_class().getHeadersArray(index, inclusions, exclusions)
             sample_headers_array = sample_headers_array + sample_headers_array_update
+
+            headers_count = checklist_entries_class().getHeadersCount(inclusions, exclusions)
+            nested_headers_checklists.append({'label': checklist_name, 'colspan': headers_count})
+            nested_headers_fields.extend(checklist_entries_class().getHeaderNames(inclusions, exclusions))
+
+            headers_max_size = checklist_entries_class().getHeadersMaxSize(headers_max_size, inclusions, exclusions)
 
             validators = validators + checklist_entries_class().getValidators(inclusions, exclusions)
 
@@ -334,6 +355,9 @@ def samples_view(request, project_id, order_id):
 
         status_choices = [choice[1] for choice in STATUS_CHOICES]
 
+        nested_headers.append(nested_headers_checklists)
+        nested_headers.append(nested_headers_fields)
+
         print(f"Sending samples_data to template: {samples_data}")
 
         return render(request, 'samples.html', {
@@ -344,11 +368,29 @@ def samples_view(request, project_id, order_id):
                 'status_choices': status_choices,
                 'project_id': project_id,
                 'validators': validators,
+                'nested_headers': nested_headers,
+                'headers_max_size': headers_max_size,
             })
     else:
         return redirect('login')
 
 
+    # for sample, plus each checklist, get set of field groups, long with the number of (selected) fields in each group as a list. 
+    # Also change the fieldnames to only show the element name ie. no checklist name. 
+    # Also, need to get length of longest field name in each group. 
+    # And length of longest group name.
+
+    # for sample, plus each checklist, use checklist name, plus number of field groups to construct top line - append to list
+    # for sample, plus each checklist, use checklist name, plus number of fields in each group to construct second line - append to list
+    # for sample, plus each checklist, get length of longest checklist name
+    # take the longest number of checklist name, fieldgroup name, field name an use this to send column width
+
+    # initially, ignore field groups, as these are not captured in the current data model.
+    # for sample, plus each checklist, change the fieldnames to only show the element name ie. no checklist name
+    # should get max length, and number of selected fields
+
+    # for sample, plus each checklist, use checklist name, plus number of fields in each checklist to construct top line - append to list
+    # take the longest number of checklist name, and field name an use this to send column width
 
 
 

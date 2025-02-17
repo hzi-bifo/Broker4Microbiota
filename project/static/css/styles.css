@@ -122,3 +122,7 @@ body {
   margin-right: 5px;
   vertical-align: middle;
 }
+
+.handsontable .hot {
+  overflow: scroll !important;
+}

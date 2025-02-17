@@ -45,7 +45,7 @@ def produceJqTree(data, jqtree_data):
 def produce_checklist_structure(data):
 
     checklist_header = data['CHECKLIST_SET']['CHECKLIST']['DESCRIPTOR']
-    checklist_name = checklist_header['NAME']
+    checklist_name = checklist_header['NAME'].replace(' ', '_').replace('(', '').replace(')', '').replace('/', '_').replace('-', '_')
 
     checklist_header2 = data['CHECKLIST_SET']['CHECKLIST']['IDENTIFIERS']
     checklist_code = checklist_header2['PRIMARY_ID']
@@ -80,6 +80,8 @@ def produceModels(data, model_data, field_names):
     checklist_output = checklist_output + f"\tsampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE, default=1)\n"
     checklist_output = checklist_output + f"\tsample = models.ForeignKey(Sample, on_delete=models.CASCADE, default=1)\n"
 
+    checklist_name_output = f"\tname = '{checklist_name}'\n"
+
     checklist_fields_output = f"\tfields = {{\n"
 
     unitchecklist_fields_output = f"\tfields = {{\n"
@@ -87,6 +89,8 @@ def produceModels(data, model_data, field_names):
     unitchecklist_header = unitchecklist_header + f"class {model_name}_unit(SelfDescribingModel):\n"
     unitchecklist_output = unitchecklist_output + f"\tsampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE, default=1)\n"
     unitchecklist_output = unitchecklist_output + f"\tsample = models.ForeignKey(Sample, on_delete=models.CASCADE, default=1)\n"
+
+    unitchecklist_name_output = f"\tname = '{checklist_name}'\n"
 
     for fieldgroup in checklist['FIELD_GROUP']:
         fieldgroup_name = fieldgroup['NAME']
@@ -191,7 +195,7 @@ def produceModels(data, model_data, field_names):
     checklist_fields_output = checklist_fields_output + f"\t}}\n"
     unitchecklist_fields_output = unitchecklist_fields_output + f"\t}}\n"
 
-    model_data = f'{checklist_header}\n{choice_output}\n{validator_output}\n{checklist_output}\n{checklist_fields_output}\n{unitchecklist_header}\n{unit_output}\n{unitchecklist_fields_output}\n{unitchecklist_output}\n'
+    model_data = f'{checklist_header}\n{choice_output}\n{validator_output}\n{checklist_output}\n{checklist_fields_output}\n{checklist_name_output}\n{unitchecklist_header}\n{unit_output}\n{unitchecklist_fields_output}\n{unitchecklist_name_output}\n{unitchecklist_output}\n'
     return model_data
 
 # Path to the directory containing the XML files

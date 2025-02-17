@@ -30,7 +30,7 @@ class SelfDescribingModel(models.Model):
     class Meta:
         abstract = True
 
-    def getSubAttributes(self, exclude=[], include=[]):
+    def getSubAttributes(self, include=[], exclude=[]):
 
         class_name = type(self).__name__
         unit_class_name = f"{class_name}_unit"
@@ -67,7 +67,7 @@ class SelfDescribingModel(models.Model):
         return output
 
     # Get actual value for each field
-    def getFields(self, exclude=[], include=[]):
+    def getFields(self, include=[], exclude=[]):
         output = {}
         if include:
             for k, v in self.fields.items():
@@ -81,7 +81,7 @@ class SelfDescribingModel(models.Model):
         return output            
     
     # Get the headers for the HoT (including choices)
-    def getHeaders(self, exclude=[], include=[]):
+    def getHeaders(self, include=[], exclude=[]):
 
         headers = ""
 
@@ -120,8 +120,24 @@ class SelfDescribingModel(models.Model):
 
         return headers + ""
 
+    def getHeaderNames(self, include=[], exclude=[]):
+
+        headerNames = []
+
+        if include:
+            for k, v in self.fields.items():
+                if k in include:
+                    headerNames.append(k)
+        else:
+            for k, v in self.fields.items():
+                if k not in exclude:
+                    headerNames.append(k)
+
+        return headerNames
+
+
     # Get the headers for returning the data output from HoT
-    def getHeadersArray(self, index, exclude=[], include=[]):
+    def getHeadersArray(self, index, include=[], exclude=[]):
 
         output = ""
         if include:
@@ -148,7 +164,7 @@ class SelfDescribingModel(models.Model):
             setattr(self, k, value)
 
     # Get the headers for the HoT (including choices)
-    def getValidators(self, exclude=[], include=[]):
+    def getValidators(self, include=[], exclude=[] ):
 
         validators = ""
 
@@ -172,6 +188,41 @@ class SelfDescribingModel(models.Model):
                         pass
 
         return validators
+
+    def getHeadersCount(self, include=[], exclude=[]):
+
+        count = 0
+
+        if include:
+            for k, v in self.fields.items():
+                if k in include:
+                    count = count + 1
+        else:
+            for k, v in self.fields.items():
+                if k not in exclude:
+                    count = count + 1
+
+        return count        
+
+    def getHeadersMaxSize(self, headers_max_size, include=[], exclude=[]):
+            
+        if include:
+            for k, v in self.fields.items():
+                if k in include:
+                    if len(v) > headers_max_size:
+                        headers_max_size = len(v)
+        else:
+            for k, v in self.fields.items():
+                if k not in exclude:
+                    if len(v) > headers_max_size:
+                        headers_max_size = len(v)
+        if self.name:
+            if len(self.name) > headers_max_size:
+                headers_max_size = len(self.name    )
+
+        return headers_max_size
+
+
 
 # class SelfDescribingUnitModel(SelfDescribingModel):
 
@@ -266,6 +317,8 @@ class Sample(SelfDescribingModel):
         'sample_description': 'sample_description',
     }
 
+    name = 'Sample'
+
     # @property
     # def getAttributes(self):
     # 	# go through each of the fields within eah of the checklists
@@ -291,6 +344,7 @@ class Sample(SelfDescribingModel):
     #         output = output + f'{attributes}\n'
 
     #     return output    
+
 
 
 class ProjectSubmission(models.Model):
@@ -400,3 +454,44 @@ class Blah_checklist(SelfDescribingModel):
 class Blah_unitchecklist(SelfDescribingModel):
     sample = models.ForeignKey(Sample, on_delete=models.CASCADE) """
 
+class MagRun(models.Model):
+    sequence = models.ForeignKey(Sequence, on_delete=models.CASCADE)
+
+    magRun_id = models.CharField(max_length=100, null=True, blank=True)
+    status = models.CharField(max_length=100, null=True, blank=True)
+
+    # Output files
+
+class Assembly(models.Model):
+    magRun = models.ForeignKey(Sequence, on_delete=models.CASCADE)
+
+    magRun_assembly_id = models.CharField(max_length=100, null=True, blank=True) 
+    file = models.CharField(max_length=255, null=True, blank=True)
+
+class Bin(models.Model):
+    magRun = models.ForeignKey(Sequence, on_delete=models.CASCADE)
+
+    magRun_bin_id = models.CharField(max_length=100, null=True, blank=True)
+    file = models.CharField(max_length=255, null=True, blank=True)
+
+class SubMGRun(models.Model):
+    order = models.ForeignKey(Order, on_delete=models.CASCADE)
+
+    subMGRun_id = models.CharField(max_length=100, null=True, blank=True)
+
+    samples = models.ManyToManyField(Sample)
+    sequences = models.ManyToManyField(Sequence)
+    # assembly_samples = models.ManyToManyField(Sample)
+    # bin_samples = models.ManyToManyField(Sample)
+    # mag_samples = models.ManyToManyField(Sample)
+    assembly = models.ManyToManyField(Assembly)
+    bins = models.ManyToManyField(Bin)
+    # mags = models.ManyToManyField(Bin)
+
+    type = models.CharField(max_length=100, null=True, blank=True)
+    status = models.CharField(max_length=100, null=True, blank=True)
+
+    yaml = models.JSONField()
+
+    # Accession stuff
+    # Output files

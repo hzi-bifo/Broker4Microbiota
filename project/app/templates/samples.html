@@ -13,7 +13,7 @@ Add and update Samples
       <button id="add" class="button is-primary" onclick="addNewRow()">Add New Row</button>
     </div>
 
-    <div id="handsontable-container"></div>
+    <div id="handsontable-container" class="hot"></div>
 
     <div class="has-text-centered mt-4">
       <button id="save" class="button is-success" onclick="validateSampleData()">Save Samples</button>
@@ -47,11 +47,13 @@ Comment out for 6.2.2 (MIT)
     },
     minSpareRows: 0,
     rowHeaders: true,
-    colWidths: 200,
+    colWidths: [75,25, 100, 100], // colWidths: {{headers_max_size | safe}} * 4,
     contextMenu: true,
     width: '100%',
     stretchH: 'all', // Optionally stretch the columns to fit the width
     licenseKey: 'non-commercial-and-evaluation',
+    nestedHeaders:
+      {{ nested_headers | safe }},
     afterChange: (changes) => {
       changes?.forEach(([row, prop, oldValue, newValue]) => {
       if (prop != "unsaved" && hot.getDataAtCell(row, 1) != "x") {
