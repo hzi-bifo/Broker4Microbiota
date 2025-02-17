@@ -222,18 +222,18 @@ class SelfDescribingModel(models.Model):
 
         return headers_max_size
 
-    def getHeadersSize(self, include=[], exclude=[]):
+    def getHeadersSize(self, pixelsPerChar, include=[], exclude=[]):
 
         headersSize = []    
 
         if include:
             for k, v in self.fields.items():
                 if k in include:
-                    headersSize.append(len(k))
+                    headersSize.append(len(k) * pixelsPerChar) 
         else:
             for k, v in self.fields.items():
                 if k not in exclude:
-                    headersSize.append(len(k))
+                    headersSize.append(len(k) * pixelsPerChar)
 
         return headersSize
 

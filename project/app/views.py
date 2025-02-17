@@ -12,6 +12,7 @@ from .forms import OrderForm, SampleForm, SamplesetForm, ProjectForm
 from .models import Order, Sample, Sampleset, Project, STATUS_CHOICES
 from json.decoder import JSONDecodeError
 import importlib
+from django.conf import settings
 
 logger = logging.getLogger(__name__)
 
@@ -288,9 +289,11 @@ def samples_view(request, project_id, order_id):
         sample_headers_array = ""
         index = 2 # make space for delete button and unsaved indicator
 
+        pixelsPerChar = settings.PIXELS_PER_CHAR
+
         nested_headers_checklists.append({'label': '-', 'colspan': 2})
         nested_headers_fields = ['Delete', 'Unsaved']
-        headers_size = [100,50]
+        headers_size = [75,60]
 
         samples_headers = samples_headers + f"{{ title: 'Delete', renderer: deleteButtonRenderer }},\n{{ title: 'Unsaved', data: 'unsaved', readOnly: true }},\n"
         sample_headers_array = sample_headers_array + f"Delete: row[1],\nunsaved: row[1],\n"
@@ -306,7 +309,7 @@ def samples_view(request, project_id, order_id):
         headers_count = sample.getHeadersCount(inclusions, exclusions)
         nested_headers_checklists.append({'label': 'sample', 'colspan': headers_count})
         nested_headers_fields.extend(sample.getHeaderNames(inclusions, exclusions))
-        headers_size.extend(sample.getHeadersSize(inclusions, exclusions))
+        headers_size.extend(sample.getHeadersSize(pixelsPerChar, inclusions, exclusions))
 
         headers_max_size = sample.getHeadersMaxSize(headers_max_size, inclusions, exclusions)
 
@@ -328,7 +331,7 @@ def samples_view(request, project_id, order_id):
             headers_count = checklist_entries_class().getHeadersCount(inclusions, exclusions)
             nested_headers_checklists.append({'label': checklist_name, 'colspan': headers_count})
             nested_headers_fields.extend(checklist_entries_class().getHeaderNames(inclusions, exclusions))
-            headers_size.extend(checklist_entries_class().getHeadersSize(inclusions, exclusions))
+            headers_size.extend(checklist_entries_class().getHeadersSize(pixelsPerChar, inclusions, exclusions))
 
             headers_max_size = checklist_entries_class().getHeadersMaxSize(headers_max_size, inclusions, exclusions)
 
