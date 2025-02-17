@@ -129,6 +129,8 @@ ROOT_DIR = os.environ.get('ROOT_DIR')
 LOCAL_DIR = f"{ROOT_DIR}/project/media/test"
 JAR_LOCATION = '/home/gary/Downloads/webin-cli-8.1.0.jar'
 
+PIXELS_PER_CHAR = 8
+
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
