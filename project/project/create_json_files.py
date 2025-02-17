@@ -96,7 +96,7 @@ def produceModels(data, model_data, field_names):
         fieldgroup_name = fieldgroup['NAME']
         model_fieldgroup_name = fieldgroup_name
         for field in fieldgroup['FIELD']:
-            field_name = model_name + "_" + field['NAME'].replace(' ', '_').replace('(', '').replace(')', '').replace('/', '_').replace('-', '_')
+            field_name = field['NAME'].replace(' ', '_').replace('(', '').replace(')', '').replace('/', '_').replace('-', '_')
             original_field_name = field['NAME'] # .replace(' ', '_').replace('(', '').replace(')', '').replace('/', '_').replace('-', '_')
 
             field_description = ''

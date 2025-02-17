@@ -47,7 +47,9 @@ Comment out for 6.2.2 (MIT)
     },
     minSpareRows: 0,
     rowHeaders: true,
-    colWidths: [75,25, 100, 100], // colWidths: {{headers_max_size | safe}} * 4,
+    // colWidths: [75,25, 100, 100],
+    // colWidths: {{headers_max_size | safe}} * 4,
+    colWidths: {{ headers_size | safe }},
     contextMenu: true,
     width: '100%',
     stretchH: 'all', // Optionally stretch the columns to fit the width

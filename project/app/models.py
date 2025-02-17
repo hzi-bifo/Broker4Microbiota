@@ -222,6 +222,21 @@ class SelfDescribingModel(models.Model):
 
         return headers_max_size
 
+    def getHeadersSize(self, include=[], exclude=[]):
+
+        headersSize = []    
+
+        if include:
+            for k, v in self.fields.items():
+                if k in include:
+                    headersSize.append(len(k))
+        else:
+            for k, v in self.fields.items():
+                if k not in exclude:
+                    headersSize.append(len(k))
+
+        return headersSize
+
 
 
 # class SelfDescribingUnitModel(SelfDescribingModel):
@@ -512,1042 +527,669 @@ class SubMGRun(models.Model):
     # Output files
 class GSC_MIxS_wastewater_sludge(SelfDescribingModel):
 
-	GSC_MIxS_wastewater_sludge_sequence_quality_check_choice = [('manual', 'manual'), ('none', 'none'), ('software', 'software')]
-	GSC_MIxS_wastewater_sludge_geographic_location_country_and_or_sea_choice = [('Afghanistan', 'Afghanistan'), ('Albania', 'Albania'), ('Algeria', 'Algeria'), ('American Samoa', 'American Samoa'), ('Andorra', 'Andorra'), ('Angola', 'Angola'), ('Anguilla', 'Anguilla'), ('Antarctica', 'Antarctica'), ('Antigua and Barbuda', 'Antigua and Barbuda'), ('Arctic Ocean', 'Arctic Ocean'), ('Argentina', 'Argentina'), ('Armenia', 'Armenia'), ('Aruba', 'Aruba'), ('Ashmore and Cartier Islands', 'Ashmore and Cartier Islands'), ('Atlantic Ocean', 'Atlantic Ocean'), ('Australia', 'Australia'), ('Austria', 'Austria'), ('Azerbaijan', 'Azerbaijan'), ('Bahamas', 'Bahamas'), ('Bahrain', 'Bahrain'), ('Baker Island', 'Baker Island'), ('Baltic Sea', 'Baltic Sea'), ('Bangladesh', 'Bangladesh'), ('Barbados', 'Barbados'), ('Bassas da India', 'Bassas da India'), ('Belarus', 'Belarus'), ('Belgium', 'Belgium'), ('Belize', 'Belize'), ('Benin', 'Benin'), ('Bermuda', 'Bermuda'), ('Bhutan', 'Bhutan'), ('Bolivia', 'Bolivia'), ('Borneo', 'Borneo'), ('Bosnia and Herzegovina', 'Bosnia and Herzegovina'), ('Botswana', 'Botswana'), ('Bouvet Island', 'Bouvet Island'), ('Brazil', 'Brazil'), ('British Virgin Islands', 'British Virgin Islands'), ('Brunei', 'Brunei'), ('Bulgaria', 'Bulgaria'), ('Burkina Faso', 'Burkina Faso'), ('Burundi', 'Burundi'), ('Cambodia', 'Cambodia'), ('Cameroon', 'Cameroon'), ('Canada', 'Canada'), ('Cape Verde', 'Cape Verde'), ('Cayman Islands', 'Cayman Islands'), ('Central African Republic', 'Central African Republic'), ('Chad', 'Chad'), ('Chile', 'Chile'), ('China', 'China'), ('Christmas Island', 'Christmas Island'), ('Clipperton Island', 'Clipperton Island'), ('Cocos Islands', 'Cocos Islands'), ('Colombia', 'Colombia'), ('Comoros', 'Comoros'), ('Cook Islands', 'Cook Islands'), ('Coral Sea Islands', 'Coral Sea Islands'), ('Costa Rica', 'Costa Rica'), ("Cote d'Ivoire", "Cote d'Ivoire"), ('Croatia', 'Croatia'), ('Cuba', 'Cuba'), ('Curacao', 'Curacao'), ('Cyprus', 'Cyprus'), ('Czech Republic', 'Czech Republic'), ('Democratic Republic of the Congo', 'Democratic Republic of the Congo'), ('Denmark', 'Denmark'), ('Djibouti', 'Djibouti'), ('Dominica', 'Dominica'), ('Dominican Republic', 'Dominican Republic'), ('East Timor', 'East Timor'), ('Ecuador', 'Ecuador'), ('Egypt', 'Egypt'), ('El Salvador', 'El Salvador'), ('Equatorial Guinea', 'Equatorial Guinea'), ('Eritrea', 'Eritrea'), ('Estonia', 'Estonia'), ('Ethiopia', 'Ethiopia'), ('Europa Island', 'Europa Island'), ('Falkland Islands (Islas Malvinas)', 'Falkland Islands (Islas Malvinas)'), ('Faroe Islands', 'Faroe Islands'), ('Fiji', 'Fiji'), ('Finland', 'Finland'), ('France', 'France'), ('French Guiana', 'French Guiana'), ('French Polynesia', 'French Polynesia'), ('French Southern and Antarctic Lands', 'French Southern and Antarctic Lands'), ('Gabon', 'Gabon'), ('Gambia', 'Gambia'), ('Gaza Strip', 'Gaza Strip'), ('Georgia', 'Georgia'), ('Germany', 'Germany'), ('Ghana', 'Ghana'), ('Gibraltar', 'Gibraltar'), ('Glorioso Islands', 'Glorioso Islands'), ('Greece', 'Greece'), ('Greenland', 'Greenland'), ('Grenada', 'Grenada'), ('Guadeloupe', 'Guadeloupe'), ('Guam', 'Guam'), ('Guatemala', 'Guatemala'), ('Guernsey', 'Guernsey'), ('Guinea', 'Guinea'), ('Guinea-Bissau', 'Guinea-Bissau'), ('Guyana', 'Guyana'), ('Haiti', 'Haiti'), ('Heard Island and McDonald Islands', 'Heard Island and McDonald Islands'), ('Honduras', 'Honduras'), ('Hong Kong', 'Hong Kong'), ('Howland Island', 'Howland Island'), ('Hungary', 'Hungary'), ('Iceland', 'Iceland'), ('India', 'India'), ('Indian Ocean', 'Indian Ocean'), ('Indonesia', 'Indonesia'), ('Iran', 'Iran'), ('Iraq', 'Iraq'), ('Ireland', 'Ireland'), ('Isle of Man', 'Isle of Man'), ('Israel', 'Israel'), ('Italy', 'Italy'), ('Jamaica', 'Jamaica'), ('Jan Mayen', 'Jan Mayen'), ('Japan', 'Japan'), ('Jarvis Island', 'Jarvis Island'), ('Jersey', 'Jersey'), ('Johnston Atoll', 'Johnston Atoll'), ('Jordan', 'Jordan'), ('Juan de Nova Island', 'Juan de Nova Island'), ('Kazakhstan', 'Kazakhstan'), ('Kenya', 'Kenya'), ('Kerguelen Archipelago', 'Kerguelen Archipelago'), ('Kingman Reef', 'Kingman Reef'), ('Kiribati', 'Kiribati'), ('Kosovo', 'Kosovo'), ('Kuwait', 'Kuwait'), ('Kyrgyzstan', 'Kyrgyzstan'), ('Laos', 'Laos'), ('Latvia', 'Latvia'), ('Lebanon', 'Lebanon'), ('Lesotho', 'Lesotho'), ('Liberia', 'Liberia'), ('Libya', 'Libya'), ('Liechtenstein', 'Liechtenstein'), ('Lithuania', 'Lithuania'), ('Luxembourg', 'Luxembourg'), ('Macau', 'Macau'), ('Macedonia', 'Macedonia'), ('Madagascar', 'Madagascar'), ('Malawi', 'Malawi'), ('Malaysia', 'Malaysia'), ('Maldives', 'Maldives'), ('Mali', 'Mali'), ('Malta', 'Malta'), ('Marshall Islands', 'Marshall Islands'), ('Martinique', 'Martinique'), ('Mauritania', 'Mauritania'), ('Mauritius', 'Mauritius'), ('Mayotte', 'Mayotte'), ('Mediterranean Sea', 'Mediterranean Sea'), ('Mexico', 'Mexico'), ('Micronesia', 'Micronesia'), ('Midway Islands', 'Midway Islands'), ('Moldova', 'Moldova'), ('Monaco', 'Monaco'), ('Mongolia', 'Mongolia'), ('Montenegro', 'Montenegro'), ('Montserrat', 'Montserrat'), ('Morocco', 'Morocco'), ('Mozambique', 'Mozambique'), ('Myanmar', 'Myanmar'), ('Namibia', 'Namibia'), ('Nauru', 'Nauru'), ('Navassa Island', 'Navassa Island'), ('Nepal', 'Nepal'), ('Netherlands', 'Netherlands'), ('New Caledonia', 'New Caledonia'), ('New Zealand', 'New Zealand'), ('Nicaragua', 'Nicaragua'), ('Niger', 'Niger'), ('Nigeria', 'Nigeria'), ('Niue', 'Niue'), ('Norfolk Island', 'Norfolk Island'), ('North Korea', 'North Korea'), ('North Sea', 'North Sea'), ('Northern Mariana Islands', 'Northern Mariana Islands'), ('Norway', 'Norway'), ('Oman', 'Oman'), ('Pacific Ocean', 'Pacific Ocean'), ('Pakistan', 'Pakistan'), ('Palau', 'Palau'), ('Palmyra Atoll', 'Palmyra Atoll'), ('Panama', 'Panama'), ('Papua New Guinea', 'Papua New Guinea'), ('Paracel Islands', 'Paracel Islands'), ('Paraguay', 'Paraguay'), ('Peru', 'Peru'), ('Philippines', 'Philippines'), ('Pitcairn Islands', 'Pitcairn Islands'), ('Poland', 'Poland'), ('Portugal', 'Portugal'), ('Puerto Rico', 'Puerto Rico'), ('Qatar', 'Qatar'), ('Republic of the Congo', 'Republic of the Congo'), ('Reunion', 'Reunion'), ('Romania', 'Romania'), ('Ross Sea', 'Ross Sea'), ('Russia', 'Russia'), ('Rwanda', 'Rwanda'), ('Saint Helena', 'Saint Helena'), ('Saint Kitts and Nevis', 'Saint Kitts and Nevis'), ('Saint Lucia', 'Saint Lucia'), ('Saint Pierre and Miquelon', 'Saint Pierre and Miquelon'), ('Saint Vincent and the Grenadines', 'Saint Vincent and the Grenadines'), ('Samoa', 'Samoa'), ('San Marino', 'San Marino'), ('Sao Tome and Principe', 'Sao Tome and Principe'), ('Saudi Arabia', 'Saudi Arabia'), ('Senegal', 'Senegal'), ('Serbia', 'Serbia'), ('Seychelles', 'Seychelles'), ('Sierra Leone', 'Sierra Leone'), ('Singapore', 'Singapore'), ('Sint Maarten', 'Sint Maarten'), ('Slovakia', 'Slovakia'), ('Slovenia', 'Slovenia'), ('Solomon Islands', 'Solomon Islands'), ('Somalia', 'Somalia'), ('South Africa', 'South Africa'), ('South Georgia and the South Sandwich Islands', 'South Georgia and the South Sandwich Islands'), ('South Korea', 'South Korea'), ('Southern Ocean', 'Southern Ocean'), ('Spain', 'Spain'), ('Spratly Islands', 'Spratly Islands'), ('Sri Lanka', 'Sri Lanka'), ('Sudan', 'Sudan'), ('Suriname', 'Suriname'), ('Svalbard', 'Svalbard'), ('Swaziland', 'Swaziland'), ('Sweden', 'Sweden'), ('Switzerland', 'Switzerland'), ('Syria', 'Syria'), ('Taiwan', 'Taiwan'), ('Tajikistan', 'Tajikistan'), ('Tanzania', 'Tanzania'), ('Tasman Sea', 'Tasman Sea'), ('Thailand', 'Thailand'), ('Togo', 'Togo'), ('Tokelau', 'Tokelau'), ('Tonga', 'Tonga'), ('Trinidad and Tobago', 'Trinidad and Tobago'), ('Tromelin Island', 'Tromelin Island'), ('Tunisia', 'Tunisia'), ('Turkey', 'Turkey'), ('Turkmenistan', 'Turkmenistan'), ('Turks and Caicos Islands', 'Turks and Caicos Islands'), ('Tuvalu', 'Tuvalu'), ('USA', 'USA'), ('Uganda', 'Uganda'), ('Ukraine', 'Ukraine'), ('United Arab Emirates', 'United Arab Emirates'), ('United Kingdom', 'United Kingdom'), ('Uruguay', 'Uruguay'), ('Uzbekistan', 'Uzbekistan'), ('Vanuatu', 'Vanuatu'), ('Venezuela', 'Venezuela'), ('Viet Nam', 'Viet Nam'), ('Virgin Islands', 'Virgin Islands'), ('Wake Island', 'Wake Island'), ('Wallis and Futuna', 'Wallis and Futuna'), ('West Bank', 'West Bank'), ('Western Sahara', 'Western Sahara'), ('Yemen', 'Yemen'), ('Zambia', 'Zambia'), ('Zimbabwe', 'Zimbabwe'), ('missing: control sample', 'missing: control sample'), ('missing: data agreement established pre-2023', 'missing: data agreement established pre-2023'), ('missing: endangered species', 'missing: endangered species'), ('missing: human-identifiable', 'missing: human-identifiable'), ('missing: lab stock', 'missing: lab stock'), ('missing: sample group', 'missing: sample group'), ('missing: synthetic construct', 'missing: synthetic construct'), ('missing: third party data', 'missing: third party data'), ('not applicable', 'not applicable'), ('not collected', 'not collected'), ('not provided', 'not provided'), ('restricted access', 'restricted access')]
-	GSC_MIxS_wastewater_sludge_oxygenation_status_of_sample_choice = [('aerobic', 'aerobic'), ('anaerobic', 'anaerobic')]
-	GSC_MIxS_wastewater_sludge_trophic_level_choice = [('autotroph', 'autotroph'), ('carboxydotroph', 'carboxydotroph'), ('chemoautotroph', 'chemoautotroph'), ('chemoheterotroph', 'chemoheterotroph'), ('chemolithoautotroph', 'chemolithoautotroph'), ('chemolithotroph', 'chemolithotroph'), ('chemoorganoheterotroph', 'chemoorganoheterotroph'), ('chemoorganotroph', 'chemoorganotroph'), ('chemosynthetic', 'chemosynthetic'), ('chemotroph', 'chemotroph'), ('copiotroph', 'copiotroph'), ('diazotroph', 'diazotroph'), ('facultative autotroph', 'facultative autotroph'), ('heterotroph', 'heterotroph'), ('lithoautotroph', 'lithoautotroph'), ('lithoheterotroph', 'lithoheterotroph'), ('lithotroph', 'lithotroph'), ('methanotroph', 'methanotroph'), ('methylotroph', 'methylotroph'), ('mixotroph', 'mixotroph'), ('obligate chemoautolithotroph', 'obligate chemoautolithotroph'), ('oligotroph', 'oligotroph'), ('organoheterotroph', 'organoheterotroph'), ('organotroph', 'organotroph'), ('photoautotroph', 'photoautotroph'), ('photoheterotroph', 'photoheterotroph'), ('photolithoautotroph', 'photolithoautotroph'), ('photolithotroph', 'photolithotroph'), ('photosynthetic', 'photosynthetic'), ('phototroph', 'phototroph')]
-	GSC_MIxS_wastewater_sludge_relationship_to_oxygen_choice = [('aerobe', 'aerobe'), ('anaerobe', 'anaerobe'), ('facultative', 'facultative'), ('microaerophilic', 'microaerophilic'), ('microanaerobe', 'microanaerobe'), ('obligate aerobe', 'obligate aerobe'), ('obligate anaerobe', 'obligate anaerobe')]
-	GSC_MIxS_wastewater_sludge_observed_biotic_relationship_choice = [('commensal', 'commensal'), ('free living', 'free living'), ('mutualism', 'mutualism'), ('parasite', 'parasite'), ('symbiont', 'symbiont')]
+	sequence_quality_check_choice = [('manual', 'manual'), ('none', 'none'), ('software', 'software')]
+	geographic_location_country_and_or_sea_choice = [('Afghanistan', 'Afghanistan'), ('Albania', 'Albania'), ('Algeria', 'Algeria'), ('American Samoa', 'American Samoa'), ('Andorra', 'Andorra'), ('Angola', 'Angola'), ('Anguilla', 'Anguilla'), ('Antarctica', 'Antarctica'), ('Antigua and Barbuda', 'Antigua and Barbuda'), ('Arctic Ocean', 'Arctic Ocean'), ('Argentina', 'Argentina'), ('Armenia', 'Armenia'), ('Aruba', 'Aruba'), ('Ashmore and Cartier Islands', 'Ashmore and Cartier Islands'), ('Atlantic Ocean', 'Atlantic Ocean'), ('Australia', 'Australia'), ('Austria', 'Austria'), ('Azerbaijan', 'Azerbaijan'), ('Bahamas', 'Bahamas'), ('Bahrain', 'Bahrain'), ('Baker Island', 'Baker Island'), ('Baltic Sea', 'Baltic Sea'), ('Bangladesh', 'Bangladesh'), ('Barbados', 'Barbados'), ('Bassas da India', 'Bassas da India'), ('Belarus', 'Belarus'), ('Belgium', 'Belgium'), ('Belize', 'Belize'), ('Benin', 'Benin'), ('Bermuda', 'Bermuda'), ('Bhutan', 'Bhutan'), ('Bolivia', 'Bolivia'), ('Borneo', 'Borneo'), ('Bosnia and Herzegovina', 'Bosnia and Herzegovina'), ('Botswana', 'Botswana'), ('Bouvet Island', 'Bouvet Island'), ('Brazil', 'Brazil'), ('British Virgin Islands', 'British Virgin Islands'), ('Brunei', 'Brunei'), ('Bulgaria', 'Bulgaria'), ('Burkina Faso', 'Burkina Faso'), ('Burundi', 'Burundi'), ('Cambodia', 'Cambodia'), ('Cameroon', 'Cameroon'), ('Canada', 'Canada'), ('Cape Verde', 'Cape Verde'), ('Cayman Islands', 'Cayman Islands'), ('Central African Republic', 'Central African Republic'), ('Chad', 'Chad'), ('Chile', 'Chile'), ('China', 'China'), ('Christmas Island', 'Christmas Island'), ('Clipperton Island', 'Clipperton Island'), ('Cocos Islands', 'Cocos Islands'), ('Colombia', 'Colombia'), ('Comoros', 'Comoros'), ('Cook Islands', 'Cook Islands'), ('Coral Sea Islands', 'Coral Sea Islands'), ('Costa Rica', 'Costa Rica'), ("Cote d'Ivoire", "Cote d'Ivoire"), ('Croatia', 'Croatia'), ('Cuba', 'Cuba'), ('Curacao', 'Curacao'), ('Cyprus', 'Cyprus'), ('Czech Republic', 'Czech Republic'), ('Democratic Republic of the Congo', 'Democratic Republic of the Congo'), ('Denmark', 'Denmark'), ('Djibouti', 'Djibouti'), ('Dominica', 'Dominica'), ('Dominican Republic', 'Dominican Republic'), ('East Timor', 'East Timor'), ('Ecuador', 'Ecuador'), ('Egypt', 'Egypt'), ('El Salvador', 'El Salvador'), ('Equatorial Guinea', 'Equatorial Guinea'), ('Eritrea', 'Eritrea'), ('Estonia', 'Estonia'), ('Ethiopia', 'Ethiopia'), ('Europa Island', 'Europa Island'), ('Falkland Islands (Islas Malvinas)', 'Falkland Islands (Islas Malvinas)'), ('Faroe Islands', 'Faroe Islands'), ('Fiji', 'Fiji'), ('Finland', 'Finland'), ('France', 'France'), ('French Guiana', 'French Guiana'), ('French Polynesia', 'French Polynesia'), ('French Southern and Antarctic Lands', 'French Southern and Antarctic Lands'), ('Gabon', 'Gabon'), ('Gambia', 'Gambia'), ('Gaza Strip', 'Gaza Strip'), ('Georgia', 'Georgia'), ('Germany', 'Germany'), ('Ghana', 'Ghana'), ('Gibraltar', 'Gibraltar'), ('Glorioso Islands', 'Glorioso Islands'), ('Greece', 'Greece'), ('Greenland', 'Greenland'), ('Grenada', 'Grenada'), ('Guadeloupe', 'Guadeloupe'), ('Guam', 'Guam'), ('Guatemala', 'Guatemala'), ('Guernsey', 'Guernsey'), ('Guinea', 'Guinea'), ('Guinea-Bissau', 'Guinea-Bissau'), ('Guyana', 'Guyana'), ('Haiti', 'Haiti'), ('Heard Island and McDonald Islands', 'Heard Island and McDonald Islands'), ('Honduras', 'Honduras'), ('Hong Kong', 'Hong Kong'), ('Howland Island', 'Howland Island'), ('Hungary', 'Hungary'), ('Iceland', 'Iceland'), ('India', 'India'), ('Indian Ocean', 'Indian Ocean'), ('Indonesia', 'Indonesia'), ('Iran', 'Iran'), ('Iraq', 'Iraq'), ('Ireland', 'Ireland'), ('Isle of Man', 'Isle of Man'), ('Israel', 'Israel'), ('Italy', 'Italy'), ('Jamaica', 'Jamaica'), ('Jan Mayen', 'Jan Mayen'), ('Japan', 'Japan'), ('Jarvis Island', 'Jarvis Island'), ('Jersey', 'Jersey'), ('Johnston Atoll', 'Johnston Atoll'), ('Jordan', 'Jordan'), ('Juan de Nova Island', 'Juan de Nova Island'), ('Kazakhstan', 'Kazakhstan'), ('Kenya', 'Kenya'), ('Kerguelen Archipelago', 'Kerguelen Archipelago'), ('Kingman Reef', 'Kingman Reef'), ('Kiribati', 'Kiribati'), ('Kosovo', 'Kosovo'), ('Kuwait', 'Kuwait'), ('Kyrgyzstan', 'Kyrgyzstan'), ('Laos', 'Laos'), ('Latvia', 'Latvia'), ('Lebanon', 'Lebanon'), ('Lesotho', 'Lesotho'), ('Liberia', 'Liberia'), ('Libya', 'Libya'), ('Liechtenstein', 'Liechtenstein'), ('Lithuania', 'Lithuania'), ('Luxembourg', 'Luxembourg'), ('Macau', 'Macau'), ('Macedonia', 'Macedonia'), ('Madagascar', 'Madagascar'), ('Malawi', 'Malawi'), ('Malaysia', 'Malaysia'), ('Maldives', 'Maldives'), ('Mali', 'Mali'), ('Malta', 'Malta'), ('Marshall Islands', 'Marshall Islands'), ('Martinique', 'Martinique'), ('Mauritania', 'Mauritania'), ('Mauritius', 'Mauritius'), ('Mayotte', 'Mayotte'), ('Mediterranean Sea', 'Mediterranean Sea'), ('Mexico', 'Mexico'), ('Micronesia', 'Micronesia'), ('Midway Islands', 'Midway Islands'), ('Moldova', 'Moldova'), ('Monaco', 'Monaco'), ('Mongolia', 'Mongolia'), ('Montenegro', 'Montenegro'), ('Montserrat', 'Montserrat'), ('Morocco', 'Morocco'), ('Mozambique', 'Mozambique'), ('Myanmar', 'Myanmar'), ('Namibia', 'Namibia'), ('Nauru', 'Nauru'), ('Navassa Island', 'Navassa Island'), ('Nepal', 'Nepal'), ('Netherlands', 'Netherlands'), ('New Caledonia', 'New Caledonia'), ('New Zealand', 'New Zealand'), ('Nicaragua', 'Nicaragua'), ('Niger', 'Niger'), ('Nigeria', 'Nigeria'), ('Niue', 'Niue'), ('Norfolk Island', 'Norfolk Island'), ('North Korea', 'North Korea'), ('North Sea', 'North Sea'), ('Northern Mariana Islands', 'Northern Mariana Islands'), ('Norway', 'Norway'), ('Oman', 'Oman'), ('Pacific Ocean', 'Pacific Ocean'), ('Pakistan', 'Pakistan'), ('Palau', 'Palau'), ('Palmyra Atoll', 'Palmyra Atoll'), ('Panama', 'Panama'), ('Papua New Guinea', 'Papua New Guinea'), ('Paracel Islands', 'Paracel Islands'), ('Paraguay', 'Paraguay'), ('Peru', 'Peru'), ('Philippines', 'Philippines'), ('Pitcairn Islands', 'Pitcairn Islands'), ('Poland', 'Poland'), ('Portugal', 'Portugal'), ('Puerto Rico', 'Puerto Rico'), ('Qatar', 'Qatar'), ('Republic of the Congo', 'Republic of the Congo'), ('Reunion', 'Reunion'), ('Romania', 'Romania'), ('Ross Sea', 'Ross Sea'), ('Russia', 'Russia'), ('Rwanda', 'Rwanda'), ('Saint Helena', 'Saint Helena'), ('Saint Kitts and Nevis', 'Saint Kitts and Nevis'), ('Saint Lucia', 'Saint Lucia'), ('Saint Pierre and Miquelon', 'Saint Pierre and Miquelon'), ('Saint Vincent and the Grenadines', 'Saint Vincent and the Grenadines'), ('Samoa', 'Samoa'), ('San Marino', 'San Marino'), ('Sao Tome and Principe', 'Sao Tome and Principe'), ('Saudi Arabia', 'Saudi Arabia'), ('Senegal', 'Senegal'), ('Serbia', 'Serbia'), ('Seychelles', 'Seychelles'), ('Sierra Leone', 'Sierra Leone'), ('Singapore', 'Singapore'), ('Sint Maarten', 'Sint Maarten'), ('Slovakia', 'Slovakia'), ('Slovenia', 'Slovenia'), ('Solomon Islands', 'Solomon Islands'), ('Somalia', 'Somalia'), ('South Africa', 'South Africa'), ('South Georgia and the South Sandwich Islands', 'South Georgia and the South Sandwich Islands'), ('South Korea', 'South Korea'), ('Southern Ocean', 'Southern Ocean'), ('Spain', 'Spain'), ('Spratly Islands', 'Spratly Islands'), ('Sri Lanka', 'Sri Lanka'), ('Sudan', 'Sudan'), ('Suriname', 'Suriname'), ('Svalbard', 'Svalbard'), ('Swaziland', 'Swaziland'), ('Sweden', 'Sweden'), ('Switzerland', 'Switzerland'), ('Syria', 'Syria'), ('Taiwan', 'Taiwan'), ('Tajikistan', 'Tajikistan'), ('Tanzania', 'Tanzania'), ('Tasman Sea', 'Tasman Sea'), ('Thailand', 'Thailand'), ('Togo', 'Togo'), ('Tokelau', 'Tokelau'), ('Tonga', 'Tonga'), ('Trinidad and Tobago', 'Trinidad and Tobago'), ('Tromelin Island', 'Tromelin Island'), ('Tunisia', 'Tunisia'), ('Turkey', 'Turkey'), ('Turkmenistan', 'Turkmenistan'), ('Turks and Caicos Islands', 'Turks and Caicos Islands'), ('Tuvalu', 'Tuvalu'), ('USA', 'USA'), ('Uganda', 'Uganda'), ('Ukraine', 'Ukraine'), ('United Arab Emirates', 'United Arab Emirates'), ('United Kingdom', 'United Kingdom'), ('Uruguay', 'Uruguay'), ('Uzbekistan', 'Uzbekistan'), ('Vanuatu', 'Vanuatu'), ('Venezuela', 'Venezuela'), ('Viet Nam', 'Viet Nam'), ('Virgin Islands', 'Virgin Islands'), ('Wake Island', 'Wake Island'), ('Wallis and Futuna', 'Wallis and Futuna'), ('West Bank', 'West Bank'), ('Western Sahara', 'Western Sahara'), ('Yemen', 'Yemen'), ('Zambia', 'Zambia'), ('Zimbabwe', 'Zimbabwe'), ('missing: control sample', 'missing: control sample'), ('missing: data agreement established pre-2023', 'missing: data agreement established pre-2023'), ('missing: endangered species', 'missing: endangered species'), ('missing: human-identifiable', 'missing: human-identifiable'), ('missing: lab stock', 'missing: lab stock'), ('missing: sample group', 'missing: sample group'), ('missing: synthetic construct', 'missing: synthetic construct'), ('missing: third party data', 'missing: third party data'), ('not applicable', 'not applicable'), ('not collected', 'not collected'), ('not provided', 'not provided'), ('restricted access', 'restricted access')]
+	oxygenation_status_of_sample_choice = [('aerobic', 'aerobic'), ('anaerobic', 'anaerobic')]
+	trophic_level_choice = [('autotroph', 'autotroph'), ('carboxydotroph', 'carboxydotroph'), ('chemoautotroph', 'chemoautotroph'), ('chemoheterotroph', 'chemoheterotroph'), ('chemolithoautotroph', 'chemolithoautotroph'), ('chemolithotroph', 'chemolithotroph'), ('chemoorganoheterotroph', 'chemoorganoheterotroph'), ('chemoorganotroph', 'chemoorganotroph'), ('chemosynthetic', 'chemosynthetic'), ('chemotroph', 'chemotroph'), ('copiotroph', 'copiotroph'), ('diazotroph', 'diazotroph'), ('facultative autotroph', 'facultative autotroph'), ('heterotroph', 'heterotroph'), ('lithoautotroph', 'lithoautotroph'), ('lithoheterotroph', 'lithoheterotroph'), ('lithotroph', 'lithotroph'), ('methanotroph', 'methanotroph'), ('methylotroph', 'methylotroph'), ('mixotroph', 'mixotroph'), ('obligate chemoautolithotroph', 'obligate chemoautolithotroph'), ('oligotroph', 'oligotroph'), ('organoheterotroph', 'organoheterotroph'), ('organotroph', 'organotroph'), ('photoautotroph', 'photoautotroph'), ('photoheterotroph', 'photoheterotroph'), ('photolithoautotroph', 'photolithoautotroph'), ('photolithotroph', 'photolithotroph'), ('photosynthetic', 'photosynthetic'), ('phototroph', 'phototroph')]
+	relationship_to_oxygen_choice = [('aerobe', 'aerobe'), ('anaerobe', 'anaerobe'), ('facultative', 'facultative'), ('microaerophilic', 'microaerophilic'), ('microanaerobe', 'microanaerobe'), ('obligate aerobe', 'obligate aerobe'), ('obligate anaerobe', 'obligate anaerobe')]
+	observed_biotic_relationship_choice = [('commensal', 'commensal'), ('free living', 'free living'), ('mutualism', 'mutualism'), ('parasite', 'parasite'), ('symbiont', 'symbiont')]
 
-	GSC_MIxS_wastewater_sludge_number_of_replicons_validator = "[+-]?[0-9]+"
-	GSC_MIxS_wastewater_sludge_extrachromosomal_elements_validator = "[+-]?[0-9]+"
-	GSC_MIxS_wastewater_sludge_estimated_size_validator = "[+-]?[0-9]+"
-	GSC_MIxS_wastewater_sludge_sample_volume_or_weight_for_DNA_extraction_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_wastewater_sludge_library_size_validator = "[+-]?[0-9]+"
-	GSC_MIxS_wastewater_sludge_library_reads_sequenced_validator = "[+-]?[0-9]+"
-	GSC_MIxS_wastewater_sludge_collection_date_validator = "(^[12][0-9]{3}(-(0[1-9]|1[0-2])(-(0[1-9]|[12][0-9]|3[01])(T[0-9]{2}:[0-9]{2}(:[0-9]{2})?Z?([+-][0-9]{1,2})?)?)?)?(\/[0-9]{4}(-[0-9]{2}(-[0-9]{2}(T[0-9]{2}:[0-9]{2}(:[0-9]{2})?Z?([+-][0-9]{1,2})?)?)?)?)?$)|(^not collected$)|(^not provided$)|(^restricted access$)|(^missing: control sample$)|(^missing: sample group$)|(^missing: synthetic construct$)|(^missing: lab stock$)|(^missing: third party data$)|(^missing: data agreement established pre-2023$)|(^missing: endangered species$)|(^missing: human-identifiable$)"
-	GSC_MIxS_wastewater_sludge_geographic_location_latitude_validator = "(^[+-]?[0-9]+.?[0-9]{0,8}$)|(^not collected$)|(^not provided$)|(^restricted access$)|(^missing: control sample$)|(^missing: sample group$)|(^missing: synthetic construct$)|(^missing: lab stock$)|(^missing: third party data$)|(^missing: data agreement established pre-2023$)|(^missing: endangered species$)|(^missing: human-identifiable$)"
-	GSC_MIxS_wastewater_sludge_geographic_location_longitude_validator = "(^[+-]?[0-9]+.?[0-9]{0,8}$)|(^not collected$)|(^not provided$)|(^restricted access$)|(^missing: control sample$)|(^missing: sample group$)|(^missing: synthetic construct$)|(^missing: lab stock$)|(^missing: third party data$)|(^missing: data agreement established pre-2023$)|(^missing: endangered species$)|(^missing: human-identifiable$)"
-	GSC_MIxS_wastewater_sludge_depth_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_wastewater_sludge_amount_or_size_of_sample_collected_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_wastewater_sludge_sample_storage_duration_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_wastewater_sludge_sample_storage_temperature_validator = "[+-]?(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_wastewater_sludge_biochemical_oxygen_demand_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_wastewater_sludge_chemical_oxygen_demand_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_wastewater_sludge_sludge_retention_time_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_wastewater_sludge_alkalinity_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_wastewater_sludge_industrial_effluent_percent_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_wastewater_sludge_temperature_validator = "[+-]?(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_wastewater_sludge_pH_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_wastewater_sludge_efficiency_percent_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_wastewater_sludge_emulsions_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_wastewater_sludge_gaseous_substances_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_wastewater_sludge_inorganic_particles_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_wastewater_sludge_organic_particles_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_wastewater_sludge_soluble_inorganic_material_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_wastewater_sludge_soluble_organic_material_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_wastewater_sludge_suspended_solids_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_wastewater_sludge_total_phosphate_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_wastewater_sludge_nitrate_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_wastewater_sludge_phosphate_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_wastewater_sludge_salinity_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_wastewater_sludge_sodium_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_wastewater_sludge_total_nitrogen_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	number_of_replicons_validator = "[+-]?[0-9]+"
+	extrachromosomal_elements_validator = "[+-]?[0-9]+"
+	estimated_size_validator = "[+-]?[0-9]+"
+	sample_volume_or_weight_for_DNA_extraction_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	library_size_validator = "[+-]?[0-9]+"
+	library_reads_sequenced_validator = "[+-]?[0-9]+"
+	collection_date_validator = "(^[12][0-9]{3}(-(0[1-9]|1[0-2])(-(0[1-9]|[12][0-9]|3[01])(T[0-9]{2}:[0-9]{2}(:[0-9]{2})?Z?([+-][0-9]{1,2})?)?)?)?(\/[0-9]{4}(-[0-9]{2}(-[0-9]{2}(T[0-9]{2}:[0-9]{2}(:[0-9]{2})?Z?([+-][0-9]{1,2})?)?)?)?)?$)|(^not collected$)|(^not provided$)|(^restricted access$)|(^missing: control sample$)|(^missing: sample group$)|(^missing: synthetic construct$)|(^missing: lab stock$)|(^missing: third party data$)|(^missing: data agreement established pre-2023$)|(^missing: endangered species$)|(^missing: human-identifiable$)"
+	geographic_location_latitude_validator = "(^[+-]?[0-9]+.?[0-9]{0,8}$)|(^not collected$)|(^not provided$)|(^restricted access$)|(^missing: control sample$)|(^missing: sample group$)|(^missing: synthetic construct$)|(^missing: lab stock$)|(^missing: third party data$)|(^missing: data agreement established pre-2023$)|(^missing: endangered species$)|(^missing: human-identifiable$)"
+	geographic_location_longitude_validator = "(^[+-]?[0-9]+.?[0-9]{0,8}$)|(^not collected$)|(^not provided$)|(^restricted access$)|(^missing: control sample$)|(^missing: sample group$)|(^missing: synthetic construct$)|(^missing: lab stock$)|(^missing: third party data$)|(^missing: data agreement established pre-2023$)|(^missing: endangered species$)|(^missing: human-identifiable$)"
+	depth_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	amount_or_size_of_sample_collected_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	sample_storage_duration_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	sample_storage_temperature_validator = "[+-]?(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	biochemical_oxygen_demand_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	chemical_oxygen_demand_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	sludge_retention_time_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	alkalinity_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	industrial_effluent_percent_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	temperature_validator = "[+-]?(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	pH_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	efficiency_percent_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	emulsions_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	gaseous_substances_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	inorganic_particles_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	organic_particles_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	soluble_inorganic_material_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	soluble_organic_material_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	suspended_solids_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	total_phosphate_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	nitrate_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	phosphate_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	salinity_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	sodium_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	total_nitrogen_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
 
 	sampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE, default=1)
 	sample = models.ForeignKey(Sample, on_delete=models.CASCADE, default=1)
-	GSC_MIxS_wastewater_sludge_project_name= models.CharField(max_length=100, blank=False,help_text="Name of th")
-	GSC_MIxS_wastewater_sludge_experimental_factor= models.CharField(max_length=100, blank=True,help_text="Experiment")
-	GSC_MIxS_wastewater_sludge_ploidy= models.CharField(max_length=100, blank=True,help_text="The ploidy")
-	GSC_MIxS_wastewater_sludge_number_of_replicons= models.CharField(max_length=100, blank=True,help_text="Reports th", validators=[RegexValidator(GSC_MIxS_wastewater_sludge_number_of_replicons_validator)])
-	GSC_MIxS_wastewater_sludge_extrachromosomal_elements= models.CharField(max_length=100, blank=True,help_text="Do plasmid", validators=[RegexValidator(GSC_MIxS_wastewater_sludge_extrachromosomal_elements_validator)])
-	GSC_MIxS_wastewater_sludge_estimated_size= models.CharField(max_length=100, blank=True,help_text="The estima", validators=[RegexValidator(GSC_MIxS_wastewater_sludge_estimated_size_validator)])
-	GSC_MIxS_wastewater_sludge_reference_for_biomaterial= models.CharField(max_length=100, blank=True,help_text="Primary pu")
-	GSC_MIxS_wastewater_sludge_annotation_source= models.CharField(max_length=100, blank=True,help_text="For cases ")
-	GSC_MIxS_wastewater_sludge_sample_volume_or_weight_for_DNA_extraction= models.CharField(max_length=100, blank=True,help_text="Volume (ml", validators=[RegexValidator(GSC_MIxS_wastewater_sludge_sample_volume_or_weight_for_DNA_extraction_validator)])
-	GSC_MIxS_wastewater_sludge_nucleic_acid_extraction= models.CharField(max_length=100, blank=True,help_text="A link to ")
-	GSC_MIxS_wastewater_sludge_nucleic_acid_amplification= models.CharField(max_length=100, blank=True,help_text="A link to ")
-	GSC_MIxS_wastewater_sludge_library_size= models.CharField(max_length=100, blank=True,help_text="Total numb", validators=[RegexValidator(GSC_MIxS_wastewater_sludge_library_size_validator)])
-	GSC_MIxS_wastewater_sludge_library_reads_sequenced= models.CharField(max_length=100, blank=True,help_text="Total numb", validators=[RegexValidator(GSC_MIxS_wastewater_sludge_library_reads_sequenced_validator)])
-	GSC_MIxS_wastewater_sludge_library_construction_method= models.CharField(max_length=100, blank=True,help_text="Library co")
-	GSC_MIxS_wastewater_sludge_library_vector= models.CharField(max_length=100, blank=True,help_text="Cloning ve")
-	GSC_MIxS_wastewater_sludge_library_screening_strategy= models.CharField(max_length=100, blank=True,help_text="Specific e")
-	GSC_MIxS_wastewater_sludge_target_gene= models.CharField(max_length=100, blank=True,help_text="Targeted g")
-	GSC_MIxS_wastewater_sludge_target_subfragment= models.CharField(max_length=100, blank=True,help_text="Name of su")
-	GSC_MIxS_wastewater_sludge_pcr_primers= models.CharField(max_length=100, blank=True,help_text="PCR primer")
-	GSC_MIxS_wastewater_sludge_multiplex_identifiers= models.CharField(max_length=100, blank=True,help_text="Molecular ")
-	GSC_MIxS_wastewater_sludge_adapters= models.CharField(max_length=100, blank=True,help_text="Adapters p")
-	GSC_MIxS_wastewater_sludge_pcr_conditions= models.CharField(max_length=100, blank=True,help_text="Descriptio")
-	GSC_MIxS_wastewater_sludge_sequencing_method= models.CharField(max_length=100, blank=True,help_text="Sequencing")
-	GSC_MIxS_wastewater_sludge_sequence_quality_check= models.CharField(max_length=100, blank=True,help_text="Indicate i", choices=GSC_MIxS_wastewater_sludge_sequence_quality_check_choice)
-	GSC_MIxS_wastewater_sludge_chimera_check_software= models.CharField(max_length=100, blank=True,help_text="Tool(s) us")
-	GSC_MIxS_wastewater_sludge_relevant_electronic_resources= models.CharField(max_length=100, blank=True,help_text="A related ")
-	GSC_MIxS_wastewater_sludge_relevant_standard_operating_procedures= models.CharField(max_length=100, blank=True,help_text="Standard o")
-	GSC_MIxS_wastewater_sludge_negative_control_type= models.CharField(max_length=100, blank=True,help_text="The substa")
-	GSC_MIxS_wastewater_sludge_positive_control_type= models.CharField(max_length=100, blank=True,help_text="The substa")
-	GSC_MIxS_wastewater_sludge_collection_date= models.CharField(max_length=100, blank=False,help_text="The date t", validators=[RegexValidator(GSC_MIxS_wastewater_sludge_collection_date_validator)])
-	GSC_MIxS_wastewater_sludge_geographic_location_country_and_or_sea= models.CharField(max_length=100, blank=False,help_text="The locati", choices=GSC_MIxS_wastewater_sludge_geographic_location_country_and_or_sea_choice)
-	GSC_MIxS_wastewater_sludge_geographic_location_latitude= models.CharField(max_length=100, blank=False,help_text="The geogra", validators=[RegexValidator(GSC_MIxS_wastewater_sludge_geographic_location_latitude_validator)])
-	GSC_MIxS_wastewater_sludge_geographic_location_longitude= models.CharField(max_length=100, blank=False,help_text="The geogra", validators=[RegexValidator(GSC_MIxS_wastewater_sludge_geographic_location_longitude_validator)])
-	GSC_MIxS_wastewater_sludge_geographic_location_region_and_locality= models.CharField(max_length=100, blank=True,help_text="The geogra")
-	GSC_MIxS_wastewater_sludge_depth= models.CharField(max_length=100, blank=True,help_text="The vertic", validators=[RegexValidator(GSC_MIxS_wastewater_sludge_depth_validator)])
-	GSC_MIxS_wastewater_sludge_broad_scale_environmental_context= models.CharField(max_length=100, blank=False,help_text="Report the")
-	GSC_MIxS_wastewater_sludge_local_environmental_context= models.CharField(max_length=100, blank=False,help_text="Report the")
-	GSC_MIxS_wastewater_sludge_environmental_medium= models.CharField(max_length=100, blank=False,help_text="Report the")
-	GSC_MIxS_wastewater_sludge_source_material_identifiers= models.CharField(max_length=100, blank=True,help_text="A unique i")
-	GSC_MIxS_wastewater_sludge_sample_material_processing= models.CharField(max_length=100, blank=True,help_text="A brief de")
-	GSC_MIxS_wastewater_sludge_isolation_and_growth_condition= models.CharField(max_length=100, blank=True,help_text="Publicatio")
-	GSC_MIxS_wastewater_sludge_propagation= models.CharField(max_length=100, blank=True,help_text="The type o")
-	GSC_MIxS_wastewater_sludge_amount_or_size_of_sample_collected= models.CharField(max_length=100, blank=True,help_text="The total ", validators=[RegexValidator(GSC_MIxS_wastewater_sludge_amount_or_size_of_sample_collected_validator)])
-	GSC_MIxS_wastewater_sludge_oxygenation_status_of_sample= models.CharField(max_length=100, blank=True,help_text="oxygenatio", choices=GSC_MIxS_wastewater_sludge_oxygenation_status_of_sample_choice)
-	GSC_MIxS_wastewater_sludge_organism_count= models.CharField(max_length=100, blank=True,help_text="Total cell")
-	GSC_MIxS_wastewater_sludge_sample_storage_duration= models.CharField(max_length=100, blank=True,help_text="duration f", validators=[RegexValidator(GSC_MIxS_wastewater_sludge_sample_storage_duration_validator)])
-	GSC_MIxS_wastewater_sludge_sample_storage_temperature= models.CharField(max_length=100, blank=True,help_text="temperatur", validators=[RegexValidator(GSC_MIxS_wastewater_sludge_sample_storage_temperature_validator)])
-	GSC_MIxS_wastewater_sludge_sample_storage_location= models.CharField(max_length=100, blank=True,help_text="location a")
-	GSC_MIxS_wastewater_sludge_sample_collection_device= models.CharField(max_length=100, blank=True,help_text="The device")
-	GSC_MIxS_wastewater_sludge_sample_collection_method= models.CharField(max_length=100, blank=True,help_text="The method")
-	GSC_MIxS_wastewater_sludge_biochemical_oxygen_demand= models.CharField(max_length=100, blank=True,help_text="a measure ", validators=[RegexValidator(GSC_MIxS_wastewater_sludge_biochemical_oxygen_demand_validator)])
-	GSC_MIxS_wastewater_sludge_chemical_oxygen_demand= models.CharField(max_length=100, blank=True,help_text="a measure ", validators=[RegexValidator(GSC_MIxS_wastewater_sludge_chemical_oxygen_demand_validator)])
-	GSC_MIxS_wastewater_sludge_pre_treatment= models.CharField(max_length=100, blank=True,help_text="the proces")
-	GSC_MIxS_wastewater_sludge_primary_treatment= models.CharField(max_length=100, blank=True,help_text="the proces")
-	GSC_MIxS_wastewater_sludge_reactor_type= models.CharField(max_length=100, blank=True,help_text="anaerobic ")
-	GSC_MIxS_wastewater_sludge_secondary_treatment= models.CharField(max_length=100, blank=True,help_text="the proces")
-	GSC_MIxS_wastewater_sludge_sludge_retention_time= models.CharField(max_length=100, blank=True,help_text="the time a", validators=[RegexValidator(GSC_MIxS_wastewater_sludge_sludge_retention_time_validator)])
-	GSC_MIxS_wastewater_sludge_tertiary_treatment= models.CharField(max_length=100, blank=True,help_text="the proces")
-	GSC_MIxS_wastewater_sludge_host_disease_status= models.CharField(max_length=100, blank=True,help_text="list of di")
-	GSC_MIxS_wastewater_sludge_host_scientific_name= models.CharField(max_length=100, blank=True,help_text="Scientific")
-	GSC_MIxS_wastewater_sludge_alkalinity= models.CharField(max_length=100, blank=True,help_text="alkalinity", validators=[RegexValidator(GSC_MIxS_wastewater_sludge_alkalinity_validator)])
-	GSC_MIxS_wastewater_sludge_industrial_effluent_percent= models.CharField(max_length=100, blank=True,help_text="percentage", validators=[RegexValidator(GSC_MIxS_wastewater_sludge_industrial_effluent_percent_validator)])
-	GSC_MIxS_wastewater_sludge_sewage_type= models.CharField(max_length=100, blank=True,help_text="Type of se")
-	GSC_MIxS_wastewater_sludge_wastewater_type= models.CharField(max_length=100, blank=True,help_text="the origin")
-	GSC_MIxS_wastewater_sludge_temperature= models.CharField(max_length=100, blank=True,help_text="temperatur", validators=[RegexValidator(GSC_MIxS_wastewater_sludge_temperature_validator)])
-	GSC_MIxS_wastewater_sludge_pH= models.CharField(max_length=100, blank=True,help_text="pH measure", validators=[RegexValidator(GSC_MIxS_wastewater_sludge_pH_validator)])
-	GSC_MIxS_wastewater_sludge_efficiency_percent= models.CharField(max_length=100, blank=True,help_text="percentage", validators=[RegexValidator(GSC_MIxS_wastewater_sludge_efficiency_percent_validator)])
-	GSC_MIxS_wastewater_sludge_emulsions= models.CharField(max_length=100, blank=True,help_text="amount or ", validators=[RegexValidator(GSC_MIxS_wastewater_sludge_emulsions_validator)])
-	GSC_MIxS_wastewater_sludge_gaseous_substances= models.CharField(max_length=100, blank=True,help_text="amount or ", validators=[RegexValidator(GSC_MIxS_wastewater_sludge_gaseous_substances_validator)])
-	GSC_MIxS_wastewater_sludge_inorganic_particles= models.CharField(max_length=100, blank=True,help_text="concentrat", validators=[RegexValidator(GSC_MIxS_wastewater_sludge_inorganic_particles_validator)])
-	GSC_MIxS_wastewater_sludge_organic_particles= models.CharField(max_length=100, blank=True,help_text="concentrat", validators=[RegexValidator(GSC_MIxS_wastewater_sludge_organic_particles_validator)])
-	GSC_MIxS_wastewater_sludge_soluble_inorganic_material= models.CharField(max_length=100, blank=True,help_text="concentrat", validators=[RegexValidator(GSC_MIxS_wastewater_sludge_soluble_inorganic_material_validator)])
-	GSC_MIxS_wastewater_sludge_soluble_organic_material= models.CharField(max_length=100, blank=True,help_text="concentrat", validators=[RegexValidator(GSC_MIxS_wastewater_sludge_soluble_organic_material_validator)])
-	GSC_MIxS_wastewater_sludge_suspended_solids= models.CharField(max_length=100, blank=True,help_text="concentrat", validators=[RegexValidator(GSC_MIxS_wastewater_sludge_suspended_solids_validator)])
-	GSC_MIxS_wastewater_sludge_total_phosphate= models.CharField(max_length=100, blank=True,help_text="total amou", validators=[RegexValidator(GSC_MIxS_wastewater_sludge_total_phosphate_validator)])
-	GSC_MIxS_wastewater_sludge_nitrate= models.CharField(max_length=100, blank=True,help_text="concentrat", validators=[RegexValidator(GSC_MIxS_wastewater_sludge_nitrate_validator)])
-	GSC_MIxS_wastewater_sludge_phosphate= models.CharField(max_length=100, blank=True,help_text="concentrat", validators=[RegexValidator(GSC_MIxS_wastewater_sludge_phosphate_validator)])
-	GSC_MIxS_wastewater_sludge_salinity= models.CharField(max_length=100, blank=True,help_text="The total ", validators=[RegexValidator(GSC_MIxS_wastewater_sludge_salinity_validator)])
-	GSC_MIxS_wastewater_sludge_sodium= models.CharField(max_length=100, blank=True,help_text="sodium con", validators=[RegexValidator(GSC_MIxS_wastewater_sludge_sodium_validator)])
-	GSC_MIxS_wastewater_sludge_total_nitrogen= models.CharField(max_length=100, blank=True,help_text="total nitr", validators=[RegexValidator(GSC_MIxS_wastewater_sludge_total_nitrogen_validator)])
-	GSC_MIxS_wastewater_sludge_subspecific_genetic_lineage= models.CharField(max_length=100, blank=True,help_text="Informatio")
-	GSC_MIxS_wastewater_sludge_trophic_level= models.CharField(max_length=100, blank=True,help_text="Trophic le", choices=GSC_MIxS_wastewater_sludge_trophic_level_choice)
-	GSC_MIxS_wastewater_sludge_relationship_to_oxygen= models.CharField(max_length=100, blank=True,help_text="Is this or", choices=GSC_MIxS_wastewater_sludge_relationship_to_oxygen_choice)
-	GSC_MIxS_wastewater_sludge_known_pathogenicity= models.CharField(max_length=100, blank=True,help_text="To what is")
-	GSC_MIxS_wastewater_sludge_encoded_traits= models.CharField(max_length=100, blank=True,help_text="Should inc")
-	GSC_MIxS_wastewater_sludge_observed_biotic_relationship= models.CharField(max_length=100, blank=True,help_text="Is it free", choices=GSC_MIxS_wastewater_sludge_observed_biotic_relationship_choice)
-	GSC_MIxS_wastewater_sludge_chemical_administration= models.CharField(max_length=100, blank=True,help_text="list of ch")
-	GSC_MIxS_wastewater_sludge_perturbation= models.CharField(max_length=100, blank=True,help_text="type of pe")
+	project_name= models.CharField(max_length=100, blank=False,help_text="Name of th")
+	experimental_factor= models.CharField(max_length=100, blank=True,help_text="Experiment")
+	ploidy= models.CharField(max_length=100, blank=True,help_text="The ploidy")
+	number_of_replicons= models.CharField(max_length=100, blank=True,help_text="Reports th", validators=[RegexValidator(number_of_replicons_validator)])
+	extrachromosomal_elements= models.CharField(max_length=100, blank=True,help_text="Do plasmid", validators=[RegexValidator(extrachromosomal_elements_validator)])
+	estimated_size= models.CharField(max_length=100, blank=True,help_text="The estima", validators=[RegexValidator(estimated_size_validator)])
+	reference_for_biomaterial= models.CharField(max_length=100, blank=True,help_text="Primary pu")
+	annotation_source= models.CharField(max_length=100, blank=True,help_text="For cases ")
+	sample_volume_or_weight_for_DNA_extraction= models.CharField(max_length=100, blank=True,help_text="Volume (ml", validators=[RegexValidator(sample_volume_or_weight_for_DNA_extraction_validator)])
+	nucleic_acid_extraction= models.CharField(max_length=100, blank=True,help_text="A link to ")
+	nucleic_acid_amplification= models.CharField(max_length=100, blank=True,help_text="A link to ")
+	library_size= models.CharField(max_length=100, blank=True,help_text="Total numb", validators=[RegexValidator(library_size_validator)])
+	library_reads_sequenced= models.CharField(max_length=100, blank=True,help_text="Total numb", validators=[RegexValidator(library_reads_sequenced_validator)])
+	library_construction_method= models.CharField(max_length=100, blank=True,help_text="Library co")
+	library_vector= models.CharField(max_length=100, blank=True,help_text="Cloning ve")
+	library_screening_strategy= models.CharField(max_length=100, blank=True,help_text="Specific e")
+	target_gene= models.CharField(max_length=100, blank=True,help_text="Targeted g")
+	target_subfragment= models.CharField(max_length=100, blank=True,help_text="Name of su")
+	pcr_primers= models.CharField(max_length=100, blank=True,help_text="PCR primer")
+	multiplex_identifiers= models.CharField(max_length=100, blank=True,help_text="Molecular ")
+	adapters= models.CharField(max_length=100, blank=True,help_text="Adapters p")
+	pcr_conditions= models.CharField(max_length=100, blank=True,help_text="Descriptio")
+	sequencing_method= models.CharField(max_length=100, blank=True,help_text="Sequencing")
+	sequence_quality_check= models.CharField(max_length=100, blank=True,help_text="Indicate i", choices=sequence_quality_check_choice)
+	chimera_check_software= models.CharField(max_length=100, blank=True,help_text="Tool(s) us")
+	relevant_electronic_resources= models.CharField(max_length=100, blank=True,help_text="A related ")
+	relevant_standard_operating_procedures= models.CharField(max_length=100, blank=True,help_text="Standard o")
+	negative_control_type= models.CharField(max_length=100, blank=True,help_text="The substa")
+	positive_control_type= models.CharField(max_length=100, blank=True,help_text="The substa")
+	collection_date= models.CharField(max_length=100, blank=False,help_text="The date t", validators=[RegexValidator(collection_date_validator)])
+	geographic_location_country_and_or_sea= models.CharField(max_length=100, blank=False,help_text="The locati", choices=geographic_location_country_and_or_sea_choice)
+	geographic_location_latitude= models.CharField(max_length=100, blank=False,help_text="The geogra", validators=[RegexValidator(geographic_location_latitude_validator)])
+	geographic_location_longitude= models.CharField(max_length=100, blank=False,help_text="The geogra", validators=[RegexValidator(geographic_location_longitude_validator)])
+	geographic_location_region_and_locality= models.CharField(max_length=100, blank=True,help_text="The geogra")
+	depth= models.CharField(max_length=100, blank=True,help_text="The vertic", validators=[RegexValidator(depth_validator)])
+	broad_scale_environmental_context= models.CharField(max_length=100, blank=False,help_text="Report the")
+	local_environmental_context= models.CharField(max_length=100, blank=False,help_text="Report the")
+	environmental_medium= models.CharField(max_length=100, blank=False,help_text="Report the")
+	source_material_identifiers= models.CharField(max_length=100, blank=True,help_text="A unique i")
+	sample_material_processing= models.CharField(max_length=100, blank=True,help_text="A brief de")
+	isolation_and_growth_condition= models.CharField(max_length=100, blank=True,help_text="Publicatio")
+	propagation= models.CharField(max_length=100, blank=True,help_text="The type o")
+	amount_or_size_of_sample_collected= models.CharField(max_length=100, blank=True,help_text="The total ", validators=[RegexValidator(amount_or_size_of_sample_collected_validator)])
+	oxygenation_status_of_sample= models.CharField(max_length=100, blank=True,help_text="oxygenatio", choices=oxygenation_status_of_sample_choice)
+	organism_count= models.CharField(max_length=100, blank=True,help_text="Total cell")
+	sample_storage_duration= models.CharField(max_length=100, blank=True,help_text="duration f", validators=[RegexValidator(sample_storage_duration_validator)])
+	sample_storage_temperature= models.CharField(max_length=100, blank=True,help_text="temperatur", validators=[RegexValidator(sample_storage_temperature_validator)])
+	sample_storage_location= models.CharField(max_length=100, blank=True,help_text="location a")
+	sample_collection_device= models.CharField(max_length=100, blank=True,help_text="The device")
+	sample_collection_method= models.CharField(max_length=100, blank=True,help_text="The method")
+	biochemical_oxygen_demand= models.CharField(max_length=100, blank=True,help_text="a measure ", validators=[RegexValidator(biochemical_oxygen_demand_validator)])
+	chemical_oxygen_demand= models.CharField(max_length=100, blank=True,help_text="a measure ", validators=[RegexValidator(chemical_oxygen_demand_validator)])
+	pre_treatment= models.CharField(max_length=100, blank=True,help_text="the proces")
+	primary_treatment= models.CharField(max_length=100, blank=True,help_text="the proces")
+	reactor_type= models.CharField(max_length=100, blank=True,help_text="anaerobic ")
+	secondary_treatment= models.CharField(max_length=100, blank=True,help_text="the proces")
+	sludge_retention_time= models.CharField(max_length=100, blank=True,help_text="the time a", validators=[RegexValidator(sludge_retention_time_validator)])
+	tertiary_treatment= models.CharField(max_length=100, blank=True,help_text="the proces")
+	host_disease_status= models.CharField(max_length=100, blank=True,help_text="list of di")
+	host_scientific_name= models.CharField(max_length=100, blank=True,help_text="Scientific")
+	alkalinity= models.CharField(max_length=100, blank=True,help_text="alkalinity", validators=[RegexValidator(alkalinity_validator)])
+	industrial_effluent_percent= models.CharField(max_length=100, blank=True,help_text="percentage", validators=[RegexValidator(industrial_effluent_percent_validator)])
+	sewage_type= models.CharField(max_length=100, blank=True,help_text="Type of se")
+	wastewater_type= models.CharField(max_length=100, blank=True,help_text="the origin")
+	temperature= models.CharField(max_length=100, blank=True,help_text="temperatur", validators=[RegexValidator(temperature_validator)])
+	pH= models.CharField(max_length=100, blank=True,help_text="pH measure", validators=[RegexValidator(pH_validator)])
+	efficiency_percent= models.CharField(max_length=100, blank=True,help_text="percentage", validators=[RegexValidator(efficiency_percent_validator)])
+	emulsions= models.CharField(max_length=100, blank=True,help_text="amount or ", validators=[RegexValidator(emulsions_validator)])
+	gaseous_substances= models.CharField(max_length=100, blank=True,help_text="amount or ", validators=[RegexValidator(gaseous_substances_validator)])
+	inorganic_particles= models.CharField(max_length=100, blank=True,help_text="concentrat", validators=[RegexValidator(inorganic_particles_validator)])
+	organic_particles= models.CharField(max_length=100, blank=True,help_text="concentrat", validators=[RegexValidator(organic_particles_validator)])
+	soluble_inorganic_material= models.CharField(max_length=100, blank=True,help_text="concentrat", validators=[RegexValidator(soluble_inorganic_material_validator)])
+	soluble_organic_material= models.CharField(max_length=100, blank=True,help_text="concentrat", validators=[RegexValidator(soluble_organic_material_validator)])
+	suspended_solids= models.CharField(max_length=100, blank=True,help_text="concentrat", validators=[RegexValidator(suspended_solids_validator)])
+	total_phosphate= models.CharField(max_length=100, blank=True,help_text="total amou", validators=[RegexValidator(total_phosphate_validator)])
+	nitrate= models.CharField(max_length=100, blank=True,help_text="concentrat", validators=[RegexValidator(nitrate_validator)])
+	phosphate= models.CharField(max_length=100, blank=True,help_text="concentrat", validators=[RegexValidator(phosphate_validator)])
+	salinity= models.CharField(max_length=100, blank=True,help_text="The total ", validators=[RegexValidator(salinity_validator)])
+	sodium= models.CharField(max_length=100, blank=True,help_text="sodium con", validators=[RegexValidator(sodium_validator)])
+	total_nitrogen= models.CharField(max_length=100, blank=True,help_text="total nitr", validators=[RegexValidator(total_nitrogen_validator)])
+	subspecific_genetic_lineage= models.CharField(max_length=100, blank=True,help_text="Informatio")
+	trophic_level= models.CharField(max_length=100, blank=True,help_text="Trophic le", choices=trophic_level_choice)
+	relationship_to_oxygen= models.CharField(max_length=100, blank=True,help_text="Is this or", choices=relationship_to_oxygen_choice)
+	known_pathogenicity= models.CharField(max_length=100, blank=True,help_text="To what is")
+	encoded_traits= models.CharField(max_length=100, blank=True,help_text="Should inc")
+	observed_biotic_relationship= models.CharField(max_length=100, blank=True,help_text="Is it free", choices=observed_biotic_relationship_choice)
+	chemical_administration= models.CharField(max_length=100, blank=True,help_text="list of ch")
+	perturbation= models.CharField(max_length=100, blank=True,help_text="type of pe")
 
 	fields = {
-		'GSC_MIxS_wastewater_sludge_project_name': 'project name',
-		'GSC_MIxS_wastewater_sludge_experimental_factor': 'experimental factor',
-		'GSC_MIxS_wastewater_sludge_ploidy': 'ploidy',
-		'GSC_MIxS_wastewater_sludge_number_of_replicons': 'number of replicons',
-		'GSC_MIxS_wastewater_sludge_extrachromosomal_elements': 'extrachromosomal elements',
-		'GSC_MIxS_wastewater_sludge_estimated_size': 'estimated size',
-		'GSC_MIxS_wastewater_sludge_reference_for_biomaterial': 'reference for biomaterial',
-		'GSC_MIxS_wastewater_sludge_annotation_source': 'annotation source',
-		'GSC_MIxS_wastewater_sludge_sample_volume_or_weight_for_DNA_extraction': 'sample volume or weight for DNA extraction',
-		'GSC_MIxS_wastewater_sludge_nucleic_acid_extraction': 'nucleic acid extraction',
-		'GSC_MIxS_wastewater_sludge_nucleic_acid_amplification': 'nucleic acid amplification',
-		'GSC_MIxS_wastewater_sludge_library_size': 'library size',
-		'GSC_MIxS_wastewater_sludge_library_reads_sequenced': 'library reads sequenced',
-		'GSC_MIxS_wastewater_sludge_library_construction_method': 'library construction method',
-		'GSC_MIxS_wastewater_sludge_library_vector': 'library vector',
-		'GSC_MIxS_wastewater_sludge_library_screening_strategy': 'library screening strategy',
-		'GSC_MIxS_wastewater_sludge_target_gene': 'target gene',
-		'GSC_MIxS_wastewater_sludge_target_subfragment': 'target subfragment',
-		'GSC_MIxS_wastewater_sludge_pcr_primers': 'pcr primers',
-		'GSC_MIxS_wastewater_sludge_multiplex_identifiers': 'multiplex identifiers',
-		'GSC_MIxS_wastewater_sludge_adapters': 'adapters',
-		'GSC_MIxS_wastewater_sludge_pcr_conditions': 'pcr conditions',
-		'GSC_MIxS_wastewater_sludge_sequencing_method': 'sequencing method',
-		'GSC_MIxS_wastewater_sludge_sequence_quality_check': 'sequence quality check',
-		'GSC_MIxS_wastewater_sludge_chimera_check_software': 'chimera check software',
-		'GSC_MIxS_wastewater_sludge_relevant_electronic_resources': 'relevant electronic resources',
-		'GSC_MIxS_wastewater_sludge_relevant_standard_operating_procedures': 'relevant standard operating procedures',
-		'GSC_MIxS_wastewater_sludge_negative_control_type': 'negative control type',
-		'GSC_MIxS_wastewater_sludge_positive_control_type': 'positive control type',
-		'GSC_MIxS_wastewater_sludge_collection_date': 'collection date',
-		'GSC_MIxS_wastewater_sludge_geographic_location_country_and_or_sea': 'geographic location (country and/or sea)',
-		'GSC_MIxS_wastewater_sludge_geographic_location_latitude': 'geographic location (latitude)',
-		'GSC_MIxS_wastewater_sludge_geographic_location_longitude': 'geographic location (longitude)',
-		'GSC_MIxS_wastewater_sludge_geographic_location_region_and_locality': 'geographic location (region and locality)',
-		'GSC_MIxS_wastewater_sludge_depth': 'depth',
-		'GSC_MIxS_wastewater_sludge_broad_scale_environmental_context': 'broad-scale environmental context',
-		'GSC_MIxS_wastewater_sludge_local_environmental_context': 'local environmental context',
-		'GSC_MIxS_wastewater_sludge_environmental_medium': 'environmental medium',
-		'GSC_MIxS_wastewater_sludge_source_material_identifiers': 'source material identifiers',
-		'GSC_MIxS_wastewater_sludge_sample_material_processing': 'sample material processing',
-		'GSC_MIxS_wastewater_sludge_isolation_and_growth_condition': 'isolation and growth condition',
-		'GSC_MIxS_wastewater_sludge_propagation': 'propagation',
-		'GSC_MIxS_wastewater_sludge_amount_or_size_of_sample_collected': 'amount or size of sample collected',
-		'GSC_MIxS_wastewater_sludge_oxygenation_status_of_sample': 'oxygenation status of sample',
-		'GSC_MIxS_wastewater_sludge_organism_count': 'organism count',
-		'GSC_MIxS_wastewater_sludge_sample_storage_duration': 'sample storage duration',
-		'GSC_MIxS_wastewater_sludge_sample_storage_temperature': 'sample storage temperature',
-		'GSC_MIxS_wastewater_sludge_sample_storage_location': 'sample storage location',
-		'GSC_MIxS_wastewater_sludge_sample_collection_device': 'sample collection device',
-		'GSC_MIxS_wastewater_sludge_sample_collection_method': 'sample collection method',
-		'GSC_MIxS_wastewater_sludge_biochemical_oxygen_demand': 'biochemical oxygen demand',
-		'GSC_MIxS_wastewater_sludge_chemical_oxygen_demand': 'chemical oxygen demand',
-		'GSC_MIxS_wastewater_sludge_pre_treatment': 'pre-treatment',
-		'GSC_MIxS_wastewater_sludge_primary_treatment': 'primary treatment',
-		'GSC_MIxS_wastewater_sludge_reactor_type': 'reactor type',
-		'GSC_MIxS_wastewater_sludge_secondary_treatment': 'secondary treatment',
-		'GSC_MIxS_wastewater_sludge_sludge_retention_time': 'sludge retention time',
-		'GSC_MIxS_wastewater_sludge_tertiary_treatment': 'tertiary treatment',
-		'GSC_MIxS_wastewater_sludge_host_disease_status': 'host disease status',
-		'GSC_MIxS_wastewater_sludge_host_scientific_name': 'host scientific name',
-		'GSC_MIxS_wastewater_sludge_alkalinity': 'alkalinity',
-		'GSC_MIxS_wastewater_sludge_industrial_effluent_percent': 'industrial effluent percent',
-		'GSC_MIxS_wastewater_sludge_sewage_type': 'sewage type',
-		'GSC_MIxS_wastewater_sludge_wastewater_type': 'wastewater type',
-		'GSC_MIxS_wastewater_sludge_temperature': 'temperature',
-		'GSC_MIxS_wastewater_sludge_pH': 'pH',
-		'GSC_MIxS_wastewater_sludge_efficiency_percent': 'efficiency percent',
-		'GSC_MIxS_wastewater_sludge_emulsions': 'emulsions',
-		'GSC_MIxS_wastewater_sludge_gaseous_substances': 'gaseous substances',
-		'GSC_MIxS_wastewater_sludge_inorganic_particles': 'inorganic particles',
-		'GSC_MIxS_wastewater_sludge_organic_particles': 'organic particles',
-		'GSC_MIxS_wastewater_sludge_soluble_inorganic_material': 'soluble inorganic material',
-		'GSC_MIxS_wastewater_sludge_soluble_organic_material': 'soluble organic material',
-		'GSC_MIxS_wastewater_sludge_suspended_solids': 'suspended solids',
-		'GSC_MIxS_wastewater_sludge_total_phosphate': 'total phosphate',
-		'GSC_MIxS_wastewater_sludge_nitrate': 'nitrate',
-		'GSC_MIxS_wastewater_sludge_phosphate': 'phosphate',
-		'GSC_MIxS_wastewater_sludge_salinity': 'salinity',
-		'GSC_MIxS_wastewater_sludge_sodium': 'sodium',
-		'GSC_MIxS_wastewater_sludge_total_nitrogen': 'total nitrogen',
-		'GSC_MIxS_wastewater_sludge_subspecific_genetic_lineage': 'subspecific genetic lineage',
-		'GSC_MIxS_wastewater_sludge_trophic_level': 'trophic level',
-		'GSC_MIxS_wastewater_sludge_relationship_to_oxygen': 'relationship to oxygen',
-		'GSC_MIxS_wastewater_sludge_known_pathogenicity': 'known pathogenicity',
-		'GSC_MIxS_wastewater_sludge_encoded_traits': 'encoded traits',
-		'GSC_MIxS_wastewater_sludge_observed_biotic_relationship': 'observed biotic relationship',
-		'GSC_MIxS_wastewater_sludge_chemical_administration': 'chemical administration',
-		'GSC_MIxS_wastewater_sludge_perturbation': 'perturbation',
+		'project_name': 'project name',
+		'experimental_factor': 'experimental factor',
+		'ploidy': 'ploidy',
+		'number_of_replicons': 'number of replicons',
+		'extrachromosomal_elements': 'extrachromosomal elements',
+		'estimated_size': 'estimated size',
+		'reference_for_biomaterial': 'reference for biomaterial',
+		'annotation_source': 'annotation source',
+		'sample_volume_or_weight_for_DNA_extraction': 'sample volume or weight for DNA extraction',
+		'nucleic_acid_extraction': 'nucleic acid extraction',
+		'nucleic_acid_amplification': 'nucleic acid amplification',
+		'library_size': 'library size',
+		'library_reads_sequenced': 'library reads sequenced',
+		'library_construction_method': 'library construction method',
+		'library_vector': 'library vector',
+		'library_screening_strategy': 'library screening strategy',
+		'target_gene': 'target gene',
+		'target_subfragment': 'target subfragment',
+		'pcr_primers': 'pcr primers',
+		'multiplex_identifiers': 'multiplex identifiers',
+		'adapters': 'adapters',
+		'pcr_conditions': 'pcr conditions',
+		'sequencing_method': 'sequencing method',
+		'sequence_quality_check': 'sequence quality check',
+		'chimera_check_software': 'chimera check software',
+		'relevant_electronic_resources': 'relevant electronic resources',
+		'relevant_standard_operating_procedures': 'relevant standard operating procedures',
+		'negative_control_type': 'negative control type',
+		'positive_control_type': 'positive control type',
+		'collection_date': 'collection date',
+		'geographic_location_country_and_or_sea': 'geographic location (country and/or sea)',
+		'geographic_location_latitude': 'geographic location (latitude)',
+		'geographic_location_longitude': 'geographic location (longitude)',
+		'geographic_location_region_and_locality': 'geographic location (region and locality)',
+		'depth': 'depth',
+		'broad_scale_environmental_context': 'broad-scale environmental context',
+		'local_environmental_context': 'local environmental context',
+		'environmental_medium': 'environmental medium',
+		'source_material_identifiers': 'source material identifiers',
+		'sample_material_processing': 'sample material processing',
+		'isolation_and_growth_condition': 'isolation and growth condition',
+		'propagation': 'propagation',
+		'amount_or_size_of_sample_collected': 'amount or size of sample collected',
+		'oxygenation_status_of_sample': 'oxygenation status of sample',
+		'organism_count': 'organism count',
+		'sample_storage_duration': 'sample storage duration',
+		'sample_storage_temperature': 'sample storage temperature',
+		'sample_storage_location': 'sample storage location',
+		'sample_collection_device': 'sample collection device',
+		'sample_collection_method': 'sample collection method',
+		'biochemical_oxygen_demand': 'biochemical oxygen demand',
+		'chemical_oxygen_demand': 'chemical oxygen demand',
+		'pre_treatment': 'pre-treatment',
+		'primary_treatment': 'primary treatment',
+		'reactor_type': 'reactor type',
+		'secondary_treatment': 'secondary treatment',
+		'sludge_retention_time': 'sludge retention time',
+		'tertiary_treatment': 'tertiary treatment',
+		'host_disease_status': 'host disease status',
+		'host_scientific_name': 'host scientific name',
+		'alkalinity': 'alkalinity',
+		'industrial_effluent_percent': 'industrial effluent percent',
+		'sewage_type': 'sewage type',
+		'wastewater_type': 'wastewater type',
+		'temperature': 'temperature',
+		'pH': 'pH',
+		'efficiency_percent': 'efficiency percent',
+		'emulsions': 'emulsions',
+		'gaseous_substances': 'gaseous substances',
+		'inorganic_particles': 'inorganic particles',
+		'organic_particles': 'organic particles',
+		'soluble_inorganic_material': 'soluble inorganic material',
+		'soluble_organic_material': 'soluble organic material',
+		'suspended_solids': 'suspended solids',
+		'total_phosphate': 'total phosphate',
+		'nitrate': 'nitrate',
+		'phosphate': 'phosphate',
+		'salinity': 'salinity',
+		'sodium': 'sodium',
+		'total_nitrogen': 'total nitrogen',
+		'subspecific_genetic_lineage': 'subspecific genetic lineage',
+		'trophic_level': 'trophic level',
+		'relationship_to_oxygen': 'relationship to oxygen',
+		'known_pathogenicity': 'known pathogenicity',
+		'encoded_traits': 'encoded traits',
+		'observed_biotic_relationship': 'observed biotic relationship',
+		'chemical_administration': 'chemical administration',
+		'perturbation': 'perturbation',
 	}
 
 	name = 'GSC_MIxS_wastewater_sludge'
 
 class GSC_MIxS_wastewater_sludge_unit(SelfDescribingModel):
 
-	GSC_MIxS_wastewater_sludge_sample_volume_or_weight_for_DNA_extraction_units = [('g', 'g'), ('mL', 'mL'), ('mg', 'mg'), ('ng', 'ng')]
-	GSC_MIxS_wastewater_sludge_geographic_location_latitude_units = [('DD', 'DD')]
-	GSC_MIxS_wastewater_sludge_geographic_location_longitude_units = [('DD', 'DD')]
-	GSC_MIxS_wastewater_sludge_depth_units = [('m', 'm')]
-	GSC_MIxS_wastewater_sludge_amount_or_size_of_sample_collected_units = [('L', 'L'), ('g', 'g'), ('kg', 'kg'), ('m2', 'm2'), ('m3', 'm3')]
-	GSC_MIxS_wastewater_sludge_sample_storage_duration_units = [('days', 'days'), ('hours', 'hours'), ('months', 'months'), ('weeks', 'weeks'), ('years', 'years')]
-	GSC_MIxS_wastewater_sludge_sample_storage_temperature_units = [('°C', '°C')]
-	GSC_MIxS_wastewater_sludge_biochemical_oxygen_demand_units = [('mg/L (over 5 days at 20C)', 'mg/L (over 5 days at 20C)')]
-	GSC_MIxS_wastewater_sludge_chemical_oxygen_demand_units = [('mg/L (over 5 days at 20C)', 'mg/L (over 5 days at 20C)')]
-	GSC_MIxS_wastewater_sludge_sludge_retention_time_units = [('days', 'days'), ('hours', 'hours'), ('minutes', 'minutes'), ('weeks', 'weeks')]
-	GSC_MIxS_wastewater_sludge_alkalinity_units = [('mEq/L', 'mEq/L')]
-	GSC_MIxS_wastewater_sludge_industrial_effluent_percent_units = [('%', '%')]
-	GSC_MIxS_wastewater_sludge_temperature_units = [('ºC', 'ºC')]
-	GSC_MIxS_wastewater_sludge_efficiency_percent_units = [('%', '%')]
-	GSC_MIxS_wastewater_sludge_emulsions_units = [('g/L', 'g/L'), ('ng/L', 'ng/L'), ('µg/L', 'µg/L')]
-	GSC_MIxS_wastewater_sludge_gaseous_substances_units = [('µmol/L', 'µmol/L')]
-	GSC_MIxS_wastewater_sludge_inorganic_particles_units = [('mg/L', 'mg/L'), ('mol/L', 'mol/L')]
-	GSC_MIxS_wastewater_sludge_organic_particles_units = [('g/L', 'g/L')]
-	GSC_MIxS_wastewater_sludge_soluble_inorganic_material_units = [('g/L', 'g/L'), ('mol/L', 'mol/L'), ('parts/million', 'parts/million')]
-	GSC_MIxS_wastewater_sludge_soluble_organic_material_units = [('g/L', 'g/L'), ('mol/L', 'mol/L'), ('parts/million', 'parts/million')]
-	GSC_MIxS_wastewater_sludge_suspended_solids_units = [('g/L', 'g/L'), ('mol/L', 'mol/L'), ('parts/million', 'parts/million')]
-	GSC_MIxS_wastewater_sludge_total_phosphate_units = [('µg/L', 'µg/L'), ('µmol/L', 'µmol/L')]
-	GSC_MIxS_wastewater_sludge_nitrate_units = [('µmol/L', 'µmol/L')]
-	GSC_MIxS_wastewater_sludge_phosphate_units = [('µmol/L', 'µmol/L')]
-	GSC_MIxS_wastewater_sludge_salinity_units = [('psu', 'psu')]
-	GSC_MIxS_wastewater_sludge_sodium_units = [('parts/million', 'parts/million'), ('µmol/L', 'µmol/L')]
-	GSC_MIxS_wastewater_sludge_total_nitrogen_units = [('µg/L', 'µg/L'), ('µmol/L', 'µmol/L')]
+	sample_volume_or_weight_for_DNA_extraction_units = [('g', 'g'), ('mL', 'mL'), ('mg', 'mg'), ('ng', 'ng')]
+	geographic_location_latitude_units = [('DD', 'DD')]
+	geographic_location_longitude_units = [('DD', 'DD')]
+	depth_units = [('m', 'm')]
+	amount_or_size_of_sample_collected_units = [('L', 'L'), ('g', 'g'), ('kg', 'kg'), ('m2', 'm2'), ('m3', 'm3')]
+	sample_storage_duration_units = [('days', 'days'), ('hours', 'hours'), ('months', 'months'), ('weeks', 'weeks'), ('years', 'years')]
+	sample_storage_temperature_units = [('°C', '°C')]
+	biochemical_oxygen_demand_units = [('mg/L (over 5 days at 20C)', 'mg/L (over 5 days at 20C)')]
+	chemical_oxygen_demand_units = [('mg/L (over 5 days at 20C)', 'mg/L (over 5 days at 20C)')]
+	sludge_retention_time_units = [('days', 'days'), ('hours', 'hours'), ('minutes', 'minutes'), ('weeks', 'weeks')]
+	alkalinity_units = [('mEq/L', 'mEq/L')]
+	industrial_effluent_percent_units = [('%', '%')]
+	temperature_units = [('ºC', 'ºC')]
+	efficiency_percent_units = [('%', '%')]
+	emulsions_units = [('g/L', 'g/L'), ('ng/L', 'ng/L'), ('µg/L', 'µg/L')]
+	gaseous_substances_units = [('µmol/L', 'µmol/L')]
+	inorganic_particles_units = [('mg/L', 'mg/L'), ('mol/L', 'mol/L')]
+	organic_particles_units = [('g/L', 'g/L')]
+	soluble_inorganic_material_units = [('g/L', 'g/L'), ('mol/L', 'mol/L'), ('parts/million', 'parts/million')]
+	soluble_organic_material_units = [('g/L', 'g/L'), ('mol/L', 'mol/L'), ('parts/million', 'parts/million')]
+	suspended_solids_units = [('g/L', 'g/L'), ('mol/L', 'mol/L'), ('parts/million', 'parts/million')]
+	total_phosphate_units = [('µg/L', 'µg/L'), ('µmol/L', 'µmol/L')]
+	nitrate_units = [('µmol/L', 'µmol/L')]
+	phosphate_units = [('µmol/L', 'µmol/L')]
+	salinity_units = [('psu', 'psu')]
+	sodium_units = [('parts/million', 'parts/million'), ('µmol/L', 'µmol/L')]
+	total_nitrogen_units = [('µg/L', 'µg/L'), ('µmol/L', 'µmol/L')]
 
 	fields = {
-		'GSC_MIxS_wastewater_sludge_sample_volume_or_weight_for_DNA_extraction': 'sample volume or weight for DNA extraction',
-		'GSC_MIxS_wastewater_sludge_geographic_location_latitude': 'geographic location (latitude)',
-		'GSC_MIxS_wastewater_sludge_geographic_location_longitude': 'geographic location (longitude)',
-		'GSC_MIxS_wastewater_sludge_depth': 'depth',
-		'GSC_MIxS_wastewater_sludge_amount_or_size_of_sample_collected': 'amount or size of sample collected',
-		'GSC_MIxS_wastewater_sludge_sample_storage_duration': 'sample storage duration',
-		'GSC_MIxS_wastewater_sludge_sample_storage_temperature': 'sample storage temperature',
-		'GSC_MIxS_wastewater_sludge_biochemical_oxygen_demand': 'biochemical oxygen demand',
-		'GSC_MIxS_wastewater_sludge_chemical_oxygen_demand': 'chemical oxygen demand',
-		'GSC_MIxS_wastewater_sludge_sludge_retention_time': 'sludge retention time',
-		'GSC_MIxS_wastewater_sludge_alkalinity': 'alkalinity',
-		'GSC_MIxS_wastewater_sludge_industrial_effluent_percent': 'industrial effluent percent',
-		'GSC_MIxS_wastewater_sludge_temperature': 'temperature',
-		'GSC_MIxS_wastewater_sludge_efficiency_percent': 'efficiency percent',
-		'GSC_MIxS_wastewater_sludge_emulsions': 'emulsions',
-		'GSC_MIxS_wastewater_sludge_gaseous_substances': 'gaseous substances',
-		'GSC_MIxS_wastewater_sludge_inorganic_particles': 'inorganic particles',
-		'GSC_MIxS_wastewater_sludge_organic_particles': 'organic particles',
-		'GSC_MIxS_wastewater_sludge_soluble_inorganic_material': 'soluble inorganic material',
-		'GSC_MIxS_wastewater_sludge_soluble_organic_material': 'soluble organic material',
-		'GSC_MIxS_wastewater_sludge_suspended_solids': 'suspended solids',
-		'GSC_MIxS_wastewater_sludge_total_phosphate': 'total phosphate',
-		'GSC_MIxS_wastewater_sludge_nitrate': 'nitrate',
-		'GSC_MIxS_wastewater_sludge_phosphate': 'phosphate',
-		'GSC_MIxS_wastewater_sludge_salinity': 'salinity',
-		'GSC_MIxS_wastewater_sludge_sodium': 'sodium',
-		'GSC_MIxS_wastewater_sludge_total_nitrogen': 'total nitrogen',
+		'sample_volume_or_weight_for_DNA_extraction': 'sample volume or weight for DNA extraction',
+		'geographic_location_latitude': 'geographic location (latitude)',
+		'geographic_location_longitude': 'geographic location (longitude)',
+		'depth': 'depth',
+		'amount_or_size_of_sample_collected': 'amount or size of sample collected',
+		'sample_storage_duration': 'sample storage duration',
+		'sample_storage_temperature': 'sample storage temperature',
+		'biochemical_oxygen_demand': 'biochemical oxygen demand',
+		'chemical_oxygen_demand': 'chemical oxygen demand',
+		'sludge_retention_time': 'sludge retention time',
+		'alkalinity': 'alkalinity',
+		'industrial_effluent_percent': 'industrial effluent percent',
+		'temperature': 'temperature',
+		'efficiency_percent': 'efficiency percent',
+		'emulsions': 'emulsions',
+		'gaseous_substances': 'gaseous substances',
+		'inorganic_particles': 'inorganic particles',
+		'organic_particles': 'organic particles',
+		'soluble_inorganic_material': 'soluble inorganic material',
+		'soluble_organic_material': 'soluble organic material',
+		'suspended_solids': 'suspended solids',
+		'total_phosphate': 'total phosphate',
+		'nitrate': 'nitrate',
+		'phosphate': 'phosphate',
+		'salinity': 'salinity',
+		'sodium': 'sodium',
+		'total_nitrogen': 'total nitrogen',
 	}
 
 	name = 'GSC_MIxS_wastewater_sludge'
 
 	sampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE, default=1)
 	sample = models.ForeignKey(Sample, on_delete=models.CASCADE, default=1)
-	GSC_MIxS_wastewater_sludge_sample_volume_or_weight_for_DNA_extraction = models.CharField(max_length=100, choices=GSC_MIxS_wastewater_sludge_sample_volume_or_weight_for_DNA_extraction_units, blank=False)
-	GSC_MIxS_wastewater_sludge_geographic_location_latitude = models.CharField(max_length=100, choices=GSC_MIxS_wastewater_sludge_geographic_location_latitude_units, blank=False)
-	GSC_MIxS_wastewater_sludge_geographic_location_longitude = models.CharField(max_length=100, choices=GSC_MIxS_wastewater_sludge_geographic_location_longitude_units, blank=False)
-	GSC_MIxS_wastewater_sludge_depth = models.CharField(max_length=100, choices=GSC_MIxS_wastewater_sludge_depth_units, blank=False)
-	GSC_MIxS_wastewater_sludge_amount_or_size_of_sample_collected = models.CharField(max_length=100, choices=GSC_MIxS_wastewater_sludge_amount_or_size_of_sample_collected_units, blank=False)
-	GSC_MIxS_wastewater_sludge_sample_storage_duration = models.CharField(max_length=100, choices=GSC_MIxS_wastewater_sludge_sample_storage_duration_units, blank=False)
-	GSC_MIxS_wastewater_sludge_sample_storage_temperature = models.CharField(max_length=100, choices=GSC_MIxS_wastewater_sludge_sample_storage_temperature_units, blank=False)
-	GSC_MIxS_wastewater_sludge_biochemical_oxygen_demand = models.CharField(max_length=100, choices=GSC_MIxS_wastewater_sludge_biochemical_oxygen_demand_units, blank=False)
-	GSC_MIxS_wastewater_sludge_chemical_oxygen_demand = models.CharField(max_length=100, choices=GSC_MIxS_wastewater_sludge_chemical_oxygen_demand_units, blank=False)
-	GSC_MIxS_wastewater_sludge_sludge_retention_time = models.CharField(max_length=100, choices=GSC_MIxS_wastewater_sludge_sludge_retention_time_units, blank=False)
-	GSC_MIxS_wastewater_sludge_alkalinity = models.CharField(max_length=100, choices=GSC_MIxS_wastewater_sludge_alkalinity_units, blank=False)
-	GSC_MIxS_wastewater_sludge_industrial_effluent_percent = models.CharField(max_length=100, choices=GSC_MIxS_wastewater_sludge_industrial_effluent_percent_units, blank=False)
-	GSC_MIxS_wastewater_sludge_temperature = models.CharField(max_length=100, choices=GSC_MIxS_wastewater_sludge_temperature_units, blank=False)
-	GSC_MIxS_wastewater_sludge_efficiency_percent = models.CharField(max_length=100, choices=GSC_MIxS_wastewater_sludge_efficiency_percent_units, blank=False)
-	GSC_MIxS_wastewater_sludge_emulsions = models.CharField(max_length=100, choices=GSC_MIxS_wastewater_sludge_emulsions_units, blank=False)
-	GSC_MIxS_wastewater_sludge_gaseous_substances = models.CharField(max_length=100, choices=GSC_MIxS_wastewater_sludge_gaseous_substances_units, blank=False)
-	GSC_MIxS_wastewater_sludge_inorganic_particles = models.CharField(max_length=100, choices=GSC_MIxS_wastewater_sludge_inorganic_particles_units, blank=False)
-	GSC_MIxS_wastewater_sludge_organic_particles = models.CharField(max_length=100, choices=GSC_MIxS_wastewater_sludge_organic_particles_units, blank=False)
-	GSC_MIxS_wastewater_sludge_soluble_inorganic_material = models.CharField(max_length=100, choices=GSC_MIxS_wastewater_sludge_soluble_inorganic_material_units, blank=False)
-	GSC_MIxS_wastewater_sludge_soluble_organic_material = models.CharField(max_length=100, choices=GSC_MIxS_wastewater_sludge_soluble_organic_material_units, blank=False)
-	GSC_MIxS_wastewater_sludge_suspended_solids = models.CharField(max_length=100, choices=GSC_MIxS_wastewater_sludge_suspended_solids_units, blank=False)
-	GSC_MIxS_wastewater_sludge_total_phosphate = models.CharField(max_length=100, choices=GSC_MIxS_wastewater_sludge_total_phosphate_units, blank=False)
-	GSC_MIxS_wastewater_sludge_nitrate = models.CharField(max_length=100, choices=GSC_MIxS_wastewater_sludge_nitrate_units, blank=False)
-	GSC_MIxS_wastewater_sludge_phosphate = models.CharField(max_length=100, choices=GSC_MIxS_wastewater_sludge_phosphate_units, blank=False)
-	GSC_MIxS_wastewater_sludge_salinity = models.CharField(max_length=100, choices=GSC_MIxS_wastewater_sludge_salinity_units, blank=False)
-	GSC_MIxS_wastewater_sludge_sodium = models.CharField(max_length=100, choices=GSC_MIxS_wastewater_sludge_sodium_units, blank=False)
-	GSC_MIxS_wastewater_sludge_total_nitrogen = models.CharField(max_length=100, choices=GSC_MIxS_wastewater_sludge_total_nitrogen_units, blank=False)
+	sample_volume_or_weight_for_DNA_extraction = models.CharField(max_length=100, choices=sample_volume_or_weight_for_DNA_extraction_units, blank=False)
+	geographic_location_latitude = models.CharField(max_length=100, choices=geographic_location_latitude_units, blank=False)
+	geographic_location_longitude = models.CharField(max_length=100, choices=geographic_location_longitude_units, blank=False)
+	depth = models.CharField(max_length=100, choices=depth_units, blank=False)
+	amount_or_size_of_sample_collected = models.CharField(max_length=100, choices=amount_or_size_of_sample_collected_units, blank=False)
+	sample_storage_duration = models.CharField(max_length=100, choices=sample_storage_duration_units, blank=False)
+	sample_storage_temperature = models.CharField(max_length=100, choices=sample_storage_temperature_units, blank=False)
+	biochemical_oxygen_demand = models.CharField(max_length=100, choices=biochemical_oxygen_demand_units, blank=False)
+	chemical_oxygen_demand = models.CharField(max_length=100, choices=chemical_oxygen_demand_units, blank=False)
+	sludge_retention_time = models.CharField(max_length=100, choices=sludge_retention_time_units, blank=False)
+	alkalinity = models.CharField(max_length=100, choices=alkalinity_units, blank=False)
+	industrial_effluent_percent = models.CharField(max_length=100, choices=industrial_effluent_percent_units, blank=False)
+	temperature = models.CharField(max_length=100, choices=temperature_units, blank=False)
+	efficiency_percent = models.CharField(max_length=100, choices=efficiency_percent_units, blank=False)
+	emulsions = models.CharField(max_length=100, choices=emulsions_units, blank=False)
+	gaseous_substances = models.CharField(max_length=100, choices=gaseous_substances_units, blank=False)
+	inorganic_particles = models.CharField(max_length=100, choices=inorganic_particles_units, blank=False)
+	organic_particles = models.CharField(max_length=100, choices=organic_particles_units, blank=False)
+	soluble_inorganic_material = models.CharField(max_length=100, choices=soluble_inorganic_material_units, blank=False)
+	soluble_organic_material = models.CharField(max_length=100, choices=soluble_organic_material_units, blank=False)
+	suspended_solids = models.CharField(max_length=100, choices=suspended_solids_units, blank=False)
+	total_phosphate = models.CharField(max_length=100, choices=total_phosphate_units, blank=False)
+	nitrate = models.CharField(max_length=100, choices=nitrate_units, blank=False)
+	phosphate = models.CharField(max_length=100, choices=phosphate_units, blank=False)
+	salinity = models.CharField(max_length=100, choices=salinity_units, blank=False)
+	sodium = models.CharField(max_length=100, choices=sodium_units, blank=False)
+	total_nitrogen = models.CharField(max_length=100, choices=total_nitrogen_units, blank=False)
 
 class GSC_MIxS_miscellaneous_natural_or_artificial_environment(SelfDescribingModel):
 
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_sequence_quality_check_choice = [('manual', 'manual'), ('none', 'none'), ('software', 'software')]
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_geographic_location_country_and_or_sea_choice = [('Afghanistan', 'Afghanistan'), ('Albania', 'Albania'), ('Algeria', 'Algeria'), ('American Samoa', 'American Samoa'), ('Andorra', 'Andorra'), ('Angola', 'Angola'), ('Anguilla', 'Anguilla'), ('Antarctica', 'Antarctica'), ('Antigua and Barbuda', 'Antigua and Barbuda'), ('Arctic Ocean', 'Arctic Ocean'), ('Argentina', 'Argentina'), ('Armenia', 'Armenia'), ('Aruba', 'Aruba'), ('Ashmore and Cartier Islands', 'Ashmore and Cartier Islands'), ('Atlantic Ocean', 'Atlantic Ocean'), ('Australia', 'Australia'), ('Austria', 'Austria'), ('Azerbaijan', 'Azerbaijan'), ('Bahamas', 'Bahamas'), ('Bahrain', 'Bahrain'), ('Baker Island', 'Baker Island'), ('Baltic Sea', 'Baltic Sea'), ('Bangladesh', 'Bangladesh'), ('Barbados', 'Barbados'), ('Bassas da India', 'Bassas da India'), ('Belarus', 'Belarus'), ('Belgium', 'Belgium'), ('Belize', 'Belize'), ('Benin', 'Benin'), ('Bermuda', 'Bermuda'), ('Bhutan', 'Bhutan'), ('Bolivia', 'Bolivia'), ('Borneo', 'Borneo'), ('Bosnia and Herzegovina', 'Bosnia and Herzegovina'), ('Botswana', 'Botswana'), ('Bouvet Island', 'Bouvet Island'), ('Brazil', 'Brazil'), ('British Virgin Islands', 'British Virgin Islands'), ('Brunei', 'Brunei'), ('Bulgaria', 'Bulgaria'), ('Burkina Faso', 'Burkina Faso'), ('Burundi', 'Burundi'), ('Cambodia', 'Cambodia'), ('Cameroon', 'Cameroon'), ('Canada', 'Canada'), ('Cape Verde', 'Cape Verde'), ('Cayman Islands', 'Cayman Islands'), ('Central African Republic', 'Central African Republic'), ('Chad', 'Chad'), ('Chile', 'Chile'), ('China', 'China'), ('Christmas Island', 'Christmas Island'), ('Clipperton Island', 'Clipperton Island'), ('Cocos Islands', 'Cocos Islands'), ('Colombia', 'Colombia'), ('Comoros', 'Comoros'), ('Cook Islands', 'Cook Islands'), ('Coral Sea Islands', 'Coral Sea Islands'), ('Costa Rica', 'Costa Rica'), ("Cote d'Ivoire", "Cote d'Ivoire"), ('Croatia', 'Croatia'), ('Cuba', 'Cuba'), ('Curacao', 'Curacao'), ('Cyprus', 'Cyprus'), ('Czech Republic', 'Czech Republic'), ('Democratic Republic of the Congo', 'Democratic Republic of the Congo'), ('Denmark', 'Denmark'), ('Djibouti', 'Djibouti'), ('Dominica', 'Dominica'), ('Dominican Republic', 'Dominican Republic'), ('East Timor', 'East Timor'), ('Ecuador', 'Ecuador'), ('Egypt', 'Egypt'), ('El Salvador', 'El Salvador'), ('Equatorial Guinea', 'Equatorial Guinea'), ('Eritrea', 'Eritrea'), ('Estonia', 'Estonia'), ('Ethiopia', 'Ethiopia'), ('Europa Island', 'Europa Island'), ('Falkland Islands (Islas Malvinas)', 'Falkland Islands (Islas Malvinas)'), ('Faroe Islands', 'Faroe Islands'), ('Fiji', 'Fiji'), ('Finland', 'Finland'), ('France', 'France'), ('French Guiana', 'French Guiana'), ('French Polynesia', 'French Polynesia'), ('French Southern and Antarctic Lands', 'French Southern and Antarctic Lands'), ('Gabon', 'Gabon'), ('Gambia', 'Gambia'), ('Gaza Strip', 'Gaza Strip'), ('Georgia', 'Georgia'), ('Germany', 'Germany'), ('Ghana', 'Ghana'), ('Gibraltar', 'Gibraltar'), ('Glorioso Islands', 'Glorioso Islands'), ('Greece', 'Greece'), ('Greenland', 'Greenland'), ('Grenada', 'Grenada'), ('Guadeloupe', 'Guadeloupe'), ('Guam', 'Guam'), ('Guatemala', 'Guatemala'), ('Guernsey', 'Guernsey'), ('Guinea', 'Guinea'), ('Guinea-Bissau', 'Guinea-Bissau'), ('Guyana', 'Guyana'), ('Haiti', 'Haiti'), ('Heard Island and McDonald Islands', 'Heard Island and McDonald Islands'), ('Honduras', 'Honduras'), ('Hong Kong', 'Hong Kong'), ('Howland Island', 'Howland Island'), ('Hungary', 'Hungary'), ('Iceland', 'Iceland'), ('India', 'India'), ('Indian Ocean', 'Indian Ocean'), ('Indonesia', 'Indonesia'), ('Iran', 'Iran'), ('Iraq', 'Iraq'), ('Ireland', 'Ireland'), ('Isle of Man', 'Isle of Man'), ('Israel', 'Israel'), ('Italy', 'Italy'), ('Jamaica', 'Jamaica'), ('Jan Mayen', 'Jan Mayen'), ('Japan', 'Japan'), ('Jarvis Island', 'Jarvis Island'), ('Jersey', 'Jersey'), ('Johnston Atoll', 'Johnston Atoll'), ('Jordan', 'Jordan'), ('Juan de Nova Island', 'Juan de Nova Island'), ('Kazakhstan', 'Kazakhstan'), ('Kenya', 'Kenya'), ('Kerguelen Archipelago', 'Kerguelen Archipelago'), ('Kingman Reef', 'Kingman Reef'), ('Kiribati', 'Kiribati'), ('Kosovo', 'Kosovo'), ('Kuwait', 'Kuwait'), ('Kyrgyzstan', 'Kyrgyzstan'), ('Laos', 'Laos'), ('Latvia', 'Latvia'), ('Lebanon', 'Lebanon'), ('Lesotho', 'Lesotho'), ('Liberia', 'Liberia'), ('Libya', 'Libya'), ('Liechtenstein', 'Liechtenstein'), ('Lithuania', 'Lithuania'), ('Luxembourg', 'Luxembourg'), ('Macau', 'Macau'), ('Macedonia', 'Macedonia'), ('Madagascar', 'Madagascar'), ('Malawi', 'Malawi'), ('Malaysia', 'Malaysia'), ('Maldives', 'Maldives'), ('Mali', 'Mali'), ('Malta', 'Malta'), ('Marshall Islands', 'Marshall Islands'), ('Martinique', 'Martinique'), ('Mauritania', 'Mauritania'), ('Mauritius', 'Mauritius'), ('Mayotte', 'Mayotte'), ('Mediterranean Sea', 'Mediterranean Sea'), ('Mexico', 'Mexico'), ('Micronesia', 'Micronesia'), ('Midway Islands', 'Midway Islands'), ('Moldova', 'Moldova'), ('Monaco', 'Monaco'), ('Mongolia', 'Mongolia'), ('Montenegro', 'Montenegro'), ('Montserrat', 'Montserrat'), ('Morocco', 'Morocco'), ('Mozambique', 'Mozambique'), ('Myanmar', 'Myanmar'), ('Namibia', 'Namibia'), ('Nauru', 'Nauru'), ('Navassa Island', 'Navassa Island'), ('Nepal', 'Nepal'), ('Netherlands', 'Netherlands'), ('New Caledonia', 'New Caledonia'), ('New Zealand', 'New Zealand'), ('Nicaragua', 'Nicaragua'), ('Niger', 'Niger'), ('Nigeria', 'Nigeria'), ('Niue', 'Niue'), ('Norfolk Island', 'Norfolk Island'), ('North Korea', 'North Korea'), ('North Sea', 'North Sea'), ('Northern Mariana Islands', 'Northern Mariana Islands'), ('Norway', 'Norway'), ('Oman', 'Oman'), ('Pacific Ocean', 'Pacific Ocean'), ('Pakistan', 'Pakistan'), ('Palau', 'Palau'), ('Palmyra Atoll', 'Palmyra Atoll'), ('Panama', 'Panama'), ('Papua New Guinea', 'Papua New Guinea'), ('Paracel Islands', 'Paracel Islands'), ('Paraguay', 'Paraguay'), ('Peru', 'Peru'), ('Philippines', 'Philippines'), ('Pitcairn Islands', 'Pitcairn Islands'), ('Poland', 'Poland'), ('Portugal', 'Portugal'), ('Puerto Rico', 'Puerto Rico'), ('Qatar', 'Qatar'), ('Republic of the Congo', 'Republic of the Congo'), ('Reunion', 'Reunion'), ('Romania', 'Romania'), ('Ross Sea', 'Ross Sea'), ('Russia', 'Russia'), ('Rwanda', 'Rwanda'), ('Saint Helena', 'Saint Helena'), ('Saint Kitts and Nevis', 'Saint Kitts and Nevis'), ('Saint Lucia', 'Saint Lucia'), ('Saint Pierre and Miquelon', 'Saint Pierre and Miquelon'), ('Saint Vincent and the Grenadines', 'Saint Vincent and the Grenadines'), ('Samoa', 'Samoa'), ('San Marino', 'San Marino'), ('Sao Tome and Principe', 'Sao Tome and Principe'), ('Saudi Arabia', 'Saudi Arabia'), ('Senegal', 'Senegal'), ('Serbia', 'Serbia'), ('Seychelles', 'Seychelles'), ('Sierra Leone', 'Sierra Leone'), ('Singapore', 'Singapore'), ('Sint Maarten', 'Sint Maarten'), ('Slovakia', 'Slovakia'), ('Slovenia', 'Slovenia'), ('Solomon Islands', 'Solomon Islands'), ('Somalia', 'Somalia'), ('South Africa', 'South Africa'), ('South Georgia and the South Sandwich Islands', 'South Georgia and the South Sandwich Islands'), ('South Korea', 'South Korea'), ('Southern Ocean', 'Southern Ocean'), ('Spain', 'Spain'), ('Spratly Islands', 'Spratly Islands'), ('Sri Lanka', 'Sri Lanka'), ('Sudan', 'Sudan'), ('Suriname', 'Suriname'), ('Svalbard', 'Svalbard'), ('Swaziland', 'Swaziland'), ('Sweden', 'Sweden'), ('Switzerland', 'Switzerland'), ('Syria', 'Syria'), ('Taiwan', 'Taiwan'), ('Tajikistan', 'Tajikistan'), ('Tanzania', 'Tanzania'), ('Tasman Sea', 'Tasman Sea'), ('Thailand', 'Thailand'), ('Togo', 'Togo'), ('Tokelau', 'Tokelau'), ('Tonga', 'Tonga'), ('Trinidad and Tobago', 'Trinidad and Tobago'), ('Tromelin Island', 'Tromelin Island'), ('Tunisia', 'Tunisia'), ('Turkey', 'Turkey'), ('Turkmenistan', 'Turkmenistan'), ('Turks and Caicos Islands', 'Turks and Caicos Islands'), ('Tuvalu', 'Tuvalu'), ('USA', 'USA'), ('Uganda', 'Uganda'), ('Ukraine', 'Ukraine'), ('United Arab Emirates', 'United Arab Emirates'), ('United Kingdom', 'United Kingdom'), ('Uruguay', 'Uruguay'), ('Uzbekistan', 'Uzbekistan'), ('Vanuatu', 'Vanuatu'), ('Venezuela', 'Venezuela'), ('Viet Nam', 'Viet Nam'), ('Virgin Islands', 'Virgin Islands'), ('Wake Island', 'Wake Island'), ('Wallis and Futuna', 'Wallis and Futuna'), ('West Bank', 'West Bank'), ('Western Sahara', 'Western Sahara'), ('Yemen', 'Yemen'), ('Zambia', 'Zambia'), ('Zimbabwe', 'Zimbabwe'), ('missing: control sample', 'missing: control sample'), ('missing: data agreement established pre-2023', 'missing: data agreement established pre-2023'), ('missing: endangered species', 'missing: endangered species'), ('missing: human-identifiable', 'missing: human-identifiable'), ('missing: lab stock', 'missing: lab stock'), ('missing: sample group', 'missing: sample group'), ('missing: synthetic construct', 'missing: synthetic construct'), ('missing: third party data', 'missing: third party data'), ('not applicable', 'not applicable'), ('not collected', 'not collected'), ('not provided', 'not provided'), ('restricted access', 'restricted access')]
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_oxygenation_status_of_sample_choice = [('aerobic', 'aerobic'), ('anaerobic', 'anaerobic')]
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_trophic_level_choice = [('autotroph', 'autotroph'), ('carboxydotroph', 'carboxydotroph'), ('chemoautotroph', 'chemoautotroph'), ('chemoheterotroph', 'chemoheterotroph'), ('chemolithoautotroph', 'chemolithoautotroph'), ('chemolithotroph', 'chemolithotroph'), ('chemoorganoheterotroph', 'chemoorganoheterotroph'), ('chemoorganotroph', 'chemoorganotroph'), ('chemosynthetic', 'chemosynthetic'), ('chemotroph', 'chemotroph'), ('copiotroph', 'copiotroph'), ('diazotroph', 'diazotroph'), ('facultative autotroph', 'facultative autotroph'), ('heterotroph', 'heterotroph'), ('lithoautotroph', 'lithoautotroph'), ('lithoheterotroph', 'lithoheterotroph'), ('lithotroph', 'lithotroph'), ('methanotroph', 'methanotroph'), ('methylotroph', 'methylotroph'), ('mixotroph', 'mixotroph'), ('obligate chemoautolithotroph', 'obligate chemoautolithotroph'), ('oligotroph', 'oligotroph'), ('organoheterotroph', 'organoheterotroph'), ('organotroph', 'organotroph'), ('photoautotroph', 'photoautotroph'), ('photoheterotroph', 'photoheterotroph'), ('photolithoautotroph', 'photolithoautotroph'), ('photolithotroph', 'photolithotroph'), ('photosynthetic', 'photosynthetic'), ('phototroph', 'phototroph')]
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_relationship_to_oxygen_choice = [('aerobe', 'aerobe'), ('anaerobe', 'anaerobe'), ('facultative', 'facultative'), ('microaerophilic', 'microaerophilic'), ('microanaerobe', 'microanaerobe'), ('obligate aerobe', 'obligate aerobe'), ('obligate anaerobe', 'obligate anaerobe')]
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_observed_biotic_relationship_choice = [('commensal', 'commensal'), ('free living', 'free living'), ('mutualism', 'mutualism'), ('parasite', 'parasite'), ('symbiont', 'symbiont')]
 
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_number_of_replicons_validator = "[+-]?[0-9]+"
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_extrachromosomal_elements_validator = "[+-]?[0-9]+"
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_estimated_size_validator = "[+-]?[0-9]+"
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_sample_volume_or_weight_for_DNA_extraction_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_library_size_validator = "[+-]?[0-9]+"
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_library_reads_sequenced_validator = "[+-]?[0-9]+"
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_collection_date_validator = "(^[12][0-9]{3}(-(0[1-9]|1[0-2])(-(0[1-9]|[12][0-9]|3[01])(T[0-9]{2}:[0-9]{2}(:[0-9]{2})?Z?([+-][0-9]{1,2})?)?)?)?(/[0-9]{4}(-[0-9]{2}(-[0-9]{2}(T[0-9]{2}:[0-9]{2}(:[0-9]{2})?Z?([+-][0-9]{1,2})?)?)?)?)?$)|(^not collected$)|(^not provided$)|(^restricted access$)|(^missing: control sample$)|(^missing: sample group$)|(^missing: synthetic construct$)|(^missing: lab stock$)|(^missing: third party data$)|(^missing: data agreement established pre-2023$)|(^missing: endangered species$)|(^missing: human-identifiable$)"
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_altitude_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_geographic_location_latitude_validator = "(^[+-]?[0-9]+.?[0-9]{0,8}$)|(^not collected$)|(^not provided$)|(^restricted access$)|(^missing: control sample$)|(^missing: sample group$)|(^missing: synthetic construct$)|(^missing: lab stock$)|(^missing: third party data$)|(^missing: data agreement established pre-2023$)|(^missing: endangered species$)|(^missing: human-identifiable$)"
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_geographic_location_longitude_validator = "(^[+-]?[0-9]+.?[0-9]{0,8}$)|(^not collected$)|(^not provided$)|(^restricted access$)|(^missing: control sample$)|(^missing: sample group$)|(^missing: synthetic construct$)|(^missing: lab stock$)|(^missing: third party data$)|(^missing: data agreement established pre-2023$)|(^missing: endangered species$)|(^missing: human-identifiable$)"
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_depth_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_elevation_validator = "[+-]?(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_amount_or_size_of_sample_collected_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_density_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_sample_storage_duration_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_sample_storage_temperature_validator = "[+-]?(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_alkalinity_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_water_current_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_pressure_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_temperature_validator = "[+-]?(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_pH_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_ammonium_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_bromide_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_calcium_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_chloride_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_chlorophyll_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_diether_lipids_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_dissolved_carbon_dioxide_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_dissolved_hydrogen_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_dissolved_inorganic_carbon_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_dissolved_organic_nitrogen_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_dissolved_oxygen_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_nitrate_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_nitrite_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_nitrogen_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_organic_carbon_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_organic_matter_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_organic_nitrogen_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_phosphate_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_phospholipid_fatty_acid_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_potassium_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_salinity_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_silicate_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_sodium_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_sulfate_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_sulfide_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	altitude_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	elevation_validator = "[+-]?(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	density_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	water_current_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	pressure_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	ammonium_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	bromide_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	calcium_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	chloride_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	chlorophyll_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	diether_lipids_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	dissolved_carbon_dioxide_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	dissolved_hydrogen_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	dissolved_inorganic_carbon_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	dissolved_organic_nitrogen_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	dissolved_oxygen_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	nitrite_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	nitrogen_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	organic_carbon_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	organic_matter_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	organic_nitrogen_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	phospholipid_fatty_acid_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	potassium_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	silicate_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	sulfate_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	sulfide_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
 
 	sampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE, default=1)
 	sample = models.ForeignKey(Sample, on_delete=models.CASCADE, default=1)
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_project_name= models.CharField(max_length=100, blank=False,help_text="Name of th")
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_experimental_factor= models.CharField(max_length=100, blank=True,help_text="Experiment")
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_ploidy= models.CharField(max_length=100, blank=True,help_text="The ploidy")
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_number_of_replicons= models.CharField(max_length=100, blank=True,help_text="Reports th", validators=[RegexValidator(GSC_MIxS_miscellaneous_natural_or_artificial_environment_number_of_replicons_validator)])
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_extrachromosomal_elements= models.CharField(max_length=100, blank=True,help_text="Do plasmid", validators=[RegexValidator(GSC_MIxS_miscellaneous_natural_or_artificial_environment_extrachromosomal_elements_validator)])
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_estimated_size= models.CharField(max_length=100, blank=True,help_text="The estima", validators=[RegexValidator(GSC_MIxS_miscellaneous_natural_or_artificial_environment_estimated_size_validator)])
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_reference_for_biomaterial= models.CharField(max_length=100, blank=True,help_text="Primary pu")
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_annotation_source= models.CharField(max_length=100, blank=True,help_text="For cases ")
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_sample_volume_or_weight_for_DNA_extraction= models.CharField(max_length=100, blank=True,help_text="Volume (ml", validators=[RegexValidator(GSC_MIxS_miscellaneous_natural_or_artificial_environment_sample_volume_or_weight_for_DNA_extraction_validator)])
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_nucleic_acid_extraction= models.CharField(max_length=100, blank=True,help_text="A link to ")
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_nucleic_acid_amplification= models.CharField(max_length=100, blank=True,help_text="A link to ")
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_library_size= models.CharField(max_length=100, blank=True,help_text="Total numb", validators=[RegexValidator(GSC_MIxS_miscellaneous_natural_or_artificial_environment_library_size_validator)])
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_library_reads_sequenced= models.CharField(max_length=100, blank=True,help_text="Total numb", validators=[RegexValidator(GSC_MIxS_miscellaneous_natural_or_artificial_environment_library_reads_sequenced_validator)])
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_library_construction_method= models.CharField(max_length=100, blank=True,help_text="Library co")
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_library_vector= models.CharField(max_length=100, blank=True,help_text="Cloning ve")
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_library_screening_strategy= models.CharField(max_length=100, blank=True,help_text="Specific e")
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_target_gene= models.CharField(max_length=100, blank=True,help_text="Targeted g")
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_target_subfragment= models.CharField(max_length=100, blank=True,help_text="Name of su")
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_pcr_primers= models.CharField(max_length=100, blank=True,help_text="PCR primer")
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_multiplex_identifiers= models.CharField(max_length=100, blank=True,help_text="Molecular ")
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_adapters= models.CharField(max_length=100, blank=True,help_text="Adapters p")
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_pcr_conditions= models.CharField(max_length=100, blank=True,help_text="Descriptio")
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_sequencing_method= models.CharField(max_length=100, blank=True,help_text="Sequencing")
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_sequence_quality_check= models.CharField(max_length=100, blank=True,help_text="Indicate i", choices=GSC_MIxS_miscellaneous_natural_or_artificial_environment_sequence_quality_check_choice)
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_chimera_check_software= models.CharField(max_length=100, blank=True,help_text="Tool(s) us")
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_relevant_electronic_resources= models.CharField(max_length=100, blank=True,help_text="A related ")
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_relevant_standard_operating_procedures= models.CharField(max_length=100, blank=True,help_text="Standard o")
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_negative_control_type= models.CharField(max_length=100, blank=True,help_text="The substa")
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_positive_control_type= models.CharField(max_length=100, blank=True,help_text="The substa")
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_collection_date= models.CharField(max_length=100, blank=False,help_text="The date t", validators=[RegexValidator(GSC_MIxS_miscellaneous_natural_or_artificial_environment_collection_date_validator)])
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_altitude= models.CharField(max_length=100, blank=True,help_text="The altitu", validators=[RegexValidator(GSC_MIxS_miscellaneous_natural_or_artificial_environment_altitude_validator)])
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_geographic_location_country_and_or_sea= models.CharField(max_length=100, blank=False,help_text="The locati", choices=GSC_MIxS_miscellaneous_natural_or_artificial_environment_geographic_location_country_and_or_sea_choice)
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_geographic_location_latitude= models.CharField(max_length=100, blank=False,help_text="The geogra", validators=[RegexValidator(GSC_MIxS_miscellaneous_natural_or_artificial_environment_geographic_location_latitude_validator)])
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_geographic_location_longitude= models.CharField(max_length=100, blank=False,help_text="The geogra", validators=[RegexValidator(GSC_MIxS_miscellaneous_natural_or_artificial_environment_geographic_location_longitude_validator)])
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_geographic_location_region_and_locality= models.CharField(max_length=100, blank=True,help_text="The geogra")
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_depth= models.CharField(max_length=100, blank=True,help_text="The vertic", validators=[RegexValidator(GSC_MIxS_miscellaneous_natural_or_artificial_environment_depth_validator)])
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_broad_scale_environmental_context= models.CharField(max_length=100, blank=False,help_text="Report the")
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_local_environmental_context= models.CharField(max_length=100, blank=False,help_text="Report the")
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_environmental_medium= models.CharField(max_length=100, blank=False,help_text="Report the")
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_elevation= models.CharField(max_length=100, blank=True,help_text="The elevat", validators=[RegexValidator(GSC_MIxS_miscellaneous_natural_or_artificial_environment_elevation_validator)])
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_source_material_identifiers= models.CharField(max_length=100, blank=True,help_text="A unique i")
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_sample_material_processing= models.CharField(max_length=100, blank=True,help_text="A brief de")
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_isolation_and_growth_condition= models.CharField(max_length=100, blank=True,help_text="Publicatio")
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_propagation= models.CharField(max_length=100, blank=True,help_text="The type o")
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_amount_or_size_of_sample_collected= models.CharField(max_length=100, blank=True,help_text="The total ", validators=[RegexValidator(GSC_MIxS_miscellaneous_natural_or_artificial_environment_amount_or_size_of_sample_collected_validator)])
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_biomass= models.CharField(max_length=100, blank=True,help_text="amount of ")
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_density= models.CharField(max_length=100, blank=True,help_text="density of", validators=[RegexValidator(GSC_MIxS_miscellaneous_natural_or_artificial_environment_density_validator)])
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_oxygenation_status_of_sample= models.CharField(max_length=100, blank=True,help_text="oxygenatio", choices=GSC_MIxS_miscellaneous_natural_or_artificial_environment_oxygenation_status_of_sample_choice)
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_organism_count= models.CharField(max_length=100, blank=True,help_text="Total cell")
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_sample_storage_duration= models.CharField(max_length=100, blank=True,help_text="duration f", validators=[RegexValidator(GSC_MIxS_miscellaneous_natural_or_artificial_environment_sample_storage_duration_validator)])
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_sample_storage_temperature= models.CharField(max_length=100, blank=True,help_text="temperatur", validators=[RegexValidator(GSC_MIxS_miscellaneous_natural_or_artificial_environment_sample_storage_temperature_validator)])
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_sample_storage_location= models.CharField(max_length=100, blank=True,help_text="location a")
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_sample_collection_device= models.CharField(max_length=100, blank=True,help_text="The device")
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_sample_collection_method= models.CharField(max_length=100, blank=True,help_text="The method")
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_host_disease_status= models.CharField(max_length=100, blank=True,help_text="list of di")
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_host_scientific_name= models.CharField(max_length=100, blank=True,help_text="Scientific")
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_alkalinity= models.CharField(max_length=100, blank=True,help_text="alkalinity", validators=[RegexValidator(GSC_MIxS_miscellaneous_natural_or_artificial_environment_alkalinity_validator)])
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_water_current= models.CharField(max_length=100, blank=True,help_text="measuremen", validators=[RegexValidator(GSC_MIxS_miscellaneous_natural_or_artificial_environment_water_current_validator)])
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_pressure= models.CharField(max_length=100, blank=True,help_text="pressure t", validators=[RegexValidator(GSC_MIxS_miscellaneous_natural_or_artificial_environment_pressure_validator)])
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_temperature= models.CharField(max_length=100, blank=True,help_text="temperatur", validators=[RegexValidator(GSC_MIxS_miscellaneous_natural_or_artificial_environment_temperature_validator)])
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_pH= models.CharField(max_length=100, blank=True,help_text="pH measure", validators=[RegexValidator(GSC_MIxS_miscellaneous_natural_or_artificial_environment_pH_validator)])
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_ammonium= models.CharField(max_length=100, blank=True,help_text="concentrat", validators=[RegexValidator(GSC_MIxS_miscellaneous_natural_or_artificial_environment_ammonium_validator)])
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_bromide= models.CharField(max_length=100, blank=True,help_text="concentrat", validators=[RegexValidator(GSC_MIxS_miscellaneous_natural_or_artificial_environment_bromide_validator)])
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_calcium= models.CharField(max_length=100, blank=True,help_text="concentrat", validators=[RegexValidator(GSC_MIxS_miscellaneous_natural_or_artificial_environment_calcium_validator)])
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_chloride= models.CharField(max_length=100, blank=True,help_text="concentrat", validators=[RegexValidator(GSC_MIxS_miscellaneous_natural_or_artificial_environment_chloride_validator)])
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_chlorophyll= models.CharField(max_length=100, blank=True,help_text="concentrat", validators=[RegexValidator(GSC_MIxS_miscellaneous_natural_or_artificial_environment_chlorophyll_validator)])
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_diether_lipids= models.CharField(max_length=100, blank=True,help_text="concentrat", validators=[RegexValidator(GSC_MIxS_miscellaneous_natural_or_artificial_environment_diether_lipids_validator)])
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_dissolved_carbon_dioxide= models.CharField(max_length=100, blank=True,help_text="concentrat", validators=[RegexValidator(GSC_MIxS_miscellaneous_natural_or_artificial_environment_dissolved_carbon_dioxide_validator)])
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_dissolved_hydrogen= models.CharField(max_length=100, blank=True,help_text="concentrat", validators=[RegexValidator(GSC_MIxS_miscellaneous_natural_or_artificial_environment_dissolved_hydrogen_validator)])
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_dissolved_inorganic_carbon= models.CharField(max_length=100, blank=True,help_text="dissolved ", validators=[RegexValidator(GSC_MIxS_miscellaneous_natural_or_artificial_environment_dissolved_inorganic_carbon_validator)])
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_dissolved_organic_nitrogen= models.CharField(max_length=100, blank=True,help_text="dissolved ", validators=[RegexValidator(GSC_MIxS_miscellaneous_natural_or_artificial_environment_dissolved_organic_nitrogen_validator)])
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_dissolved_oxygen= models.CharField(max_length=100, blank=True,help_text="concentrat", validators=[RegexValidator(GSC_MIxS_miscellaneous_natural_or_artificial_environment_dissolved_oxygen_validator)])
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_nitrate= models.CharField(max_length=100, blank=True,help_text="concentrat", validators=[RegexValidator(GSC_MIxS_miscellaneous_natural_or_artificial_environment_nitrate_validator)])
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_nitrite= models.CharField(max_length=100, blank=True,help_text="concentrat", validators=[RegexValidator(GSC_MIxS_miscellaneous_natural_or_artificial_environment_nitrite_validator)])
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_nitrogen= models.CharField(max_length=100, blank=True,help_text="concentrat", validators=[RegexValidator(GSC_MIxS_miscellaneous_natural_or_artificial_environment_nitrogen_validator)])
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_organic_carbon= models.CharField(max_length=100, blank=True,help_text="concentrat", validators=[RegexValidator(GSC_MIxS_miscellaneous_natural_or_artificial_environment_organic_carbon_validator)])
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_organic_matter= models.CharField(max_length=100, blank=True,help_text="concentrat", validators=[RegexValidator(GSC_MIxS_miscellaneous_natural_or_artificial_environment_organic_matter_validator)])
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_organic_nitrogen= models.CharField(max_length=100, blank=True,help_text="concentrat", validators=[RegexValidator(GSC_MIxS_miscellaneous_natural_or_artificial_environment_organic_nitrogen_validator)])
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_phosphate= models.CharField(max_length=100, blank=True,help_text="concentrat", validators=[RegexValidator(GSC_MIxS_miscellaneous_natural_or_artificial_environment_phosphate_validator)])
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_phospholipid_fatty_acid= models.CharField(max_length=100, blank=True,help_text="concentrat", validators=[RegexValidator(GSC_MIxS_miscellaneous_natural_or_artificial_environment_phospholipid_fatty_acid_validator)])
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_potassium= models.CharField(max_length=100, blank=True,help_text="concentrat", validators=[RegexValidator(GSC_MIxS_miscellaneous_natural_or_artificial_environment_potassium_validator)])
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_salinity= models.CharField(max_length=100, blank=True,help_text="The total ", validators=[RegexValidator(GSC_MIxS_miscellaneous_natural_or_artificial_environment_salinity_validator)])
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_silicate= models.CharField(max_length=100, blank=True,help_text="concentrat", validators=[RegexValidator(GSC_MIxS_miscellaneous_natural_or_artificial_environment_silicate_validator)])
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_sodium= models.CharField(max_length=100, blank=True,help_text="sodium con", validators=[RegexValidator(GSC_MIxS_miscellaneous_natural_or_artificial_environment_sodium_validator)])
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_sulfate= models.CharField(max_length=100, blank=True,help_text="concentrat", validators=[RegexValidator(GSC_MIxS_miscellaneous_natural_or_artificial_environment_sulfate_validator)])
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_sulfide= models.CharField(max_length=100, blank=True,help_text="concentrat", validators=[RegexValidator(GSC_MIxS_miscellaneous_natural_or_artificial_environment_sulfide_validator)])
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_subspecific_genetic_lineage= models.CharField(max_length=100, blank=True,help_text="Informatio")
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_trophic_level= models.CharField(max_length=100, blank=True,help_text="Trophic le", choices=GSC_MIxS_miscellaneous_natural_or_artificial_environment_trophic_level_choice)
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_relationship_to_oxygen= models.CharField(max_length=100, blank=True,help_text="Is this or", choices=GSC_MIxS_miscellaneous_natural_or_artificial_environment_relationship_to_oxygen_choice)
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_known_pathogenicity= models.CharField(max_length=100, blank=True,help_text="To what is")
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_encoded_traits= models.CharField(max_length=100, blank=True,help_text="Should inc")
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_observed_biotic_relationship= models.CharField(max_length=100, blank=True,help_text="Is it free", choices=GSC_MIxS_miscellaneous_natural_or_artificial_environment_observed_biotic_relationship_choice)
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_chemical_administration= models.CharField(max_length=100, blank=True,help_text="list of ch")
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_perturbation= models.CharField(max_length=100, blank=True,help_text="type of pe")
+	altitude= models.CharField(max_length=100, blank=True,help_text="The altitu", validators=[RegexValidator(altitude_validator)])
+	elevation= models.CharField(max_length=100, blank=True,help_text="The elevat", validators=[RegexValidator(elevation_validator)])
+	biomass= models.CharField(max_length=100, blank=True,help_text="amount of ")
+	density= models.CharField(max_length=100, blank=True,help_text="density of", validators=[RegexValidator(density_validator)])
+	water_current= models.CharField(max_length=100, blank=True,help_text="measuremen", validators=[RegexValidator(water_current_validator)])
+	pressure= models.CharField(max_length=100, blank=True,help_text="pressure t", validators=[RegexValidator(pressure_validator)])
+	ammonium= models.CharField(max_length=100, blank=True,help_text="concentrat", validators=[RegexValidator(ammonium_validator)])
+	bromide= models.CharField(max_length=100, blank=True,help_text="concentrat", validators=[RegexValidator(bromide_validator)])
+	calcium= models.CharField(max_length=100, blank=True,help_text="concentrat", validators=[RegexValidator(calcium_validator)])
+	chloride= models.CharField(max_length=100, blank=True,help_text="concentrat", validators=[RegexValidator(chloride_validator)])
+	chlorophyll= models.CharField(max_length=100, blank=True,help_text="concentrat", validators=[RegexValidator(chlorophyll_validator)])
+	diether_lipids= models.CharField(max_length=100, blank=True,help_text="concentrat", validators=[RegexValidator(diether_lipids_validator)])
+	dissolved_carbon_dioxide= models.CharField(max_length=100, blank=True,help_text="concentrat", validators=[RegexValidator(dissolved_carbon_dioxide_validator)])
+	dissolved_hydrogen= models.CharField(max_length=100, blank=True,help_text="concentrat", validators=[RegexValidator(dissolved_hydrogen_validator)])
+	dissolved_inorganic_carbon= models.CharField(max_length=100, blank=True,help_text="dissolved ", validators=[RegexValidator(dissolved_inorganic_carbon_validator)])
+	dissolved_organic_nitrogen= models.CharField(max_length=100, blank=True,help_text="dissolved ", validators=[RegexValidator(dissolved_organic_nitrogen_validator)])
+	dissolved_oxygen= models.CharField(max_length=100, blank=True,help_text="concentrat", validators=[RegexValidator(dissolved_oxygen_validator)])
+	nitrite= models.CharField(max_length=100, blank=True,help_text="concentrat", validators=[RegexValidator(nitrite_validator)])
+	nitrogen= models.CharField(max_length=100, blank=True,help_text="concentrat", validators=[RegexValidator(nitrogen_validator)])
+	organic_carbon= models.CharField(max_length=100, blank=True,help_text="concentrat", validators=[RegexValidator(organic_carbon_validator)])
+	organic_matter= models.CharField(max_length=100, blank=True,help_text="concentrat", validators=[RegexValidator(organic_matter_validator)])
+	organic_nitrogen= models.CharField(max_length=100, blank=True,help_text="concentrat", validators=[RegexValidator(organic_nitrogen_validator)])
+	phospholipid_fatty_acid= models.CharField(max_length=100, blank=True,help_text="concentrat", validators=[RegexValidator(phospholipid_fatty_acid_validator)])
+	potassium= models.CharField(max_length=100, blank=True,help_text="concentrat", validators=[RegexValidator(potassium_validator)])
+	silicate= models.CharField(max_length=100, blank=True,help_text="concentrat", validators=[RegexValidator(silicate_validator)])
+	sulfate= models.CharField(max_length=100, blank=True,help_text="concentrat", validators=[RegexValidator(sulfate_validator)])
+	sulfide= models.CharField(max_length=100, blank=True,help_text="concentrat", validators=[RegexValidator(sulfide_validator)])
 
 	fields = {
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_project_name': 'project name',
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_experimental_factor': 'experimental factor',
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_ploidy': 'ploidy',
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_number_of_replicons': 'number of replicons',
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_extrachromosomal_elements': 'extrachromosomal elements',
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_estimated_size': 'estimated size',
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_reference_for_biomaterial': 'reference for biomaterial',
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_annotation_source': 'annotation source',
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_sample_volume_or_weight_for_DNA_extraction': 'sample volume or weight for DNA extraction',
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_nucleic_acid_extraction': 'nucleic acid extraction',
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_nucleic_acid_amplification': 'nucleic acid amplification',
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_library_size': 'library size',
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_library_reads_sequenced': 'library reads sequenced',
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_library_construction_method': 'library construction method',
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_library_vector': 'library vector',
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_library_screening_strategy': 'library screening strategy',
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_target_gene': 'target gene',
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_target_subfragment': 'target subfragment',
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_pcr_primers': 'pcr primers',
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_multiplex_identifiers': 'multiplex identifiers',
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_adapters': 'adapters',
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_pcr_conditions': 'pcr conditions',
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_sequencing_method': 'sequencing method',
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_sequence_quality_check': 'sequence quality check',
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_chimera_check_software': 'chimera check software',
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_relevant_electronic_resources': 'relevant electronic resources',
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_relevant_standard_operating_procedures': 'relevant standard operating procedures',
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_negative_control_type': 'negative control type',
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_positive_control_type': 'positive control type',
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_collection_date': 'collection date',
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_altitude': 'altitude',
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_geographic_location_country_and_or_sea': 'geographic location (country and/or sea)',
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_geographic_location_latitude': 'geographic location (latitude)',
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_geographic_location_longitude': 'geographic location (longitude)',
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_geographic_location_region_and_locality': 'geographic location (region and locality)',
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_depth': 'depth',
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_broad_scale_environmental_context': 'broad-scale environmental context',
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_local_environmental_context': 'local environmental context',
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_environmental_medium': 'environmental medium',
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_elevation': 'elevation',
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_source_material_identifiers': 'source material identifiers',
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_sample_material_processing': 'sample material processing',
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_isolation_and_growth_condition': 'isolation and growth condition',
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_propagation': 'propagation',
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_amount_or_size_of_sample_collected': 'amount or size of sample collected',
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_biomass': 'biomass',
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_density': 'density',
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_oxygenation_status_of_sample': 'oxygenation status of sample',
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_organism_count': 'organism count',
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_sample_storage_duration': 'sample storage duration',
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_sample_storage_temperature': 'sample storage temperature',
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_sample_storage_location': 'sample storage location',
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_sample_collection_device': 'sample collection device',
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_sample_collection_method': 'sample collection method',
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_host_disease_status': 'host disease status',
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_host_scientific_name': 'host scientific name',
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_alkalinity': 'alkalinity',
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_water_current': 'water current',
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_pressure': 'pressure',
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_temperature': 'temperature',
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_pH': 'pH',
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_ammonium': 'ammonium',
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_bromide': 'bromide',
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_calcium': 'calcium',
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_chloride': 'chloride',
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_chlorophyll': 'chlorophyll',
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_diether_lipids': 'diether lipids',
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_dissolved_carbon_dioxide': 'dissolved carbon dioxide',
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_dissolved_hydrogen': 'dissolved hydrogen',
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_dissolved_inorganic_carbon': 'dissolved inorganic carbon',
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_dissolved_organic_nitrogen': 'dissolved organic nitrogen',
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_dissolved_oxygen': 'dissolved oxygen',
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_nitrate': 'nitrate',
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_nitrite': 'nitrite',
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_nitrogen': 'nitrogen',
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_organic_carbon': 'organic carbon',
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_organic_matter': 'organic matter',
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_organic_nitrogen': 'organic nitrogen',
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_phosphate': 'phosphate',
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_phospholipid_fatty_acid': 'phospholipid fatty acid',
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_potassium': 'potassium',
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_salinity': 'salinity',
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_silicate': 'silicate',
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_sodium': 'sodium',
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_sulfate': 'sulfate',
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_sulfide': 'sulfide',
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_subspecific_genetic_lineage': 'subspecific genetic lineage',
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_trophic_level': 'trophic level',
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_relationship_to_oxygen': 'relationship to oxygen',
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_known_pathogenicity': 'known pathogenicity',
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_encoded_traits': 'encoded traits',
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_observed_biotic_relationship': 'observed biotic relationship',
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_chemical_administration': 'chemical administration',
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_perturbation': 'perturbation',
+		'altitude': 'altitude',
+		'elevation': 'elevation',
+		'biomass': 'biomass',
+		'density': 'density',
+		'water_current': 'water current',
+		'pressure': 'pressure',
+		'ammonium': 'ammonium',
+		'bromide': 'bromide',
+		'calcium': 'calcium',
+		'chloride': 'chloride',
+		'chlorophyll': 'chlorophyll',
+		'diether_lipids': 'diether lipids',
+		'dissolved_carbon_dioxide': 'dissolved carbon dioxide',
+		'dissolved_hydrogen': 'dissolved hydrogen',
+		'dissolved_inorganic_carbon': 'dissolved inorganic carbon',
+		'dissolved_organic_nitrogen': 'dissolved organic nitrogen',
+		'dissolved_oxygen': 'dissolved oxygen',
+		'nitrite': 'nitrite',
+		'nitrogen': 'nitrogen',
+		'organic_carbon': 'organic carbon',
+		'organic_matter': 'organic matter',
+		'organic_nitrogen': 'organic nitrogen',
+		'phospholipid_fatty_acid': 'phospholipid fatty acid',
+		'potassium': 'potassium',
+		'silicate': 'silicate',
+		'sulfate': 'sulfate',
+		'sulfide': 'sulfide',
 	}
 
 	name = 'GSC_MIxS_miscellaneous_natural_or_artificial_environment'
 
 class GSC_MIxS_miscellaneous_natural_or_artificial_environment_unit(SelfDescribingModel):
 
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_sample_volume_or_weight_for_DNA_extraction_units = [('g', 'g'), ('mL', 'mL'), ('mg', 'mg'), ('ng', 'ng')]
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_altitude_units = [('m', 'm')]
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_geographic_location_latitude_units = [('DD', 'DD')]
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_geographic_location_longitude_units = [('DD', 'DD')]
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_depth_units = [('m', 'm')]
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_elevation_units = [('m', 'm')]
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_amount_or_size_of_sample_collected_units = [('L', 'L'), ('g', 'g'), ('kg', 'kg'), ('m2', 'm2'), ('m3', 'm3')]
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_biomass_units = [('g', 'g'), ('kg', 'kg'), ('t', 't')]
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_density_units = [('g/m3', 'g/m3')]
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_sample_storage_duration_units = [('days', 'days'), ('hours', 'hours'), ('months', 'months'), ('weeks', 'weeks'), ('years', 'years')]
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_sample_storage_temperature_units = [('°C', '°C')]
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_alkalinity_units = [('mEq/L', 'mEq/L')]
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_water_current_units = [('knot', 'knot'), ('m3/s', 'm3/s')]
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_pressure_units = [('atm', 'atm'), ('bar', 'bar')]
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_temperature_units = [('ºC', 'ºC')]
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_ammonium_units = [('µmol/L', 'µmol/L')]
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_bromide_units = [('parts/million', 'parts/million'), ('µmol/L', 'µmol/L')]
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_calcium_units = [('mg/L', 'mg/L'), ('parts/million', 'parts/million'), ('µmol/L', 'µmol/L')]
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_chloride_units = [('mg/L', 'mg/L')]
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_chlorophyll_units = [('mg/m3', 'mg/m3'), ('µg/L', 'µg/L')]
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_diether_lipids_units = [('ng/L', 'ng/L')]
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_dissolved_carbon_dioxide_units = [('µmol/L', 'µmol/L')]
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_dissolved_hydrogen_units = [('µmol/L', 'µmol/L')]
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_dissolved_inorganic_carbon_units = [('µg/L', 'µg/L')]
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_dissolved_organic_nitrogen_units = [('mg/L', 'mg/L'), ('µg/L', 'µg/L')]
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_dissolved_oxygen_units = [('µmol/kg', 'µmol/kg')]
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_nitrate_units = [('µmol/L', 'µmol/L')]
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_nitrite_units = [('µmol/L', 'µmol/L')]
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_nitrogen_units = [('µmol/L', 'µmol/L')]
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_organic_carbon_units = [('µmol/L', 'µmol/L')]
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_organic_matter_units = [('µg/L', 'µg/L')]
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_organic_nitrogen_units = [('µg/L', 'µg/L')]
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_phosphate_units = [('µmol/L', 'µmol/L')]
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_phospholipid_fatty_acid_units = [('mol/L', 'mol/L'), ('mol/g', 'mol/g')]
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_potassium_units = [('parts/million', 'parts/million'), ('µmol/L', 'µmol/L')]
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_salinity_units = [('psu', 'psu')]
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_silicate_units = [('µmol/L', 'µmol/L')]
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_sodium_units = [('parts/million', 'parts/million'), ('µmol/L', 'µmol/L')]
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_sulfate_units = [('mg/L', 'mg/L'), ('µmol/L', 'µmol/L')]
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_sulfide_units = [('mg/L', 'mg/L'), ('µmol/L', 'µmol/L')]
+	altitude_units = [('m', 'm')]
+	elevation_units = [('m', 'm')]
+	biomass_units = [('g', 'g'), ('kg', 'kg'), ('t', 't')]
+	density_units = [('g/m3', 'g/m3')]
+	water_current_units = [('knot', 'knot'), ('m3/s', 'm3/s')]
+	pressure_units = [('atm', 'atm'), ('bar', 'bar')]
+	ammonium_units = [('µmol/L', 'µmol/L')]
+	bromide_units = [('parts/million', 'parts/million'), ('µmol/L', 'µmol/L')]
+	calcium_units = [('mg/L', 'mg/L'), ('parts/million', 'parts/million'), ('µmol/L', 'µmol/L')]
+	chloride_units = [('mg/L', 'mg/L')]
+	chlorophyll_units = [('mg/m3', 'mg/m3'), ('µg/L', 'µg/L')]
+	diether_lipids_units = [('ng/L', 'ng/L')]
+	dissolved_carbon_dioxide_units = [('µmol/L', 'µmol/L')]
+	dissolved_hydrogen_units = [('µmol/L', 'µmol/L')]
+	dissolved_inorganic_carbon_units = [('µg/L', 'µg/L')]
+	dissolved_organic_nitrogen_units = [('mg/L', 'mg/L'), ('µg/L', 'µg/L')]
+	dissolved_oxygen_units = [('µmol/kg', 'µmol/kg')]
+	nitrite_units = [('µmol/L', 'µmol/L')]
+	nitrogen_units = [('µmol/L', 'µmol/L')]
+	organic_carbon_units = [('µmol/L', 'µmol/L')]
+	organic_matter_units = [('µg/L', 'µg/L')]
+	organic_nitrogen_units = [('µg/L', 'µg/L')]
+	phospholipid_fatty_acid_units = [('mol/L', 'mol/L'), ('mol/g', 'mol/g')]
+	potassium_units = [('parts/million', 'parts/million'), ('µmol/L', 'µmol/L')]
+	silicate_units = [('µmol/L', 'µmol/L')]
+	sulfate_units = [('mg/L', 'mg/L'), ('µmol/L', 'µmol/L')]
+	sulfide_units = [('mg/L', 'mg/L'), ('µmol/L', 'µmol/L')]
 
 	fields = {
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_sample_volume_or_weight_for_DNA_extraction': 'sample volume or weight for DNA extraction',
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_altitude': 'altitude',
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_geographic_location_latitude': 'geographic location (latitude)',
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_geographic_location_longitude': 'geographic location (longitude)',
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_depth': 'depth',
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_elevation': 'elevation',
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_amount_or_size_of_sample_collected': 'amount or size of sample collected',
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_biomass': 'biomass',
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_density': 'density',
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_sample_storage_duration': 'sample storage duration',
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_sample_storage_temperature': 'sample storage temperature',
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_alkalinity': 'alkalinity',
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_water_current': 'water current',
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_pressure': 'pressure',
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_temperature': 'temperature',
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_ammonium': 'ammonium',
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_bromide': 'bromide',
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_calcium': 'calcium',
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_chloride': 'chloride',
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_chlorophyll': 'chlorophyll',
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_diether_lipids': 'diether lipids',
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_dissolved_carbon_dioxide': 'dissolved carbon dioxide',
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_dissolved_hydrogen': 'dissolved hydrogen',
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_dissolved_inorganic_carbon': 'dissolved inorganic carbon',
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_dissolved_organic_nitrogen': 'dissolved organic nitrogen',
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_dissolved_oxygen': 'dissolved oxygen',
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_nitrate': 'nitrate',
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_nitrite': 'nitrite',
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_nitrogen': 'nitrogen',
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_organic_carbon': 'organic carbon',
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_organic_matter': 'organic matter',
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_organic_nitrogen': 'organic nitrogen',
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_phosphate': 'phosphate',
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_phospholipid_fatty_acid': 'phospholipid fatty acid',
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_potassium': 'potassium',
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_salinity': 'salinity',
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_silicate': 'silicate',
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_sodium': 'sodium',
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_sulfate': 'sulfate',
-		'GSC_MIxS_miscellaneous_natural_or_artificial_environment_sulfide': 'sulfide',
+		'altitude': 'altitude',
+		'elevation': 'elevation',
+		'biomass': 'biomass',
+		'density': 'density',
+		'water_current': 'water current',
+		'pressure': 'pressure',
+		'ammonium': 'ammonium',
+		'bromide': 'bromide',
+		'calcium': 'calcium',
+		'chloride': 'chloride',
+		'chlorophyll': 'chlorophyll',
+		'diether_lipids': 'diether lipids',
+		'dissolved_carbon_dioxide': 'dissolved carbon dioxide',
+		'dissolved_hydrogen': 'dissolved hydrogen',
+		'dissolved_inorganic_carbon': 'dissolved inorganic carbon',
+		'dissolved_organic_nitrogen': 'dissolved organic nitrogen',
+		'dissolved_oxygen': 'dissolved oxygen',
+		'nitrite': 'nitrite',
+		'nitrogen': 'nitrogen',
+		'organic_carbon': 'organic carbon',
+		'organic_matter': 'organic matter',
+		'organic_nitrogen': 'organic nitrogen',
+		'phospholipid_fatty_acid': 'phospholipid fatty acid',
+		'potassium': 'potassium',
+		'silicate': 'silicate',
+		'sulfate': 'sulfate',
+		'sulfide': 'sulfide',
 	}
 
 	name = 'GSC_MIxS_miscellaneous_natural_or_artificial_environment'
 
 	sampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE, default=1)
 	sample = models.ForeignKey(Sample, on_delete=models.CASCADE, default=1)
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_sample_volume_or_weight_for_DNA_extraction = models.CharField(max_length=100, choices=GSC_MIxS_miscellaneous_natural_or_artificial_environment_sample_volume_or_weight_for_DNA_extraction_units, blank=False)
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_altitude = models.CharField(max_length=100, choices=GSC_MIxS_miscellaneous_natural_or_artificial_environment_altitude_units, blank=False)
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_geographic_location_latitude = models.CharField(max_length=100, choices=GSC_MIxS_miscellaneous_natural_or_artificial_environment_geographic_location_latitude_units, blank=False)
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_geographic_location_longitude = models.CharField(max_length=100, choices=GSC_MIxS_miscellaneous_natural_or_artificial_environment_geographic_location_longitude_units, blank=False)
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_depth = models.CharField(max_length=100, choices=GSC_MIxS_miscellaneous_natural_or_artificial_environment_depth_units, blank=False)
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_elevation = models.CharField(max_length=100, choices=GSC_MIxS_miscellaneous_natural_or_artificial_environment_elevation_units, blank=False)
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_amount_or_size_of_sample_collected = models.CharField(max_length=100, choices=GSC_MIxS_miscellaneous_natural_or_artificial_environment_amount_or_size_of_sample_collected_units, blank=False)
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_biomass = models.CharField(max_length=100, choices=GSC_MIxS_miscellaneous_natural_or_artificial_environment_biomass_units, blank=False)
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_density = models.CharField(max_length=100, choices=GSC_MIxS_miscellaneous_natural_or_artificial_environment_density_units, blank=False)
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_sample_storage_duration = models.CharField(max_length=100, choices=GSC_MIxS_miscellaneous_natural_or_artificial_environment_sample_storage_duration_units, blank=False)
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_sample_storage_temperature = models.CharField(max_length=100, choices=GSC_MIxS_miscellaneous_natural_or_artificial_environment_sample_storage_temperature_units, blank=False)
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_alkalinity = models.CharField(max_length=100, choices=GSC_MIxS_miscellaneous_natural_or_artificial_environment_alkalinity_units, blank=False)
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_water_current = models.CharField(max_length=100, choices=GSC_MIxS_miscellaneous_natural_or_artificial_environment_water_current_units, blank=False)
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_pressure = models.CharField(max_length=100, choices=GSC_MIxS_miscellaneous_natural_or_artificial_environment_pressure_units, blank=False)
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_temperature = models.CharField(max_length=100, choices=GSC_MIxS_miscellaneous_natural_or_artificial_environment_temperature_units, blank=False)
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_ammonium = models.CharField(max_length=100, choices=GSC_MIxS_miscellaneous_natural_or_artificial_environment_ammonium_units, blank=False)
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_bromide = models.CharField(max_length=100, choices=GSC_MIxS_miscellaneous_natural_or_artificial_environment_bromide_units, blank=False)
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_calcium = models.CharField(max_length=100, choices=GSC_MIxS_miscellaneous_natural_or_artificial_environment_calcium_units, blank=False)
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_chloride = models.CharField(max_length=100, choices=GSC_MIxS_miscellaneous_natural_or_artificial_environment_chloride_units, blank=False)
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_chlorophyll = models.CharField(max_length=100, choices=GSC_MIxS_miscellaneous_natural_or_artificial_environment_chlorophyll_units, blank=False)
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_diether_lipids = models.CharField(max_length=100, choices=GSC_MIxS_miscellaneous_natural_or_artificial_environment_diether_lipids_units, blank=False)
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_dissolved_carbon_dioxide = models.CharField(max_length=100, choices=GSC_MIxS_miscellaneous_natural_or_artificial_environment_dissolved_carbon_dioxide_units, blank=False)
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_dissolved_hydrogen = models.CharField(max_length=100, choices=GSC_MIxS_miscellaneous_natural_or_artificial_environment_dissolved_hydrogen_units, blank=False)
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_dissolved_inorganic_carbon = models.CharField(max_length=100, choices=GSC_MIxS_miscellaneous_natural_or_artificial_environment_dissolved_inorganic_carbon_units, blank=False)
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_dissolved_organic_nitrogen = models.CharField(max_length=100, choices=GSC_MIxS_miscellaneous_natural_or_artificial_environment_dissolved_organic_nitrogen_units, blank=False)
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_dissolved_oxygen = models.CharField(max_length=100, choices=GSC_MIxS_miscellaneous_natural_or_artificial_environment_dissolved_oxygen_units, blank=False)
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_nitrate = models.CharField(max_length=100, choices=GSC_MIxS_miscellaneous_natural_or_artificial_environment_nitrate_units, blank=False)
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_nitrite = models.CharField(max_length=100, choices=GSC_MIxS_miscellaneous_natural_or_artificial_environment_nitrite_units, blank=False)
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_nitrogen = models.CharField(max_length=100, choices=GSC_MIxS_miscellaneous_natural_or_artificial_environment_nitrogen_units, blank=False)
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_organic_carbon = models.CharField(max_length=100, choices=GSC_MIxS_miscellaneous_natural_or_artificial_environment_organic_carbon_units, blank=False)
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_organic_matter = models.CharField(max_length=100, choices=GSC_MIxS_miscellaneous_natural_or_artificial_environment_organic_matter_units, blank=False)
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_organic_nitrogen = models.CharField(max_length=100, choices=GSC_MIxS_miscellaneous_natural_or_artificial_environment_organic_nitrogen_units, blank=False)
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_phosphate = models.CharField(max_length=100, choices=GSC_MIxS_miscellaneous_natural_or_artificial_environment_phosphate_units, blank=False)
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_phospholipid_fatty_acid = models.CharField(max_length=100, choices=GSC_MIxS_miscellaneous_natural_or_artificial_environment_phospholipid_fatty_acid_units, blank=False)
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_potassium = models.CharField(max_length=100, choices=GSC_MIxS_miscellaneous_natural_or_artificial_environment_potassium_units, blank=False)
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_salinity = models.CharField(max_length=100, choices=GSC_MIxS_miscellaneous_natural_or_artificial_environment_salinity_units, blank=False)
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_silicate = models.CharField(max_length=100, choices=GSC_MIxS_miscellaneous_natural_or_artificial_environment_silicate_units, blank=False)
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_sodium = models.CharField(max_length=100, choices=GSC_MIxS_miscellaneous_natural_or_artificial_environment_sodium_units, blank=False)
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_sulfate = models.CharField(max_length=100, choices=GSC_MIxS_miscellaneous_natural_or_artificial_environment_sulfate_units, blank=False)
-	GSC_MIxS_miscellaneous_natural_or_artificial_environment_sulfide = models.CharField(max_length=100, choices=GSC_MIxS_miscellaneous_natural_or_artificial_environment_sulfide_units, blank=False)
+	altitude = models.CharField(max_length=100, choices=altitude_units, blank=False)
+	elevation = models.CharField(max_length=100, choices=elevation_units, blank=False)
+	biomass = models.CharField(max_length=100, choices=biomass_units, blank=False)
+	density = models.CharField(max_length=100, choices=density_units, blank=False)
+	water_current = models.CharField(max_length=100, choices=water_current_units, blank=False)
+	pressure = models.CharField(max_length=100, choices=pressure_units, blank=False)
+	ammonium = models.CharField(max_length=100, choices=ammonium_units, blank=False)
+	bromide = models.CharField(max_length=100, choices=bromide_units, blank=False)
+	calcium = models.CharField(max_length=100, choices=calcium_units, blank=False)
+	chloride = models.CharField(max_length=100, choices=chloride_units, blank=False)
+	chlorophyll = models.CharField(max_length=100, choices=chlorophyll_units, blank=False)
+	diether_lipids = models.CharField(max_length=100, choices=diether_lipids_units, blank=False)
+	dissolved_carbon_dioxide = models.CharField(max_length=100, choices=dissolved_carbon_dioxide_units, blank=False)
+	dissolved_hydrogen = models.CharField(max_length=100, choices=dissolved_hydrogen_units, blank=False)
+	dissolved_inorganic_carbon = models.CharField(max_length=100, choices=dissolved_inorganic_carbon_units, blank=False)
+	dissolved_organic_nitrogen = models.CharField(max_length=100, choices=dissolved_organic_nitrogen_units, blank=False)
+	dissolved_oxygen = models.CharField(max_length=100, choices=dissolved_oxygen_units, blank=False)
+	nitrite = models.CharField(max_length=100, choices=nitrite_units, blank=False)
+	nitrogen = models.CharField(max_length=100, choices=nitrogen_units, blank=False)
+	organic_carbon = models.CharField(max_length=100, choices=organic_carbon_units, blank=False)
+	organic_matter = models.CharField(max_length=100, choices=organic_matter_units, blank=False)
+	organic_nitrogen = models.CharField(max_length=100, choices=organic_nitrogen_units, blank=False)
+	phospholipid_fatty_acid = models.CharField(max_length=100, choices=phospholipid_fatty_acid_units, blank=False)
+	potassium = models.CharField(max_length=100, choices=potassium_units, blank=False)
+	silicate = models.CharField(max_length=100, choices=silicate_units, blank=False)
+	sulfate = models.CharField(max_length=100, choices=sulfate_units, blank=False)
+	sulfide = models.CharField(max_length=100, choices=sulfide_units, blank=False)
 
 class GSC_MIxS_human_skin(SelfDescribingModel):
 
-	GSC_MIxS_human_skin_sequence_quality_check_choice = [('manual', 'manual'), ('none', 'none'), ('software', 'software')]
-	GSC_MIxS_human_skin_geographic_location_country_and_or_sea_choice = [('Afghanistan', 'Afghanistan'), ('Albania', 'Albania'), ('Algeria', 'Algeria'), ('American Samoa', 'American Samoa'), ('Andorra', 'Andorra'), ('Angola', 'Angola'), ('Anguilla', 'Anguilla'), ('Antarctica', 'Antarctica'), ('Antigua and Barbuda', 'Antigua and Barbuda'), ('Arctic Ocean', 'Arctic Ocean'), ('Argentina', 'Argentina'), ('Armenia', 'Armenia'), ('Aruba', 'Aruba'), ('Ashmore and Cartier Islands', 'Ashmore and Cartier Islands'), ('Atlantic Ocean', 'Atlantic Ocean'), ('Australia', 'Australia'), ('Austria', 'Austria'), ('Azerbaijan', 'Azerbaijan'), ('Bahamas', 'Bahamas'), ('Bahrain', 'Bahrain'), ('Baker Island', 'Baker Island'), ('Baltic Sea', 'Baltic Sea'), ('Bangladesh', 'Bangladesh'), ('Barbados', 'Barbados'), ('Bassas da India', 'Bassas da India'), ('Belarus', 'Belarus'), ('Belgium', 'Belgium'), ('Belize', 'Belize'), ('Benin', 'Benin'), ('Bermuda', 'Bermuda'), ('Bhutan', 'Bhutan'), ('Bolivia', 'Bolivia'), ('Borneo', 'Borneo'), ('Bosnia and Herzegovina', 'Bosnia and Herzegovina'), ('Botswana', 'Botswana'), ('Bouvet Island', 'Bouvet Island'), ('Brazil', 'Brazil'), ('British Virgin Islands', 'British Virgin Islands'), ('Brunei', 'Brunei'), ('Bulgaria', 'Bulgaria'), ('Burkina Faso', 'Burkina Faso'), ('Burundi', 'Burundi'), ('Cambodia', 'Cambodia'), ('Cameroon', 'Cameroon'), ('Canada', 'Canada'), ('Cape Verde', 'Cape Verde'), ('Cayman Islands', 'Cayman Islands'), ('Central African Republic', 'Central African Republic'), ('Chad', 'Chad'), ('Chile', 'Chile'), ('China', 'China'), ('Christmas Island', 'Christmas Island'), ('Clipperton Island', 'Clipperton Island'), ('Cocos Islands', 'Cocos Islands'), ('Colombia', 'Colombia'), ('Comoros', 'Comoros'), ('Cook Islands', 'Cook Islands'), ('Coral Sea Islands', 'Coral Sea Islands'), ('Costa Rica', 'Costa Rica'), ("Cote d'Ivoire", "Cote d'Ivoire"), ('Croatia', 'Croatia'), ('Cuba', 'Cuba'), ('Curacao', 'Curacao'), ('Cyprus', 'Cyprus'), ('Czech Republic', 'Czech Republic'), ('Democratic Republic of the Congo', 'Democratic Republic of the Congo'), ('Denmark', 'Denmark'), ('Djibouti', 'Djibouti'), ('Dominica', 'Dominica'), ('Dominican Republic', 'Dominican Republic'), ('East Timor', 'East Timor'), ('Ecuador', 'Ecuador'), ('Egypt', 'Egypt'), ('El Salvador', 'El Salvador'), ('Equatorial Guinea', 'Equatorial Guinea'), ('Eritrea', 'Eritrea'), ('Estonia', 'Estonia'), ('Ethiopia', 'Ethiopia'), ('Europa Island', 'Europa Island'), ('Falkland Islands (Islas Malvinas)', 'Falkland Islands (Islas Malvinas)'), ('Faroe Islands', 'Faroe Islands'), ('Fiji', 'Fiji'), ('Finland', 'Finland'), ('France', 'France'), ('French Guiana', 'French Guiana'), ('French Polynesia', 'French Polynesia'), ('French Southern and Antarctic Lands', 'French Southern and Antarctic Lands'), ('Gabon', 'Gabon'), ('Gambia', 'Gambia'), ('Gaza Strip', 'Gaza Strip'), ('Georgia', 'Georgia'), ('Germany', 'Germany'), ('Ghana', 'Ghana'), ('Gibraltar', 'Gibraltar'), ('Glorioso Islands', 'Glorioso Islands'), ('Greece', 'Greece'), ('Greenland', 'Greenland'), ('Grenada', 'Grenada'), ('Guadeloupe', 'Guadeloupe'), ('Guam', 'Guam'), ('Guatemala', 'Guatemala'), ('Guernsey', 'Guernsey'), ('Guinea', 'Guinea'), ('Guinea-Bissau', 'Guinea-Bissau'), ('Guyana', 'Guyana'), ('Haiti', 'Haiti'), ('Heard Island and McDonald Islands', 'Heard Island and McDonald Islands'), ('Honduras', 'Honduras'), ('Hong Kong', 'Hong Kong'), ('Howland Island', 'Howland Island'), ('Hungary', 'Hungary'), ('Iceland', 'Iceland'), ('India', 'India'), ('Indian Ocean', 'Indian Ocean'), ('Indonesia', 'Indonesia'), ('Iran', 'Iran'), ('Iraq', 'Iraq'), ('Ireland', 'Ireland'), ('Isle of Man', 'Isle of Man'), ('Israel', 'Israel'), ('Italy', 'Italy'), ('Jamaica', 'Jamaica'), ('Jan Mayen', 'Jan Mayen'), ('Japan', 'Japan'), ('Jarvis Island', 'Jarvis Island'), ('Jersey', 'Jersey'), ('Johnston Atoll', 'Johnston Atoll'), ('Jordan', 'Jordan'), ('Juan de Nova Island', 'Juan de Nova Island'), ('Kazakhstan', 'Kazakhstan'), ('Kenya', 'Kenya'), ('Kerguelen Archipelago', 'Kerguelen Archipelago'), ('Kingman Reef', 'Kingman Reef'), ('Kiribati', 'Kiribati'), ('Kosovo', 'Kosovo'), ('Kuwait', 'Kuwait'), ('Kyrgyzstan', 'Kyrgyzstan'), ('Laos', 'Laos'), ('Latvia', 'Latvia'), ('Lebanon', 'Lebanon'), ('Lesotho', 'Lesotho'), ('Liberia', 'Liberia'), ('Libya', 'Libya'), ('Liechtenstein', 'Liechtenstein'), ('Lithuania', 'Lithuania'), ('Luxembourg', 'Luxembourg'), ('Macau', 'Macau'), ('Macedonia', 'Macedonia'), ('Madagascar', 'Madagascar'), ('Malawi', 'Malawi'), ('Malaysia', 'Malaysia'), ('Maldives', 'Maldives'), ('Mali', 'Mali'), ('Malta', 'Malta'), ('Marshall Islands', 'Marshall Islands'), ('Martinique', 'Martinique'), ('Mauritania', 'Mauritania'), ('Mauritius', 'Mauritius'), ('Mayotte', 'Mayotte'), ('Mediterranean Sea', 'Mediterranean Sea'), ('Mexico', 'Mexico'), ('Micronesia', 'Micronesia'), ('Midway Islands', 'Midway Islands'), ('Moldova', 'Moldova'), ('Monaco', 'Monaco'), ('Mongolia', 'Mongolia'), ('Montenegro', 'Montenegro'), ('Montserrat', 'Montserrat'), ('Morocco', 'Morocco'), ('Mozambique', 'Mozambique'), ('Myanmar', 'Myanmar'), ('Namibia', 'Namibia'), ('Nauru', 'Nauru'), ('Navassa Island', 'Navassa Island'), ('Nepal', 'Nepal'), ('Netherlands', 'Netherlands'), ('New Caledonia', 'New Caledonia'), ('New Zealand', 'New Zealand'), ('Nicaragua', 'Nicaragua'), ('Niger', 'Niger'), ('Nigeria', 'Nigeria'), ('Niue', 'Niue'), ('Norfolk Island', 'Norfolk Island'), ('North Korea', 'North Korea'), ('North Sea', 'North Sea'), ('Northern Mariana Islands', 'Northern Mariana Islands'), ('Norway', 'Norway'), ('Oman', 'Oman'), ('Pacific Ocean', 'Pacific Ocean'), ('Pakistan', 'Pakistan'), ('Palau', 'Palau'), ('Palmyra Atoll', 'Palmyra Atoll'), ('Panama', 'Panama'), ('Papua New Guinea', 'Papua New Guinea'), ('Paracel Islands', 'Paracel Islands'), ('Paraguay', 'Paraguay'), ('Peru', 'Peru'), ('Philippines', 'Philippines'), ('Pitcairn Islands', 'Pitcairn Islands'), ('Poland', 'Poland'), ('Portugal', 'Portugal'), ('Puerto Rico', 'Puerto Rico'), ('Qatar', 'Qatar'), ('Republic of the Congo', 'Republic of the Congo'), ('Reunion', 'Reunion'), ('Romania', 'Romania'), ('Ross Sea', 'Ross Sea'), ('Russia', 'Russia'), ('Rwanda', 'Rwanda'), ('Saint Helena', 'Saint Helena'), ('Saint Kitts and Nevis', 'Saint Kitts and Nevis'), ('Saint Lucia', 'Saint Lucia'), ('Saint Pierre and Miquelon', 'Saint Pierre and Miquelon'), ('Saint Vincent and the Grenadines', 'Saint Vincent and the Grenadines'), ('Samoa', 'Samoa'), ('San Marino', 'San Marino'), ('Sao Tome and Principe', 'Sao Tome and Principe'), ('Saudi Arabia', 'Saudi Arabia'), ('Senegal', 'Senegal'), ('Serbia', 'Serbia'), ('Seychelles', 'Seychelles'), ('Sierra Leone', 'Sierra Leone'), ('Singapore', 'Singapore'), ('Sint Maarten', 'Sint Maarten'), ('Slovakia', 'Slovakia'), ('Slovenia', 'Slovenia'), ('Solomon Islands', 'Solomon Islands'), ('Somalia', 'Somalia'), ('South Africa', 'South Africa'), ('South Georgia and the South Sandwich Islands', 'South Georgia and the South Sandwich Islands'), ('South Korea', 'South Korea'), ('Southern Ocean', 'Southern Ocean'), ('Spain', 'Spain'), ('Spratly Islands', 'Spratly Islands'), ('Sri Lanka', 'Sri Lanka'), ('Sudan', 'Sudan'), ('Suriname', 'Suriname'), ('Svalbard', 'Svalbard'), ('Swaziland', 'Swaziland'), ('Sweden', 'Sweden'), ('Switzerland', 'Switzerland'), ('Syria', 'Syria'), ('Taiwan', 'Taiwan'), ('Tajikistan', 'Tajikistan'), ('Tanzania', 'Tanzania'), ('Tasman Sea', 'Tasman Sea'), ('Thailand', 'Thailand'), ('Togo', 'Togo'), ('Tokelau', 'Tokelau'), ('Tonga', 'Tonga'), ('Trinidad and Tobago', 'Trinidad and Tobago'), ('Tromelin Island', 'Tromelin Island'), ('Tunisia', 'Tunisia'), ('Turkey', 'Turkey'), ('Turkmenistan', 'Turkmenistan'), ('Turks and Caicos Islands', 'Turks and Caicos Islands'), ('Tuvalu', 'Tuvalu'), ('USA', 'USA'), ('Uganda', 'Uganda'), ('Ukraine', 'Ukraine'), ('United Arab Emirates', 'United Arab Emirates'), ('United Kingdom', 'United Kingdom'), ('Uruguay', 'Uruguay'), ('Uzbekistan', 'Uzbekistan'), ('Vanuatu', 'Vanuatu'), ('Venezuela', 'Venezuela'), ('Viet Nam', 'Viet Nam'), ('Virgin Islands', 'Virgin Islands'), ('Wake Island', 'Wake Island'), ('Wallis and Futuna', 'Wallis and Futuna'), ('West Bank', 'West Bank'), ('Western Sahara', 'Western Sahara'), ('Yemen', 'Yemen'), ('Zambia', 'Zambia'), ('Zimbabwe', 'Zimbabwe'), ('missing: control sample', 'missing: control sample'), ('missing: data agreement established pre-2023', 'missing: data agreement established pre-2023'), ('missing: endangered species', 'missing: endangered species'), ('missing: human-identifiable', 'missing: human-identifiable'), ('missing: lab stock', 'missing: lab stock'), ('missing: sample group', 'missing: sample group'), ('missing: synthetic construct', 'missing: synthetic construct'), ('missing: third party data', 'missing: third party data'), ('not applicable', 'not applicable'), ('not collected', 'not collected'), ('not provided', 'not provided'), ('restricted access', 'restricted access')]
-	GSC_MIxS_human_skin_medical_history_performed_choice = [('No', 'No'), ('Yes', 'Yes')]
-	GSC_MIxS_human_skin_oxygenation_status_of_sample_choice = [('aerobic', 'aerobic'), ('anaerobic', 'anaerobic')]
-	GSC_MIxS_human_skin_IHMC_medication_code_choice = [('01=1=Analgesics/NSAIDS', '01=1=Analgesics/NSAIDS'), ('02=2=Anesthetics', '02=2=Anesthetics'), ('03=3=Antacids/H2 antagonists', '03=3=Antacids/H2 antagonists'), ('04=4=Anti-acne', '04=4=Anti-acne'), ('05=5=Anti-asthma/bronchodilators', '05=5=Anti-asthma/bronchodilators'), ('06=6=Anti-cholesterol/Anti-hyperlipidemic', '06=6=Anti-cholesterol/Anti-hyperlipidemic'), ('07=7=Anti-coagulants', '07=7=Anti-coagulants'), ('08=8=Antibiotics/(anti)-infectives, parasitics, microbials', '08=8=Antibiotics/(anti)-infectives, parasitics, microbials'), ('09=9=Antidepressants/mood-altering drugs', '09=9=Antidepressants/mood-altering drugs'), ('10=10=Antihistamines/ Decongestants', '10=10=Antihistamines/ Decongestants'), ('11=11=Antihypertensives', '11=11=Antihypertensives'), ('12=12=Cardiovascular, other than hyperlipidemic/HTN', '12=12=Cardiovascular, other than hyperlipidemic/HTN'), ('13=13=Contraceptives (oral, implant, injectable)', '13=13=Contraceptives (oral, implant, injectable)'), ('14=14=Emergency/support medications', '14=14=Emergency/support medications'), ('15=15=Endocrine/Metabolic agents', '15=15=Endocrine/Metabolic agents'), ('16=16=GI meds (anti-diarrheal, emetic, spasmodics)', '16=16=GI meds (anti-diarrheal, emetic, spasmodics)'), ('17=17=Herbal/homeopathic products', '17=17=Herbal/homeopathic products'), ('18=18=Hormones/steroids', '18=18=Hormones/steroids'), ('19=19=OTC cold & flu', '19=19=OTC cold & flu'), ('20=20=Vaccine prophylaxis', '20=20=Vaccine prophylaxis'), ('21=21=Vitamins, minerals, food supplements', '21=21=Vitamins, minerals, food supplements'), ('99=99=Other', '99=99=Other')]
-	GSC_MIxS_human_skin_host_occupation_choice = [('01=01 Accounting/Finance', '01=01 Accounting/Finance'), ('02=02 Advertising/Public Relations', '02=02 Advertising/Public Relations'), ('03=03 Arts/Entertainment/Publishing', '03=03 Arts/Entertainment/Publishing'), ('04=04 Automotive', '04=04 Automotive'), ('05=05 Banking/ Mortgage', '05=05 Banking/ Mortgage'), ('06=06 Biotech', '06=06 Biotech'), ('07=07 Broadcast/Journalism', '07=07 Broadcast/Journalism'), ('08=08 Business Development', '08=08 Business Development'), ('09=09 Clerical/Administrative', '09=09 Clerical/Administrative'), ('10=10 Construction/Trades', '10=10 Construction/Trades'), ('11=11 Consultant', '11=11 Consultant'), ('12=12 Customer Services', '12=12 Customer Services'), ('13=13 Design', '13=13 Design'), ('14=14 Education', '14=14 Education'), ('15=15 Engineering', '15=15 Engineering'), ('16=16 Entry Level', '16=16 Entry Level'), ('17=17 Executive', '17=17 Executive'), ('18=18 Food Service', '18=18 Food Service'), ('19=19 Government', '19=19 Government'), ('20=20 Grocery', '20=20 Grocery'), ('21=21 Healthcare', '21=21 Healthcare'), ('22=22 Hospitality', '22=22 Hospitality'), ('23=23 Human Resources', '23=23 Human Resources'), ('24=24 Information Technology', '24=24 Information Technology'), ('25=25 Insurance', '25=25 Insurance'), ('26=26 Law/Legal', '26=26 Law/Legal'), ('27=27 Management', '27=27 Management'), ('28=28 Manufacturing', '28=28 Manufacturing'), ('29=29 Marketing', '29=29 Marketing'), ('30=30 Pharmaceutical', '30=30 Pharmaceutical'), ('31=31 Professional Services', '31=31 Professional Services'), ('32=32 Purchasing', '32=32 Purchasing'), ('33=33 Quality Assurance (QA)', '33=33 Quality Assurance (QA)'), ('34=34 Research', '34=34 Research'), ('35=35 Restaurant', '35=35 Restaurant'), ('36=36 Retail', '36=36 Retail'), ('37=37 Sales', '37=37 Sales'), ('38=38 Science', '38=38 Science'), ('39=39 Security/Law Enforcement', '39=39 Security/Law Enforcement'), ('40=40 Shipping/Distribution', '40=40 Shipping/Distribution'), ('41=41 Strategy', '41=41 Strategy'), ('42=42 Student', '42=42 Student'), ('43=43 Telecommunications', '43=43 Telecommunications'), ('44=44 Training', '44=44 Training'), ('45=45 Transportation', '45=45 Transportation'), ('46=46 Warehouse', '46=46 Warehouse'), ('47=47 Other', '47=47 Other'), ('99=99 Unknown/Refused', '99=99 Unknown/Refused')]
-	GSC_MIxS_human_skin_host_sex_choice = [('female', 'female'), ('hermaphrodite', 'hermaphrodite'), ('male', 'male'), ('missing: control sample', 'missing: control sample'), ('missing: data agreement established pre-2023', 'missing: data agreement established pre-2023'), ('missing: endangered species', 'missing: endangered species'), ('missing: human-identifiable', 'missing: human-identifiable'), ('missing: lab stock', 'missing: lab stock'), ('missing: sample group', 'missing: sample group'), ('missing: synthetic construct', 'missing: synthetic construct'), ('missing: third party data', 'missing: third party data'), ('neuter', 'neuter'), ('not applicable', 'not applicable'), ('not collected', 'not collected'), ('not provided', 'not provided'), ('other', 'other'), ('restricted access', 'restricted access')]
-	GSC_MIxS_human_skin_dominant_hand_choice = [('ambidextrous', 'ambidextrous'), ('left', 'left'), ('right', 'right')]
-	GSC_MIxS_human_skin_trophic_level_choice = [('autotroph', 'autotroph'), ('carboxydotroph', 'carboxydotroph'), ('chemoautotroph', 'chemoautotroph'), ('chemoheterotroph', 'chemoheterotroph'), ('chemolithoautotroph', 'chemolithoautotroph'), ('chemolithotroph', 'chemolithotroph'), ('chemoorganoheterotroph', 'chemoorganoheterotroph'), ('chemoorganotroph', 'chemoorganotroph'), ('chemosynthetic', 'chemosynthetic'), ('chemotroph', 'chemotroph'), ('copiotroph', 'copiotroph'), ('diazotroph', 'diazotroph'), ('facultative autotroph', 'facultative autotroph'), ('heterotroph', 'heterotroph'), ('lithoautotroph', 'lithoautotroph'), ('lithoheterotroph', 'lithoheterotroph'), ('lithotroph', 'lithotroph'), ('methanotroph', 'methanotroph'), ('methylotroph', 'methylotroph'), ('mixotroph', 'mixotroph'), ('obligate chemoautolithotroph', 'obligate chemoautolithotroph'), ('oligotroph', 'oligotroph'), ('organoheterotroph', 'organoheterotroph'), ('organotroph', 'organotroph'), ('photoautotroph', 'photoautotroph'), ('photoheterotroph', 'photoheterotroph'), ('photolithoautotroph', 'photolithoautotroph'), ('photolithotroph', 'photolithotroph'), ('photosynthetic', 'photosynthetic'), ('phototroph', 'phototroph')]
-	GSC_MIxS_human_skin_relationship_to_oxygen_choice = [('aerobe', 'aerobe'), ('anaerobe', 'anaerobe'), ('facultative', 'facultative'), ('microaerophilic', 'microaerophilic'), ('microanaerobe', 'microanaerobe'), ('obligate aerobe', 'obligate aerobe'), ('obligate anaerobe', 'obligate anaerobe')]
-	GSC_MIxS_human_skin_observed_biotic_relationship_choice = [('commensal', 'commensal'), ('free living', 'free living'), ('mutualism', 'mutualism'), ('parasite', 'parasite'), ('symbiont', 'symbiont')]
+	medical_history_performed_choice = [('No', 'No'), ('Yes', 'Yes')]
+	IHMC_medication_code_choice = [('01=1=Analgesics/NSAIDS', '01=1=Analgesics/NSAIDS'), ('02=2=Anesthetics', '02=2=Anesthetics'), ('03=3=Antacids/H2 antagonists', '03=3=Antacids/H2 antagonists'), ('04=4=Anti-acne', '04=4=Anti-acne'), ('05=5=Anti-asthma/bronchodilators', '05=5=Anti-asthma/bronchodilators'), ('06=6=Anti-cholesterol/Anti-hyperlipidemic', '06=6=Anti-cholesterol/Anti-hyperlipidemic'), ('07=7=Anti-coagulants', '07=7=Anti-coagulants'), ('08=8=Antibiotics/(anti)-infectives, parasitics, microbials', '08=8=Antibiotics/(anti)-infectives, parasitics, microbials'), ('09=9=Antidepressants/mood-altering drugs', '09=9=Antidepressants/mood-altering drugs'), ('10=10=Antihistamines/ Decongestants', '10=10=Antihistamines/ Decongestants'), ('11=11=Antihypertensives', '11=11=Antihypertensives'), ('12=12=Cardiovascular, other than hyperlipidemic/HTN', '12=12=Cardiovascular, other than hyperlipidemic/HTN'), ('13=13=Contraceptives (oral, implant, injectable)', '13=13=Contraceptives (oral, implant, injectable)'), ('14=14=Emergency/support medications', '14=14=Emergency/support medications'), ('15=15=Endocrine/Metabolic agents', '15=15=Endocrine/Metabolic agents'), ('16=16=GI meds (anti-diarrheal, emetic, spasmodics)', '16=16=GI meds (anti-diarrheal, emetic, spasmodics)'), ('17=17=Herbal/homeopathic products', '17=17=Herbal/homeopathic products'), ('18=18=Hormones/steroids', '18=18=Hormones/steroids'), ('19=19=OTC cold & flu', '19=19=OTC cold & flu'), ('20=20=Vaccine prophylaxis', '20=20=Vaccine prophylaxis'), ('21=21=Vitamins, minerals, food supplements', '21=21=Vitamins, minerals, food supplements'), ('99=99=Other', '99=99=Other')]
+	host_occupation_choice = [('01=01 Accounting/Finance', '01=01 Accounting/Finance'), ('02=02 Advertising/Public Relations', '02=02 Advertising/Public Relations'), ('03=03 Arts/Entertainment/Publishing', '03=03 Arts/Entertainment/Publishing'), ('04=04 Automotive', '04=04 Automotive'), ('05=05 Banking/ Mortgage', '05=05 Banking/ Mortgage'), ('06=06 Biotech', '06=06 Biotech'), ('07=07 Broadcast/Journalism', '07=07 Broadcast/Journalism'), ('08=08 Business Development', '08=08 Business Development'), ('09=09 Clerical/Administrative', '09=09 Clerical/Administrative'), ('10=10 Construction/Trades', '10=10 Construction/Trades'), ('11=11 Consultant', '11=11 Consultant'), ('12=12 Customer Services', '12=12 Customer Services'), ('13=13 Design', '13=13 Design'), ('14=14 Education', '14=14 Education'), ('15=15 Engineering', '15=15 Engineering'), ('16=16 Entry Level', '16=16 Entry Level'), ('17=17 Executive', '17=17 Executive'), ('18=18 Food Service', '18=18 Food Service'), ('19=19 Government', '19=19 Government'), ('20=20 Grocery', '20=20 Grocery'), ('21=21 Healthcare', '21=21 Healthcare'), ('22=22 Hospitality', '22=22 Hospitality'), ('23=23 Human Resources', '23=23 Human Resources'), ('24=24 Information Technology', '24=24 Information Technology'), ('25=25 Insurance', '25=25 Insurance'), ('26=26 Law/Legal', '26=26 Law/Legal'), ('27=27 Management', '27=27 Management'), ('28=28 Manufacturing', '28=28 Manufacturing'), ('29=29 Marketing', '29=29 Marketing'), ('30=30 Pharmaceutical', '30=30 Pharmaceutical'), ('31=31 Professional Services', '31=31 Professional Services'), ('32=32 Purchasing', '32=32 Purchasing'), ('33=33 Quality Assurance (QA)', '33=33 Quality Assurance (QA)'), ('34=34 Research', '34=34 Research'), ('35=35 Restaurant', '35=35 Restaurant'), ('36=36 Retail', '36=36 Retail'), ('37=37 Sales', '37=37 Sales'), ('38=38 Science', '38=38 Science'), ('39=39 Security/Law Enforcement', '39=39 Security/Law Enforcement'), ('40=40 Shipping/Distribution', '40=40 Shipping/Distribution'), ('41=41 Strategy', '41=41 Strategy'), ('42=42 Student', '42=42 Student'), ('43=43 Telecommunications', '43=43 Telecommunications'), ('44=44 Training', '44=44 Training'), ('45=45 Transportation', '45=45 Transportation'), ('46=46 Warehouse', '46=46 Warehouse'), ('47=47 Other', '47=47 Other'), ('99=99 Unknown/Refused', '99=99 Unknown/Refused')]
+	host_sex_choice = [('female', 'female'), ('hermaphrodite', 'hermaphrodite'), ('male', 'male'), ('missing: control sample', 'missing: control sample'), ('missing: data agreement established pre-2023', 'missing: data agreement established pre-2023'), ('missing: endangered species', 'missing: endangered species'), ('missing: human-identifiable', 'missing: human-identifiable'), ('missing: lab stock', 'missing: lab stock'), ('missing: sample group', 'missing: sample group'), ('missing: synthetic construct', 'missing: synthetic construct'), ('missing: third party data', 'missing: third party data'), ('neuter', 'neuter'), ('not applicable', 'not applicable'), ('not collected', 'not collected'), ('not provided', 'not provided'), ('other', 'other'), ('restricted access', 'restricted access')]
+	dominant_hand_choice = [('ambidextrous', 'ambidextrous'), ('left', 'left'), ('right', 'right')]
 
-	GSC_MIxS_human_skin_number_of_replicons_validator = "[+-]?[0-9]+"
-	GSC_MIxS_human_skin_extrachromosomal_elements_validator = "[+-]?[0-9]+"
-	GSC_MIxS_human_skin_estimated_size_validator = "[+-]?[0-9]+"
-	GSC_MIxS_human_skin_sample_volume_or_weight_for_DNA_extraction_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_human_skin_library_size_validator = "[+-]?[0-9]+"
-	GSC_MIxS_human_skin_library_reads_sequenced_validator = "[+-]?[0-9]+"
-	GSC_MIxS_human_skin_collection_date_validator = "(^[12][0-9]{3}(-(0[1-9]|1[0-2])(-(0[1-9]|[12][0-9]|3[01])(T[0-9]{2}:[0-9]{2}(:[0-9]{2})?Z?([+-][0-9]{1,2})?)?)?)?(/[0-9]{4}(-[0-9]{2}(-[0-9]{2}(T[0-9]{2}:[0-9]{2}(:[0-9]{2})?Z?([+-][0-9]{1,2})?)?)?)?)?$)|(^not collected$)|(^not provided$)|(^restricted access$)|(^missing: control sample$)|(^missing: sample group$)|(^missing: synthetic construct$)|(^missing: lab stock$)|(^missing: third party data$)|(^missing: data agreement established pre-2023$)|(^missing: endangered species$)|(^missing: human-identifiable$)"
-	GSC_MIxS_human_skin_geographic_location_latitude_validator = "(^[+-]?[0-9]+.?[0-9]{0,8}$)|(^not collected$)|(^not provided$)|(^restricted access$)|(^missing: control sample$)|(^missing: sample group$)|(^missing: synthetic construct$)|(^missing: lab stock$)|(^missing: third party data$)|(^missing: data agreement established pre-2023$)|(^missing: endangered species$)|(^missing: human-identifiable$)"
-	GSC_MIxS_human_skin_geographic_location_longitude_validator = "(^[+-]?[0-9]+.?[0-9]{0,8}$)|(^not collected$)|(^not provided$)|(^restricted access$)|(^missing: control sample$)|(^missing: sample group$)|(^missing: synthetic construct$)|(^missing: lab stock$)|(^missing: third party data$)|(^missing: data agreement established pre-2023$)|(^missing: endangered species$)|(^missing: human-identifiable$)"
-	GSC_MIxS_human_skin_amount_or_size_of_sample_collected_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_human_skin_sample_storage_duration_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_human_skin_sample_storage_temperature_validator = "[+-]?(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_human_skin_host_age_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_human_skin_host_height_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_human_skin_host_body_mass_index_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_human_skin_host_total_mass_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_human_skin_host_body_temperature_validator = "[+-]?(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_human_skin_temperature_validator = "[+-]?(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_human_skin_salinity_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_human_skin_time_since_last_wash_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_human_skin_host_pulse_validator = "[+-]?[0-9]+"
+	host_age_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	host_height_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	host_body_mass_index_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	host_total_mass_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	host_body_temperature_validator = "[+-]?(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	time_since_last_wash_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	host_pulse_validator = "[+-]?[0-9]+"
 
 	sampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE, default=1)
 	sample = models.ForeignKey(Sample, on_delete=models.CASCADE, default=1)
-	GSC_MIxS_human_skin_project_name= models.CharField(max_length=100, blank=False,help_text="Name of th")
-	GSC_MIxS_human_skin_experimental_factor= models.CharField(max_length=100, blank=True,help_text="Experiment")
-	GSC_MIxS_human_skin_ploidy= models.CharField(max_length=100, blank=True,help_text="The ploidy")
-	GSC_MIxS_human_skin_number_of_replicons= models.CharField(max_length=100, blank=True,help_text="Reports th", validators=[RegexValidator(GSC_MIxS_human_skin_number_of_replicons_validator)])
-	GSC_MIxS_human_skin_extrachromosomal_elements= models.CharField(max_length=100, blank=True,help_text="Do plasmid", validators=[RegexValidator(GSC_MIxS_human_skin_extrachromosomal_elements_validator)])
-	GSC_MIxS_human_skin_estimated_size= models.CharField(max_length=100, blank=True,help_text="The estima", validators=[RegexValidator(GSC_MIxS_human_skin_estimated_size_validator)])
-	GSC_MIxS_human_skin_reference_for_biomaterial= models.CharField(max_length=100, blank=True,help_text="Primary pu")
-	GSC_MIxS_human_skin_annotation_source= models.CharField(max_length=100, blank=True,help_text="For cases ")
-	GSC_MIxS_human_skin_sample_volume_or_weight_for_DNA_extraction= models.CharField(max_length=100, blank=True,help_text="Volume (ml", validators=[RegexValidator(GSC_MIxS_human_skin_sample_volume_or_weight_for_DNA_extraction_validator)])
-	GSC_MIxS_human_skin_nucleic_acid_extraction= models.CharField(max_length=100, blank=True,help_text="A link to ")
-	GSC_MIxS_human_skin_nucleic_acid_amplification= models.CharField(max_length=100, blank=True,help_text="A link to ")
-	GSC_MIxS_human_skin_library_size= models.CharField(max_length=100, blank=True,help_text="Total numb", validators=[RegexValidator(GSC_MIxS_human_skin_library_size_validator)])
-	GSC_MIxS_human_skin_library_reads_sequenced= models.CharField(max_length=100, blank=True,help_text="Total numb", validators=[RegexValidator(GSC_MIxS_human_skin_library_reads_sequenced_validator)])
-	GSC_MIxS_human_skin_library_construction_method= models.CharField(max_length=100, blank=True,help_text="Library co")
-	GSC_MIxS_human_skin_library_vector= models.CharField(max_length=100, blank=True,help_text="Cloning ve")
-	GSC_MIxS_human_skin_library_screening_strategy= models.CharField(max_length=100, blank=True,help_text="Specific e")
-	GSC_MIxS_human_skin_target_gene= models.CharField(max_length=100, blank=True,help_text="Targeted g")
-	GSC_MIxS_human_skin_target_subfragment= models.CharField(max_length=100, blank=True,help_text="Name of su")
-	GSC_MIxS_human_skin_pcr_primers= models.CharField(max_length=100, blank=True,help_text="PCR primer")
-	GSC_MIxS_human_skin_multiplex_identifiers= models.CharField(max_length=100, blank=True,help_text="Molecular ")
-	GSC_MIxS_human_skin_adapters= models.CharField(max_length=100, blank=True,help_text="Adapters p")
-	GSC_MIxS_human_skin_pcr_conditions= models.CharField(max_length=100, blank=True,help_text="Descriptio")
-	GSC_MIxS_human_skin_sequencing_method= models.CharField(max_length=100, blank=True,help_text="Sequencing")
-	GSC_MIxS_human_skin_sequence_quality_check= models.CharField(max_length=100, blank=True,help_text="Indicate i", choices=GSC_MIxS_human_skin_sequence_quality_check_choice)
-	GSC_MIxS_human_skin_chimera_check_software= models.CharField(max_length=100, blank=True,help_text="Tool(s) us")
-	GSC_MIxS_human_skin_relevant_electronic_resources= models.CharField(max_length=100, blank=True,help_text="A related ")
-	GSC_MIxS_human_skin_relevant_standard_operating_procedures= models.CharField(max_length=100, blank=True,help_text="Standard o")
-	GSC_MIxS_human_skin_negative_control_type= models.CharField(max_length=100, blank=True,help_text="The substa")
-	GSC_MIxS_human_skin_positive_control_type= models.CharField(max_length=100, blank=True,help_text="The substa")
-	GSC_MIxS_human_skin_collection_date= models.CharField(max_length=100, blank=False,help_text="The date t", validators=[RegexValidator(GSC_MIxS_human_skin_collection_date_validator)])
-	GSC_MIxS_human_skin_geographic_location_country_and_or_sea= models.CharField(max_length=100, blank=False,help_text="The locati", choices=GSC_MIxS_human_skin_geographic_location_country_and_or_sea_choice)
-	GSC_MIxS_human_skin_geographic_location_latitude= models.CharField(max_length=100, blank=False,help_text="The geogra", validators=[RegexValidator(GSC_MIxS_human_skin_geographic_location_latitude_validator)])
-	GSC_MIxS_human_skin_geographic_location_longitude= models.CharField(max_length=100, blank=False,help_text="The geogra", validators=[RegexValidator(GSC_MIxS_human_skin_geographic_location_longitude_validator)])
-	GSC_MIxS_human_skin_geographic_location_region_and_locality= models.CharField(max_length=100, blank=True,help_text="The geogra")
-	GSC_MIxS_human_skin_broad_scale_environmental_context= models.CharField(max_length=100, blank=False,help_text="Report the")
-	GSC_MIxS_human_skin_local_environmental_context= models.CharField(max_length=100, blank=False,help_text="Report the")
-	GSC_MIxS_human_skin_environmental_medium= models.CharField(max_length=100, blank=False,help_text="Report the")
-	GSC_MIxS_human_skin_source_material_identifiers= models.CharField(max_length=100, blank=True,help_text="A unique i")
-	GSC_MIxS_human_skin_sample_material_processing= models.CharField(max_length=100, blank=True,help_text="A brief de")
-	GSC_MIxS_human_skin_isolation_and_growth_condition= models.CharField(max_length=100, blank=True,help_text="Publicatio")
-	GSC_MIxS_human_skin_propagation= models.CharField(max_length=100, blank=True,help_text="The type o")
-	GSC_MIxS_human_skin_amount_or_size_of_sample_collected= models.CharField(max_length=100, blank=True,help_text="The total ", validators=[RegexValidator(GSC_MIxS_human_skin_amount_or_size_of_sample_collected_validator)])
-	GSC_MIxS_human_skin_host_body_product= models.CharField(max_length=100, blank=True,help_text="substance ")
-	GSC_MIxS_human_skin_medical_history_performed= models.CharField(max_length=100, blank=True,help_text="whether fu", choices=GSC_MIxS_human_skin_medical_history_performed_choice)
-	GSC_MIxS_human_skin_oxygenation_status_of_sample= models.CharField(max_length=100, blank=True,help_text="oxygenatio", choices=GSC_MIxS_human_skin_oxygenation_status_of_sample_choice)
-	GSC_MIxS_human_skin_organism_count= models.CharField(max_length=100, blank=True,help_text="Total cell")
-	GSC_MIxS_human_skin_sample_storage_duration= models.CharField(max_length=100, blank=True,help_text="duration f", validators=[RegexValidator(GSC_MIxS_human_skin_sample_storage_duration_validator)])
-	GSC_MIxS_human_skin_sample_storage_temperature= models.CharField(max_length=100, blank=True,help_text="temperatur", validators=[RegexValidator(GSC_MIxS_human_skin_sample_storage_temperature_validator)])
-	GSC_MIxS_human_skin_sample_storage_location= models.CharField(max_length=100, blank=True,help_text="location a")
-	GSC_MIxS_human_skin_sample_collection_device= models.CharField(max_length=100, blank=True,help_text="The device")
-	GSC_MIxS_human_skin_sample_collection_method= models.CharField(max_length=100, blank=True,help_text="The method")
-	GSC_MIxS_human_skin_dermatology_disorder= models.CharField(max_length=100, blank=True,help_text="History of")
-	GSC_MIxS_human_skin_host_disease_status= models.CharField(max_length=100, blank=True,help_text="list of di")
-	GSC_MIxS_human_skin_host_subject_id= models.CharField(max_length=100, blank=True,help_text="a unique i")
-	GSC_MIxS_human_skin_IHMC_medication_code= models.CharField(max_length=100, blank=True,help_text="can includ", choices=GSC_MIxS_human_skin_IHMC_medication_code_choice)
-	GSC_MIxS_human_skin_host_age= models.CharField(max_length=100, blank=True,help_text="age of hos", validators=[RegexValidator(GSC_MIxS_human_skin_host_age_validator)])
-	GSC_MIxS_human_skin_host_body_site= models.CharField(max_length=100, blank=True,help_text="name of bo")
-	GSC_MIxS_human_skin_host_height= models.CharField(max_length=100, blank=True,help_text="the height", validators=[RegexValidator(GSC_MIxS_human_skin_host_height_validator)])
-	GSC_MIxS_human_skin_host_body_mass_index= models.CharField(max_length=100, blank=True,help_text="body mass ", validators=[RegexValidator(GSC_MIxS_human_skin_host_body_mass_index_validator)])
-	GSC_MIxS_human_skin_ethnicity= models.CharField(max_length=100, blank=True,help_text="A category")
-	GSC_MIxS_human_skin_host_occupation= models.CharField(max_length=100, blank=True,help_text="most frequ", choices=GSC_MIxS_human_skin_host_occupation_choice)
-	GSC_MIxS_human_skin_host_total_mass= models.CharField(max_length=100, blank=True,help_text="total mass", validators=[RegexValidator(GSC_MIxS_human_skin_host_total_mass_validator)])
-	GSC_MIxS_human_skin_host_phenotype= models.CharField(max_length=100, blank=True,help_text="phenotype ")
-	GSC_MIxS_human_skin_host_body_temperature= models.CharField(max_length=100, blank=True,help_text="core body ", validators=[RegexValidator(GSC_MIxS_human_skin_host_body_temperature_validator)])
-	GSC_MIxS_human_skin_host_sex= models.CharField(max_length=100, blank=True,help_text="Gender or ", choices=GSC_MIxS_human_skin_host_sex_choice)
-	GSC_MIxS_human_skin_temperature= models.CharField(max_length=100, blank=True,help_text="temperatur", validators=[RegexValidator(GSC_MIxS_human_skin_temperature_validator)])
-	GSC_MIxS_human_skin_salinity= models.CharField(max_length=100, blank=True,help_text="The total ", validators=[RegexValidator(GSC_MIxS_human_skin_salinity_validator)])
-	GSC_MIxS_human_skin_time_since_last_wash= models.CharField(max_length=100, blank=True,help_text="specificat", validators=[RegexValidator(GSC_MIxS_human_skin_time_since_last_wash_validator)])
-	GSC_MIxS_human_skin_dominant_hand= models.CharField(max_length=100, blank=True,help_text="dominant h", choices=GSC_MIxS_human_skin_dominant_hand_choice)
-	GSC_MIxS_human_skin_host_diet= models.CharField(max_length=100, blank=True,help_text="type of di")
-	GSC_MIxS_human_skin_host_last_meal= models.CharField(max_length=100, blank=True,help_text="content of")
-	GSC_MIxS_human_skin_host_family_relationship= models.CharField(max_length=100, blank=True,help_text="relationsh")
-	GSC_MIxS_human_skin_host_genotype= models.CharField(max_length=100, blank=True,help_text="observed g")
-	GSC_MIxS_human_skin_host_pulse= models.CharField(max_length=100, blank=True,help_text="resting pu", validators=[RegexValidator(GSC_MIxS_human_skin_host_pulse_validator)])
-	GSC_MIxS_human_skin_subspecific_genetic_lineage= models.CharField(max_length=100, blank=True,help_text="Informatio")
-	GSC_MIxS_human_skin_trophic_level= models.CharField(max_length=100, blank=True,help_text="Trophic le", choices=GSC_MIxS_human_skin_trophic_level_choice)
-	GSC_MIxS_human_skin_relationship_to_oxygen= models.CharField(max_length=100, blank=True,help_text="Is this or", choices=GSC_MIxS_human_skin_relationship_to_oxygen_choice)
-	GSC_MIxS_human_skin_known_pathogenicity= models.CharField(max_length=100, blank=True,help_text="To what is")
-	GSC_MIxS_human_skin_encoded_traits= models.CharField(max_length=100, blank=True,help_text="Should inc")
-	GSC_MIxS_human_skin_observed_biotic_relationship= models.CharField(max_length=100, blank=True,help_text="Is it free", choices=GSC_MIxS_human_skin_observed_biotic_relationship_choice)
-	GSC_MIxS_human_skin_chemical_administration= models.CharField(max_length=100, blank=True,help_text="list of ch")
-	GSC_MIxS_human_skin_perturbation= models.CharField(max_length=100, blank=True,help_text="type of pe")
+	host_body_product= models.CharField(max_length=100, blank=True,help_text="substance ")
+	medical_history_performed= models.CharField(max_length=100, blank=True,help_text="whether fu", choices=medical_history_performed_choice)
+	dermatology_disorder= models.CharField(max_length=100, blank=True,help_text="History of")
+	host_subject_id= models.CharField(max_length=100, blank=True,help_text="a unique i")
+	IHMC_medication_code= models.CharField(max_length=100, blank=True,help_text="can includ", choices=IHMC_medication_code_choice)
+	host_age= models.CharField(max_length=100, blank=True,help_text="age of hos", validators=[RegexValidator(host_age_validator)])
+	host_body_site= models.CharField(max_length=100, blank=True,help_text="name of bo")
+	host_height= models.CharField(max_length=100, blank=True,help_text="the height", validators=[RegexValidator(host_height_validator)])
+	host_body_mass_index= models.CharField(max_length=100, blank=True,help_text="body mass ", validators=[RegexValidator(host_body_mass_index_validator)])
+	ethnicity= models.CharField(max_length=100, blank=True,help_text="A category")
+	host_occupation= models.CharField(max_length=100, blank=True,help_text="most frequ", choices=host_occupation_choice)
+	host_total_mass= models.CharField(max_length=100, blank=True,help_text="total mass", validators=[RegexValidator(host_total_mass_validator)])
+	host_phenotype= models.CharField(max_length=100, blank=True,help_text="phenotype ")
+	host_body_temperature= models.CharField(max_length=100, blank=True,help_text="core body ", validators=[RegexValidator(host_body_temperature_validator)])
+	host_sex= models.CharField(max_length=100, blank=True,help_text="Gender or ", choices=host_sex_choice)
+	time_since_last_wash= models.CharField(max_length=100, blank=True,help_text="specificat", validators=[RegexValidator(time_since_last_wash_validator)])
+	dominant_hand= models.CharField(max_length=100, blank=True,help_text="dominant h", choices=dominant_hand_choice)
+	host_diet= models.CharField(max_length=100, blank=True,help_text="type of di")
+	host_last_meal= models.CharField(max_length=100, blank=True,help_text="content of")
+	host_family_relationship= models.CharField(max_length=100, blank=True,help_text="relationsh")
+	host_genotype= models.CharField(max_length=100, blank=True,help_text="observed g")
+	host_pulse= models.CharField(max_length=100, blank=True,help_text="resting pu", validators=[RegexValidator(host_pulse_validator)])
 
 	fields = {
-		'GSC_MIxS_human_skin_project_name': 'project name',
-		'GSC_MIxS_human_skin_experimental_factor': 'experimental factor',
-		'GSC_MIxS_human_skin_ploidy': 'ploidy',
-		'GSC_MIxS_human_skin_number_of_replicons': 'number of replicons',
-		'GSC_MIxS_human_skin_extrachromosomal_elements': 'extrachromosomal elements',
-		'GSC_MIxS_human_skin_estimated_size': 'estimated size',
-		'GSC_MIxS_human_skin_reference_for_biomaterial': 'reference for biomaterial',
-		'GSC_MIxS_human_skin_annotation_source': 'annotation source',
-		'GSC_MIxS_human_skin_sample_volume_or_weight_for_DNA_extraction': 'sample volume or weight for DNA extraction',
-		'GSC_MIxS_human_skin_nucleic_acid_extraction': 'nucleic acid extraction',
-		'GSC_MIxS_human_skin_nucleic_acid_amplification': 'nucleic acid amplification',
-		'GSC_MIxS_human_skin_library_size': 'library size',
-		'GSC_MIxS_human_skin_library_reads_sequenced': 'library reads sequenced',
-		'GSC_MIxS_human_skin_library_construction_method': 'library construction method',
-		'GSC_MIxS_human_skin_library_vector': 'library vector',
-		'GSC_MIxS_human_skin_library_screening_strategy': 'library screening strategy',
-		'GSC_MIxS_human_skin_target_gene': 'target gene',
-		'GSC_MIxS_human_skin_target_subfragment': 'target subfragment',
-		'GSC_MIxS_human_skin_pcr_primers': 'pcr primers',
-		'GSC_MIxS_human_skin_multiplex_identifiers': 'multiplex identifiers',
-		'GSC_MIxS_human_skin_adapters': 'adapters',
-		'GSC_MIxS_human_skin_pcr_conditions': 'pcr conditions',
-		'GSC_MIxS_human_skin_sequencing_method': 'sequencing method',
-		'GSC_MIxS_human_skin_sequence_quality_check': 'sequence quality check',
-		'GSC_MIxS_human_skin_chimera_check_software': 'chimera check software',
-		'GSC_MIxS_human_skin_relevant_electronic_resources': 'relevant electronic resources',
-		'GSC_MIxS_human_skin_relevant_standard_operating_procedures': 'relevant standard operating procedures',
-		'GSC_MIxS_human_skin_negative_control_type': 'negative control type',
-		'GSC_MIxS_human_skin_positive_control_type': 'positive control type',
-		'GSC_MIxS_human_skin_collection_date': 'collection date',
-		'GSC_MIxS_human_skin_geographic_location_country_and_or_sea': 'geographic location (country and/or sea)',
-		'GSC_MIxS_human_skin_geographic_location_latitude': 'geographic location (latitude)',
-		'GSC_MIxS_human_skin_geographic_location_longitude': 'geographic location (longitude)',
-		'GSC_MIxS_human_skin_geographic_location_region_and_locality': 'geographic location (region and locality)',
-		'GSC_MIxS_human_skin_broad_scale_environmental_context': 'broad-scale environmental context',
-		'GSC_MIxS_human_skin_local_environmental_context': 'local environmental context',
-		'GSC_MIxS_human_skin_environmental_medium': 'environmental medium',
-		'GSC_MIxS_human_skin_source_material_identifiers': 'source material identifiers',
-		'GSC_MIxS_human_skin_sample_material_processing': 'sample material processing',
-		'GSC_MIxS_human_skin_isolation_and_growth_condition': 'isolation and growth condition',
-		'GSC_MIxS_human_skin_propagation': 'propagation',
-		'GSC_MIxS_human_skin_amount_or_size_of_sample_collected': 'amount or size of sample collected',
-		'GSC_MIxS_human_skin_host_body_product': 'host body product',
-		'GSC_MIxS_human_skin_medical_history_performed': 'medical history performed',
-		'GSC_MIxS_human_skin_oxygenation_status_of_sample': 'oxygenation status of sample',
-		'GSC_MIxS_human_skin_organism_count': 'organism count',
-		'GSC_MIxS_human_skin_sample_storage_duration': 'sample storage duration',
-		'GSC_MIxS_human_skin_sample_storage_temperature': 'sample storage temperature',
-		'GSC_MIxS_human_skin_sample_storage_location': 'sample storage location',
-		'GSC_MIxS_human_skin_sample_collection_device': 'sample collection device',
-		'GSC_MIxS_human_skin_sample_collection_method': 'sample collection method',
-		'GSC_MIxS_human_skin_dermatology_disorder': 'dermatology disorder',
-		'GSC_MIxS_human_skin_host_disease_status': 'host disease status',
-		'GSC_MIxS_human_skin_host_subject_id': 'host subject id',
-		'GSC_MIxS_human_skin_IHMC_medication_code': 'IHMC medication code',
-		'GSC_MIxS_human_skin_host_age': 'host age',
-		'GSC_MIxS_human_skin_host_body_site': 'host body site',
-		'GSC_MIxS_human_skin_host_height': 'host height',
-		'GSC_MIxS_human_skin_host_body_mass_index': 'host body-mass index',
-		'GSC_MIxS_human_skin_ethnicity': 'ethnicity',
-		'GSC_MIxS_human_skin_host_occupation': 'host occupation',
-		'GSC_MIxS_human_skin_host_total_mass': 'host total mass',
-		'GSC_MIxS_human_skin_host_phenotype': 'host phenotype',
-		'GSC_MIxS_human_skin_host_body_temperature': 'host body temperature',
-		'GSC_MIxS_human_skin_host_sex': 'host sex',
-		'GSC_MIxS_human_skin_temperature': 'temperature',
-		'GSC_MIxS_human_skin_salinity': 'salinity',
-		'GSC_MIxS_human_skin_time_since_last_wash': 'time since last wash',
-		'GSC_MIxS_human_skin_dominant_hand': 'dominant hand',
-		'GSC_MIxS_human_skin_host_diet': 'host diet',
-		'GSC_MIxS_human_skin_host_last_meal': 'host last meal',
-		'GSC_MIxS_human_skin_host_family_relationship': 'host family relationship',
-		'GSC_MIxS_human_skin_host_genotype': 'host genotype',
-		'GSC_MIxS_human_skin_host_pulse': 'host pulse',
-		'GSC_MIxS_human_skin_subspecific_genetic_lineage': 'subspecific genetic lineage',
-		'GSC_MIxS_human_skin_trophic_level': 'trophic level',
-		'GSC_MIxS_human_skin_relationship_to_oxygen': 'relationship to oxygen',
-		'GSC_MIxS_human_skin_known_pathogenicity': 'known pathogenicity',
-		'GSC_MIxS_human_skin_encoded_traits': 'encoded traits',
-		'GSC_MIxS_human_skin_observed_biotic_relationship': 'observed biotic relationship',
-		'GSC_MIxS_human_skin_chemical_administration': 'chemical administration',
-		'GSC_MIxS_human_skin_perturbation': 'perturbation',
+		'host_body_product': 'host body product',
+		'medical_history_performed': 'medical history performed',
+		'dermatology_disorder': 'dermatology disorder',
+		'host_subject_id': 'host subject id',
+		'IHMC_medication_code': 'IHMC medication code',
+		'host_age': 'host age',
+		'host_body_site': 'host body site',
+		'host_height': 'host height',
+		'host_body_mass_index': 'host body-mass index',
+		'ethnicity': 'ethnicity',
+		'host_occupation': 'host occupation',
+		'host_total_mass': 'host total mass',
+		'host_phenotype': 'host phenotype',
+		'host_body_temperature': 'host body temperature',
+		'host_sex': 'host sex',
+		'time_since_last_wash': 'time since last wash',
+		'dominant_hand': 'dominant hand',
+		'host_diet': 'host diet',
+		'host_last_meal': 'host last meal',
+		'host_family_relationship': 'host family relationship',
+		'host_genotype': 'host genotype',
+		'host_pulse': 'host pulse',
 	}
 
 	name = 'GSC_MIxS_human_skin'
 
 class GSC_MIxS_human_skin_unit(SelfDescribingModel):
 
-	GSC_MIxS_human_skin_sample_volume_or_weight_for_DNA_extraction_units = [('g', 'g'), ('mL', 'mL'), ('mg', 'mg'), ('ng', 'ng')]
-	GSC_MIxS_human_skin_geographic_location_latitude_units = [('DD', 'DD')]
-	GSC_MIxS_human_skin_geographic_location_longitude_units = [('DD', 'DD')]
-	GSC_MIxS_human_skin_amount_or_size_of_sample_collected_units = [('L', 'L'), ('g', 'g'), ('kg', 'kg'), ('m2', 'm2'), ('m3', 'm3')]
-	GSC_MIxS_human_skin_sample_storage_duration_units = [('days', 'days'), ('hours', 'hours'), ('months', 'months'), ('weeks', 'weeks'), ('years', 'years')]
-	GSC_MIxS_human_skin_sample_storage_temperature_units = [('°C', '°C')]
-	GSC_MIxS_human_skin_host_age_units = [('centuries', 'centuries'), ('days', 'days'), ('decades', 'decades'), ('hours', 'hours'), ('minutes', 'minutes'), ('months', 'months'), ('seconds', 'seconds'), ('weeks', 'weeks'), ('years', 'years')]
-	GSC_MIxS_human_skin_host_height_units = [('cm', 'cm'), ('m', 'm'), ('mm', 'mm')]
-	GSC_MIxS_human_skin_host_body_mass_index_units = [('kg/m2', 'kg/m2')]
-	GSC_MIxS_human_skin_host_total_mass_units = [('g', 'g'), ('kg', 'kg')]
-	GSC_MIxS_human_skin_host_body_temperature_units = [('ºC', 'ºC')]
-	GSC_MIxS_human_skin_temperature_units = [('ºC', 'ºC')]
-	GSC_MIxS_human_skin_salinity_units = [('psu', 'psu')]
-	GSC_MIxS_human_skin_time_since_last_wash_units = [('hours', 'hours'), ('minutes', 'minutes')]
-	GSC_MIxS_human_skin_host_pulse_units = [('bpm', 'bpm')]
+	host_age_units = [('centuries', 'centuries'), ('days', 'days'), ('decades', 'decades'), ('hours', 'hours'), ('minutes', 'minutes'), ('months', 'months'), ('seconds', 'seconds'), ('weeks', 'weeks'), ('years', 'years')]
+	host_height_units = [('cm', 'cm'), ('m', 'm'), ('mm', 'mm')]
+	host_body_mass_index_units = [('kg/m2', 'kg/m2')]
+	host_total_mass_units = [('g', 'g'), ('kg', 'kg')]
+	host_body_temperature_units = [('ºC', 'ºC')]
+	time_since_last_wash_units = [('hours', 'hours'), ('minutes', 'minutes')]
+	host_pulse_units = [('bpm', 'bpm')]
 
 	fields = {
-		'GSC_MIxS_human_skin_sample_volume_or_weight_for_DNA_extraction': 'sample volume or weight for DNA extraction',
-		'GSC_MIxS_human_skin_geographic_location_latitude': 'geographic location (latitude)',
-		'GSC_MIxS_human_skin_geographic_location_longitude': 'geographic location (longitude)',
-		'GSC_MIxS_human_skin_amount_or_size_of_sample_collected': 'amount or size of sample collected',
-		'GSC_MIxS_human_skin_sample_storage_duration': 'sample storage duration',
-		'GSC_MIxS_human_skin_sample_storage_temperature': 'sample storage temperature',
-		'GSC_MIxS_human_skin_host_age': 'host age',
-		'GSC_MIxS_human_skin_host_height': 'host height',
-		'GSC_MIxS_human_skin_host_body_mass_index': 'host body-mass index',
-		'GSC_MIxS_human_skin_host_total_mass': 'host total mass',
-		'GSC_MIxS_human_skin_host_body_temperature': 'host body temperature',
-		'GSC_MIxS_human_skin_temperature': 'temperature',
-		'GSC_MIxS_human_skin_salinity': 'salinity',
-		'GSC_MIxS_human_skin_time_since_last_wash': 'time since last wash',
-		'GSC_MIxS_human_skin_host_pulse': 'host pulse',
+		'host_age': 'host age',
+		'host_height': 'host height',
+		'host_body_mass_index': 'host body-mass index',
+		'host_total_mass': 'host total mass',
+		'host_body_temperature': 'host body temperature',
+		'time_since_last_wash': 'time since last wash',
+		'host_pulse': 'host pulse',
 	}
 
 	name = 'GSC_MIxS_human_skin'
 
 	sampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE, default=1)
 	sample = models.ForeignKey(Sample, on_delete=models.CASCADE, default=1)
-	GSC_MIxS_human_skin_sample_volume_or_weight_for_DNA_extraction = models.CharField(max_length=100, choices=GSC_MIxS_human_skin_sample_volume_or_weight_for_DNA_extraction_units, blank=False)
-	GSC_MIxS_human_skin_geographic_location_latitude = models.CharField(max_length=100, choices=GSC_MIxS_human_skin_geographic_location_latitude_units, blank=False)
-	GSC_MIxS_human_skin_geographic_location_longitude = models.CharField(max_length=100, choices=GSC_MIxS_human_skin_geographic_location_longitude_units, blank=False)
-	GSC_MIxS_human_skin_amount_or_size_of_sample_collected = models.CharField(max_length=100, choices=GSC_MIxS_human_skin_amount_or_size_of_sample_collected_units, blank=False)
-	GSC_MIxS_human_skin_sample_storage_duration = models.CharField(max_length=100, choices=GSC_MIxS_human_skin_sample_storage_duration_units, blank=False)
-	GSC_MIxS_human_skin_sample_storage_temperature = models.CharField(max_length=100, choices=GSC_MIxS_human_skin_sample_storage_temperature_units, blank=False)
-	GSC_MIxS_human_skin_host_age = models.CharField(max_length=100, choices=GSC_MIxS_human_skin_host_age_units, blank=False)
-	GSC_MIxS_human_skin_host_height = models.CharField(max_length=100, choices=GSC_MIxS_human_skin_host_height_units, blank=False)
-	GSC_MIxS_human_skin_host_body_mass_index = models.CharField(max_length=100, choices=GSC_MIxS_human_skin_host_body_mass_index_units, blank=False)
-	GSC_MIxS_human_skin_host_total_mass = models.CharField(max_length=100, choices=GSC_MIxS_human_skin_host_total_mass_units, blank=False)
-	GSC_MIxS_human_skin_host_body_temperature = models.CharField(max_length=100, choices=GSC_MIxS_human_skin_host_body_temperature_units, blank=False)
-	GSC_MIxS_human_skin_temperature = models.CharField(max_length=100, choices=GSC_MIxS_human_skin_temperature_units, blank=False)
-	GSC_MIxS_human_skin_salinity = models.CharField(max_length=100, choices=GSC_MIxS_human_skin_salinity_units, blank=False)
-	GSC_MIxS_human_skin_time_since_last_wash = models.CharField(max_length=100, choices=GSC_MIxS_human_skin_time_since_last_wash_units, blank=False)
-	GSC_MIxS_human_skin_host_pulse = models.CharField(max_length=100, choices=GSC_MIxS_human_skin_host_pulse_units, blank=False)
+	host_age = models.CharField(max_length=100, choices=host_age_units, blank=False)
+	host_height = models.CharField(max_length=100, choices=host_height_units, blank=False)
+	host_body_mass_index = models.CharField(max_length=100, choices=host_body_mass_index_units, blank=False)
+	host_total_mass = models.CharField(max_length=100, choices=host_total_mass_units, blank=False)
+	host_body_temperature = models.CharField(max_length=100, choices=host_body_temperature_units, blank=False)
+	time_since_last_wash = models.CharField(max_length=100, choices=time_since_last_wash_units, blank=False)
+	host_pulse = models.CharField(max_length=100, choices=host_pulse_units, blank=False)
 
 class ENA_default_sample_checklist(SelfDescribingModel):
 
-	ENA_default_sample_checklist_geographic_location_country_and_or_sea_choice = [('Afghanistan', 'Afghanistan'), ('Albania', 'Albania'), ('Algeria', 'Algeria'), ('American Samoa', 'American Samoa'), ('Andorra', 'Andorra'), ('Angola', 'Angola'), ('Anguilla', 'Anguilla'), ('Antarctica', 'Antarctica'), ('Antigua and Barbuda', 'Antigua and Barbuda'), ('Arctic Ocean', 'Arctic Ocean'), ('Argentina', 'Argentina'), ('Armenia', 'Armenia'), ('Aruba', 'Aruba'), ('Ashmore and Cartier Islands', 'Ashmore and Cartier Islands'), ('Atlantic Ocean', 'Atlantic Ocean'), ('Australia', 'Australia'), ('Austria', 'Austria'), ('Azerbaijan', 'Azerbaijan'), ('Bahamas', 'Bahamas'), ('Bahrain', 'Bahrain'), ('Baker Island', 'Baker Island'), ('Baltic Sea', 'Baltic Sea'), ('Bangladesh', 'Bangladesh'), ('Barbados', 'Barbados'), ('Bassas da India', 'Bassas da India'), ('Belarus', 'Belarus'), ('Belgium', 'Belgium'), ('Belize', 'Belize'), ('Benin', 'Benin'), ('Bermuda', 'Bermuda'), ('Bhutan', 'Bhutan'), ('Bolivia', 'Bolivia'), ('Borneo', 'Borneo'), ('Bosnia and Herzegovina', 'Bosnia and Herzegovina'), ('Botswana', 'Botswana'), ('Bouvet Island', 'Bouvet Island'), ('Brazil', 'Brazil'), ('British Virgin Islands', 'British Virgin Islands'), ('Brunei', 'Brunei'), ('Bulgaria', 'Bulgaria'), ('Burkina Faso', 'Burkina Faso'), ('Burundi', 'Burundi'), ('Cambodia', 'Cambodia'), ('Cameroon', 'Cameroon'), ('Canada', 'Canada'), ('Cape Verde', 'Cape Verde'), ('Cayman Islands', 'Cayman Islands'), ('Central African Republic', 'Central African Republic'), ('Chad', 'Chad'), ('Chile', 'Chile'), ('China', 'China'), ('Christmas Island', 'Christmas Island'), ('Clipperton Island', 'Clipperton Island'), ('Cocos Islands', 'Cocos Islands'), ('Colombia', 'Colombia'), ('Comoros', 'Comoros'), ('Cook Islands', 'Cook Islands'), ('Coral Sea Islands', 'Coral Sea Islands'), ('Costa Rica', 'Costa Rica'), ("Cote d'Ivoire", "Cote d'Ivoire"), ('Croatia', 'Croatia'), ('Cuba', 'Cuba'), ('Curacao', 'Curacao'), ('Cyprus', 'Cyprus'), ('Czech Republic', 'Czech Republic'), ('Democratic Republic of the Congo', 'Democratic Republic of the Congo'), ('Denmark', 'Denmark'), ('Djibouti', 'Djibouti'), ('Dominica', 'Dominica'), ('Dominican Republic', 'Dominican Republic'), ('East Timor', 'East Timor'), ('Ecuador', 'Ecuador'), ('Egypt', 'Egypt'), ('El Salvador', 'El Salvador'), ('Equatorial Guinea', 'Equatorial Guinea'), ('Eritrea', 'Eritrea'), ('Estonia', 'Estonia'), ('Ethiopia', 'Ethiopia'), ('Europa Island', 'Europa Island'), ('Falkland Islands (Islas Malvinas)', 'Falkland Islands (Islas Malvinas)'), ('Faroe Islands', 'Faroe Islands'), ('Fiji', 'Fiji'), ('Finland', 'Finland'), ('France', 'France'), ('French Guiana', 'French Guiana'), ('French Polynesia', 'French Polynesia'), ('French Southern and Antarctic Lands', 'French Southern and Antarctic Lands'), ('Gabon', 'Gabon'), ('Gambia', 'Gambia'), ('Gaza Strip', 'Gaza Strip'), ('Georgia', 'Georgia'), ('Germany', 'Germany'), ('Ghana', 'Ghana'), ('Gibraltar', 'Gibraltar'), ('Glorioso Islands', 'Glorioso Islands'), ('Greece', 'Greece'), ('Greenland', 'Greenland'), ('Grenada', 'Grenada'), ('Guadeloupe', 'Guadeloupe'), ('Guam', 'Guam'), ('Guatemala', 'Guatemala'), ('Guernsey', 'Guernsey'), ('Guinea', 'Guinea'), ('Guinea-Bissau', 'Guinea-Bissau'), ('Guyana', 'Guyana'), ('Haiti', 'Haiti'), ('Heard Island and McDonald Islands', 'Heard Island and McDonald Islands'), ('Honduras', 'Honduras'), ('Hong Kong', 'Hong Kong'), ('Howland Island', 'Howland Island'), ('Hungary', 'Hungary'), ('Iceland', 'Iceland'), ('India', 'India'), ('Indian Ocean', 'Indian Ocean'), ('Indonesia', 'Indonesia'), ('Iran', 'Iran'), ('Iraq', 'Iraq'), ('Ireland', 'Ireland'), ('Isle of Man', 'Isle of Man'), ('Israel', 'Israel'), ('Italy', 'Italy'), ('Jamaica', 'Jamaica'), ('Jan Mayen', 'Jan Mayen'), ('Japan', 'Japan'), ('Jarvis Island', 'Jarvis Island'), ('Jersey', 'Jersey'), ('Johnston Atoll', 'Johnston Atoll'), ('Jordan', 'Jordan'), ('Juan de Nova Island', 'Juan de Nova Island'), ('Kazakhstan', 'Kazakhstan'), ('Kenya', 'Kenya'), ('Kerguelen Archipelago', 'Kerguelen Archipelago'), ('Kingman Reef', 'Kingman Reef'), ('Kiribati', 'Kiribati'), ('Kosovo', 'Kosovo'), ('Kuwait', 'Kuwait'), ('Kyrgyzstan', 'Kyrgyzstan'), ('Laos', 'Laos'), ('Latvia', 'Latvia'), ('Lebanon', 'Lebanon'), ('Lesotho', 'Lesotho'), ('Liberia', 'Liberia'), ('Libya', 'Libya'), ('Liechtenstein', 'Liechtenstein'), ('Lithuania', 'Lithuania'), ('Luxembourg', 'Luxembourg'), ('Macau', 'Macau'), ('Macedonia', 'Macedonia'), ('Madagascar', 'Madagascar'), ('Malawi', 'Malawi'), ('Malaysia', 'Malaysia'), ('Maldives', 'Maldives'), ('Mali', 'Mali'), ('Malta', 'Malta'), ('Marshall Islands', 'Marshall Islands'), ('Martinique', 'Martinique'), ('Mauritania', 'Mauritania'), ('Mauritius', 'Mauritius'), ('Mayotte', 'Mayotte'), ('Mediterranean Sea', 'Mediterranean Sea'), ('Mexico', 'Mexico'), ('Micronesia', 'Micronesia'), ('Midway Islands', 'Midway Islands'), ('Moldova', 'Moldova'), ('Monaco', 'Monaco'), ('Mongolia', 'Mongolia'), ('Montenegro', 'Montenegro'), ('Montserrat', 'Montserrat'), ('Morocco', 'Morocco'), ('Mozambique', 'Mozambique'), ('Myanmar', 'Myanmar'), ('Namibia', 'Namibia'), ('Nauru', 'Nauru'), ('Navassa Island', 'Navassa Island'), ('Nepal', 'Nepal'), ('Netherlands', 'Netherlands'), ('New Caledonia', 'New Caledonia'), ('New Zealand', 'New Zealand'), ('Nicaragua', 'Nicaragua'), ('Niger', 'Niger'), ('Nigeria', 'Nigeria'), ('Niue', 'Niue'), ('Norfolk Island', 'Norfolk Island'), ('North Korea', 'North Korea'), ('North Sea', 'North Sea'), ('Northern Mariana Islands', 'Northern Mariana Islands'), ('Norway', 'Norway'), ('Oman', 'Oman'), ('Pacific Ocean', 'Pacific Ocean'), ('Pakistan', 'Pakistan'), ('Palau', 'Palau'), ('Palmyra Atoll', 'Palmyra Atoll'), ('Panama', 'Panama'), ('Papua New Guinea', 'Papua New Guinea'), ('Paracel Islands', 'Paracel Islands'), ('Paraguay', 'Paraguay'), ('Peru', 'Peru'), ('Philippines', 'Philippines'), ('Pitcairn Islands', 'Pitcairn Islands'), ('Poland', 'Poland'), ('Portugal', 'Portugal'), ('Puerto Rico', 'Puerto Rico'), ('Qatar', 'Qatar'), ('Republic of the Congo', 'Republic of the Congo'), ('Reunion', 'Reunion'), ('Romania', 'Romania'), ('Ross Sea', 'Ross Sea'), ('Russia', 'Russia'), ('Rwanda', 'Rwanda'), ('Saint Helena', 'Saint Helena'), ('Saint Kitts and Nevis', 'Saint Kitts and Nevis'), ('Saint Lucia', 'Saint Lucia'), ('Saint Pierre and Miquelon', 'Saint Pierre and Miquelon'), ('Saint Vincent and the Grenadines', 'Saint Vincent and the Grenadines'), ('Samoa', 'Samoa'), ('San Marino', 'San Marino'), ('Sao Tome and Principe', 'Sao Tome and Principe'), ('Saudi Arabia', 'Saudi Arabia'), ('Senegal', 'Senegal'), ('Serbia', 'Serbia'), ('Seychelles', 'Seychelles'), ('Sierra Leone', 'Sierra Leone'), ('Singapore', 'Singapore'), ('Sint Maarten', 'Sint Maarten'), ('Slovakia', 'Slovakia'), ('Slovenia', 'Slovenia'), ('Solomon Islands', 'Solomon Islands'), ('Somalia', 'Somalia'), ('South Africa', 'South Africa'), ('South Georgia and the South Sandwich Islands', 'South Georgia and the South Sandwich Islands'), ('South Korea', 'South Korea'), ('Southern Ocean', 'Southern Ocean'), ('Spain', 'Spain'), ('Spratly Islands', 'Spratly Islands'), ('Sri Lanka', 'Sri Lanka'), ('Sudan', 'Sudan'), ('Suriname', 'Suriname'), ('Svalbard', 'Svalbard'), ('Swaziland', 'Swaziland'), ('Sweden', 'Sweden'), ('Switzerland', 'Switzerland'), ('Syria', 'Syria'), ('Taiwan', 'Taiwan'), ('Tajikistan', 'Tajikistan'), ('Tanzania', 'Tanzania'), ('Tasman Sea', 'Tasman Sea'), ('Thailand', 'Thailand'), ('Togo', 'Togo'), ('Tokelau', 'Tokelau'), ('Tonga', 'Tonga'), ('Trinidad and Tobago', 'Trinidad and Tobago'), ('Tromelin Island', 'Tromelin Island'), ('Tunisia', 'Tunisia'), ('Turkey', 'Turkey'), ('Turkmenistan', 'Turkmenistan'), ('Turks and Caicos Islands', 'Turks and Caicos Islands'), ('Tuvalu', 'Tuvalu'), ('USA', 'USA'), ('Uganda', 'Uganda'), ('Ukraine', 'Ukraine'), ('United Arab Emirates', 'United Arab Emirates'), ('United Kingdom', 'United Kingdom'), ('Uruguay', 'Uruguay'), ('Uzbekistan', 'Uzbekistan'), ('Vanuatu', 'Vanuatu'), ('Venezuela', 'Venezuela'), ('Viet Nam', 'Viet Nam'), ('Virgin Islands', 'Virgin Islands'), ('Wake Island', 'Wake Island'), ('Wallis and Futuna', 'Wallis and Futuna'), ('West Bank', 'West Bank'), ('Western Sahara', 'Western Sahara'), ('Yemen', 'Yemen'), ('Zambia', 'Zambia'), ('Zimbabwe', 'Zimbabwe'), ('missing: control sample', 'missing: control sample'), ('missing: data agreement established pre-2023', 'missing: data agreement established pre-2023'), ('missing: endangered species', 'missing: endangered species'), ('missing: human-identifiable', 'missing: human-identifiable'), ('missing: lab stock', 'missing: lab stock'), ('missing: sample group', 'missing: sample group'), ('missing: synthetic construct', 'missing: synthetic construct'), ('missing: third party data', 'missing: third party data'), ('not applicable', 'not applicable'), ('not collected', 'not collected'), ('not provided', 'not provided'), ('restricted access', 'restricted access')]
-	ENA_default_sample_checklist_environmental_sample_choice = [('No', 'No'), ('Yes', 'Yes')]
+	environmental_sample_choice = [('No', 'No'), ('Yes', 'Yes')]
 
-	ENA_default_sample_checklist_collection_date_validator = "(^[12][0-9]{3}(-(0[1-9]|1[0-2])(-(0[1-9]|[12][0-9]|3[01])(T[0-9]{2}:[0-9]{2}(:[0-9]{2})?Z?([+-][0-9]{1,2})?)?)?)?(/[0-9]{4}(-[0-9]{2}(-[0-9]{2}(T[0-9]{2}:[0-9]{2}(:[0-9]{2})?Z?([+-][0-9]{1,2})?)?)?)?)?$)|(^not collected$)|(^not provided$)|(^restricted access$)|(^missing: control sample$)|(^missing: sample group$)|(^missing: synthetic construct$)|(^missing: lab stock$)|(^missing: third party data$)|(^missing: data agreement established pre-2023$)|(^missing: endangered species$)|(^missing: human-identifiable$)"
 
 	sampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE, default=1)
 	sample = models.ForeignKey(Sample, on_delete=models.CASCADE, default=1)
-	ENA_default_sample_checklist_cell_type= models.CharField(max_length=100, blank=True,help_text="cell type ")
-	ENA_default_sample_checklist_dev_stage= models.CharField(max_length=100, blank=True,help_text="if the sam")
-	ENA_default_sample_checklist_germline= models.CharField(max_length=100, blank=True,help_text="the sample")
-	ENA_default_sample_checklist_tissue_lib= models.CharField(max_length=100, blank=True,help_text="tissue lib")
-	ENA_default_sample_checklist_tissue_type= models.CharField(max_length=100, blank=True,help_text="tissue typ")
-	ENA_default_sample_checklist_isolation_source= models.CharField(max_length=100, blank=True,help_text="describes ")
-	ENA_default_sample_checklist_lat_lon= models.CharField(max_length=100, blank=True,help_text="geographic")
-	ENA_default_sample_checklist_collected_by= models.CharField(max_length=100, blank=True,help_text="name of pe")
-	ENA_default_sample_checklist_collection_date= models.CharField(max_length=100, blank=False,help_text="The date t", validators=[RegexValidator(ENA_default_sample_checklist_collection_date_validator)])
-	ENA_default_sample_checklist_geographic_location_country_and_or_sea= models.CharField(max_length=100, blank=False,help_text="The locati", choices=ENA_default_sample_checklist_geographic_location_country_and_or_sea_choice)
-	ENA_default_sample_checklist_geographic_location_region_and_locality= models.CharField(max_length=100, blank=True,help_text="The geogra")
-	ENA_default_sample_checklist_identified_by= models.CharField(max_length=100, blank=True,help_text="name of th")
-	ENA_default_sample_checklist_environmental_sample= models.CharField(max_length=100, blank=True,help_text="identifies", choices=ENA_default_sample_checklist_environmental_sample_choice)
-	ENA_default_sample_checklist_mating_type= models.CharField(max_length=100, blank=True,help_text="mating typ")
-	ENA_default_sample_checklist_sex= models.CharField(max_length=100, blank=True,help_text="sex of the")
-	ENA_default_sample_checklist_lab_host= models.CharField(max_length=100, blank=True,help_text="scientific")
-	ENA_default_sample_checklist_host_scientific_name= models.CharField(max_length=100, blank=True,help_text="Scientific")
-	ENA_default_sample_checklist_bio_material= models.CharField(max_length=100, blank=True,help_text="Unique ide")
-	ENA_default_sample_checklist_culture_collection= models.CharField(max_length=100, blank=True,help_text="Unique ide")
-	ENA_default_sample_checklist_specimen_voucher= models.CharField(max_length=100, blank=True,help_text="Unique ide")
-	ENA_default_sample_checklist_cultivar= models.CharField(max_length=100, blank=True,help_text="cultivar (")
-	ENA_default_sample_checklist_ecotype= models.CharField(max_length=100, blank=True,help_text="a populati")
-	ENA_default_sample_checklist_isolate= models.CharField(max_length=100, blank=True,help_text="individual")
-	ENA_default_sample_checklist_sub_species= models.CharField(max_length=100, blank=True,help_text="name of su")
-	ENA_default_sample_checklist_variety= models.CharField(max_length=100, blank=True,help_text="variety (=")
-	ENA_default_sample_checklist_sub_strain= models.CharField(max_length=100, blank=True,help_text="name or id")
-	ENA_default_sample_checklist_cell_line= models.CharField(max_length=100, blank=True,help_text="cell line ")
-	ENA_default_sample_checklist_serotype= models.CharField(max_length=100, blank=True,help_text="serologica")
-	ENA_default_sample_checklist_serovar= models.CharField(max_length=100, blank=True,help_text="serologica")
-	ENA_default_sample_checklist_strain= models.CharField(max_length=100, blank=True,help_text="Name of th")
+	cell_type= models.CharField(max_length=100, blank=True,help_text="cell type ")
+	dev_stage= models.CharField(max_length=100, blank=True,help_text="if the sam")
+	germline= models.CharField(max_length=100, blank=True,help_text="the sample")
+	tissue_lib= models.CharField(max_length=100, blank=True,help_text="tissue lib")
+	tissue_type= models.CharField(max_length=100, blank=True,help_text="tissue typ")
+	isolation_source= models.CharField(max_length=100, blank=True,help_text="describes ")
+	lat_lon= models.CharField(max_length=100, blank=True,help_text="geographic")
+	collected_by= models.CharField(max_length=100, blank=True,help_text="name of pe")
+	identified_by= models.CharField(max_length=100, blank=True,help_text="name of th")
+	environmental_sample= models.CharField(max_length=100, blank=True,help_text="identifies", choices=environmental_sample_choice)
+	mating_type= models.CharField(max_length=100, blank=True,help_text="mating typ")
+	sex= models.CharField(max_length=100, blank=True,help_text="sex of the")
+	lab_host= models.CharField(max_length=100, blank=True,help_text="scientific")
+	bio_material= models.CharField(max_length=100, blank=True,help_text="Unique ide")
+	culture_collection= models.CharField(max_length=100, blank=True,help_text="Unique ide")
+	specimen_voucher= models.CharField(max_length=100, blank=True,help_text="Unique ide")
+	cultivar= models.CharField(max_length=100, blank=True,help_text="cultivar (")
+	ecotype= models.CharField(max_length=100, blank=True,help_text="a populati")
+	isolate= models.CharField(max_length=100, blank=True,help_text="individual")
+	sub_species= models.CharField(max_length=100, blank=True,help_text="name of su")
+	variety= models.CharField(max_length=100, blank=True,help_text="variety (=")
+	sub_strain= models.CharField(max_length=100, blank=True,help_text="name or id")
+	cell_line= models.CharField(max_length=100, blank=True,help_text="cell line ")
+	serotype= models.CharField(max_length=100, blank=True,help_text="serologica")
+	serovar= models.CharField(max_length=100, blank=True,help_text="serologica")
+	strain= models.CharField(max_length=100, blank=True,help_text="Name of th")
 
 	fields = {
-		'ENA_default_sample_checklist_cell_type': 'cell_type',
-		'ENA_default_sample_checklist_dev_stage': 'dev_stage',
-		'ENA_default_sample_checklist_germline': 'germline',
-		'ENA_default_sample_checklist_tissue_lib': 'tissue_lib',
-		'ENA_default_sample_checklist_tissue_type': 'tissue_type',
-		'ENA_default_sample_checklist_isolation_source': 'isolation_source',
-		'ENA_default_sample_checklist_lat_lon': 'lat_lon',
-		'ENA_default_sample_checklist_collected_by': 'collected_by',
-		'ENA_default_sample_checklist_collection_date': 'collection date',
-		'ENA_default_sample_checklist_geographic_location_country_and_or_sea': 'geographic location (country and/or sea)',
-		'ENA_default_sample_checklist_geographic_location_region_and_locality': 'geographic location (region and locality)',
-		'ENA_default_sample_checklist_identified_by': 'identified_by',
-		'ENA_default_sample_checklist_environmental_sample': 'environmental_sample',
-		'ENA_default_sample_checklist_mating_type': 'mating_type',
-		'ENA_default_sample_checklist_sex': 'sex',
-		'ENA_default_sample_checklist_lab_host': 'lab_host',
-		'ENA_default_sample_checklist_host_scientific_name': 'host scientific name',
-		'ENA_default_sample_checklist_bio_material': 'bio_material',
-		'ENA_default_sample_checklist_culture_collection': 'culture_collection',
-		'ENA_default_sample_checklist_specimen_voucher': 'specimen_voucher',
-		'ENA_default_sample_checklist_cultivar': 'cultivar',
-		'ENA_default_sample_checklist_ecotype': 'ecotype',
-		'ENA_default_sample_checklist_isolate': 'isolate',
-		'ENA_default_sample_checklist_sub_species': 'sub_species',
-		'ENA_default_sample_checklist_variety': 'variety',
-		'ENA_default_sample_checklist_sub_strain': 'sub_strain',
-		'ENA_default_sample_checklist_cell_line': 'cell_line',
-		'ENA_default_sample_checklist_serotype': 'serotype',
-		'ENA_default_sample_checklist_serovar': 'serovar',
-		'ENA_default_sample_checklist_strain': 'strain',
+		'cell_type': 'cell_type',
+		'dev_stage': 'dev_stage',
+		'germline': 'germline',
+		'tissue_lib': 'tissue_lib',
+		'tissue_type': 'tissue_type',
+		'isolation_source': 'isolation_source',
+		'lat_lon': 'lat_lon',
+		'collected_by': 'collected_by',
+		'identified_by': 'identified_by',
+		'environmental_sample': 'environmental_sample',
+		'mating_type': 'mating_type',
+		'sex': 'sex',
+		'lab_host': 'lab_host',
+		'bio_material': 'bio_material',
+		'culture_collection': 'culture_collection',
+		'specimen_voucher': 'specimen_voucher',
+		'cultivar': 'cultivar',
+		'ecotype': 'ecotype',
+		'isolate': 'isolate',
+		'sub_species': 'sub_species',
+		'variety': 'variety',
+		'sub_strain': 'sub_strain',
+		'cell_line': 'cell_line',
+		'serotype': 'serotype',
+		'serovar': 'serovar',
+		'strain': 'strain',
 	}
 
 	name = 'ENA_default_sample_checklist'
@@ -1565,3842 +1207,859 @@ class ENA_default_sample_checklist_unit(SelfDescribingModel):
 
 class GSC_MIxS_plant_associated(SelfDescribingModel):
 
-	GSC_MIxS_plant_associated_sequence_quality_check_choice = [('manual', 'manual'), ('none', 'none'), ('software', 'software')]
-	GSC_MIxS_plant_associated_geographic_location_country_and_or_sea_choice = [('Afghanistan', 'Afghanistan'), ('Albania', 'Albania'), ('Algeria', 'Algeria'), ('American Samoa', 'American Samoa'), ('Andorra', 'Andorra'), ('Angola', 'Angola'), ('Anguilla', 'Anguilla'), ('Antarctica', 'Antarctica'), ('Antigua and Barbuda', 'Antigua and Barbuda'), ('Arctic Ocean', 'Arctic Ocean'), ('Argentina', 'Argentina'), ('Armenia', 'Armenia'), ('Aruba', 'Aruba'), ('Ashmore and Cartier Islands', 'Ashmore and Cartier Islands'), ('Atlantic Ocean', 'Atlantic Ocean'), ('Australia', 'Australia'), ('Austria', 'Austria'), ('Azerbaijan', 'Azerbaijan'), ('Bahamas', 'Bahamas'), ('Bahrain', 'Bahrain'), ('Baker Island', 'Baker Island'), ('Baltic Sea', 'Baltic Sea'), ('Bangladesh', 'Bangladesh'), ('Barbados', 'Barbados'), ('Bassas da India', 'Bassas da India'), ('Belarus', 'Belarus'), ('Belgium', 'Belgium'), ('Belize', 'Belize'), ('Benin', 'Benin'), ('Bermuda', 'Bermuda'), ('Bhutan', 'Bhutan'), ('Bolivia', 'Bolivia'), ('Borneo', 'Borneo'), ('Bosnia and Herzegovina', 'Bosnia and Herzegovina'), ('Botswana', 'Botswana'), ('Bouvet Island', 'Bouvet Island'), ('Brazil', 'Brazil'), ('British Virgin Islands', 'British Virgin Islands'), ('Brunei', 'Brunei'), ('Bulgaria', 'Bulgaria'), ('Burkina Faso', 'Burkina Faso'), ('Burundi', 'Burundi'), ('Cambodia', 'Cambodia'), ('Cameroon', 'Cameroon'), ('Canada', 'Canada'), ('Cape Verde', 'Cape Verde'), ('Cayman Islands', 'Cayman Islands'), ('Central African Republic', 'Central African Republic'), ('Chad', 'Chad'), ('Chile', 'Chile'), ('China', 'China'), ('Christmas Island', 'Christmas Island'), ('Clipperton Island', 'Clipperton Island'), ('Cocos Islands', 'Cocos Islands'), ('Colombia', 'Colombia'), ('Comoros', 'Comoros'), ('Cook Islands', 'Cook Islands'), ('Coral Sea Islands', 'Coral Sea Islands'), ('Costa Rica', 'Costa Rica'), ("Cote d'Ivoire", "Cote d'Ivoire"), ('Croatia', 'Croatia'), ('Cuba', 'Cuba'), ('Curacao', 'Curacao'), ('Cyprus', 'Cyprus'), ('Czech Republic', 'Czech Republic'), ('Democratic Republic of the Congo', 'Democratic Republic of the Congo'), ('Denmark', 'Denmark'), ('Djibouti', 'Djibouti'), ('Dominica', 'Dominica'), ('Dominican Republic', 'Dominican Republic'), ('East Timor', 'East Timor'), ('Ecuador', 'Ecuador'), ('Egypt', 'Egypt'), ('El Salvador', 'El Salvador'), ('Equatorial Guinea', 'Equatorial Guinea'), ('Eritrea', 'Eritrea'), ('Estonia', 'Estonia'), ('Ethiopia', 'Ethiopia'), ('Europa Island', 'Europa Island'), ('Falkland Islands (Islas Malvinas)', 'Falkland Islands (Islas Malvinas)'), ('Faroe Islands', 'Faroe Islands'), ('Fiji', 'Fiji'), ('Finland', 'Finland'), ('France', 'France'), ('French Guiana', 'French Guiana'), ('French Polynesia', 'French Polynesia'), ('French Southern and Antarctic Lands', 'French Southern and Antarctic Lands'), ('Gabon', 'Gabon'), ('Gambia', 'Gambia'), ('Gaza Strip', 'Gaza Strip'), ('Georgia', 'Georgia'), ('Germany', 'Germany'), ('Ghana', 'Ghana'), ('Gibraltar', 'Gibraltar'), ('Glorioso Islands', 'Glorioso Islands'), ('Greece', 'Greece'), ('Greenland', 'Greenland'), ('Grenada', 'Grenada'), ('Guadeloupe', 'Guadeloupe'), ('Guam', 'Guam'), ('Guatemala', 'Guatemala'), ('Guernsey', 'Guernsey'), ('Guinea', 'Guinea'), ('Guinea-Bissau', 'Guinea-Bissau'), ('Guyana', 'Guyana'), ('Haiti', 'Haiti'), ('Heard Island and McDonald Islands', 'Heard Island and McDonald Islands'), ('Honduras', 'Honduras'), ('Hong Kong', 'Hong Kong'), ('Howland Island', 'Howland Island'), ('Hungary', 'Hungary'), ('Iceland', 'Iceland'), ('India', 'India'), ('Indian Ocean', 'Indian Ocean'), ('Indonesia', 'Indonesia'), ('Iran', 'Iran'), ('Iraq', 'Iraq'), ('Ireland', 'Ireland'), ('Isle of Man', 'Isle of Man'), ('Israel', 'Israel'), ('Italy', 'Italy'), ('Jamaica', 'Jamaica'), ('Jan Mayen', 'Jan Mayen'), ('Japan', 'Japan'), ('Jarvis Island', 'Jarvis Island'), ('Jersey', 'Jersey'), ('Johnston Atoll', 'Johnston Atoll'), ('Jordan', 'Jordan'), ('Juan de Nova Island', 'Juan de Nova Island'), ('Kazakhstan', 'Kazakhstan'), ('Kenya', 'Kenya'), ('Kerguelen Archipelago', 'Kerguelen Archipelago'), ('Kingman Reef', 'Kingman Reef'), ('Kiribati', 'Kiribati'), ('Kosovo', 'Kosovo'), ('Kuwait', 'Kuwait'), ('Kyrgyzstan', 'Kyrgyzstan'), ('Laos', 'Laos'), ('Latvia', 'Latvia'), ('Lebanon', 'Lebanon'), ('Lesotho', 'Lesotho'), ('Liberia', 'Liberia'), ('Libya', 'Libya'), ('Liechtenstein', 'Liechtenstein'), ('Lithuania', 'Lithuania'), ('Luxembourg', 'Luxembourg'), ('Macau', 'Macau'), ('Macedonia', 'Macedonia'), ('Madagascar', 'Madagascar'), ('Malawi', 'Malawi'), ('Malaysia', 'Malaysia'), ('Maldives', 'Maldives'), ('Mali', 'Mali'), ('Malta', 'Malta'), ('Marshall Islands', 'Marshall Islands'), ('Martinique', 'Martinique'), ('Mauritania', 'Mauritania'), ('Mauritius', 'Mauritius'), ('Mayotte', 'Mayotte'), ('Mediterranean Sea', 'Mediterranean Sea'), ('Mexico', 'Mexico'), ('Micronesia', 'Micronesia'), ('Midway Islands', 'Midway Islands'), ('Moldova', 'Moldova'), ('Monaco', 'Monaco'), ('Mongolia', 'Mongolia'), ('Montenegro', 'Montenegro'), ('Montserrat', 'Montserrat'), ('Morocco', 'Morocco'), ('Mozambique', 'Mozambique'), ('Myanmar', 'Myanmar'), ('Namibia', 'Namibia'), ('Nauru', 'Nauru'), ('Navassa Island', 'Navassa Island'), ('Nepal', 'Nepal'), ('Netherlands', 'Netherlands'), ('New Caledonia', 'New Caledonia'), ('New Zealand', 'New Zealand'), ('Nicaragua', 'Nicaragua'), ('Niger', 'Niger'), ('Nigeria', 'Nigeria'), ('Niue', 'Niue'), ('Norfolk Island', 'Norfolk Island'), ('North Korea', 'North Korea'), ('North Sea', 'North Sea'), ('Northern Mariana Islands', 'Northern Mariana Islands'), ('Norway', 'Norway'), ('Oman', 'Oman'), ('Pacific Ocean', 'Pacific Ocean'), ('Pakistan', 'Pakistan'), ('Palau', 'Palau'), ('Palmyra Atoll', 'Palmyra Atoll'), ('Panama', 'Panama'), ('Papua New Guinea', 'Papua New Guinea'), ('Paracel Islands', 'Paracel Islands'), ('Paraguay', 'Paraguay'), ('Peru', 'Peru'), ('Philippines', 'Philippines'), ('Pitcairn Islands', 'Pitcairn Islands'), ('Poland', 'Poland'), ('Portugal', 'Portugal'), ('Puerto Rico', 'Puerto Rico'), ('Qatar', 'Qatar'), ('Republic of the Congo', 'Republic of the Congo'), ('Reunion', 'Reunion'), ('Romania', 'Romania'), ('Ross Sea', 'Ross Sea'), ('Russia', 'Russia'), ('Rwanda', 'Rwanda'), ('Saint Helena', 'Saint Helena'), ('Saint Kitts and Nevis', 'Saint Kitts and Nevis'), ('Saint Lucia', 'Saint Lucia'), ('Saint Pierre and Miquelon', 'Saint Pierre and Miquelon'), ('Saint Vincent and the Grenadines', 'Saint Vincent and the Grenadines'), ('Samoa', 'Samoa'), ('San Marino', 'San Marino'), ('Sao Tome and Principe', 'Sao Tome and Principe'), ('Saudi Arabia', 'Saudi Arabia'), ('Senegal', 'Senegal'), ('Serbia', 'Serbia'), ('Seychelles', 'Seychelles'), ('Sierra Leone', 'Sierra Leone'), ('Singapore', 'Singapore'), ('Sint Maarten', 'Sint Maarten'), ('Slovakia', 'Slovakia'), ('Slovenia', 'Slovenia'), ('Solomon Islands', 'Solomon Islands'), ('Somalia', 'Somalia'), ('South Africa', 'South Africa'), ('South Georgia and the South Sandwich Islands', 'South Georgia and the South Sandwich Islands'), ('South Korea', 'South Korea'), ('Southern Ocean', 'Southern Ocean'), ('Spain', 'Spain'), ('Spratly Islands', 'Spratly Islands'), ('Sri Lanka', 'Sri Lanka'), ('Sudan', 'Sudan'), ('Suriname', 'Suriname'), ('Svalbard', 'Svalbard'), ('Swaziland', 'Swaziland'), ('Sweden', 'Sweden'), ('Switzerland', 'Switzerland'), ('Syria', 'Syria'), ('Taiwan', 'Taiwan'), ('Tajikistan', 'Tajikistan'), ('Tanzania', 'Tanzania'), ('Tasman Sea', 'Tasman Sea'), ('Thailand', 'Thailand'), ('Togo', 'Togo'), ('Tokelau', 'Tokelau'), ('Tonga', 'Tonga'), ('Trinidad and Tobago', 'Trinidad and Tobago'), ('Tromelin Island', 'Tromelin Island'), ('Tunisia', 'Tunisia'), ('Turkey', 'Turkey'), ('Turkmenistan', 'Turkmenistan'), ('Turks and Caicos Islands', 'Turks and Caicos Islands'), ('Tuvalu', 'Tuvalu'), ('USA', 'USA'), ('Uganda', 'Uganda'), ('Ukraine', 'Ukraine'), ('United Arab Emirates', 'United Arab Emirates'), ('United Kingdom', 'United Kingdom'), ('Uruguay', 'Uruguay'), ('Uzbekistan', 'Uzbekistan'), ('Vanuatu', 'Vanuatu'), ('Venezuela', 'Venezuela'), ('Viet Nam', 'Viet Nam'), ('Virgin Islands', 'Virgin Islands'), ('Wake Island', 'Wake Island'), ('Wallis and Futuna', 'Wallis and Futuna'), ('West Bank', 'West Bank'), ('Western Sahara', 'Western Sahara'), ('Yemen', 'Yemen'), ('Zambia', 'Zambia'), ('Zimbabwe', 'Zimbabwe'), ('missing: control sample', 'missing: control sample'), ('missing: data agreement established pre-2023', 'missing: data agreement established pre-2023'), ('missing: endangered species', 'missing: endangered species'), ('missing: human-identifiable', 'missing: human-identifiable'), ('missing: lab stock', 'missing: lab stock'), ('missing: sample group', 'missing: sample group'), ('missing: synthetic construct', 'missing: synthetic construct'), ('missing: third party data', 'missing: third party data'), ('not applicable', 'not applicable'), ('not collected', 'not collected'), ('not provided', 'not provided'), ('restricted access', 'restricted access')]
-	GSC_MIxS_plant_associated_oxygenation_status_of_sample_choice = [('aerobic', 'aerobic'), ('anaerobic', 'anaerobic')]
-	GSC_MIxS_plant_associated_trophic_level_choice = [('autotroph', 'autotroph'), ('carboxydotroph', 'carboxydotroph'), ('chemoautotroph', 'chemoautotroph'), ('chemoheterotroph', 'chemoheterotroph'), ('chemolithoautotroph', 'chemolithoautotroph'), ('chemolithotroph', 'chemolithotroph'), ('chemoorganoheterotroph', 'chemoorganoheterotroph'), ('chemoorganotroph', 'chemoorganotroph'), ('chemosynthetic', 'chemosynthetic'), ('chemotroph', 'chemotroph'), ('copiotroph', 'copiotroph'), ('diazotroph', 'diazotroph'), ('facultative autotroph', 'facultative autotroph'), ('heterotroph', 'heterotroph'), ('lithoautotroph', 'lithoautotroph'), ('lithoheterotroph', 'lithoheterotroph'), ('lithotroph', 'lithotroph'), ('methanotroph', 'methanotroph'), ('methylotroph', 'methylotroph'), ('mixotroph', 'mixotroph'), ('obligate chemoautolithotroph', 'obligate chemoautolithotroph'), ('oligotroph', 'oligotroph'), ('organoheterotroph', 'organoheterotroph'), ('organotroph', 'organotroph'), ('photoautotroph', 'photoautotroph'), ('photoheterotroph', 'photoheterotroph'), ('photolithoautotroph', 'photolithoautotroph'), ('photolithotroph', 'photolithotroph'), ('photosynthetic', 'photosynthetic'), ('phototroph', 'phototroph')]
-	GSC_MIxS_plant_associated_relationship_to_oxygen_choice = [('aerobe', 'aerobe'), ('anaerobe', 'anaerobe'), ('facultative', 'facultative'), ('microaerophilic', 'microaerophilic'), ('microanaerobe', 'microanaerobe'), ('obligate aerobe', 'obligate aerobe'), ('obligate anaerobe', 'obligate anaerobe')]
-	GSC_MIxS_plant_associated_observed_biotic_relationship_choice = [('commensal', 'commensal'), ('free living', 'free living'), ('mutualism', 'mutualism'), ('parasite', 'parasite'), ('symbiont', 'symbiont')]
 
-	GSC_MIxS_plant_associated_number_of_replicons_validator = "[+-]?[0-9]+"
-	GSC_MIxS_plant_associated_extrachromosomal_elements_validator = "[+-]?[0-9]+"
-	GSC_MIxS_plant_associated_estimated_size_validator = "[+-]?[0-9]+"
-	GSC_MIxS_plant_associated_sample_volume_or_weight_for_DNA_extraction_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_plant_associated_library_size_validator = "[+-]?[0-9]+"
-	GSC_MIxS_plant_associated_library_reads_sequenced_validator = "[+-]?[0-9]+"
-	GSC_MIxS_plant_associated_collection_date_validator = "(^[12][0-9]{3}(-(0[1-9]|1[0-2])(-(0[1-9]|[12][0-9]|3[01])(T[0-9]{2}:[0-9]{2}(:[0-9]{2})?Z?([+-][0-9]{1,2})?)?)?)?(/[0-9]{4}(-[0-9]{2}(-[0-9]{2}(T[0-9]{2}:[0-9]{2}(:[0-9]{2})?Z?([+-][0-9]{1,2})?)?)?)?)?$)|(^not collected$)|(^not provided$)|(^restricted access$)|(^missing: control sample$)|(^missing: sample group$)|(^missing: synthetic construct$)|(^missing: lab stock$)|(^missing: third party data$)|(^missing: data agreement established pre-2023$)|(^missing: endangered species$)|(^missing: human-identifiable$)"
-	GSC_MIxS_plant_associated_altitude_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_plant_associated_geographic_location_latitude_validator = "(^[+-]?[0-9]+.?[0-9]{0,8}$)|(^not collected$)|(^not provided$)|(^restricted access$)|(^missing: control sample$)|(^missing: sample group$)|(^missing: synthetic construct$)|(^missing: lab stock$)|(^missing: third party data$)|(^missing: data agreement established pre-2023$)|(^missing: endangered species$)|(^missing: human-identifiable$)"
-	GSC_MIxS_plant_associated_geographic_location_longitude_validator = "(^[+-]?[0-9]+.?[0-9]{0,8}$)|(^not collected$)|(^not provided$)|(^restricted access$)|(^missing: control sample$)|(^missing: sample group$)|(^missing: synthetic construct$)|(^missing: lab stock$)|(^missing: third party data$)|(^missing: data agreement established pre-2023$)|(^missing: endangered species$)|(^missing: human-identifiable$)"
-	GSC_MIxS_plant_associated_depth_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_plant_associated_elevation_validator = "[+-]?(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_plant_associated_amount_or_size_of_sample_collected_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_plant_associated_host_dry_mass_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_plant_associated_sample_storage_duration_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_plant_associated_sample_storage_temperature_validator = "[+-]?(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_plant_associated_host_wet_mass_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_plant_associated_host_age_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_plant_associated_host_taxid_validator = "[+-]?[0-9]+"
-	GSC_MIxS_plant_associated_host_height_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_plant_associated_host_length_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_plant_associated_host_total_mass_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_plant_associated_temperature_validator = "[+-]?(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_plant_associated_salinity_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	host_dry_mass_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	host_wet_mass_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	host_taxid_validator = "[+-]?[0-9]+"
+	host_length_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
 
 	sampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE, default=1)
 	sample = models.ForeignKey(Sample, on_delete=models.CASCADE, default=1)
-	GSC_MIxS_plant_associated_project_name= models.CharField(max_length=100, blank=False,help_text="Name of th")
-	GSC_MIxS_plant_associated_experimental_factor= models.CharField(max_length=100, blank=True,help_text="Experiment")
-	GSC_MIxS_plant_associated_ploidy= models.CharField(max_length=100, blank=True,help_text="The ploidy")
-	GSC_MIxS_plant_associated_number_of_replicons= models.CharField(max_length=100, blank=True,help_text="Reports th", validators=[RegexValidator(GSC_MIxS_plant_associated_number_of_replicons_validator)])
-	GSC_MIxS_plant_associated_extrachromosomal_elements= models.CharField(max_length=100, blank=True,help_text="Do plasmid", validators=[RegexValidator(GSC_MIxS_plant_associated_extrachromosomal_elements_validator)])
-	GSC_MIxS_plant_associated_estimated_size= models.CharField(max_length=100, blank=True,help_text="The estima", validators=[RegexValidator(GSC_MIxS_plant_associated_estimated_size_validator)])
-	GSC_MIxS_plant_associated_reference_for_biomaterial= models.CharField(max_length=100, blank=True,help_text="Primary pu")
-	GSC_MIxS_plant_associated_annotation_source= models.CharField(max_length=100, blank=True,help_text="For cases ")
-	GSC_MIxS_plant_associated_sample_volume_or_weight_for_DNA_extraction= models.CharField(max_length=100, blank=True,help_text="Volume (ml", validators=[RegexValidator(GSC_MIxS_plant_associated_sample_volume_or_weight_for_DNA_extraction_validator)])
-	GSC_MIxS_plant_associated_nucleic_acid_extraction= models.CharField(max_length=100, blank=True,help_text="A link to ")
-	GSC_MIxS_plant_associated_nucleic_acid_amplification= models.CharField(max_length=100, blank=True,help_text="A link to ")
-	GSC_MIxS_plant_associated_library_size= models.CharField(max_length=100, blank=True,help_text="Total numb", validators=[RegexValidator(GSC_MIxS_plant_associated_library_size_validator)])
-	GSC_MIxS_plant_associated_library_reads_sequenced= models.CharField(max_length=100, blank=True,help_text="Total numb", validators=[RegexValidator(GSC_MIxS_plant_associated_library_reads_sequenced_validator)])
-	GSC_MIxS_plant_associated_library_construction_method= models.CharField(max_length=100, blank=True,help_text="Library co")
-	GSC_MIxS_plant_associated_library_vector= models.CharField(max_length=100, blank=True,help_text="Cloning ve")
-	GSC_MIxS_plant_associated_library_screening_strategy= models.CharField(max_length=100, blank=True,help_text="Specific e")
-	GSC_MIxS_plant_associated_target_gene= models.CharField(max_length=100, blank=True,help_text="Targeted g")
-	GSC_MIxS_plant_associated_target_subfragment= models.CharField(max_length=100, blank=True,help_text="Name of su")
-	GSC_MIxS_plant_associated_pcr_primers= models.CharField(max_length=100, blank=True,help_text="PCR primer")
-	GSC_MIxS_plant_associated_multiplex_identifiers= models.CharField(max_length=100, blank=True,help_text="Molecular ")
-	GSC_MIxS_plant_associated_adapters= models.CharField(max_length=100, blank=True,help_text="Adapters p")
-	GSC_MIxS_plant_associated_pcr_conditions= models.CharField(max_length=100, blank=True,help_text="Descriptio")
-	GSC_MIxS_plant_associated_sequencing_method= models.CharField(max_length=100, blank=True,help_text="Sequencing")
-	GSC_MIxS_plant_associated_sequence_quality_check= models.CharField(max_length=100, blank=True,help_text="Indicate i", choices=GSC_MIxS_plant_associated_sequence_quality_check_choice)
-	GSC_MIxS_plant_associated_chimera_check_software= models.CharField(max_length=100, blank=True,help_text="Tool(s) us")
-	GSC_MIxS_plant_associated_relevant_electronic_resources= models.CharField(max_length=100, blank=True,help_text="A related ")
-	GSC_MIxS_plant_associated_relevant_standard_operating_procedures= models.CharField(max_length=100, blank=True,help_text="Standard o")
-	GSC_MIxS_plant_associated_negative_control_type= models.CharField(max_length=100, blank=True,help_text="The substa")
-	GSC_MIxS_plant_associated_positive_control_type= models.CharField(max_length=100, blank=True,help_text="The substa")
-	GSC_MIxS_plant_associated_collection_date= models.CharField(max_length=100, blank=False,help_text="The date t", validators=[RegexValidator(GSC_MIxS_plant_associated_collection_date_validator)])
-	GSC_MIxS_plant_associated_altitude= models.CharField(max_length=100, blank=True,help_text="The altitu", validators=[RegexValidator(GSC_MIxS_plant_associated_altitude_validator)])
-	GSC_MIxS_plant_associated_geographic_location_country_and_or_sea= models.CharField(max_length=100, blank=False,help_text="The locati", choices=GSC_MIxS_plant_associated_geographic_location_country_and_or_sea_choice)
-	GSC_MIxS_plant_associated_geographic_location_latitude= models.CharField(max_length=100, blank=False,help_text="The geogra", validators=[RegexValidator(GSC_MIxS_plant_associated_geographic_location_latitude_validator)])
-	GSC_MIxS_plant_associated_geographic_location_longitude= models.CharField(max_length=100, blank=False,help_text="The geogra", validators=[RegexValidator(GSC_MIxS_plant_associated_geographic_location_longitude_validator)])
-	GSC_MIxS_plant_associated_geographic_location_region_and_locality= models.CharField(max_length=100, blank=True,help_text="The geogra")
-	GSC_MIxS_plant_associated_depth= models.CharField(max_length=100, blank=True,help_text="The vertic", validators=[RegexValidator(GSC_MIxS_plant_associated_depth_validator)])
-	GSC_MIxS_plant_associated_broad_scale_environmental_context= models.CharField(max_length=100, blank=False,help_text="Report the")
-	GSC_MIxS_plant_associated_local_environmental_context= models.CharField(max_length=100, blank=False,help_text="Report the")
-	GSC_MIxS_plant_associated_environmental_medium= models.CharField(max_length=100, blank=False,help_text="Report the")
-	GSC_MIxS_plant_associated_elevation= models.CharField(max_length=100, blank=True,help_text="The elevat", validators=[RegexValidator(GSC_MIxS_plant_associated_elevation_validator)])
-	GSC_MIxS_plant_associated_source_material_identifiers= models.CharField(max_length=100, blank=True,help_text="A unique i")
-	GSC_MIxS_plant_associated_sample_material_processing= models.CharField(max_length=100, blank=True,help_text="A brief de")
-	GSC_MIxS_plant_associated_isolation_and_growth_condition= models.CharField(max_length=100, blank=True,help_text="Publicatio")
-	GSC_MIxS_plant_associated_propagation= models.CharField(max_length=100, blank=True,help_text="The type o")
-	GSC_MIxS_plant_associated_amount_or_size_of_sample_collected= models.CharField(max_length=100, blank=True,help_text="The total ", validators=[RegexValidator(GSC_MIxS_plant_associated_amount_or_size_of_sample_collected_validator)])
-	GSC_MIxS_plant_associated_host_dry_mass= models.CharField(max_length=100, blank=True,help_text="measuremen", validators=[RegexValidator(GSC_MIxS_plant_associated_host_dry_mass_validator)])
-	GSC_MIxS_plant_associated_oxygenation_status_of_sample= models.CharField(max_length=100, blank=True,help_text="oxygenatio", choices=GSC_MIxS_plant_associated_oxygenation_status_of_sample_choice)
-	GSC_MIxS_plant_associated_plant_product= models.CharField(max_length=100, blank=True,help_text="substance ")
-	GSC_MIxS_plant_associated_organism_count= models.CharField(max_length=100, blank=True,help_text="Total cell")
-	GSC_MIxS_plant_associated_sample_storage_duration= models.CharField(max_length=100, blank=True,help_text="duration f", validators=[RegexValidator(GSC_MIxS_plant_associated_sample_storage_duration_validator)])
-	GSC_MIxS_plant_associated_sample_storage_temperature= models.CharField(max_length=100, blank=True,help_text="temperatur", validators=[RegexValidator(GSC_MIxS_plant_associated_sample_storage_temperature_validator)])
-	GSC_MIxS_plant_associated_host_wet_mass= models.CharField(max_length=100, blank=True,help_text="measuremen", validators=[RegexValidator(GSC_MIxS_plant_associated_host_wet_mass_validator)])
-	GSC_MIxS_plant_associated_sample_storage_location= models.CharField(max_length=100, blank=True,help_text="location a")
-	GSC_MIxS_plant_associated_sample_collection_device= models.CharField(max_length=100, blank=True,help_text="The device")
-	GSC_MIxS_plant_associated_sample_collection_method= models.CharField(max_length=100, blank=True,help_text="The method")
-	GSC_MIxS_plant_associated_host_disease_status= models.CharField(max_length=100, blank=True,help_text="list of di")
-	GSC_MIxS_plant_associated_host_common_name= models.CharField(max_length=100, blank=True,help_text="common nam")
-	GSC_MIxS_plant_associated_host_age= models.CharField(max_length=100, blank=True,help_text="age of hos", validators=[RegexValidator(GSC_MIxS_plant_associated_host_age_validator)])
-	GSC_MIxS_plant_associated_host_taxid= models.CharField(max_length=100, blank=True,help_text="NCBI taxon", validators=[RegexValidator(GSC_MIxS_plant_associated_host_taxid_validator)])
-	GSC_MIxS_plant_associated_host_life_stage= models.CharField(max_length=100, blank=True,help_text="descriptio")
-	GSC_MIxS_plant_associated_host_height= models.CharField(max_length=100, blank=True,help_text="the height", validators=[RegexValidator(GSC_MIxS_plant_associated_host_height_validator)])
-	GSC_MIxS_plant_associated_host_length= models.CharField(max_length=100, blank=True,help_text="the length", validators=[RegexValidator(GSC_MIxS_plant_associated_host_length_validator)])
-	GSC_MIxS_plant_associated_plant_body_site= models.CharField(max_length=100, blank=True,help_text="name of bo")
-	GSC_MIxS_plant_associated_host_total_mass= models.CharField(max_length=100, blank=True,help_text="total mass", validators=[RegexValidator(GSC_MIxS_plant_associated_host_total_mass_validator)])
-	GSC_MIxS_plant_associated_host_phenotype= models.CharField(max_length=100, blank=True,help_text="phenotype ")
-	GSC_MIxS_plant_associated_host_subspecific_genetic_lineage= models.CharField(max_length=100, blank=True,help_text="Informatio")
-	GSC_MIxS_plant_associated_climate_environment= models.CharField(max_length=100, blank=True,help_text="treatment ")
-	GSC_MIxS_plant_associated_gaseous_environment= models.CharField(max_length=100, blank=True,help_text="use of con")
-	GSC_MIxS_plant_associated_seasonal_environment= models.CharField(max_length=100, blank=True,help_text="treatment ")
-	GSC_MIxS_plant_associated_temperature= models.CharField(max_length=100, blank=True,help_text="temperatur", validators=[RegexValidator(GSC_MIxS_plant_associated_temperature_validator)])
-	GSC_MIxS_plant_associated_salinity= models.CharField(max_length=100, blank=True,help_text="The total ", validators=[RegexValidator(GSC_MIxS_plant_associated_salinity_validator)])
-	GSC_MIxS_plant_associated_host_genotype= models.CharField(max_length=100, blank=True,help_text="observed g")
-	GSC_MIxS_plant_associated_subspecific_genetic_lineage= models.CharField(max_length=100, blank=True,help_text="Informatio")
-	GSC_MIxS_plant_associated_trophic_level= models.CharField(max_length=100, blank=True,help_text="Trophic le", choices=GSC_MIxS_plant_associated_trophic_level_choice)
-	GSC_MIxS_plant_associated_relationship_to_oxygen= models.CharField(max_length=100, blank=True,help_text="Is this or", choices=GSC_MIxS_plant_associated_relationship_to_oxygen_choice)
-	GSC_MIxS_plant_associated_known_pathogenicity= models.CharField(max_length=100, blank=True,help_text="To what is")
-	GSC_MIxS_plant_associated_encoded_traits= models.CharField(max_length=100, blank=True,help_text="Should inc")
-	GSC_MIxS_plant_associated_observed_biotic_relationship= models.CharField(max_length=100, blank=True,help_text="Is it free", choices=GSC_MIxS_plant_associated_observed_biotic_relationship_choice)
-	GSC_MIxS_plant_associated_air_temperature_regimen= models.CharField(max_length=100, blank=True,help_text="informatio")
-	GSC_MIxS_plant_associated_antibiotic_regimen= models.CharField(max_length=100, blank=True,help_text="informatio")
-	GSC_MIxS_plant_associated_chemical_mutagen= models.CharField(max_length=100, blank=True,help_text="treatment ")
-	GSC_MIxS_plant_associated_fertilizer_regimen= models.CharField(max_length=100, blank=True,help_text="informatio")
-	GSC_MIxS_plant_associated_fungicide_regimen= models.CharField(max_length=100, blank=True,help_text="informatio")
-	GSC_MIxS_plant_associated_gravity= models.CharField(max_length=100, blank=True,help_text="informatio")
-	GSC_MIxS_plant_associated_growth_hormone_regimen= models.CharField(max_length=100, blank=True,help_text="informatio")
-	GSC_MIxS_plant_associated_growth_media= models.CharField(max_length=100, blank=True,help_text="informatio")
-	GSC_MIxS_plant_associated_herbicide_regimen= models.CharField(max_length=100, blank=True,help_text="informatio")
-	GSC_MIxS_plant_associated_humidity_regimen= models.CharField(max_length=100, blank=True,help_text="informatio")
-	GSC_MIxS_plant_associated_mineral_nutrient_regimen= models.CharField(max_length=100, blank=True,help_text="informatio")
-	GSC_MIxS_plant_associated_non_mineral_nutrient_regimen= models.CharField(max_length=100, blank=True,help_text="informatio")
-	GSC_MIxS_plant_associated_pesticide_regimen= models.CharField(max_length=100, blank=True,help_text="informatio")
-	GSC_MIxS_plant_associated_pH_regimen= models.CharField(max_length=100, blank=True,help_text="informatio")
-	GSC_MIxS_plant_associated_radiation_regimen= models.CharField(max_length=100, blank=True,help_text="informatio")
-	GSC_MIxS_plant_associated_rainfall_regimen= models.CharField(max_length=100, blank=True,help_text="informatio")
-	GSC_MIxS_plant_associated_salt_regimen= models.CharField(max_length=100, blank=True,help_text="informatio")
-	GSC_MIxS_plant_associated_standing_water_regimen= models.CharField(max_length=100, blank=True,help_text="treatment ")
-	GSC_MIxS_plant_associated_tissue_culture_growth_media= models.CharField(max_length=100, blank=True,help_text="descriptio")
-	GSC_MIxS_plant_associated_watering_regimen= models.CharField(max_length=100, blank=True,help_text="informatio")
-	GSC_MIxS_plant_associated_water_temperature_regimen= models.CharField(max_length=100, blank=True,help_text="informatio")
-	GSC_MIxS_plant_associated_mechanical_damage= models.CharField(max_length=100, blank=True,help_text="informatio")
-	GSC_MIxS_plant_associated_chemical_administration= models.CharField(max_length=100, blank=True,help_text="list of ch")
-	GSC_MIxS_plant_associated_perturbation= models.CharField(max_length=100, blank=True,help_text="type of pe")
+	host_dry_mass= models.CharField(max_length=100, blank=True,help_text="measuremen", validators=[RegexValidator(host_dry_mass_validator)])
+	plant_product= models.CharField(max_length=100, blank=True,help_text="substance ")
+	host_wet_mass= models.CharField(max_length=100, blank=True,help_text="measuremen", validators=[RegexValidator(host_wet_mass_validator)])
+	host_common_name= models.CharField(max_length=100, blank=True,help_text="common nam")
+	host_taxid= models.CharField(max_length=100, blank=True,help_text="NCBI taxon", validators=[RegexValidator(host_taxid_validator)])
+	host_life_stage= models.CharField(max_length=100, blank=True,help_text="descriptio")
+	host_length= models.CharField(max_length=100, blank=True,help_text="the length", validators=[RegexValidator(host_length_validator)])
+	plant_body_site= models.CharField(max_length=100, blank=True,help_text="name of bo")
+	host_subspecific_genetic_lineage= models.CharField(max_length=100, blank=True,help_text="Informatio")
+	climate_environment= models.CharField(max_length=100, blank=True,help_text="treatment ")
+	gaseous_environment= models.CharField(max_length=100, blank=True,help_text="use of con")
+	seasonal_environment= models.CharField(max_length=100, blank=True,help_text="treatment ")
+	air_temperature_regimen= models.CharField(max_length=100, blank=True,help_text="informatio")
+	antibiotic_regimen= models.CharField(max_length=100, blank=True,help_text="informatio")
+	chemical_mutagen= models.CharField(max_length=100, blank=True,help_text="treatment ")
+	fertilizer_regimen= models.CharField(max_length=100, blank=True,help_text="informatio")
+	fungicide_regimen= models.CharField(max_length=100, blank=True,help_text="informatio")
+	gravity= models.CharField(max_length=100, blank=True,help_text="informatio")
+	growth_hormone_regimen= models.CharField(max_length=100, blank=True,help_text="informatio")
+	growth_media= models.CharField(max_length=100, blank=True,help_text="informatio")
+	herbicide_regimen= models.CharField(max_length=100, blank=True,help_text="informatio")
+	humidity_regimen= models.CharField(max_length=100, blank=True,help_text="informatio")
+	mineral_nutrient_regimen= models.CharField(max_length=100, blank=True,help_text="informatio")
+	non_mineral_nutrient_regimen= models.CharField(max_length=100, blank=True,help_text="informatio")
+	pesticide_regimen= models.CharField(max_length=100, blank=True,help_text="informatio")
+	pH_regimen= models.CharField(max_length=100, blank=True,help_text="informatio")
+	radiation_regimen= models.CharField(max_length=100, blank=True,help_text="informatio")
+	rainfall_regimen= models.CharField(max_length=100, blank=True,help_text="informatio")
+	salt_regimen= models.CharField(max_length=100, blank=True,help_text="informatio")
+	standing_water_regimen= models.CharField(max_length=100, blank=True,help_text="treatment ")
+	tissue_culture_growth_media= models.CharField(max_length=100, blank=True,help_text="descriptio")
+	watering_regimen= models.CharField(max_length=100, blank=True,help_text="informatio")
+	water_temperature_regimen= models.CharField(max_length=100, blank=True,help_text="informatio")
+	mechanical_damage= models.CharField(max_length=100, blank=True,help_text="informatio")
 
 	fields = {
-		'GSC_MIxS_plant_associated_project_name': 'project name',
-		'GSC_MIxS_plant_associated_experimental_factor': 'experimental factor',
-		'GSC_MIxS_plant_associated_ploidy': 'ploidy',
-		'GSC_MIxS_plant_associated_number_of_replicons': 'number of replicons',
-		'GSC_MIxS_plant_associated_extrachromosomal_elements': 'extrachromosomal elements',
-		'GSC_MIxS_plant_associated_estimated_size': 'estimated size',
-		'GSC_MIxS_plant_associated_reference_for_biomaterial': 'reference for biomaterial',
-		'GSC_MIxS_plant_associated_annotation_source': 'annotation source',
-		'GSC_MIxS_plant_associated_sample_volume_or_weight_for_DNA_extraction': 'sample volume or weight for DNA extraction',
-		'GSC_MIxS_plant_associated_nucleic_acid_extraction': 'nucleic acid extraction',
-		'GSC_MIxS_plant_associated_nucleic_acid_amplification': 'nucleic acid amplification',
-		'GSC_MIxS_plant_associated_library_size': 'library size',
-		'GSC_MIxS_plant_associated_library_reads_sequenced': 'library reads sequenced',
-		'GSC_MIxS_plant_associated_library_construction_method': 'library construction method',
-		'GSC_MIxS_plant_associated_library_vector': 'library vector',
-		'GSC_MIxS_plant_associated_library_screening_strategy': 'library screening strategy',
-		'GSC_MIxS_plant_associated_target_gene': 'target gene',
-		'GSC_MIxS_plant_associated_target_subfragment': 'target subfragment',
-		'GSC_MIxS_plant_associated_pcr_primers': 'pcr primers',
-		'GSC_MIxS_plant_associated_multiplex_identifiers': 'multiplex identifiers',
-		'GSC_MIxS_plant_associated_adapters': 'adapters',
-		'GSC_MIxS_plant_associated_pcr_conditions': 'pcr conditions',
-		'GSC_MIxS_plant_associated_sequencing_method': 'sequencing method',
-		'GSC_MIxS_plant_associated_sequence_quality_check': 'sequence quality check',
-		'GSC_MIxS_plant_associated_chimera_check_software': 'chimera check software',
-		'GSC_MIxS_plant_associated_relevant_electronic_resources': 'relevant electronic resources',
-		'GSC_MIxS_plant_associated_relevant_standard_operating_procedures': 'relevant standard operating procedures',
-		'GSC_MIxS_plant_associated_negative_control_type': 'negative control type',
-		'GSC_MIxS_plant_associated_positive_control_type': 'positive control type',
-		'GSC_MIxS_plant_associated_collection_date': 'collection date',
-		'GSC_MIxS_plant_associated_altitude': 'altitude',
-		'GSC_MIxS_plant_associated_geographic_location_country_and_or_sea': 'geographic location (country and/or sea)',
-		'GSC_MIxS_plant_associated_geographic_location_latitude': 'geographic location (latitude)',
-		'GSC_MIxS_plant_associated_geographic_location_longitude': 'geographic location (longitude)',
-		'GSC_MIxS_plant_associated_geographic_location_region_and_locality': 'geographic location (region and locality)',
-		'GSC_MIxS_plant_associated_depth': 'depth',
-		'GSC_MIxS_plant_associated_broad_scale_environmental_context': 'broad-scale environmental context',
-		'GSC_MIxS_plant_associated_local_environmental_context': 'local environmental context',
-		'GSC_MIxS_plant_associated_environmental_medium': 'environmental medium',
-		'GSC_MIxS_plant_associated_elevation': 'elevation',
-		'GSC_MIxS_plant_associated_source_material_identifiers': 'source material identifiers',
-		'GSC_MIxS_plant_associated_sample_material_processing': 'sample material processing',
-		'GSC_MIxS_plant_associated_isolation_and_growth_condition': 'isolation and growth condition',
-		'GSC_MIxS_plant_associated_propagation': 'propagation',
-		'GSC_MIxS_plant_associated_amount_or_size_of_sample_collected': 'amount or size of sample collected',
-		'GSC_MIxS_plant_associated_host_dry_mass': 'host dry mass',
-		'GSC_MIxS_plant_associated_oxygenation_status_of_sample': 'oxygenation status of sample',
-		'GSC_MIxS_plant_associated_plant_product': 'plant product',
-		'GSC_MIxS_plant_associated_organism_count': 'organism count',
-		'GSC_MIxS_plant_associated_sample_storage_duration': 'sample storage duration',
-		'GSC_MIxS_plant_associated_sample_storage_temperature': 'sample storage temperature',
-		'GSC_MIxS_plant_associated_host_wet_mass': 'host wet mass',
-		'GSC_MIxS_plant_associated_sample_storage_location': 'sample storage location',
-		'GSC_MIxS_plant_associated_sample_collection_device': 'sample collection device',
-		'GSC_MIxS_plant_associated_sample_collection_method': 'sample collection method',
-		'GSC_MIxS_plant_associated_host_disease_status': 'host disease status',
-		'GSC_MIxS_plant_associated_host_common_name': 'host common name',
-		'GSC_MIxS_plant_associated_host_age': 'host age',
-		'GSC_MIxS_plant_associated_host_taxid': 'host taxid',
-		'GSC_MIxS_plant_associated_host_life_stage': 'host life stage',
-		'GSC_MIxS_plant_associated_host_height': 'host height',
-		'GSC_MIxS_plant_associated_host_length': 'host length',
-		'GSC_MIxS_plant_associated_plant_body_site': 'plant body site',
-		'GSC_MIxS_plant_associated_host_total_mass': 'host total mass',
-		'GSC_MIxS_plant_associated_host_phenotype': 'host phenotype',
-		'GSC_MIxS_plant_associated_host_subspecific_genetic_lineage': 'host subspecific genetic lineage',
-		'GSC_MIxS_plant_associated_climate_environment': 'climate environment',
-		'GSC_MIxS_plant_associated_gaseous_environment': 'gaseous environment',
-		'GSC_MIxS_plant_associated_seasonal_environment': 'seasonal environment',
-		'GSC_MIxS_plant_associated_temperature': 'temperature',
-		'GSC_MIxS_plant_associated_salinity': 'salinity',
-		'GSC_MIxS_plant_associated_host_genotype': 'host genotype',
-		'GSC_MIxS_plant_associated_subspecific_genetic_lineage': 'subspecific genetic lineage',
-		'GSC_MIxS_plant_associated_trophic_level': 'trophic level',
-		'GSC_MIxS_plant_associated_relationship_to_oxygen': 'relationship to oxygen',
-		'GSC_MIxS_plant_associated_known_pathogenicity': 'known pathogenicity',
-		'GSC_MIxS_plant_associated_encoded_traits': 'encoded traits',
-		'GSC_MIxS_plant_associated_observed_biotic_relationship': 'observed biotic relationship',
-		'GSC_MIxS_plant_associated_air_temperature_regimen': 'air temperature regimen',
-		'GSC_MIxS_plant_associated_antibiotic_regimen': 'antibiotic regimen',
-		'GSC_MIxS_plant_associated_chemical_mutagen': 'chemical mutagen',
-		'GSC_MIxS_plant_associated_fertilizer_regimen': 'fertilizer regimen',
-		'GSC_MIxS_plant_associated_fungicide_regimen': 'fungicide regimen',
-		'GSC_MIxS_plant_associated_gravity': 'gravity',
-		'GSC_MIxS_plant_associated_growth_hormone_regimen': 'growth hormone regimen',
-		'GSC_MIxS_plant_associated_growth_media': 'growth media',
-		'GSC_MIxS_plant_associated_herbicide_regimen': 'herbicide regimen',
-		'GSC_MIxS_plant_associated_humidity_regimen': 'humidity regimen',
-		'GSC_MIxS_plant_associated_mineral_nutrient_regimen': 'mineral nutrient regimen',
-		'GSC_MIxS_plant_associated_non_mineral_nutrient_regimen': 'non-mineral nutrient regimen',
-		'GSC_MIxS_plant_associated_pesticide_regimen': 'pesticide regimen',
-		'GSC_MIxS_plant_associated_pH_regimen': 'pH regimen',
-		'GSC_MIxS_plant_associated_radiation_regimen': 'radiation regimen',
-		'GSC_MIxS_plant_associated_rainfall_regimen': 'rainfall regimen',
-		'GSC_MIxS_plant_associated_salt_regimen': 'salt regimen',
-		'GSC_MIxS_plant_associated_standing_water_regimen': 'standing water regimen',
-		'GSC_MIxS_plant_associated_tissue_culture_growth_media': 'tissue culture growth media',
-		'GSC_MIxS_plant_associated_watering_regimen': 'watering regimen',
-		'GSC_MIxS_plant_associated_water_temperature_regimen': 'water temperature regimen',
-		'GSC_MIxS_plant_associated_mechanical_damage': 'mechanical damage',
-		'GSC_MIxS_plant_associated_chemical_administration': 'chemical administration',
-		'GSC_MIxS_plant_associated_perturbation': 'perturbation',
+		'host_dry_mass': 'host dry mass',
+		'plant_product': 'plant product',
+		'host_wet_mass': 'host wet mass',
+		'host_common_name': 'host common name',
+		'host_taxid': 'host taxid',
+		'host_life_stage': 'host life stage',
+		'host_length': 'host length',
+		'plant_body_site': 'plant body site',
+		'host_subspecific_genetic_lineage': 'host subspecific genetic lineage',
+		'climate_environment': 'climate environment',
+		'gaseous_environment': 'gaseous environment',
+		'seasonal_environment': 'seasonal environment',
+		'air_temperature_regimen': 'air temperature regimen',
+		'antibiotic_regimen': 'antibiotic regimen',
+		'chemical_mutagen': 'chemical mutagen',
+		'fertilizer_regimen': 'fertilizer regimen',
+		'fungicide_regimen': 'fungicide regimen',
+		'gravity': 'gravity',
+		'growth_hormone_regimen': 'growth hormone regimen',
+		'growth_media': 'growth media',
+		'herbicide_regimen': 'herbicide regimen',
+		'humidity_regimen': 'humidity regimen',
+		'mineral_nutrient_regimen': 'mineral nutrient regimen',
+		'non_mineral_nutrient_regimen': 'non-mineral nutrient regimen',
+		'pesticide_regimen': 'pesticide regimen',
+		'pH_regimen': 'pH regimen',
+		'radiation_regimen': 'radiation regimen',
+		'rainfall_regimen': 'rainfall regimen',
+		'salt_regimen': 'salt regimen',
+		'standing_water_regimen': 'standing water regimen',
+		'tissue_culture_growth_media': 'tissue culture growth media',
+		'watering_regimen': 'watering regimen',
+		'water_temperature_regimen': 'water temperature regimen',
+		'mechanical_damage': 'mechanical damage',
 	}
 
 	name = 'GSC_MIxS_plant_associated'
 
 class GSC_MIxS_plant_associated_unit(SelfDescribingModel):
 
-	GSC_MIxS_plant_associated_sample_volume_or_weight_for_DNA_extraction_units = [('g', 'g'), ('mL', 'mL'), ('mg', 'mg'), ('ng', 'ng')]
-	GSC_MIxS_plant_associated_altitude_units = [('m', 'm')]
-	GSC_MIxS_plant_associated_geographic_location_latitude_units = [('DD', 'DD')]
-	GSC_MIxS_plant_associated_geographic_location_longitude_units = [('DD', 'DD')]
-	GSC_MIxS_plant_associated_depth_units = [('m', 'm')]
-	GSC_MIxS_plant_associated_elevation_units = [('m', 'm')]
-	GSC_MIxS_plant_associated_amount_or_size_of_sample_collected_units = [('L', 'L'), ('g', 'g'), ('kg', 'kg'), ('m2', 'm2'), ('m3', 'm3')]
-	GSC_MIxS_plant_associated_host_dry_mass_units = [('g', 'g'), ('kg', 'kg'), ('mg', 'mg')]
-	GSC_MIxS_plant_associated_sample_storage_duration_units = [('days', 'days'), ('hours', 'hours'), ('months', 'months'), ('weeks', 'weeks'), ('years', 'years')]
-	GSC_MIxS_plant_associated_sample_storage_temperature_units = [('°C', '°C')]
-	GSC_MIxS_plant_associated_host_wet_mass_units = [('g', 'g'), ('kg', 'kg'), ('mg', 'mg')]
-	GSC_MIxS_plant_associated_host_age_units = [('centuries', 'centuries'), ('days', 'days'), ('decades', 'decades'), ('hours', 'hours'), ('minutes', 'minutes'), ('months', 'months'), ('seconds', 'seconds'), ('weeks', 'weeks'), ('years', 'years')]
-	GSC_MIxS_plant_associated_host_height_units = [('cm', 'cm'), ('m', 'm'), ('mm', 'mm')]
-	GSC_MIxS_plant_associated_host_length_units = [('cm', 'cm'), ('m', 'm'), ('mm', 'mm')]
-	GSC_MIxS_plant_associated_host_total_mass_units = [('g', 'g'), ('kg', 'kg')]
-	GSC_MIxS_plant_associated_temperature_units = [('ºC', 'ºC')]
-	GSC_MIxS_plant_associated_salinity_units = [('psu', 'psu')]
+	host_dry_mass_units = [('g', 'g'), ('kg', 'kg'), ('mg', 'mg')]
+	host_wet_mass_units = [('g', 'g'), ('kg', 'kg'), ('mg', 'mg')]
+	host_length_units = [('cm', 'cm'), ('m', 'm'), ('mm', 'mm')]
 
 	fields = {
-		'GSC_MIxS_plant_associated_sample_volume_or_weight_for_DNA_extraction': 'sample volume or weight for DNA extraction',
-		'GSC_MIxS_plant_associated_altitude': 'altitude',
-		'GSC_MIxS_plant_associated_geographic_location_latitude': 'geographic location (latitude)',
-		'GSC_MIxS_plant_associated_geographic_location_longitude': 'geographic location (longitude)',
-		'GSC_MIxS_plant_associated_depth': 'depth',
-		'GSC_MIxS_plant_associated_elevation': 'elevation',
-		'GSC_MIxS_plant_associated_amount_or_size_of_sample_collected': 'amount or size of sample collected',
-		'GSC_MIxS_plant_associated_host_dry_mass': 'host dry mass',
-		'GSC_MIxS_plant_associated_sample_storage_duration': 'sample storage duration',
-		'GSC_MIxS_plant_associated_sample_storage_temperature': 'sample storage temperature',
-		'GSC_MIxS_plant_associated_host_wet_mass': 'host wet mass',
-		'GSC_MIxS_plant_associated_host_age': 'host age',
-		'GSC_MIxS_plant_associated_host_height': 'host height',
-		'GSC_MIxS_plant_associated_host_length': 'host length',
-		'GSC_MIxS_plant_associated_host_total_mass': 'host total mass',
-		'GSC_MIxS_plant_associated_temperature': 'temperature',
-		'GSC_MIxS_plant_associated_salinity': 'salinity',
+		'host_dry_mass': 'host dry mass',
+		'host_wet_mass': 'host wet mass',
+		'host_length': 'host length',
 	}
 
 	name = 'GSC_MIxS_plant_associated'
 
 	sampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE, default=1)
 	sample = models.ForeignKey(Sample, on_delete=models.CASCADE, default=1)
-	GSC_MIxS_plant_associated_sample_volume_or_weight_for_DNA_extraction = models.CharField(max_length=100, choices=GSC_MIxS_plant_associated_sample_volume_or_weight_for_DNA_extraction_units, blank=False)
-	GSC_MIxS_plant_associated_altitude = models.CharField(max_length=100, choices=GSC_MIxS_plant_associated_altitude_units, blank=False)
-	GSC_MIxS_plant_associated_geographic_location_latitude = models.CharField(max_length=100, choices=GSC_MIxS_plant_associated_geographic_location_latitude_units, blank=False)
-	GSC_MIxS_plant_associated_geographic_location_longitude = models.CharField(max_length=100, choices=GSC_MIxS_plant_associated_geographic_location_longitude_units, blank=False)
-	GSC_MIxS_plant_associated_depth = models.CharField(max_length=100, choices=GSC_MIxS_plant_associated_depth_units, blank=False)
-	GSC_MIxS_plant_associated_elevation = models.CharField(max_length=100, choices=GSC_MIxS_plant_associated_elevation_units, blank=False)
-	GSC_MIxS_plant_associated_amount_or_size_of_sample_collected = models.CharField(max_length=100, choices=GSC_MIxS_plant_associated_amount_or_size_of_sample_collected_units, blank=False)
-	GSC_MIxS_plant_associated_host_dry_mass = models.CharField(max_length=100, choices=GSC_MIxS_plant_associated_host_dry_mass_units, blank=False)
-	GSC_MIxS_plant_associated_sample_storage_duration = models.CharField(max_length=100, choices=GSC_MIxS_plant_associated_sample_storage_duration_units, blank=False)
-	GSC_MIxS_plant_associated_sample_storage_temperature = models.CharField(max_length=100, choices=GSC_MIxS_plant_associated_sample_storage_temperature_units, blank=False)
-	GSC_MIxS_plant_associated_host_wet_mass = models.CharField(max_length=100, choices=GSC_MIxS_plant_associated_host_wet_mass_units, blank=False)
-	GSC_MIxS_plant_associated_host_age = models.CharField(max_length=100, choices=GSC_MIxS_plant_associated_host_age_units, blank=False)
-	GSC_MIxS_plant_associated_host_height = models.CharField(max_length=100, choices=GSC_MIxS_plant_associated_host_height_units, blank=False)
-	GSC_MIxS_plant_associated_host_length = models.CharField(max_length=100, choices=GSC_MIxS_plant_associated_host_length_units, blank=False)
-	GSC_MIxS_plant_associated_host_total_mass = models.CharField(max_length=100, choices=GSC_MIxS_plant_associated_host_total_mass_units, blank=False)
-	GSC_MIxS_plant_associated_temperature = models.CharField(max_length=100, choices=GSC_MIxS_plant_associated_temperature_units, blank=False)
-	GSC_MIxS_plant_associated_salinity = models.CharField(max_length=100, choices=GSC_MIxS_plant_associated_salinity_units, blank=False)
+	host_dry_mass = models.CharField(max_length=100, choices=host_dry_mass_units, blank=False)
+	host_wet_mass = models.CharField(max_length=100, choices=host_wet_mass_units, blank=False)
+	host_length = models.CharField(max_length=100, choices=host_length_units, blank=False)
 
 class GSC_MIxS_water(SelfDescribingModel):
 
-	GSC_MIxS_water_sequence_quality_check_choice = [('manual', 'manual'), ('none', 'none'), ('software', 'software')]
-	GSC_MIxS_water_geographic_location_country_and_or_sea_choice = [('Afghanistan', 'Afghanistan'), ('Albania', 'Albania'), ('Algeria', 'Algeria'), ('American Samoa', 'American Samoa'), ('Andorra', 'Andorra'), ('Angola', 'Angola'), ('Anguilla', 'Anguilla'), ('Antarctica', 'Antarctica'), ('Antigua and Barbuda', 'Antigua and Barbuda'), ('Arctic Ocean', 'Arctic Ocean'), ('Argentina', 'Argentina'), ('Armenia', 'Armenia'), ('Aruba', 'Aruba'), ('Ashmore and Cartier Islands', 'Ashmore and Cartier Islands'), ('Atlantic Ocean', 'Atlantic Ocean'), ('Australia', 'Australia'), ('Austria', 'Austria'), ('Azerbaijan', 'Azerbaijan'), ('Bahamas', 'Bahamas'), ('Bahrain', 'Bahrain'), ('Baker Island', 'Baker Island'), ('Baltic Sea', 'Baltic Sea'), ('Bangladesh', 'Bangladesh'), ('Barbados', 'Barbados'), ('Bassas da India', 'Bassas da India'), ('Belarus', 'Belarus'), ('Belgium', 'Belgium'), ('Belize', 'Belize'), ('Benin', 'Benin'), ('Bermuda', 'Bermuda'), ('Bhutan', 'Bhutan'), ('Bolivia', 'Bolivia'), ('Borneo', 'Borneo'), ('Bosnia and Herzegovina', 'Bosnia and Herzegovina'), ('Botswana', 'Botswana'), ('Bouvet Island', 'Bouvet Island'), ('Brazil', 'Brazil'), ('British Virgin Islands', 'British Virgin Islands'), ('Brunei', 'Brunei'), ('Bulgaria', 'Bulgaria'), ('Burkina Faso', 'Burkina Faso'), ('Burundi', 'Burundi'), ('Cambodia', 'Cambodia'), ('Cameroon', 'Cameroon'), ('Canada', 'Canada'), ('Cape Verde', 'Cape Verde'), ('Cayman Islands', 'Cayman Islands'), ('Central African Republic', 'Central African Republic'), ('Chad', 'Chad'), ('Chile', 'Chile'), ('China', 'China'), ('Christmas Island', 'Christmas Island'), ('Clipperton Island', 'Clipperton Island'), ('Cocos Islands', 'Cocos Islands'), ('Colombia', 'Colombia'), ('Comoros', 'Comoros'), ('Cook Islands', 'Cook Islands'), ('Coral Sea Islands', 'Coral Sea Islands'), ('Costa Rica', 'Costa Rica'), ("Cote d'Ivoire", "Cote d'Ivoire"), ('Croatia', 'Croatia'), ('Cuba', 'Cuba'), ('Curacao', 'Curacao'), ('Cyprus', 'Cyprus'), ('Czech Republic', 'Czech Republic'), ('Democratic Republic of the Congo', 'Democratic Republic of the Congo'), ('Denmark', 'Denmark'), ('Djibouti', 'Djibouti'), ('Dominica', 'Dominica'), ('Dominican Republic', 'Dominican Republic'), ('East Timor', 'East Timor'), ('Ecuador', 'Ecuador'), ('Egypt', 'Egypt'), ('El Salvador', 'El Salvador'), ('Equatorial Guinea', 'Equatorial Guinea'), ('Eritrea', 'Eritrea'), ('Estonia', 'Estonia'), ('Ethiopia', 'Ethiopia'), ('Europa Island', 'Europa Island'), ('Falkland Islands (Islas Malvinas)', 'Falkland Islands (Islas Malvinas)'), ('Faroe Islands', 'Faroe Islands'), ('Fiji', 'Fiji'), ('Finland', 'Finland'), ('France', 'France'), ('French Guiana', 'French Guiana'), ('French Polynesia', 'French Polynesia'), ('French Southern and Antarctic Lands', 'French Southern and Antarctic Lands'), ('Gabon', 'Gabon'), ('Gambia', 'Gambia'), ('Gaza Strip', 'Gaza Strip'), ('Georgia', 'Georgia'), ('Germany', 'Germany'), ('Ghana', 'Ghana'), ('Gibraltar', 'Gibraltar'), ('Glorioso Islands', 'Glorioso Islands'), ('Greece', 'Greece'), ('Greenland', 'Greenland'), ('Grenada', 'Grenada'), ('Guadeloupe', 'Guadeloupe'), ('Guam', 'Guam'), ('Guatemala', 'Guatemala'), ('Guernsey', 'Guernsey'), ('Guinea', 'Guinea'), ('Guinea-Bissau', 'Guinea-Bissau'), ('Guyana', 'Guyana'), ('Haiti', 'Haiti'), ('Heard Island and McDonald Islands', 'Heard Island and McDonald Islands'), ('Honduras', 'Honduras'), ('Hong Kong', 'Hong Kong'), ('Howland Island', 'Howland Island'), ('Hungary', 'Hungary'), ('Iceland', 'Iceland'), ('India', 'India'), ('Indian Ocean', 'Indian Ocean'), ('Indonesia', 'Indonesia'), ('Iran', 'Iran'), ('Iraq', 'Iraq'), ('Ireland', 'Ireland'), ('Isle of Man', 'Isle of Man'), ('Israel', 'Israel'), ('Italy', 'Italy'), ('Jamaica', 'Jamaica'), ('Jan Mayen', 'Jan Mayen'), ('Japan', 'Japan'), ('Jarvis Island', 'Jarvis Island'), ('Jersey', 'Jersey'), ('Johnston Atoll', 'Johnston Atoll'), ('Jordan', 'Jordan'), ('Juan de Nova Island', 'Juan de Nova Island'), ('Kazakhstan', 'Kazakhstan'), ('Kenya', 'Kenya'), ('Kerguelen Archipelago', 'Kerguelen Archipelago'), ('Kingman Reef', 'Kingman Reef'), ('Kiribati', 'Kiribati'), ('Kosovo', 'Kosovo'), ('Kuwait', 'Kuwait'), ('Kyrgyzstan', 'Kyrgyzstan'), ('Laos', 'Laos'), ('Latvia', 'Latvia'), ('Lebanon', 'Lebanon'), ('Lesotho', 'Lesotho'), ('Liberia', 'Liberia'), ('Libya', 'Libya'), ('Liechtenstein', 'Liechtenstein'), ('Lithuania', 'Lithuania'), ('Luxembourg', 'Luxembourg'), ('Macau', 'Macau'), ('Macedonia', 'Macedonia'), ('Madagascar', 'Madagascar'), ('Malawi', 'Malawi'), ('Malaysia', 'Malaysia'), ('Maldives', 'Maldives'), ('Mali', 'Mali'), ('Malta', 'Malta'), ('Marshall Islands', 'Marshall Islands'), ('Martinique', 'Martinique'), ('Mauritania', 'Mauritania'), ('Mauritius', 'Mauritius'), ('Mayotte', 'Mayotte'), ('Mediterranean Sea', 'Mediterranean Sea'), ('Mexico', 'Mexico'), ('Micronesia', 'Micronesia'), ('Midway Islands', 'Midway Islands'), ('Moldova', 'Moldova'), ('Monaco', 'Monaco'), ('Mongolia', 'Mongolia'), ('Montenegro', 'Montenegro'), ('Montserrat', 'Montserrat'), ('Morocco', 'Morocco'), ('Mozambique', 'Mozambique'), ('Myanmar', 'Myanmar'), ('Namibia', 'Namibia'), ('Nauru', 'Nauru'), ('Navassa Island', 'Navassa Island'), ('Nepal', 'Nepal'), ('Netherlands', 'Netherlands'), ('New Caledonia', 'New Caledonia'), ('New Zealand', 'New Zealand'), ('Nicaragua', 'Nicaragua'), ('Niger', 'Niger'), ('Nigeria', 'Nigeria'), ('Niue', 'Niue'), ('Norfolk Island', 'Norfolk Island'), ('North Korea', 'North Korea'), ('North Sea', 'North Sea'), ('Northern Mariana Islands', 'Northern Mariana Islands'), ('Norway', 'Norway'), ('Oman', 'Oman'), ('Pacific Ocean', 'Pacific Ocean'), ('Pakistan', 'Pakistan'), ('Palau', 'Palau'), ('Palmyra Atoll', 'Palmyra Atoll'), ('Panama', 'Panama'), ('Papua New Guinea', 'Papua New Guinea'), ('Paracel Islands', 'Paracel Islands'), ('Paraguay', 'Paraguay'), ('Peru', 'Peru'), ('Philippines', 'Philippines'), ('Pitcairn Islands', 'Pitcairn Islands'), ('Poland', 'Poland'), ('Portugal', 'Portugal'), ('Puerto Rico', 'Puerto Rico'), ('Qatar', 'Qatar'), ('Republic of the Congo', 'Republic of the Congo'), ('Reunion', 'Reunion'), ('Romania', 'Romania'), ('Ross Sea', 'Ross Sea'), ('Russia', 'Russia'), ('Rwanda', 'Rwanda'), ('Saint Helena', 'Saint Helena'), ('Saint Kitts and Nevis', 'Saint Kitts and Nevis'), ('Saint Lucia', 'Saint Lucia'), ('Saint Pierre and Miquelon', 'Saint Pierre and Miquelon'), ('Saint Vincent and the Grenadines', 'Saint Vincent and the Grenadines'), ('Samoa', 'Samoa'), ('San Marino', 'San Marino'), ('Sao Tome and Principe', 'Sao Tome and Principe'), ('Saudi Arabia', 'Saudi Arabia'), ('Senegal', 'Senegal'), ('Serbia', 'Serbia'), ('Seychelles', 'Seychelles'), ('Sierra Leone', 'Sierra Leone'), ('Singapore', 'Singapore'), ('Sint Maarten', 'Sint Maarten'), ('Slovakia', 'Slovakia'), ('Slovenia', 'Slovenia'), ('Solomon Islands', 'Solomon Islands'), ('Somalia', 'Somalia'), ('South Africa', 'South Africa'), ('South Georgia and the South Sandwich Islands', 'South Georgia and the South Sandwich Islands'), ('South Korea', 'South Korea'), ('Southern Ocean', 'Southern Ocean'), ('Spain', 'Spain'), ('Spratly Islands', 'Spratly Islands'), ('Sri Lanka', 'Sri Lanka'), ('Sudan', 'Sudan'), ('Suriname', 'Suriname'), ('Svalbard', 'Svalbard'), ('Swaziland', 'Swaziland'), ('Sweden', 'Sweden'), ('Switzerland', 'Switzerland'), ('Syria', 'Syria'), ('Taiwan', 'Taiwan'), ('Tajikistan', 'Tajikistan'), ('Tanzania', 'Tanzania'), ('Tasman Sea', 'Tasman Sea'), ('Thailand', 'Thailand'), ('Togo', 'Togo'), ('Tokelau', 'Tokelau'), ('Tonga', 'Tonga'), ('Trinidad and Tobago', 'Trinidad and Tobago'), ('Tromelin Island', 'Tromelin Island'), ('Tunisia', 'Tunisia'), ('Turkey', 'Turkey'), ('Turkmenistan', 'Turkmenistan'), ('Turks and Caicos Islands', 'Turks and Caicos Islands'), ('Tuvalu', 'Tuvalu'), ('USA', 'USA'), ('Uganda', 'Uganda'), ('Ukraine', 'Ukraine'), ('United Arab Emirates', 'United Arab Emirates'), ('United Kingdom', 'United Kingdom'), ('Uruguay', 'Uruguay'), ('Uzbekistan', 'Uzbekistan'), ('Vanuatu', 'Vanuatu'), ('Venezuela', 'Venezuela'), ('Viet Nam', 'Viet Nam'), ('Virgin Islands', 'Virgin Islands'), ('Wake Island', 'Wake Island'), ('Wallis and Futuna', 'Wallis and Futuna'), ('West Bank', 'West Bank'), ('Western Sahara', 'Western Sahara'), ('Yemen', 'Yemen'), ('Zambia', 'Zambia'), ('Zimbabwe', 'Zimbabwe'), ('missing: control sample', 'missing: control sample'), ('missing: data agreement established pre-2023', 'missing: data agreement established pre-2023'), ('missing: endangered species', 'missing: endangered species'), ('missing: human-identifiable', 'missing: human-identifiable'), ('missing: lab stock', 'missing: lab stock'), ('missing: sample group', 'missing: sample group'), ('missing: synthetic construct', 'missing: synthetic construct'), ('missing: third party data', 'missing: third party data'), ('not applicable', 'not applicable'), ('not collected', 'not collected'), ('not provided', 'not provided'), ('restricted access', 'restricted access')]
-	GSC_MIxS_water_oxygenation_status_of_sample_choice = [('aerobic', 'aerobic'), ('anaerobic', 'anaerobic')]
-	GSC_MIxS_water_tidal_stage_choice = [('high', 'high'), ('low', 'low')]
-	GSC_MIxS_water_trophic_level_choice = [('autotroph', 'autotroph'), ('carboxydotroph', 'carboxydotroph'), ('chemoautotroph', 'chemoautotroph'), ('chemoheterotroph', 'chemoheterotroph'), ('chemolithoautotroph', 'chemolithoautotroph'), ('chemolithotroph', 'chemolithotroph'), ('chemoorganoheterotroph', 'chemoorganoheterotroph'), ('chemoorganotroph', 'chemoorganotroph'), ('chemosynthetic', 'chemosynthetic'), ('chemotroph', 'chemotroph'), ('copiotroph', 'copiotroph'), ('diazotroph', 'diazotroph'), ('facultative autotroph', 'facultative autotroph'), ('heterotroph', 'heterotroph'), ('lithoautotroph', 'lithoautotroph'), ('lithoheterotroph', 'lithoheterotroph'), ('lithotroph', 'lithotroph'), ('methanotroph', 'methanotroph'), ('methylotroph', 'methylotroph'), ('mixotroph', 'mixotroph'), ('obligate chemoautolithotroph', 'obligate chemoautolithotroph'), ('oligotroph', 'oligotroph'), ('organoheterotroph', 'organoheterotroph'), ('organotroph', 'organotroph'), ('photoautotroph', 'photoautotroph'), ('photoheterotroph', 'photoheterotroph'), ('photolithoautotroph', 'photolithoautotroph'), ('photolithotroph', 'photolithotroph'), ('photosynthetic', 'photosynthetic'), ('phototroph', 'phototroph')]
-	GSC_MIxS_water_relationship_to_oxygen_choice = [('aerobe', 'aerobe'), ('anaerobe', 'anaerobe'), ('facultative', 'facultative'), ('microaerophilic', 'microaerophilic'), ('microanaerobe', 'microanaerobe'), ('obligate aerobe', 'obligate aerobe'), ('obligate anaerobe', 'obligate anaerobe')]
-	GSC_MIxS_water_observed_biotic_relationship_choice = [('commensal', 'commensal'), ('free living', 'free living'), ('mutualism', 'mutualism'), ('parasite', 'parasite'), ('symbiont', 'symbiont')]
+	tidal_stage_choice = [('high', 'high'), ('low', 'low')]
 
-	GSC_MIxS_water_number_of_replicons_validator = "[+-]?[0-9]+"
-	GSC_MIxS_water_extrachromosomal_elements_validator = "[+-]?[0-9]+"
-	GSC_MIxS_water_estimated_size_validator = "[+-]?[0-9]+"
-	GSC_MIxS_water_sample_volume_or_weight_for_DNA_extraction_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_water_library_size_validator = "[+-]?[0-9]+"
-	GSC_MIxS_water_library_reads_sequenced_validator = "[+-]?[0-9]+"
-	GSC_MIxS_water_collection_date_validator = "(^[12][0-9]{3}(-(0[1-9]|1[0-2])(-(0[1-9]|[12][0-9]|3[01])(T[0-9]{2}:[0-9]{2}(:[0-9]{2})?Z?([+-][0-9]{1,2})?)?)?)?(/[0-9]{4}(-[0-9]{2}(-[0-9]{2}(T[0-9]{2}:[0-9]{2}(:[0-9]{2})?Z?([+-][0-9]{1,2})?)?)?)?)?$)|(^not collected$)|(^not provided$)|(^restricted access$)|(^missing: control sample$)|(^missing: sample group$)|(^missing: synthetic construct$)|(^missing: lab stock$)|(^missing: third party data$)|(^missing: data agreement established pre-2023$)|(^missing: endangered species$)|(^missing: human-identifiable$)"
-	GSC_MIxS_water_altitude_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_water_geographic_location_latitude_validator = "(^[+-]?[0-9]+.?[0-9]{0,8}$)|(^not collected$)|(^not provided$)|(^restricted access$)|(^missing: control sample$)|(^missing: sample group$)|(^missing: synthetic construct$)|(^missing: lab stock$)|(^missing: third party data$)|(^missing: data agreement established pre-2023$)|(^missing: endangered species$)|(^missing: human-identifiable$)"
-	GSC_MIxS_water_geographic_location_longitude_validator = "(^[+-]?[0-9]+.?[0-9]{0,8}$)|(^not collected$)|(^not provided$)|(^restricted access$)|(^missing: control sample$)|(^missing: sample group$)|(^missing: synthetic construct$)|(^missing: lab stock$)|(^missing: third party data$)|(^missing: data agreement established pre-2023$)|(^missing: endangered species$)|(^missing: human-identifiable$)"
-	GSC_MIxS_water_depth_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_water_elevation_validator = "[+-]?(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_water_amount_or_size_of_sample_collected_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_water_density_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_water_sample_storage_duration_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_water_sample_storage_temperature_validator = "[+-]?(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_water_alkalinity_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_water_conductivity_validator = "[1-9][0-9]*\.?[0-9]*([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_water_water_current_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_water_fluorescence_validator = "[1-9][0-9]*\.?[0-9]*([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_water_light_intensity_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_water_mean_friction_velocity_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_water_mean_peak_friction_velocity_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_water_downward_PAR_validator = "[1-9][0-9]*\.?[0-9]*([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_water_photon_flux_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_water_pressure_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_water_temperature_validator = "[+-]?(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_water_pH_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_water_total_depth_of_water_column_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_water_alkyl_diethers_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_water_aminopeptidase_activity_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_water_ammonium_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_water_bacterial_carbon_production_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_water_bacterial_production_validator = "[1-9][0-9]*\.?[0-9]*([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_water_bacterial_respiration_validator = "[1-9][0-9]*\.?[0-9]*([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_water_bishomohopanol_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_water_bromide_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_water_calcium_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_water_carbon_nitrogen_ratio_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_water_chloride_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_water_chlorophyll_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_water_diether_lipids_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_water_dissolved_carbon_dioxide_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_water_dissolved_hydrogen_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_water_dissolved_inorganic_carbon_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_water_dissolved_inorganic_nitrogen_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_water_dissolved_inorganic_phosphorus_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_water_dissolved_organic_carbon_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_water_dissolved_organic_nitrogen_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_water_dissolved_oxygen_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_water_glucosidase_activity_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_water_magnesium_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_water_n_alkanes_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_water_nitrate_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_water_nitrite_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_water_nitrogen_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_water_organic_carbon_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_water_organic_matter_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_water_organic_nitrogen_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_water_particulate_organic_carbon_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_water_particulate_organic_nitrogen_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_water_petroleum_hydrocarbon_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_water_phaeopigments_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_water_phosphate_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_water_phospholipid_fatty_acid_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_water_potassium_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_water_primary_production_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_water_redox_potential_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_water_salinity_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_water_silicate_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_water_sodium_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_water_soluble_reactive_phosphorus_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_water_sulfate_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_water_sulfide_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_water_suspended_particulate_matter_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_water_total_dissolved_nitrogen_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_water_total_inorganic_nitrogen_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_water_total_nitrogen_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_water_total_particulate_carbon_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_water_total_phosphorus_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	conductivity_validator = "[1-9][0-9]*\.?[0-9]*([Ee][+-]?[0-9]+)?"
+	fluorescence_validator = "[1-9][0-9]*\.?[0-9]*([Ee][+-]?[0-9]+)?"
+	light_intensity_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	mean_friction_velocity_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	mean_peak_friction_velocity_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	downward_PAR_validator = "[1-9][0-9]*\.?[0-9]*([Ee][+-]?[0-9]+)?"
+	photon_flux_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	total_depth_of_water_column_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	alkyl_diethers_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	aminopeptidase_activity_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	bacterial_carbon_production_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	bacterial_production_validator = "[1-9][0-9]*\.?[0-9]*([Ee][+-]?[0-9]+)?"
+	bacterial_respiration_validator = "[1-9][0-9]*\.?[0-9]*([Ee][+-]?[0-9]+)?"
+	bishomohopanol_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	carbon_nitrogen_ratio_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	dissolved_inorganic_nitrogen_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	dissolved_inorganic_phosphorus_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	dissolved_organic_carbon_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	glucosidase_activity_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	magnesium_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	n_alkanes_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	particulate_organic_carbon_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	particulate_organic_nitrogen_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	petroleum_hydrocarbon_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	phaeopigments_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	primary_production_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	redox_potential_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	soluble_reactive_phosphorus_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	suspended_particulate_matter_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	total_dissolved_nitrogen_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	total_inorganic_nitrogen_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	total_particulate_carbon_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	total_phosphorus_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
 
 	sampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE, default=1)
 	sample = models.ForeignKey(Sample, on_delete=models.CASCADE, default=1)
-	GSC_MIxS_water_project_name= models.CharField(max_length=100, blank=False,help_text="Name of th")
-	GSC_MIxS_water_experimental_factor= models.CharField(max_length=100, blank=True,help_text="Experiment")
-	GSC_MIxS_water_ploidy= models.CharField(max_length=100, blank=True,help_text="The ploidy")
-	GSC_MIxS_water_number_of_replicons= models.CharField(max_length=100, blank=True,help_text="Reports th", validators=[RegexValidator(GSC_MIxS_water_number_of_replicons_validator)])
-	GSC_MIxS_water_extrachromosomal_elements= models.CharField(max_length=100, blank=True,help_text="Do plasmid", validators=[RegexValidator(GSC_MIxS_water_extrachromosomal_elements_validator)])
-	GSC_MIxS_water_estimated_size= models.CharField(max_length=100, blank=True,help_text="The estima", validators=[RegexValidator(GSC_MIxS_water_estimated_size_validator)])
-	GSC_MIxS_water_reference_for_biomaterial= models.CharField(max_length=100, blank=True,help_text="Primary pu")
-	GSC_MIxS_water_annotation_source= models.CharField(max_length=100, blank=True,help_text="For cases ")
-	GSC_MIxS_water_sample_volume_or_weight_for_DNA_extraction= models.CharField(max_length=100, blank=True,help_text="Volume (ml", validators=[RegexValidator(GSC_MIxS_water_sample_volume_or_weight_for_DNA_extraction_validator)])
-	GSC_MIxS_water_nucleic_acid_extraction= models.CharField(max_length=100, blank=True,help_text="A link to ")
-	GSC_MIxS_water_nucleic_acid_amplification= models.CharField(max_length=100, blank=True,help_text="A link to ")
-	GSC_MIxS_water_library_size= models.CharField(max_length=100, blank=True,help_text="Total numb", validators=[RegexValidator(GSC_MIxS_water_library_size_validator)])
-	GSC_MIxS_water_library_reads_sequenced= models.CharField(max_length=100, blank=True,help_text="Total numb", validators=[RegexValidator(GSC_MIxS_water_library_reads_sequenced_validator)])
-	GSC_MIxS_water_library_construction_method= models.CharField(max_length=100, blank=True,help_text="Library co")
-	GSC_MIxS_water_library_vector= models.CharField(max_length=100, blank=True,help_text="Cloning ve")
-	GSC_MIxS_water_library_screening_strategy= models.CharField(max_length=100, blank=True,help_text="Specific e")
-	GSC_MIxS_water_target_gene= models.CharField(max_length=100, blank=True,help_text="Targeted g")
-	GSC_MIxS_water_target_subfragment= models.CharField(max_length=100, blank=True,help_text="Name of su")
-	GSC_MIxS_water_pcr_primers= models.CharField(max_length=100, blank=True,help_text="PCR primer")
-	GSC_MIxS_water_multiplex_identifiers= models.CharField(max_length=100, blank=True,help_text="Molecular ")
-	GSC_MIxS_water_adapters= models.CharField(max_length=100, blank=True,help_text="Adapters p")
-	GSC_MIxS_water_pcr_conditions= models.CharField(max_length=100, blank=True,help_text="Descriptio")
-	GSC_MIxS_water_sequencing_method= models.CharField(max_length=100, blank=True,help_text="Sequencing")
-	GSC_MIxS_water_sequence_quality_check= models.CharField(max_length=100, blank=True,help_text="Indicate i", choices=GSC_MIxS_water_sequence_quality_check_choice)
-	GSC_MIxS_water_chimera_check_software= models.CharField(max_length=100, blank=True,help_text="Tool(s) us")
-	GSC_MIxS_water_relevant_electronic_resources= models.CharField(max_length=100, blank=True,help_text="A related ")
-	GSC_MIxS_water_relevant_standard_operating_procedures= models.CharField(max_length=100, blank=True,help_text="Standard o")
-	GSC_MIxS_water_negative_control_type= models.CharField(max_length=100, blank=True,help_text="The substa")
-	GSC_MIxS_water_positive_control_type= models.CharField(max_length=100, blank=True,help_text="The substa")
-	GSC_MIxS_water_collection_date= models.CharField(max_length=100, blank=False,help_text="The date t", validators=[RegexValidator(GSC_MIxS_water_collection_date_validator)])
-	GSC_MIxS_water_altitude= models.CharField(max_length=100, blank=True,help_text="The altitu", validators=[RegexValidator(GSC_MIxS_water_altitude_validator)])
-	GSC_MIxS_water_geographic_location_country_and_or_sea= models.CharField(max_length=100, blank=False,help_text="The locati", choices=GSC_MIxS_water_geographic_location_country_and_or_sea_choice)
-	GSC_MIxS_water_geographic_location_latitude= models.CharField(max_length=100, blank=False,help_text="The geogra", validators=[RegexValidator(GSC_MIxS_water_geographic_location_latitude_validator)])
-	GSC_MIxS_water_geographic_location_longitude= models.CharField(max_length=100, blank=False,help_text="The geogra", validators=[RegexValidator(GSC_MIxS_water_geographic_location_longitude_validator)])
-	GSC_MIxS_water_geographic_location_region_and_locality= models.CharField(max_length=100, blank=True,help_text="The geogra")
-	GSC_MIxS_water_depth= models.CharField(max_length=100, blank=False,help_text="The vertic", validators=[RegexValidator(GSC_MIxS_water_depth_validator)])
-	GSC_MIxS_water_broad_scale_environmental_context= models.CharField(max_length=100, blank=False,help_text="Report the")
-	GSC_MIxS_water_local_environmental_context= models.CharField(max_length=100, blank=False,help_text="Report the")
-	GSC_MIxS_water_environmental_medium= models.CharField(max_length=100, blank=False,help_text="Report the")
-	GSC_MIxS_water_elevation= models.CharField(max_length=100, blank=True,help_text="The elevat", validators=[RegexValidator(GSC_MIxS_water_elevation_validator)])
-	GSC_MIxS_water_source_material_identifiers= models.CharField(max_length=100, blank=True,help_text="A unique i")
-	GSC_MIxS_water_sample_material_processing= models.CharField(max_length=100, blank=True,help_text="A brief de")
-	GSC_MIxS_water_isolation_and_growth_condition= models.CharField(max_length=100, blank=True,help_text="Publicatio")
-	GSC_MIxS_water_propagation= models.CharField(max_length=100, blank=True,help_text="The type o")
-	GSC_MIxS_water_amount_or_size_of_sample_collected= models.CharField(max_length=100, blank=True,help_text="The total ", validators=[RegexValidator(GSC_MIxS_water_amount_or_size_of_sample_collected_validator)])
-	GSC_MIxS_water_biomass= models.CharField(max_length=100, blank=True,help_text="amount of ")
-	GSC_MIxS_water_density= models.CharField(max_length=100, blank=True,help_text="density of", validators=[RegexValidator(GSC_MIxS_water_density_validator)])
-	GSC_MIxS_water_oxygenation_status_of_sample= models.CharField(max_length=100, blank=True,help_text="oxygenatio", choices=GSC_MIxS_water_oxygenation_status_of_sample_choice)
-	GSC_MIxS_water_organism_count= models.CharField(max_length=100, blank=True,help_text="Total cell")
-	GSC_MIxS_water_sample_storage_duration= models.CharField(max_length=100, blank=True,help_text="duration f", validators=[RegexValidator(GSC_MIxS_water_sample_storage_duration_validator)])
-	GSC_MIxS_water_sample_storage_temperature= models.CharField(max_length=100, blank=True,help_text="temperatur", validators=[RegexValidator(GSC_MIxS_water_sample_storage_temperature_validator)])
-	GSC_MIxS_water_sample_storage_location= models.CharField(max_length=100, blank=True,help_text="location a")
-	GSC_MIxS_water_sample_collection_device= models.CharField(max_length=100, blank=True,help_text="The device")
-	GSC_MIxS_water_sample_collection_method= models.CharField(max_length=100, blank=True,help_text="The method")
-	GSC_MIxS_water_host_disease_status= models.CharField(max_length=100, blank=True,help_text="list of di")
-	GSC_MIxS_water_host_scientific_name= models.CharField(max_length=100, blank=True,help_text="Scientific")
-	GSC_MIxS_water_alkalinity= models.CharField(max_length=100, blank=True,help_text="alkalinity", validators=[RegexValidator(GSC_MIxS_water_alkalinity_validator)])
-	GSC_MIxS_water_atmospheric_data= models.CharField(max_length=100, blank=True,help_text="measuremen")
-	GSC_MIxS_water_conductivity= models.CharField(max_length=100, blank=True,help_text="electrical", validators=[RegexValidator(GSC_MIxS_water_conductivity_validator)])
-	GSC_MIxS_water_water_current= models.CharField(max_length=100, blank=True,help_text="measuremen", validators=[RegexValidator(GSC_MIxS_water_water_current_validator)])
-	GSC_MIxS_water_fluorescence= models.CharField(max_length=100, blank=True,help_text="raw (volts", validators=[RegexValidator(GSC_MIxS_water_fluorescence_validator)])
-	GSC_MIxS_water_light_intensity= models.CharField(max_length=100, blank=True,help_text="measuremen", validators=[RegexValidator(GSC_MIxS_water_light_intensity_validator)])
-	GSC_MIxS_water_mean_friction_velocity= models.CharField(max_length=100, blank=True,help_text="measuremen", validators=[RegexValidator(GSC_MIxS_water_mean_friction_velocity_validator)])
-	GSC_MIxS_water_mean_peak_friction_velocity= models.CharField(max_length=100, blank=True,help_text="measuremen", validators=[RegexValidator(GSC_MIxS_water_mean_peak_friction_velocity_validator)])
-	GSC_MIxS_water_downward_PAR= models.CharField(max_length=100, blank=True,help_text="visible wa", validators=[RegexValidator(GSC_MIxS_water_downward_PAR_validator)])
-	GSC_MIxS_water_photon_flux= models.CharField(max_length=100, blank=True,help_text="measuremen", validators=[RegexValidator(GSC_MIxS_water_photon_flux_validator)])
-	GSC_MIxS_water_pressure= models.CharField(max_length=100, blank=True,help_text="pressure t", validators=[RegexValidator(GSC_MIxS_water_pressure_validator)])
-	GSC_MIxS_water_temperature= models.CharField(max_length=100, blank=True,help_text="temperatur", validators=[RegexValidator(GSC_MIxS_water_temperature_validator)])
-	GSC_MIxS_water_tidal_stage= models.CharField(max_length=100, blank=True,help_text="stage of t", choices=GSC_MIxS_water_tidal_stage_choice)
-	GSC_MIxS_water_pH= models.CharField(max_length=100, blank=True,help_text="pH measure", validators=[RegexValidator(GSC_MIxS_water_pH_validator)])
-	GSC_MIxS_water_total_depth_of_water_column= models.CharField(max_length=100, blank=True,help_text="measuremen", validators=[RegexValidator(GSC_MIxS_water_total_depth_of_water_column_validator)])
-	GSC_MIxS_water_alkyl_diethers= models.CharField(max_length=100, blank=True,help_text="concentrat", validators=[RegexValidator(GSC_MIxS_water_alkyl_diethers_validator)])
-	GSC_MIxS_water_aminopeptidase_activity= models.CharField(max_length=100, blank=True,help_text="measuremen", validators=[RegexValidator(GSC_MIxS_water_aminopeptidase_activity_validator)])
-	GSC_MIxS_water_ammonium= models.CharField(max_length=100, blank=True,help_text="concentrat", validators=[RegexValidator(GSC_MIxS_water_ammonium_validator)])
-	GSC_MIxS_water_bacterial_carbon_production= models.CharField(max_length=100, blank=True,help_text="measuremen", validators=[RegexValidator(GSC_MIxS_water_bacterial_carbon_production_validator)])
-	GSC_MIxS_water_bacterial_production= models.CharField(max_length=100, blank=True,help_text="bacterial ", validators=[RegexValidator(GSC_MIxS_water_bacterial_production_validator)])
-	GSC_MIxS_water_bacterial_respiration= models.CharField(max_length=100, blank=True,help_text="measuremen", validators=[RegexValidator(GSC_MIxS_water_bacterial_respiration_validator)])
-	GSC_MIxS_water_bishomohopanol= models.CharField(max_length=100, blank=True,help_text="concentrat", validators=[RegexValidator(GSC_MIxS_water_bishomohopanol_validator)])
-	GSC_MIxS_water_bromide= models.CharField(max_length=100, blank=True,help_text="concentrat", validators=[RegexValidator(GSC_MIxS_water_bromide_validator)])
-	GSC_MIxS_water_calcium= models.CharField(max_length=100, blank=True,help_text="concentrat", validators=[RegexValidator(GSC_MIxS_water_calcium_validator)])
-	GSC_MIxS_water_carbon_nitrogen_ratio= models.CharField(max_length=100, blank=True,help_text="ratio of a", validators=[RegexValidator(GSC_MIxS_water_carbon_nitrogen_ratio_validator)])
-	GSC_MIxS_water_chloride= models.CharField(max_length=100, blank=True,help_text="concentrat", validators=[RegexValidator(GSC_MIxS_water_chloride_validator)])
-	GSC_MIxS_water_chlorophyll= models.CharField(max_length=100, blank=True,help_text="concentrat", validators=[RegexValidator(GSC_MIxS_water_chlorophyll_validator)])
-	GSC_MIxS_water_diether_lipids= models.CharField(max_length=100, blank=True,help_text="concentrat", validators=[RegexValidator(GSC_MIxS_water_diether_lipids_validator)])
-	GSC_MIxS_water_dissolved_carbon_dioxide= models.CharField(max_length=100, blank=True,help_text="concentrat", validators=[RegexValidator(GSC_MIxS_water_dissolved_carbon_dioxide_validator)])
-	GSC_MIxS_water_dissolved_hydrogen= models.CharField(max_length=100, blank=True,help_text="concentrat", validators=[RegexValidator(GSC_MIxS_water_dissolved_hydrogen_validator)])
-	GSC_MIxS_water_dissolved_inorganic_carbon= models.CharField(max_length=100, blank=True,help_text="dissolved ", validators=[RegexValidator(GSC_MIxS_water_dissolved_inorganic_carbon_validator)])
-	GSC_MIxS_water_dissolved_inorganic_nitrogen= models.CharField(max_length=100, blank=True,help_text="concentrat", validators=[RegexValidator(GSC_MIxS_water_dissolved_inorganic_nitrogen_validator)])
-	GSC_MIxS_water_dissolved_inorganic_phosphorus= models.CharField(max_length=100, blank=True,help_text="concentrat", validators=[RegexValidator(GSC_MIxS_water_dissolved_inorganic_phosphorus_validator)])
-	GSC_MIxS_water_dissolved_organic_carbon= models.CharField(max_length=100, blank=True,help_text="concentrat", validators=[RegexValidator(GSC_MIxS_water_dissolved_organic_carbon_validator)])
-	GSC_MIxS_water_dissolved_organic_nitrogen= models.CharField(max_length=100, blank=True,help_text="dissolved ", validators=[RegexValidator(GSC_MIxS_water_dissolved_organic_nitrogen_validator)])
-	GSC_MIxS_water_dissolved_oxygen= models.CharField(max_length=100, blank=True,help_text="concentrat", validators=[RegexValidator(GSC_MIxS_water_dissolved_oxygen_validator)])
-	GSC_MIxS_water_glucosidase_activity= models.CharField(max_length=100, blank=True,help_text="measuremen", validators=[RegexValidator(GSC_MIxS_water_glucosidase_activity_validator)])
-	GSC_MIxS_water_magnesium= models.CharField(max_length=100, blank=True,help_text="concentrat", validators=[RegexValidator(GSC_MIxS_water_magnesium_validator)])
-	GSC_MIxS_water_n_alkanes= models.CharField(max_length=100, blank=True,help_text="concentrat", validators=[RegexValidator(GSC_MIxS_water_n_alkanes_validator)])
-	GSC_MIxS_water_nitrate= models.CharField(max_length=100, blank=True,help_text="concentrat", validators=[RegexValidator(GSC_MIxS_water_nitrate_validator)])
-	GSC_MIxS_water_nitrite= models.CharField(max_length=100, blank=True,help_text="concentrat", validators=[RegexValidator(GSC_MIxS_water_nitrite_validator)])
-	GSC_MIxS_water_nitrogen= models.CharField(max_length=100, blank=True,help_text="concentrat", validators=[RegexValidator(GSC_MIxS_water_nitrogen_validator)])
-	GSC_MIxS_water_organic_carbon= models.CharField(max_length=100, blank=True,help_text="concentrat", validators=[RegexValidator(GSC_MIxS_water_organic_carbon_validator)])
-	GSC_MIxS_water_organic_matter= models.CharField(max_length=100, blank=True,help_text="concentrat", validators=[RegexValidator(GSC_MIxS_water_organic_matter_validator)])
-	GSC_MIxS_water_organic_nitrogen= models.CharField(max_length=100, blank=True,help_text="concentrat", validators=[RegexValidator(GSC_MIxS_water_organic_nitrogen_validator)])
-	GSC_MIxS_water_particulate_organic_carbon= models.CharField(max_length=100, blank=True,help_text="concentrat", validators=[RegexValidator(GSC_MIxS_water_particulate_organic_carbon_validator)])
-	GSC_MIxS_water_particulate_organic_nitrogen= models.CharField(max_length=100, blank=True,help_text="concentrat", validators=[RegexValidator(GSC_MIxS_water_particulate_organic_nitrogen_validator)])
-	GSC_MIxS_water_petroleum_hydrocarbon= models.CharField(max_length=100, blank=True,help_text="concentrat", validators=[RegexValidator(GSC_MIxS_water_petroleum_hydrocarbon_validator)])
-	GSC_MIxS_water_phaeopigments= models.CharField(max_length=100, blank=True,help_text="concentrat", validators=[RegexValidator(GSC_MIxS_water_phaeopigments_validator)])
-	GSC_MIxS_water_phosphate= models.CharField(max_length=100, blank=True,help_text="concentrat", validators=[RegexValidator(GSC_MIxS_water_phosphate_validator)])
-	GSC_MIxS_water_phospholipid_fatty_acid= models.CharField(max_length=100, blank=True,help_text="concentrat", validators=[RegexValidator(GSC_MIxS_water_phospholipid_fatty_acid_validator)])
-	GSC_MIxS_water_potassium= models.CharField(max_length=100, blank=True,help_text="concentrat", validators=[RegexValidator(GSC_MIxS_water_potassium_validator)])
-	GSC_MIxS_water_primary_production= models.CharField(max_length=100, blank=True,help_text="measuremen", validators=[RegexValidator(GSC_MIxS_water_primary_production_validator)])
-	GSC_MIxS_water_redox_potential= models.CharField(max_length=100, blank=True,help_text="redox pote", validators=[RegexValidator(GSC_MIxS_water_redox_potential_validator)])
-	GSC_MIxS_water_salinity= models.CharField(max_length=100, blank=True,help_text="The total ", validators=[RegexValidator(GSC_MIxS_water_salinity_validator)])
-	GSC_MIxS_water_silicate= models.CharField(max_length=100, blank=True,help_text="concentrat", validators=[RegexValidator(GSC_MIxS_water_silicate_validator)])
-	GSC_MIxS_water_sodium= models.CharField(max_length=100, blank=True,help_text="sodium con", validators=[RegexValidator(GSC_MIxS_water_sodium_validator)])
-	GSC_MIxS_water_soluble_reactive_phosphorus= models.CharField(max_length=100, blank=True,help_text="concentrat", validators=[RegexValidator(GSC_MIxS_water_soluble_reactive_phosphorus_validator)])
-	GSC_MIxS_water_sulfate= models.CharField(max_length=100, blank=True,help_text="concentrat", validators=[RegexValidator(GSC_MIxS_water_sulfate_validator)])
-	GSC_MIxS_water_sulfide= models.CharField(max_length=100, blank=True,help_text="concentrat", validators=[RegexValidator(GSC_MIxS_water_sulfide_validator)])
-	GSC_MIxS_water_suspended_particulate_matter= models.CharField(max_length=100, blank=True,help_text="concentrat", validators=[RegexValidator(GSC_MIxS_water_suspended_particulate_matter_validator)])
-	GSC_MIxS_water_total_dissolved_nitrogen= models.CharField(max_length=100, blank=True,help_text="total diss", validators=[RegexValidator(GSC_MIxS_water_total_dissolved_nitrogen_validator)])
-	GSC_MIxS_water_total_inorganic_nitrogen= models.CharField(max_length=100, blank=True,help_text="total inor", validators=[RegexValidator(GSC_MIxS_water_total_inorganic_nitrogen_validator)])
-	GSC_MIxS_water_total_nitrogen= models.CharField(max_length=100, blank=True,help_text="total nitr", validators=[RegexValidator(GSC_MIxS_water_total_nitrogen_validator)])
-	GSC_MIxS_water_total_particulate_carbon= models.CharField(max_length=100, blank=True,help_text="total part", validators=[RegexValidator(GSC_MIxS_water_total_particulate_carbon_validator)])
-	GSC_MIxS_water_total_phosphorus= models.CharField(max_length=100, blank=True,help_text="total phos", validators=[RegexValidator(GSC_MIxS_water_total_phosphorus_validator)])
-	GSC_MIxS_water_subspecific_genetic_lineage= models.CharField(max_length=100, blank=True,help_text="Informatio")
-	GSC_MIxS_water_trophic_level= models.CharField(max_length=100, blank=True,help_text="Trophic le", choices=GSC_MIxS_water_trophic_level_choice)
-	GSC_MIxS_water_relationship_to_oxygen= models.CharField(max_length=100, blank=True,help_text="Is this or", choices=GSC_MIxS_water_relationship_to_oxygen_choice)
-	GSC_MIxS_water_known_pathogenicity= models.CharField(max_length=100, blank=True,help_text="To what is")
-	GSC_MIxS_water_encoded_traits= models.CharField(max_length=100, blank=True,help_text="Should inc")
-	GSC_MIxS_water_observed_biotic_relationship= models.CharField(max_length=100, blank=True,help_text="Is it free", choices=GSC_MIxS_water_observed_biotic_relationship_choice)
-	GSC_MIxS_water_chemical_administration= models.CharField(max_length=100, blank=True,help_text="list of ch")
-	GSC_MIxS_water_perturbation= models.CharField(max_length=100, blank=True,help_text="type of pe")
+	atmospheric_data= models.CharField(max_length=100, blank=True,help_text="measuremen")
+	conductivity= models.CharField(max_length=100, blank=True,help_text="electrical", validators=[RegexValidator(conductivity_validator)])
+	fluorescence= models.CharField(max_length=100, blank=True,help_text="raw (volts", validators=[RegexValidator(fluorescence_validator)])
+	light_intensity= models.CharField(max_length=100, blank=True,help_text="measuremen", validators=[RegexValidator(light_intensity_validator)])
+	mean_friction_velocity= models.CharField(max_length=100, blank=True,help_text="measuremen", validators=[RegexValidator(mean_friction_velocity_validator)])
+	mean_peak_friction_velocity= models.CharField(max_length=100, blank=True,help_text="measuremen", validators=[RegexValidator(mean_peak_friction_velocity_validator)])
+	downward_PAR= models.CharField(max_length=100, blank=True,help_text="visible wa", validators=[RegexValidator(downward_PAR_validator)])
+	photon_flux= models.CharField(max_length=100, blank=True,help_text="measuremen", validators=[RegexValidator(photon_flux_validator)])
+	tidal_stage= models.CharField(max_length=100, blank=True,help_text="stage of t", choices=tidal_stage_choice)
+	total_depth_of_water_column= models.CharField(max_length=100, blank=True,help_text="measuremen", validators=[RegexValidator(total_depth_of_water_column_validator)])
+	alkyl_diethers= models.CharField(max_length=100, blank=True,help_text="concentrat", validators=[RegexValidator(alkyl_diethers_validator)])
+	aminopeptidase_activity= models.CharField(max_length=100, blank=True,help_text="measuremen", validators=[RegexValidator(aminopeptidase_activity_validator)])
+	bacterial_carbon_production= models.CharField(max_length=100, blank=True,help_text="measuremen", validators=[RegexValidator(bacterial_carbon_production_validator)])
+	bacterial_production= models.CharField(max_length=100, blank=True,help_text="bacterial ", validators=[RegexValidator(bacterial_production_validator)])
+	bacterial_respiration= models.CharField(max_length=100, blank=True,help_text="measuremen", validators=[RegexValidator(bacterial_respiration_validator)])
+	bishomohopanol= models.CharField(max_length=100, blank=True,help_text="concentrat", validators=[RegexValidator(bishomohopanol_validator)])
+	carbon_nitrogen_ratio= models.CharField(max_length=100, blank=True,help_text="ratio of a", validators=[RegexValidator(carbon_nitrogen_ratio_validator)])
+	dissolved_inorganic_nitrogen= models.CharField(max_length=100, blank=True,help_text="concentrat", validators=[RegexValidator(dissolved_inorganic_nitrogen_validator)])
+	dissolved_inorganic_phosphorus= models.CharField(max_length=100, blank=True,help_text="concentrat", validators=[RegexValidator(dissolved_inorganic_phosphorus_validator)])
+	dissolved_organic_carbon= models.CharField(max_length=100, blank=True,help_text="concentrat", validators=[RegexValidator(dissolved_organic_carbon_validator)])
+	glucosidase_activity= models.CharField(max_length=100, blank=True,help_text="measuremen", validators=[RegexValidator(glucosidase_activity_validator)])
+	magnesium= models.CharField(max_length=100, blank=True,help_text="concentrat", validators=[RegexValidator(magnesium_validator)])
+	n_alkanes= models.CharField(max_length=100, blank=True,help_text="concentrat", validators=[RegexValidator(n_alkanes_validator)])
+	particulate_organic_carbon= models.CharField(max_length=100, blank=True,help_text="concentrat", validators=[RegexValidator(particulate_organic_carbon_validator)])
+	particulate_organic_nitrogen= models.CharField(max_length=100, blank=True,help_text="concentrat", validators=[RegexValidator(particulate_organic_nitrogen_validator)])
+	petroleum_hydrocarbon= models.CharField(max_length=100, blank=True,help_text="concentrat", validators=[RegexValidator(petroleum_hydrocarbon_validator)])
+	phaeopigments= models.CharField(max_length=100, blank=True,help_text="concentrat", validators=[RegexValidator(phaeopigments_validator)])
+	primary_production= models.CharField(max_length=100, blank=True,help_text="measuremen", validators=[RegexValidator(primary_production_validator)])
+	redox_potential= models.CharField(max_length=100, blank=True,help_text="redox pote", validators=[RegexValidator(redox_potential_validator)])
+	soluble_reactive_phosphorus= models.CharField(max_length=100, blank=True,help_text="concentrat", validators=[RegexValidator(soluble_reactive_phosphorus_validator)])
+	suspended_particulate_matter= models.CharField(max_length=100, blank=True,help_text="concentrat", validators=[RegexValidator(suspended_particulate_matter_validator)])
+	total_dissolved_nitrogen= models.CharField(max_length=100, blank=True,help_text="total diss", validators=[RegexValidator(total_dissolved_nitrogen_validator)])
+	total_inorganic_nitrogen= models.CharField(max_length=100, blank=True,help_text="total inor", validators=[RegexValidator(total_inorganic_nitrogen_validator)])
+	total_particulate_carbon= models.CharField(max_length=100, blank=True,help_text="total part", validators=[RegexValidator(total_particulate_carbon_validator)])
+	total_phosphorus= models.CharField(max_length=100, blank=True,help_text="total phos", validators=[RegexValidator(total_phosphorus_validator)])
 
 	fields = {
-		'GSC_MIxS_water_project_name': 'project name',
-		'GSC_MIxS_water_experimental_factor': 'experimental factor',
-		'GSC_MIxS_water_ploidy': 'ploidy',
-		'GSC_MIxS_water_number_of_replicons': 'number of replicons',
-		'GSC_MIxS_water_extrachromosomal_elements': 'extrachromosomal elements',
-		'GSC_MIxS_water_estimated_size': 'estimated size',
-		'GSC_MIxS_water_reference_for_biomaterial': 'reference for biomaterial',
-		'GSC_MIxS_water_annotation_source': 'annotation source',
-		'GSC_MIxS_water_sample_volume_or_weight_for_DNA_extraction': 'sample volume or weight for DNA extraction',
-		'GSC_MIxS_water_nucleic_acid_extraction': 'nucleic acid extraction',
-		'GSC_MIxS_water_nucleic_acid_amplification': 'nucleic acid amplification',
-		'GSC_MIxS_water_library_size': 'library size',
-		'GSC_MIxS_water_library_reads_sequenced': 'library reads sequenced',
-		'GSC_MIxS_water_library_construction_method': 'library construction method',
-		'GSC_MIxS_water_library_vector': 'library vector',
-		'GSC_MIxS_water_library_screening_strategy': 'library screening strategy',
-		'GSC_MIxS_water_target_gene': 'target gene',
-		'GSC_MIxS_water_target_subfragment': 'target subfragment',
-		'GSC_MIxS_water_pcr_primers': 'pcr primers',
-		'GSC_MIxS_water_multiplex_identifiers': 'multiplex identifiers',
-		'GSC_MIxS_water_adapters': 'adapters',
-		'GSC_MIxS_water_pcr_conditions': 'pcr conditions',
-		'GSC_MIxS_water_sequencing_method': 'sequencing method',
-		'GSC_MIxS_water_sequence_quality_check': 'sequence quality check',
-		'GSC_MIxS_water_chimera_check_software': 'chimera check software',
-		'GSC_MIxS_water_relevant_electronic_resources': 'relevant electronic resources',
-		'GSC_MIxS_water_relevant_standard_operating_procedures': 'relevant standard operating procedures',
-		'GSC_MIxS_water_negative_control_type': 'negative control type',
-		'GSC_MIxS_water_positive_control_type': 'positive control type',
-		'GSC_MIxS_water_collection_date': 'collection date',
-		'GSC_MIxS_water_altitude': 'altitude',
-		'GSC_MIxS_water_geographic_location_country_and_or_sea': 'geographic location (country and/or sea)',
-		'GSC_MIxS_water_geographic_location_latitude': 'geographic location (latitude)',
-		'GSC_MIxS_water_geographic_location_longitude': 'geographic location (longitude)',
-		'GSC_MIxS_water_geographic_location_region_and_locality': 'geographic location (region and locality)',
-		'GSC_MIxS_water_depth': 'depth',
-		'GSC_MIxS_water_broad_scale_environmental_context': 'broad-scale environmental context',
-		'GSC_MIxS_water_local_environmental_context': 'local environmental context',
-		'GSC_MIxS_water_environmental_medium': 'environmental medium',
-		'GSC_MIxS_water_elevation': 'elevation',
-		'GSC_MIxS_water_source_material_identifiers': 'source material identifiers',
-		'GSC_MIxS_water_sample_material_processing': 'sample material processing',
-		'GSC_MIxS_water_isolation_and_growth_condition': 'isolation and growth condition',
-		'GSC_MIxS_water_propagation': 'propagation',
-		'GSC_MIxS_water_amount_or_size_of_sample_collected': 'amount or size of sample collected',
-		'GSC_MIxS_water_biomass': 'biomass',
-		'GSC_MIxS_water_density': 'density',
-		'GSC_MIxS_water_oxygenation_status_of_sample': 'oxygenation status of sample',
-		'GSC_MIxS_water_organism_count': 'organism count',
-		'GSC_MIxS_water_sample_storage_duration': 'sample storage duration',
-		'GSC_MIxS_water_sample_storage_temperature': 'sample storage temperature',
-		'GSC_MIxS_water_sample_storage_location': 'sample storage location',
-		'GSC_MIxS_water_sample_collection_device': 'sample collection device',
-		'GSC_MIxS_water_sample_collection_method': 'sample collection method',
-		'GSC_MIxS_water_host_disease_status': 'host disease status',
-		'GSC_MIxS_water_host_scientific_name': 'host scientific name',
-		'GSC_MIxS_water_alkalinity': 'alkalinity',
-		'GSC_MIxS_water_atmospheric_data': 'atmospheric data',
-		'GSC_MIxS_water_conductivity': 'conductivity',
-		'GSC_MIxS_water_water_current': 'water current',
-		'GSC_MIxS_water_fluorescence': 'fluorescence',
-		'GSC_MIxS_water_light_intensity': 'light intensity',
-		'GSC_MIxS_water_mean_friction_velocity': 'mean friction velocity',
-		'GSC_MIxS_water_mean_peak_friction_velocity': 'mean peak friction velocity',
-		'GSC_MIxS_water_downward_PAR': 'downward PAR',
-		'GSC_MIxS_water_photon_flux': 'photon flux',
-		'GSC_MIxS_water_pressure': 'pressure',
-		'GSC_MIxS_water_temperature': 'temperature',
-		'GSC_MIxS_water_tidal_stage': 'tidal stage',
-		'GSC_MIxS_water_pH': 'pH',
-		'GSC_MIxS_water_total_depth_of_water_column': 'total depth of water column',
-		'GSC_MIxS_water_alkyl_diethers': 'alkyl diethers',
-		'GSC_MIxS_water_aminopeptidase_activity': 'aminopeptidase activity',
-		'GSC_MIxS_water_ammonium': 'ammonium',
-		'GSC_MIxS_water_bacterial_carbon_production': 'bacterial carbon production',
-		'GSC_MIxS_water_bacterial_production': 'bacterial production',
-		'GSC_MIxS_water_bacterial_respiration': 'bacterial respiration',
-		'GSC_MIxS_water_bishomohopanol': 'bishomohopanol',
-		'GSC_MIxS_water_bromide': 'bromide',
-		'GSC_MIxS_water_calcium': 'calcium',
-		'GSC_MIxS_water_carbon_nitrogen_ratio': 'carbon/nitrogen ratio',
-		'GSC_MIxS_water_chloride': 'chloride',
-		'GSC_MIxS_water_chlorophyll': 'chlorophyll',
-		'GSC_MIxS_water_diether_lipids': 'diether lipids',
-		'GSC_MIxS_water_dissolved_carbon_dioxide': 'dissolved carbon dioxide',
-		'GSC_MIxS_water_dissolved_hydrogen': 'dissolved hydrogen',
-		'GSC_MIxS_water_dissolved_inorganic_carbon': 'dissolved inorganic carbon',
-		'GSC_MIxS_water_dissolved_inorganic_nitrogen': 'dissolved inorganic nitrogen',
-		'GSC_MIxS_water_dissolved_inorganic_phosphorus': 'dissolved inorganic phosphorus',
-		'GSC_MIxS_water_dissolved_organic_carbon': 'dissolved organic carbon',
-		'GSC_MIxS_water_dissolved_organic_nitrogen': 'dissolved organic nitrogen',
-		'GSC_MIxS_water_dissolved_oxygen': 'dissolved oxygen',
-		'GSC_MIxS_water_glucosidase_activity': 'glucosidase activity',
-		'GSC_MIxS_water_magnesium': 'magnesium',
-		'GSC_MIxS_water_n_alkanes': 'n-alkanes',
-		'GSC_MIxS_water_nitrate': 'nitrate',
-		'GSC_MIxS_water_nitrite': 'nitrite',
-		'GSC_MIxS_water_nitrogen': 'nitrogen',
-		'GSC_MIxS_water_organic_carbon': 'organic carbon',
-		'GSC_MIxS_water_organic_matter': 'organic matter',
-		'GSC_MIxS_water_organic_nitrogen': 'organic nitrogen',
-		'GSC_MIxS_water_particulate_organic_carbon': 'particulate organic carbon',
-		'GSC_MIxS_water_particulate_organic_nitrogen': 'particulate organic nitrogen',
-		'GSC_MIxS_water_petroleum_hydrocarbon': 'petroleum hydrocarbon',
-		'GSC_MIxS_water_phaeopigments': 'phaeopigments',
-		'GSC_MIxS_water_phosphate': 'phosphate',
-		'GSC_MIxS_water_phospholipid_fatty_acid': 'phospholipid fatty acid',
-		'GSC_MIxS_water_potassium': 'potassium',
-		'GSC_MIxS_water_primary_production': 'primary production',
-		'GSC_MIxS_water_redox_potential': 'redox potential',
-		'GSC_MIxS_water_salinity': 'salinity',
-		'GSC_MIxS_water_silicate': 'silicate',
-		'GSC_MIxS_water_sodium': 'sodium',
-		'GSC_MIxS_water_soluble_reactive_phosphorus': 'soluble reactive phosphorus',
-		'GSC_MIxS_water_sulfate': 'sulfate',
-		'GSC_MIxS_water_sulfide': 'sulfide',
-		'GSC_MIxS_water_suspended_particulate_matter': 'suspended particulate matter',
-		'GSC_MIxS_water_total_dissolved_nitrogen': 'total dissolved nitrogen',
-		'GSC_MIxS_water_total_inorganic_nitrogen': 'total inorganic nitrogen',
-		'GSC_MIxS_water_total_nitrogen': 'total nitrogen',
-		'GSC_MIxS_water_total_particulate_carbon': 'total particulate carbon',
-		'GSC_MIxS_water_total_phosphorus': 'total phosphorus',
-		'GSC_MIxS_water_subspecific_genetic_lineage': 'subspecific genetic lineage',
-		'GSC_MIxS_water_trophic_level': 'trophic level',
-		'GSC_MIxS_water_relationship_to_oxygen': 'relationship to oxygen',
-		'GSC_MIxS_water_known_pathogenicity': 'known pathogenicity',
-		'GSC_MIxS_water_encoded_traits': 'encoded traits',
-		'GSC_MIxS_water_observed_biotic_relationship': 'observed biotic relationship',
-		'GSC_MIxS_water_chemical_administration': 'chemical administration',
-		'GSC_MIxS_water_perturbation': 'perturbation',
+		'atmospheric_data': 'atmospheric data',
+		'conductivity': 'conductivity',
+		'fluorescence': 'fluorescence',
+		'light_intensity': 'light intensity',
+		'mean_friction_velocity': 'mean friction velocity',
+		'mean_peak_friction_velocity': 'mean peak friction velocity',
+		'downward_PAR': 'downward PAR',
+		'photon_flux': 'photon flux',
+		'tidal_stage': 'tidal stage',
+		'total_depth_of_water_column': 'total depth of water column',
+		'alkyl_diethers': 'alkyl diethers',
+		'aminopeptidase_activity': 'aminopeptidase activity',
+		'bacterial_carbon_production': 'bacterial carbon production',
+		'bacterial_production': 'bacterial production',
+		'bacterial_respiration': 'bacterial respiration',
+		'bishomohopanol': 'bishomohopanol',
+		'carbon_nitrogen_ratio': 'carbon/nitrogen ratio',
+		'dissolved_inorganic_nitrogen': 'dissolved inorganic nitrogen',
+		'dissolved_inorganic_phosphorus': 'dissolved inorganic phosphorus',
+		'dissolved_organic_carbon': 'dissolved organic carbon',
+		'glucosidase_activity': 'glucosidase activity',
+		'magnesium': 'magnesium',
+		'n_alkanes': 'n-alkanes',
+		'particulate_organic_carbon': 'particulate organic carbon',
+		'particulate_organic_nitrogen': 'particulate organic nitrogen',
+		'petroleum_hydrocarbon': 'petroleum hydrocarbon',
+		'phaeopigments': 'phaeopigments',
+		'primary_production': 'primary production',
+		'redox_potential': 'redox potential',
+		'soluble_reactive_phosphorus': 'soluble reactive phosphorus',
+		'suspended_particulate_matter': 'suspended particulate matter',
+		'total_dissolved_nitrogen': 'total dissolved nitrogen',
+		'total_inorganic_nitrogen': 'total inorganic nitrogen',
+		'total_particulate_carbon': 'total particulate carbon',
+		'total_phosphorus': 'total phosphorus',
 	}
 
 	name = 'GSC_MIxS_water'
 
 class GSC_MIxS_water_unit(SelfDescribingModel):
 
-	GSC_MIxS_water_sample_volume_or_weight_for_DNA_extraction_units = [('g', 'g'), ('mL', 'mL'), ('mg', 'mg'), ('ng', 'ng')]
-	GSC_MIxS_water_altitude_units = [('m', 'm')]
-	GSC_MIxS_water_geographic_location_latitude_units = [('DD', 'DD')]
-	GSC_MIxS_water_geographic_location_longitude_units = [('DD', 'DD')]
-	GSC_MIxS_water_depth_units = [('m', 'm')]
-	GSC_MIxS_water_elevation_units = [('m', 'm')]
-	GSC_MIxS_water_amount_or_size_of_sample_collected_units = [('L', 'L'), ('g', 'g'), ('kg', 'kg'), ('m2', 'm2'), ('m3', 'm3')]
-	GSC_MIxS_water_biomass_units = [('g', 'g'), ('kg', 'kg'), ('t', 't')]
-	GSC_MIxS_water_density_units = [('g/m3', 'g/m3')]
-	GSC_MIxS_water_sample_storage_duration_units = [('days', 'days'), ('hours', 'hours'), ('months', 'months'), ('weeks', 'weeks'), ('years', 'years')]
-	GSC_MIxS_water_sample_storage_temperature_units = [('°C', '°C')]
-	GSC_MIxS_water_alkalinity_units = [('mEq/L', 'mEq/L')]
-	GSC_MIxS_water_conductivity_units = [('mS/cm', 'mS/cm')]
-	GSC_MIxS_water_water_current_units = [('knot', 'knot'), ('m3/s', 'm3/s')]
-	GSC_MIxS_water_fluorescence_units = [('V', 'V'), ('mg Chla/m3', 'mg Chla/m3')]
-	GSC_MIxS_water_light_intensity_units = [('lux', 'lux')]
-	GSC_MIxS_water_mean_friction_velocity_units = [('m/s', 'm/s')]
-	GSC_MIxS_water_mean_peak_friction_velocity_units = [('m/s', 'm/s')]
-	GSC_MIxS_water_downward_PAR_units = [('µE/m2/s', 'µE/m2/s')]
-	GSC_MIxS_water_photon_flux_units = [('µmol/m2/s', 'µmol/m2/s')]
-	GSC_MIxS_water_pressure_units = [('atm', 'atm'), ('bar', 'bar')]
-	GSC_MIxS_water_temperature_units = [('ºC', 'ºC')]
-	GSC_MIxS_water_total_depth_of_water_column_units = [('m', 'm')]
-	GSC_MIxS_water_alkyl_diethers_units = [('M/L', 'M/L'), ('µg/L', 'µg/L')]
-	GSC_MIxS_water_aminopeptidase_activity_units = [('mol/L/h', 'mol/L/h')]
-	GSC_MIxS_water_ammonium_units = [('µmol/L', 'µmol/L')]
-	GSC_MIxS_water_bacterial_carbon_production_units = [('ng/h', 'ng/h')]
-	GSC_MIxS_water_bacterial_production_units = [('mg/m3/d', 'mg/m3/d')]
-	GSC_MIxS_water_bacterial_respiration_units = [('mg/m3/d', 'mg/m3/d')]
-	GSC_MIxS_water_bishomohopanol_units = [('µg/L', 'µg/L'), ('µg/g', 'µg/g')]
-	GSC_MIxS_water_bromide_units = [('parts/million', 'parts/million'), ('µmol/L', 'µmol/L')]
-	GSC_MIxS_water_calcium_units = [('mg/L', 'mg/L'), ('parts/million', 'parts/million'), ('µmol/L', 'µmol/L')]
-	GSC_MIxS_water_chloride_units = [('mg/L', 'mg/L')]
-	GSC_MIxS_water_chlorophyll_units = [('mg/m3', 'mg/m3'), ('µg/L', 'µg/L')]
-	GSC_MIxS_water_diether_lipids_units = [('ng/L', 'ng/L')]
-	GSC_MIxS_water_dissolved_carbon_dioxide_units = [('µmol/L', 'µmol/L')]
-	GSC_MIxS_water_dissolved_hydrogen_units = [('µmol/L', 'µmol/L')]
-	GSC_MIxS_water_dissolved_inorganic_carbon_units = [('µg/L', 'µg/L')]
-	GSC_MIxS_water_dissolved_inorganic_nitrogen_units = [('µg/L', 'µg/L')]
-	GSC_MIxS_water_dissolved_inorganic_phosphorus_units = [('µg/L', 'µg/L')]
-	GSC_MIxS_water_dissolved_organic_carbon_units = [('µmol/L', 'µmol/L')]
-	GSC_MIxS_water_dissolved_organic_nitrogen_units = [('mg/L', 'mg/L'), ('µg/L', 'µg/L')]
-	GSC_MIxS_water_dissolved_oxygen_units = [('µmol/kg', 'µmol/kg')]
-	GSC_MIxS_water_glucosidase_activity_units = [('mol/L/h', 'mol/L/h')]
-	GSC_MIxS_water_magnesium_units = [('mg/L', 'mg/L'), ('mol/L', 'mol/L'), ('parts/million', 'parts/million')]
-	GSC_MIxS_water_n_alkanes_units = [('µmol/L', 'µmol/L')]
-	GSC_MIxS_water_nitrate_units = [('µmol/L', 'µmol/L')]
-	GSC_MIxS_water_nitrite_units = [('µmol/L', 'µmol/L')]
-	GSC_MIxS_water_nitrogen_units = [('µmol/L', 'µmol/L')]
-	GSC_MIxS_water_organic_carbon_units = [('µmol/L', 'µmol/L')]
-	GSC_MIxS_water_organic_matter_units = [('µg/L', 'µg/L')]
-	GSC_MIxS_water_organic_nitrogen_units = [('µg/L', 'µg/L')]
-	GSC_MIxS_water_particulate_organic_carbon_units = [('µg/L', 'µg/L')]
-	GSC_MIxS_water_particulate_organic_nitrogen_units = [('µg/L', 'µg/L')]
-	GSC_MIxS_water_petroleum_hydrocarbon_units = [('µmol/L', 'µmol/L')]
-	GSC_MIxS_water_phaeopigments_units = [('mg/m3', 'mg/m3'), ('µg/L', 'µg/L')]
-	GSC_MIxS_water_phosphate_units = [('µmol/L', 'µmol/L')]
-	GSC_MIxS_water_phospholipid_fatty_acid_units = [('mol/L', 'mol/L'), ('mol/g', 'mol/g')]
-	GSC_MIxS_water_potassium_units = [('parts/million', 'parts/million'), ('µmol/L', 'µmol/L')]
-	GSC_MIxS_water_primary_production_units = [('g/m2/day', 'g/m2/day'), ('mg/m3/day', 'mg/m3/day')]
-	GSC_MIxS_water_redox_potential_units = [('mV', 'mV')]
-	GSC_MIxS_water_salinity_units = [('psu', 'psu')]
-	GSC_MIxS_water_silicate_units = [('µmol/L', 'µmol/L')]
-	GSC_MIxS_water_sodium_units = [('parts/million', 'parts/million'), ('µmol/L', 'µmol/L')]
-	GSC_MIxS_water_soluble_reactive_phosphorus_units = [('µmol/L', 'µmol/L')]
-	GSC_MIxS_water_sulfate_units = [('mg/L', 'mg/L'), ('µmol/L', 'µmol/L')]
-	GSC_MIxS_water_sulfide_units = [('mg/L', 'mg/L'), ('µmol/L', 'µmol/L')]
-	GSC_MIxS_water_suspended_particulate_matter_units = [('mg/L', 'mg/L')]
-	GSC_MIxS_water_total_dissolved_nitrogen_units = [('µg/L', 'µg/L')]
-	GSC_MIxS_water_total_inorganic_nitrogen_units = [('µg/L', 'µg/L')]
-	GSC_MIxS_water_total_nitrogen_units = [('µg/L', 'µg/L'), ('µmol/L', 'µmol/L')]
-	GSC_MIxS_water_total_particulate_carbon_units = [('µg/L', 'µg/L'), ('µmol/L', 'µmol/L')]
-	GSC_MIxS_water_total_phosphorus_units = [('µmol/L', 'µmol/L')]
+	conductivity_units = [('mS/cm', 'mS/cm')]
+	fluorescence_units = [('V', 'V'), ('mg Chla/m3', 'mg Chla/m3')]
+	light_intensity_units = [('lux', 'lux')]
+	mean_friction_velocity_units = [('m/s', 'm/s')]
+	mean_peak_friction_velocity_units = [('m/s', 'm/s')]
+	downward_PAR_units = [('µE/m2/s', 'µE/m2/s')]
+	photon_flux_units = [('µmol/m2/s', 'µmol/m2/s')]
+	total_depth_of_water_column_units = [('m', 'm')]
+	alkyl_diethers_units = [('M/L', 'M/L'), ('µg/L', 'µg/L')]
+	aminopeptidase_activity_units = [('mol/L/h', 'mol/L/h')]
+	bacterial_carbon_production_units = [('ng/h', 'ng/h')]
+	bacterial_production_units = [('mg/m3/d', 'mg/m3/d')]
+	bacterial_respiration_units = [('mg/m3/d', 'mg/m3/d')]
+	bishomohopanol_units = [('µg/L', 'µg/L'), ('µg/g', 'µg/g')]
+	dissolved_inorganic_nitrogen_units = [('µg/L', 'µg/L')]
+	dissolved_inorganic_phosphorus_units = [('µg/L', 'µg/L')]
+	dissolved_organic_carbon_units = [('µmol/L', 'µmol/L')]
+	glucosidase_activity_units = [('mol/L/h', 'mol/L/h')]
+	magnesium_units = [('mg/L', 'mg/L'), ('mol/L', 'mol/L'), ('parts/million', 'parts/million')]
+	n_alkanes_units = [('µmol/L', 'µmol/L')]
+	particulate_organic_carbon_units = [('µg/L', 'µg/L')]
+	particulate_organic_nitrogen_units = [('µg/L', 'µg/L')]
+	petroleum_hydrocarbon_units = [('µmol/L', 'µmol/L')]
+	phaeopigments_units = [('mg/m3', 'mg/m3'), ('µg/L', 'µg/L')]
+	primary_production_units = [('g/m2/day', 'g/m2/day'), ('mg/m3/day', 'mg/m3/day')]
+	redox_potential_units = [('mV', 'mV')]
+	soluble_reactive_phosphorus_units = [('µmol/L', 'µmol/L')]
+	suspended_particulate_matter_units = [('mg/L', 'mg/L')]
+	total_dissolved_nitrogen_units = [('µg/L', 'µg/L')]
+	total_inorganic_nitrogen_units = [('µg/L', 'µg/L')]
+	total_particulate_carbon_units = [('µg/L', 'µg/L'), ('µmol/L', 'µmol/L')]
+	total_phosphorus_units = [('µmol/L', 'µmol/L')]
 
 	fields = {
-		'GSC_MIxS_water_sample_volume_or_weight_for_DNA_extraction': 'sample volume or weight for DNA extraction',
-		'GSC_MIxS_water_altitude': 'altitude',
-		'GSC_MIxS_water_geographic_location_latitude': 'geographic location (latitude)',
-		'GSC_MIxS_water_geographic_location_longitude': 'geographic location (longitude)',
-		'GSC_MIxS_water_depth': 'depth',
-		'GSC_MIxS_water_elevation': 'elevation',
-		'GSC_MIxS_water_amount_or_size_of_sample_collected': 'amount or size of sample collected',
-		'GSC_MIxS_water_biomass': 'biomass',
-		'GSC_MIxS_water_density': 'density',
-		'GSC_MIxS_water_sample_storage_duration': 'sample storage duration',
-		'GSC_MIxS_water_sample_storage_temperature': 'sample storage temperature',
-		'GSC_MIxS_water_alkalinity': 'alkalinity',
-		'GSC_MIxS_water_conductivity': 'conductivity',
-		'GSC_MIxS_water_water_current': 'water current',
-		'GSC_MIxS_water_fluorescence': 'fluorescence',
-		'GSC_MIxS_water_light_intensity': 'light intensity',
-		'GSC_MIxS_water_mean_friction_velocity': 'mean friction velocity',
-		'GSC_MIxS_water_mean_peak_friction_velocity': 'mean peak friction velocity',
-		'GSC_MIxS_water_downward_PAR': 'downward PAR',
-		'GSC_MIxS_water_photon_flux': 'photon flux',
-		'GSC_MIxS_water_pressure': 'pressure',
-		'GSC_MIxS_water_temperature': 'temperature',
-		'GSC_MIxS_water_total_depth_of_water_column': 'total depth of water column',
-		'GSC_MIxS_water_alkyl_diethers': 'alkyl diethers',
-		'GSC_MIxS_water_aminopeptidase_activity': 'aminopeptidase activity',
-		'GSC_MIxS_water_ammonium': 'ammonium',
-		'GSC_MIxS_water_bacterial_carbon_production': 'bacterial carbon production',
-		'GSC_MIxS_water_bacterial_production': 'bacterial production',
-		'GSC_MIxS_water_bacterial_respiration': 'bacterial respiration',
-		'GSC_MIxS_water_bishomohopanol': 'bishomohopanol',
-		'GSC_MIxS_water_bromide': 'bromide',
-		'GSC_MIxS_water_calcium': 'calcium',
-		'GSC_MIxS_water_chloride': 'chloride',
-		'GSC_MIxS_water_chlorophyll': 'chlorophyll',
-		'GSC_MIxS_water_diether_lipids': 'diether lipids',
-		'GSC_MIxS_water_dissolved_carbon_dioxide': 'dissolved carbon dioxide',
-		'GSC_MIxS_water_dissolved_hydrogen': 'dissolved hydrogen',
-		'GSC_MIxS_water_dissolved_inorganic_carbon': 'dissolved inorganic carbon',
-		'GSC_MIxS_water_dissolved_inorganic_nitrogen': 'dissolved inorganic nitrogen',
-		'GSC_MIxS_water_dissolved_inorganic_phosphorus': 'dissolved inorganic phosphorus',
-		'GSC_MIxS_water_dissolved_organic_carbon': 'dissolved organic carbon',
-		'GSC_MIxS_water_dissolved_organic_nitrogen': 'dissolved organic nitrogen',
-		'GSC_MIxS_water_dissolved_oxygen': 'dissolved oxygen',
-		'GSC_MIxS_water_glucosidase_activity': 'glucosidase activity',
-		'GSC_MIxS_water_magnesium': 'magnesium',
-		'GSC_MIxS_water_n_alkanes': 'n-alkanes',
-		'GSC_MIxS_water_nitrate': 'nitrate',
-		'GSC_MIxS_water_nitrite': 'nitrite',
-		'GSC_MIxS_water_nitrogen': 'nitrogen',
-		'GSC_MIxS_water_organic_carbon': 'organic carbon',
-		'GSC_MIxS_water_organic_matter': 'organic matter',
-		'GSC_MIxS_water_organic_nitrogen': 'organic nitrogen',
-		'GSC_MIxS_water_particulate_organic_carbon': 'particulate organic carbon',
-		'GSC_MIxS_water_particulate_organic_nitrogen': 'particulate organic nitrogen',
-		'GSC_MIxS_water_petroleum_hydrocarbon': 'petroleum hydrocarbon',
-		'GSC_MIxS_water_phaeopigments': 'phaeopigments',
-		'GSC_MIxS_water_phosphate': 'phosphate',
-		'GSC_MIxS_water_phospholipid_fatty_acid': 'phospholipid fatty acid',
-		'GSC_MIxS_water_potassium': 'potassium',
-		'GSC_MIxS_water_primary_production': 'primary production',
-		'GSC_MIxS_water_redox_potential': 'redox potential',
-		'GSC_MIxS_water_salinity': 'salinity',
-		'GSC_MIxS_water_silicate': 'silicate',
-		'GSC_MIxS_water_sodium': 'sodium',
-		'GSC_MIxS_water_soluble_reactive_phosphorus': 'soluble reactive phosphorus',
-		'GSC_MIxS_water_sulfate': 'sulfate',
-		'GSC_MIxS_water_sulfide': 'sulfide',
-		'GSC_MIxS_water_suspended_particulate_matter': 'suspended particulate matter',
-		'GSC_MIxS_water_total_dissolved_nitrogen': 'total dissolved nitrogen',
-		'GSC_MIxS_water_total_inorganic_nitrogen': 'total inorganic nitrogen',
-		'GSC_MIxS_water_total_nitrogen': 'total nitrogen',
-		'GSC_MIxS_water_total_particulate_carbon': 'total particulate carbon',
-		'GSC_MIxS_water_total_phosphorus': 'total phosphorus',
+		'conductivity': 'conductivity',
+		'fluorescence': 'fluorescence',
+		'light_intensity': 'light intensity',
+		'mean_friction_velocity': 'mean friction velocity',
+		'mean_peak_friction_velocity': 'mean peak friction velocity',
+		'downward_PAR': 'downward PAR',
+		'photon_flux': 'photon flux',
+		'total_depth_of_water_column': 'total depth of water column',
+		'alkyl_diethers': 'alkyl diethers',
+		'aminopeptidase_activity': 'aminopeptidase activity',
+		'bacterial_carbon_production': 'bacterial carbon production',
+		'bacterial_production': 'bacterial production',
+		'bacterial_respiration': 'bacterial respiration',
+		'bishomohopanol': 'bishomohopanol',
+		'dissolved_inorganic_nitrogen': 'dissolved inorganic nitrogen',
+		'dissolved_inorganic_phosphorus': 'dissolved inorganic phosphorus',
+		'dissolved_organic_carbon': 'dissolved organic carbon',
+		'glucosidase_activity': 'glucosidase activity',
+		'magnesium': 'magnesium',
+		'n_alkanes': 'n-alkanes',
+		'particulate_organic_carbon': 'particulate organic carbon',
+		'particulate_organic_nitrogen': 'particulate organic nitrogen',
+		'petroleum_hydrocarbon': 'petroleum hydrocarbon',
+		'phaeopigments': 'phaeopigments',
+		'primary_production': 'primary production',
+		'redox_potential': 'redox potential',
+		'soluble_reactive_phosphorus': 'soluble reactive phosphorus',
+		'suspended_particulate_matter': 'suspended particulate matter',
+		'total_dissolved_nitrogen': 'total dissolved nitrogen',
+		'total_inorganic_nitrogen': 'total inorganic nitrogen',
+		'total_particulate_carbon': 'total particulate carbon',
+		'total_phosphorus': 'total phosphorus',
 	}
 
 	name = 'GSC_MIxS_water'
 
 	sampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE, default=1)
 	sample = models.ForeignKey(Sample, on_delete=models.CASCADE, default=1)
-	GSC_MIxS_water_sample_volume_or_weight_for_DNA_extraction = models.CharField(max_length=100, choices=GSC_MIxS_water_sample_volume_or_weight_for_DNA_extraction_units, blank=False)
-	GSC_MIxS_water_altitude = models.CharField(max_length=100, choices=GSC_MIxS_water_altitude_units, blank=False)
-	GSC_MIxS_water_geographic_location_latitude = models.CharField(max_length=100, choices=GSC_MIxS_water_geographic_location_latitude_units, blank=False)
-	GSC_MIxS_water_geographic_location_longitude = models.CharField(max_length=100, choices=GSC_MIxS_water_geographic_location_longitude_units, blank=False)
-	GSC_MIxS_water_depth = models.CharField(max_length=100, choices=GSC_MIxS_water_depth_units, blank=False)
-	GSC_MIxS_water_elevation = models.CharField(max_length=100, choices=GSC_MIxS_water_elevation_units, blank=False)
-	GSC_MIxS_water_amount_or_size_of_sample_collected = models.CharField(max_length=100, choices=GSC_MIxS_water_amount_or_size_of_sample_collected_units, blank=False)
-	GSC_MIxS_water_biomass = models.CharField(max_length=100, choices=GSC_MIxS_water_biomass_units, blank=False)
-	GSC_MIxS_water_density = models.CharField(max_length=100, choices=GSC_MIxS_water_density_units, blank=False)
-	GSC_MIxS_water_sample_storage_duration = models.CharField(max_length=100, choices=GSC_MIxS_water_sample_storage_duration_units, blank=False)
-	GSC_MIxS_water_sample_storage_temperature = models.CharField(max_length=100, choices=GSC_MIxS_water_sample_storage_temperature_units, blank=False)
-	GSC_MIxS_water_alkalinity = models.CharField(max_length=100, choices=GSC_MIxS_water_alkalinity_units, blank=False)
-	GSC_MIxS_water_conductivity = models.CharField(max_length=100, choices=GSC_MIxS_water_conductivity_units, blank=False)
-	GSC_MIxS_water_water_current = models.CharField(max_length=100, choices=GSC_MIxS_water_water_current_units, blank=False)
-	GSC_MIxS_water_fluorescence = models.CharField(max_length=100, choices=GSC_MIxS_water_fluorescence_units, blank=False)
-	GSC_MIxS_water_light_intensity = models.CharField(max_length=100, choices=GSC_MIxS_water_light_intensity_units, blank=False)
-	GSC_MIxS_water_mean_friction_velocity = models.CharField(max_length=100, choices=GSC_MIxS_water_mean_friction_velocity_units, blank=False)
-	GSC_MIxS_water_mean_peak_friction_velocity = models.CharField(max_length=100, choices=GSC_MIxS_water_mean_peak_friction_velocity_units, blank=False)
-	GSC_MIxS_water_downward_PAR = models.CharField(max_length=100, choices=GSC_MIxS_water_downward_PAR_units, blank=False)
-	GSC_MIxS_water_photon_flux = models.CharField(max_length=100, choices=GSC_MIxS_water_photon_flux_units, blank=False)
-	GSC_MIxS_water_pressure = models.CharField(max_length=100, choices=GSC_MIxS_water_pressure_units, blank=False)
-	GSC_MIxS_water_temperature = models.CharField(max_length=100, choices=GSC_MIxS_water_temperature_units, blank=False)
-	GSC_MIxS_water_total_depth_of_water_column = models.CharField(max_length=100, choices=GSC_MIxS_water_total_depth_of_water_column_units, blank=False)
-	GSC_MIxS_water_alkyl_diethers = models.CharField(max_length=100, choices=GSC_MIxS_water_alkyl_diethers_units, blank=False)
-	GSC_MIxS_water_aminopeptidase_activity = models.CharField(max_length=100, choices=GSC_MIxS_water_aminopeptidase_activity_units, blank=False)
-	GSC_MIxS_water_ammonium = models.CharField(max_length=100, choices=GSC_MIxS_water_ammonium_units, blank=False)
-	GSC_MIxS_water_bacterial_carbon_production = models.CharField(max_length=100, choices=GSC_MIxS_water_bacterial_carbon_production_units, blank=False)
-	GSC_MIxS_water_bacterial_production = models.CharField(max_length=100, choices=GSC_MIxS_water_bacterial_production_units, blank=False)
-	GSC_MIxS_water_bacterial_respiration = models.CharField(max_length=100, choices=GSC_MIxS_water_bacterial_respiration_units, blank=False)
-	GSC_MIxS_water_bishomohopanol = models.CharField(max_length=100, choices=GSC_MIxS_water_bishomohopanol_units, blank=False)
-	GSC_MIxS_water_bromide = models.CharField(max_length=100, choices=GSC_MIxS_water_bromide_units, blank=False)
-	GSC_MIxS_water_calcium = models.CharField(max_length=100, choices=GSC_MIxS_water_calcium_units, blank=False)
-	GSC_MIxS_water_chloride = models.CharField(max_length=100, choices=GSC_MIxS_water_chloride_units, blank=False)
-	GSC_MIxS_water_chlorophyll = models.CharField(max_length=100, choices=GSC_MIxS_water_chlorophyll_units, blank=False)
-	GSC_MIxS_water_diether_lipids = models.CharField(max_length=100, choices=GSC_MIxS_water_diether_lipids_units, blank=False)
-	GSC_MIxS_water_dissolved_carbon_dioxide = models.CharField(max_length=100, choices=GSC_MIxS_water_dissolved_carbon_dioxide_units, blank=False)
-	GSC_MIxS_water_dissolved_hydrogen = models.CharField(max_length=100, choices=GSC_MIxS_water_dissolved_hydrogen_units, blank=False)
-	GSC_MIxS_water_dissolved_inorganic_carbon = models.CharField(max_length=100, choices=GSC_MIxS_water_dissolved_inorganic_carbon_units, blank=False)
-	GSC_MIxS_water_dissolved_inorganic_nitrogen = models.CharField(max_length=100, choices=GSC_MIxS_water_dissolved_inorganic_nitrogen_units, blank=False)
-	GSC_MIxS_water_dissolved_inorganic_phosphorus = models.CharField(max_length=100, choices=GSC_MIxS_water_dissolved_inorganic_phosphorus_units, blank=False)
-	GSC_MIxS_water_dissolved_organic_carbon = models.CharField(max_length=100, choices=GSC_MIxS_water_dissolved_organic_carbon_units, blank=False)
-	GSC_MIxS_water_dissolved_organic_nitrogen = models.CharField(max_length=100, choices=GSC_MIxS_water_dissolved_organic_nitrogen_units, blank=False)
-	GSC_MIxS_water_dissolved_oxygen = models.CharField(max_length=100, choices=GSC_MIxS_water_dissolved_oxygen_units, blank=False)
-	GSC_MIxS_water_glucosidase_activity = models.CharField(max_length=100, choices=GSC_MIxS_water_glucosidase_activity_units, blank=False)
-	GSC_MIxS_water_magnesium = models.CharField(max_length=100, choices=GSC_MIxS_water_magnesium_units, blank=False)
-	GSC_MIxS_water_n_alkanes = models.CharField(max_length=100, choices=GSC_MIxS_water_n_alkanes_units, blank=False)
-	GSC_MIxS_water_nitrate = models.CharField(max_length=100, choices=GSC_MIxS_water_nitrate_units, blank=False)
-	GSC_MIxS_water_nitrite = models.CharField(max_length=100, choices=GSC_MIxS_water_nitrite_units, blank=False)
-	GSC_MIxS_water_nitrogen = models.CharField(max_length=100, choices=GSC_MIxS_water_nitrogen_units, blank=False)
-	GSC_MIxS_water_organic_carbon = models.CharField(max_length=100, choices=GSC_MIxS_water_organic_carbon_units, blank=False)
-	GSC_MIxS_water_organic_matter = models.CharField(max_length=100, choices=GSC_MIxS_water_organic_matter_units, blank=False)
-	GSC_MIxS_water_organic_nitrogen = models.CharField(max_length=100, choices=GSC_MIxS_water_organic_nitrogen_units, blank=False)
-	GSC_MIxS_water_particulate_organic_carbon = models.CharField(max_length=100, choices=GSC_MIxS_water_particulate_organic_carbon_units, blank=False)
-	GSC_MIxS_water_particulate_organic_nitrogen = models.CharField(max_length=100, choices=GSC_MIxS_water_particulate_organic_nitrogen_units, blank=False)
-	GSC_MIxS_water_petroleum_hydrocarbon = models.CharField(max_length=100, choices=GSC_MIxS_water_petroleum_hydrocarbon_units, blank=False)
-	GSC_MIxS_water_phaeopigments = models.CharField(max_length=100, choices=GSC_MIxS_water_phaeopigments_units, blank=False)
-	GSC_MIxS_water_phosphate = models.CharField(max_length=100, choices=GSC_MIxS_water_phosphate_units, blank=False)
-	GSC_MIxS_water_phospholipid_fatty_acid = models.CharField(max_length=100, choices=GSC_MIxS_water_phospholipid_fatty_acid_units, blank=False)
-	GSC_MIxS_water_potassium = models.CharField(max_length=100, choices=GSC_MIxS_water_potassium_units, blank=False)
-	GSC_MIxS_water_primary_production = models.CharField(max_length=100, choices=GSC_MIxS_water_primary_production_units, blank=False)
-	GSC_MIxS_water_redox_potential = models.CharField(max_length=100, choices=GSC_MIxS_water_redox_potential_units, blank=False)
-	GSC_MIxS_water_salinity = models.CharField(max_length=100, choices=GSC_MIxS_water_salinity_units, blank=False)
-	GSC_MIxS_water_silicate = models.CharField(max_length=100, choices=GSC_MIxS_water_silicate_units, blank=False)
-	GSC_MIxS_water_sodium = models.CharField(max_length=100, choices=GSC_MIxS_water_sodium_units, blank=False)
-	GSC_MIxS_water_soluble_reactive_phosphorus = models.CharField(max_length=100, choices=GSC_MIxS_water_soluble_reactive_phosphorus_units, blank=False)
-	GSC_MIxS_water_sulfate = models.CharField(max_length=100, choices=GSC_MIxS_water_sulfate_units, blank=False)
-	GSC_MIxS_water_sulfide = models.CharField(max_length=100, choices=GSC_MIxS_water_sulfide_units, blank=False)
-	GSC_MIxS_water_suspended_particulate_matter = models.CharField(max_length=100, choices=GSC_MIxS_water_suspended_particulate_matter_units, blank=False)
-	GSC_MIxS_water_total_dissolved_nitrogen = models.CharField(max_length=100, choices=GSC_MIxS_water_total_dissolved_nitrogen_units, blank=False)
-	GSC_MIxS_water_total_inorganic_nitrogen = models.CharField(max_length=100, choices=GSC_MIxS_water_total_inorganic_nitrogen_units, blank=False)
-	GSC_MIxS_water_total_nitrogen = models.CharField(max_length=100, choices=GSC_MIxS_water_total_nitrogen_units, blank=False)
-	GSC_MIxS_water_total_particulate_carbon = models.CharField(max_length=100, choices=GSC_MIxS_water_total_particulate_carbon_units, blank=False)
-	GSC_MIxS_water_total_phosphorus = models.CharField(max_length=100, choices=GSC_MIxS_water_total_phosphorus_units, blank=False)
+	conductivity = models.CharField(max_length=100, choices=conductivity_units, blank=False)
+	fluorescence = models.CharField(max_length=100, choices=fluorescence_units, blank=False)
+	light_intensity = models.CharField(max_length=100, choices=light_intensity_units, blank=False)
+	mean_friction_velocity = models.CharField(max_length=100, choices=mean_friction_velocity_units, blank=False)
+	mean_peak_friction_velocity = models.CharField(max_length=100, choices=mean_peak_friction_velocity_units, blank=False)
+	downward_PAR = models.CharField(max_length=100, choices=downward_PAR_units, blank=False)
+	photon_flux = models.CharField(max_length=100, choices=photon_flux_units, blank=False)
+	total_depth_of_water_column = models.CharField(max_length=100, choices=total_depth_of_water_column_units, blank=False)
+	alkyl_diethers = models.CharField(max_length=100, choices=alkyl_diethers_units, blank=False)
+	aminopeptidase_activity = models.CharField(max_length=100, choices=aminopeptidase_activity_units, blank=False)
+	bacterial_carbon_production = models.CharField(max_length=100, choices=bacterial_carbon_production_units, blank=False)
+	bacterial_production = models.CharField(max_length=100, choices=bacterial_production_units, blank=False)
+	bacterial_respiration = models.CharField(max_length=100, choices=bacterial_respiration_units, blank=False)
+	bishomohopanol = models.CharField(max_length=100, choices=bishomohopanol_units, blank=False)
+	dissolved_inorganic_nitrogen = models.CharField(max_length=100, choices=dissolved_inorganic_nitrogen_units, blank=False)
+	dissolved_inorganic_phosphorus = models.CharField(max_length=100, choices=dissolved_inorganic_phosphorus_units, blank=False)
+	dissolved_organic_carbon = models.CharField(max_length=100, choices=dissolved_organic_carbon_units, blank=False)
+	glucosidase_activity = models.CharField(max_length=100, choices=glucosidase_activity_units, blank=False)
+	magnesium = models.CharField(max_length=100, choices=magnesium_units, blank=False)
+	n_alkanes = models.CharField(max_length=100, choices=n_alkanes_units, blank=False)
+	particulate_organic_carbon = models.CharField(max_length=100, choices=particulate_organic_carbon_units, blank=False)
+	particulate_organic_nitrogen = models.CharField(max_length=100, choices=particulate_organic_nitrogen_units, blank=False)
+	petroleum_hydrocarbon = models.CharField(max_length=100, choices=petroleum_hydrocarbon_units, blank=False)
+	phaeopigments = models.CharField(max_length=100, choices=phaeopigments_units, blank=False)
+	primary_production = models.CharField(max_length=100, choices=primary_production_units, blank=False)
+	redox_potential = models.CharField(max_length=100, choices=redox_potential_units, blank=False)
+	soluble_reactive_phosphorus = models.CharField(max_length=100, choices=soluble_reactive_phosphorus_units, blank=False)
+	suspended_particulate_matter = models.CharField(max_length=100, choices=suspended_particulate_matter_units, blank=False)
+	total_dissolved_nitrogen = models.CharField(max_length=100, choices=total_dissolved_nitrogen_units, blank=False)
+	total_inorganic_nitrogen = models.CharField(max_length=100, choices=total_inorganic_nitrogen_units, blank=False)
+	total_particulate_carbon = models.CharField(max_length=100, choices=total_particulate_carbon_units, blank=False)
+	total_phosphorus = models.CharField(max_length=100, choices=total_phosphorus_units, blank=False)
 
 class GSC_MIxS_soil(SelfDescribingModel):
 
-	GSC_MIxS_soil_profile_position_choice = [('backslope', 'backslope'), ('footslope', 'footslope'), ('shoulder', 'shoulder'), ('summit', 'summit'), ('toeslope', 'toeslope')]
-	GSC_MIxS_soil_sequence_quality_check_choice = [('manual', 'manual'), ('none', 'none'), ('software', 'software')]
-	GSC_MIxS_soil_geographic_location_country_and_or_sea_choice = [('Afghanistan', 'Afghanistan'), ('Albania', 'Albania'), ('Algeria', 'Algeria'), ('American Samoa', 'American Samoa'), ('Andorra', 'Andorra'), ('Angola', 'Angola'), ('Anguilla', 'Anguilla'), ('Antarctica', 'Antarctica'), ('Antigua and Barbuda', 'Antigua and Barbuda'), ('Arctic Ocean', 'Arctic Ocean'), ('Argentina', 'Argentina'), ('Armenia', 'Armenia'), ('Aruba', 'Aruba'), ('Ashmore and Cartier Islands', 'Ashmore and Cartier Islands'), ('Atlantic Ocean', 'Atlantic Ocean'), ('Australia', 'Australia'), ('Austria', 'Austria'), ('Azerbaijan', 'Azerbaijan'), ('Bahamas', 'Bahamas'), ('Bahrain', 'Bahrain'), ('Baker Island', 'Baker Island'), ('Baltic Sea', 'Baltic Sea'), ('Bangladesh', 'Bangladesh'), ('Barbados', 'Barbados'), ('Bassas da India', 'Bassas da India'), ('Belarus', 'Belarus'), ('Belgium', 'Belgium'), ('Belize', 'Belize'), ('Benin', 'Benin'), ('Bermuda', 'Bermuda'), ('Bhutan', 'Bhutan'), ('Bolivia', 'Bolivia'), ('Borneo', 'Borneo'), ('Bosnia and Herzegovina', 'Bosnia and Herzegovina'), ('Botswana', 'Botswana'), ('Bouvet Island', 'Bouvet Island'), ('Brazil', 'Brazil'), ('British Virgin Islands', 'British Virgin Islands'), ('Brunei', 'Brunei'), ('Bulgaria', 'Bulgaria'), ('Burkina Faso', 'Burkina Faso'), ('Burundi', 'Burundi'), ('Cambodia', 'Cambodia'), ('Cameroon', 'Cameroon'), ('Canada', 'Canada'), ('Cape Verde', 'Cape Verde'), ('Cayman Islands', 'Cayman Islands'), ('Central African Republic', 'Central African Republic'), ('Chad', 'Chad'), ('Chile', 'Chile'), ('China', 'China'), ('Christmas Island', 'Christmas Island'), ('Clipperton Island', 'Clipperton Island'), ('Cocos Islands', 'Cocos Islands'), ('Colombia', 'Colombia'), ('Comoros', 'Comoros'), ('Cook Islands', 'Cook Islands'), ('Coral Sea Islands', 'Coral Sea Islands'), ('Costa Rica', 'Costa Rica'), ("Cote d'Ivoire", "Cote d'Ivoire"), ('Croatia', 'Croatia'), ('Cuba', 'Cuba'), ('Curacao', 'Curacao'), ('Cyprus', 'Cyprus'), ('Czech Republic', 'Czech Republic'), ('Democratic Republic of the Congo', 'Democratic Republic of the Congo'), ('Denmark', 'Denmark'), ('Djibouti', 'Djibouti'), ('Dominica', 'Dominica'), ('Dominican Republic', 'Dominican Republic'), ('East Timor', 'East Timor'), ('Ecuador', 'Ecuador'), ('Egypt', 'Egypt'), ('El Salvador', 'El Salvador'), ('Equatorial Guinea', 'Equatorial Guinea'), ('Eritrea', 'Eritrea'), ('Estonia', 'Estonia'), ('Ethiopia', 'Ethiopia'), ('Europa Island', 'Europa Island'), ('Falkland Islands (Islas Malvinas)', 'Falkland Islands (Islas Malvinas)'), ('Faroe Islands', 'Faroe Islands'), ('Fiji', 'Fiji'), ('Finland', 'Finland'), ('France', 'France'), ('French Guiana', 'French Guiana'), ('French Polynesia', 'French Polynesia'), ('French Southern and Antarctic Lands', 'French Southern and Antarctic Lands'), ('Gabon', 'Gabon'), ('Gambia', 'Gambia'), ('Gaza Strip', 'Gaza Strip'), ('Georgia', 'Georgia'), ('Germany', 'Germany'), ('Ghana', 'Ghana'), ('Gibraltar', 'Gibraltar'), ('Glorioso Islands', 'Glorioso Islands'), ('Greece', 'Greece'), ('Greenland', 'Greenland'), ('Grenada', 'Grenada'), ('Guadeloupe', 'Guadeloupe'), ('Guam', 'Guam'), ('Guatemala', 'Guatemala'), ('Guernsey', 'Guernsey'), ('Guinea', 'Guinea'), ('Guinea-Bissau', 'Guinea-Bissau'), ('Guyana', 'Guyana'), ('Haiti', 'Haiti'), ('Heard Island and McDonald Islands', 'Heard Island and McDonald Islands'), ('Honduras', 'Honduras'), ('Hong Kong', 'Hong Kong'), ('Howland Island', 'Howland Island'), ('Hungary', 'Hungary'), ('Iceland', 'Iceland'), ('India', 'India'), ('Indian Ocean', 'Indian Ocean'), ('Indonesia', 'Indonesia'), ('Iran', 'Iran'), ('Iraq', 'Iraq'), ('Ireland', 'Ireland'), ('Isle of Man', 'Isle of Man'), ('Israel', 'Israel'), ('Italy', 'Italy'), ('Jamaica', 'Jamaica'), ('Jan Mayen', 'Jan Mayen'), ('Japan', 'Japan'), ('Jarvis Island', 'Jarvis Island'), ('Jersey', 'Jersey'), ('Johnston Atoll', 'Johnston Atoll'), ('Jordan', 'Jordan'), ('Juan de Nova Island', 'Juan de Nova Island'), ('Kazakhstan', 'Kazakhstan'), ('Kenya', 'Kenya'), ('Kerguelen Archipelago', 'Kerguelen Archipelago'), ('Kingman Reef', 'Kingman Reef'), ('Kiribati', 'Kiribati'), ('Kosovo', 'Kosovo'), ('Kuwait', 'Kuwait'), ('Kyrgyzstan', 'Kyrgyzstan'), ('Laos', 'Laos'), ('Latvia', 'Latvia'), ('Lebanon', 'Lebanon'), ('Lesotho', 'Lesotho'), ('Liberia', 'Liberia'), ('Libya', 'Libya'), ('Liechtenstein', 'Liechtenstein'), ('Lithuania', 'Lithuania'), ('Luxembourg', 'Luxembourg'), ('Macau', 'Macau'), ('Macedonia', 'Macedonia'), ('Madagascar', 'Madagascar'), ('Malawi', 'Malawi'), ('Malaysia', 'Malaysia'), ('Maldives', 'Maldives'), ('Mali', 'Mali'), ('Malta', 'Malta'), ('Marshall Islands', 'Marshall Islands'), ('Martinique', 'Martinique'), ('Mauritania', 'Mauritania'), ('Mauritius', 'Mauritius'), ('Mayotte', 'Mayotte'), ('Mediterranean Sea', 'Mediterranean Sea'), ('Mexico', 'Mexico'), ('Micronesia', 'Micronesia'), ('Midway Islands', 'Midway Islands'), ('Moldova', 'Moldova'), ('Monaco', 'Monaco'), ('Mongolia', 'Mongolia'), ('Montenegro', 'Montenegro'), ('Montserrat', 'Montserrat'), ('Morocco', 'Morocco'), ('Mozambique', 'Mozambique'), ('Myanmar', 'Myanmar'), ('Namibia', 'Namibia'), ('Nauru', 'Nauru'), ('Navassa Island', 'Navassa Island'), ('Nepal', 'Nepal'), ('Netherlands', 'Netherlands'), ('New Caledonia', 'New Caledonia'), ('New Zealand', 'New Zealand'), ('Nicaragua', 'Nicaragua'), ('Niger', 'Niger'), ('Nigeria', 'Nigeria'), ('Niue', 'Niue'), ('Norfolk Island', 'Norfolk Island'), ('North Korea', 'North Korea'), ('North Sea', 'North Sea'), ('Northern Mariana Islands', 'Northern Mariana Islands'), ('Norway', 'Norway'), ('Oman', 'Oman'), ('Pacific Ocean', 'Pacific Ocean'), ('Pakistan', 'Pakistan'), ('Palau', 'Palau'), ('Palmyra Atoll', 'Palmyra Atoll'), ('Panama', 'Panama'), ('Papua New Guinea', 'Papua New Guinea'), ('Paracel Islands', 'Paracel Islands'), ('Paraguay', 'Paraguay'), ('Peru', 'Peru'), ('Philippines', 'Philippines'), ('Pitcairn Islands', 'Pitcairn Islands'), ('Poland', 'Poland'), ('Portugal', 'Portugal'), ('Puerto Rico', 'Puerto Rico'), ('Qatar', 'Qatar'), ('Republic of the Congo', 'Republic of the Congo'), ('Reunion', 'Reunion'), ('Romania', 'Romania'), ('Ross Sea', 'Ross Sea'), ('Russia', 'Russia'), ('Rwanda', 'Rwanda'), ('Saint Helena', 'Saint Helena'), ('Saint Kitts and Nevis', 'Saint Kitts and Nevis'), ('Saint Lucia', 'Saint Lucia'), ('Saint Pierre and Miquelon', 'Saint Pierre and Miquelon'), ('Saint Vincent and the Grenadines', 'Saint Vincent and the Grenadines'), ('Samoa', 'Samoa'), ('San Marino', 'San Marino'), ('Sao Tome and Principe', 'Sao Tome and Principe'), ('Saudi Arabia', 'Saudi Arabia'), ('Senegal', 'Senegal'), ('Serbia', 'Serbia'), ('Seychelles', 'Seychelles'), ('Sierra Leone', 'Sierra Leone'), ('Singapore', 'Singapore'), ('Sint Maarten', 'Sint Maarten'), ('Slovakia', 'Slovakia'), ('Slovenia', 'Slovenia'), ('Solomon Islands', 'Solomon Islands'), ('Somalia', 'Somalia'), ('South Africa', 'South Africa'), ('South Georgia and the South Sandwich Islands', 'South Georgia and the South Sandwich Islands'), ('South Korea', 'South Korea'), ('Southern Ocean', 'Southern Ocean'), ('Spain', 'Spain'), ('Spratly Islands', 'Spratly Islands'), ('Sri Lanka', 'Sri Lanka'), ('Sudan', 'Sudan'), ('Suriname', 'Suriname'), ('Svalbard', 'Svalbard'), ('Swaziland', 'Swaziland'), ('Sweden', 'Sweden'), ('Switzerland', 'Switzerland'), ('Syria', 'Syria'), ('Taiwan', 'Taiwan'), ('Tajikistan', 'Tajikistan'), ('Tanzania', 'Tanzania'), ('Tasman Sea', 'Tasman Sea'), ('Thailand', 'Thailand'), ('Togo', 'Togo'), ('Tokelau', 'Tokelau'), ('Tonga', 'Tonga'), ('Trinidad and Tobago', 'Trinidad and Tobago'), ('Tromelin Island', 'Tromelin Island'), ('Tunisia', 'Tunisia'), ('Turkey', 'Turkey'), ('Turkmenistan', 'Turkmenistan'), ('Turks and Caicos Islands', 'Turks and Caicos Islands'), ('Tuvalu', 'Tuvalu'), ('USA', 'USA'), ('Uganda', 'Uganda'), ('Ukraine', 'Ukraine'), ('United Arab Emirates', 'United Arab Emirates'), ('United Kingdom', 'United Kingdom'), ('Uruguay', 'Uruguay'), ('Uzbekistan', 'Uzbekistan'), ('Vanuatu', 'Vanuatu'), ('Venezuela', 'Venezuela'), ('Viet Nam', 'Viet Nam'), ('Virgin Islands', 'Virgin Islands'), ('Wake Island', 'Wake Island'), ('Wallis and Futuna', 'Wallis and Futuna'), ('West Bank', 'West Bank'), ('Western Sahara', 'Western Sahara'), ('Yemen', 'Yemen'), ('Zambia', 'Zambia'), ('Zimbabwe', 'Zimbabwe'), ('missing: control sample', 'missing: control sample'), ('missing: data agreement established pre-2023', 'missing: data agreement established pre-2023'), ('missing: endangered species', 'missing: endangered species'), ('missing: human-identifiable', 'missing: human-identifiable'), ('missing: lab stock', 'missing: lab stock'), ('missing: sample group', 'missing: sample group'), ('missing: synthetic construct', 'missing: synthetic construct'), ('missing: third party data', 'missing: third party data'), ('not applicable', 'not applicable'), ('not collected', 'not collected'), ('not provided', 'not provided'), ('restricted access', 'restricted access')]
-	GSC_MIxS_soil_soil_horizon_choice = [('A horizon', 'A horizon'), ('B horizon', 'B horizon'), ('C horizon', 'C horizon'), ('E horizon', 'E horizon'), ('O horizon', 'O horizon'), ('Permafrost', 'Permafrost'), ('R layer', 'R layer')]
-	GSC_MIxS_soil_soil_type_choice = [('Acrisol', 'Acrisol'), ('Albeluvisol', 'Albeluvisol'), ('Alisol', 'Alisol'), ('Andosol', 'Andosol'), ('Anthrosol', 'Anthrosol'), ('Arenosol', 'Arenosol'), ('Calcisol', 'Calcisol'), ('Cambisol', 'Cambisol'), ('Chernozem', 'Chernozem'), ('Cryosol', 'Cryosol'), ('Durisol', 'Durisol'), ('Ferralsol', 'Ferralsol'), ('Fluvisol', 'Fluvisol'), ('Gleysol', 'Gleysol'), ('Gypsisol', 'Gypsisol'), ('Histosol', 'Histosol'), ('Kastanozem', 'Kastanozem'), ('Leptosol', 'Leptosol'), ('Lixisol', 'Lixisol'), ('Luvisol', 'Luvisol'), ('Nitisol', 'Nitisol'), ('Phaeozem', 'Phaeozem'), ('Planosol', 'Planosol'), ('Plinthosol', 'Plinthosol'), ('Podzol', 'Podzol'), ('Regosol', 'Regosol'), ('Solonchak', 'Solonchak'), ('Solonetz', 'Solonetz'), ('Stagnosol', 'Stagnosol'), ('Technosol', 'Technosol'), ('Umbrisol', 'Umbrisol'), ('Vertisol', 'Vertisol')]
-	GSC_MIxS_soil_drainage_classification_choice = [('excessively drained', 'excessively drained'), ('moderately well', 'moderately well'), ('poorly', 'poorly'), ('somewhat poorly', 'somewhat poorly'), ('very poorly', 'very poorly'), ('well', 'well')]
-	GSC_MIxS_soil_history_tillage_choice = [('chisel', 'chisel'), ('cutting disc', 'cutting disc'), ('disc plough', 'disc plough'), ('drill', 'drill'), ('mouldboard', 'mouldboard'), ('ridge till', 'ridge till'), ('strip tillage', 'strip tillage'), ('tined', 'tined'), ('zonal tillage', 'zonal tillage')]
-	GSC_MIxS_soil_trophic_level_choice = [('autotroph', 'autotroph'), ('carboxydotroph', 'carboxydotroph'), ('chemoautotroph', 'chemoautotroph'), ('chemoheterotroph', 'chemoheterotroph'), ('chemolithoautotroph', 'chemolithoautotroph'), ('chemolithotroph', 'chemolithotroph'), ('chemoorganoheterotroph', 'chemoorganoheterotroph'), ('chemoorganotroph', 'chemoorganotroph'), ('chemosynthetic', 'chemosynthetic'), ('chemotroph', 'chemotroph'), ('copiotroph', 'copiotroph'), ('diazotroph', 'diazotroph'), ('facultative autotroph', 'facultative autotroph'), ('heterotroph', 'heterotroph'), ('lithoautotroph', 'lithoautotroph'), ('lithoheterotroph', 'lithoheterotroph'), ('lithotroph', 'lithotroph'), ('methanotroph', 'methanotroph'), ('methylotroph', 'methylotroph'), ('mixotroph', 'mixotroph'), ('obligate chemoautolithotroph', 'obligate chemoautolithotroph'), ('oligotroph', 'oligotroph'), ('organoheterotroph', 'organoheterotroph'), ('organotroph', 'organotroph'), ('photoautotroph', 'photoautotroph'), ('photoheterotroph', 'photoheterotroph'), ('photolithoautotroph', 'photolithoautotroph'), ('photolithotroph', 'photolithotroph'), ('photosynthetic', 'photosynthetic'), ('phototroph', 'phototroph')]
-	GSC_MIxS_soil_relationship_to_oxygen_choice = [('aerobe', 'aerobe'), ('anaerobe', 'anaerobe'), ('facultative', 'facultative'), ('microaerophilic', 'microaerophilic'), ('microanaerobe', 'microanaerobe'), ('obligate aerobe', 'obligate aerobe'), ('obligate anaerobe', 'obligate anaerobe')]
-	GSC_MIxS_soil_observed_biotic_relationship_choice = [('commensal', 'commensal'), ('free living', 'free living'), ('mutualism', 'mutualism'), ('parasite', 'parasite'), ('symbiont', 'symbiont')]
+	profile_position_choice = [('backslope', 'backslope'), ('footslope', 'footslope'), ('shoulder', 'shoulder'), ('summit', 'summit'), ('toeslope', 'toeslope')]
+	soil_horizon_choice = [('A horizon', 'A horizon'), ('B horizon', 'B horizon'), ('C horizon', 'C horizon'), ('E horizon', 'E horizon'), ('O horizon', 'O horizon'), ('Permafrost', 'Permafrost'), ('R layer', 'R layer')]
+	soil_type_choice = [('Acrisol', 'Acrisol'), ('Albeluvisol', 'Albeluvisol'), ('Alisol', 'Alisol'), ('Andosol', 'Andosol'), ('Anthrosol', 'Anthrosol'), ('Arenosol', 'Arenosol'), ('Calcisol', 'Calcisol'), ('Cambisol', 'Cambisol'), ('Chernozem', 'Chernozem'), ('Cryosol', 'Cryosol'), ('Durisol', 'Durisol'), ('Ferralsol', 'Ferralsol'), ('Fluvisol', 'Fluvisol'), ('Gleysol', 'Gleysol'), ('Gypsisol', 'Gypsisol'), ('Histosol', 'Histosol'), ('Kastanozem', 'Kastanozem'), ('Leptosol', 'Leptosol'), ('Lixisol', 'Lixisol'), ('Luvisol', 'Luvisol'), ('Nitisol', 'Nitisol'), ('Phaeozem', 'Phaeozem'), ('Planosol', 'Planosol'), ('Plinthosol', 'Plinthosol'), ('Podzol', 'Podzol'), ('Regosol', 'Regosol'), ('Solonchak', 'Solonchak'), ('Solonetz', 'Solonetz'), ('Stagnosol', 'Stagnosol'), ('Technosol', 'Technosol'), ('Umbrisol', 'Umbrisol'), ('Vertisol', 'Vertisol')]
+	drainage_classification_choice = [('excessively drained', 'excessively drained'), ('moderately well', 'moderately well'), ('poorly', 'poorly'), ('somewhat poorly', 'somewhat poorly'), ('very poorly', 'very poorly'), ('well', 'well')]
+	history_tillage_choice = [('chisel', 'chisel'), ('cutting disc', 'cutting disc'), ('disc plough', 'disc plough'), ('drill', 'drill'), ('mouldboard', 'mouldboard'), ('ridge till', 'ridge till'), ('strip tillage', 'strip tillage'), ('tined', 'tined'), ('zonal tillage', 'zonal tillage')]
 
-	GSC_MIxS_soil_slope_gradient_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_soil_number_of_replicons_validator = "[+-]?[0-9]+"
-	GSC_MIxS_soil_extrachromosomal_elements_validator = "[+-]?[0-9]+"
-	GSC_MIxS_soil_estimated_size_validator = "[+-]?[0-9]+"
-	GSC_MIxS_soil_sample_volume_or_weight_for_DNA_extraction_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_soil_library_size_validator = "[+-]?[0-9]+"
-	GSC_MIxS_soil_library_reads_sequenced_validator = "[+-]?[0-9]+"
-	GSC_MIxS_soil_collection_date_validator = "(^[12][0-9]{3}(-(0[1-9]|1[0-2])(-(0[1-9]|[12][0-9]|3[01])(T[0-9]{2}:[0-9]{2}(:[0-9]{2})?Z?([+-][0-9]{1,2})?)?)?)?(/[0-9]{4}(-[0-9]{2}(-[0-9]{2}(T[0-9]{2}:[0-9]{2}(:[0-9]{2})?Z?([+-][0-9]{1,2})?)?)?)?)?$)|(^not collected$)|(^not provided$)|(^restricted access$)|(^missing: control sample$)|(^missing: sample group$)|(^missing: synthetic construct$)|(^missing: lab stock$)|(^missing: third party data$)|(^missing: data agreement established pre-2023$)|(^missing: endangered species$)|(^missing: human-identifiable$)"
-	GSC_MIxS_soil_altitude_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_soil_geographic_location_latitude_validator = "(^[+-]?[0-9]+.?[0-9]{0,8}$)|(^not collected$)|(^not provided$)|(^restricted access$)|(^missing: control sample$)|(^missing: sample group$)|(^missing: synthetic construct$)|(^missing: lab stock$)|(^missing: third party data$)|(^missing: data agreement established pre-2023$)|(^missing: endangered species$)|(^missing: human-identifiable$)"
-	GSC_MIxS_soil_geographic_location_longitude_validator = "(^[+-]?[0-9]+.?[0-9]{0,8}$)|(^not collected$)|(^not provided$)|(^restricted access$)|(^missing: control sample$)|(^missing: sample group$)|(^missing: synthetic construct$)|(^missing: lab stock$)|(^missing: third party data$)|(^missing: data agreement established pre-2023$)|(^missing: endangered species$)|(^missing: human-identifiable$)"
-	GSC_MIxS_soil_depth_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_soil_elevation_validator = "[+-]?(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_soil_amount_or_size_of_sample_collected_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_soil_sample_weight_for_DNA_extraction_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_soil_microbial_biomass_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_soil_extreme_unusual_properties_Al_saturation_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_soil_mean_annual_and_seasonal_temperature_validator = "[+-]?(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_soil_mean_annual_and_seasonal_precipitation_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_soil_temperature_validator = "[+-]?(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_soil_pH_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_soil_organic_matter_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_soil_total_organic_carbon_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_soil_water_content_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_soil_total_nitrogen_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	slope_gradient_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	sample_weight_for_DNA_extraction_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	microbial_biomass_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	extreme_unusual_properties_Al_saturation_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	mean_annual_and_seasonal_temperature_validator = "[+-]?(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	mean_annual_and_seasonal_precipitation_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	total_organic_carbon_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	water_content_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
 
 	sampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE, default=1)
 	sample = models.ForeignKey(Sample, on_delete=models.CASCADE, default=1)
-	GSC_MIxS_soil_slope_gradient= models.CharField(max_length=100, blank=True,help_text="commonly c", validators=[RegexValidator(GSC_MIxS_soil_slope_gradient_validator)])
-	GSC_MIxS_soil_slope_aspect= models.CharField(max_length=100, blank=True,help_text="the direct")
-	GSC_MIxS_soil_profile_position= models.CharField(max_length=100, blank=True,help_text="cross-sect", choices=GSC_MIxS_soil_profile_position_choice)
-	GSC_MIxS_soil_project_name= models.CharField(max_length=100, blank=False,help_text="Name of th")
-	GSC_MIxS_soil_experimental_factor= models.CharField(max_length=100, blank=True,help_text="Experiment")
-	GSC_MIxS_soil_ploidy= models.CharField(max_length=100, blank=True,help_text="The ploidy")
-	GSC_MIxS_soil_number_of_replicons= models.CharField(max_length=100, blank=True,help_text="Reports th", validators=[RegexValidator(GSC_MIxS_soil_number_of_replicons_validator)])
-	GSC_MIxS_soil_extrachromosomal_elements= models.CharField(max_length=100, blank=True,help_text="Do plasmid", validators=[RegexValidator(GSC_MIxS_soil_extrachromosomal_elements_validator)])
-	GSC_MIxS_soil_estimated_size= models.CharField(max_length=100, blank=True,help_text="The estima", validators=[RegexValidator(GSC_MIxS_soil_estimated_size_validator)])
-	GSC_MIxS_soil_reference_for_biomaterial= models.CharField(max_length=100, blank=True,help_text="Primary pu")
-	GSC_MIxS_soil_annotation_source= models.CharField(max_length=100, blank=True,help_text="For cases ")
-	GSC_MIxS_soil_sample_volume_or_weight_for_DNA_extraction= models.CharField(max_length=100, blank=True,help_text="Volume (ml", validators=[RegexValidator(GSC_MIxS_soil_sample_volume_or_weight_for_DNA_extraction_validator)])
-	GSC_MIxS_soil_nucleic_acid_extraction= models.CharField(max_length=100, blank=True,help_text="A link to ")
-	GSC_MIxS_soil_nucleic_acid_amplification= models.CharField(max_length=100, blank=True,help_text="A link to ")
-	GSC_MIxS_soil_library_size= models.CharField(max_length=100, blank=True,help_text="Total numb", validators=[RegexValidator(GSC_MIxS_soil_library_size_validator)])
-	GSC_MIxS_soil_library_reads_sequenced= models.CharField(max_length=100, blank=True,help_text="Total numb", validators=[RegexValidator(GSC_MIxS_soil_library_reads_sequenced_validator)])
-	GSC_MIxS_soil_library_construction_method= models.CharField(max_length=100, blank=True,help_text="Library co")
-	GSC_MIxS_soil_library_vector= models.CharField(max_length=100, blank=True,help_text="Cloning ve")
-	GSC_MIxS_soil_library_screening_strategy= models.CharField(max_length=100, blank=True,help_text="Specific e")
-	GSC_MIxS_soil_target_gene= models.CharField(max_length=100, blank=True,help_text="Targeted g")
-	GSC_MIxS_soil_target_subfragment= models.CharField(max_length=100, blank=True,help_text="Name of su")
-	GSC_MIxS_soil_pcr_primers= models.CharField(max_length=100, blank=True,help_text="PCR primer")
-	GSC_MIxS_soil_multiplex_identifiers= models.CharField(max_length=100, blank=True,help_text="Molecular ")
-	GSC_MIxS_soil_adapters= models.CharField(max_length=100, blank=True,help_text="Adapters p")
-	GSC_MIxS_soil_pcr_conditions= models.CharField(max_length=100, blank=True,help_text="Descriptio")
-	GSC_MIxS_soil_sequencing_method= models.CharField(max_length=100, blank=True,help_text="Sequencing")
-	GSC_MIxS_soil_sequence_quality_check= models.CharField(max_length=100, blank=True,help_text="Indicate i", choices=GSC_MIxS_soil_sequence_quality_check_choice)
-	GSC_MIxS_soil_chimera_check_software= models.CharField(max_length=100, blank=True,help_text="Tool(s) us")
-	GSC_MIxS_soil_relevant_electronic_resources= models.CharField(max_length=100, blank=True,help_text="A related ")
-	GSC_MIxS_soil_relevant_standard_operating_procedures= models.CharField(max_length=100, blank=True,help_text="Standard o")
-	GSC_MIxS_soil_pooling_of_DNA_extracts_if_done= models.CharField(max_length=100, blank=True,help_text="were multi")
-	GSC_MIxS_soil_negative_control_type= models.CharField(max_length=100, blank=True,help_text="The substa")
-	GSC_MIxS_soil_positive_control_type= models.CharField(max_length=100, blank=True,help_text="The substa")
-	GSC_MIxS_soil_collection_date= models.CharField(max_length=100, blank=False,help_text="The date t", validators=[RegexValidator(GSC_MIxS_soil_collection_date_validator)])
-	GSC_MIxS_soil_altitude= models.CharField(max_length=100, blank=True,help_text="The altitu", validators=[RegexValidator(GSC_MIxS_soil_altitude_validator)])
-	GSC_MIxS_soil_geographic_location_country_and_or_sea= models.CharField(max_length=100, blank=False,help_text="The locati", choices=GSC_MIxS_soil_geographic_location_country_and_or_sea_choice)
-	GSC_MIxS_soil_geographic_location_latitude= models.CharField(max_length=100, blank=False,help_text="The geogra", validators=[RegexValidator(GSC_MIxS_soil_geographic_location_latitude_validator)])
-	GSC_MIxS_soil_geographic_location_longitude= models.CharField(max_length=100, blank=False,help_text="The geogra", validators=[RegexValidator(GSC_MIxS_soil_geographic_location_longitude_validator)])
-	GSC_MIxS_soil_geographic_location_region_and_locality= models.CharField(max_length=100, blank=True,help_text="The geogra")
-	GSC_MIxS_soil_depth= models.CharField(max_length=100, blank=False,help_text="The vertic", validators=[RegexValidator(GSC_MIxS_soil_depth_validator)])
-	GSC_MIxS_soil_broad_scale_environmental_context= models.CharField(max_length=100, blank=False,help_text="Report the")
-	GSC_MIxS_soil_local_environmental_context= models.CharField(max_length=100, blank=False,help_text="Report the")
-	GSC_MIxS_soil_environmental_medium= models.CharField(max_length=100, blank=False,help_text="Report the")
-	GSC_MIxS_soil_elevation= models.CharField(max_length=100, blank=False,help_text="The elevat", validators=[RegexValidator(GSC_MIxS_soil_elevation_validator)])
-	GSC_MIxS_soil_source_material_identifiers= models.CharField(max_length=100, blank=True,help_text="A unique i")
-	GSC_MIxS_soil_sample_material_processing= models.CharField(max_length=100, blank=True,help_text="A brief de")
-	GSC_MIxS_soil_isolation_and_growth_condition= models.CharField(max_length=100, blank=True,help_text="Publicatio")
-	GSC_MIxS_soil_propagation= models.CharField(max_length=100, blank=True,help_text="The type o")
-	GSC_MIxS_soil_amount_or_size_of_sample_collected= models.CharField(max_length=100, blank=True,help_text="The total ", validators=[RegexValidator(GSC_MIxS_soil_amount_or_size_of_sample_collected_validator)])
-	GSC_MIxS_soil_composite_design_sieving_if_any= models.CharField(max_length=100, blank=True,help_text="collection")
-	GSC_MIxS_soil_sample_weight_for_DNA_extraction= models.CharField(max_length=100, blank=True,help_text="weight (g)", validators=[RegexValidator(GSC_MIxS_soil_sample_weight_for_DNA_extraction_validator)])
-	GSC_MIxS_soil_storage_conditions_fresh_frozen_other= models.CharField(max_length=100, blank=True,help_text="explain ho")
-	GSC_MIxS_soil_microbial_biomass= models.CharField(max_length=100, blank=True,help_text="the part o", validators=[RegexValidator(GSC_MIxS_soil_microbial_biomass_validator)])
-	GSC_MIxS_soil_microbial_biomass_method= models.CharField(max_length=100, blank=True,help_text="reference ")
-	GSC_MIxS_soil_sample_collection_device= models.CharField(max_length=100, blank=True,help_text="The device")
-	GSC_MIxS_soil_sample_collection_method= models.CharField(max_length=100, blank=True,help_text="The method")
-	GSC_MIxS_soil_salinity_method= models.CharField(max_length=100, blank=True,help_text="reference ")
-	GSC_MIxS_soil_extreme_unusual_properties_heavy_metals= models.CharField(max_length=100, blank=True,help_text="heavy meta")
-	GSC_MIxS_soil_extreme_unusual_properties_heavy_metals_method= models.CharField(max_length=100, blank=True,help_text="reference ")
-	GSC_MIxS_soil_extreme_unusual_properties_Al_saturation= models.CharField(max_length=100, blank=True,help_text="aluminum s", validators=[RegexValidator(GSC_MIxS_soil_extreme_unusual_properties_Al_saturation_validator)])
-	GSC_MIxS_soil_extreme_unusual_properties_Al_saturation_method= models.CharField(max_length=100, blank=True,help_text="reference ")
-	GSC_MIxS_soil_host_disease_status= models.CharField(max_length=100, blank=True,help_text="list of di")
-	GSC_MIxS_soil_host_scientific_name= models.CharField(max_length=100, blank=True,help_text="Scientific")
-	GSC_MIxS_soil_link_to_climate_information= models.CharField(max_length=100, blank=True,help_text="link to cl")
-	GSC_MIxS_soil_link_to_classification_information= models.CharField(max_length=100, blank=True,help_text="link to di")
-	GSC_MIxS_soil_links_to_additional_analysis= models.CharField(max_length=100, blank=True,help_text="link to ad")
-	GSC_MIxS_soil_current_land_use= models.CharField(max_length=100, blank=True,help_text="present st")
-	GSC_MIxS_soil_current_vegetation= models.CharField(max_length=100, blank=True,help_text="vegetation")
-	GSC_MIxS_soil_current_vegetation_method= models.CharField(max_length=100, blank=True,help_text="reference ")
-	GSC_MIxS_soil_soil_horizon= models.CharField(max_length=100, blank=True,help_text="specific l", choices=GSC_MIxS_soil_soil_horizon_choice)
-	GSC_MIxS_soil_soil_horizon_method= models.CharField(max_length=100, blank=True,help_text="reference ")
-	GSC_MIxS_soil_mean_annual_and_seasonal_temperature= models.CharField(max_length=100, blank=True,help_text="mean annua", validators=[RegexValidator(GSC_MIxS_soil_mean_annual_and_seasonal_temperature_validator)])
-	GSC_MIxS_soil_mean_annual_and_seasonal_precipitation= models.CharField(max_length=100, blank=True,help_text="mean annua", validators=[RegexValidator(GSC_MIxS_soil_mean_annual_and_seasonal_precipitation_validator)])
-	GSC_MIxS_soil_soil_taxonomic_FAO_classification= models.CharField(max_length=100, blank=True,help_text="soil class")
-	GSC_MIxS_soil_soil_taxonomic_local_classification= models.CharField(max_length=100, blank=True,help_text="soil class")
-	GSC_MIxS_soil_soil_taxonomic_local_classification_method= models.CharField(max_length=100, blank=True,help_text="reference ")
-	GSC_MIxS_soil_soil_type= models.CharField(max_length=100, blank=True,help_text="Descriptio", choices=GSC_MIxS_soil_soil_type_choice)
-	GSC_MIxS_soil_soil_type_method= models.CharField(max_length=100, blank=True,help_text="reference ")
-	GSC_MIxS_soil_drainage_classification= models.CharField(max_length=100, blank=True,help_text="drainage c", choices=GSC_MIxS_soil_drainage_classification_choice)
-	GSC_MIxS_soil_temperature= models.CharField(max_length=100, blank=True,help_text="temperatur", validators=[RegexValidator(GSC_MIxS_soil_temperature_validator)])
-	GSC_MIxS_soil_soil_texture_measurement= models.CharField(max_length=100, blank=True,help_text="the relati")
-	GSC_MIxS_soil_soil_texture_method= models.CharField(max_length=100, blank=True,help_text="reference ")
-	GSC_MIxS_soil_pH= models.CharField(max_length=100, blank=True,help_text="pH measure", validators=[RegexValidator(GSC_MIxS_soil_pH_validator)])
-	GSC_MIxS_soil_pH_method= models.CharField(max_length=100, blank=True,help_text="reference ")
-	GSC_MIxS_soil_water_content_method= models.CharField(max_length=100, blank=True,help_text="reference ")
-	GSC_MIxS_soil_total_organic_C_method= models.CharField(max_length=100, blank=True,help_text="reference ")
-	GSC_MIxS_soil_total_nitrogen_method= models.CharField(max_length=100, blank=True,help_text="reference ")
-	GSC_MIxS_soil_organic_matter= models.CharField(max_length=100, blank=True,help_text="concentrat", validators=[RegexValidator(GSC_MIxS_soil_organic_matter_validator)])
-	GSC_MIxS_soil_total_organic_carbon= models.CharField(max_length=100, blank=True,help_text="Definition", validators=[RegexValidator(GSC_MIxS_soil_total_organic_carbon_validator)])
-	GSC_MIxS_soil_water_content= models.CharField(max_length=100, blank=True,help_text="water cont", validators=[RegexValidator(GSC_MIxS_soil_water_content_validator)])
-	GSC_MIxS_soil_total_nitrogen= models.CharField(max_length=100, blank=True,help_text="total nitr", validators=[RegexValidator(GSC_MIxS_soil_total_nitrogen_validator)])
-	GSC_MIxS_soil_history_previous_land_use= models.CharField(max_length=100, blank=True,help_text="previous l")
-	GSC_MIxS_soil_history_previous_land_use_method= models.CharField(max_length=100, blank=True,help_text="reference ")
-	GSC_MIxS_soil_history_crop_rotation= models.CharField(max_length=100, blank=True,help_text="whether or")
-	GSC_MIxS_soil_history_agrochemical_additions= models.CharField(max_length=100, blank=True,help_text="addition o")
-	GSC_MIxS_soil_history_tillage= models.CharField(max_length=100, blank=True,help_text="note metho", choices=GSC_MIxS_soil_history_tillage_choice)
-	GSC_MIxS_soil_history_fire= models.CharField(max_length=100, blank=True,help_text="historical")
-	GSC_MIxS_soil_history_flooding= models.CharField(max_length=100, blank=True,help_text="historical")
-	GSC_MIxS_soil_history_extreme_events= models.CharField(max_length=100, blank=True,help_text="unusual ph")
-	GSC_MIxS_soil_subspecific_genetic_lineage= models.CharField(max_length=100, blank=True,help_text="Informatio")
-	GSC_MIxS_soil_trophic_level= models.CharField(max_length=100, blank=True,help_text="Trophic le", choices=GSC_MIxS_soil_trophic_level_choice)
-	GSC_MIxS_soil_relationship_to_oxygen= models.CharField(max_length=100, blank=True,help_text="Is this or", choices=GSC_MIxS_soil_relationship_to_oxygen_choice)
-	GSC_MIxS_soil_known_pathogenicity= models.CharField(max_length=100, blank=True,help_text="To what is")
-	GSC_MIxS_soil_encoded_traits= models.CharField(max_length=100, blank=True,help_text="Should inc")
-	GSC_MIxS_soil_observed_biotic_relationship= models.CharField(max_length=100, blank=True,help_text="Is it free", choices=GSC_MIxS_soil_observed_biotic_relationship_choice)
-	GSC_MIxS_soil_perturbation= models.CharField(max_length=100, blank=True,help_text="type of pe")
+	slope_gradient= models.CharField(max_length=100, blank=True,help_text="commonly c", validators=[RegexValidator(slope_gradient_validator)])
+	slope_aspect= models.CharField(max_length=100, blank=True,help_text="the direct")
+	profile_position= models.CharField(max_length=100, blank=True,help_text="cross-sect", choices=profile_position_choice)
+	pooling_of_DNA_extracts_if_done= models.CharField(max_length=100, blank=True,help_text="were multi")
+	composite_design_sieving_if_any= models.CharField(max_length=100, blank=True,help_text="collection")
+	sample_weight_for_DNA_extraction= models.CharField(max_length=100, blank=True,help_text="weight (g)", validators=[RegexValidator(sample_weight_for_DNA_extraction_validator)])
+	storage_conditions_fresh_frozen_other= models.CharField(max_length=100, blank=True,help_text="explain ho")
+	microbial_biomass= models.CharField(max_length=100, blank=True,help_text="the part o", validators=[RegexValidator(microbial_biomass_validator)])
+	microbial_biomass_method= models.CharField(max_length=100, blank=True,help_text="reference ")
+	salinity_method= models.CharField(max_length=100, blank=True,help_text="reference ")
+	extreme_unusual_properties_heavy_metals= models.CharField(max_length=100, blank=True,help_text="heavy meta")
+	extreme_unusual_properties_heavy_metals_method= models.CharField(max_length=100, blank=True,help_text="reference ")
+	extreme_unusual_properties_Al_saturation= models.CharField(max_length=100, blank=True,help_text="aluminum s", validators=[RegexValidator(extreme_unusual_properties_Al_saturation_validator)])
+	extreme_unusual_properties_Al_saturation_method= models.CharField(max_length=100, blank=True,help_text="reference ")
+	link_to_climate_information= models.CharField(max_length=100, blank=True,help_text="link to cl")
+	link_to_classification_information= models.CharField(max_length=100, blank=True,help_text="link to di")
+	links_to_additional_analysis= models.CharField(max_length=100, blank=True,help_text="link to ad")
+	current_land_use= models.CharField(max_length=100, blank=True,help_text="present st")
+	current_vegetation= models.CharField(max_length=100, blank=True,help_text="vegetation")
+	current_vegetation_method= models.CharField(max_length=100, blank=True,help_text="reference ")
+	soil_horizon= models.CharField(max_length=100, blank=True,help_text="specific l", choices=soil_horizon_choice)
+	soil_horizon_method= models.CharField(max_length=100, blank=True,help_text="reference ")
+	mean_annual_and_seasonal_temperature= models.CharField(max_length=100, blank=True,help_text="mean annua", validators=[RegexValidator(mean_annual_and_seasonal_temperature_validator)])
+	mean_annual_and_seasonal_precipitation= models.CharField(max_length=100, blank=True,help_text="mean annua", validators=[RegexValidator(mean_annual_and_seasonal_precipitation_validator)])
+	soil_taxonomic_FAO_classification= models.CharField(max_length=100, blank=True,help_text="soil class")
+	soil_taxonomic_local_classification= models.CharField(max_length=100, blank=True,help_text="soil class")
+	soil_taxonomic_local_classification_method= models.CharField(max_length=100, blank=True,help_text="reference ")
+	soil_type= models.CharField(max_length=100, blank=True,help_text="Descriptio", choices=soil_type_choice)
+	soil_type_method= models.CharField(max_length=100, blank=True,help_text="reference ")
+	drainage_classification= models.CharField(max_length=100, blank=True,help_text="drainage c", choices=drainage_classification_choice)
+	soil_texture_measurement= models.CharField(max_length=100, blank=True,help_text="the relati")
+	soil_texture_method= models.CharField(max_length=100, blank=True,help_text="reference ")
+	pH_method= models.CharField(max_length=100, blank=True,help_text="reference ")
+	water_content_method= models.CharField(max_length=100, blank=True,help_text="reference ")
+	total_organic_C_method= models.CharField(max_length=100, blank=True,help_text="reference ")
+	total_nitrogen_method= models.CharField(max_length=100, blank=True,help_text="reference ")
+	total_organic_carbon= models.CharField(max_length=100, blank=True,help_text="Definition", validators=[RegexValidator(total_organic_carbon_validator)])
+	water_content= models.CharField(max_length=100, blank=True,help_text="water cont", validators=[RegexValidator(water_content_validator)])
+	history_previous_land_use= models.CharField(max_length=100, blank=True,help_text="previous l")
+	history_previous_land_use_method= models.CharField(max_length=100, blank=True,help_text="reference ")
+	history_crop_rotation= models.CharField(max_length=100, blank=True,help_text="whether or")
+	history_agrochemical_additions= models.CharField(max_length=100, blank=True,help_text="addition o")
+	history_tillage= models.CharField(max_length=100, blank=True,help_text="note metho", choices=history_tillage_choice)
+	history_fire= models.CharField(max_length=100, blank=True,help_text="historical")
+	history_flooding= models.CharField(max_length=100, blank=True,help_text="historical")
+	history_extreme_events= models.CharField(max_length=100, blank=True,help_text="unusual ph")
 
 	fields = {
-		'GSC_MIxS_soil_slope_gradient': 'slope gradient',
-		'GSC_MIxS_soil_slope_aspect': 'slope aspect',
-		'GSC_MIxS_soil_profile_position': 'profile position',
-		'GSC_MIxS_soil_project_name': 'project name',
-		'GSC_MIxS_soil_experimental_factor': 'experimental factor',
-		'GSC_MIxS_soil_ploidy': 'ploidy',
-		'GSC_MIxS_soil_number_of_replicons': 'number of replicons',
-		'GSC_MIxS_soil_extrachromosomal_elements': 'extrachromosomal elements',
-		'GSC_MIxS_soil_estimated_size': 'estimated size',
-		'GSC_MIxS_soil_reference_for_biomaterial': 'reference for biomaterial',
-		'GSC_MIxS_soil_annotation_source': 'annotation source',
-		'GSC_MIxS_soil_sample_volume_or_weight_for_DNA_extraction': 'sample volume or weight for DNA extraction',
-		'GSC_MIxS_soil_nucleic_acid_extraction': 'nucleic acid extraction',
-		'GSC_MIxS_soil_nucleic_acid_amplification': 'nucleic acid amplification',
-		'GSC_MIxS_soil_library_size': 'library size',
-		'GSC_MIxS_soil_library_reads_sequenced': 'library reads sequenced',
-		'GSC_MIxS_soil_library_construction_method': 'library construction method',
-		'GSC_MIxS_soil_library_vector': 'library vector',
-		'GSC_MIxS_soil_library_screening_strategy': 'library screening strategy',
-		'GSC_MIxS_soil_target_gene': 'target gene',
-		'GSC_MIxS_soil_target_subfragment': 'target subfragment',
-		'GSC_MIxS_soil_pcr_primers': 'pcr primers',
-		'GSC_MIxS_soil_multiplex_identifiers': 'multiplex identifiers',
-		'GSC_MIxS_soil_adapters': 'adapters',
-		'GSC_MIxS_soil_pcr_conditions': 'pcr conditions',
-		'GSC_MIxS_soil_sequencing_method': 'sequencing method',
-		'GSC_MIxS_soil_sequence_quality_check': 'sequence quality check',
-		'GSC_MIxS_soil_chimera_check_software': 'chimera check software',
-		'GSC_MIxS_soil_relevant_electronic_resources': 'relevant electronic resources',
-		'GSC_MIxS_soil_relevant_standard_operating_procedures': 'relevant standard operating procedures',
-		'GSC_MIxS_soil_pooling_of_DNA_extracts_if_done': 'pooling of DNA extracts (if done)',
-		'GSC_MIxS_soil_negative_control_type': 'negative control type',
-		'GSC_MIxS_soil_positive_control_type': 'positive control type',
-		'GSC_MIxS_soil_collection_date': 'collection date',
-		'GSC_MIxS_soil_altitude': 'altitude',
-		'GSC_MIxS_soil_geographic_location_country_and_or_sea': 'geographic location (country and/or sea)',
-		'GSC_MIxS_soil_geographic_location_latitude': 'geographic location (latitude)',
-		'GSC_MIxS_soil_geographic_location_longitude': 'geographic location (longitude)',
-		'GSC_MIxS_soil_geographic_location_region_and_locality': 'geographic location (region and locality)',
-		'GSC_MIxS_soil_depth': 'depth',
-		'GSC_MIxS_soil_broad_scale_environmental_context': 'broad-scale environmental context',
-		'GSC_MIxS_soil_local_environmental_context': 'local environmental context',
-		'GSC_MIxS_soil_environmental_medium': 'environmental medium',
-		'GSC_MIxS_soil_elevation': 'elevation',
-		'GSC_MIxS_soil_source_material_identifiers': 'source material identifiers',
-		'GSC_MIxS_soil_sample_material_processing': 'sample material processing',
-		'GSC_MIxS_soil_isolation_and_growth_condition': 'isolation and growth condition',
-		'GSC_MIxS_soil_propagation': 'propagation',
-		'GSC_MIxS_soil_amount_or_size_of_sample_collected': 'amount or size of sample collected',
-		'GSC_MIxS_soil_composite_design_sieving_if_any': 'composite design/sieving (if any)',
-		'GSC_MIxS_soil_sample_weight_for_DNA_extraction': 'sample weight for DNA extraction',
-		'GSC_MIxS_soil_storage_conditions_fresh_frozen_other': 'storage conditions (fresh/frozen/other)',
-		'GSC_MIxS_soil_microbial_biomass': 'microbial biomass',
-		'GSC_MIxS_soil_microbial_biomass_method': 'microbial biomass method',
-		'GSC_MIxS_soil_sample_collection_device': 'sample collection device',
-		'GSC_MIxS_soil_sample_collection_method': 'sample collection method',
-		'GSC_MIxS_soil_salinity_method': 'salinity method',
-		'GSC_MIxS_soil_extreme_unusual_properties_heavy_metals': 'extreme_unusual_properties/heavy metals',
-		'GSC_MIxS_soil_extreme_unusual_properties_heavy_metals_method': 'extreme_unusual_properties/heavy metals method',
-		'GSC_MIxS_soil_extreme_unusual_properties_Al_saturation': 'extreme_unusual_properties/Al saturation',
-		'GSC_MIxS_soil_extreme_unusual_properties_Al_saturation_method': 'extreme_unusual_properties/Al saturation method',
-		'GSC_MIxS_soil_host_disease_status': 'host disease status',
-		'GSC_MIxS_soil_host_scientific_name': 'host scientific name',
-		'GSC_MIxS_soil_link_to_climate_information': 'link to climate information',
-		'GSC_MIxS_soil_link_to_classification_information': 'link to classification information',
-		'GSC_MIxS_soil_links_to_additional_analysis': 'links to additional analysis',
-		'GSC_MIxS_soil_current_land_use': 'current land use',
-		'GSC_MIxS_soil_current_vegetation': 'current vegetation',
-		'GSC_MIxS_soil_current_vegetation_method': 'current vegetation method',
-		'GSC_MIxS_soil_soil_horizon': 'soil horizon',
-		'GSC_MIxS_soil_soil_horizon_method': 'soil horizon method',
-		'GSC_MIxS_soil_mean_annual_and_seasonal_temperature': 'mean annual and seasonal temperature',
-		'GSC_MIxS_soil_mean_annual_and_seasonal_precipitation': 'mean annual and seasonal precipitation',
-		'GSC_MIxS_soil_soil_taxonomic_FAO_classification': 'soil_taxonomic/FAO classification',
-		'GSC_MIxS_soil_soil_taxonomic_local_classification': 'soil_taxonomic/local classification',
-		'GSC_MIxS_soil_soil_taxonomic_local_classification_method': 'soil_taxonomic/local classification method',
-		'GSC_MIxS_soil_soil_type': 'soil type',
-		'GSC_MIxS_soil_soil_type_method': 'soil type method',
-		'GSC_MIxS_soil_drainage_classification': 'drainage classification',
-		'GSC_MIxS_soil_temperature': 'temperature',
-		'GSC_MIxS_soil_soil_texture_measurement': 'soil texture measurement',
-		'GSC_MIxS_soil_soil_texture_method': 'soil texture method',
-		'GSC_MIxS_soil_pH': 'pH',
-		'GSC_MIxS_soil_pH_method': 'pH method',
-		'GSC_MIxS_soil_water_content_method': 'water content method',
-		'GSC_MIxS_soil_total_organic_C_method': 'total organic C method',
-		'GSC_MIxS_soil_total_nitrogen_method': 'total nitrogen method',
-		'GSC_MIxS_soil_organic_matter': 'organic matter',
-		'GSC_MIxS_soil_total_organic_carbon': 'total organic carbon',
-		'GSC_MIxS_soil_water_content': 'water content',
-		'GSC_MIxS_soil_total_nitrogen': 'total nitrogen',
-		'GSC_MIxS_soil_history_previous_land_use': 'history/previous land use',
-		'GSC_MIxS_soil_history_previous_land_use_method': 'history/previous land use method',
-		'GSC_MIxS_soil_history_crop_rotation': 'history/crop rotation',
-		'GSC_MIxS_soil_history_agrochemical_additions': 'history/agrochemical additions',
-		'GSC_MIxS_soil_history_tillage': 'history/tillage',
-		'GSC_MIxS_soil_history_fire': 'history/fire',
-		'GSC_MIxS_soil_history_flooding': 'history/flooding',
-		'GSC_MIxS_soil_history_extreme_events': 'history/extreme events',
-		'GSC_MIxS_soil_subspecific_genetic_lineage': 'subspecific genetic lineage',
-		'GSC_MIxS_soil_trophic_level': 'trophic level',
-		'GSC_MIxS_soil_relationship_to_oxygen': 'relationship to oxygen',
-		'GSC_MIxS_soil_known_pathogenicity': 'known pathogenicity',
-		'GSC_MIxS_soil_encoded_traits': 'encoded traits',
-		'GSC_MIxS_soil_observed_biotic_relationship': 'observed biotic relationship',
-		'GSC_MIxS_soil_perturbation': 'perturbation',
+		'slope_gradient': 'slope gradient',
+		'slope_aspect': 'slope aspect',
+		'profile_position': 'profile position',
+		'pooling_of_DNA_extracts_if_done': 'pooling of DNA extracts (if done)',
+		'composite_design_sieving_if_any': 'composite design/sieving (if any)',
+		'sample_weight_for_DNA_extraction': 'sample weight for DNA extraction',
+		'storage_conditions_fresh_frozen_other': 'storage conditions (fresh/frozen/other)',
+		'microbial_biomass': 'microbial biomass',
+		'microbial_biomass_method': 'microbial biomass method',
+		'salinity_method': 'salinity method',
+		'extreme_unusual_properties_heavy_metals': 'extreme_unusual_properties/heavy metals',
+		'extreme_unusual_properties_heavy_metals_method': 'extreme_unusual_properties/heavy metals method',
+		'extreme_unusual_properties_Al_saturation': 'extreme_unusual_properties/Al saturation',
+		'extreme_unusual_properties_Al_saturation_method': 'extreme_unusual_properties/Al saturation method',
+		'link_to_climate_information': 'link to climate information',
+		'link_to_classification_information': 'link to classification information',
+		'links_to_additional_analysis': 'links to additional analysis',
+		'current_land_use': 'current land use',
+		'current_vegetation': 'current vegetation',
+		'current_vegetation_method': 'current vegetation method',
+		'soil_horizon': 'soil horizon',
+		'soil_horizon_method': 'soil horizon method',
+		'mean_annual_and_seasonal_temperature': 'mean annual and seasonal temperature',
+		'mean_annual_and_seasonal_precipitation': 'mean annual and seasonal precipitation',
+		'soil_taxonomic_FAO_classification': 'soil_taxonomic/FAO classification',
+		'soil_taxonomic_local_classification': 'soil_taxonomic/local classification',
+		'soil_taxonomic_local_classification_method': 'soil_taxonomic/local classification method',
+		'soil_type': 'soil type',
+		'soil_type_method': 'soil type method',
+		'drainage_classification': 'drainage classification',
+		'soil_texture_measurement': 'soil texture measurement',
+		'soil_texture_method': 'soil texture method',
+		'pH_method': 'pH method',
+		'water_content_method': 'water content method',
+		'total_organic_C_method': 'total organic C method',
+		'total_nitrogen_method': 'total nitrogen method',
+		'total_organic_carbon': 'total organic carbon',
+		'water_content': 'water content',
+		'history_previous_land_use': 'history/previous land use',
+		'history_previous_land_use_method': 'history/previous land use method',
+		'history_crop_rotation': 'history/crop rotation',
+		'history_agrochemical_additions': 'history/agrochemical additions',
+		'history_tillage': 'history/tillage',
+		'history_fire': 'history/fire',
+		'history_flooding': 'history/flooding',
+		'history_extreme_events': 'history/extreme events',
 	}
 
 	name = 'GSC_MIxS_soil'
 
 class GSC_MIxS_soil_unit(SelfDescribingModel):
 
-	GSC_MIxS_soil_slope_gradient_units = [('%', '%')]
-	GSC_MIxS_soil_sample_volume_or_weight_for_DNA_extraction_units = [('g', 'g'), ('mL', 'mL'), ('mg', 'mg'), ('ng', 'ng')]
-	GSC_MIxS_soil_altitude_units = [('m', 'm')]
-	GSC_MIxS_soil_geographic_location_latitude_units = [('DD', 'DD')]
-	GSC_MIxS_soil_geographic_location_longitude_units = [('DD', 'DD')]
-	GSC_MIxS_soil_depth_units = [('m', 'm')]
-	GSC_MIxS_soil_elevation_units = [('m', 'm')]
-	GSC_MIxS_soil_amount_or_size_of_sample_collected_units = [('L', 'L'), ('g', 'g'), ('kg', 'kg'), ('m2', 'm2'), ('m3', 'm3')]
-	GSC_MIxS_soil_sample_weight_for_DNA_extraction_units = [('g', 'g')]
-	GSC_MIxS_soil_microbial_biomass_units = [('g/kg', 'g/kg')]
-	GSC_MIxS_soil_extreme_unusual_properties_Al_saturation_units = [('%', '%')]
-	GSC_MIxS_soil_mean_annual_and_seasonal_temperature_units = [('ºC', 'ºC')]
-	GSC_MIxS_soil_mean_annual_and_seasonal_precipitation_units = [('mm', 'mm')]
-	GSC_MIxS_soil_temperature_units = [('ºC', 'ºC')]
-	GSC_MIxS_soil_soil_texture_measurement_units = [('% sand/silt/clay', '% sand/silt/clay')]
-	GSC_MIxS_soil_organic_matter_units = [('µg/L', 'µg/L')]
-	GSC_MIxS_soil_total_organic_carbon_units = [('g/kg', 'g/kg')]
-	GSC_MIxS_soil_water_content_units = [('cm3/cm3', 'cm3/cm3'), ('g/g', 'g/g')]
-	GSC_MIxS_soil_total_nitrogen_units = [('µg/L', 'µg/L'), ('µmol/L', 'µmol/L')]
+	slope_gradient_units = [('%', '%')]
+	sample_weight_for_DNA_extraction_units = [('g', 'g')]
+	microbial_biomass_units = [('g/kg', 'g/kg')]
+	extreme_unusual_properties_Al_saturation_units = [('%', '%')]
+	mean_annual_and_seasonal_temperature_units = [('ºC', 'ºC')]
+	mean_annual_and_seasonal_precipitation_units = [('mm', 'mm')]
+	soil_texture_measurement_units = [('% sand/silt/clay', '% sand/silt/clay')]
+	total_organic_carbon_units = [('g/kg', 'g/kg')]
+	water_content_units = [('cm3/cm3', 'cm3/cm3'), ('g/g', 'g/g')]
 
 	fields = {
-		'GSC_MIxS_soil_slope_gradient': 'slope gradient',
-		'GSC_MIxS_soil_sample_volume_or_weight_for_DNA_extraction': 'sample volume or weight for DNA extraction',
-		'GSC_MIxS_soil_altitude': 'altitude',
-		'GSC_MIxS_soil_geographic_location_latitude': 'geographic location (latitude)',
-		'GSC_MIxS_soil_geographic_location_longitude': 'geographic location (longitude)',
-		'GSC_MIxS_soil_depth': 'depth',
-		'GSC_MIxS_soil_elevation': 'elevation',
-		'GSC_MIxS_soil_amount_or_size_of_sample_collected': 'amount or size of sample collected',
-		'GSC_MIxS_soil_sample_weight_for_DNA_extraction': 'sample weight for DNA extraction',
-		'GSC_MIxS_soil_microbial_biomass': 'microbial biomass',
-		'GSC_MIxS_soil_extreme_unusual_properties_Al_saturation': 'extreme_unusual_properties/Al saturation',
-		'GSC_MIxS_soil_mean_annual_and_seasonal_temperature': 'mean annual and seasonal temperature',
-		'GSC_MIxS_soil_mean_annual_and_seasonal_precipitation': 'mean annual and seasonal precipitation',
-		'GSC_MIxS_soil_temperature': 'temperature',
-		'GSC_MIxS_soil_soil_texture_measurement': 'soil texture measurement',
-		'GSC_MIxS_soil_organic_matter': 'organic matter',
-		'GSC_MIxS_soil_total_organic_carbon': 'total organic carbon',
-		'GSC_MIxS_soil_water_content': 'water content',
-		'GSC_MIxS_soil_total_nitrogen': 'total nitrogen',
+		'slope_gradient': 'slope gradient',
+		'sample_weight_for_DNA_extraction': 'sample weight for DNA extraction',
+		'microbial_biomass': 'microbial biomass',
+		'extreme_unusual_properties_Al_saturation': 'extreme_unusual_properties/Al saturation',
+		'mean_annual_and_seasonal_temperature': 'mean annual and seasonal temperature',
+		'mean_annual_and_seasonal_precipitation': 'mean annual and seasonal precipitation',
+		'soil_texture_measurement': 'soil texture measurement',
+		'total_organic_carbon': 'total organic carbon',
+		'water_content': 'water content',
 	}
 
 	name = 'GSC_MIxS_soil'
 
 	sampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE, default=1)
 	sample = models.ForeignKey(Sample, on_delete=models.CASCADE, default=1)
-	GSC_MIxS_soil_slope_gradient = models.CharField(max_length=100, choices=GSC_MIxS_soil_slope_gradient_units, blank=False)
-	GSC_MIxS_soil_sample_volume_or_weight_for_DNA_extraction = models.CharField(max_length=100, choices=GSC_MIxS_soil_sample_volume_or_weight_for_DNA_extraction_units, blank=False)
-	GSC_MIxS_soil_altitude = models.CharField(max_length=100, choices=GSC_MIxS_soil_altitude_units, blank=False)
-	GSC_MIxS_soil_geographic_location_latitude = models.CharField(max_length=100, choices=GSC_MIxS_soil_geographic_location_latitude_units, blank=False)
-	GSC_MIxS_soil_geographic_location_longitude = models.CharField(max_length=100, choices=GSC_MIxS_soil_geographic_location_longitude_units, blank=False)
-	GSC_MIxS_soil_depth = models.CharField(max_length=100, choices=GSC_MIxS_soil_depth_units, blank=False)
-	GSC_MIxS_soil_elevation = models.CharField(max_length=100, choices=GSC_MIxS_soil_elevation_units, blank=False)
-	GSC_MIxS_soil_amount_or_size_of_sample_collected = models.CharField(max_length=100, choices=GSC_MIxS_soil_amount_or_size_of_sample_collected_units, blank=False)
-	GSC_MIxS_soil_sample_weight_for_DNA_extraction = models.CharField(max_length=100, choices=GSC_MIxS_soil_sample_weight_for_DNA_extraction_units, blank=False)
-	GSC_MIxS_soil_microbial_biomass = models.CharField(max_length=100, choices=GSC_MIxS_soil_microbial_biomass_units, blank=False)
-	GSC_MIxS_soil_extreme_unusual_properties_Al_saturation = models.CharField(max_length=100, choices=GSC_MIxS_soil_extreme_unusual_properties_Al_saturation_units, blank=False)
-	GSC_MIxS_soil_mean_annual_and_seasonal_temperature = models.CharField(max_length=100, choices=GSC_MIxS_soil_mean_annual_and_seasonal_temperature_units, blank=False)
-	GSC_MIxS_soil_mean_annual_and_seasonal_precipitation = models.CharField(max_length=100, choices=GSC_MIxS_soil_mean_annual_and_seasonal_precipitation_units, blank=False)
-	GSC_MIxS_soil_temperature = models.CharField(max_length=100, choices=GSC_MIxS_soil_temperature_units, blank=False)
-	GSC_MIxS_soil_soil_texture_measurement = models.CharField(max_length=100, choices=GSC_MIxS_soil_soil_texture_measurement_units, blank=False)
-	GSC_MIxS_soil_organic_matter = models.CharField(max_length=100, choices=GSC_MIxS_soil_organic_matter_units, blank=False)
-	GSC_MIxS_soil_total_organic_carbon = models.CharField(max_length=100, choices=GSC_MIxS_soil_total_organic_carbon_units, blank=False)
-	GSC_MIxS_soil_water_content = models.CharField(max_length=100, choices=GSC_MIxS_soil_water_content_units, blank=False)
-	GSC_MIxS_soil_total_nitrogen = models.CharField(max_length=100, choices=GSC_MIxS_soil_total_nitrogen_units, blank=False)
+	slope_gradient = models.CharField(max_length=100, choices=slope_gradient_units, blank=False)
+	sample_weight_for_DNA_extraction = models.CharField(max_length=100, choices=sample_weight_for_DNA_extraction_units, blank=False)
+	microbial_biomass = models.CharField(max_length=100, choices=microbial_biomass_units, blank=False)
+	extreme_unusual_properties_Al_saturation = models.CharField(max_length=100, choices=extreme_unusual_properties_Al_saturation_units, blank=False)
+	mean_annual_and_seasonal_temperature = models.CharField(max_length=100, choices=mean_annual_and_seasonal_temperature_units, blank=False)
+	mean_annual_and_seasonal_precipitation = models.CharField(max_length=100, choices=mean_annual_and_seasonal_precipitation_units, blank=False)
+	soil_texture_measurement = models.CharField(max_length=100, choices=soil_texture_measurement_units, blank=False)
+	total_organic_carbon = models.CharField(max_length=100, choices=total_organic_carbon_units, blank=False)
+	water_content = models.CharField(max_length=100, choices=water_content_units, blank=False)
 
 class GSC_MIxS_human_gut(SelfDescribingModel):
 
-	GSC_MIxS_human_gut_sequence_quality_check_choice = [('manual', 'manual'), ('none', 'none'), ('software', 'software')]
-	GSC_MIxS_human_gut_geographic_location_country_and_or_sea_choice = [('Afghanistan', 'Afghanistan'), ('Albania', 'Albania'), ('Algeria', 'Algeria'), ('American Samoa', 'American Samoa'), ('Andorra', 'Andorra'), ('Angola', 'Angola'), ('Anguilla', 'Anguilla'), ('Antarctica', 'Antarctica'), ('Antigua and Barbuda', 'Antigua and Barbuda'), ('Arctic Ocean', 'Arctic Ocean'), ('Argentina', 'Argentina'), ('Armenia', 'Armenia'), ('Aruba', 'Aruba'), ('Ashmore and Cartier Islands', 'Ashmore and Cartier Islands'), ('Atlantic Ocean', 'Atlantic Ocean'), ('Australia', 'Australia'), ('Austria', 'Austria'), ('Azerbaijan', 'Azerbaijan'), ('Bahamas', 'Bahamas'), ('Bahrain', 'Bahrain'), ('Baker Island', 'Baker Island'), ('Baltic Sea', 'Baltic Sea'), ('Bangladesh', 'Bangladesh'), ('Barbados', 'Barbados'), ('Bassas da India', 'Bassas da India'), ('Belarus', 'Belarus'), ('Belgium', 'Belgium'), ('Belize', 'Belize'), ('Benin', 'Benin'), ('Bermuda', 'Bermuda'), ('Bhutan', 'Bhutan'), ('Bolivia', 'Bolivia'), ('Borneo', 'Borneo'), ('Bosnia and Herzegovina', 'Bosnia and Herzegovina'), ('Botswana', 'Botswana'), ('Bouvet Island', 'Bouvet Island'), ('Brazil', 'Brazil'), ('British Virgin Islands', 'British Virgin Islands'), ('Brunei', 'Brunei'), ('Bulgaria', 'Bulgaria'), ('Burkina Faso', 'Burkina Faso'), ('Burundi', 'Burundi'), ('Cambodia', 'Cambodia'), ('Cameroon', 'Cameroon'), ('Canada', 'Canada'), ('Cape Verde', 'Cape Verde'), ('Cayman Islands', 'Cayman Islands'), ('Central African Republic', 'Central African Republic'), ('Chad', 'Chad'), ('Chile', 'Chile'), ('China', 'China'), ('Christmas Island', 'Christmas Island'), ('Clipperton Island', 'Clipperton Island'), ('Cocos Islands', 'Cocos Islands'), ('Colombia', 'Colombia'), ('Comoros', 'Comoros'), ('Cook Islands', 'Cook Islands'), ('Coral Sea Islands', 'Coral Sea Islands'), ('Costa Rica', 'Costa Rica'), ("Cote d'Ivoire", "Cote d'Ivoire"), ('Croatia', 'Croatia'), ('Cuba', 'Cuba'), ('Curacao', 'Curacao'), ('Cyprus', 'Cyprus'), ('Czech Republic', 'Czech Republic'), ('Democratic Republic of the Congo', 'Democratic Republic of the Congo'), ('Denmark', 'Denmark'), ('Djibouti', 'Djibouti'), ('Dominica', 'Dominica'), ('Dominican Republic', 'Dominican Republic'), ('East Timor', 'East Timor'), ('Ecuador', 'Ecuador'), ('Egypt', 'Egypt'), ('El Salvador', 'El Salvador'), ('Equatorial Guinea', 'Equatorial Guinea'), ('Eritrea', 'Eritrea'), ('Estonia', 'Estonia'), ('Ethiopia', 'Ethiopia'), ('Europa Island', 'Europa Island'), ('Falkland Islands (Islas Malvinas)', 'Falkland Islands (Islas Malvinas)'), ('Faroe Islands', 'Faroe Islands'), ('Fiji', 'Fiji'), ('Finland', 'Finland'), ('France', 'France'), ('French Guiana', 'French Guiana'), ('French Polynesia', 'French Polynesia'), ('French Southern and Antarctic Lands', 'French Southern and Antarctic Lands'), ('Gabon', 'Gabon'), ('Gambia', 'Gambia'), ('Gaza Strip', 'Gaza Strip'), ('Georgia', 'Georgia'), ('Germany', 'Germany'), ('Ghana', 'Ghana'), ('Gibraltar', 'Gibraltar'), ('Glorioso Islands', 'Glorioso Islands'), ('Greece', 'Greece'), ('Greenland', 'Greenland'), ('Grenada', 'Grenada'), ('Guadeloupe', 'Guadeloupe'), ('Guam', 'Guam'), ('Guatemala', 'Guatemala'), ('Guernsey', 'Guernsey'), ('Guinea', 'Guinea'), ('Guinea-Bissau', 'Guinea-Bissau'), ('Guyana', 'Guyana'), ('Haiti', 'Haiti'), ('Heard Island and McDonald Islands', 'Heard Island and McDonald Islands'), ('Honduras', 'Honduras'), ('Hong Kong', 'Hong Kong'), ('Howland Island', 'Howland Island'), ('Hungary', 'Hungary'), ('Iceland', 'Iceland'), ('India', 'India'), ('Indian Ocean', 'Indian Ocean'), ('Indonesia', 'Indonesia'), ('Iran', 'Iran'), ('Iraq', 'Iraq'), ('Ireland', 'Ireland'), ('Isle of Man', 'Isle of Man'), ('Israel', 'Israel'), ('Italy', 'Italy'), ('Jamaica', 'Jamaica'), ('Jan Mayen', 'Jan Mayen'), ('Japan', 'Japan'), ('Jarvis Island', 'Jarvis Island'), ('Jersey', 'Jersey'), ('Johnston Atoll', 'Johnston Atoll'), ('Jordan', 'Jordan'), ('Juan de Nova Island', 'Juan de Nova Island'), ('Kazakhstan', 'Kazakhstan'), ('Kenya', 'Kenya'), ('Kerguelen Archipelago', 'Kerguelen Archipelago'), ('Kingman Reef', 'Kingman Reef'), ('Kiribati', 'Kiribati'), ('Kosovo', 'Kosovo'), ('Kuwait', 'Kuwait'), ('Kyrgyzstan', 'Kyrgyzstan'), ('Laos', 'Laos'), ('Latvia', 'Latvia'), ('Lebanon', 'Lebanon'), ('Lesotho', 'Lesotho'), ('Liberia', 'Liberia'), ('Libya', 'Libya'), ('Liechtenstein', 'Liechtenstein'), ('Lithuania', 'Lithuania'), ('Luxembourg', 'Luxembourg'), ('Macau', 'Macau'), ('Macedonia', 'Macedonia'), ('Madagascar', 'Madagascar'), ('Malawi', 'Malawi'), ('Malaysia', 'Malaysia'), ('Maldives', 'Maldives'), ('Mali', 'Mali'), ('Malta', 'Malta'), ('Marshall Islands', 'Marshall Islands'), ('Martinique', 'Martinique'), ('Mauritania', 'Mauritania'), ('Mauritius', 'Mauritius'), ('Mayotte', 'Mayotte'), ('Mediterranean Sea', 'Mediterranean Sea'), ('Mexico', 'Mexico'), ('Micronesia', 'Micronesia'), ('Midway Islands', 'Midway Islands'), ('Moldova', 'Moldova'), ('Monaco', 'Monaco'), ('Mongolia', 'Mongolia'), ('Montenegro', 'Montenegro'), ('Montserrat', 'Montserrat'), ('Morocco', 'Morocco'), ('Mozambique', 'Mozambique'), ('Myanmar', 'Myanmar'), ('Namibia', 'Namibia'), ('Nauru', 'Nauru'), ('Navassa Island', 'Navassa Island'), ('Nepal', 'Nepal'), ('Netherlands', 'Netherlands'), ('New Caledonia', 'New Caledonia'), ('New Zealand', 'New Zealand'), ('Nicaragua', 'Nicaragua'), ('Niger', 'Niger'), ('Nigeria', 'Nigeria'), ('Niue', 'Niue'), ('Norfolk Island', 'Norfolk Island'), ('North Korea', 'North Korea'), ('North Sea', 'North Sea'), ('Northern Mariana Islands', 'Northern Mariana Islands'), ('Norway', 'Norway'), ('Oman', 'Oman'), ('Pacific Ocean', 'Pacific Ocean'), ('Pakistan', 'Pakistan'), ('Palau', 'Palau'), ('Palmyra Atoll', 'Palmyra Atoll'), ('Panama', 'Panama'), ('Papua New Guinea', 'Papua New Guinea'), ('Paracel Islands', 'Paracel Islands'), ('Paraguay', 'Paraguay'), ('Peru', 'Peru'), ('Philippines', 'Philippines'), ('Pitcairn Islands', 'Pitcairn Islands'), ('Poland', 'Poland'), ('Portugal', 'Portugal'), ('Puerto Rico', 'Puerto Rico'), ('Qatar', 'Qatar'), ('Republic of the Congo', 'Republic of the Congo'), ('Reunion', 'Reunion'), ('Romania', 'Romania'), ('Ross Sea', 'Ross Sea'), ('Russia', 'Russia'), ('Rwanda', 'Rwanda'), ('Saint Helena', 'Saint Helena'), ('Saint Kitts and Nevis', 'Saint Kitts and Nevis'), ('Saint Lucia', 'Saint Lucia'), ('Saint Pierre and Miquelon', 'Saint Pierre and Miquelon'), ('Saint Vincent and the Grenadines', 'Saint Vincent and the Grenadines'), ('Samoa', 'Samoa'), ('San Marino', 'San Marino'), ('Sao Tome and Principe', 'Sao Tome and Principe'), ('Saudi Arabia', 'Saudi Arabia'), ('Senegal', 'Senegal'), ('Serbia', 'Serbia'), ('Seychelles', 'Seychelles'), ('Sierra Leone', 'Sierra Leone'), ('Singapore', 'Singapore'), ('Sint Maarten', 'Sint Maarten'), ('Slovakia', 'Slovakia'), ('Slovenia', 'Slovenia'), ('Solomon Islands', 'Solomon Islands'), ('Somalia', 'Somalia'), ('South Africa', 'South Africa'), ('South Georgia and the South Sandwich Islands', 'South Georgia and the South Sandwich Islands'), ('South Korea', 'South Korea'), ('Southern Ocean', 'Southern Ocean'), ('Spain', 'Spain'), ('Spratly Islands', 'Spratly Islands'), ('Sri Lanka', 'Sri Lanka'), ('Sudan', 'Sudan'), ('Suriname', 'Suriname'), ('Svalbard', 'Svalbard'), ('Swaziland', 'Swaziland'), ('Sweden', 'Sweden'), ('Switzerland', 'Switzerland'), ('Syria', 'Syria'), ('Taiwan', 'Taiwan'), ('Tajikistan', 'Tajikistan'), ('Tanzania', 'Tanzania'), ('Tasman Sea', 'Tasman Sea'), ('Thailand', 'Thailand'), ('Togo', 'Togo'), ('Tokelau', 'Tokelau'), ('Tonga', 'Tonga'), ('Trinidad and Tobago', 'Trinidad and Tobago'), ('Tromelin Island', 'Tromelin Island'), ('Tunisia', 'Tunisia'), ('Turkey', 'Turkey'), ('Turkmenistan', 'Turkmenistan'), ('Turks and Caicos Islands', 'Turks and Caicos Islands'), ('Tuvalu', 'Tuvalu'), ('USA', 'USA'), ('Uganda', 'Uganda'), ('Ukraine', 'Ukraine'), ('United Arab Emirates', 'United Arab Emirates'), ('United Kingdom', 'United Kingdom'), ('Uruguay', 'Uruguay'), ('Uzbekistan', 'Uzbekistan'), ('Vanuatu', 'Vanuatu'), ('Venezuela', 'Venezuela'), ('Viet Nam', 'Viet Nam'), ('Virgin Islands', 'Virgin Islands'), ('Wake Island', 'Wake Island'), ('Wallis and Futuna', 'Wallis and Futuna'), ('West Bank', 'West Bank'), ('Western Sahara', 'Western Sahara'), ('Yemen', 'Yemen'), ('Zambia', 'Zambia'), ('Zimbabwe', 'Zimbabwe'), ('missing: control sample', 'missing: control sample'), ('missing: data agreement established pre-2023', 'missing: data agreement established pre-2023'), ('missing: endangered species', 'missing: endangered species'), ('missing: human-identifiable', 'missing: human-identifiable'), ('missing: lab stock', 'missing: lab stock'), ('missing: sample group', 'missing: sample group'), ('missing: synthetic construct', 'missing: synthetic construct'), ('missing: third party data', 'missing: third party data'), ('not applicable', 'not applicable'), ('not collected', 'not collected'), ('not provided', 'not provided'), ('restricted access', 'restricted access')]
-	GSC_MIxS_human_gut_medical_history_performed_choice = [('No', 'No'), ('Yes', 'Yes')]
-	GSC_MIxS_human_gut_oxygenation_status_of_sample_choice = [('aerobic', 'aerobic'), ('anaerobic', 'anaerobic')]
-	GSC_MIxS_human_gut_IHMC_medication_code_choice = [('01=1=Analgesics/NSAIDS', '01=1=Analgesics/NSAIDS'), ('02=2=Anesthetics', '02=2=Anesthetics'), ('03=3=Antacids/H2 antagonists', '03=3=Antacids/H2 antagonists'), ('04=4=Anti-acne', '04=4=Anti-acne'), ('05=5=Anti-asthma/bronchodilators', '05=5=Anti-asthma/bronchodilators'), ('06=6=Anti-cholesterol/Anti-hyperlipidemic', '06=6=Anti-cholesterol/Anti-hyperlipidemic'), ('07=7=Anti-coagulants', '07=7=Anti-coagulants'), ('08=8=Antibiotics/(anti)-infectives, parasitics, microbials', '08=8=Antibiotics/(anti)-infectives, parasitics, microbials'), ('09=9=Antidepressants/mood-altering drugs', '09=9=Antidepressants/mood-altering drugs'), ('10=10=Antihistamines/ Decongestants', '10=10=Antihistamines/ Decongestants'), ('11=11=Antihypertensives', '11=11=Antihypertensives'), ('12=12=Cardiovascular, other than hyperlipidemic/HTN', '12=12=Cardiovascular, other than hyperlipidemic/HTN'), ('13=13=Contraceptives (oral, implant, injectable)', '13=13=Contraceptives (oral, implant, injectable)'), ('14=14=Emergency/support medications', '14=14=Emergency/support medications'), ('15=15=Endocrine/Metabolic agents', '15=15=Endocrine/Metabolic agents'), ('16=16=GI meds (anti-diarrheal, emetic, spasmodics)', '16=16=GI meds (anti-diarrheal, emetic, spasmodics)'), ('17=17=Herbal/homeopathic products', '17=17=Herbal/homeopathic products'), ('18=18=Hormones/steroids', '18=18=Hormones/steroids'), ('19=19=OTC cold & flu', '19=19=OTC cold & flu'), ('20=20=Vaccine prophylaxis', '20=20=Vaccine prophylaxis'), ('21=21=Vitamins, minerals, food supplements', '21=21=Vitamins, minerals, food supplements'), ('99=99=Other', '99=99=Other')]
-	GSC_MIxS_human_gut_host_occupation_choice = [('01=01 Accounting/Finance', '01=01 Accounting/Finance'), ('02=02 Advertising/Public Relations', '02=02 Advertising/Public Relations'), ('03=03 Arts/Entertainment/Publishing', '03=03 Arts/Entertainment/Publishing'), ('04=04 Automotive', '04=04 Automotive'), ('05=05 Banking/ Mortgage', '05=05 Banking/ Mortgage'), ('06=06 Biotech', '06=06 Biotech'), ('07=07 Broadcast/Journalism', '07=07 Broadcast/Journalism'), ('08=08 Business Development', '08=08 Business Development'), ('09=09 Clerical/Administrative', '09=09 Clerical/Administrative'), ('10=10 Construction/Trades', '10=10 Construction/Trades'), ('11=11 Consultant', '11=11 Consultant'), ('12=12 Customer Services', '12=12 Customer Services'), ('13=13 Design', '13=13 Design'), ('14=14 Education', '14=14 Education'), ('15=15 Engineering', '15=15 Engineering'), ('16=16 Entry Level', '16=16 Entry Level'), ('17=17 Executive', '17=17 Executive'), ('18=18 Food Service', '18=18 Food Service'), ('19=19 Government', '19=19 Government'), ('20=20 Grocery', '20=20 Grocery'), ('21=21 Healthcare', '21=21 Healthcare'), ('22=22 Hospitality', '22=22 Hospitality'), ('23=23 Human Resources', '23=23 Human Resources'), ('24=24 Information Technology', '24=24 Information Technology'), ('25=25 Insurance', '25=25 Insurance'), ('26=26 Law/Legal', '26=26 Law/Legal'), ('27=27 Management', '27=27 Management'), ('28=28 Manufacturing', '28=28 Manufacturing'), ('29=29 Marketing', '29=29 Marketing'), ('30=30 Pharmaceutical', '30=30 Pharmaceutical'), ('31=31 Professional Services', '31=31 Professional Services'), ('32=32 Purchasing', '32=32 Purchasing'), ('33=33 Quality Assurance (QA)', '33=33 Quality Assurance (QA)'), ('34=34 Research', '34=34 Research'), ('35=35 Restaurant', '35=35 Restaurant'), ('36=36 Retail', '36=36 Retail'), ('37=37 Sales', '37=37 Sales'), ('38=38 Science', '38=38 Science'), ('39=39 Security/Law Enforcement', '39=39 Security/Law Enforcement'), ('40=40 Shipping/Distribution', '40=40 Shipping/Distribution'), ('41=41 Strategy', '41=41 Strategy'), ('42=42 Student', '42=42 Student'), ('43=43 Telecommunications', '43=43 Telecommunications'), ('44=44 Training', '44=44 Training'), ('45=45 Transportation', '45=45 Transportation'), ('46=46 Warehouse', '46=46 Warehouse'), ('47=47 Other', '47=47 Other'), ('99=99 Unknown/Refused', '99=99 Unknown/Refused')]
-	GSC_MIxS_human_gut_host_sex_choice = [('female', 'female'), ('hermaphrodite', 'hermaphrodite'), ('male', 'male'), ('missing: control sample', 'missing: control sample'), ('missing: data agreement established pre-2023', 'missing: data agreement established pre-2023'), ('missing: endangered species', 'missing: endangered species'), ('missing: human-identifiable', 'missing: human-identifiable'), ('missing: lab stock', 'missing: lab stock'), ('missing: sample group', 'missing: sample group'), ('missing: synthetic construct', 'missing: synthetic construct'), ('missing: third party data', 'missing: third party data'), ('neuter', 'neuter'), ('not applicable', 'not applicable'), ('not collected', 'not collected'), ('not provided', 'not provided'), ('other', 'other'), ('restricted access', 'restricted access')]
-	GSC_MIxS_human_gut_trophic_level_choice = [('autotroph', 'autotroph'), ('carboxydotroph', 'carboxydotroph'), ('chemoautotroph', 'chemoautotroph'), ('chemoheterotroph', 'chemoheterotroph'), ('chemolithoautotroph', 'chemolithoautotroph'), ('chemolithotroph', 'chemolithotroph'), ('chemoorganoheterotroph', 'chemoorganoheterotroph'), ('chemoorganotroph', 'chemoorganotroph'), ('chemosynthetic', 'chemosynthetic'), ('chemotroph', 'chemotroph'), ('copiotroph', 'copiotroph'), ('diazotroph', 'diazotroph'), ('facultative autotroph', 'facultative autotroph'), ('heterotroph', 'heterotroph'), ('lithoautotroph', 'lithoautotroph'), ('lithoheterotroph', 'lithoheterotroph'), ('lithotroph', 'lithotroph'), ('methanotroph', 'methanotroph'), ('methylotroph', 'methylotroph'), ('mixotroph', 'mixotroph'), ('obligate chemoautolithotroph', 'obligate chemoautolithotroph'), ('oligotroph', 'oligotroph'), ('organoheterotroph', 'organoheterotroph'), ('organotroph', 'organotroph'), ('photoautotroph', 'photoautotroph'), ('photoheterotroph', 'photoheterotroph'), ('photolithoautotroph', 'photolithoautotroph'), ('photolithotroph', 'photolithotroph'), ('photosynthetic', 'photosynthetic'), ('phototroph', 'phototroph')]
-	GSC_MIxS_human_gut_relationship_to_oxygen_choice = [('aerobe', 'aerobe'), ('anaerobe', 'anaerobe'), ('facultative', 'facultative'), ('microaerophilic', 'microaerophilic'), ('microanaerobe', 'microanaerobe'), ('obligate aerobe', 'obligate aerobe'), ('obligate anaerobe', 'obligate anaerobe')]
-	GSC_MIxS_human_gut_observed_biotic_relationship_choice = [('commensal', 'commensal'), ('free living', 'free living'), ('mutualism', 'mutualism'), ('parasite', 'parasite'), ('symbiont', 'symbiont')]
 
-	GSC_MIxS_human_gut_number_of_replicons_validator = "[+-]?[0-9]+"
-	GSC_MIxS_human_gut_extrachromosomal_elements_validator = "[+-]?[0-9]+"
-	GSC_MIxS_human_gut_estimated_size_validator = "[+-]?[0-9]+"
-	GSC_MIxS_human_gut_sample_volume_or_weight_for_DNA_extraction_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_human_gut_library_size_validator = "[+-]?[0-9]+"
-	GSC_MIxS_human_gut_library_reads_sequenced_validator = "[+-]?[0-9]+"
-	GSC_MIxS_human_gut_collection_date_validator = "(^[12][0-9]{3}(-(0[1-9]|1[0-2])(-(0[1-9]|[12][0-9]|3[01])(T[0-9]{2}:[0-9]{2}(:[0-9]{2})?Z?([+-][0-9]{1,2})?)?)?)?(/[0-9]{4}(-[0-9]{2}(-[0-9]{2}(T[0-9]{2}:[0-9]{2}(:[0-9]{2})?Z?([+-][0-9]{1,2})?)?)?)?)?$)|(^not collected$)|(^not provided$)|(^restricted access$)|(^missing: control sample$)|(^missing: sample group$)|(^missing: synthetic construct$)|(^missing: lab stock$)|(^missing: third party data$)|(^missing: data agreement established pre-2023$)|(^missing: endangered species$)|(^missing: human-identifiable$)"
-	GSC_MIxS_human_gut_geographic_location_latitude_validator = "(^[+-]?[0-9]+.?[0-9]{0,8}$)|(^not collected$)|(^not provided$)|(^restricted access$)|(^missing: control sample$)|(^missing: sample group$)|(^missing: synthetic construct$)|(^missing: lab stock$)|(^missing: third party data$)|(^missing: data agreement established pre-2023$)|(^missing: endangered species$)|(^missing: human-identifiable$)"
-	GSC_MIxS_human_gut_geographic_location_longitude_validator = "(^[+-]?[0-9]+.?[0-9]{0,8}$)|(^not collected$)|(^not provided$)|(^restricted access$)|(^missing: control sample$)|(^missing: sample group$)|(^missing: synthetic construct$)|(^missing: lab stock$)|(^missing: third party data$)|(^missing: data agreement established pre-2023$)|(^missing: endangered species$)|(^missing: human-identifiable$)"
-	GSC_MIxS_human_gut_amount_or_size_of_sample_collected_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_human_gut_sample_storage_duration_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_human_gut_sample_storage_temperature_validator = "[+-]?(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_human_gut_host_age_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_human_gut_host_height_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_human_gut_host_body_mass_index_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_human_gut_host_total_mass_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_human_gut_host_body_temperature_validator = "[+-]?(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_human_gut_temperature_validator = "[+-]?(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_human_gut_salinity_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_human_gut_host_pulse_validator = "[+-]?[0-9]+"
 
 	sampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE, default=1)
 	sample = models.ForeignKey(Sample, on_delete=models.CASCADE, default=1)
-	GSC_MIxS_human_gut_project_name= models.CharField(max_length=100, blank=False,help_text="Name of th")
-	GSC_MIxS_human_gut_experimental_factor= models.CharField(max_length=100, blank=True,help_text="Experiment")
-	GSC_MIxS_human_gut_ploidy= models.CharField(max_length=100, blank=True,help_text="The ploidy")
-	GSC_MIxS_human_gut_number_of_replicons= models.CharField(max_length=100, blank=True,help_text="Reports th", validators=[RegexValidator(GSC_MIxS_human_gut_number_of_replicons_validator)])
-	GSC_MIxS_human_gut_extrachromosomal_elements= models.CharField(max_length=100, blank=True,help_text="Do plasmid", validators=[RegexValidator(GSC_MIxS_human_gut_extrachromosomal_elements_validator)])
-	GSC_MIxS_human_gut_estimated_size= models.CharField(max_length=100, blank=True,help_text="The estima", validators=[RegexValidator(GSC_MIxS_human_gut_estimated_size_validator)])
-	GSC_MIxS_human_gut_reference_for_biomaterial= models.CharField(max_length=100, blank=True,help_text="Primary pu")
-	GSC_MIxS_human_gut_annotation_source= models.CharField(max_length=100, blank=True,help_text="For cases ")
-	GSC_MIxS_human_gut_sample_volume_or_weight_for_DNA_extraction= models.CharField(max_length=100, blank=True,help_text="Volume (ml", validators=[RegexValidator(GSC_MIxS_human_gut_sample_volume_or_weight_for_DNA_extraction_validator)])
-	GSC_MIxS_human_gut_nucleic_acid_extraction= models.CharField(max_length=100, blank=True,help_text="A link to ")
-	GSC_MIxS_human_gut_nucleic_acid_amplification= models.CharField(max_length=100, blank=True,help_text="A link to ")
-	GSC_MIxS_human_gut_library_size= models.CharField(max_length=100, blank=True,help_text="Total numb", validators=[RegexValidator(GSC_MIxS_human_gut_library_size_validator)])
-	GSC_MIxS_human_gut_library_reads_sequenced= models.CharField(max_length=100, blank=True,help_text="Total numb", validators=[RegexValidator(GSC_MIxS_human_gut_library_reads_sequenced_validator)])
-	GSC_MIxS_human_gut_library_construction_method= models.CharField(max_length=100, blank=True,help_text="Library co")
-	GSC_MIxS_human_gut_library_vector= models.CharField(max_length=100, blank=True,help_text="Cloning ve")
-	GSC_MIxS_human_gut_library_screening_strategy= models.CharField(max_length=100, blank=True,help_text="Specific e")
-	GSC_MIxS_human_gut_target_gene= models.CharField(max_length=100, blank=True,help_text="Targeted g")
-	GSC_MIxS_human_gut_target_subfragment= models.CharField(max_length=100, blank=True,help_text="Name of su")
-	GSC_MIxS_human_gut_pcr_primers= models.CharField(max_length=100, blank=True,help_text="PCR primer")
-	GSC_MIxS_human_gut_multiplex_identifiers= models.CharField(max_length=100, blank=True,help_text="Molecular ")
-	GSC_MIxS_human_gut_adapters= models.CharField(max_length=100, blank=True,help_text="Adapters p")
-	GSC_MIxS_human_gut_pcr_conditions= models.CharField(max_length=100, blank=True,help_text="Descriptio")
-	GSC_MIxS_human_gut_sequencing_method= models.CharField(max_length=100, blank=True,help_text="Sequencing")
-	GSC_MIxS_human_gut_sequence_quality_check= models.CharField(max_length=100, blank=True,help_text="Indicate i", choices=GSC_MIxS_human_gut_sequence_quality_check_choice)
-	GSC_MIxS_human_gut_chimera_check_software= models.CharField(max_length=100, blank=True,help_text="Tool(s) us")
-	GSC_MIxS_human_gut_relevant_electronic_resources= models.CharField(max_length=100, blank=True,help_text="A related ")
-	GSC_MIxS_human_gut_relevant_standard_operating_procedures= models.CharField(max_length=100, blank=True,help_text="Standard o")
-	GSC_MIxS_human_gut_negative_control_type= models.CharField(max_length=100, blank=True,help_text="The substa")
-	GSC_MIxS_human_gut_positive_control_type= models.CharField(max_length=100, blank=True,help_text="The substa")
-	GSC_MIxS_human_gut_collection_date= models.CharField(max_length=100, blank=False,help_text="The date t", validators=[RegexValidator(GSC_MIxS_human_gut_collection_date_validator)])
-	GSC_MIxS_human_gut_geographic_location_country_and_or_sea= models.CharField(max_length=100, blank=False,help_text="The locati", choices=GSC_MIxS_human_gut_geographic_location_country_and_or_sea_choice)
-	GSC_MIxS_human_gut_geographic_location_latitude= models.CharField(max_length=100, blank=False,help_text="The geogra", validators=[RegexValidator(GSC_MIxS_human_gut_geographic_location_latitude_validator)])
-	GSC_MIxS_human_gut_geographic_location_longitude= models.CharField(max_length=100, blank=False,help_text="The geogra", validators=[RegexValidator(GSC_MIxS_human_gut_geographic_location_longitude_validator)])
-	GSC_MIxS_human_gut_geographic_location_region_and_locality= models.CharField(max_length=100, blank=True,help_text="The geogra")
-	GSC_MIxS_human_gut_broad_scale_environmental_context= models.CharField(max_length=100, blank=False,help_text="Report the")
-	GSC_MIxS_human_gut_local_environmental_context= models.CharField(max_length=100, blank=False,help_text="Report the")
-	GSC_MIxS_human_gut_environmental_medium= models.CharField(max_length=100, blank=False,help_text="Report the")
-	GSC_MIxS_human_gut_source_material_identifiers= models.CharField(max_length=100, blank=True,help_text="A unique i")
-	GSC_MIxS_human_gut_sample_material_processing= models.CharField(max_length=100, blank=True,help_text="A brief de")
-	GSC_MIxS_human_gut_isolation_and_growth_condition= models.CharField(max_length=100, blank=True,help_text="Publicatio")
-	GSC_MIxS_human_gut_propagation= models.CharField(max_length=100, blank=True,help_text="The type o")
-	GSC_MIxS_human_gut_amount_or_size_of_sample_collected= models.CharField(max_length=100, blank=True,help_text="The total ", validators=[RegexValidator(GSC_MIxS_human_gut_amount_or_size_of_sample_collected_validator)])
-	GSC_MIxS_human_gut_host_body_product= models.CharField(max_length=100, blank=True,help_text="substance ")
-	GSC_MIxS_human_gut_medical_history_performed= models.CharField(max_length=100, blank=True,help_text="whether fu", choices=GSC_MIxS_human_gut_medical_history_performed_choice)
-	GSC_MIxS_human_gut_oxygenation_status_of_sample= models.CharField(max_length=100, blank=True,help_text="oxygenatio", choices=GSC_MIxS_human_gut_oxygenation_status_of_sample_choice)
-	GSC_MIxS_human_gut_organism_count= models.CharField(max_length=100, blank=True,help_text="Total cell")
-	GSC_MIxS_human_gut_sample_storage_duration= models.CharField(max_length=100, blank=True,help_text="duration f", validators=[RegexValidator(GSC_MIxS_human_gut_sample_storage_duration_validator)])
-	GSC_MIxS_human_gut_sample_storage_temperature= models.CharField(max_length=100, blank=True,help_text="temperatur", validators=[RegexValidator(GSC_MIxS_human_gut_sample_storage_temperature_validator)])
-	GSC_MIxS_human_gut_sample_storage_location= models.CharField(max_length=100, blank=True,help_text="location a")
-	GSC_MIxS_human_gut_sample_collection_device= models.CharField(max_length=100, blank=True,help_text="The device")
-	GSC_MIxS_human_gut_sample_collection_method= models.CharField(max_length=100, blank=True,help_text="The method")
-	GSC_MIxS_human_gut_gastrointestinal_tract_disorder= models.CharField(max_length=100, blank=True,help_text="History of")
-	GSC_MIxS_human_gut_liver_disorder= models.CharField(max_length=100, blank=True,help_text="History of")
-	GSC_MIxS_human_gut_host_disease_status= models.CharField(max_length=100, blank=True,help_text="list of di")
-	GSC_MIxS_human_gut_host_subject_id= models.CharField(max_length=100, blank=True,help_text="a unique i")
-	GSC_MIxS_human_gut_IHMC_medication_code= models.CharField(max_length=100, blank=True,help_text="can includ", choices=GSC_MIxS_human_gut_IHMC_medication_code_choice)
-	GSC_MIxS_human_gut_host_age= models.CharField(max_length=100, blank=True,help_text="age of hos", validators=[RegexValidator(GSC_MIxS_human_gut_host_age_validator)])
-	GSC_MIxS_human_gut_host_body_site= models.CharField(max_length=100, blank=True,help_text="name of bo")
-	GSC_MIxS_human_gut_host_height= models.CharField(max_length=100, blank=True,help_text="the height", validators=[RegexValidator(GSC_MIxS_human_gut_host_height_validator)])
-	GSC_MIxS_human_gut_host_body_mass_index= models.CharField(max_length=100, blank=True,help_text="body mass ", validators=[RegexValidator(GSC_MIxS_human_gut_host_body_mass_index_validator)])
-	GSC_MIxS_human_gut_ethnicity= models.CharField(max_length=100, blank=True,help_text="A category")
-	GSC_MIxS_human_gut_host_occupation= models.CharField(max_length=100, blank=True,help_text="most frequ", choices=GSC_MIxS_human_gut_host_occupation_choice)
-	GSC_MIxS_human_gut_host_total_mass= models.CharField(max_length=100, blank=True,help_text="total mass", validators=[RegexValidator(GSC_MIxS_human_gut_host_total_mass_validator)])
-	GSC_MIxS_human_gut_host_phenotype= models.CharField(max_length=100, blank=True,help_text="phenotype ")
-	GSC_MIxS_human_gut_host_body_temperature= models.CharField(max_length=100, blank=True,help_text="core body ", validators=[RegexValidator(GSC_MIxS_human_gut_host_body_temperature_validator)])
-	GSC_MIxS_human_gut_host_sex= models.CharField(max_length=100, blank=True,help_text="Gender or ", choices=GSC_MIxS_human_gut_host_sex_choice)
-	GSC_MIxS_human_gut_temperature= models.CharField(max_length=100, blank=True,help_text="temperatur", validators=[RegexValidator(GSC_MIxS_human_gut_temperature_validator)])
-	GSC_MIxS_human_gut_salinity= models.CharField(max_length=100, blank=True,help_text="The total ", validators=[RegexValidator(GSC_MIxS_human_gut_salinity_validator)])
-	GSC_MIxS_human_gut_special_diet= models.CharField(max_length=100, blank=True,help_text="specificat")
-	GSC_MIxS_human_gut_host_diet= models.CharField(max_length=100, blank=True,help_text="type of di")
-	GSC_MIxS_human_gut_host_last_meal= models.CharField(max_length=100, blank=True,help_text="content of")
-	GSC_MIxS_human_gut_host_family_relationship= models.CharField(max_length=100, blank=True,help_text="relationsh")
-	GSC_MIxS_human_gut_host_genotype= models.CharField(max_length=100, blank=True,help_text="observed g")
-	GSC_MIxS_human_gut_host_pulse= models.CharField(max_length=100, blank=True,help_text="resting pu", validators=[RegexValidator(GSC_MIxS_human_gut_host_pulse_validator)])
-	GSC_MIxS_human_gut_subspecific_genetic_lineage= models.CharField(max_length=100, blank=True,help_text="Informatio")
-	GSC_MIxS_human_gut_trophic_level= models.CharField(max_length=100, blank=True,help_text="Trophic le", choices=GSC_MIxS_human_gut_trophic_level_choice)
-	GSC_MIxS_human_gut_relationship_to_oxygen= models.CharField(max_length=100, blank=True,help_text="Is this or", choices=GSC_MIxS_human_gut_relationship_to_oxygen_choice)
-	GSC_MIxS_human_gut_known_pathogenicity= models.CharField(max_length=100, blank=True,help_text="To what is")
-	GSC_MIxS_human_gut_encoded_traits= models.CharField(max_length=100, blank=True,help_text="Should inc")
-	GSC_MIxS_human_gut_observed_biotic_relationship= models.CharField(max_length=100, blank=True,help_text="Is it free", choices=GSC_MIxS_human_gut_observed_biotic_relationship_choice)
-	GSC_MIxS_human_gut_chemical_administration= models.CharField(max_length=100, blank=True,help_text="list of ch")
-	GSC_MIxS_human_gut_perturbation= models.CharField(max_length=100, blank=True,help_text="type of pe")
+	gastrointestinal_tract_disorder= models.CharField(max_length=100, blank=True,help_text="History of")
+	liver_disorder= models.CharField(max_length=100, blank=True,help_text="History of")
+	special_diet= models.CharField(max_length=100, blank=True,help_text="specificat")
 
 	fields = {
-		'GSC_MIxS_human_gut_project_name': 'project name',
-		'GSC_MIxS_human_gut_experimental_factor': 'experimental factor',
-		'GSC_MIxS_human_gut_ploidy': 'ploidy',
-		'GSC_MIxS_human_gut_number_of_replicons': 'number of replicons',
-		'GSC_MIxS_human_gut_extrachromosomal_elements': 'extrachromosomal elements',
-		'GSC_MIxS_human_gut_estimated_size': 'estimated size',
-		'GSC_MIxS_human_gut_reference_for_biomaterial': 'reference for biomaterial',
-		'GSC_MIxS_human_gut_annotation_source': 'annotation source',
-		'GSC_MIxS_human_gut_sample_volume_or_weight_for_DNA_extraction': 'sample volume or weight for DNA extraction',
-		'GSC_MIxS_human_gut_nucleic_acid_extraction': 'nucleic acid extraction',
-		'GSC_MIxS_human_gut_nucleic_acid_amplification': 'nucleic acid amplification',
-		'GSC_MIxS_human_gut_library_size': 'library size',
-		'GSC_MIxS_human_gut_library_reads_sequenced': 'library reads sequenced',
-		'GSC_MIxS_human_gut_library_construction_method': 'library construction method',
-		'GSC_MIxS_human_gut_library_vector': 'library vector',
-		'GSC_MIxS_human_gut_library_screening_strategy': 'library screening strategy',
-		'GSC_MIxS_human_gut_target_gene': 'target gene',
-		'GSC_MIxS_human_gut_target_subfragment': 'target subfragment',
-		'GSC_MIxS_human_gut_pcr_primers': 'pcr primers',
-		'GSC_MIxS_human_gut_multiplex_identifiers': 'multiplex identifiers',
-		'GSC_MIxS_human_gut_adapters': 'adapters',
-		'GSC_MIxS_human_gut_pcr_conditions': 'pcr conditions',
-		'GSC_MIxS_human_gut_sequencing_method': 'sequencing method',
-		'GSC_MIxS_human_gut_sequence_quality_check': 'sequence quality check',
-		'GSC_MIxS_human_gut_chimera_check_software': 'chimera check software',
-		'GSC_MIxS_human_gut_relevant_electronic_resources': 'relevant electronic resources',
-		'GSC_MIxS_human_gut_relevant_standard_operating_procedures': 'relevant standard operating procedures',
-		'GSC_MIxS_human_gut_negative_control_type': 'negative control type',
-		'GSC_MIxS_human_gut_positive_control_type': 'positive control type',
-		'GSC_MIxS_human_gut_collection_date': 'collection date',
-		'GSC_MIxS_human_gut_geographic_location_country_and_or_sea': 'geographic location (country and/or sea)',
-		'GSC_MIxS_human_gut_geographic_location_latitude': 'geographic location (latitude)',
-		'GSC_MIxS_human_gut_geographic_location_longitude': 'geographic location (longitude)',
-		'GSC_MIxS_human_gut_geographic_location_region_and_locality': 'geographic location (region and locality)',
-		'GSC_MIxS_human_gut_broad_scale_environmental_context': 'broad-scale environmental context',
-		'GSC_MIxS_human_gut_local_environmental_context': 'local environmental context',
-		'GSC_MIxS_human_gut_environmental_medium': 'environmental medium',
-		'GSC_MIxS_human_gut_source_material_identifiers': 'source material identifiers',
-		'GSC_MIxS_human_gut_sample_material_processing': 'sample material processing',
-		'GSC_MIxS_human_gut_isolation_and_growth_condition': 'isolation and growth condition',
-		'GSC_MIxS_human_gut_propagation': 'propagation',
-		'GSC_MIxS_human_gut_amount_or_size_of_sample_collected': 'amount or size of sample collected',
-		'GSC_MIxS_human_gut_host_body_product': 'host body product',
-		'GSC_MIxS_human_gut_medical_history_performed': 'medical history performed',
-		'GSC_MIxS_human_gut_oxygenation_status_of_sample': 'oxygenation status of sample',
-		'GSC_MIxS_human_gut_organism_count': 'organism count',
-		'GSC_MIxS_human_gut_sample_storage_duration': 'sample storage duration',
-		'GSC_MIxS_human_gut_sample_storage_temperature': 'sample storage temperature',
-		'GSC_MIxS_human_gut_sample_storage_location': 'sample storage location',
-		'GSC_MIxS_human_gut_sample_collection_device': 'sample collection device',
-		'GSC_MIxS_human_gut_sample_collection_method': 'sample collection method',
-		'GSC_MIxS_human_gut_gastrointestinal_tract_disorder': 'gastrointestinal tract disorder',
-		'GSC_MIxS_human_gut_liver_disorder': 'liver disorder',
-		'GSC_MIxS_human_gut_host_disease_status': 'host disease status',
-		'GSC_MIxS_human_gut_host_subject_id': 'host subject id',
-		'GSC_MIxS_human_gut_IHMC_medication_code': 'IHMC medication code',
-		'GSC_MIxS_human_gut_host_age': 'host age',
-		'GSC_MIxS_human_gut_host_body_site': 'host body site',
-		'GSC_MIxS_human_gut_host_height': 'host height',
-		'GSC_MIxS_human_gut_host_body_mass_index': 'host body-mass index',
-		'GSC_MIxS_human_gut_ethnicity': 'ethnicity',
-		'GSC_MIxS_human_gut_host_occupation': 'host occupation',
-		'GSC_MIxS_human_gut_host_total_mass': 'host total mass',
-		'GSC_MIxS_human_gut_host_phenotype': 'host phenotype',
-		'GSC_MIxS_human_gut_host_body_temperature': 'host body temperature',
-		'GSC_MIxS_human_gut_host_sex': 'host sex',
-		'GSC_MIxS_human_gut_temperature': 'temperature',
-		'GSC_MIxS_human_gut_salinity': 'salinity',
-		'GSC_MIxS_human_gut_special_diet': 'special diet',
-		'GSC_MIxS_human_gut_host_diet': 'host diet',
-		'GSC_MIxS_human_gut_host_last_meal': 'host last meal',
-		'GSC_MIxS_human_gut_host_family_relationship': 'host family relationship',
-		'GSC_MIxS_human_gut_host_genotype': 'host genotype',
-		'GSC_MIxS_human_gut_host_pulse': 'host pulse',
-		'GSC_MIxS_human_gut_subspecific_genetic_lineage': 'subspecific genetic lineage',
-		'GSC_MIxS_human_gut_trophic_level': 'trophic level',
-		'GSC_MIxS_human_gut_relationship_to_oxygen': 'relationship to oxygen',
-		'GSC_MIxS_human_gut_known_pathogenicity': 'known pathogenicity',
-		'GSC_MIxS_human_gut_encoded_traits': 'encoded traits',
-		'GSC_MIxS_human_gut_observed_biotic_relationship': 'observed biotic relationship',
-		'GSC_MIxS_human_gut_chemical_administration': 'chemical administration',
-		'GSC_MIxS_human_gut_perturbation': 'perturbation',
+		'gastrointestinal_tract_disorder': 'gastrointestinal tract disorder',
+		'liver_disorder': 'liver disorder',
+		'special_diet': 'special diet',
 	}
 
 	name = 'GSC_MIxS_human_gut'
 
 class GSC_MIxS_human_gut_unit(SelfDescribingModel):
 
-	GSC_MIxS_human_gut_sample_volume_or_weight_for_DNA_extraction_units = [('g', 'g'), ('mL', 'mL'), ('mg', 'mg'), ('ng', 'ng')]
-	GSC_MIxS_human_gut_geographic_location_latitude_units = [('DD', 'DD')]
-	GSC_MIxS_human_gut_geographic_location_longitude_units = [('DD', 'DD')]
-	GSC_MIxS_human_gut_amount_or_size_of_sample_collected_units = [('L', 'L'), ('g', 'g'), ('kg', 'kg'), ('m2', 'm2'), ('m3', 'm3')]
-	GSC_MIxS_human_gut_sample_storage_duration_units = [('days', 'days'), ('hours', 'hours'), ('months', 'months'), ('weeks', 'weeks'), ('years', 'years')]
-	GSC_MIxS_human_gut_sample_storage_temperature_units = [('°C', '°C')]
-	GSC_MIxS_human_gut_host_age_units = [('centuries', 'centuries'), ('days', 'days'), ('decades', 'decades'), ('hours', 'hours'), ('minutes', 'minutes'), ('months', 'months'), ('seconds', 'seconds'), ('weeks', 'weeks'), ('years', 'years')]
-	GSC_MIxS_human_gut_host_height_units = [('cm', 'cm'), ('m', 'm'), ('mm', 'mm')]
-	GSC_MIxS_human_gut_host_body_mass_index_units = [('kg/m2', 'kg/m2')]
-	GSC_MIxS_human_gut_host_total_mass_units = [('g', 'g'), ('kg', 'kg')]
-	GSC_MIxS_human_gut_host_body_temperature_units = [('ºC', 'ºC')]
-	GSC_MIxS_human_gut_temperature_units = [('ºC', 'ºC')]
-	GSC_MIxS_human_gut_salinity_units = [('psu', 'psu')]
-	GSC_MIxS_human_gut_host_pulse_units = [('bpm', 'bpm')]
 
 	fields = {
-		'GSC_MIxS_human_gut_sample_volume_or_weight_for_DNA_extraction': 'sample volume or weight for DNA extraction',
-		'GSC_MIxS_human_gut_geographic_location_latitude': 'geographic location (latitude)',
-		'GSC_MIxS_human_gut_geographic_location_longitude': 'geographic location (longitude)',
-		'GSC_MIxS_human_gut_amount_or_size_of_sample_collected': 'amount or size of sample collected',
-		'GSC_MIxS_human_gut_sample_storage_duration': 'sample storage duration',
-		'GSC_MIxS_human_gut_sample_storage_temperature': 'sample storage temperature',
-		'GSC_MIxS_human_gut_host_age': 'host age',
-		'GSC_MIxS_human_gut_host_height': 'host height',
-		'GSC_MIxS_human_gut_host_body_mass_index': 'host body-mass index',
-		'GSC_MIxS_human_gut_host_total_mass': 'host total mass',
-		'GSC_MIxS_human_gut_host_body_temperature': 'host body temperature',
-		'GSC_MIxS_human_gut_temperature': 'temperature',
-		'GSC_MIxS_human_gut_salinity': 'salinity',
-		'GSC_MIxS_human_gut_host_pulse': 'host pulse',
 	}
 
 	name = 'GSC_MIxS_human_gut'
 
 	sampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE, default=1)
 	sample = models.ForeignKey(Sample, on_delete=models.CASCADE, default=1)
-	GSC_MIxS_human_gut_sample_volume_or_weight_for_DNA_extraction = models.CharField(max_length=100, choices=GSC_MIxS_human_gut_sample_volume_or_weight_for_DNA_extraction_units, blank=False)
-	GSC_MIxS_human_gut_geographic_location_latitude = models.CharField(max_length=100, choices=GSC_MIxS_human_gut_geographic_location_latitude_units, blank=False)
-	GSC_MIxS_human_gut_geographic_location_longitude = models.CharField(max_length=100, choices=GSC_MIxS_human_gut_geographic_location_longitude_units, blank=False)
-	GSC_MIxS_human_gut_amount_or_size_of_sample_collected = models.CharField(max_length=100, choices=GSC_MIxS_human_gut_amount_or_size_of_sample_collected_units, blank=False)
-	GSC_MIxS_human_gut_sample_storage_duration = models.CharField(max_length=100, choices=GSC_MIxS_human_gut_sample_storage_duration_units, blank=False)
-	GSC_MIxS_human_gut_sample_storage_temperature = models.CharField(max_length=100, choices=GSC_MIxS_human_gut_sample_storage_temperature_units, blank=False)
-	GSC_MIxS_human_gut_host_age = models.CharField(max_length=100, choices=GSC_MIxS_human_gut_host_age_units, blank=False)
-	GSC_MIxS_human_gut_host_height = models.CharField(max_length=100, choices=GSC_MIxS_human_gut_host_height_units, blank=False)
-	GSC_MIxS_human_gut_host_body_mass_index = models.CharField(max_length=100, choices=GSC_MIxS_human_gut_host_body_mass_index_units, blank=False)
-	GSC_MIxS_human_gut_host_total_mass = models.CharField(max_length=100, choices=GSC_MIxS_human_gut_host_total_mass_units, blank=False)
-	GSC_MIxS_human_gut_host_body_temperature = models.CharField(max_length=100, choices=GSC_MIxS_human_gut_host_body_temperature_units, blank=False)
-	GSC_MIxS_human_gut_temperature = models.CharField(max_length=100, choices=GSC_MIxS_human_gut_temperature_units, blank=False)
-	GSC_MIxS_human_gut_salinity = models.CharField(max_length=100, choices=GSC_MIxS_human_gut_salinity_units, blank=False)
-	GSC_MIxS_human_gut_host_pulse = models.CharField(max_length=100, choices=GSC_MIxS_human_gut_host_pulse_units, blank=False)
 
 class GSC_MIxS_host_associated(SelfDescribingModel):
 
-	GSC_MIxS_host_associated_sequence_quality_check_choice = [('manual', 'manual'), ('none', 'none'), ('software', 'software')]
-	GSC_MIxS_host_associated_geographic_location_country_and_or_sea_choice = [('Afghanistan', 'Afghanistan'), ('Albania', 'Albania'), ('Algeria', 'Algeria'), ('American Samoa', 'American Samoa'), ('Andorra', 'Andorra'), ('Angola', 'Angola'), ('Anguilla', 'Anguilla'), ('Antarctica', 'Antarctica'), ('Antigua and Barbuda', 'Antigua and Barbuda'), ('Arctic Ocean', 'Arctic Ocean'), ('Argentina', 'Argentina'), ('Armenia', 'Armenia'), ('Aruba', 'Aruba'), ('Ashmore and Cartier Islands', 'Ashmore and Cartier Islands'), ('Atlantic Ocean', 'Atlantic Ocean'), ('Australia', 'Australia'), ('Austria', 'Austria'), ('Azerbaijan', 'Azerbaijan'), ('Bahamas', 'Bahamas'), ('Bahrain', 'Bahrain'), ('Baker Island', 'Baker Island'), ('Baltic Sea', 'Baltic Sea'), ('Bangladesh', 'Bangladesh'), ('Barbados', 'Barbados'), ('Bassas da India', 'Bassas da India'), ('Belarus', 'Belarus'), ('Belgium', 'Belgium'), ('Belize', 'Belize'), ('Benin', 'Benin'), ('Bermuda', 'Bermuda'), ('Bhutan', 'Bhutan'), ('Bolivia', 'Bolivia'), ('Borneo', 'Borneo'), ('Bosnia and Herzegovina', 'Bosnia and Herzegovina'), ('Botswana', 'Botswana'), ('Bouvet Island', 'Bouvet Island'), ('Brazil', 'Brazil'), ('British Virgin Islands', 'British Virgin Islands'), ('Brunei', 'Brunei'), ('Bulgaria', 'Bulgaria'), ('Burkina Faso', 'Burkina Faso'), ('Burundi', 'Burundi'), ('Cambodia', 'Cambodia'), ('Cameroon', 'Cameroon'), ('Canada', 'Canada'), ('Cape Verde', 'Cape Verde'), ('Cayman Islands', 'Cayman Islands'), ('Central African Republic', 'Central African Republic'), ('Chad', 'Chad'), ('Chile', 'Chile'), ('China', 'China'), ('Christmas Island', 'Christmas Island'), ('Clipperton Island', 'Clipperton Island'), ('Cocos Islands', 'Cocos Islands'), ('Colombia', 'Colombia'), ('Comoros', 'Comoros'), ('Cook Islands', 'Cook Islands'), ('Coral Sea Islands', 'Coral Sea Islands'), ('Costa Rica', 'Costa Rica'), ("Cote d'Ivoire", "Cote d'Ivoire"), ('Croatia', 'Croatia'), ('Cuba', 'Cuba'), ('Curacao', 'Curacao'), ('Cyprus', 'Cyprus'), ('Czech Republic', 'Czech Republic'), ('Democratic Republic of the Congo', 'Democratic Republic of the Congo'), ('Denmark', 'Denmark'), ('Djibouti', 'Djibouti'), ('Dominica', 'Dominica'), ('Dominican Republic', 'Dominican Republic'), ('East Timor', 'East Timor'), ('Ecuador', 'Ecuador'), ('Egypt', 'Egypt'), ('El Salvador', 'El Salvador'), ('Equatorial Guinea', 'Equatorial Guinea'), ('Eritrea', 'Eritrea'), ('Estonia', 'Estonia'), ('Ethiopia', 'Ethiopia'), ('Europa Island', 'Europa Island'), ('Falkland Islands (Islas Malvinas)', 'Falkland Islands (Islas Malvinas)'), ('Faroe Islands', 'Faroe Islands'), ('Fiji', 'Fiji'), ('Finland', 'Finland'), ('France', 'France'), ('French Guiana', 'French Guiana'), ('French Polynesia', 'French Polynesia'), ('French Southern and Antarctic Lands', 'French Southern and Antarctic Lands'), ('Gabon', 'Gabon'), ('Gambia', 'Gambia'), ('Gaza Strip', 'Gaza Strip'), ('Georgia', 'Georgia'), ('Germany', 'Germany'), ('Ghana', 'Ghana'), ('Gibraltar', 'Gibraltar'), ('Glorioso Islands', 'Glorioso Islands'), ('Greece', 'Greece'), ('Greenland', 'Greenland'), ('Grenada', 'Grenada'), ('Guadeloupe', 'Guadeloupe'), ('Guam', 'Guam'), ('Guatemala', 'Guatemala'), ('Guernsey', 'Guernsey'), ('Guinea', 'Guinea'), ('Guinea-Bissau', 'Guinea-Bissau'), ('Guyana', 'Guyana'), ('Haiti', 'Haiti'), ('Heard Island and McDonald Islands', 'Heard Island and McDonald Islands'), ('Honduras', 'Honduras'), ('Hong Kong', 'Hong Kong'), ('Howland Island', 'Howland Island'), ('Hungary', 'Hungary'), ('Iceland', 'Iceland'), ('India', 'India'), ('Indian Ocean', 'Indian Ocean'), ('Indonesia', 'Indonesia'), ('Iran', 'Iran'), ('Iraq', 'Iraq'), ('Ireland', 'Ireland'), ('Isle of Man', 'Isle of Man'), ('Israel', 'Israel'), ('Italy', 'Italy'), ('Jamaica', 'Jamaica'), ('Jan Mayen', 'Jan Mayen'), ('Japan', 'Japan'), ('Jarvis Island', 'Jarvis Island'), ('Jersey', 'Jersey'), ('Johnston Atoll', 'Johnston Atoll'), ('Jordan', 'Jordan'), ('Juan de Nova Island', 'Juan de Nova Island'), ('Kazakhstan', 'Kazakhstan'), ('Kenya', 'Kenya'), ('Kerguelen Archipelago', 'Kerguelen Archipelago'), ('Kingman Reef', 'Kingman Reef'), ('Kiribati', 'Kiribati'), ('Kosovo', 'Kosovo'), ('Kuwait', 'Kuwait'), ('Kyrgyzstan', 'Kyrgyzstan'), ('Laos', 'Laos'), ('Latvia', 'Latvia'), ('Lebanon', 'Lebanon'), ('Lesotho', 'Lesotho'), ('Liberia', 'Liberia'), ('Libya', 'Libya'), ('Liechtenstein', 'Liechtenstein'), ('Lithuania', 'Lithuania'), ('Luxembourg', 'Luxembourg'), ('Macau', 'Macau'), ('Macedonia', 'Macedonia'), ('Madagascar', 'Madagascar'), ('Malawi', 'Malawi'), ('Malaysia', 'Malaysia'), ('Maldives', 'Maldives'), ('Mali', 'Mali'), ('Malta', 'Malta'), ('Marshall Islands', 'Marshall Islands'), ('Martinique', 'Martinique'), ('Mauritania', 'Mauritania'), ('Mauritius', 'Mauritius'), ('Mayotte', 'Mayotte'), ('Mediterranean Sea', 'Mediterranean Sea'), ('Mexico', 'Mexico'), ('Micronesia', 'Micronesia'), ('Midway Islands', 'Midway Islands'), ('Moldova', 'Moldova'), ('Monaco', 'Monaco'), ('Mongolia', 'Mongolia'), ('Montenegro', 'Montenegro'), ('Montserrat', 'Montserrat'), ('Morocco', 'Morocco'), ('Mozambique', 'Mozambique'), ('Myanmar', 'Myanmar'), ('Namibia', 'Namibia'), ('Nauru', 'Nauru'), ('Navassa Island', 'Navassa Island'), ('Nepal', 'Nepal'), ('Netherlands', 'Netherlands'), ('New Caledonia', 'New Caledonia'), ('New Zealand', 'New Zealand'), ('Nicaragua', 'Nicaragua'), ('Niger', 'Niger'), ('Nigeria', 'Nigeria'), ('Niue', 'Niue'), ('Norfolk Island', 'Norfolk Island'), ('North Korea', 'North Korea'), ('North Sea', 'North Sea'), ('Northern Mariana Islands', 'Northern Mariana Islands'), ('Norway', 'Norway'), ('Oman', 'Oman'), ('Pacific Ocean', 'Pacific Ocean'), ('Pakistan', 'Pakistan'), ('Palau', 'Palau'), ('Palmyra Atoll', 'Palmyra Atoll'), ('Panama', 'Panama'), ('Papua New Guinea', 'Papua New Guinea'), ('Paracel Islands', 'Paracel Islands'), ('Paraguay', 'Paraguay'), ('Peru', 'Peru'), ('Philippines', 'Philippines'), ('Pitcairn Islands', 'Pitcairn Islands'), ('Poland', 'Poland'), ('Portugal', 'Portugal'), ('Puerto Rico', 'Puerto Rico'), ('Qatar', 'Qatar'), ('Republic of the Congo', 'Republic of the Congo'), ('Reunion', 'Reunion'), ('Romania', 'Romania'), ('Ross Sea', 'Ross Sea'), ('Russia', 'Russia'), ('Rwanda', 'Rwanda'), ('Saint Helena', 'Saint Helena'), ('Saint Kitts and Nevis', 'Saint Kitts and Nevis'), ('Saint Lucia', 'Saint Lucia'), ('Saint Pierre and Miquelon', 'Saint Pierre and Miquelon'), ('Saint Vincent and the Grenadines', 'Saint Vincent and the Grenadines'), ('Samoa', 'Samoa'), ('San Marino', 'San Marino'), ('Sao Tome and Principe', 'Sao Tome and Principe'), ('Saudi Arabia', 'Saudi Arabia'), ('Senegal', 'Senegal'), ('Serbia', 'Serbia'), ('Seychelles', 'Seychelles'), ('Sierra Leone', 'Sierra Leone'), ('Singapore', 'Singapore'), ('Sint Maarten', 'Sint Maarten'), ('Slovakia', 'Slovakia'), ('Slovenia', 'Slovenia'), ('Solomon Islands', 'Solomon Islands'), ('Somalia', 'Somalia'), ('South Africa', 'South Africa'), ('South Georgia and the South Sandwich Islands', 'South Georgia and the South Sandwich Islands'), ('South Korea', 'South Korea'), ('Southern Ocean', 'Southern Ocean'), ('Spain', 'Spain'), ('Spratly Islands', 'Spratly Islands'), ('Sri Lanka', 'Sri Lanka'), ('Sudan', 'Sudan'), ('Suriname', 'Suriname'), ('Svalbard', 'Svalbard'), ('Swaziland', 'Swaziland'), ('Sweden', 'Sweden'), ('Switzerland', 'Switzerland'), ('Syria', 'Syria'), ('Taiwan', 'Taiwan'), ('Tajikistan', 'Tajikistan'), ('Tanzania', 'Tanzania'), ('Tasman Sea', 'Tasman Sea'), ('Thailand', 'Thailand'), ('Togo', 'Togo'), ('Tokelau', 'Tokelau'), ('Tonga', 'Tonga'), ('Trinidad and Tobago', 'Trinidad and Tobago'), ('Tromelin Island', 'Tromelin Island'), ('Tunisia', 'Tunisia'), ('Turkey', 'Turkey'), ('Turkmenistan', 'Turkmenistan'), ('Turks and Caicos Islands', 'Turks and Caicos Islands'), ('Tuvalu', 'Tuvalu'), ('USA', 'USA'), ('Uganda', 'Uganda'), ('Ukraine', 'Ukraine'), ('United Arab Emirates', 'United Arab Emirates'), ('United Kingdom', 'United Kingdom'), ('Uruguay', 'Uruguay'), ('Uzbekistan', 'Uzbekistan'), ('Vanuatu', 'Vanuatu'), ('Venezuela', 'Venezuela'), ('Viet Nam', 'Viet Nam'), ('Virgin Islands', 'Virgin Islands'), ('Wake Island', 'Wake Island'), ('Wallis and Futuna', 'Wallis and Futuna'), ('West Bank', 'West Bank'), ('Western Sahara', 'Western Sahara'), ('Yemen', 'Yemen'), ('Zambia', 'Zambia'), ('Zimbabwe', 'Zimbabwe'), ('missing: control sample', 'missing: control sample'), ('missing: data agreement established pre-2023', 'missing: data agreement established pre-2023'), ('missing: endangered species', 'missing: endangered species'), ('missing: human-identifiable', 'missing: human-identifiable'), ('missing: lab stock', 'missing: lab stock'), ('missing: sample group', 'missing: sample group'), ('missing: synthetic construct', 'missing: synthetic construct'), ('missing: third party data', 'missing: third party data'), ('not applicable', 'not applicable'), ('not collected', 'not collected'), ('not provided', 'not provided'), ('restricted access', 'restricted access')]
-	GSC_MIxS_host_associated_oxygenation_status_of_sample_choice = [('aerobic', 'aerobic'), ('anaerobic', 'anaerobic')]
-	GSC_MIxS_host_associated_host_sex_choice = [('female', 'female'), ('hermaphrodite', 'hermaphrodite'), ('male', 'male'), ('missing: control sample', 'missing: control sample'), ('missing: data agreement established pre-2023', 'missing: data agreement established pre-2023'), ('missing: endangered species', 'missing: endangered species'), ('missing: human-identifiable', 'missing: human-identifiable'), ('missing: lab stock', 'missing: lab stock'), ('missing: sample group', 'missing: sample group'), ('missing: synthetic construct', 'missing: synthetic construct'), ('missing: third party data', 'missing: third party data'), ('neuter', 'neuter'), ('not applicable', 'not applicable'), ('not collected', 'not collected'), ('not provided', 'not provided'), ('other', 'other'), ('restricted access', 'restricted access')]
-	GSC_MIxS_host_associated_trophic_level_choice = [('autotroph', 'autotroph'), ('carboxydotroph', 'carboxydotroph'), ('chemoautotroph', 'chemoautotroph'), ('chemoheterotroph', 'chemoheterotroph'), ('chemolithoautotroph', 'chemolithoautotroph'), ('chemolithotroph', 'chemolithotroph'), ('chemoorganoheterotroph', 'chemoorganoheterotroph'), ('chemoorganotroph', 'chemoorganotroph'), ('chemosynthetic', 'chemosynthetic'), ('chemotroph', 'chemotroph'), ('copiotroph', 'copiotroph'), ('diazotroph', 'diazotroph'), ('facultative autotroph', 'facultative autotroph'), ('heterotroph', 'heterotroph'), ('lithoautotroph', 'lithoautotroph'), ('lithoheterotroph', 'lithoheterotroph'), ('lithotroph', 'lithotroph'), ('methanotroph', 'methanotroph'), ('methylotroph', 'methylotroph'), ('mixotroph', 'mixotroph'), ('obligate chemoautolithotroph', 'obligate chemoautolithotroph'), ('oligotroph', 'oligotroph'), ('organoheterotroph', 'organoheterotroph'), ('organotroph', 'organotroph'), ('photoautotroph', 'photoautotroph'), ('photoheterotroph', 'photoheterotroph'), ('photolithoautotroph', 'photolithoautotroph'), ('photolithotroph', 'photolithotroph'), ('photosynthetic', 'photosynthetic'), ('phototroph', 'phototroph')]
-	GSC_MIxS_host_associated_relationship_to_oxygen_choice = [('aerobe', 'aerobe'), ('anaerobe', 'anaerobe'), ('facultative', 'facultative'), ('microaerophilic', 'microaerophilic'), ('microanaerobe', 'microanaerobe'), ('obligate aerobe', 'obligate aerobe'), ('obligate anaerobe', 'obligate anaerobe')]
-	GSC_MIxS_host_associated_observed_biotic_relationship_choice = [('commensal', 'commensal'), ('free living', 'free living'), ('mutualism', 'mutualism'), ('parasite', 'parasite'), ('symbiont', 'symbiont')]
 
-	GSC_MIxS_host_associated_number_of_replicons_validator = "[+-]?[0-9]+"
-	GSC_MIxS_host_associated_extrachromosomal_elements_validator = "[+-]?[0-9]+"
-	GSC_MIxS_host_associated_estimated_size_validator = "[+-]?[0-9]+"
-	GSC_MIxS_host_associated_sample_volume_or_weight_for_DNA_extraction_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_host_associated_library_size_validator = "[+-]?[0-9]+"
-	GSC_MIxS_host_associated_library_reads_sequenced_validator = "[+-]?[0-9]+"
-	GSC_MIxS_host_associated_collection_date_validator = "(^[12][0-9]{3}(-(0[1-9]|1[0-2])(-(0[1-9]|[12][0-9]|3[01])(T[0-9]{2}:[0-9]{2}(:[0-9]{2})?Z?([+-][0-9]{1,2})?)?)?)?(/[0-9]{4}(-[0-9]{2}(-[0-9]{2}(T[0-9]{2}:[0-9]{2}(:[0-9]{2})?Z?([+-][0-9]{1,2})?)?)?)?)?$)|(^not collected$)|(^not provided$)|(^restricted access$)|(^missing: control sample$)|(^missing: sample group$)|(^missing: synthetic construct$)|(^missing: lab stock$)|(^missing: third party data$)|(^missing: data agreement established pre-2023$)|(^missing: endangered species$)|(^missing: human-identifiable$)"
-	GSC_MIxS_host_associated_altitude_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_host_associated_geographic_location_latitude_validator = "(^[+-]?[0-9]+.?[0-9]{0,8}$)|(^not collected$)|(^not provided$)|(^restricted access$)|(^missing: control sample$)|(^missing: sample group$)|(^missing: synthetic construct$)|(^missing: lab stock$)|(^missing: third party data$)|(^missing: data agreement established pre-2023$)|(^missing: endangered species$)|(^missing: human-identifiable$)"
-	GSC_MIxS_host_associated_geographic_location_longitude_validator = "(^[+-]?[0-9]+.?[0-9]{0,8}$)|(^not collected$)|(^not provided$)|(^restricted access$)|(^missing: control sample$)|(^missing: sample group$)|(^missing: synthetic construct$)|(^missing: lab stock$)|(^missing: third party data$)|(^missing: data agreement established pre-2023$)|(^missing: endangered species$)|(^missing: human-identifiable$)"
-	GSC_MIxS_host_associated_depth_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_host_associated_elevation_validator = "[+-]?(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_host_associated_amount_or_size_of_sample_collected_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_host_associated_host_dry_mass_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_host_associated_sample_storage_duration_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_host_associated_sample_storage_temperature_validator = "[+-]?(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_host_associated_host_age_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_host_associated_host_taxid_validator = "[+-]?[0-9]+"
-	GSC_MIxS_host_associated_host_height_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_host_associated_host_length_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_host_associated_host_total_mass_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_host_associated_host_body_temperature_validator = "[+-]?(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_host_associated_temperature_validator = "[+-]?(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_host_associated_salinity_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_host_associated_host_blood_pressure_diastolic_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_host_associated_host_blood_pressure_systolic_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	host_blood_pressure_diastolic_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	host_blood_pressure_systolic_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
 
 	sampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE, default=1)
 	sample = models.ForeignKey(Sample, on_delete=models.CASCADE, default=1)
-	GSC_MIxS_host_associated_project_name= models.CharField(max_length=100, blank=False,help_text="Name of th")
-	GSC_MIxS_host_associated_experimental_factor= models.CharField(max_length=100, blank=True,help_text="Experiment")
-	GSC_MIxS_host_associated_ploidy= models.CharField(max_length=100, blank=True,help_text="The ploidy")
-	GSC_MIxS_host_associated_number_of_replicons= models.CharField(max_length=100, blank=True,help_text="Reports th", validators=[RegexValidator(GSC_MIxS_host_associated_number_of_replicons_validator)])
-	GSC_MIxS_host_associated_extrachromosomal_elements= models.CharField(max_length=100, blank=True,help_text="Do plasmid", validators=[RegexValidator(GSC_MIxS_host_associated_extrachromosomal_elements_validator)])
-	GSC_MIxS_host_associated_estimated_size= models.CharField(max_length=100, blank=True,help_text="The estima", validators=[RegexValidator(GSC_MIxS_host_associated_estimated_size_validator)])
-	GSC_MIxS_host_associated_reference_for_biomaterial= models.CharField(max_length=100, blank=True,help_text="Primary pu")
-	GSC_MIxS_host_associated_annotation_source= models.CharField(max_length=100, blank=True,help_text="For cases ")
-	GSC_MIxS_host_associated_sample_volume_or_weight_for_DNA_extraction= models.CharField(max_length=100, blank=True,help_text="Volume (ml", validators=[RegexValidator(GSC_MIxS_host_associated_sample_volume_or_weight_for_DNA_extraction_validator)])
-	GSC_MIxS_host_associated_nucleic_acid_extraction= models.CharField(max_length=100, blank=True,help_text="A link to ")
-	GSC_MIxS_host_associated_nucleic_acid_amplification= models.CharField(max_length=100, blank=True,help_text="A link to ")
-	GSC_MIxS_host_associated_library_size= models.CharField(max_length=100, blank=True,help_text="Total numb", validators=[RegexValidator(GSC_MIxS_host_associated_library_size_validator)])
-	GSC_MIxS_host_associated_library_reads_sequenced= models.CharField(max_length=100, blank=True,help_text="Total numb", validators=[RegexValidator(GSC_MIxS_host_associated_library_reads_sequenced_validator)])
-	GSC_MIxS_host_associated_library_construction_method= models.CharField(max_length=100, blank=True,help_text="Library co")
-	GSC_MIxS_host_associated_library_vector= models.CharField(max_length=100, blank=True,help_text="Cloning ve")
-	GSC_MIxS_host_associated_library_screening_strategy= models.CharField(max_length=100, blank=True,help_text="Specific e")
-	GSC_MIxS_host_associated_target_gene= models.CharField(max_length=100, blank=True,help_text="Targeted g")
-	GSC_MIxS_host_associated_target_subfragment= models.CharField(max_length=100, blank=True,help_text="Name of su")
-	GSC_MIxS_host_associated_pcr_primers= models.CharField(max_length=100, blank=True,help_text="PCR primer")
-	GSC_MIxS_host_associated_multiplex_identifiers= models.CharField(max_length=100, blank=True,help_text="Molecular ")
-	GSC_MIxS_host_associated_adapters= models.CharField(max_length=100, blank=True,help_text="Adapters p")
-	GSC_MIxS_host_associated_pcr_conditions= models.CharField(max_length=100, blank=True,help_text="Descriptio")
-	GSC_MIxS_host_associated_sequencing_method= models.CharField(max_length=100, blank=True,help_text="Sequencing")
-	GSC_MIxS_host_associated_sequence_quality_check= models.CharField(max_length=100, blank=True,help_text="Indicate i", choices=GSC_MIxS_host_associated_sequence_quality_check_choice)
-	GSC_MIxS_host_associated_chimera_check_software= models.CharField(max_length=100, blank=True,help_text="Tool(s) us")
-	GSC_MIxS_host_associated_relevant_electronic_resources= models.CharField(max_length=100, blank=True,help_text="A related ")
-	GSC_MIxS_host_associated_relevant_standard_operating_procedures= models.CharField(max_length=100, blank=True,help_text="Standard o")
-	GSC_MIxS_host_associated_negative_control_type= models.CharField(max_length=100, blank=True,help_text="The substa")
-	GSC_MIxS_host_associated_positive_control_type= models.CharField(max_length=100, blank=True,help_text="The substa")
-	GSC_MIxS_host_associated_collection_date= models.CharField(max_length=100, blank=False,help_text="The date t", validators=[RegexValidator(GSC_MIxS_host_associated_collection_date_validator)])
-	GSC_MIxS_host_associated_altitude= models.CharField(max_length=100, blank=True,help_text="The altitu", validators=[RegexValidator(GSC_MIxS_host_associated_altitude_validator)])
-	GSC_MIxS_host_associated_geographic_location_country_and_or_sea= models.CharField(max_length=100, blank=False,help_text="The locati", choices=GSC_MIxS_host_associated_geographic_location_country_and_or_sea_choice)
-	GSC_MIxS_host_associated_geographic_location_latitude= models.CharField(max_length=100, blank=False,help_text="The geogra", validators=[RegexValidator(GSC_MIxS_host_associated_geographic_location_latitude_validator)])
-	GSC_MIxS_host_associated_geographic_location_longitude= models.CharField(max_length=100, blank=False,help_text="The geogra", validators=[RegexValidator(GSC_MIxS_host_associated_geographic_location_longitude_validator)])
-	GSC_MIxS_host_associated_geographic_location_region_and_locality= models.CharField(max_length=100, blank=True,help_text="The geogra")
-	GSC_MIxS_host_associated_depth= models.CharField(max_length=100, blank=True,help_text="The vertic", validators=[RegexValidator(GSC_MIxS_host_associated_depth_validator)])
-	GSC_MIxS_host_associated_broad_scale_environmental_context= models.CharField(max_length=100, blank=False,help_text="Report the")
-	GSC_MIxS_host_associated_local_environmental_context= models.CharField(max_length=100, blank=False,help_text="Report the")
-	GSC_MIxS_host_associated_environmental_medium= models.CharField(max_length=100, blank=False,help_text="Report the")
-	GSC_MIxS_host_associated_elevation= models.CharField(max_length=100, blank=True,help_text="The elevat", validators=[RegexValidator(GSC_MIxS_host_associated_elevation_validator)])
-	GSC_MIxS_host_associated_source_material_identifiers= models.CharField(max_length=100, blank=True,help_text="A unique i")
-	GSC_MIxS_host_associated_sample_material_processing= models.CharField(max_length=100, blank=True,help_text="A brief de")
-	GSC_MIxS_host_associated_isolation_and_growth_condition= models.CharField(max_length=100, blank=True,help_text="Publicatio")
-	GSC_MIxS_host_associated_propagation= models.CharField(max_length=100, blank=True,help_text="The type o")
-	GSC_MIxS_host_associated_amount_or_size_of_sample_collected= models.CharField(max_length=100, blank=True,help_text="The total ", validators=[RegexValidator(GSC_MIxS_host_associated_amount_or_size_of_sample_collected_validator)])
-	GSC_MIxS_host_associated_host_body_product= models.CharField(max_length=100, blank=True,help_text="substance ")
-	GSC_MIxS_host_associated_host_dry_mass= models.CharField(max_length=100, blank=True,help_text="measuremen", validators=[RegexValidator(GSC_MIxS_host_associated_host_dry_mass_validator)])
-	GSC_MIxS_host_associated_oxygenation_status_of_sample= models.CharField(max_length=100, blank=True,help_text="oxygenatio", choices=GSC_MIxS_host_associated_oxygenation_status_of_sample_choice)
-	GSC_MIxS_host_associated_organism_count= models.CharField(max_length=100, blank=True,help_text="Total cell")
-	GSC_MIxS_host_associated_sample_storage_duration= models.CharField(max_length=100, blank=True,help_text="duration f", validators=[RegexValidator(GSC_MIxS_host_associated_sample_storage_duration_validator)])
-	GSC_MIxS_host_associated_sample_storage_temperature= models.CharField(max_length=100, blank=True,help_text="temperatur", validators=[RegexValidator(GSC_MIxS_host_associated_sample_storage_temperature_validator)])
-	GSC_MIxS_host_associated_sample_storage_location= models.CharField(max_length=100, blank=True,help_text="location a")
-	GSC_MIxS_host_associated_host_disease_status= models.CharField(max_length=100, blank=True,help_text="list of di")
-	GSC_MIxS_host_associated_host_common_name= models.CharField(max_length=100, blank=True,help_text="common nam")
-	GSC_MIxS_host_associated_host_subject_id= models.CharField(max_length=100, blank=True,help_text="a unique i")
-	GSC_MIxS_host_associated_host_age= models.CharField(max_length=100, blank=True,help_text="age of hos", validators=[RegexValidator(GSC_MIxS_host_associated_host_age_validator)])
-	GSC_MIxS_host_associated_host_taxid= models.CharField(max_length=100, blank=True,help_text="NCBI taxon", validators=[RegexValidator(GSC_MIxS_host_associated_host_taxid_validator)])
-	GSC_MIxS_host_associated_host_body_habitat= models.CharField(max_length=100, blank=True,help_text="original b")
-	GSC_MIxS_host_associated_host_body_site= models.CharField(max_length=100, blank=True,help_text="name of bo")
-	GSC_MIxS_host_associated_host_life_stage= models.CharField(max_length=100, blank=True,help_text="descriptio")
-	GSC_MIxS_host_associated_host_height= models.CharField(max_length=100, blank=True,help_text="the height", validators=[RegexValidator(GSC_MIxS_host_associated_host_height_validator)])
-	GSC_MIxS_host_associated_host_length= models.CharField(max_length=100, blank=True,help_text="the length", validators=[RegexValidator(GSC_MIxS_host_associated_host_length_validator)])
-	GSC_MIxS_host_associated_host_growth_conditions= models.CharField(max_length=100, blank=True,help_text="literature")
-	GSC_MIxS_host_associated_host_substrate= models.CharField(max_length=100, blank=True,help_text="the growth")
-	GSC_MIxS_host_associated_host_total_mass= models.CharField(max_length=100, blank=True,help_text="total mass", validators=[RegexValidator(GSC_MIxS_host_associated_host_total_mass_validator)])
-	GSC_MIxS_host_associated_host_phenotype= models.CharField(max_length=100, blank=True,help_text="phenotype ")
-	GSC_MIxS_host_associated_host_body_temperature= models.CharField(max_length=100, blank=True,help_text="core body ", validators=[RegexValidator(GSC_MIxS_host_associated_host_body_temperature_validator)])
-	GSC_MIxS_host_associated_host_color= models.CharField(max_length=100, blank=True,help_text="the color ")
-	GSC_MIxS_host_associated_host_shape= models.CharField(max_length=100, blank=True,help_text="morphologi")
-	GSC_MIxS_host_associated_host_sex= models.CharField(max_length=100, blank=True,help_text="Gender or ", choices=GSC_MIxS_host_associated_host_sex_choice)
-	GSC_MIxS_host_associated_host_scientific_name= models.CharField(max_length=100, blank=True,help_text="Scientific")
-	GSC_MIxS_host_associated_host_subspecific_genetic_lineage= models.CharField(max_length=100, blank=True,help_text="Informatio")
-	GSC_MIxS_host_associated_temperature= models.CharField(max_length=100, blank=True,help_text="temperatur", validators=[RegexValidator(GSC_MIxS_host_associated_temperature_validator)])
-	GSC_MIxS_host_associated_salinity= models.CharField(max_length=100, blank=True,help_text="The total ", validators=[RegexValidator(GSC_MIxS_host_associated_salinity_validator)])
-	GSC_MIxS_host_associated_host_blood_pressure_diastolic= models.CharField(max_length=100, blank=True,help_text="resting di", validators=[RegexValidator(GSC_MIxS_host_associated_host_blood_pressure_diastolic_validator)])
-	GSC_MIxS_host_associated_host_blood_pressure_systolic= models.CharField(max_length=100, blank=True,help_text="resting sy", validators=[RegexValidator(GSC_MIxS_host_associated_host_blood_pressure_systolic_validator)])
-	GSC_MIxS_host_associated_host_diet= models.CharField(max_length=100, blank=True,help_text="type of di")
-	GSC_MIxS_host_associated_host_last_meal= models.CharField(max_length=100, blank=True,help_text="content of")
-	GSC_MIxS_host_associated_host_family_relationship= models.CharField(max_length=100, blank=True,help_text="relationsh")
-	GSC_MIxS_host_associated_host_genotype= models.CharField(max_length=100, blank=True,help_text="observed g")
-	GSC_MIxS_host_associated_gravidity= models.CharField(max_length=100, blank=True,help_text="Whether or")
-	GSC_MIxS_host_associated_subspecific_genetic_lineage= models.CharField(max_length=100, blank=True,help_text="Informatio")
-	GSC_MIxS_host_associated_trophic_level= models.CharField(max_length=100, blank=True,help_text="Trophic le", choices=GSC_MIxS_host_associated_trophic_level_choice)
-	GSC_MIxS_host_associated_relationship_to_oxygen= models.CharField(max_length=100, blank=True,help_text="Is this or", choices=GSC_MIxS_host_associated_relationship_to_oxygen_choice)
-	GSC_MIxS_host_associated_known_pathogenicity= models.CharField(max_length=100, blank=True,help_text="To what is")
-	GSC_MIxS_host_associated_encoded_traits= models.CharField(max_length=100, blank=True,help_text="Should inc")
-	GSC_MIxS_host_associated_observed_biotic_relationship= models.CharField(max_length=100, blank=True,help_text="Is it free", choices=GSC_MIxS_host_associated_observed_biotic_relationship_choice)
-	GSC_MIxS_host_associated_chemical_administration= models.CharField(max_length=100, blank=True,help_text="list of ch")
-	GSC_MIxS_host_associated_perturbation= models.CharField(max_length=100, blank=True,help_text="type of pe")
+	host_body_habitat= models.CharField(max_length=100, blank=True,help_text="original b")
+	host_growth_conditions= models.CharField(max_length=100, blank=True,help_text="literature")
+	host_substrate= models.CharField(max_length=100, blank=True,help_text="the growth")
+	host_color= models.CharField(max_length=100, blank=True,help_text="the color ")
+	host_shape= models.CharField(max_length=100, blank=True,help_text="morphologi")
+	host_blood_pressure_diastolic= models.CharField(max_length=100, blank=True,help_text="resting di", validators=[RegexValidator(host_blood_pressure_diastolic_validator)])
+	host_blood_pressure_systolic= models.CharField(max_length=100, blank=True,help_text="resting sy", validators=[RegexValidator(host_blood_pressure_systolic_validator)])
+	gravidity= models.CharField(max_length=100, blank=True,help_text="Whether or")
 
 	fields = {
-		'GSC_MIxS_host_associated_project_name': 'project name',
-		'GSC_MIxS_host_associated_experimental_factor': 'experimental factor',
-		'GSC_MIxS_host_associated_ploidy': 'ploidy',
-		'GSC_MIxS_host_associated_number_of_replicons': 'number of replicons',
-		'GSC_MIxS_host_associated_extrachromosomal_elements': 'extrachromosomal elements',
-		'GSC_MIxS_host_associated_estimated_size': 'estimated size',
-		'GSC_MIxS_host_associated_reference_for_biomaterial': 'reference for biomaterial',
-		'GSC_MIxS_host_associated_annotation_source': 'annotation source',
-		'GSC_MIxS_host_associated_sample_volume_or_weight_for_DNA_extraction': 'sample volume or weight for DNA extraction',
-		'GSC_MIxS_host_associated_nucleic_acid_extraction': 'nucleic acid extraction',
-		'GSC_MIxS_host_associated_nucleic_acid_amplification': 'nucleic acid amplification',
-		'GSC_MIxS_host_associated_library_size': 'library size',
-		'GSC_MIxS_host_associated_library_reads_sequenced': 'library reads sequenced',
-		'GSC_MIxS_host_associated_library_construction_method': 'library construction method',
-		'GSC_MIxS_host_associated_library_vector': 'library vector',
-		'GSC_MIxS_host_associated_library_screening_strategy': 'library screening strategy',
-		'GSC_MIxS_host_associated_target_gene': 'target gene',
-		'GSC_MIxS_host_associated_target_subfragment': 'target subfragment',
-		'GSC_MIxS_host_associated_pcr_primers': 'pcr primers',
-		'GSC_MIxS_host_associated_multiplex_identifiers': 'multiplex identifiers',
-		'GSC_MIxS_host_associated_adapters': 'adapters',
-		'GSC_MIxS_host_associated_pcr_conditions': 'pcr conditions',
-		'GSC_MIxS_host_associated_sequencing_method': 'sequencing method',
-		'GSC_MIxS_host_associated_sequence_quality_check': 'sequence quality check',
-		'GSC_MIxS_host_associated_chimera_check_software': 'chimera check software',
-		'GSC_MIxS_host_associated_relevant_electronic_resources': 'relevant electronic resources',
-		'GSC_MIxS_host_associated_relevant_standard_operating_procedures': 'relevant standard operating procedures',
-		'GSC_MIxS_host_associated_negative_control_type': 'negative control type',
-		'GSC_MIxS_host_associated_positive_control_type': 'positive control type',
-		'GSC_MIxS_host_associated_collection_date': 'collection date',
-		'GSC_MIxS_host_associated_altitude': 'altitude',
-		'GSC_MIxS_host_associated_geographic_location_country_and_or_sea': 'geographic location (country and/or sea)',
-		'GSC_MIxS_host_associated_geographic_location_latitude': 'geographic location (latitude)',
-		'GSC_MIxS_host_associated_geographic_location_longitude': 'geographic location (longitude)',
-		'GSC_MIxS_host_associated_geographic_location_region_and_locality': 'geographic location (region and locality)',
-		'GSC_MIxS_host_associated_depth': 'depth',
-		'GSC_MIxS_host_associated_broad_scale_environmental_context': 'broad-scale environmental context',
-		'GSC_MIxS_host_associated_local_environmental_context': 'local environmental context',
-		'GSC_MIxS_host_associated_environmental_medium': 'environmental medium',
-		'GSC_MIxS_host_associated_elevation': 'elevation',
-		'GSC_MIxS_host_associated_source_material_identifiers': 'source material identifiers',
-		'GSC_MIxS_host_associated_sample_material_processing': 'sample material processing',
-		'GSC_MIxS_host_associated_isolation_and_growth_condition': 'isolation and growth condition',
-		'GSC_MIxS_host_associated_propagation': 'propagation',
-		'GSC_MIxS_host_associated_amount_or_size_of_sample_collected': 'amount or size of sample collected',
-		'GSC_MIxS_host_associated_host_body_product': 'host body product',
-		'GSC_MIxS_host_associated_host_dry_mass': 'host dry mass',
-		'GSC_MIxS_host_associated_oxygenation_status_of_sample': 'oxygenation status of sample',
-		'GSC_MIxS_host_associated_organism_count': 'organism count',
-		'GSC_MIxS_host_associated_sample_storage_duration': 'sample storage duration',
-		'GSC_MIxS_host_associated_sample_storage_temperature': 'sample storage temperature',
-		'GSC_MIxS_host_associated_sample_storage_location': 'sample storage location',
-		'GSC_MIxS_host_associated_host_disease_status': 'host disease status',
-		'GSC_MIxS_host_associated_host_common_name': 'host common name',
-		'GSC_MIxS_host_associated_host_subject_id': 'host subject id',
-		'GSC_MIxS_host_associated_host_age': 'host age',
-		'GSC_MIxS_host_associated_host_taxid': 'host taxid',
-		'GSC_MIxS_host_associated_host_body_habitat': 'host body habitat',
-		'GSC_MIxS_host_associated_host_body_site': 'host body site',
-		'GSC_MIxS_host_associated_host_life_stage': 'host life stage',
-		'GSC_MIxS_host_associated_host_height': 'host height',
-		'GSC_MIxS_host_associated_host_length': 'host length',
-		'GSC_MIxS_host_associated_host_growth_conditions': 'host growth conditions',
-		'GSC_MIxS_host_associated_host_substrate': 'host substrate',
-		'GSC_MIxS_host_associated_host_total_mass': 'host total mass',
-		'GSC_MIxS_host_associated_host_phenotype': 'host phenotype',
-		'GSC_MIxS_host_associated_host_body_temperature': 'host body temperature',
-		'GSC_MIxS_host_associated_host_color': 'host color',
-		'GSC_MIxS_host_associated_host_shape': 'host shape',
-		'GSC_MIxS_host_associated_host_sex': 'host sex',
-		'GSC_MIxS_host_associated_host_scientific_name': 'host scientific name',
-		'GSC_MIxS_host_associated_host_subspecific_genetic_lineage': 'host subspecific genetic lineage',
-		'GSC_MIxS_host_associated_temperature': 'temperature',
-		'GSC_MIxS_host_associated_salinity': 'salinity',
-		'GSC_MIxS_host_associated_host_blood_pressure_diastolic': 'host blood pressure diastolic',
-		'GSC_MIxS_host_associated_host_blood_pressure_systolic': 'host blood pressure systolic',
-		'GSC_MIxS_host_associated_host_diet': 'host diet',
-		'GSC_MIxS_host_associated_host_last_meal': 'host last meal',
-		'GSC_MIxS_host_associated_host_family_relationship': 'host family relationship',
-		'GSC_MIxS_host_associated_host_genotype': 'host genotype',
-		'GSC_MIxS_host_associated_gravidity': 'gravidity',
-		'GSC_MIxS_host_associated_subspecific_genetic_lineage': 'subspecific genetic lineage',
-		'GSC_MIxS_host_associated_trophic_level': 'trophic level',
-		'GSC_MIxS_host_associated_relationship_to_oxygen': 'relationship to oxygen',
-		'GSC_MIxS_host_associated_known_pathogenicity': 'known pathogenicity',
-		'GSC_MIxS_host_associated_encoded_traits': 'encoded traits',
-		'GSC_MIxS_host_associated_observed_biotic_relationship': 'observed biotic relationship',
-		'GSC_MIxS_host_associated_chemical_administration': 'chemical administration',
-		'GSC_MIxS_host_associated_perturbation': 'perturbation',
+		'host_body_habitat': 'host body habitat',
+		'host_growth_conditions': 'host growth conditions',
+		'host_substrate': 'host substrate',
+		'host_color': 'host color',
+		'host_shape': 'host shape',
+		'host_blood_pressure_diastolic': 'host blood pressure diastolic',
+		'host_blood_pressure_systolic': 'host blood pressure systolic',
+		'gravidity': 'gravidity',
 	}
 
 	name = 'GSC_MIxS_host_associated'
 
 class GSC_MIxS_host_associated_unit(SelfDescribingModel):
 
-	GSC_MIxS_host_associated_sample_volume_or_weight_for_DNA_extraction_units = [('g', 'g'), ('mL', 'mL'), ('mg', 'mg'), ('ng', 'ng')]
-	GSC_MIxS_host_associated_altitude_units = [('m', 'm')]
-	GSC_MIxS_host_associated_geographic_location_latitude_units = [('DD', 'DD')]
-	GSC_MIxS_host_associated_geographic_location_longitude_units = [('DD', 'DD')]
-	GSC_MIxS_host_associated_depth_units = [('m', 'm')]
-	GSC_MIxS_host_associated_elevation_units = [('m', 'm')]
-	GSC_MIxS_host_associated_amount_or_size_of_sample_collected_units = [('L', 'L'), ('g', 'g'), ('kg', 'kg'), ('m2', 'm2'), ('m3', 'm3')]
-	GSC_MIxS_host_associated_host_dry_mass_units = [('g', 'g'), ('kg', 'kg'), ('mg', 'mg')]
-	GSC_MIxS_host_associated_sample_storage_duration_units = [('days', 'days'), ('hours', 'hours'), ('months', 'months'), ('weeks', 'weeks'), ('years', 'years')]
-	GSC_MIxS_host_associated_sample_storage_temperature_units = [('°C', '°C')]
-	GSC_MIxS_host_associated_host_age_units = [('centuries', 'centuries'), ('days', 'days'), ('decades', 'decades'), ('hours', 'hours'), ('minutes', 'minutes'), ('months', 'months'), ('seconds', 'seconds'), ('weeks', 'weeks'), ('years', 'years')]
-	GSC_MIxS_host_associated_host_height_units = [('cm', 'cm'), ('m', 'm'), ('mm', 'mm')]
-	GSC_MIxS_host_associated_host_length_units = [('cm', 'cm'), ('m', 'm'), ('mm', 'mm')]
-	GSC_MIxS_host_associated_host_total_mass_units = [('g', 'g'), ('kg', 'kg')]
-	GSC_MIxS_host_associated_host_body_temperature_units = [('ºC', 'ºC')]
-	GSC_MIxS_host_associated_temperature_units = [('ºC', 'ºC')]
-	GSC_MIxS_host_associated_salinity_units = [('psu', 'psu')]
-	GSC_MIxS_host_associated_host_blood_pressure_diastolic_units = [('mm Hg', 'mm Hg')]
-	GSC_MIxS_host_associated_host_blood_pressure_systolic_units = [('mm Hg', 'mm Hg')]
+	host_blood_pressure_diastolic_units = [('mm Hg', 'mm Hg')]
+	host_blood_pressure_systolic_units = [('mm Hg', 'mm Hg')]
 
 	fields = {
-		'GSC_MIxS_host_associated_sample_volume_or_weight_for_DNA_extraction': 'sample volume or weight for DNA extraction',
-		'GSC_MIxS_host_associated_altitude': 'altitude',
-		'GSC_MIxS_host_associated_geographic_location_latitude': 'geographic location (latitude)',
-		'GSC_MIxS_host_associated_geographic_location_longitude': 'geographic location (longitude)',
-		'GSC_MIxS_host_associated_depth': 'depth',
-		'GSC_MIxS_host_associated_elevation': 'elevation',
-		'GSC_MIxS_host_associated_amount_or_size_of_sample_collected': 'amount or size of sample collected',
-		'GSC_MIxS_host_associated_host_dry_mass': 'host dry mass',
-		'GSC_MIxS_host_associated_sample_storage_duration': 'sample storage duration',
-		'GSC_MIxS_host_associated_sample_storage_temperature': 'sample storage temperature',
-		'GSC_MIxS_host_associated_host_age': 'host age',
-		'GSC_MIxS_host_associated_host_height': 'host height',
-		'GSC_MIxS_host_associated_host_length': 'host length',
-		'GSC_MIxS_host_associated_host_total_mass': 'host total mass',
-		'GSC_MIxS_host_associated_host_body_temperature': 'host body temperature',
-		'GSC_MIxS_host_associated_temperature': 'temperature',
-		'GSC_MIxS_host_associated_salinity': 'salinity',
-		'GSC_MIxS_host_associated_host_blood_pressure_diastolic': 'host blood pressure diastolic',
-		'GSC_MIxS_host_associated_host_blood_pressure_systolic': 'host blood pressure systolic',
+		'host_blood_pressure_diastolic': 'host blood pressure diastolic',
+		'host_blood_pressure_systolic': 'host blood pressure systolic',
 	}
 
 	name = 'GSC_MIxS_host_associated'
 
 	sampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE, default=1)
 	sample = models.ForeignKey(Sample, on_delete=models.CASCADE, default=1)
-	GSC_MIxS_host_associated_sample_volume_or_weight_for_DNA_extraction = models.CharField(max_length=100, choices=GSC_MIxS_host_associated_sample_volume_or_weight_for_DNA_extraction_units, blank=False)
-	GSC_MIxS_host_associated_altitude = models.CharField(max_length=100, choices=GSC_MIxS_host_associated_altitude_units, blank=False)
-	GSC_MIxS_host_associated_geographic_location_latitude = models.CharField(max_length=100, choices=GSC_MIxS_host_associated_geographic_location_latitude_units, blank=False)
-	GSC_MIxS_host_associated_geographic_location_longitude = models.CharField(max_length=100, choices=GSC_MIxS_host_associated_geographic_location_longitude_units, blank=False)
-	GSC_MIxS_host_associated_depth = models.CharField(max_length=100, choices=GSC_MIxS_host_associated_depth_units, blank=False)
-	GSC_MIxS_host_associated_elevation = models.CharField(max_length=100, choices=GSC_MIxS_host_associated_elevation_units, blank=False)
-	GSC_MIxS_host_associated_amount_or_size_of_sample_collected = models.CharField(max_length=100, choices=GSC_MIxS_host_associated_amount_or_size_of_sample_collected_units, blank=False)
-	GSC_MIxS_host_associated_host_dry_mass = models.CharField(max_length=100, choices=GSC_MIxS_host_associated_host_dry_mass_units, blank=False)
-	GSC_MIxS_host_associated_sample_storage_duration = models.CharField(max_length=100, choices=GSC_MIxS_host_associated_sample_storage_duration_units, blank=False)
-	GSC_MIxS_host_associated_sample_storage_temperature = models.CharField(max_length=100, choices=GSC_MIxS_host_associated_sample_storage_temperature_units, blank=False)
-	GSC_MIxS_host_associated_host_age = models.CharField(max_length=100, choices=GSC_MIxS_host_associated_host_age_units, blank=False)
-	GSC_MIxS_host_associated_host_height = models.CharField(max_length=100, choices=GSC_MIxS_host_associated_host_height_units, blank=False)
-	GSC_MIxS_host_associated_host_length = models.CharField(max_length=100, choices=GSC_MIxS_host_associated_host_length_units, blank=False)
-	GSC_MIxS_host_associated_host_total_mass = models.CharField(max_length=100, choices=GSC_MIxS_host_associated_host_total_mass_units, blank=False)
-	GSC_MIxS_host_associated_host_body_temperature = models.CharField(max_length=100, choices=GSC_MIxS_host_associated_host_body_temperature_units, blank=False)
-	GSC_MIxS_host_associated_temperature = models.CharField(max_length=100, choices=GSC_MIxS_host_associated_temperature_units, blank=False)
-	GSC_MIxS_host_associated_salinity = models.CharField(max_length=100, choices=GSC_MIxS_host_associated_salinity_units, blank=False)
-	GSC_MIxS_host_associated_host_blood_pressure_diastolic = models.CharField(max_length=100, choices=GSC_MIxS_host_associated_host_blood_pressure_diastolic_units, blank=False)
-	GSC_MIxS_host_associated_host_blood_pressure_systolic = models.CharField(max_length=100, choices=GSC_MIxS_host_associated_host_blood_pressure_systolic_units, blank=False)
+	host_blood_pressure_diastolic = models.CharField(max_length=100, choices=host_blood_pressure_diastolic_units, blank=False)
+	host_blood_pressure_systolic = models.CharField(max_length=100, choices=host_blood_pressure_systolic_units, blank=False)
 
 class GSC_MIxS_human_vaginal(SelfDescribingModel):
 
-	GSC_MIxS_human_vaginal_sequence_quality_check_choice = [('manual', 'manual'), ('none', 'none'), ('software', 'software')]
-	GSC_MIxS_human_vaginal_geographic_location_country_and_or_sea_choice = [('Afghanistan', 'Afghanistan'), ('Albania', 'Albania'), ('Algeria', 'Algeria'), ('American Samoa', 'American Samoa'), ('Andorra', 'Andorra'), ('Angola', 'Angola'), ('Anguilla', 'Anguilla'), ('Antarctica', 'Antarctica'), ('Antigua and Barbuda', 'Antigua and Barbuda'), ('Arctic Ocean', 'Arctic Ocean'), ('Argentina', 'Argentina'), ('Armenia', 'Armenia'), ('Aruba', 'Aruba'), ('Ashmore and Cartier Islands', 'Ashmore and Cartier Islands'), ('Atlantic Ocean', 'Atlantic Ocean'), ('Australia', 'Australia'), ('Austria', 'Austria'), ('Azerbaijan', 'Azerbaijan'), ('Bahamas', 'Bahamas'), ('Bahrain', 'Bahrain'), ('Baker Island', 'Baker Island'), ('Baltic Sea', 'Baltic Sea'), ('Bangladesh', 'Bangladesh'), ('Barbados', 'Barbados'), ('Bassas da India', 'Bassas da India'), ('Belarus', 'Belarus'), ('Belgium', 'Belgium'), ('Belize', 'Belize'), ('Benin', 'Benin'), ('Bermuda', 'Bermuda'), ('Bhutan', 'Bhutan'), ('Bolivia', 'Bolivia'), ('Borneo', 'Borneo'), ('Bosnia and Herzegovina', 'Bosnia and Herzegovina'), ('Botswana', 'Botswana'), ('Bouvet Island', 'Bouvet Island'), ('Brazil', 'Brazil'), ('British Virgin Islands', 'British Virgin Islands'), ('Brunei', 'Brunei'), ('Bulgaria', 'Bulgaria'), ('Burkina Faso', 'Burkina Faso'), ('Burundi', 'Burundi'), ('Cambodia', 'Cambodia'), ('Cameroon', 'Cameroon'), ('Canada', 'Canada'), ('Cape Verde', 'Cape Verde'), ('Cayman Islands', 'Cayman Islands'), ('Central African Republic', 'Central African Republic'), ('Chad', 'Chad'), ('Chile', 'Chile'), ('China', 'China'), ('Christmas Island', 'Christmas Island'), ('Clipperton Island', 'Clipperton Island'), ('Cocos Islands', 'Cocos Islands'), ('Colombia', 'Colombia'), ('Comoros', 'Comoros'), ('Cook Islands', 'Cook Islands'), ('Coral Sea Islands', 'Coral Sea Islands'), ('Costa Rica', 'Costa Rica'), ("Cote d'Ivoire", "Cote d'Ivoire"), ('Croatia', 'Croatia'), ('Cuba', 'Cuba'), ('Curacao', 'Curacao'), ('Cyprus', 'Cyprus'), ('Czech Republic', 'Czech Republic'), ('Democratic Republic of the Congo', 'Democratic Republic of the Congo'), ('Denmark', 'Denmark'), ('Djibouti', 'Djibouti'), ('Dominica', 'Dominica'), ('Dominican Republic', 'Dominican Republic'), ('East Timor', 'East Timor'), ('Ecuador', 'Ecuador'), ('Egypt', 'Egypt'), ('El Salvador', 'El Salvador'), ('Equatorial Guinea', 'Equatorial Guinea'), ('Eritrea', 'Eritrea'), ('Estonia', 'Estonia'), ('Ethiopia', 'Ethiopia'), ('Europa Island', 'Europa Island'), ('Falkland Islands (Islas Malvinas)', 'Falkland Islands (Islas Malvinas)'), ('Faroe Islands', 'Faroe Islands'), ('Fiji', 'Fiji'), ('Finland', 'Finland'), ('France', 'France'), ('French Guiana', 'French Guiana'), ('French Polynesia', 'French Polynesia'), ('French Southern and Antarctic Lands', 'French Southern and Antarctic Lands'), ('Gabon', 'Gabon'), ('Gambia', 'Gambia'), ('Gaza Strip', 'Gaza Strip'), ('Georgia', 'Georgia'), ('Germany', 'Germany'), ('Ghana', 'Ghana'), ('Gibraltar', 'Gibraltar'), ('Glorioso Islands', 'Glorioso Islands'), ('Greece', 'Greece'), ('Greenland', 'Greenland'), ('Grenada', 'Grenada'), ('Guadeloupe', 'Guadeloupe'), ('Guam', 'Guam'), ('Guatemala', 'Guatemala'), ('Guernsey', 'Guernsey'), ('Guinea', 'Guinea'), ('Guinea-Bissau', 'Guinea-Bissau'), ('Guyana', 'Guyana'), ('Haiti', 'Haiti'), ('Heard Island and McDonald Islands', 'Heard Island and McDonald Islands'), ('Honduras', 'Honduras'), ('Hong Kong', 'Hong Kong'), ('Howland Island', 'Howland Island'), ('Hungary', 'Hungary'), ('Iceland', 'Iceland'), ('India', 'India'), ('Indian Ocean', 'Indian Ocean'), ('Indonesia', 'Indonesia'), ('Iran', 'Iran'), ('Iraq', 'Iraq'), ('Ireland', 'Ireland'), ('Isle of Man', 'Isle of Man'), ('Israel', 'Israel'), ('Italy', 'Italy'), ('Jamaica', 'Jamaica'), ('Jan Mayen', 'Jan Mayen'), ('Japan', 'Japan'), ('Jarvis Island', 'Jarvis Island'), ('Jersey', 'Jersey'), ('Johnston Atoll', 'Johnston Atoll'), ('Jordan', 'Jordan'), ('Juan de Nova Island', 'Juan de Nova Island'), ('Kazakhstan', 'Kazakhstan'), ('Kenya', 'Kenya'), ('Kerguelen Archipelago', 'Kerguelen Archipelago'), ('Kingman Reef', 'Kingman Reef'), ('Kiribati', 'Kiribati'), ('Kosovo', 'Kosovo'), ('Kuwait', 'Kuwait'), ('Kyrgyzstan', 'Kyrgyzstan'), ('Laos', 'Laos'), ('Latvia', 'Latvia'), ('Lebanon', 'Lebanon'), ('Lesotho', 'Lesotho'), ('Liberia', 'Liberia'), ('Libya', 'Libya'), ('Liechtenstein', 'Liechtenstein'), ('Lithuania', 'Lithuania'), ('Luxembourg', 'Luxembourg'), ('Macau', 'Macau'), ('Macedonia', 'Macedonia'), ('Madagascar', 'Madagascar'), ('Malawi', 'Malawi'), ('Malaysia', 'Malaysia'), ('Maldives', 'Maldives'), ('Mali', 'Mali'), ('Malta', 'Malta'), ('Marshall Islands', 'Marshall Islands'), ('Martinique', 'Martinique'), ('Mauritania', 'Mauritania'), ('Mauritius', 'Mauritius'), ('Mayotte', 'Mayotte'), ('Mediterranean Sea', 'Mediterranean Sea'), ('Mexico', 'Mexico'), ('Micronesia', 'Micronesia'), ('Midway Islands', 'Midway Islands'), ('Moldova', 'Moldova'), ('Monaco', 'Monaco'), ('Mongolia', 'Mongolia'), ('Montenegro', 'Montenegro'), ('Montserrat', 'Montserrat'), ('Morocco', 'Morocco'), ('Mozambique', 'Mozambique'), ('Myanmar', 'Myanmar'), ('Namibia', 'Namibia'), ('Nauru', 'Nauru'), ('Navassa Island', 'Navassa Island'), ('Nepal', 'Nepal'), ('Netherlands', 'Netherlands'), ('New Caledonia', 'New Caledonia'), ('New Zealand', 'New Zealand'), ('Nicaragua', 'Nicaragua'), ('Niger', 'Niger'), ('Nigeria', 'Nigeria'), ('Niue', 'Niue'), ('Norfolk Island', 'Norfolk Island'), ('North Korea', 'North Korea'), ('North Sea', 'North Sea'), ('Northern Mariana Islands', 'Northern Mariana Islands'), ('Norway', 'Norway'), ('Oman', 'Oman'), ('Pacific Ocean', 'Pacific Ocean'), ('Pakistan', 'Pakistan'), ('Palau', 'Palau'), ('Palmyra Atoll', 'Palmyra Atoll'), ('Panama', 'Panama'), ('Papua New Guinea', 'Papua New Guinea'), ('Paracel Islands', 'Paracel Islands'), ('Paraguay', 'Paraguay'), ('Peru', 'Peru'), ('Philippines', 'Philippines'), ('Pitcairn Islands', 'Pitcairn Islands'), ('Poland', 'Poland'), ('Portugal', 'Portugal'), ('Puerto Rico', 'Puerto Rico'), ('Qatar', 'Qatar'), ('Republic of the Congo', 'Republic of the Congo'), ('Reunion', 'Reunion'), ('Romania', 'Romania'), ('Ross Sea', 'Ross Sea'), ('Russia', 'Russia'), ('Rwanda', 'Rwanda'), ('Saint Helena', 'Saint Helena'), ('Saint Kitts and Nevis', 'Saint Kitts and Nevis'), ('Saint Lucia', 'Saint Lucia'), ('Saint Pierre and Miquelon', 'Saint Pierre and Miquelon'), ('Saint Vincent and the Grenadines', 'Saint Vincent and the Grenadines'), ('Samoa', 'Samoa'), ('San Marino', 'San Marino'), ('Sao Tome and Principe', 'Sao Tome and Principe'), ('Saudi Arabia', 'Saudi Arabia'), ('Senegal', 'Senegal'), ('Serbia', 'Serbia'), ('Seychelles', 'Seychelles'), ('Sierra Leone', 'Sierra Leone'), ('Singapore', 'Singapore'), ('Sint Maarten', 'Sint Maarten'), ('Slovakia', 'Slovakia'), ('Slovenia', 'Slovenia'), ('Solomon Islands', 'Solomon Islands'), ('Somalia', 'Somalia'), ('South Africa', 'South Africa'), ('South Georgia and the South Sandwich Islands', 'South Georgia and the South Sandwich Islands'), ('South Korea', 'South Korea'), ('Southern Ocean', 'Southern Ocean'), ('Spain', 'Spain'), ('Spratly Islands', 'Spratly Islands'), ('Sri Lanka', 'Sri Lanka'), ('Sudan', 'Sudan'), ('Suriname', 'Suriname'), ('Svalbard', 'Svalbard'), ('Swaziland', 'Swaziland'), ('Sweden', 'Sweden'), ('Switzerland', 'Switzerland'), ('Syria', 'Syria'), ('Taiwan', 'Taiwan'), ('Tajikistan', 'Tajikistan'), ('Tanzania', 'Tanzania'), ('Tasman Sea', 'Tasman Sea'), ('Thailand', 'Thailand'), ('Togo', 'Togo'), ('Tokelau', 'Tokelau'), ('Tonga', 'Tonga'), ('Trinidad and Tobago', 'Trinidad and Tobago'), ('Tromelin Island', 'Tromelin Island'), ('Tunisia', 'Tunisia'), ('Turkey', 'Turkey'), ('Turkmenistan', 'Turkmenistan'), ('Turks and Caicos Islands', 'Turks and Caicos Islands'), ('Tuvalu', 'Tuvalu'), ('USA', 'USA'), ('Uganda', 'Uganda'), ('Ukraine', 'Ukraine'), ('United Arab Emirates', 'United Arab Emirates'), ('United Kingdom', 'United Kingdom'), ('Uruguay', 'Uruguay'), ('Uzbekistan', 'Uzbekistan'), ('Vanuatu', 'Vanuatu'), ('Venezuela', 'Venezuela'), ('Viet Nam', 'Viet Nam'), ('Virgin Islands', 'Virgin Islands'), ('Wake Island', 'Wake Island'), ('Wallis and Futuna', 'Wallis and Futuna'), ('West Bank', 'West Bank'), ('Western Sahara', 'Western Sahara'), ('Yemen', 'Yemen'), ('Zambia', 'Zambia'), ('Zimbabwe', 'Zimbabwe'), ('missing: control sample', 'missing: control sample'), ('missing: data agreement established pre-2023', 'missing: data agreement established pre-2023'), ('missing: endangered species', 'missing: endangered species'), ('missing: human-identifiable', 'missing: human-identifiable'), ('missing: lab stock', 'missing: lab stock'), ('missing: sample group', 'missing: sample group'), ('missing: synthetic construct', 'missing: synthetic construct'), ('missing: third party data', 'missing: third party data'), ('not applicable', 'not applicable'), ('not collected', 'not collected'), ('not provided', 'not provided'), ('restricted access', 'restricted access')]
-	GSC_MIxS_human_vaginal_medical_history_performed_choice = [('No', 'No'), ('Yes', 'Yes')]
-	GSC_MIxS_human_vaginal_oxygenation_status_of_sample_choice = [('aerobic', 'aerobic'), ('anaerobic', 'anaerobic')]
-	GSC_MIxS_human_vaginal_IHMC_medication_code_choice = [('01=1=Analgesics/NSAIDS', '01=1=Analgesics/NSAIDS'), ('02=2=Anesthetics', '02=2=Anesthetics'), ('03=3=Antacids/H2 antagonists', '03=3=Antacids/H2 antagonists'), ('04=4=Anti-acne', '04=4=Anti-acne'), ('05=5=Anti-asthma/bronchodilators', '05=5=Anti-asthma/bronchodilators'), ('06=6=Anti-cholesterol/Anti-hyperlipidemic', '06=6=Anti-cholesterol/Anti-hyperlipidemic'), ('07=7=Anti-coagulants', '07=7=Anti-coagulants'), ('08=8=Antibiotics/(anti)-infectives, parasitics, microbials', '08=8=Antibiotics/(anti)-infectives, parasitics, microbials'), ('09=9=Antidepressants/mood-altering drugs', '09=9=Antidepressants/mood-altering drugs'), ('10=10=Antihistamines/ Decongestants', '10=10=Antihistamines/ Decongestants'), ('11=11=Antihypertensives', '11=11=Antihypertensives'), ('12=12=Cardiovascular, other than hyperlipidemic/HTN', '12=12=Cardiovascular, other than hyperlipidemic/HTN'), ('13=13=Contraceptives (oral, implant, injectable)', '13=13=Contraceptives (oral, implant, injectable)'), ('14=14=Emergency/support medications', '14=14=Emergency/support medications'), ('15=15=Endocrine/Metabolic agents', '15=15=Endocrine/Metabolic agents'), ('16=16=GI meds (anti-diarrheal, emetic, spasmodics)', '16=16=GI meds (anti-diarrheal, emetic, spasmodics)'), ('17=17=Herbal/homeopathic products', '17=17=Herbal/homeopathic products'), ('18=18=Hormones/steroids', '18=18=Hormones/steroids'), ('19=19=OTC cold & flu', '19=19=OTC cold & flu'), ('20=20=Vaccine prophylaxis', '20=20=Vaccine prophylaxis'), ('21=21=Vitamins, minerals, food supplements', '21=21=Vitamins, minerals, food supplements'), ('99=99=Other', '99=99=Other')]
-	GSC_MIxS_human_vaginal_host_occupation_choice = [('01=01 Accounting/Finance', '01=01 Accounting/Finance'), ('02=02 Advertising/Public Relations', '02=02 Advertising/Public Relations'), ('03=03 Arts/Entertainment/Publishing', '03=03 Arts/Entertainment/Publishing'), ('04=04 Automotive', '04=04 Automotive'), ('05=05 Banking/ Mortgage', '05=05 Banking/ Mortgage'), ('06=06 Biotech', '06=06 Biotech'), ('07=07 Broadcast/Journalism', '07=07 Broadcast/Journalism'), ('08=08 Business Development', '08=08 Business Development'), ('09=09 Clerical/Administrative', '09=09 Clerical/Administrative'), ('10=10 Construction/Trades', '10=10 Construction/Trades'), ('11=11 Consultant', '11=11 Consultant'), ('12=12 Customer Services', '12=12 Customer Services'), ('13=13 Design', '13=13 Design'), ('14=14 Education', '14=14 Education'), ('15=15 Engineering', '15=15 Engineering'), ('16=16 Entry Level', '16=16 Entry Level'), ('17=17 Executive', '17=17 Executive'), ('18=18 Food Service', '18=18 Food Service'), ('19=19 Government', '19=19 Government'), ('20=20 Grocery', '20=20 Grocery'), ('21=21 Healthcare', '21=21 Healthcare'), ('22=22 Hospitality', '22=22 Hospitality'), ('23=23 Human Resources', '23=23 Human Resources'), ('24=24 Information Technology', '24=24 Information Technology'), ('25=25 Insurance', '25=25 Insurance'), ('26=26 Law/Legal', '26=26 Law/Legal'), ('27=27 Management', '27=27 Management'), ('28=28 Manufacturing', '28=28 Manufacturing'), ('29=29 Marketing', '29=29 Marketing'), ('30=30 Pharmaceutical', '30=30 Pharmaceutical'), ('31=31 Professional Services', '31=31 Professional Services'), ('32=32 Purchasing', '32=32 Purchasing'), ('33=33 Quality Assurance (QA)', '33=33 Quality Assurance (QA)'), ('34=34 Research', '34=34 Research'), ('35=35 Restaurant', '35=35 Restaurant'), ('36=36 Retail', '36=36 Retail'), ('37=37 Sales', '37=37 Sales'), ('38=38 Science', '38=38 Science'), ('39=39 Security/Law Enforcement', '39=39 Security/Law Enforcement'), ('40=40 Shipping/Distribution', '40=40 Shipping/Distribution'), ('41=41 Strategy', '41=41 Strategy'), ('42=42 Student', '42=42 Student'), ('43=43 Telecommunications', '43=43 Telecommunications'), ('44=44 Training', '44=44 Training'), ('45=45 Transportation', '45=45 Transportation'), ('46=46 Warehouse', '46=46 Warehouse'), ('47=47 Other', '47=47 Other'), ('99=99 Unknown/Refused', '99=99 Unknown/Refused')]
-	GSC_MIxS_human_vaginal_host_sex_choice = [('female', 'female'), ('hermaphrodite', 'hermaphrodite'), ('male', 'male'), ('missing: control sample', 'missing: control sample'), ('missing: data agreement established pre-2023', 'missing: data agreement established pre-2023'), ('missing: endangered species', 'missing: endangered species'), ('missing: human-identifiable', 'missing: human-identifiable'), ('missing: lab stock', 'missing: lab stock'), ('missing: sample group', 'missing: sample group'), ('missing: synthetic construct', 'missing: synthetic construct'), ('missing: third party data', 'missing: third party data'), ('neuter', 'neuter'), ('not applicable', 'not applicable'), ('not collected', 'not collected'), ('not provided', 'not provided'), ('other', 'other'), ('restricted access', 'restricted access')]
-	GSC_MIxS_human_vaginal_hysterectomy_choice = [('No', 'No'), ('Yes', 'Yes')]
-	GSC_MIxS_human_vaginal_trophic_level_choice = [('autotroph', 'autotroph'), ('carboxydotroph', 'carboxydotroph'), ('chemoautotroph', 'chemoautotroph'), ('chemoheterotroph', 'chemoheterotroph'), ('chemolithoautotroph', 'chemolithoautotroph'), ('chemolithotroph', 'chemolithotroph'), ('chemoorganoheterotroph', 'chemoorganoheterotroph'), ('chemoorganotroph', 'chemoorganotroph'), ('chemosynthetic', 'chemosynthetic'), ('chemotroph', 'chemotroph'), ('copiotroph', 'copiotroph'), ('diazotroph', 'diazotroph'), ('facultative autotroph', 'facultative autotroph'), ('heterotroph', 'heterotroph'), ('lithoautotroph', 'lithoautotroph'), ('lithoheterotroph', 'lithoheterotroph'), ('lithotroph', 'lithotroph'), ('methanotroph', 'methanotroph'), ('methylotroph', 'methylotroph'), ('mixotroph', 'mixotroph'), ('obligate chemoautolithotroph', 'obligate chemoautolithotroph'), ('oligotroph', 'oligotroph'), ('organoheterotroph', 'organoheterotroph'), ('organotroph', 'organotroph'), ('photoautotroph', 'photoautotroph'), ('photoheterotroph', 'photoheterotroph'), ('photolithoautotroph', 'photolithoautotroph'), ('photolithotroph', 'photolithotroph'), ('photosynthetic', 'photosynthetic'), ('phototroph', 'phototroph')]
-	GSC_MIxS_human_vaginal_relationship_to_oxygen_choice = [('aerobe', 'aerobe'), ('anaerobe', 'anaerobe'), ('facultative', 'facultative'), ('microaerophilic', 'microaerophilic'), ('microanaerobe', 'microanaerobe'), ('obligate aerobe', 'obligate aerobe'), ('obligate anaerobe', 'obligate anaerobe')]
-	GSC_MIxS_human_vaginal_observed_biotic_relationship_choice = [('commensal', 'commensal'), ('free living', 'free living'), ('mutualism', 'mutualism'), ('parasite', 'parasite'), ('symbiont', 'symbiont')]
+	hysterectomy_choice = [('No', 'No'), ('Yes', 'Yes')]
 
-	GSC_MIxS_human_vaginal_number_of_replicons_validator = "[+-]?[0-9]+"
-	GSC_MIxS_human_vaginal_extrachromosomal_elements_validator = "[+-]?[0-9]+"
-	GSC_MIxS_human_vaginal_estimated_size_validator = "[+-]?[0-9]+"
-	GSC_MIxS_human_vaginal_sample_volume_or_weight_for_DNA_extraction_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_human_vaginal_library_size_validator = "[+-]?[0-9]+"
-	GSC_MIxS_human_vaginal_library_reads_sequenced_validator = "[+-]?[0-9]+"
-	GSC_MIxS_human_vaginal_collection_date_validator = "(^[12][0-9]{3}(-(0[1-9]|1[0-2])(-(0[1-9]|[12][0-9]|3[01])(T[0-9]{2}:[0-9]{2}(:[0-9]{2})?Z?([+-][0-9]{1,2})?)?)?)?(/[0-9]{4}(-[0-9]{2}(-[0-9]{2}(T[0-9]{2}:[0-9]{2}(:[0-9]{2})?Z?([+-][0-9]{1,2})?)?)?)?)?$)|(^not collected$)|(^not provided$)|(^restricted access$)|(^missing: control sample$)|(^missing: sample group$)|(^missing: synthetic construct$)|(^missing: lab stock$)|(^missing: third party data$)|(^missing: data agreement established pre-2023$)|(^missing: endangered species$)|(^missing: human-identifiable$)"
-	GSC_MIxS_human_vaginal_geographic_location_latitude_validator = "(^[+-]?[0-9]+.?[0-9]{0,8}$)|(^not collected$)|(^not provided$)|(^restricted access$)|(^missing: control sample$)|(^missing: sample group$)|(^missing: synthetic construct$)|(^missing: lab stock$)|(^missing: third party data$)|(^missing: data agreement established pre-2023$)|(^missing: endangered species$)|(^missing: human-identifiable$)"
-	GSC_MIxS_human_vaginal_geographic_location_longitude_validator = "(^[+-]?[0-9]+.?[0-9]{0,8}$)|(^not collected$)|(^not provided$)|(^restricted access$)|(^missing: control sample$)|(^missing: sample group$)|(^missing: synthetic construct$)|(^missing: lab stock$)|(^missing: third party data$)|(^missing: data agreement established pre-2023$)|(^missing: endangered species$)|(^missing: human-identifiable$)"
-	GSC_MIxS_human_vaginal_amount_or_size_of_sample_collected_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_human_vaginal_sample_storage_duration_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_human_vaginal_sample_storage_temperature_validator = "[+-]?(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_human_vaginal_host_age_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_human_vaginal_host_height_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_human_vaginal_host_body_mass_index_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_human_vaginal_host_total_mass_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_human_vaginal_host_body_temperature_validator = "[+-]?(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_human_vaginal_temperature_validator = "[+-]?(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_human_vaginal_salinity_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_human_vaginal_host_pulse_validator = "[+-]?[0-9]+"
 
 	sampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE, default=1)
 	sample = models.ForeignKey(Sample, on_delete=models.CASCADE, default=1)
-	GSC_MIxS_human_vaginal_project_name= models.CharField(max_length=100, blank=False,help_text="Name of th")
-	GSC_MIxS_human_vaginal_experimental_factor= models.CharField(max_length=100, blank=True,help_text="Experiment")
-	GSC_MIxS_human_vaginal_ploidy= models.CharField(max_length=100, blank=True,help_text="The ploidy")
-	GSC_MIxS_human_vaginal_number_of_replicons= models.CharField(max_length=100, blank=True,help_text="Reports th", validators=[RegexValidator(GSC_MIxS_human_vaginal_number_of_replicons_validator)])
-	GSC_MIxS_human_vaginal_extrachromosomal_elements= models.CharField(max_length=100, blank=True,help_text="Do plasmid", validators=[RegexValidator(GSC_MIxS_human_vaginal_extrachromosomal_elements_validator)])
-	GSC_MIxS_human_vaginal_estimated_size= models.CharField(max_length=100, blank=True,help_text="The estima", validators=[RegexValidator(GSC_MIxS_human_vaginal_estimated_size_validator)])
-	GSC_MIxS_human_vaginal_reference_for_biomaterial= models.CharField(max_length=100, blank=True,help_text="Primary pu")
-	GSC_MIxS_human_vaginal_annotation_source= models.CharField(max_length=100, blank=True,help_text="For cases ")
-	GSC_MIxS_human_vaginal_sample_volume_or_weight_for_DNA_extraction= models.CharField(max_length=100, blank=True,help_text="Volume (ml", validators=[RegexValidator(GSC_MIxS_human_vaginal_sample_volume_or_weight_for_DNA_extraction_validator)])
-	GSC_MIxS_human_vaginal_nucleic_acid_extraction= models.CharField(max_length=100, blank=True,help_text="A link to ")
-	GSC_MIxS_human_vaginal_nucleic_acid_amplification= models.CharField(max_length=100, blank=True,help_text="A link to ")
-	GSC_MIxS_human_vaginal_library_size= models.CharField(max_length=100, blank=True,help_text="Total numb", validators=[RegexValidator(GSC_MIxS_human_vaginal_library_size_validator)])
-	GSC_MIxS_human_vaginal_library_reads_sequenced= models.CharField(max_length=100, blank=True,help_text="Total numb", validators=[RegexValidator(GSC_MIxS_human_vaginal_library_reads_sequenced_validator)])
-	GSC_MIxS_human_vaginal_library_construction_method= models.CharField(max_length=100, blank=True,help_text="Library co")
-	GSC_MIxS_human_vaginal_library_vector= models.CharField(max_length=100, blank=True,help_text="Cloning ve")
-	GSC_MIxS_human_vaginal_library_screening_strategy= models.CharField(max_length=100, blank=True,help_text="Specific e")
-	GSC_MIxS_human_vaginal_target_gene= models.CharField(max_length=100, blank=True,help_text="Targeted g")
-	GSC_MIxS_human_vaginal_target_subfragment= models.CharField(max_length=100, blank=True,help_text="Name of su")
-	GSC_MIxS_human_vaginal_pcr_primers= models.CharField(max_length=100, blank=True,help_text="PCR primer")
-	GSC_MIxS_human_vaginal_multiplex_identifiers= models.CharField(max_length=100, blank=True,help_text="Molecular ")
-	GSC_MIxS_human_vaginal_adapters= models.CharField(max_length=100, blank=True,help_text="Adapters p")
-	GSC_MIxS_human_vaginal_pcr_conditions= models.CharField(max_length=100, blank=True,help_text="Descriptio")
-	GSC_MIxS_human_vaginal_sequencing_method= models.CharField(max_length=100, blank=True,help_text="Sequencing")
-	GSC_MIxS_human_vaginal_sequence_quality_check= models.CharField(max_length=100, blank=True,help_text="Indicate i", choices=GSC_MIxS_human_vaginal_sequence_quality_check_choice)
-	GSC_MIxS_human_vaginal_chimera_check_software= models.CharField(max_length=100, blank=True,help_text="Tool(s) us")
-	GSC_MIxS_human_vaginal_relevant_electronic_resources= models.CharField(max_length=100, blank=True,help_text="A related ")
-	GSC_MIxS_human_vaginal_relevant_standard_operating_procedures= models.CharField(max_length=100, blank=True,help_text="Standard o")
-	GSC_MIxS_human_vaginal_negative_control_type= models.CharField(max_length=100, blank=True,help_text="The substa")
-	GSC_MIxS_human_vaginal_positive_control_type= models.CharField(max_length=100, blank=True,help_text="The substa")
-	GSC_MIxS_human_vaginal_collection_date= models.CharField(max_length=100, blank=False,help_text="The date t", validators=[RegexValidator(GSC_MIxS_human_vaginal_collection_date_validator)])
-	GSC_MIxS_human_vaginal_geographic_location_country_and_or_sea= models.CharField(max_length=100, blank=False,help_text="The locati", choices=GSC_MIxS_human_vaginal_geographic_location_country_and_or_sea_choice)
-	GSC_MIxS_human_vaginal_geographic_location_latitude= models.CharField(max_length=100, blank=False,help_text="The geogra", validators=[RegexValidator(GSC_MIxS_human_vaginal_geographic_location_latitude_validator)])
-	GSC_MIxS_human_vaginal_geographic_location_longitude= models.CharField(max_length=100, blank=False,help_text="The geogra", validators=[RegexValidator(GSC_MIxS_human_vaginal_geographic_location_longitude_validator)])
-	GSC_MIxS_human_vaginal_geographic_location_region_and_locality= models.CharField(max_length=100, blank=True,help_text="The geogra")
-	GSC_MIxS_human_vaginal_broad_scale_environmental_context= models.CharField(max_length=100, blank=False,help_text="Report the")
-	GSC_MIxS_human_vaginal_local_environmental_context= models.CharField(max_length=100, blank=False,help_text="Report the")
-	GSC_MIxS_human_vaginal_environmental_medium= models.CharField(max_length=100, blank=False,help_text="Report the")
-	GSC_MIxS_human_vaginal_source_material_identifiers= models.CharField(max_length=100, blank=True,help_text="A unique i")
-	GSC_MIxS_human_vaginal_sample_material_processing= models.CharField(max_length=100, blank=True,help_text="A brief de")
-	GSC_MIxS_human_vaginal_isolation_and_growth_condition= models.CharField(max_length=100, blank=True,help_text="Publicatio")
-	GSC_MIxS_human_vaginal_propagation= models.CharField(max_length=100, blank=True,help_text="The type o")
-	GSC_MIxS_human_vaginal_amount_or_size_of_sample_collected= models.CharField(max_length=100, blank=True,help_text="The total ", validators=[RegexValidator(GSC_MIxS_human_vaginal_amount_or_size_of_sample_collected_validator)])
-	GSC_MIxS_human_vaginal_host_body_product= models.CharField(max_length=100, blank=True,help_text="substance ")
-	GSC_MIxS_human_vaginal_medical_history_performed= models.CharField(max_length=100, blank=True,help_text="whether fu", choices=GSC_MIxS_human_vaginal_medical_history_performed_choice)
-	GSC_MIxS_human_vaginal_oxygenation_status_of_sample= models.CharField(max_length=100, blank=True,help_text="oxygenatio", choices=GSC_MIxS_human_vaginal_oxygenation_status_of_sample_choice)
-	GSC_MIxS_human_vaginal_organism_count= models.CharField(max_length=100, blank=True,help_text="Total cell")
-	GSC_MIxS_human_vaginal_sample_storage_duration= models.CharField(max_length=100, blank=True,help_text="duration f", validators=[RegexValidator(GSC_MIxS_human_vaginal_sample_storage_duration_validator)])
-	GSC_MIxS_human_vaginal_sample_storage_temperature= models.CharField(max_length=100, blank=True,help_text="temperatur", validators=[RegexValidator(GSC_MIxS_human_vaginal_sample_storage_temperature_validator)])
-	GSC_MIxS_human_vaginal_sample_storage_location= models.CharField(max_length=100, blank=True,help_text="location a")
-	GSC_MIxS_human_vaginal_sample_collection_device= models.CharField(max_length=100, blank=True,help_text="The device")
-	GSC_MIxS_human_vaginal_sample_collection_method= models.CharField(max_length=100, blank=True,help_text="The method")
-	GSC_MIxS_human_vaginal_gynecological_disorder= models.CharField(max_length=100, blank=True,help_text="History of")
-	GSC_MIxS_human_vaginal_urogenital_disorder= models.CharField(max_length=100, blank=True,help_text="History of")
-	GSC_MIxS_human_vaginal_host_disease_status= models.CharField(max_length=100, blank=True,help_text="list of di")
-	GSC_MIxS_human_vaginal_host_subject_id= models.CharField(max_length=100, blank=True,help_text="a unique i")
-	GSC_MIxS_human_vaginal_IHMC_medication_code= models.CharField(max_length=100, blank=True,help_text="can includ", choices=GSC_MIxS_human_vaginal_IHMC_medication_code_choice)
-	GSC_MIxS_human_vaginal_host_age= models.CharField(max_length=100, blank=True,help_text="age of hos", validators=[RegexValidator(GSC_MIxS_human_vaginal_host_age_validator)])
-	GSC_MIxS_human_vaginal_host_body_site= models.CharField(max_length=100, blank=True,help_text="name of bo")
-	GSC_MIxS_human_vaginal_host_height= models.CharField(max_length=100, blank=True,help_text="the height", validators=[RegexValidator(GSC_MIxS_human_vaginal_host_height_validator)])
-	GSC_MIxS_human_vaginal_host_body_mass_index= models.CharField(max_length=100, blank=True,help_text="body mass ", validators=[RegexValidator(GSC_MIxS_human_vaginal_host_body_mass_index_validator)])
-	GSC_MIxS_human_vaginal_ethnicity= models.CharField(max_length=100, blank=True,help_text="A category")
-	GSC_MIxS_human_vaginal_host_occupation= models.CharField(max_length=100, blank=True,help_text="most frequ", choices=GSC_MIxS_human_vaginal_host_occupation_choice)
-	GSC_MIxS_human_vaginal_host_total_mass= models.CharField(max_length=100, blank=True,help_text="total mass", validators=[RegexValidator(GSC_MIxS_human_vaginal_host_total_mass_validator)])
-	GSC_MIxS_human_vaginal_host_phenotype= models.CharField(max_length=100, blank=True,help_text="phenotype ")
-	GSC_MIxS_human_vaginal_host_body_temperature= models.CharField(max_length=100, blank=True,help_text="core body ", validators=[RegexValidator(GSC_MIxS_human_vaginal_host_body_temperature_validator)])
-	GSC_MIxS_human_vaginal_host_sex= models.CharField(max_length=100, blank=True,help_text="Gender or ", choices=GSC_MIxS_human_vaginal_host_sex_choice)
-	GSC_MIxS_human_vaginal_temperature= models.CharField(max_length=100, blank=True,help_text="temperatur", validators=[RegexValidator(GSC_MIxS_human_vaginal_temperature_validator)])
-	GSC_MIxS_human_vaginal_salinity= models.CharField(max_length=100, blank=True,help_text="The total ", validators=[RegexValidator(GSC_MIxS_human_vaginal_salinity_validator)])
-	GSC_MIxS_human_vaginal_menarche= models.CharField(max_length=100, blank=True,help_text="date of mo")
-	GSC_MIxS_human_vaginal_sexual_activity= models.CharField(max_length=100, blank=True,help_text="current se")
-	GSC_MIxS_human_vaginal_pregnancy= models.CharField(max_length=100, blank=True,help_text="date due o")
-	GSC_MIxS_human_vaginal_douche= models.CharField(max_length=100, blank=True,help_text="date of mo")
-	GSC_MIxS_human_vaginal_birth_control= models.CharField(max_length=100, blank=True,help_text="specificat")
-	GSC_MIxS_human_vaginal_menopause= models.CharField(max_length=100, blank=True,help_text="date of on")
-	GSC_MIxS_human_vaginal_HRT= models.CharField(max_length=100, blank=True,help_text="whether su")
-	GSC_MIxS_human_vaginal_hysterectomy= models.CharField(max_length=100, blank=True,help_text="specificat", choices=GSC_MIxS_human_vaginal_hysterectomy_choice)
-	GSC_MIxS_human_vaginal_host_diet= models.CharField(max_length=100, blank=True,help_text="type of di")
-	GSC_MIxS_human_vaginal_host_last_meal= models.CharField(max_length=100, blank=True,help_text="content of")
-	GSC_MIxS_human_vaginal_host_family_relationship= models.CharField(max_length=100, blank=True,help_text="relationsh")
-	GSC_MIxS_human_vaginal_host_genotype= models.CharField(max_length=100, blank=True,help_text="observed g")
-	GSC_MIxS_human_vaginal_host_pulse= models.CharField(max_length=100, blank=True,help_text="resting pu", validators=[RegexValidator(GSC_MIxS_human_vaginal_host_pulse_validator)])
-	GSC_MIxS_human_vaginal_subspecific_genetic_lineage= models.CharField(max_length=100, blank=True,help_text="Informatio")
-	GSC_MIxS_human_vaginal_trophic_level= models.CharField(max_length=100, blank=True,help_text="Trophic le", choices=GSC_MIxS_human_vaginal_trophic_level_choice)
-	GSC_MIxS_human_vaginal_relationship_to_oxygen= models.CharField(max_length=100, blank=True,help_text="Is this or", choices=GSC_MIxS_human_vaginal_relationship_to_oxygen_choice)
-	GSC_MIxS_human_vaginal_known_pathogenicity= models.CharField(max_length=100, blank=True,help_text="To what is")
-	GSC_MIxS_human_vaginal_encoded_traits= models.CharField(max_length=100, blank=True,help_text="Should inc")
-	GSC_MIxS_human_vaginal_observed_biotic_relationship= models.CharField(max_length=100, blank=True,help_text="Is it free", choices=GSC_MIxS_human_vaginal_observed_biotic_relationship_choice)
-	GSC_MIxS_human_vaginal_chemical_administration= models.CharField(max_length=100, blank=True,help_text="list of ch")
-	GSC_MIxS_human_vaginal_perturbation= models.CharField(max_length=100, blank=True,help_text="type of pe")
+	gynecological_disorder= models.CharField(max_length=100, blank=True,help_text="History of")
+	urogenital_disorder= models.CharField(max_length=100, blank=True,help_text="History of")
+	menarche= models.CharField(max_length=100, blank=True,help_text="date of mo")
+	sexual_activity= models.CharField(max_length=100, blank=True,help_text="current se")
+	pregnancy= models.CharField(max_length=100, blank=True,help_text="date due o")
+	douche= models.CharField(max_length=100, blank=True,help_text="date of mo")
+	birth_control= models.CharField(max_length=100, blank=True,help_text="specificat")
+	menopause= models.CharField(max_length=100, blank=True,help_text="date of on")
+	HRT= models.CharField(max_length=100, blank=True,help_text="whether su")
+	hysterectomy= models.CharField(max_length=100, blank=True,help_text="specificat", choices=hysterectomy_choice)
 
 	fields = {
-		'GSC_MIxS_human_vaginal_project_name': 'project name',
-		'GSC_MIxS_human_vaginal_experimental_factor': 'experimental factor',
-		'GSC_MIxS_human_vaginal_ploidy': 'ploidy',
-		'GSC_MIxS_human_vaginal_number_of_replicons': 'number of replicons',
-		'GSC_MIxS_human_vaginal_extrachromosomal_elements': 'extrachromosomal elements',
-		'GSC_MIxS_human_vaginal_estimated_size': 'estimated size',
-		'GSC_MIxS_human_vaginal_reference_for_biomaterial': 'reference for biomaterial',
-		'GSC_MIxS_human_vaginal_annotation_source': 'annotation source',
-		'GSC_MIxS_human_vaginal_sample_volume_or_weight_for_DNA_extraction': 'sample volume or weight for DNA extraction',
-		'GSC_MIxS_human_vaginal_nucleic_acid_extraction': 'nucleic acid extraction',
-		'GSC_MIxS_human_vaginal_nucleic_acid_amplification': 'nucleic acid amplification',
-		'GSC_MIxS_human_vaginal_library_size': 'library size',
-		'GSC_MIxS_human_vaginal_library_reads_sequenced': 'library reads sequenced',
-		'GSC_MIxS_human_vaginal_library_construction_method': 'library construction method',
-		'GSC_MIxS_human_vaginal_library_vector': 'library vector',
-		'GSC_MIxS_human_vaginal_library_screening_strategy': 'library screening strategy',
-		'GSC_MIxS_human_vaginal_target_gene': 'target gene',
-		'GSC_MIxS_human_vaginal_target_subfragment': 'target subfragment',
-		'GSC_MIxS_human_vaginal_pcr_primers': 'pcr primers',
-		'GSC_MIxS_human_vaginal_multiplex_identifiers': 'multiplex identifiers',
-		'GSC_MIxS_human_vaginal_adapters': 'adapters',
-		'GSC_MIxS_human_vaginal_pcr_conditions': 'pcr conditions',
-		'GSC_MIxS_human_vaginal_sequencing_method': 'sequencing method',
-		'GSC_MIxS_human_vaginal_sequence_quality_check': 'sequence quality check',
-		'GSC_MIxS_human_vaginal_chimera_check_software': 'chimera check software',
-		'GSC_MIxS_human_vaginal_relevant_electronic_resources': 'relevant electronic resources',
-		'GSC_MIxS_human_vaginal_relevant_standard_operating_procedures': 'relevant standard operating procedures',
-		'GSC_MIxS_human_vaginal_negative_control_type': 'negative control type',
-		'GSC_MIxS_human_vaginal_positive_control_type': 'positive control type',
-		'GSC_MIxS_human_vaginal_collection_date': 'collection date',
-		'GSC_MIxS_human_vaginal_geographic_location_country_and_or_sea': 'geographic location (country and/or sea)',
-		'GSC_MIxS_human_vaginal_geographic_location_latitude': 'geographic location (latitude)',
-		'GSC_MIxS_human_vaginal_geographic_location_longitude': 'geographic location (longitude)',
-		'GSC_MIxS_human_vaginal_geographic_location_region_and_locality': 'geographic location (region and locality)',
-		'GSC_MIxS_human_vaginal_broad_scale_environmental_context': 'broad-scale environmental context',
-		'GSC_MIxS_human_vaginal_local_environmental_context': 'local environmental context',
-		'GSC_MIxS_human_vaginal_environmental_medium': 'environmental medium',
-		'GSC_MIxS_human_vaginal_source_material_identifiers': 'source material identifiers',
-		'GSC_MIxS_human_vaginal_sample_material_processing': 'sample material processing',
-		'GSC_MIxS_human_vaginal_isolation_and_growth_condition': 'isolation and growth condition',
-		'GSC_MIxS_human_vaginal_propagation': 'propagation',
-		'GSC_MIxS_human_vaginal_amount_or_size_of_sample_collected': 'amount or size of sample collected',
-		'GSC_MIxS_human_vaginal_host_body_product': 'host body product',
-		'GSC_MIxS_human_vaginal_medical_history_performed': 'medical history performed',
-		'GSC_MIxS_human_vaginal_oxygenation_status_of_sample': 'oxygenation status of sample',
-		'GSC_MIxS_human_vaginal_organism_count': 'organism count',
-		'GSC_MIxS_human_vaginal_sample_storage_duration': 'sample storage duration',
-		'GSC_MIxS_human_vaginal_sample_storage_temperature': 'sample storage temperature',
-		'GSC_MIxS_human_vaginal_sample_storage_location': 'sample storage location',
-		'GSC_MIxS_human_vaginal_sample_collection_device': 'sample collection device',
-		'GSC_MIxS_human_vaginal_sample_collection_method': 'sample collection method',
-		'GSC_MIxS_human_vaginal_gynecological_disorder': 'gynecological disorder',
-		'GSC_MIxS_human_vaginal_urogenital_disorder': 'urogenital disorder',
-		'GSC_MIxS_human_vaginal_host_disease_status': 'host disease status',
-		'GSC_MIxS_human_vaginal_host_subject_id': 'host subject id',
-		'GSC_MIxS_human_vaginal_IHMC_medication_code': 'IHMC medication code',
-		'GSC_MIxS_human_vaginal_host_age': 'host age',
-		'GSC_MIxS_human_vaginal_host_body_site': 'host body site',
-		'GSC_MIxS_human_vaginal_host_height': 'host height',
-		'GSC_MIxS_human_vaginal_host_body_mass_index': 'host body-mass index',
-		'GSC_MIxS_human_vaginal_ethnicity': 'ethnicity',
-		'GSC_MIxS_human_vaginal_host_occupation': 'host occupation',
-		'GSC_MIxS_human_vaginal_host_total_mass': 'host total mass',
-		'GSC_MIxS_human_vaginal_host_phenotype': 'host phenotype',
-		'GSC_MIxS_human_vaginal_host_body_temperature': 'host body temperature',
-		'GSC_MIxS_human_vaginal_host_sex': 'host sex',
-		'GSC_MIxS_human_vaginal_temperature': 'temperature',
-		'GSC_MIxS_human_vaginal_salinity': 'salinity',
-		'GSC_MIxS_human_vaginal_menarche': 'menarche',
-		'GSC_MIxS_human_vaginal_sexual_activity': 'sexual activity',
-		'GSC_MIxS_human_vaginal_pregnancy': 'pregnancy',
-		'GSC_MIxS_human_vaginal_douche': 'douche',
-		'GSC_MIxS_human_vaginal_birth_control': 'birth control',
-		'GSC_MIxS_human_vaginal_menopause': 'menopause',
-		'GSC_MIxS_human_vaginal_HRT': 'HRT',
-		'GSC_MIxS_human_vaginal_hysterectomy': 'hysterectomy',
-		'GSC_MIxS_human_vaginal_host_diet': 'host diet',
-		'GSC_MIxS_human_vaginal_host_last_meal': 'host last meal',
-		'GSC_MIxS_human_vaginal_host_family_relationship': 'host family relationship',
-		'GSC_MIxS_human_vaginal_host_genotype': 'host genotype',
-		'GSC_MIxS_human_vaginal_host_pulse': 'host pulse',
-		'GSC_MIxS_human_vaginal_subspecific_genetic_lineage': 'subspecific genetic lineage',
-		'GSC_MIxS_human_vaginal_trophic_level': 'trophic level',
-		'GSC_MIxS_human_vaginal_relationship_to_oxygen': 'relationship to oxygen',
-		'GSC_MIxS_human_vaginal_known_pathogenicity': 'known pathogenicity',
-		'GSC_MIxS_human_vaginal_encoded_traits': 'encoded traits',
-		'GSC_MIxS_human_vaginal_observed_biotic_relationship': 'observed biotic relationship',
-		'GSC_MIxS_human_vaginal_chemical_administration': 'chemical administration',
-		'GSC_MIxS_human_vaginal_perturbation': 'perturbation',
+		'gynecological_disorder': 'gynecological disorder',
+		'urogenital_disorder': 'urogenital disorder',
+		'menarche': 'menarche',
+		'sexual_activity': 'sexual activity',
+		'pregnancy': 'pregnancy',
+		'douche': 'douche',
+		'birth_control': 'birth control',
+		'menopause': 'menopause',
+		'HRT': 'HRT',
+		'hysterectomy': 'hysterectomy',
 	}
 
 	name = 'GSC_MIxS_human_vaginal'
 
 class GSC_MIxS_human_vaginal_unit(SelfDescribingModel):
 
-	GSC_MIxS_human_vaginal_sample_volume_or_weight_for_DNA_extraction_units = [('g', 'g'), ('mL', 'mL'), ('mg', 'mg'), ('ng', 'ng')]
-	GSC_MIxS_human_vaginal_geographic_location_latitude_units = [('DD', 'DD')]
-	GSC_MIxS_human_vaginal_geographic_location_longitude_units = [('DD', 'DD')]
-	GSC_MIxS_human_vaginal_amount_or_size_of_sample_collected_units = [('L', 'L'), ('g', 'g'), ('kg', 'kg'), ('m2', 'm2'), ('m3', 'm3')]
-	GSC_MIxS_human_vaginal_sample_storage_duration_units = [('days', 'days'), ('hours', 'hours'), ('months', 'months'), ('weeks', 'weeks'), ('years', 'years')]
-	GSC_MIxS_human_vaginal_sample_storage_temperature_units = [('°C', '°C')]
-	GSC_MIxS_human_vaginal_host_age_units = [('centuries', 'centuries'), ('days', 'days'), ('decades', 'decades'), ('hours', 'hours'), ('minutes', 'minutes'), ('months', 'months'), ('seconds', 'seconds'), ('weeks', 'weeks'), ('years', 'years')]
-	GSC_MIxS_human_vaginal_host_height_units = [('cm', 'cm'), ('m', 'm'), ('mm', 'mm')]
-	GSC_MIxS_human_vaginal_host_body_mass_index_units = [('kg/m2', 'kg/m2')]
-	GSC_MIxS_human_vaginal_host_total_mass_units = [('g', 'g'), ('kg', 'kg')]
-	GSC_MIxS_human_vaginal_host_body_temperature_units = [('ºC', 'ºC')]
-	GSC_MIxS_human_vaginal_temperature_units = [('ºC', 'ºC')]
-	GSC_MIxS_human_vaginal_salinity_units = [('psu', 'psu')]
-	GSC_MIxS_human_vaginal_host_pulse_units = [('bpm', 'bpm')]
 
 	fields = {
-		'GSC_MIxS_human_vaginal_sample_volume_or_weight_for_DNA_extraction': 'sample volume or weight for DNA extraction',
-		'GSC_MIxS_human_vaginal_geographic_location_latitude': 'geographic location (latitude)',
-		'GSC_MIxS_human_vaginal_geographic_location_longitude': 'geographic location (longitude)',
-		'GSC_MIxS_human_vaginal_amount_or_size_of_sample_collected': 'amount or size of sample collected',
-		'GSC_MIxS_human_vaginal_sample_storage_duration': 'sample storage duration',
-		'GSC_MIxS_human_vaginal_sample_storage_temperature': 'sample storage temperature',
-		'GSC_MIxS_human_vaginal_host_age': 'host age',
-		'GSC_MIxS_human_vaginal_host_height': 'host height',
-		'GSC_MIxS_human_vaginal_host_body_mass_index': 'host body-mass index',
-		'GSC_MIxS_human_vaginal_host_total_mass': 'host total mass',
-		'GSC_MIxS_human_vaginal_host_body_temperature': 'host body temperature',
-		'GSC_MIxS_human_vaginal_temperature': 'temperature',
-		'GSC_MIxS_human_vaginal_salinity': 'salinity',
-		'GSC_MIxS_human_vaginal_host_pulse': 'host pulse',
 	}
 
 	name = 'GSC_MIxS_human_vaginal'
 
 	sampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE, default=1)
 	sample = models.ForeignKey(Sample, on_delete=models.CASCADE, default=1)
-	GSC_MIxS_human_vaginal_sample_volume_or_weight_for_DNA_extraction = models.CharField(max_length=100, choices=GSC_MIxS_human_vaginal_sample_volume_or_weight_for_DNA_extraction_units, blank=False)
-	GSC_MIxS_human_vaginal_geographic_location_latitude = models.CharField(max_length=100, choices=GSC_MIxS_human_vaginal_geographic_location_latitude_units, blank=False)
-	GSC_MIxS_human_vaginal_geographic_location_longitude = models.CharField(max_length=100, choices=GSC_MIxS_human_vaginal_geographic_location_longitude_units, blank=False)
-	GSC_MIxS_human_vaginal_amount_or_size_of_sample_collected = models.CharField(max_length=100, choices=GSC_MIxS_human_vaginal_amount_or_size_of_sample_collected_units, blank=False)
-	GSC_MIxS_human_vaginal_sample_storage_duration = models.CharField(max_length=100, choices=GSC_MIxS_human_vaginal_sample_storage_duration_units, blank=False)
-	GSC_MIxS_human_vaginal_sample_storage_temperature = models.CharField(max_length=100, choices=GSC_MIxS_human_vaginal_sample_storage_temperature_units, blank=False)
-	GSC_MIxS_human_vaginal_host_age = models.CharField(max_length=100, choices=GSC_MIxS_human_vaginal_host_age_units, blank=False)
-	GSC_MIxS_human_vaginal_host_height = models.CharField(max_length=100, choices=GSC_MIxS_human_vaginal_host_height_units, blank=False)
-	GSC_MIxS_human_vaginal_host_body_mass_index = models.CharField(max_length=100, choices=GSC_MIxS_human_vaginal_host_body_mass_index_units, blank=False)
-	GSC_MIxS_human_vaginal_host_total_mass = models.CharField(max_length=100, choices=GSC_MIxS_human_vaginal_host_total_mass_units, blank=False)
-	GSC_MIxS_human_vaginal_host_body_temperature = models.CharField(max_length=100, choices=GSC_MIxS_human_vaginal_host_body_temperature_units, blank=False)
-	GSC_MIxS_human_vaginal_temperature = models.CharField(max_length=100, choices=GSC_MIxS_human_vaginal_temperature_units, blank=False)
-	GSC_MIxS_human_vaginal_salinity = models.CharField(max_length=100, choices=GSC_MIxS_human_vaginal_salinity_units, blank=False)
-	GSC_MIxS_human_vaginal_host_pulse = models.CharField(max_length=100, choices=GSC_MIxS_human_vaginal_host_pulse_units, blank=False)
 
 class GSC_MIxS_human_oral(SelfDescribingModel):
 
-	GSC_MIxS_human_oral_sequence_quality_check_choice = [('manual', 'manual'), ('none', 'none'), ('software', 'software')]
-	GSC_MIxS_human_oral_geographic_location_country_and_or_sea_choice = [('Afghanistan', 'Afghanistan'), ('Albania', 'Albania'), ('Algeria', 'Algeria'), ('American Samoa', 'American Samoa'), ('Andorra', 'Andorra'), ('Angola', 'Angola'), ('Anguilla', 'Anguilla'), ('Antarctica', 'Antarctica'), ('Antigua and Barbuda', 'Antigua and Barbuda'), ('Arctic Ocean', 'Arctic Ocean'), ('Argentina', 'Argentina'), ('Armenia', 'Armenia'), ('Aruba', 'Aruba'), ('Ashmore and Cartier Islands', 'Ashmore and Cartier Islands'), ('Atlantic Ocean', 'Atlantic Ocean'), ('Australia', 'Australia'), ('Austria', 'Austria'), ('Azerbaijan', 'Azerbaijan'), ('Bahamas', 'Bahamas'), ('Bahrain', 'Bahrain'), ('Baker Island', 'Baker Island'), ('Baltic Sea', 'Baltic Sea'), ('Bangladesh', 'Bangladesh'), ('Barbados', 'Barbados'), ('Bassas da India', 'Bassas da India'), ('Belarus', 'Belarus'), ('Belgium', 'Belgium'), ('Belize', 'Belize'), ('Benin', 'Benin'), ('Bermuda', 'Bermuda'), ('Bhutan', 'Bhutan'), ('Bolivia', 'Bolivia'), ('Borneo', 'Borneo'), ('Bosnia and Herzegovina', 'Bosnia and Herzegovina'), ('Botswana', 'Botswana'), ('Bouvet Island', 'Bouvet Island'), ('Brazil', 'Brazil'), ('British Virgin Islands', 'British Virgin Islands'), ('Brunei', 'Brunei'), ('Bulgaria', 'Bulgaria'), ('Burkina Faso', 'Burkina Faso'), ('Burundi', 'Burundi'), ('Cambodia', 'Cambodia'), ('Cameroon', 'Cameroon'), ('Canada', 'Canada'), ('Cape Verde', 'Cape Verde'), ('Cayman Islands', 'Cayman Islands'), ('Central African Republic', 'Central African Republic'), ('Chad', 'Chad'), ('Chile', 'Chile'), ('China', 'China'), ('Christmas Island', 'Christmas Island'), ('Clipperton Island', 'Clipperton Island'), ('Cocos Islands', 'Cocos Islands'), ('Colombia', 'Colombia'), ('Comoros', 'Comoros'), ('Cook Islands', 'Cook Islands'), ('Coral Sea Islands', 'Coral Sea Islands'), ('Costa Rica', 'Costa Rica'), ("Cote d'Ivoire", "Cote d'Ivoire"), ('Croatia', 'Croatia'), ('Cuba', 'Cuba'), ('Curacao', 'Curacao'), ('Cyprus', 'Cyprus'), ('Czech Republic', 'Czech Republic'), ('Democratic Republic of the Congo', 'Democratic Republic of the Congo'), ('Denmark', 'Denmark'), ('Djibouti', 'Djibouti'), ('Dominica', 'Dominica'), ('Dominican Republic', 'Dominican Republic'), ('East Timor', 'East Timor'), ('Ecuador', 'Ecuador'), ('Egypt', 'Egypt'), ('El Salvador', 'El Salvador'), ('Equatorial Guinea', 'Equatorial Guinea'), ('Eritrea', 'Eritrea'), ('Estonia', 'Estonia'), ('Ethiopia', 'Ethiopia'), ('Europa Island', 'Europa Island'), ('Falkland Islands (Islas Malvinas)', 'Falkland Islands (Islas Malvinas)'), ('Faroe Islands', 'Faroe Islands'), ('Fiji', 'Fiji'), ('Finland', 'Finland'), ('France', 'France'), ('French Guiana', 'French Guiana'), ('French Polynesia', 'French Polynesia'), ('French Southern and Antarctic Lands', 'French Southern and Antarctic Lands'), ('Gabon', 'Gabon'), ('Gambia', 'Gambia'), ('Gaza Strip', 'Gaza Strip'), ('Georgia', 'Georgia'), ('Germany', 'Germany'), ('Ghana', 'Ghana'), ('Gibraltar', 'Gibraltar'), ('Glorioso Islands', 'Glorioso Islands'), ('Greece', 'Greece'), ('Greenland', 'Greenland'), ('Grenada', 'Grenada'), ('Guadeloupe', 'Guadeloupe'), ('Guam', 'Guam'), ('Guatemala', 'Guatemala'), ('Guernsey', 'Guernsey'), ('Guinea', 'Guinea'), ('Guinea-Bissau', 'Guinea-Bissau'), ('Guyana', 'Guyana'), ('Haiti', 'Haiti'), ('Heard Island and McDonald Islands', 'Heard Island and McDonald Islands'), ('Honduras', 'Honduras'), ('Hong Kong', 'Hong Kong'), ('Howland Island', 'Howland Island'), ('Hungary', 'Hungary'), ('Iceland', 'Iceland'), ('India', 'India'), ('Indian Ocean', 'Indian Ocean'), ('Indonesia', 'Indonesia'), ('Iran', 'Iran'), ('Iraq', 'Iraq'), ('Ireland', 'Ireland'), ('Isle of Man', 'Isle of Man'), ('Israel', 'Israel'), ('Italy', 'Italy'), ('Jamaica', 'Jamaica'), ('Jan Mayen', 'Jan Mayen'), ('Japan', 'Japan'), ('Jarvis Island', 'Jarvis Island'), ('Jersey', 'Jersey'), ('Johnston Atoll', 'Johnston Atoll'), ('Jordan', 'Jordan'), ('Juan de Nova Island', 'Juan de Nova Island'), ('Kazakhstan', 'Kazakhstan'), ('Kenya', 'Kenya'), ('Kerguelen Archipelago', 'Kerguelen Archipelago'), ('Kingman Reef', 'Kingman Reef'), ('Kiribati', 'Kiribati'), ('Kosovo', 'Kosovo'), ('Kuwait', 'Kuwait'), ('Kyrgyzstan', 'Kyrgyzstan'), ('Laos', 'Laos'), ('Latvia', 'Latvia'), ('Lebanon', 'Lebanon'), ('Lesotho', 'Lesotho'), ('Liberia', 'Liberia'), ('Libya', 'Libya'), ('Liechtenstein', 'Liechtenstein'), ('Lithuania', 'Lithuania'), ('Luxembourg', 'Luxembourg'), ('Macau', 'Macau'), ('Macedonia', 'Macedonia'), ('Madagascar', 'Madagascar'), ('Malawi', 'Malawi'), ('Malaysia', 'Malaysia'), ('Maldives', 'Maldives'), ('Mali', 'Mali'), ('Malta', 'Malta'), ('Marshall Islands', 'Marshall Islands'), ('Martinique', 'Martinique'), ('Mauritania', 'Mauritania'), ('Mauritius', 'Mauritius'), ('Mayotte', 'Mayotte'), ('Mediterranean Sea', 'Mediterranean Sea'), ('Mexico', 'Mexico'), ('Micronesia', 'Micronesia'), ('Midway Islands', 'Midway Islands'), ('Moldova', 'Moldova'), ('Monaco', 'Monaco'), ('Mongolia', 'Mongolia'), ('Montenegro', 'Montenegro'), ('Montserrat', 'Montserrat'), ('Morocco', 'Morocco'), ('Mozambique', 'Mozambique'), ('Myanmar', 'Myanmar'), ('Namibia', 'Namibia'), ('Nauru', 'Nauru'), ('Navassa Island', 'Navassa Island'), ('Nepal', 'Nepal'), ('Netherlands', 'Netherlands'), ('New Caledonia', 'New Caledonia'), ('New Zealand', 'New Zealand'), ('Nicaragua', 'Nicaragua'), ('Niger', 'Niger'), ('Nigeria', 'Nigeria'), ('Niue', 'Niue'), ('Norfolk Island', 'Norfolk Island'), ('North Korea', 'North Korea'), ('North Sea', 'North Sea'), ('Northern Mariana Islands', 'Northern Mariana Islands'), ('Norway', 'Norway'), ('Oman', 'Oman'), ('Pacific Ocean', 'Pacific Ocean'), ('Pakistan', 'Pakistan'), ('Palau', 'Palau'), ('Palmyra Atoll', 'Palmyra Atoll'), ('Panama', 'Panama'), ('Papua New Guinea', 'Papua New Guinea'), ('Paracel Islands', 'Paracel Islands'), ('Paraguay', 'Paraguay'), ('Peru', 'Peru'), ('Philippines', 'Philippines'), ('Pitcairn Islands', 'Pitcairn Islands'), ('Poland', 'Poland'), ('Portugal', 'Portugal'), ('Puerto Rico', 'Puerto Rico'), ('Qatar', 'Qatar'), ('Republic of the Congo', 'Republic of the Congo'), ('Reunion', 'Reunion'), ('Romania', 'Romania'), ('Ross Sea', 'Ross Sea'), ('Russia', 'Russia'), ('Rwanda', 'Rwanda'), ('Saint Helena', 'Saint Helena'), ('Saint Kitts and Nevis', 'Saint Kitts and Nevis'), ('Saint Lucia', 'Saint Lucia'), ('Saint Pierre and Miquelon', 'Saint Pierre and Miquelon'), ('Saint Vincent and the Grenadines', 'Saint Vincent and the Grenadines'), ('Samoa', 'Samoa'), ('San Marino', 'San Marino'), ('Sao Tome and Principe', 'Sao Tome and Principe'), ('Saudi Arabia', 'Saudi Arabia'), ('Senegal', 'Senegal'), ('Serbia', 'Serbia'), ('Seychelles', 'Seychelles'), ('Sierra Leone', 'Sierra Leone'), ('Singapore', 'Singapore'), ('Sint Maarten', 'Sint Maarten'), ('Slovakia', 'Slovakia'), ('Slovenia', 'Slovenia'), ('Solomon Islands', 'Solomon Islands'), ('Somalia', 'Somalia'), ('South Africa', 'South Africa'), ('South Georgia and the South Sandwich Islands', 'South Georgia and the South Sandwich Islands'), ('South Korea', 'South Korea'), ('Southern Ocean', 'Southern Ocean'), ('Spain', 'Spain'), ('Spratly Islands', 'Spratly Islands'), ('Sri Lanka', 'Sri Lanka'), ('Sudan', 'Sudan'), ('Suriname', 'Suriname'), ('Svalbard', 'Svalbard'), ('Swaziland', 'Swaziland'), ('Sweden', 'Sweden'), ('Switzerland', 'Switzerland'), ('Syria', 'Syria'), ('Taiwan', 'Taiwan'), ('Tajikistan', 'Tajikistan'), ('Tanzania', 'Tanzania'), ('Tasman Sea', 'Tasman Sea'), ('Thailand', 'Thailand'), ('Togo', 'Togo'), ('Tokelau', 'Tokelau'), ('Tonga', 'Tonga'), ('Trinidad and Tobago', 'Trinidad and Tobago'), ('Tromelin Island', 'Tromelin Island'), ('Tunisia', 'Tunisia'), ('Turkey', 'Turkey'), ('Turkmenistan', 'Turkmenistan'), ('Turks and Caicos Islands', 'Turks and Caicos Islands'), ('Tuvalu', 'Tuvalu'), ('USA', 'USA'), ('Uganda', 'Uganda'), ('Ukraine', 'Ukraine'), ('United Arab Emirates', 'United Arab Emirates'), ('United Kingdom', 'United Kingdom'), ('Uruguay', 'Uruguay'), ('Uzbekistan', 'Uzbekistan'), ('Vanuatu', 'Vanuatu'), ('Venezuela', 'Venezuela'), ('Viet Nam', 'Viet Nam'), ('Virgin Islands', 'Virgin Islands'), ('Wake Island', 'Wake Island'), ('Wallis and Futuna', 'Wallis and Futuna'), ('West Bank', 'West Bank'), ('Western Sahara', 'Western Sahara'), ('Yemen', 'Yemen'), ('Zambia', 'Zambia'), ('Zimbabwe', 'Zimbabwe'), ('missing: control sample', 'missing: control sample'), ('missing: data agreement established pre-2023', 'missing: data agreement established pre-2023'), ('missing: endangered species', 'missing: endangered species'), ('missing: human-identifiable', 'missing: human-identifiable'), ('missing: lab stock', 'missing: lab stock'), ('missing: sample group', 'missing: sample group'), ('missing: synthetic construct', 'missing: synthetic construct'), ('missing: third party data', 'missing: third party data'), ('not applicable', 'not applicable'), ('not collected', 'not collected'), ('not provided', 'not provided'), ('restricted access', 'restricted access')]
-	GSC_MIxS_human_oral_medical_history_performed_choice = [('No', 'No'), ('Yes', 'Yes')]
-	GSC_MIxS_human_oral_oxygenation_status_of_sample_choice = [('aerobic', 'aerobic'), ('anaerobic', 'anaerobic')]
-	GSC_MIxS_human_oral_IHMC_medication_code_choice = [('01=1=Analgesics/NSAIDS', '01=1=Analgesics/NSAIDS'), ('02=2=Anesthetics', '02=2=Anesthetics'), ('03=3=Antacids/H2 antagonists', '03=3=Antacids/H2 antagonists'), ('04=4=Anti-acne', '04=4=Anti-acne'), ('05=5=Anti-asthma/bronchodilators', '05=5=Anti-asthma/bronchodilators'), ('06=6=Anti-cholesterol/Anti-hyperlipidemic', '06=6=Anti-cholesterol/Anti-hyperlipidemic'), ('07=7=Anti-coagulants', '07=7=Anti-coagulants'), ('08=8=Antibiotics/(anti)-infectives, parasitics, microbials', '08=8=Antibiotics/(anti)-infectives, parasitics, microbials'), ('09=9=Antidepressants/mood-altering drugs', '09=9=Antidepressants/mood-altering drugs'), ('10=10=Antihistamines/ Decongestants', '10=10=Antihistamines/ Decongestants'), ('11=11=Antihypertensives', '11=11=Antihypertensives'), ('12=12=Cardiovascular, other than hyperlipidemic/HTN', '12=12=Cardiovascular, other than hyperlipidemic/HTN'), ('13=13=Contraceptives (oral, implant, injectable)', '13=13=Contraceptives (oral, implant, injectable)'), ('14=14=Emergency/support medications', '14=14=Emergency/support medications'), ('15=15=Endocrine/Metabolic agents', '15=15=Endocrine/Metabolic agents'), ('16=16=GI meds (anti-diarrheal, emetic, spasmodics)', '16=16=GI meds (anti-diarrheal, emetic, spasmodics)'), ('17=17=Herbal/homeopathic products', '17=17=Herbal/homeopathic products'), ('18=18=Hormones/steroids', '18=18=Hormones/steroids'), ('19=19=OTC cold & flu', '19=19=OTC cold & flu'), ('20=20=Vaccine prophylaxis', '20=20=Vaccine prophylaxis'), ('21=21=Vitamins, minerals, food supplements', '21=21=Vitamins, minerals, food supplements'), ('99=99=Other', '99=99=Other')]
-	GSC_MIxS_human_oral_host_occupation_choice = [('01=01 Accounting/Finance', '01=01 Accounting/Finance'), ('02=02 Advertising/Public Relations', '02=02 Advertising/Public Relations'), ('03=03 Arts/Entertainment/Publishing', '03=03 Arts/Entertainment/Publishing'), ('04=04 Automotive', '04=04 Automotive'), ('05=05 Banking/ Mortgage', '05=05 Banking/ Mortgage'), ('06=06 Biotech', '06=06 Biotech'), ('07=07 Broadcast/Journalism', '07=07 Broadcast/Journalism'), ('08=08 Business Development', '08=08 Business Development'), ('09=09 Clerical/Administrative', '09=09 Clerical/Administrative'), ('10=10 Construction/Trades', '10=10 Construction/Trades'), ('11=11 Consultant', '11=11 Consultant'), ('12=12 Customer Services', '12=12 Customer Services'), ('13=13 Design', '13=13 Design'), ('14=14 Education', '14=14 Education'), ('15=15 Engineering', '15=15 Engineering'), ('16=16 Entry Level', '16=16 Entry Level'), ('17=17 Executive', '17=17 Executive'), ('18=18 Food Service', '18=18 Food Service'), ('19=19 Government', '19=19 Government'), ('20=20 Grocery', '20=20 Grocery'), ('21=21 Healthcare', '21=21 Healthcare'), ('22=22 Hospitality', '22=22 Hospitality'), ('23=23 Human Resources', '23=23 Human Resources'), ('24=24 Information Technology', '24=24 Information Technology'), ('25=25 Insurance', '25=25 Insurance'), ('26=26 Law/Legal', '26=26 Law/Legal'), ('27=27 Management', '27=27 Management'), ('28=28 Manufacturing', '28=28 Manufacturing'), ('29=29 Marketing', '29=29 Marketing'), ('30=30 Pharmaceutical', '30=30 Pharmaceutical'), ('31=31 Professional Services', '31=31 Professional Services'), ('32=32 Purchasing', '32=32 Purchasing'), ('33=33 Quality Assurance (QA)', '33=33 Quality Assurance (QA)'), ('34=34 Research', '34=34 Research'), ('35=35 Restaurant', '35=35 Restaurant'), ('36=36 Retail', '36=36 Retail'), ('37=37 Sales', '37=37 Sales'), ('38=38 Science', '38=38 Science'), ('39=39 Security/Law Enforcement', '39=39 Security/Law Enforcement'), ('40=40 Shipping/Distribution', '40=40 Shipping/Distribution'), ('41=41 Strategy', '41=41 Strategy'), ('42=42 Student', '42=42 Student'), ('43=43 Telecommunications', '43=43 Telecommunications'), ('44=44 Training', '44=44 Training'), ('45=45 Transportation', '45=45 Transportation'), ('46=46 Warehouse', '46=46 Warehouse'), ('47=47 Other', '47=47 Other'), ('99=99 Unknown/Refused', '99=99 Unknown/Refused')]
-	GSC_MIxS_human_oral_host_sex_choice = [('female', 'female'), ('hermaphrodite', 'hermaphrodite'), ('male', 'male'), ('missing: control sample', 'missing: control sample'), ('missing: data agreement established pre-2023', 'missing: data agreement established pre-2023'), ('missing: endangered species', 'missing: endangered species'), ('missing: human-identifiable', 'missing: human-identifiable'), ('missing: lab stock', 'missing: lab stock'), ('missing: sample group', 'missing: sample group'), ('missing: synthetic construct', 'missing: synthetic construct'), ('missing: third party data', 'missing: third party data'), ('neuter', 'neuter'), ('not applicable', 'not applicable'), ('not collected', 'not collected'), ('not provided', 'not provided'), ('other', 'other'), ('restricted access', 'restricted access')]
-	GSC_MIxS_human_oral_trophic_level_choice = [('autotroph', 'autotroph'), ('carboxydotroph', 'carboxydotroph'), ('chemoautotroph', 'chemoautotroph'), ('chemoheterotroph', 'chemoheterotroph'), ('chemolithoautotroph', 'chemolithoautotroph'), ('chemolithotroph', 'chemolithotroph'), ('chemoorganoheterotroph', 'chemoorganoheterotroph'), ('chemoorganotroph', 'chemoorganotroph'), ('chemosynthetic', 'chemosynthetic'), ('chemotroph', 'chemotroph'), ('copiotroph', 'copiotroph'), ('diazotroph', 'diazotroph'), ('facultative autotroph', 'facultative autotroph'), ('heterotroph', 'heterotroph'), ('lithoautotroph', 'lithoautotroph'), ('lithoheterotroph', 'lithoheterotroph'), ('lithotroph', 'lithotroph'), ('methanotroph', 'methanotroph'), ('methylotroph', 'methylotroph'), ('mixotroph', 'mixotroph'), ('obligate chemoautolithotroph', 'obligate chemoautolithotroph'), ('oligotroph', 'oligotroph'), ('organoheterotroph', 'organoheterotroph'), ('organotroph', 'organotroph'), ('photoautotroph', 'photoautotroph'), ('photoheterotroph', 'photoheterotroph'), ('photolithoautotroph', 'photolithoautotroph'), ('photolithotroph', 'photolithotroph'), ('photosynthetic', 'photosynthetic'), ('phototroph', 'phototroph')]
-	GSC_MIxS_human_oral_relationship_to_oxygen_choice = [('aerobe', 'aerobe'), ('anaerobe', 'anaerobe'), ('facultative', 'facultative'), ('microaerophilic', 'microaerophilic'), ('microanaerobe', 'microanaerobe'), ('obligate aerobe', 'obligate aerobe'), ('obligate anaerobe', 'obligate anaerobe')]
-	GSC_MIxS_human_oral_observed_biotic_relationship_choice = [('commensal', 'commensal'), ('free living', 'free living'), ('mutualism', 'mutualism'), ('parasite', 'parasite'), ('symbiont', 'symbiont')]
 
-	GSC_MIxS_human_oral_number_of_replicons_validator = "[+-]?[0-9]+"
-	GSC_MIxS_human_oral_extrachromosomal_elements_validator = "[+-]?[0-9]+"
-	GSC_MIxS_human_oral_estimated_size_validator = "[+-]?[0-9]+"
-	GSC_MIxS_human_oral_sample_volume_or_weight_for_DNA_extraction_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_human_oral_library_size_validator = "[+-]?[0-9]+"
-	GSC_MIxS_human_oral_library_reads_sequenced_validator = "[+-]?[0-9]+"
-	GSC_MIxS_human_oral_collection_date_validator = "(^[12][0-9]{3}(-(0[1-9]|1[0-2])(-(0[1-9]|[12][0-9]|3[01])(T[0-9]{2}:[0-9]{2}(:[0-9]{2})?Z?([+-][0-9]{1,2})?)?)?)?(/[0-9]{4}(-[0-9]{2}(-[0-9]{2}(T[0-9]{2}:[0-9]{2}(:[0-9]{2})?Z?([+-][0-9]{1,2})?)?)?)?)?$)|(^not collected$)|(^not provided$)|(^restricted access$)|(^missing: control sample$)|(^missing: sample group$)|(^missing: synthetic construct$)|(^missing: lab stock$)|(^missing: third party data$)|(^missing: data agreement established pre-2023$)|(^missing: endangered species$)|(^missing: human-identifiable$)"
-	GSC_MIxS_human_oral_geographic_location_latitude_validator = "(^[+-]?[0-9]+.?[0-9]{0,8}$)|(^not collected$)|(^not provided$)|(^restricted access$)|(^missing: control sample$)|(^missing: sample group$)|(^missing: synthetic construct$)|(^missing: lab stock$)|(^missing: third party data$)|(^missing: data agreement established pre-2023$)|(^missing: endangered species$)|(^missing: human-identifiable$)"
-	GSC_MIxS_human_oral_geographic_location_longitude_validator = "(^[+-]?[0-9]+.?[0-9]{0,8}$)|(^not collected$)|(^not provided$)|(^restricted access$)|(^missing: control sample$)|(^missing: sample group$)|(^missing: synthetic construct$)|(^missing: lab stock$)|(^missing: third party data$)|(^missing: data agreement established pre-2023$)|(^missing: endangered species$)|(^missing: human-identifiable$)"
-	GSC_MIxS_human_oral_amount_or_size_of_sample_collected_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_human_oral_sample_storage_duration_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_human_oral_sample_storage_temperature_validator = "[+-]?(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_human_oral_host_age_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_human_oral_host_height_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_human_oral_host_body_mass_index_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_human_oral_host_total_mass_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_human_oral_host_body_temperature_validator = "[+-]?(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_human_oral_temperature_validator = "[+-]?(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_human_oral_salinity_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_human_oral_time_since_last_toothbrushing_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_human_oral_host_pulse_validator = "[+-]?[0-9]+"
+	time_since_last_toothbrushing_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
 
 	sampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE, default=1)
 	sample = models.ForeignKey(Sample, on_delete=models.CASCADE, default=1)
-	GSC_MIxS_human_oral_project_name= models.CharField(max_length=100, blank=False,help_text="Name of th")
-	GSC_MIxS_human_oral_experimental_factor= models.CharField(max_length=100, blank=True,help_text="Experiment")
-	GSC_MIxS_human_oral_ploidy= models.CharField(max_length=100, blank=True,help_text="The ploidy")
-	GSC_MIxS_human_oral_number_of_replicons= models.CharField(max_length=100, blank=True,help_text="Reports th", validators=[RegexValidator(GSC_MIxS_human_oral_number_of_replicons_validator)])
-	GSC_MIxS_human_oral_extrachromosomal_elements= models.CharField(max_length=100, blank=True,help_text="Do plasmid", validators=[RegexValidator(GSC_MIxS_human_oral_extrachromosomal_elements_validator)])
-	GSC_MIxS_human_oral_estimated_size= models.CharField(max_length=100, blank=True,help_text="The estima", validators=[RegexValidator(GSC_MIxS_human_oral_estimated_size_validator)])
-	GSC_MIxS_human_oral_reference_for_biomaterial= models.CharField(max_length=100, blank=True,help_text="Primary pu")
-	GSC_MIxS_human_oral_annotation_source= models.CharField(max_length=100, blank=True,help_text="For cases ")
-	GSC_MIxS_human_oral_sample_volume_or_weight_for_DNA_extraction= models.CharField(max_length=100, blank=True,help_text="Volume (ml", validators=[RegexValidator(GSC_MIxS_human_oral_sample_volume_or_weight_for_DNA_extraction_validator)])
-	GSC_MIxS_human_oral_nucleic_acid_extraction= models.CharField(max_length=100, blank=True,help_text="A link to ")
-	GSC_MIxS_human_oral_nucleic_acid_amplification= models.CharField(max_length=100, blank=True,help_text="A link to ")
-	GSC_MIxS_human_oral_library_size= models.CharField(max_length=100, blank=True,help_text="Total numb", validators=[RegexValidator(GSC_MIxS_human_oral_library_size_validator)])
-	GSC_MIxS_human_oral_library_reads_sequenced= models.CharField(max_length=100, blank=True,help_text="Total numb", validators=[RegexValidator(GSC_MIxS_human_oral_library_reads_sequenced_validator)])
-	GSC_MIxS_human_oral_library_construction_method= models.CharField(max_length=100, blank=True,help_text="Library co")
-	GSC_MIxS_human_oral_library_vector= models.CharField(max_length=100, blank=True,help_text="Cloning ve")
-	GSC_MIxS_human_oral_library_screening_strategy= models.CharField(max_length=100, blank=True,help_text="Specific e")
-	GSC_MIxS_human_oral_target_gene= models.CharField(max_length=100, blank=True,help_text="Targeted g")
-	GSC_MIxS_human_oral_target_subfragment= models.CharField(max_length=100, blank=True,help_text="Name of su")
-	GSC_MIxS_human_oral_pcr_primers= models.CharField(max_length=100, blank=True,help_text="PCR primer")
-	GSC_MIxS_human_oral_multiplex_identifiers= models.CharField(max_length=100, blank=True,help_text="Molecular ")
-	GSC_MIxS_human_oral_adapters= models.CharField(max_length=100, blank=True,help_text="Adapters p")
-	GSC_MIxS_human_oral_pcr_conditions= models.CharField(max_length=100, blank=True,help_text="Descriptio")
-	GSC_MIxS_human_oral_sequencing_method= models.CharField(max_length=100, blank=True,help_text="Sequencing")
-	GSC_MIxS_human_oral_sequence_quality_check= models.CharField(max_length=100, blank=True,help_text="Indicate i", choices=GSC_MIxS_human_oral_sequence_quality_check_choice)
-	GSC_MIxS_human_oral_chimera_check_software= models.CharField(max_length=100, blank=True,help_text="Tool(s) us")
-	GSC_MIxS_human_oral_relevant_electronic_resources= models.CharField(max_length=100, blank=True,help_text="A related ")
-	GSC_MIxS_human_oral_relevant_standard_operating_procedures= models.CharField(max_length=100, blank=True,help_text="Standard o")
-	GSC_MIxS_human_oral_negative_control_type= models.CharField(max_length=100, blank=True,help_text="The substa")
-	GSC_MIxS_human_oral_positive_control_type= models.CharField(max_length=100, blank=True,help_text="The substa")
-	GSC_MIxS_human_oral_collection_date= models.CharField(max_length=100, blank=False,help_text="The date t", validators=[RegexValidator(GSC_MIxS_human_oral_collection_date_validator)])
-	GSC_MIxS_human_oral_geographic_location_country_and_or_sea= models.CharField(max_length=100, blank=False,help_text="The locati", choices=GSC_MIxS_human_oral_geographic_location_country_and_or_sea_choice)
-	GSC_MIxS_human_oral_geographic_location_latitude= models.CharField(max_length=100, blank=False,help_text="The geogra", validators=[RegexValidator(GSC_MIxS_human_oral_geographic_location_latitude_validator)])
-	GSC_MIxS_human_oral_geographic_location_longitude= models.CharField(max_length=100, blank=False,help_text="The geogra", validators=[RegexValidator(GSC_MIxS_human_oral_geographic_location_longitude_validator)])
-	GSC_MIxS_human_oral_geographic_location_region_and_locality= models.CharField(max_length=100, blank=True,help_text="The geogra")
-	GSC_MIxS_human_oral_broad_scale_environmental_context= models.CharField(max_length=100, blank=False,help_text="Report the")
-	GSC_MIxS_human_oral_local_environmental_context= models.CharField(max_length=100, blank=False,help_text="Report the")
-	GSC_MIxS_human_oral_environmental_medium= models.CharField(max_length=100, blank=False,help_text="Report the")
-	GSC_MIxS_human_oral_source_material_identifiers= models.CharField(max_length=100, blank=True,help_text="A unique i")
-	GSC_MIxS_human_oral_sample_material_processing= models.CharField(max_length=100, blank=True,help_text="A brief de")
-	GSC_MIxS_human_oral_isolation_and_growth_condition= models.CharField(max_length=100, blank=True,help_text="Publicatio")
-	GSC_MIxS_human_oral_propagation= models.CharField(max_length=100, blank=True,help_text="The type o")
-	GSC_MIxS_human_oral_amount_or_size_of_sample_collected= models.CharField(max_length=100, blank=True,help_text="The total ", validators=[RegexValidator(GSC_MIxS_human_oral_amount_or_size_of_sample_collected_validator)])
-	GSC_MIxS_human_oral_host_body_product= models.CharField(max_length=100, blank=True,help_text="substance ")
-	GSC_MIxS_human_oral_medical_history_performed= models.CharField(max_length=100, blank=True,help_text="whether fu", choices=GSC_MIxS_human_oral_medical_history_performed_choice)
-	GSC_MIxS_human_oral_oxygenation_status_of_sample= models.CharField(max_length=100, blank=True,help_text="oxygenatio", choices=GSC_MIxS_human_oral_oxygenation_status_of_sample_choice)
-	GSC_MIxS_human_oral_organism_count= models.CharField(max_length=100, blank=True,help_text="Total cell")
-	GSC_MIxS_human_oral_sample_storage_duration= models.CharField(max_length=100, blank=True,help_text="duration f", validators=[RegexValidator(GSC_MIxS_human_oral_sample_storage_duration_validator)])
-	GSC_MIxS_human_oral_sample_storage_temperature= models.CharField(max_length=100, blank=True,help_text="temperatur", validators=[RegexValidator(GSC_MIxS_human_oral_sample_storage_temperature_validator)])
-	GSC_MIxS_human_oral_sample_storage_location= models.CharField(max_length=100, blank=True,help_text="location a")
-	GSC_MIxS_human_oral_sample_collection_device= models.CharField(max_length=100, blank=True,help_text="The device")
-	GSC_MIxS_human_oral_sample_collection_method= models.CharField(max_length=100, blank=True,help_text="The method")
-	GSC_MIxS_human_oral_nose_mouth_teeth_throat_disorder= models.CharField(max_length=100, blank=True,help_text="History of")
-	GSC_MIxS_human_oral_host_disease_status= models.CharField(max_length=100, blank=True,help_text="list of di")
-	GSC_MIxS_human_oral_host_subject_id= models.CharField(max_length=100, blank=True,help_text="a unique i")
-	GSC_MIxS_human_oral_IHMC_medication_code= models.CharField(max_length=100, blank=True,help_text="can includ", choices=GSC_MIxS_human_oral_IHMC_medication_code_choice)
-	GSC_MIxS_human_oral_host_age= models.CharField(max_length=100, blank=True,help_text="age of hos", validators=[RegexValidator(GSC_MIxS_human_oral_host_age_validator)])
-	GSC_MIxS_human_oral_host_body_site= models.CharField(max_length=100, blank=True,help_text="name of bo")
-	GSC_MIxS_human_oral_host_height= models.CharField(max_length=100, blank=True,help_text="the height", validators=[RegexValidator(GSC_MIxS_human_oral_host_height_validator)])
-	GSC_MIxS_human_oral_host_body_mass_index= models.CharField(max_length=100, blank=True,help_text="body mass ", validators=[RegexValidator(GSC_MIxS_human_oral_host_body_mass_index_validator)])
-	GSC_MIxS_human_oral_ethnicity= models.CharField(max_length=100, blank=True,help_text="A category")
-	GSC_MIxS_human_oral_host_occupation= models.CharField(max_length=100, blank=True,help_text="most frequ", choices=GSC_MIxS_human_oral_host_occupation_choice)
-	GSC_MIxS_human_oral_host_total_mass= models.CharField(max_length=100, blank=True,help_text="total mass", validators=[RegexValidator(GSC_MIxS_human_oral_host_total_mass_validator)])
-	GSC_MIxS_human_oral_host_phenotype= models.CharField(max_length=100, blank=True,help_text="phenotype ")
-	GSC_MIxS_human_oral_host_body_temperature= models.CharField(max_length=100, blank=True,help_text="core body ", validators=[RegexValidator(GSC_MIxS_human_oral_host_body_temperature_validator)])
-	GSC_MIxS_human_oral_host_sex= models.CharField(max_length=100, blank=True,help_text="Gender or ", choices=GSC_MIxS_human_oral_host_sex_choice)
-	GSC_MIxS_human_oral_temperature= models.CharField(max_length=100, blank=True,help_text="temperatur", validators=[RegexValidator(GSC_MIxS_human_oral_temperature_validator)])
-	GSC_MIxS_human_oral_salinity= models.CharField(max_length=100, blank=True,help_text="The total ", validators=[RegexValidator(GSC_MIxS_human_oral_salinity_validator)])
-	GSC_MIxS_human_oral_time_since_last_toothbrushing= models.CharField(max_length=100, blank=True,help_text="specificat", validators=[RegexValidator(GSC_MIxS_human_oral_time_since_last_toothbrushing_validator)])
-	GSC_MIxS_human_oral_host_diet= models.CharField(max_length=100, blank=True,help_text="type of di")
-	GSC_MIxS_human_oral_host_last_meal= models.CharField(max_length=100, blank=True,help_text="content of")
-	GSC_MIxS_human_oral_host_family_relationship= models.CharField(max_length=100, blank=True,help_text="relationsh")
-	GSC_MIxS_human_oral_host_genotype= models.CharField(max_length=100, blank=True,help_text="observed g")
-	GSC_MIxS_human_oral_host_pulse= models.CharField(max_length=100, blank=True,help_text="resting pu", validators=[RegexValidator(GSC_MIxS_human_oral_host_pulse_validator)])
-	GSC_MIxS_human_oral_subspecific_genetic_lineage= models.CharField(max_length=100, blank=True,help_text="Informatio")
-	GSC_MIxS_human_oral_trophic_level= models.CharField(max_length=100, blank=True,help_text="Trophic le", choices=GSC_MIxS_human_oral_trophic_level_choice)
-	GSC_MIxS_human_oral_relationship_to_oxygen= models.CharField(max_length=100, blank=True,help_text="Is this or", choices=GSC_MIxS_human_oral_relationship_to_oxygen_choice)
-	GSC_MIxS_human_oral_known_pathogenicity= models.CharField(max_length=100, blank=True,help_text="To what is")
-	GSC_MIxS_human_oral_encoded_traits= models.CharField(max_length=100, blank=True,help_text="Should inc")
-	GSC_MIxS_human_oral_observed_biotic_relationship= models.CharField(max_length=100, blank=True,help_text="Is it free", choices=GSC_MIxS_human_oral_observed_biotic_relationship_choice)
-	GSC_MIxS_human_oral_chemical_administration= models.CharField(max_length=100, blank=True,help_text="list of ch")
-	GSC_MIxS_human_oral_perturbation= models.CharField(max_length=100, blank=True,help_text="type of pe")
+	nose_mouth_teeth_throat_disorder= models.CharField(max_length=100, blank=True,help_text="History of")
+	time_since_last_toothbrushing= models.CharField(max_length=100, blank=True,help_text="specificat", validators=[RegexValidator(time_since_last_toothbrushing_validator)])
 
 	fields = {
-		'GSC_MIxS_human_oral_project_name': 'project name',
-		'GSC_MIxS_human_oral_experimental_factor': 'experimental factor',
-		'GSC_MIxS_human_oral_ploidy': 'ploidy',
-		'GSC_MIxS_human_oral_number_of_replicons': 'number of replicons',
-		'GSC_MIxS_human_oral_extrachromosomal_elements': 'extrachromosomal elements',
-		'GSC_MIxS_human_oral_estimated_size': 'estimated size',
-		'GSC_MIxS_human_oral_reference_for_biomaterial': 'reference for biomaterial',
-		'GSC_MIxS_human_oral_annotation_source': 'annotation source',
-		'GSC_MIxS_human_oral_sample_volume_or_weight_for_DNA_extraction': 'sample volume or weight for DNA extraction',
-		'GSC_MIxS_human_oral_nucleic_acid_extraction': 'nucleic acid extraction',
-		'GSC_MIxS_human_oral_nucleic_acid_amplification': 'nucleic acid amplification',
-		'GSC_MIxS_human_oral_library_size': 'library size',
-		'GSC_MIxS_human_oral_library_reads_sequenced': 'library reads sequenced',
-		'GSC_MIxS_human_oral_library_construction_method': 'library construction method',
-		'GSC_MIxS_human_oral_library_vector': 'library vector',
-		'GSC_MIxS_human_oral_library_screening_strategy': 'library screening strategy',
-		'GSC_MIxS_human_oral_target_gene': 'target gene',
-		'GSC_MIxS_human_oral_target_subfragment': 'target subfragment',
-		'GSC_MIxS_human_oral_pcr_primers': 'pcr primers',
-		'GSC_MIxS_human_oral_multiplex_identifiers': 'multiplex identifiers',
-		'GSC_MIxS_human_oral_adapters': 'adapters',
-		'GSC_MIxS_human_oral_pcr_conditions': 'pcr conditions',
-		'GSC_MIxS_human_oral_sequencing_method': 'sequencing method',
-		'GSC_MIxS_human_oral_sequence_quality_check': 'sequence quality check',
-		'GSC_MIxS_human_oral_chimera_check_software': 'chimera check software',
-		'GSC_MIxS_human_oral_relevant_electronic_resources': 'relevant electronic resources',
-		'GSC_MIxS_human_oral_relevant_standard_operating_procedures': 'relevant standard operating procedures',
-		'GSC_MIxS_human_oral_negative_control_type': 'negative control type',
-		'GSC_MIxS_human_oral_positive_control_type': 'positive control type',
-		'GSC_MIxS_human_oral_collection_date': 'collection date',
-		'GSC_MIxS_human_oral_geographic_location_country_and_or_sea': 'geographic location (country and/or sea)',
-		'GSC_MIxS_human_oral_geographic_location_latitude': 'geographic location (latitude)',
-		'GSC_MIxS_human_oral_geographic_location_longitude': 'geographic location (longitude)',
-		'GSC_MIxS_human_oral_geographic_location_region_and_locality': 'geographic location (region and locality)',
-		'GSC_MIxS_human_oral_broad_scale_environmental_context': 'broad-scale environmental context',
-		'GSC_MIxS_human_oral_local_environmental_context': 'local environmental context',
-		'GSC_MIxS_human_oral_environmental_medium': 'environmental medium',
-		'GSC_MIxS_human_oral_source_material_identifiers': 'source material identifiers',
-		'GSC_MIxS_human_oral_sample_material_processing': 'sample material processing',
-		'GSC_MIxS_human_oral_isolation_and_growth_condition': 'isolation and growth condition',
-		'GSC_MIxS_human_oral_propagation': 'propagation',
-		'GSC_MIxS_human_oral_amount_or_size_of_sample_collected': 'amount or size of sample collected',
-		'GSC_MIxS_human_oral_host_body_product': 'host body product',
-		'GSC_MIxS_human_oral_medical_history_performed': 'medical history performed',
-		'GSC_MIxS_human_oral_oxygenation_status_of_sample': 'oxygenation status of sample',
-		'GSC_MIxS_human_oral_organism_count': 'organism count',
-		'GSC_MIxS_human_oral_sample_storage_duration': 'sample storage duration',
-		'GSC_MIxS_human_oral_sample_storage_temperature': 'sample storage temperature',
-		'GSC_MIxS_human_oral_sample_storage_location': 'sample storage location',
-		'GSC_MIxS_human_oral_sample_collection_device': 'sample collection device',
-		'GSC_MIxS_human_oral_sample_collection_method': 'sample collection method',
-		'GSC_MIxS_human_oral_nose_mouth_teeth_throat_disorder': 'nose/mouth/teeth/throat disorder',
-		'GSC_MIxS_human_oral_host_disease_status': 'host disease status',
-		'GSC_MIxS_human_oral_host_subject_id': 'host subject id',
-		'GSC_MIxS_human_oral_IHMC_medication_code': 'IHMC medication code',
-		'GSC_MIxS_human_oral_host_age': 'host age',
-		'GSC_MIxS_human_oral_host_body_site': 'host body site',
-		'GSC_MIxS_human_oral_host_height': 'host height',
-		'GSC_MIxS_human_oral_host_body_mass_index': 'host body-mass index',
-		'GSC_MIxS_human_oral_ethnicity': 'ethnicity',
-		'GSC_MIxS_human_oral_host_occupation': 'host occupation',
-		'GSC_MIxS_human_oral_host_total_mass': 'host total mass',
-		'GSC_MIxS_human_oral_host_phenotype': 'host phenotype',
-		'GSC_MIxS_human_oral_host_body_temperature': 'host body temperature',
-		'GSC_MIxS_human_oral_host_sex': 'host sex',
-		'GSC_MIxS_human_oral_temperature': 'temperature',
-		'GSC_MIxS_human_oral_salinity': 'salinity',
-		'GSC_MIxS_human_oral_time_since_last_toothbrushing': 'time since last toothbrushing',
-		'GSC_MIxS_human_oral_host_diet': 'host diet',
-		'GSC_MIxS_human_oral_host_last_meal': 'host last meal',
-		'GSC_MIxS_human_oral_host_family_relationship': 'host family relationship',
-		'GSC_MIxS_human_oral_host_genotype': 'host genotype',
-		'GSC_MIxS_human_oral_host_pulse': 'host pulse',
-		'GSC_MIxS_human_oral_subspecific_genetic_lineage': 'subspecific genetic lineage',
-		'GSC_MIxS_human_oral_trophic_level': 'trophic level',
-		'GSC_MIxS_human_oral_relationship_to_oxygen': 'relationship to oxygen',
-		'GSC_MIxS_human_oral_known_pathogenicity': 'known pathogenicity',
-		'GSC_MIxS_human_oral_encoded_traits': 'encoded traits',
-		'GSC_MIxS_human_oral_observed_biotic_relationship': 'observed biotic relationship',
-		'GSC_MIxS_human_oral_chemical_administration': 'chemical administration',
-		'GSC_MIxS_human_oral_perturbation': 'perturbation',
+		'nose_mouth_teeth_throat_disorder': 'nose/mouth/teeth/throat disorder',
+		'time_since_last_toothbrushing': 'time since last toothbrushing',
 	}
 
 	name = 'GSC_MIxS_human_oral'
 
 class GSC_MIxS_human_oral_unit(SelfDescribingModel):
 
-	GSC_MIxS_human_oral_sample_volume_or_weight_for_DNA_extraction_units = [('g', 'g'), ('mL', 'mL'), ('mg', 'mg'), ('ng', 'ng')]
-	GSC_MIxS_human_oral_geographic_location_latitude_units = [('DD', 'DD')]
-	GSC_MIxS_human_oral_geographic_location_longitude_units = [('DD', 'DD')]
-	GSC_MIxS_human_oral_amount_or_size_of_sample_collected_units = [('L', 'L'), ('g', 'g'), ('kg', 'kg'), ('m2', 'm2'), ('m3', 'm3')]
-	GSC_MIxS_human_oral_sample_storage_duration_units = [('days', 'days'), ('hours', 'hours'), ('months', 'months'), ('weeks', 'weeks'), ('years', 'years')]
-	GSC_MIxS_human_oral_sample_storage_temperature_units = [('°C', '°C')]
-	GSC_MIxS_human_oral_host_age_units = [('centuries', 'centuries'), ('days', 'days'), ('decades', 'decades'), ('hours', 'hours'), ('minutes', 'minutes'), ('months', 'months'), ('seconds', 'seconds'), ('weeks', 'weeks'), ('years', 'years')]
-	GSC_MIxS_human_oral_host_height_units = [('cm', 'cm'), ('m', 'm'), ('mm', 'mm')]
-	GSC_MIxS_human_oral_host_body_mass_index_units = [('kg/m2', 'kg/m2')]
-	GSC_MIxS_human_oral_host_total_mass_units = [('g', 'g'), ('kg', 'kg')]
-	GSC_MIxS_human_oral_host_body_temperature_units = [('ºC', 'ºC')]
-	GSC_MIxS_human_oral_temperature_units = [('ºC', 'ºC')]
-	GSC_MIxS_human_oral_salinity_units = [('psu', 'psu')]
-	GSC_MIxS_human_oral_time_since_last_toothbrushing_units = [('hours', 'hours'), ('minutes', 'minutes')]
-	GSC_MIxS_human_oral_host_pulse_units = [('bpm', 'bpm')]
+	time_since_last_toothbrushing_units = [('hours', 'hours'), ('minutes', 'minutes')]
 
 	fields = {
-		'GSC_MIxS_human_oral_sample_volume_or_weight_for_DNA_extraction': 'sample volume or weight for DNA extraction',
-		'GSC_MIxS_human_oral_geographic_location_latitude': 'geographic location (latitude)',
-		'GSC_MIxS_human_oral_geographic_location_longitude': 'geographic location (longitude)',
-		'GSC_MIxS_human_oral_amount_or_size_of_sample_collected': 'amount or size of sample collected',
-		'GSC_MIxS_human_oral_sample_storage_duration': 'sample storage duration',
-		'GSC_MIxS_human_oral_sample_storage_temperature': 'sample storage temperature',
-		'GSC_MIxS_human_oral_host_age': 'host age',
-		'GSC_MIxS_human_oral_host_height': 'host height',
-		'GSC_MIxS_human_oral_host_body_mass_index': 'host body-mass index',
-		'GSC_MIxS_human_oral_host_total_mass': 'host total mass',
-		'GSC_MIxS_human_oral_host_body_temperature': 'host body temperature',
-		'GSC_MIxS_human_oral_temperature': 'temperature',
-		'GSC_MIxS_human_oral_salinity': 'salinity',
-		'GSC_MIxS_human_oral_time_since_last_toothbrushing': 'time since last toothbrushing',
-		'GSC_MIxS_human_oral_host_pulse': 'host pulse',
+		'time_since_last_toothbrushing': 'time since last toothbrushing',
 	}
 
 	name = 'GSC_MIxS_human_oral'
 
 	sampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE, default=1)
 	sample = models.ForeignKey(Sample, on_delete=models.CASCADE, default=1)
-	GSC_MIxS_human_oral_sample_volume_or_weight_for_DNA_extraction = models.CharField(max_length=100, choices=GSC_MIxS_human_oral_sample_volume_or_weight_for_DNA_extraction_units, blank=False)
-	GSC_MIxS_human_oral_geographic_location_latitude = models.CharField(max_length=100, choices=GSC_MIxS_human_oral_geographic_location_latitude_units, blank=False)
-	GSC_MIxS_human_oral_geographic_location_longitude = models.CharField(max_length=100, choices=GSC_MIxS_human_oral_geographic_location_longitude_units, blank=False)
-	GSC_MIxS_human_oral_amount_or_size_of_sample_collected = models.CharField(max_length=100, choices=GSC_MIxS_human_oral_amount_or_size_of_sample_collected_units, blank=False)
-	GSC_MIxS_human_oral_sample_storage_duration = models.CharField(max_length=100, choices=GSC_MIxS_human_oral_sample_storage_duration_units, blank=False)
-	GSC_MIxS_human_oral_sample_storage_temperature = models.CharField(max_length=100, choices=GSC_MIxS_human_oral_sample_storage_temperature_units, blank=False)
-	GSC_MIxS_human_oral_host_age = models.CharField(max_length=100, choices=GSC_MIxS_human_oral_host_age_units, blank=False)
-	GSC_MIxS_human_oral_host_height = models.CharField(max_length=100, choices=GSC_MIxS_human_oral_host_height_units, blank=False)
-	GSC_MIxS_human_oral_host_body_mass_index = models.CharField(max_length=100, choices=GSC_MIxS_human_oral_host_body_mass_index_units, blank=False)
-	GSC_MIxS_human_oral_host_total_mass = models.CharField(max_length=100, choices=GSC_MIxS_human_oral_host_total_mass_units, blank=False)
-	GSC_MIxS_human_oral_host_body_temperature = models.CharField(max_length=100, choices=GSC_MIxS_human_oral_host_body_temperature_units, blank=False)
-	GSC_MIxS_human_oral_temperature = models.CharField(max_length=100, choices=GSC_MIxS_human_oral_temperature_units, blank=False)
-	GSC_MIxS_human_oral_salinity = models.CharField(max_length=100, choices=GSC_MIxS_human_oral_salinity_units, blank=False)
-	GSC_MIxS_human_oral_time_since_last_toothbrushing = models.CharField(max_length=100, choices=GSC_MIxS_human_oral_time_since_last_toothbrushing_units, blank=False)
-	GSC_MIxS_human_oral_host_pulse = models.CharField(max_length=100, choices=GSC_MIxS_human_oral_host_pulse_units, blank=False)
+	time_since_last_toothbrushing = models.CharField(max_length=100, choices=time_since_last_toothbrushing_units, blank=False)
 
 class GSC_MIxS_sediment(SelfDescribingModel):
 
-	GSC_MIxS_sediment_sequence_quality_check_choice = [('manual', 'manual'), ('none', 'none'), ('software', 'software')]
-	GSC_MIxS_sediment_geographic_location_country_and_or_sea_choice = [('Afghanistan', 'Afghanistan'), ('Albania', 'Albania'), ('Algeria', 'Algeria'), ('American Samoa', 'American Samoa'), ('Andorra', 'Andorra'), ('Angola', 'Angola'), ('Anguilla', 'Anguilla'), ('Antarctica', 'Antarctica'), ('Antigua and Barbuda', 'Antigua and Barbuda'), ('Arctic Ocean', 'Arctic Ocean'), ('Argentina', 'Argentina'), ('Armenia', 'Armenia'), ('Aruba', 'Aruba'), ('Ashmore and Cartier Islands', 'Ashmore and Cartier Islands'), ('Atlantic Ocean', 'Atlantic Ocean'), ('Australia', 'Australia'), ('Austria', 'Austria'), ('Azerbaijan', 'Azerbaijan'), ('Bahamas', 'Bahamas'), ('Bahrain', 'Bahrain'), ('Baker Island', 'Baker Island'), ('Baltic Sea', 'Baltic Sea'), ('Bangladesh', 'Bangladesh'), ('Barbados', 'Barbados'), ('Bassas da India', 'Bassas da India'), ('Belarus', 'Belarus'), ('Belgium', 'Belgium'), ('Belize', 'Belize'), ('Benin', 'Benin'), ('Bermuda', 'Bermuda'), ('Bhutan', 'Bhutan'), ('Bolivia', 'Bolivia'), ('Borneo', 'Borneo'), ('Bosnia and Herzegovina', 'Bosnia and Herzegovina'), ('Botswana', 'Botswana'), ('Bouvet Island', 'Bouvet Island'), ('Brazil', 'Brazil'), ('British Virgin Islands', 'British Virgin Islands'), ('Brunei', 'Brunei'), ('Bulgaria', 'Bulgaria'), ('Burkina Faso', 'Burkina Faso'), ('Burundi', 'Burundi'), ('Cambodia', 'Cambodia'), ('Cameroon', 'Cameroon'), ('Canada', 'Canada'), ('Cape Verde', 'Cape Verde'), ('Cayman Islands', 'Cayman Islands'), ('Central African Republic', 'Central African Republic'), ('Chad', 'Chad'), ('Chile', 'Chile'), ('China', 'China'), ('Christmas Island', 'Christmas Island'), ('Clipperton Island', 'Clipperton Island'), ('Cocos Islands', 'Cocos Islands'), ('Colombia', 'Colombia'), ('Comoros', 'Comoros'), ('Cook Islands', 'Cook Islands'), ('Coral Sea Islands', 'Coral Sea Islands'), ('Costa Rica', 'Costa Rica'), ("Cote d'Ivoire", "Cote d'Ivoire"), ('Croatia', 'Croatia'), ('Cuba', 'Cuba'), ('Curacao', 'Curacao'), ('Cyprus', 'Cyprus'), ('Czech Republic', 'Czech Republic'), ('Democratic Republic of the Congo', 'Democratic Republic of the Congo'), ('Denmark', 'Denmark'), ('Djibouti', 'Djibouti'), ('Dominica', 'Dominica'), ('Dominican Republic', 'Dominican Republic'), ('East Timor', 'East Timor'), ('Ecuador', 'Ecuador'), ('Egypt', 'Egypt'), ('El Salvador', 'El Salvador'), ('Equatorial Guinea', 'Equatorial Guinea'), ('Eritrea', 'Eritrea'), ('Estonia', 'Estonia'), ('Ethiopia', 'Ethiopia'), ('Europa Island', 'Europa Island'), ('Falkland Islands (Islas Malvinas)', 'Falkland Islands (Islas Malvinas)'), ('Faroe Islands', 'Faroe Islands'), ('Fiji', 'Fiji'), ('Finland', 'Finland'), ('France', 'France'), ('French Guiana', 'French Guiana'), ('French Polynesia', 'French Polynesia'), ('French Southern and Antarctic Lands', 'French Southern and Antarctic Lands'), ('Gabon', 'Gabon'), ('Gambia', 'Gambia'), ('Gaza Strip', 'Gaza Strip'), ('Georgia', 'Georgia'), ('Germany', 'Germany'), ('Ghana', 'Ghana'), ('Gibraltar', 'Gibraltar'), ('Glorioso Islands', 'Glorioso Islands'), ('Greece', 'Greece'), ('Greenland', 'Greenland'), ('Grenada', 'Grenada'), ('Guadeloupe', 'Guadeloupe'), ('Guam', 'Guam'), ('Guatemala', 'Guatemala'), ('Guernsey', 'Guernsey'), ('Guinea', 'Guinea'), ('Guinea-Bissau', 'Guinea-Bissau'), ('Guyana', 'Guyana'), ('Haiti', 'Haiti'), ('Heard Island and McDonald Islands', 'Heard Island and McDonald Islands'), ('Honduras', 'Honduras'), ('Hong Kong', 'Hong Kong'), ('Howland Island', 'Howland Island'), ('Hungary', 'Hungary'), ('Iceland', 'Iceland'), ('India', 'India'), ('Indian Ocean', 'Indian Ocean'), ('Indonesia', 'Indonesia'), ('Iran', 'Iran'), ('Iraq', 'Iraq'), ('Ireland', 'Ireland'), ('Isle of Man', 'Isle of Man'), ('Israel', 'Israel'), ('Italy', 'Italy'), ('Jamaica', 'Jamaica'), ('Jan Mayen', 'Jan Mayen'), ('Japan', 'Japan'), ('Jarvis Island', 'Jarvis Island'), ('Jersey', 'Jersey'), ('Johnston Atoll', 'Johnston Atoll'), ('Jordan', 'Jordan'), ('Juan de Nova Island', 'Juan de Nova Island'), ('Kazakhstan', 'Kazakhstan'), ('Kenya', 'Kenya'), ('Kerguelen Archipelago', 'Kerguelen Archipelago'), ('Kingman Reef', 'Kingman Reef'), ('Kiribati', 'Kiribati'), ('Kosovo', 'Kosovo'), ('Kuwait', 'Kuwait'), ('Kyrgyzstan', 'Kyrgyzstan'), ('Laos', 'Laos'), ('Latvia', 'Latvia'), ('Lebanon', 'Lebanon'), ('Lesotho', 'Lesotho'), ('Liberia', 'Liberia'), ('Libya', 'Libya'), ('Liechtenstein', 'Liechtenstein'), ('Lithuania', 'Lithuania'), ('Luxembourg', 'Luxembourg'), ('Macau', 'Macau'), ('Macedonia', 'Macedonia'), ('Madagascar', 'Madagascar'), ('Malawi', 'Malawi'), ('Malaysia', 'Malaysia'), ('Maldives', 'Maldives'), ('Mali', 'Mali'), ('Malta', 'Malta'), ('Marshall Islands', 'Marshall Islands'), ('Martinique', 'Martinique'), ('Mauritania', 'Mauritania'), ('Mauritius', 'Mauritius'), ('Mayotte', 'Mayotte'), ('Mediterranean Sea', 'Mediterranean Sea'), ('Mexico', 'Mexico'), ('Micronesia', 'Micronesia'), ('Midway Islands', 'Midway Islands'), ('Moldova', 'Moldova'), ('Monaco', 'Monaco'), ('Mongolia', 'Mongolia'), ('Montenegro', 'Montenegro'), ('Montserrat', 'Montserrat'), ('Morocco', 'Morocco'), ('Mozambique', 'Mozambique'), ('Myanmar', 'Myanmar'), ('Namibia', 'Namibia'), ('Nauru', 'Nauru'), ('Navassa Island', 'Navassa Island'), ('Nepal', 'Nepal'), ('Netherlands', 'Netherlands'), ('New Caledonia', 'New Caledonia'), ('New Zealand', 'New Zealand'), ('Nicaragua', 'Nicaragua'), ('Niger', 'Niger'), ('Nigeria', 'Nigeria'), ('Niue', 'Niue'), ('Norfolk Island', 'Norfolk Island'), ('North Korea', 'North Korea'), ('North Sea', 'North Sea'), ('Northern Mariana Islands', 'Northern Mariana Islands'), ('Norway', 'Norway'), ('Oman', 'Oman'), ('Pacific Ocean', 'Pacific Ocean'), ('Pakistan', 'Pakistan'), ('Palau', 'Palau'), ('Palmyra Atoll', 'Palmyra Atoll'), ('Panama', 'Panama'), ('Papua New Guinea', 'Papua New Guinea'), ('Paracel Islands', 'Paracel Islands'), ('Paraguay', 'Paraguay'), ('Peru', 'Peru'), ('Philippines', 'Philippines'), ('Pitcairn Islands', 'Pitcairn Islands'), ('Poland', 'Poland'), ('Portugal', 'Portugal'), ('Puerto Rico', 'Puerto Rico'), ('Qatar', 'Qatar'), ('Republic of the Congo', 'Republic of the Congo'), ('Reunion', 'Reunion'), ('Romania', 'Romania'), ('Ross Sea', 'Ross Sea'), ('Russia', 'Russia'), ('Rwanda', 'Rwanda'), ('Saint Helena', 'Saint Helena'), ('Saint Kitts and Nevis', 'Saint Kitts and Nevis'), ('Saint Lucia', 'Saint Lucia'), ('Saint Pierre and Miquelon', 'Saint Pierre and Miquelon'), ('Saint Vincent and the Grenadines', 'Saint Vincent and the Grenadines'), ('Samoa', 'Samoa'), ('San Marino', 'San Marino'), ('Sao Tome and Principe', 'Sao Tome and Principe'), ('Saudi Arabia', 'Saudi Arabia'), ('Senegal', 'Senegal'), ('Serbia', 'Serbia'), ('Seychelles', 'Seychelles'), ('Sierra Leone', 'Sierra Leone'), ('Singapore', 'Singapore'), ('Sint Maarten', 'Sint Maarten'), ('Slovakia', 'Slovakia'), ('Slovenia', 'Slovenia'), ('Solomon Islands', 'Solomon Islands'), ('Somalia', 'Somalia'), ('South Africa', 'South Africa'), ('South Georgia and the South Sandwich Islands', 'South Georgia and the South Sandwich Islands'), ('South Korea', 'South Korea'), ('Southern Ocean', 'Southern Ocean'), ('Spain', 'Spain'), ('Spratly Islands', 'Spratly Islands'), ('Sri Lanka', 'Sri Lanka'), ('Sudan', 'Sudan'), ('Suriname', 'Suriname'), ('Svalbard', 'Svalbard'), ('Swaziland', 'Swaziland'), ('Sweden', 'Sweden'), ('Switzerland', 'Switzerland'), ('Syria', 'Syria'), ('Taiwan', 'Taiwan'), ('Tajikistan', 'Tajikistan'), ('Tanzania', 'Tanzania'), ('Tasman Sea', 'Tasman Sea'), ('Thailand', 'Thailand'), ('Togo', 'Togo'), ('Tokelau', 'Tokelau'), ('Tonga', 'Tonga'), ('Trinidad and Tobago', 'Trinidad and Tobago'), ('Tromelin Island', 'Tromelin Island'), ('Tunisia', 'Tunisia'), ('Turkey', 'Turkey'), ('Turkmenistan', 'Turkmenistan'), ('Turks and Caicos Islands', 'Turks and Caicos Islands'), ('Tuvalu', 'Tuvalu'), ('USA', 'USA'), ('Uganda', 'Uganda'), ('Ukraine', 'Ukraine'), ('United Arab Emirates', 'United Arab Emirates'), ('United Kingdom', 'United Kingdom'), ('Uruguay', 'Uruguay'), ('Uzbekistan', 'Uzbekistan'), ('Vanuatu', 'Vanuatu'), ('Venezuela', 'Venezuela'), ('Viet Nam', 'Viet Nam'), ('Virgin Islands', 'Virgin Islands'), ('Wake Island', 'Wake Island'), ('Wallis and Futuna', 'Wallis and Futuna'), ('West Bank', 'West Bank'), ('Western Sahara', 'Western Sahara'), ('Yemen', 'Yemen'), ('Zambia', 'Zambia'), ('Zimbabwe', 'Zimbabwe'), ('missing: control sample', 'missing: control sample'), ('missing: data agreement established pre-2023', 'missing: data agreement established pre-2023'), ('missing: endangered species', 'missing: endangered species'), ('missing: human-identifiable', 'missing: human-identifiable'), ('missing: lab stock', 'missing: lab stock'), ('missing: sample group', 'missing: sample group'), ('missing: synthetic construct', 'missing: synthetic construct'), ('missing: third party data', 'missing: third party data'), ('not applicable', 'not applicable'), ('not collected', 'not collected'), ('not provided', 'not provided'), ('restricted access', 'restricted access')]
-	GSC_MIxS_sediment_oxygenation_status_of_sample_choice = [('aerobic', 'aerobic'), ('anaerobic', 'anaerobic')]
-	GSC_MIxS_sediment_trophic_level_choice = [('autotroph', 'autotroph'), ('carboxydotroph', 'carboxydotroph'), ('chemoautotroph', 'chemoautotroph'), ('chemoheterotroph', 'chemoheterotroph'), ('chemolithoautotroph', 'chemolithoautotroph'), ('chemolithotroph', 'chemolithotroph'), ('chemoorganoheterotroph', 'chemoorganoheterotroph'), ('chemoorganotroph', 'chemoorganotroph'), ('chemosynthetic', 'chemosynthetic'), ('chemotroph', 'chemotroph'), ('copiotroph', 'copiotroph'), ('diazotroph', 'diazotroph'), ('facultative autotroph', 'facultative autotroph'), ('heterotroph', 'heterotroph'), ('lithoautotroph', 'lithoautotroph'), ('lithoheterotroph', 'lithoheterotroph'), ('lithotroph', 'lithotroph'), ('methanotroph', 'methanotroph'), ('methylotroph', 'methylotroph'), ('mixotroph', 'mixotroph'), ('obligate chemoautolithotroph', 'obligate chemoautolithotroph'), ('oligotroph', 'oligotroph'), ('organoheterotroph', 'organoheterotroph'), ('organotroph', 'organotroph'), ('photoautotroph', 'photoautotroph'), ('photoheterotroph', 'photoheterotroph'), ('photolithoautotroph', 'photolithoautotroph'), ('photolithotroph', 'photolithotroph'), ('photosynthetic', 'photosynthetic'), ('phototroph', 'phototroph')]
-	GSC_MIxS_sediment_relationship_to_oxygen_choice = [('aerobe', 'aerobe'), ('anaerobe', 'anaerobe'), ('facultative', 'facultative'), ('microaerophilic', 'microaerophilic'), ('microanaerobe', 'microanaerobe'), ('obligate aerobe', 'obligate aerobe'), ('obligate anaerobe', 'obligate anaerobe')]
-	GSC_MIxS_sediment_observed_biotic_relationship_choice = [('commensal', 'commensal'), ('free living', 'free living'), ('mutualism', 'mutualism'), ('parasite', 'parasite'), ('symbiont', 'symbiont')]
 
-	GSC_MIxS_sediment_number_of_replicons_validator = "[+-]?[0-9]+"
-	GSC_MIxS_sediment_extrachromosomal_elements_validator = "[+-]?[0-9]+"
-	GSC_MIxS_sediment_estimated_size_validator = "[+-]?[0-9]+"
-	GSC_MIxS_sediment_sample_volume_or_weight_for_DNA_extraction_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_sediment_library_size_validator = "[+-]?[0-9]+"
-	GSC_MIxS_sediment_library_reads_sequenced_validator = "[+-]?[0-9]+"
-	GSC_MIxS_sediment_collection_date_validator = "(^[12][0-9]{3}(-(0[1-9]|1[0-2])(-(0[1-9]|[12][0-9]|3[01])(T[0-9]{2}:[0-9]{2}(:[0-9]{2})?Z?([+-][0-9]{1,2})?)?)?)?(/[0-9]{4}(-[0-9]{2}(-[0-9]{2}(T[0-9]{2}:[0-9]{2}(:[0-9]{2})?Z?([+-][0-9]{1,2})?)?)?)?)?$)|(^not collected$)|(^not provided$)|(^restricted access$)|(^missing: control sample$)|(^missing: sample group$)|(^missing: synthetic construct$)|(^missing: lab stock$)|(^missing: third party data$)|(^missing: data agreement established pre-2023$)|(^missing: endangered species$)|(^missing: human-identifiable$)"
-	GSC_MIxS_sediment_altitude_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_sediment_geographic_location_latitude_validator = "(^[+-]?[0-9]+.?[0-9]{0,8}$)|(^not collected$)|(^not provided$)|(^restricted access$)|(^missing: control sample$)|(^missing: sample group$)|(^missing: synthetic construct$)|(^missing: lab stock$)|(^missing: third party data$)|(^missing: data agreement established pre-2023$)|(^missing: endangered species$)|(^missing: human-identifiable$)"
-	GSC_MIxS_sediment_geographic_location_longitude_validator = "(^[+-]?[0-9]+.?[0-9]{0,8}$)|(^not collected$)|(^not provided$)|(^restricted access$)|(^missing: control sample$)|(^missing: sample group$)|(^missing: synthetic construct$)|(^missing: lab stock$)|(^missing: third party data$)|(^missing: data agreement established pre-2023$)|(^missing: endangered species$)|(^missing: human-identifiable$)"
-	GSC_MIxS_sediment_depth_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_sediment_elevation_validator = "[+-]?(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_sediment_amount_or_size_of_sample_collected_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_sediment_density_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_sediment_sample_storage_duration_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_sediment_sample_storage_temperature_validator = "[+-]?(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_sediment_alkyl_diethers_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_sediment_aminopeptidase_activity_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_sediment_ammonium_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_sediment_bacterial_carbon_production_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_sediment_bishomohopanol_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_sediment_bromide_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_sediment_calcium_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_sediment_carbon_nitrogen_ratio_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_sediment_chloride_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_sediment_chlorophyll_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_sediment_diether_lipids_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_sediment_dissolved_carbon_dioxide_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_sediment_dissolved_hydrogen_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_sediment_dissolved_inorganic_carbon_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_sediment_dissolved_organic_carbon_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_sediment_dissolved_organic_nitrogen_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_sediment_methane_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_sediment_dissolved_oxygen_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_sediment_glucosidase_activity_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_sediment_magnesium_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_sediment_n_alkanes_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_sediment_nitrate_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_sediment_nitrite_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_sediment_nitrogen_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_sediment_organic_carbon_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_sediment_organic_matter_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_sediment_organic_nitrogen_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_sediment_particulate_organic_carbon_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_sediment_petroleum_hydrocarbon_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_sediment_phaeopigments_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_sediment_phosphate_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_sediment_phospholipid_fatty_acid_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_sediment_potassium_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_sediment_redox_potential_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_sediment_salinity_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_sediment_total_carbon_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_sediment_silicate_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_sediment_sodium_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_sediment_total_organic_carbon_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_sediment_water_content_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_sediment_sulfate_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_sediment_sulfide_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_sediment_total_nitrogen_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	methane_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	total_carbon_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
 
 	sampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE, default=1)
 	sample = models.ForeignKey(Sample, on_delete=models.CASCADE, default=1)
-	GSC_MIxS_sediment_project_name= models.CharField(max_length=100, blank=False,help_text="Name of th")
-	GSC_MIxS_sediment_experimental_factor= models.CharField(max_length=100, blank=True,help_text="Experiment")
-	GSC_MIxS_sediment_ploidy= models.CharField(max_length=100, blank=True,help_text="The ploidy")
-	GSC_MIxS_sediment_number_of_replicons= models.CharField(max_length=100, blank=True,help_text="Reports th", validators=[RegexValidator(GSC_MIxS_sediment_number_of_replicons_validator)])
-	GSC_MIxS_sediment_extrachromosomal_elements= models.CharField(max_length=100, blank=True,help_text="Do plasmid", validators=[RegexValidator(GSC_MIxS_sediment_extrachromosomal_elements_validator)])
-	GSC_MIxS_sediment_estimated_size= models.CharField(max_length=100, blank=True,help_text="The estima", validators=[RegexValidator(GSC_MIxS_sediment_estimated_size_validator)])
-	GSC_MIxS_sediment_reference_for_biomaterial= models.CharField(max_length=100, blank=True,help_text="Primary pu")
-	GSC_MIxS_sediment_annotation_source= models.CharField(max_length=100, blank=True,help_text="For cases ")
-	GSC_MIxS_sediment_sample_volume_or_weight_for_DNA_extraction= models.CharField(max_length=100, blank=True,help_text="Volume (ml", validators=[RegexValidator(GSC_MIxS_sediment_sample_volume_or_weight_for_DNA_extraction_validator)])
-	GSC_MIxS_sediment_nucleic_acid_extraction= models.CharField(max_length=100, blank=True,help_text="A link to ")
-	GSC_MIxS_sediment_nucleic_acid_amplification= models.CharField(max_length=100, blank=True,help_text="A link to ")
-	GSC_MIxS_sediment_library_size= models.CharField(max_length=100, blank=True,help_text="Total numb", validators=[RegexValidator(GSC_MIxS_sediment_library_size_validator)])
-	GSC_MIxS_sediment_library_reads_sequenced= models.CharField(max_length=100, blank=True,help_text="Total numb", validators=[RegexValidator(GSC_MIxS_sediment_library_reads_sequenced_validator)])
-	GSC_MIxS_sediment_library_construction_method= models.CharField(max_length=100, blank=True,help_text="Library co")
-	GSC_MIxS_sediment_library_vector= models.CharField(max_length=100, blank=True,help_text="Cloning ve")
-	GSC_MIxS_sediment_library_screening_strategy= models.CharField(max_length=100, blank=True,help_text="Specific e")
-	GSC_MIxS_sediment_target_gene= models.CharField(max_length=100, blank=True,help_text="Targeted g")
-	GSC_MIxS_sediment_target_subfragment= models.CharField(max_length=100, blank=True,help_text="Name of su")
-	GSC_MIxS_sediment_pcr_primers= models.CharField(max_length=100, blank=True,help_text="PCR primer")
-	GSC_MIxS_sediment_multiplex_identifiers= models.CharField(max_length=100, blank=True,help_text="Molecular ")
-	GSC_MIxS_sediment_adapters= models.CharField(max_length=100, blank=True,help_text="Adapters p")
-	GSC_MIxS_sediment_pcr_conditions= models.CharField(max_length=100, blank=True,help_text="Descriptio")
-	GSC_MIxS_sediment_sequencing_method= models.CharField(max_length=100, blank=True,help_text="Sequencing")
-	GSC_MIxS_sediment_sequence_quality_check= models.CharField(max_length=100, blank=True,help_text="Indicate i", choices=GSC_MIxS_sediment_sequence_quality_check_choice)
-	GSC_MIxS_sediment_chimera_check_software= models.CharField(max_length=100, blank=True,help_text="Tool(s) us")
-	GSC_MIxS_sediment_relevant_electronic_resources= models.CharField(max_length=100, blank=True,help_text="A related ")
-	GSC_MIxS_sediment_relevant_standard_operating_procedures= models.CharField(max_length=100, blank=True,help_text="Standard o")
-	GSC_MIxS_sediment_negative_control_type= models.CharField(max_length=100, blank=True,help_text="The substa")
-	GSC_MIxS_sediment_positive_control_type= models.CharField(max_length=100, blank=True,help_text="The substa")
-	GSC_MIxS_sediment_collection_date= models.CharField(max_length=100, blank=False,help_text="The date t", validators=[RegexValidator(GSC_MIxS_sediment_collection_date_validator)])
-	GSC_MIxS_sediment_altitude= models.CharField(max_length=100, blank=True,help_text="The altitu", validators=[RegexValidator(GSC_MIxS_sediment_altitude_validator)])
-	GSC_MIxS_sediment_geographic_location_country_and_or_sea= models.CharField(max_length=100, blank=False,help_text="The locati", choices=GSC_MIxS_sediment_geographic_location_country_and_or_sea_choice)
-	GSC_MIxS_sediment_geographic_location_latitude= models.CharField(max_length=100, blank=False,help_text="The geogra", validators=[RegexValidator(GSC_MIxS_sediment_geographic_location_latitude_validator)])
-	GSC_MIxS_sediment_geographic_location_longitude= models.CharField(max_length=100, blank=False,help_text="The geogra", validators=[RegexValidator(GSC_MIxS_sediment_geographic_location_longitude_validator)])
-	GSC_MIxS_sediment_geographic_location_region_and_locality= models.CharField(max_length=100, blank=True,help_text="The geogra")
-	GSC_MIxS_sediment_depth= models.CharField(max_length=100, blank=False,help_text="The vertic", validators=[RegexValidator(GSC_MIxS_sediment_depth_validator)])
-	GSC_MIxS_sediment_broad_scale_environmental_context= models.CharField(max_length=100, blank=False,help_text="Report the")
-	GSC_MIxS_sediment_local_environmental_context= models.CharField(max_length=100, blank=False,help_text="Report the")
-	GSC_MIxS_sediment_environmental_medium= models.CharField(max_length=100, blank=False,help_text="Report the")
-	GSC_MIxS_sediment_elevation= models.CharField(max_length=100, blank=False,help_text="The elevat", validators=[RegexValidator(GSC_MIxS_sediment_elevation_validator)])
-	GSC_MIxS_sediment_source_material_identifiers= models.CharField(max_length=100, blank=True,help_text="A unique i")
-	GSC_MIxS_sediment_sample_material_processing= models.CharField(max_length=100, blank=True,help_text="A brief de")
-	GSC_MIxS_sediment_isolation_and_growth_condition= models.CharField(max_length=100, blank=True,help_text="Publicatio")
-	GSC_MIxS_sediment_propagation= models.CharField(max_length=100, blank=True,help_text="The type o")
-	GSC_MIxS_sediment_amount_or_size_of_sample_collected= models.CharField(max_length=100, blank=True,help_text="The total ", validators=[RegexValidator(GSC_MIxS_sediment_amount_or_size_of_sample_collected_validator)])
-	GSC_MIxS_sediment_biomass= models.CharField(max_length=100, blank=True,help_text="amount of ")
-	GSC_MIxS_sediment_density= models.CharField(max_length=100, blank=True,help_text="density of", validators=[RegexValidator(GSC_MIxS_sediment_density_validator)])
-	GSC_MIxS_sediment_oxygenation_status_of_sample= models.CharField(max_length=100, blank=True,help_text="oxygenatio", choices=GSC_MIxS_sediment_oxygenation_status_of_sample_choice)
-	GSC_MIxS_sediment_organism_count= models.CharField(max_length=100, blank=True,help_text="Total cell")
-	GSC_MIxS_sediment_sample_storage_duration= models.CharField(max_length=100, blank=True,help_text="duration f", validators=[RegexValidator(GSC_MIxS_sediment_sample_storage_duration_validator)])
-	GSC_MIxS_sediment_sample_storage_temperature= models.CharField(max_length=100, blank=True,help_text="temperatur", validators=[RegexValidator(GSC_MIxS_sediment_sample_storage_temperature_validator)])
-	GSC_MIxS_sediment_sample_storage_location= models.CharField(max_length=100, blank=True,help_text="location a")
-	GSC_MIxS_sediment_sample_collection_device= models.CharField(max_length=100, blank=True,help_text="The device")
-	GSC_MIxS_sediment_sample_collection_method= models.CharField(max_length=100, blank=True,help_text="The method")
-	GSC_MIxS_sediment_host_disease_status= models.CharField(max_length=100, blank=True,help_text="list of di")
-	GSC_MIxS_sediment_host_scientific_name= models.CharField(max_length=100, blank=True,help_text="Scientific")
-	GSC_MIxS_sediment_alkyl_diethers= models.CharField(max_length=100, blank=True,help_text="concentrat", validators=[RegexValidator(GSC_MIxS_sediment_alkyl_diethers_validator)])
-	GSC_MIxS_sediment_aminopeptidase_activity= models.CharField(max_length=100, blank=True,help_text="measuremen", validators=[RegexValidator(GSC_MIxS_sediment_aminopeptidase_activity_validator)])
-	GSC_MIxS_sediment_ammonium= models.CharField(max_length=100, blank=True,help_text="concentrat", validators=[RegexValidator(GSC_MIxS_sediment_ammonium_validator)])
-	GSC_MIxS_sediment_bacterial_carbon_production= models.CharField(max_length=100, blank=True,help_text="measuremen", validators=[RegexValidator(GSC_MIxS_sediment_bacterial_carbon_production_validator)])
-	GSC_MIxS_sediment_bishomohopanol= models.CharField(max_length=100, blank=True,help_text="concentrat", validators=[RegexValidator(GSC_MIxS_sediment_bishomohopanol_validator)])
-	GSC_MIxS_sediment_bromide= models.CharField(max_length=100, blank=True,help_text="concentrat", validators=[RegexValidator(GSC_MIxS_sediment_bromide_validator)])
-	GSC_MIxS_sediment_calcium= models.CharField(max_length=100, blank=True,help_text="concentrat", validators=[RegexValidator(GSC_MIxS_sediment_calcium_validator)])
-	GSC_MIxS_sediment_carbon_nitrogen_ratio= models.CharField(max_length=100, blank=True,help_text="ratio of a", validators=[RegexValidator(GSC_MIxS_sediment_carbon_nitrogen_ratio_validator)])
-	GSC_MIxS_sediment_chloride= models.CharField(max_length=100, blank=True,help_text="concentrat", validators=[RegexValidator(GSC_MIxS_sediment_chloride_validator)])
-	GSC_MIxS_sediment_chlorophyll= models.CharField(max_length=100, blank=True,help_text="concentrat", validators=[RegexValidator(GSC_MIxS_sediment_chlorophyll_validator)])
-	GSC_MIxS_sediment_diether_lipids= models.CharField(max_length=100, blank=True,help_text="concentrat", validators=[RegexValidator(GSC_MIxS_sediment_diether_lipids_validator)])
-	GSC_MIxS_sediment_dissolved_carbon_dioxide= models.CharField(max_length=100, blank=True,help_text="concentrat", validators=[RegexValidator(GSC_MIxS_sediment_dissolved_carbon_dioxide_validator)])
-	GSC_MIxS_sediment_dissolved_hydrogen= models.CharField(max_length=100, blank=True,help_text="concentrat", validators=[RegexValidator(GSC_MIxS_sediment_dissolved_hydrogen_validator)])
-	GSC_MIxS_sediment_dissolved_inorganic_carbon= models.CharField(max_length=100, blank=True,help_text="dissolved ", validators=[RegexValidator(GSC_MIxS_sediment_dissolved_inorganic_carbon_validator)])
-	GSC_MIxS_sediment_dissolved_organic_carbon= models.CharField(max_length=100, blank=True,help_text="concentrat", validators=[RegexValidator(GSC_MIxS_sediment_dissolved_organic_carbon_validator)])
-	GSC_MIxS_sediment_dissolved_organic_nitrogen= models.CharField(max_length=100, blank=True,help_text="dissolved ", validators=[RegexValidator(GSC_MIxS_sediment_dissolved_organic_nitrogen_validator)])
-	GSC_MIxS_sediment_methane= models.CharField(max_length=100, blank=True,help_text="methane (g", validators=[RegexValidator(GSC_MIxS_sediment_methane_validator)])
-	GSC_MIxS_sediment_dissolved_oxygen= models.CharField(max_length=100, blank=True,help_text="concentrat", validators=[RegexValidator(GSC_MIxS_sediment_dissolved_oxygen_validator)])
-	GSC_MIxS_sediment_glucosidase_activity= models.CharField(max_length=100, blank=True,help_text="measuremen", validators=[RegexValidator(GSC_MIxS_sediment_glucosidase_activity_validator)])
-	GSC_MIxS_sediment_magnesium= models.CharField(max_length=100, blank=True,help_text="concentrat", validators=[RegexValidator(GSC_MIxS_sediment_magnesium_validator)])
-	GSC_MIxS_sediment_n_alkanes= models.CharField(max_length=100, blank=True,help_text="concentrat", validators=[RegexValidator(GSC_MIxS_sediment_n_alkanes_validator)])
-	GSC_MIxS_sediment_nitrate= models.CharField(max_length=100, blank=True,help_text="concentrat", validators=[RegexValidator(GSC_MIxS_sediment_nitrate_validator)])
-	GSC_MIxS_sediment_nitrite= models.CharField(max_length=100, blank=True,help_text="concentrat", validators=[RegexValidator(GSC_MIxS_sediment_nitrite_validator)])
-	GSC_MIxS_sediment_nitrogen= models.CharField(max_length=100, blank=True,help_text="concentrat", validators=[RegexValidator(GSC_MIxS_sediment_nitrogen_validator)])
-	GSC_MIxS_sediment_organic_carbon= models.CharField(max_length=100, blank=True,help_text="concentrat", validators=[RegexValidator(GSC_MIxS_sediment_organic_carbon_validator)])
-	GSC_MIxS_sediment_organic_matter= models.CharField(max_length=100, blank=True,help_text="concentrat", validators=[RegexValidator(GSC_MIxS_sediment_organic_matter_validator)])
-	GSC_MIxS_sediment_organic_nitrogen= models.CharField(max_length=100, blank=True,help_text="concentrat", validators=[RegexValidator(GSC_MIxS_sediment_organic_nitrogen_validator)])
-	GSC_MIxS_sediment_particulate_organic_carbon= models.CharField(max_length=100, blank=True,help_text="concentrat", validators=[RegexValidator(GSC_MIxS_sediment_particulate_organic_carbon_validator)])
-	GSC_MIxS_sediment_petroleum_hydrocarbon= models.CharField(max_length=100, blank=True,help_text="concentrat", validators=[RegexValidator(GSC_MIxS_sediment_petroleum_hydrocarbon_validator)])
-	GSC_MIxS_sediment_phaeopigments= models.CharField(max_length=100, blank=True,help_text="concentrat", validators=[RegexValidator(GSC_MIxS_sediment_phaeopigments_validator)])
-	GSC_MIxS_sediment_phosphate= models.CharField(max_length=100, blank=True,help_text="concentrat", validators=[RegexValidator(GSC_MIxS_sediment_phosphate_validator)])
-	GSC_MIxS_sediment_phospholipid_fatty_acid= models.CharField(max_length=100, blank=True,help_text="concentrat", validators=[RegexValidator(GSC_MIxS_sediment_phospholipid_fatty_acid_validator)])
-	GSC_MIxS_sediment_potassium= models.CharField(max_length=100, blank=True,help_text="concentrat", validators=[RegexValidator(GSC_MIxS_sediment_potassium_validator)])
-	GSC_MIxS_sediment_redox_potential= models.CharField(max_length=100, blank=True,help_text="redox pote", validators=[RegexValidator(GSC_MIxS_sediment_redox_potential_validator)])
-	GSC_MIxS_sediment_salinity= models.CharField(max_length=100, blank=True,help_text="The total ", validators=[RegexValidator(GSC_MIxS_sediment_salinity_validator)])
-	GSC_MIxS_sediment_total_carbon= models.CharField(max_length=100, blank=True,help_text="total carb", validators=[RegexValidator(GSC_MIxS_sediment_total_carbon_validator)])
-	GSC_MIxS_sediment_silicate= models.CharField(max_length=100, blank=True,help_text="concentrat", validators=[RegexValidator(GSC_MIxS_sediment_silicate_validator)])
-	GSC_MIxS_sediment_sodium= models.CharField(max_length=100, blank=True,help_text="sodium con", validators=[RegexValidator(GSC_MIxS_sediment_sodium_validator)])
-	GSC_MIxS_sediment_total_organic_carbon= models.CharField(max_length=100, blank=True,help_text="Definition", validators=[RegexValidator(GSC_MIxS_sediment_total_organic_carbon_validator)])
-	GSC_MIxS_sediment_water_content= models.CharField(max_length=100, blank=True,help_text="water cont", validators=[RegexValidator(GSC_MIxS_sediment_water_content_validator)])
-	GSC_MIxS_sediment_sulfate= models.CharField(max_length=100, blank=True,help_text="concentrat", validators=[RegexValidator(GSC_MIxS_sediment_sulfate_validator)])
-	GSC_MIxS_sediment_sulfide= models.CharField(max_length=100, blank=True,help_text="concentrat", validators=[RegexValidator(GSC_MIxS_sediment_sulfide_validator)])
-	GSC_MIxS_sediment_total_nitrogen= models.CharField(max_length=100, blank=True,help_text="total nitr", validators=[RegexValidator(GSC_MIxS_sediment_total_nitrogen_validator)])
-	GSC_MIxS_sediment_subspecific_genetic_lineage= models.CharField(max_length=100, blank=True,help_text="Informatio")
-	GSC_MIxS_sediment_trophic_level= models.CharField(max_length=100, blank=True,help_text="Trophic le", choices=GSC_MIxS_sediment_trophic_level_choice)
-	GSC_MIxS_sediment_relationship_to_oxygen= models.CharField(max_length=100, blank=True,help_text="Is this or", choices=GSC_MIxS_sediment_relationship_to_oxygen_choice)
-	GSC_MIxS_sediment_known_pathogenicity= models.CharField(max_length=100, blank=True,help_text="To what is")
-	GSC_MIxS_sediment_encoded_traits= models.CharField(max_length=100, blank=True,help_text="Should inc")
-	GSC_MIxS_sediment_observed_biotic_relationship= models.CharField(max_length=100, blank=True,help_text="Is it free", choices=GSC_MIxS_sediment_observed_biotic_relationship_choice)
-	GSC_MIxS_sediment_chemical_administration= models.CharField(max_length=100, blank=True,help_text="list of ch")
-	GSC_MIxS_sediment_perturbation= models.CharField(max_length=100, blank=True,help_text="type of pe")
+	methane= models.CharField(max_length=100, blank=True,help_text="methane (g", validators=[RegexValidator(methane_validator)])
+	total_carbon= models.CharField(max_length=100, blank=True,help_text="total carb", validators=[RegexValidator(total_carbon_validator)])
 
 	fields = {
-		'GSC_MIxS_sediment_project_name': 'project name',
-		'GSC_MIxS_sediment_experimental_factor': 'experimental factor',
-		'GSC_MIxS_sediment_ploidy': 'ploidy',
-		'GSC_MIxS_sediment_number_of_replicons': 'number of replicons',
-		'GSC_MIxS_sediment_extrachromosomal_elements': 'extrachromosomal elements',
-		'GSC_MIxS_sediment_estimated_size': 'estimated size',
-		'GSC_MIxS_sediment_reference_for_biomaterial': 'reference for biomaterial',
-		'GSC_MIxS_sediment_annotation_source': 'annotation source',
-		'GSC_MIxS_sediment_sample_volume_or_weight_for_DNA_extraction': 'sample volume or weight for DNA extraction',
-		'GSC_MIxS_sediment_nucleic_acid_extraction': 'nucleic acid extraction',
-		'GSC_MIxS_sediment_nucleic_acid_amplification': 'nucleic acid amplification',
-		'GSC_MIxS_sediment_library_size': 'library size',
-		'GSC_MIxS_sediment_library_reads_sequenced': 'library reads sequenced',
-		'GSC_MIxS_sediment_library_construction_method': 'library construction method',
-		'GSC_MIxS_sediment_library_vector': 'library vector',
-		'GSC_MIxS_sediment_library_screening_strategy': 'library screening strategy',
-		'GSC_MIxS_sediment_target_gene': 'target gene',
-		'GSC_MIxS_sediment_target_subfragment': 'target subfragment',
-		'GSC_MIxS_sediment_pcr_primers': 'pcr primers',
-		'GSC_MIxS_sediment_multiplex_identifiers': 'multiplex identifiers',
-		'GSC_MIxS_sediment_adapters': 'adapters',
-		'GSC_MIxS_sediment_pcr_conditions': 'pcr conditions',
-		'GSC_MIxS_sediment_sequencing_method': 'sequencing method',
-		'GSC_MIxS_sediment_sequence_quality_check': 'sequence quality check',
-		'GSC_MIxS_sediment_chimera_check_software': 'chimera check software',
-		'GSC_MIxS_sediment_relevant_electronic_resources': 'relevant electronic resources',
-		'GSC_MIxS_sediment_relevant_standard_operating_procedures': 'relevant standard operating procedures',
-		'GSC_MIxS_sediment_negative_control_type': 'negative control type',
-		'GSC_MIxS_sediment_positive_control_type': 'positive control type',
-		'GSC_MIxS_sediment_collection_date': 'collection date',
-		'GSC_MIxS_sediment_altitude': 'altitude',
-		'GSC_MIxS_sediment_geographic_location_country_and_or_sea': 'geographic location (country and/or sea)',
-		'GSC_MIxS_sediment_geographic_location_latitude': 'geographic location (latitude)',
-		'GSC_MIxS_sediment_geographic_location_longitude': 'geographic location (longitude)',
-		'GSC_MIxS_sediment_geographic_location_region_and_locality': 'geographic location (region and locality)',
-		'GSC_MIxS_sediment_depth': 'depth',
-		'GSC_MIxS_sediment_broad_scale_environmental_context': 'broad-scale environmental context',
-		'GSC_MIxS_sediment_local_environmental_context': 'local environmental context',
-		'GSC_MIxS_sediment_environmental_medium': 'environmental medium',
-		'GSC_MIxS_sediment_elevation': 'elevation',
-		'GSC_MIxS_sediment_source_material_identifiers': 'source material identifiers',
-		'GSC_MIxS_sediment_sample_material_processing': 'sample material processing',
-		'GSC_MIxS_sediment_isolation_and_growth_condition': 'isolation and growth condition',
-		'GSC_MIxS_sediment_propagation': 'propagation',
-		'GSC_MIxS_sediment_amount_or_size_of_sample_collected': 'amount or size of sample collected',
-		'GSC_MIxS_sediment_biomass': 'biomass',
-		'GSC_MIxS_sediment_density': 'density',
-		'GSC_MIxS_sediment_oxygenation_status_of_sample': 'oxygenation status of sample',
-		'GSC_MIxS_sediment_organism_count': 'organism count',
-		'GSC_MIxS_sediment_sample_storage_duration': 'sample storage duration',
-		'GSC_MIxS_sediment_sample_storage_temperature': 'sample storage temperature',
-		'GSC_MIxS_sediment_sample_storage_location': 'sample storage location',
-		'GSC_MIxS_sediment_sample_collection_device': 'sample collection device',
-		'GSC_MIxS_sediment_sample_collection_method': 'sample collection method',
-		'GSC_MIxS_sediment_host_disease_status': 'host disease status',
-		'GSC_MIxS_sediment_host_scientific_name': 'host scientific name',
-		'GSC_MIxS_sediment_alkyl_diethers': 'alkyl diethers',
-		'GSC_MIxS_sediment_aminopeptidase_activity': 'aminopeptidase activity',
-		'GSC_MIxS_sediment_ammonium': 'ammonium',
-		'GSC_MIxS_sediment_bacterial_carbon_production': 'bacterial carbon production',
-		'GSC_MIxS_sediment_bishomohopanol': 'bishomohopanol',
-		'GSC_MIxS_sediment_bromide': 'bromide',
-		'GSC_MIxS_sediment_calcium': 'calcium',
-		'GSC_MIxS_sediment_carbon_nitrogen_ratio': 'carbon/nitrogen ratio',
-		'GSC_MIxS_sediment_chloride': 'chloride',
-		'GSC_MIxS_sediment_chlorophyll': 'chlorophyll',
-		'GSC_MIxS_sediment_diether_lipids': 'diether lipids',
-		'GSC_MIxS_sediment_dissolved_carbon_dioxide': 'dissolved carbon dioxide',
-		'GSC_MIxS_sediment_dissolved_hydrogen': 'dissolved hydrogen',
-		'GSC_MIxS_sediment_dissolved_inorganic_carbon': 'dissolved inorganic carbon',
-		'GSC_MIxS_sediment_dissolved_organic_carbon': 'dissolved organic carbon',
-		'GSC_MIxS_sediment_dissolved_organic_nitrogen': 'dissolved organic nitrogen',
-		'GSC_MIxS_sediment_methane': 'methane',
-		'GSC_MIxS_sediment_dissolved_oxygen': 'dissolved oxygen',
-		'GSC_MIxS_sediment_glucosidase_activity': 'glucosidase activity',
-		'GSC_MIxS_sediment_magnesium': 'magnesium',
-		'GSC_MIxS_sediment_n_alkanes': 'n-alkanes',
-		'GSC_MIxS_sediment_nitrate': 'nitrate',
-		'GSC_MIxS_sediment_nitrite': 'nitrite',
-		'GSC_MIxS_sediment_nitrogen': 'nitrogen',
-		'GSC_MIxS_sediment_organic_carbon': 'organic carbon',
-		'GSC_MIxS_sediment_organic_matter': 'organic matter',
-		'GSC_MIxS_sediment_organic_nitrogen': 'organic nitrogen',
-		'GSC_MIxS_sediment_particulate_organic_carbon': 'particulate organic carbon',
-		'GSC_MIxS_sediment_petroleum_hydrocarbon': 'petroleum hydrocarbon',
-		'GSC_MIxS_sediment_phaeopigments': 'phaeopigments',
-		'GSC_MIxS_sediment_phosphate': 'phosphate',
-		'GSC_MIxS_sediment_phospholipid_fatty_acid': 'phospholipid fatty acid',
-		'GSC_MIxS_sediment_potassium': 'potassium',
-		'GSC_MIxS_sediment_redox_potential': 'redox potential',
-		'GSC_MIxS_sediment_salinity': 'salinity',
-		'GSC_MIxS_sediment_total_carbon': 'total carbon',
-		'GSC_MIxS_sediment_silicate': 'silicate',
-		'GSC_MIxS_sediment_sodium': 'sodium',
-		'GSC_MIxS_sediment_total_organic_carbon': 'total organic carbon',
-		'GSC_MIxS_sediment_water_content': 'water content',
-		'GSC_MIxS_sediment_sulfate': 'sulfate',
-		'GSC_MIxS_sediment_sulfide': 'sulfide',
-		'GSC_MIxS_sediment_total_nitrogen': 'total nitrogen',
-		'GSC_MIxS_sediment_subspecific_genetic_lineage': 'subspecific genetic lineage',
-		'GSC_MIxS_sediment_trophic_level': 'trophic level',
-		'GSC_MIxS_sediment_relationship_to_oxygen': 'relationship to oxygen',
-		'GSC_MIxS_sediment_known_pathogenicity': 'known pathogenicity',
-		'GSC_MIxS_sediment_encoded_traits': 'encoded traits',
-		'GSC_MIxS_sediment_observed_biotic_relationship': 'observed biotic relationship',
-		'GSC_MIxS_sediment_chemical_administration': 'chemical administration',
-		'GSC_MIxS_sediment_perturbation': 'perturbation',
+		'methane': 'methane',
+		'total_carbon': 'total carbon',
 	}
 
 	name = 'GSC_MIxS_sediment'
 
 class GSC_MIxS_sediment_unit(SelfDescribingModel):
 
-	GSC_MIxS_sediment_sample_volume_or_weight_for_DNA_extraction_units = [('g', 'g'), ('mL', 'mL'), ('mg', 'mg'), ('ng', 'ng')]
-	GSC_MIxS_sediment_altitude_units = [('m', 'm')]
-	GSC_MIxS_sediment_geographic_location_latitude_units = [('DD', 'DD')]
-	GSC_MIxS_sediment_geographic_location_longitude_units = [('DD', 'DD')]
-	GSC_MIxS_sediment_depth_units = [('m', 'm')]
-	GSC_MIxS_sediment_elevation_units = [('m', 'm')]
-	GSC_MIxS_sediment_amount_or_size_of_sample_collected_units = [('L', 'L'), ('g', 'g'), ('kg', 'kg'), ('m2', 'm2'), ('m3', 'm3')]
-	GSC_MIxS_sediment_biomass_units = [('g', 'g'), ('kg', 'kg'), ('t', 't')]
-	GSC_MIxS_sediment_density_units = [('g/m3', 'g/m3')]
-	GSC_MIxS_sediment_sample_storage_duration_units = [('days', 'days'), ('hours', 'hours'), ('months', 'months'), ('weeks', 'weeks'), ('years', 'years')]
-	GSC_MIxS_sediment_sample_storage_temperature_units = [('°C', '°C')]
-	GSC_MIxS_sediment_alkyl_diethers_units = [('M/L', 'M/L'), ('µg/L', 'µg/L')]
-	GSC_MIxS_sediment_aminopeptidase_activity_units = [('mol/L/h', 'mol/L/h')]
-	GSC_MIxS_sediment_ammonium_units = [('µmol/L', 'µmol/L')]
-	GSC_MIxS_sediment_bacterial_carbon_production_units = [('ng/h', 'ng/h')]
-	GSC_MIxS_sediment_bishomohopanol_units = [('µg/L', 'µg/L'), ('µg/g', 'µg/g')]
-	GSC_MIxS_sediment_bromide_units = [('parts/million', 'parts/million'), ('µmol/L', 'µmol/L')]
-	GSC_MIxS_sediment_calcium_units = [('mg/L', 'mg/L'), ('parts/million', 'parts/million'), ('µmol/L', 'µmol/L')]
-	GSC_MIxS_sediment_chloride_units = [('mg/L', 'mg/L')]
-	GSC_MIxS_sediment_chlorophyll_units = [('mg/m3', 'mg/m3'), ('µg/L', 'µg/L')]
-	GSC_MIxS_sediment_diether_lipids_units = [('ng/L', 'ng/L')]
-	GSC_MIxS_sediment_dissolved_carbon_dioxide_units = [('µmol/L', 'µmol/L')]
-	GSC_MIxS_sediment_dissolved_hydrogen_units = [('µmol/L', 'µmol/L')]
-	GSC_MIxS_sediment_dissolved_inorganic_carbon_units = [('µg/L', 'µg/L')]
-	GSC_MIxS_sediment_dissolved_organic_carbon_units = [('µmol/L', 'µmol/L')]
-	GSC_MIxS_sediment_dissolved_organic_nitrogen_units = [('mg/L', 'mg/L'), ('µg/L', 'µg/L')]
-	GSC_MIxS_sediment_methane_units = [('µM/L', 'µM/L')]
-	GSC_MIxS_sediment_dissolved_oxygen_units = [('µmol/kg', 'µmol/kg')]
-	GSC_MIxS_sediment_glucosidase_activity_units = [('mol/L/h', 'mol/L/h')]
-	GSC_MIxS_sediment_magnesium_units = [('mg/L', 'mg/L'), ('mol/L', 'mol/L'), ('parts/million', 'parts/million')]
-	GSC_MIxS_sediment_n_alkanes_units = [('µmol/L', 'µmol/L')]
-	GSC_MIxS_sediment_nitrate_units = [('µmol/L', 'µmol/L')]
-	GSC_MIxS_sediment_nitrite_units = [('µmol/L', 'µmol/L')]
-	GSC_MIxS_sediment_nitrogen_units = [('µmol/L', 'µmol/L')]
-	GSC_MIxS_sediment_organic_carbon_units = [('µmol/L', 'µmol/L')]
-	GSC_MIxS_sediment_organic_matter_units = [('µg/L', 'µg/L')]
-	GSC_MIxS_sediment_organic_nitrogen_units = [('µg/L', 'µg/L')]
-	GSC_MIxS_sediment_particulate_organic_carbon_units = [('µg/L', 'µg/L')]
-	GSC_MIxS_sediment_petroleum_hydrocarbon_units = [('µmol/L', 'µmol/L')]
-	GSC_MIxS_sediment_phaeopigments_units = [('mg/m3', 'mg/m3'), ('µg/L', 'µg/L')]
-	GSC_MIxS_sediment_phosphate_units = [('µmol/L', 'µmol/L')]
-	GSC_MIxS_sediment_phospholipid_fatty_acid_units = [('mol/L', 'mol/L'), ('mol/g', 'mol/g')]
-	GSC_MIxS_sediment_potassium_units = [('parts/million', 'parts/million'), ('µmol/L', 'µmol/L')]
-	GSC_MIxS_sediment_redox_potential_units = [('mV', 'mV')]
-	GSC_MIxS_sediment_salinity_units = [('psu', 'psu')]
-	GSC_MIxS_sediment_total_carbon_units = [('µg/L', 'µg/L')]
-	GSC_MIxS_sediment_silicate_units = [('µmol/L', 'µmol/L')]
-	GSC_MIxS_sediment_sodium_units = [('parts/million', 'parts/million'), ('µmol/L', 'µmol/L')]
-	GSC_MIxS_sediment_total_organic_carbon_units = [('g/kg', 'g/kg')]
-	GSC_MIxS_sediment_water_content_units = [('cm3/cm3', 'cm3/cm3'), ('g/g', 'g/g')]
-	GSC_MIxS_sediment_sulfate_units = [('mg/L', 'mg/L'), ('µmol/L', 'µmol/L')]
-	GSC_MIxS_sediment_sulfide_units = [('mg/L', 'mg/L'), ('µmol/L', 'µmol/L')]
-	GSC_MIxS_sediment_total_nitrogen_units = [('µg/L', 'µg/L'), ('µmol/L', 'µmol/L')]
+	methane_units = [('µM/L', 'µM/L')]
+	total_carbon_units = [('µg/L', 'µg/L')]
 
 	fields = {
-		'GSC_MIxS_sediment_sample_volume_or_weight_for_DNA_extraction': 'sample volume or weight for DNA extraction',
-		'GSC_MIxS_sediment_altitude': 'altitude',
-		'GSC_MIxS_sediment_geographic_location_latitude': 'geographic location (latitude)',
-		'GSC_MIxS_sediment_geographic_location_longitude': 'geographic location (longitude)',
-		'GSC_MIxS_sediment_depth': 'depth',
-		'GSC_MIxS_sediment_elevation': 'elevation',
-		'GSC_MIxS_sediment_amount_or_size_of_sample_collected': 'amount or size of sample collected',
-		'GSC_MIxS_sediment_biomass': 'biomass',
-		'GSC_MIxS_sediment_density': 'density',
-		'GSC_MIxS_sediment_sample_storage_duration': 'sample storage duration',
-		'GSC_MIxS_sediment_sample_storage_temperature': 'sample storage temperature',
-		'GSC_MIxS_sediment_alkyl_diethers': 'alkyl diethers',
-		'GSC_MIxS_sediment_aminopeptidase_activity': 'aminopeptidase activity',
-		'GSC_MIxS_sediment_ammonium': 'ammonium',
-		'GSC_MIxS_sediment_bacterial_carbon_production': 'bacterial carbon production',
-		'GSC_MIxS_sediment_bishomohopanol': 'bishomohopanol',
-		'GSC_MIxS_sediment_bromide': 'bromide',
-		'GSC_MIxS_sediment_calcium': 'calcium',
-		'GSC_MIxS_sediment_chloride': 'chloride',
-		'GSC_MIxS_sediment_chlorophyll': 'chlorophyll',
-		'GSC_MIxS_sediment_diether_lipids': 'diether lipids',
-		'GSC_MIxS_sediment_dissolved_carbon_dioxide': 'dissolved carbon dioxide',
-		'GSC_MIxS_sediment_dissolved_hydrogen': 'dissolved hydrogen',
-		'GSC_MIxS_sediment_dissolved_inorganic_carbon': 'dissolved inorganic carbon',
-		'GSC_MIxS_sediment_dissolved_organic_carbon': 'dissolved organic carbon',
-		'GSC_MIxS_sediment_dissolved_organic_nitrogen': 'dissolved organic nitrogen',
-		'GSC_MIxS_sediment_methane': 'methane',
-		'GSC_MIxS_sediment_dissolved_oxygen': 'dissolved oxygen',
-		'GSC_MIxS_sediment_glucosidase_activity': 'glucosidase activity',
-		'GSC_MIxS_sediment_magnesium': 'magnesium',
-		'GSC_MIxS_sediment_n_alkanes': 'n-alkanes',
-		'GSC_MIxS_sediment_nitrate': 'nitrate',
-		'GSC_MIxS_sediment_nitrite': 'nitrite',
-		'GSC_MIxS_sediment_nitrogen': 'nitrogen',
-		'GSC_MIxS_sediment_organic_carbon': 'organic carbon',
-		'GSC_MIxS_sediment_organic_matter': 'organic matter',
-		'GSC_MIxS_sediment_organic_nitrogen': 'organic nitrogen',
-		'GSC_MIxS_sediment_particulate_organic_carbon': 'particulate organic carbon',
-		'GSC_MIxS_sediment_petroleum_hydrocarbon': 'petroleum hydrocarbon',
-		'GSC_MIxS_sediment_phaeopigments': 'phaeopigments',
-		'GSC_MIxS_sediment_phosphate': 'phosphate',
-		'GSC_MIxS_sediment_phospholipid_fatty_acid': 'phospholipid fatty acid',
-		'GSC_MIxS_sediment_potassium': 'potassium',
-		'GSC_MIxS_sediment_redox_potential': 'redox potential',
-		'GSC_MIxS_sediment_salinity': 'salinity',
-		'GSC_MIxS_sediment_total_carbon': 'total carbon',
-		'GSC_MIxS_sediment_silicate': 'silicate',
-		'GSC_MIxS_sediment_sodium': 'sodium',
-		'GSC_MIxS_sediment_total_organic_carbon': 'total organic carbon',
-		'GSC_MIxS_sediment_water_content': 'water content',
-		'GSC_MIxS_sediment_sulfate': 'sulfate',
-		'GSC_MIxS_sediment_sulfide': 'sulfide',
-		'GSC_MIxS_sediment_total_nitrogen': 'total nitrogen',
+		'methane': 'methane',
+		'total_carbon': 'total carbon',
 	}
 
 	name = 'GSC_MIxS_sediment'
 
 	sampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE, default=1)
 	sample = models.ForeignKey(Sample, on_delete=models.CASCADE, default=1)
-	GSC_MIxS_sediment_sample_volume_or_weight_for_DNA_extraction = models.CharField(max_length=100, choices=GSC_MIxS_sediment_sample_volume_or_weight_for_DNA_extraction_units, blank=False)
-	GSC_MIxS_sediment_altitude = models.CharField(max_length=100, choices=GSC_MIxS_sediment_altitude_units, blank=False)
-	GSC_MIxS_sediment_geographic_location_latitude = models.CharField(max_length=100, choices=GSC_MIxS_sediment_geographic_location_latitude_units, blank=False)
-	GSC_MIxS_sediment_geographic_location_longitude = models.CharField(max_length=100, choices=GSC_MIxS_sediment_geographic_location_longitude_units, blank=False)
-	GSC_MIxS_sediment_depth = models.CharField(max_length=100, choices=GSC_MIxS_sediment_depth_units, blank=False)
-	GSC_MIxS_sediment_elevation = models.CharField(max_length=100, choices=GSC_MIxS_sediment_elevation_units, blank=False)
-	GSC_MIxS_sediment_amount_or_size_of_sample_collected = models.CharField(max_length=100, choices=GSC_MIxS_sediment_amount_or_size_of_sample_collected_units, blank=False)
-	GSC_MIxS_sediment_biomass = models.CharField(max_length=100, choices=GSC_MIxS_sediment_biomass_units, blank=False)
-	GSC_MIxS_sediment_density = models.CharField(max_length=100, choices=GSC_MIxS_sediment_density_units, blank=False)
-	GSC_MIxS_sediment_sample_storage_duration = models.CharField(max_length=100, choices=GSC_MIxS_sediment_sample_storage_duration_units, blank=False)
-	GSC_MIxS_sediment_sample_storage_temperature = models.CharField(max_length=100, choices=GSC_MIxS_sediment_sample_storage_temperature_units, blank=False)
-	GSC_MIxS_sediment_alkyl_diethers = models.CharField(max_length=100, choices=GSC_MIxS_sediment_alkyl_diethers_units, blank=False)
-	GSC_MIxS_sediment_aminopeptidase_activity = models.CharField(max_length=100, choices=GSC_MIxS_sediment_aminopeptidase_activity_units, blank=False)
-	GSC_MIxS_sediment_ammonium = models.CharField(max_length=100, choices=GSC_MIxS_sediment_ammonium_units, blank=False)
-	GSC_MIxS_sediment_bacterial_carbon_production = models.CharField(max_length=100, choices=GSC_MIxS_sediment_bacterial_carbon_production_units, blank=False)
-	GSC_MIxS_sediment_bishomohopanol = models.CharField(max_length=100, choices=GSC_MIxS_sediment_bishomohopanol_units, blank=False)
-	GSC_MIxS_sediment_bromide = models.CharField(max_length=100, choices=GSC_MIxS_sediment_bromide_units, blank=False)
-	GSC_MIxS_sediment_calcium = models.CharField(max_length=100, choices=GSC_MIxS_sediment_calcium_units, blank=False)
-	GSC_MIxS_sediment_chloride = models.CharField(max_length=100, choices=GSC_MIxS_sediment_chloride_units, blank=False)
-	GSC_MIxS_sediment_chlorophyll = models.CharField(max_length=100, choices=GSC_MIxS_sediment_chlorophyll_units, blank=False)
-	GSC_MIxS_sediment_diether_lipids = models.CharField(max_length=100, choices=GSC_MIxS_sediment_diether_lipids_units, blank=False)
-	GSC_MIxS_sediment_dissolved_carbon_dioxide = models.CharField(max_length=100, choices=GSC_MIxS_sediment_dissolved_carbon_dioxide_units, blank=False)
-	GSC_MIxS_sediment_dissolved_hydrogen = models.CharField(max_length=100, choices=GSC_MIxS_sediment_dissolved_hydrogen_units, blank=False)
-	GSC_MIxS_sediment_dissolved_inorganic_carbon = models.CharField(max_length=100, choices=GSC_MIxS_sediment_dissolved_inorganic_carbon_units, blank=False)
-	GSC_MIxS_sediment_dissolved_organic_carbon = models.CharField(max_length=100, choices=GSC_MIxS_sediment_dissolved_organic_carbon_units, blank=False)
-	GSC_MIxS_sediment_dissolved_organic_nitrogen = models.CharField(max_length=100, choices=GSC_MIxS_sediment_dissolved_organic_nitrogen_units, blank=False)
-	GSC_MIxS_sediment_methane = models.CharField(max_length=100, choices=GSC_MIxS_sediment_methane_units, blank=False)
-	GSC_MIxS_sediment_dissolved_oxygen = models.CharField(max_length=100, choices=GSC_MIxS_sediment_dissolved_oxygen_units, blank=False)
-	GSC_MIxS_sediment_glucosidase_activity = models.CharField(max_length=100, choices=GSC_MIxS_sediment_glucosidase_activity_units, blank=False)
-	GSC_MIxS_sediment_magnesium = models.CharField(max_length=100, choices=GSC_MIxS_sediment_magnesium_units, blank=False)
-	GSC_MIxS_sediment_n_alkanes = models.CharField(max_length=100, choices=GSC_MIxS_sediment_n_alkanes_units, blank=False)
-	GSC_MIxS_sediment_nitrate = models.CharField(max_length=100, choices=GSC_MIxS_sediment_nitrate_units, blank=False)
-	GSC_MIxS_sediment_nitrite = models.CharField(max_length=100, choices=GSC_MIxS_sediment_nitrite_units, blank=False)
-	GSC_MIxS_sediment_nitrogen = models.CharField(max_length=100, choices=GSC_MIxS_sediment_nitrogen_units, blank=False)
-	GSC_MIxS_sediment_organic_carbon = models.CharField(max_length=100, choices=GSC_MIxS_sediment_organic_carbon_units, blank=False)
-	GSC_MIxS_sediment_organic_matter = models.CharField(max_length=100, choices=GSC_MIxS_sediment_organic_matter_units, blank=False)
-	GSC_MIxS_sediment_organic_nitrogen = models.CharField(max_length=100, choices=GSC_MIxS_sediment_organic_nitrogen_units, blank=False)
-	GSC_MIxS_sediment_particulate_organic_carbon = models.CharField(max_length=100, choices=GSC_MIxS_sediment_particulate_organic_carbon_units, blank=False)
-	GSC_MIxS_sediment_petroleum_hydrocarbon = models.CharField(max_length=100, choices=GSC_MIxS_sediment_petroleum_hydrocarbon_units, blank=False)
-	GSC_MIxS_sediment_phaeopigments = models.CharField(max_length=100, choices=GSC_MIxS_sediment_phaeopigments_units, blank=False)
-	GSC_MIxS_sediment_phosphate = models.CharField(max_length=100, choices=GSC_MIxS_sediment_phosphate_units, blank=False)
-	GSC_MIxS_sediment_phospholipid_fatty_acid = models.CharField(max_length=100, choices=GSC_MIxS_sediment_phospholipid_fatty_acid_units, blank=False)
-	GSC_MIxS_sediment_potassium = models.CharField(max_length=100, choices=GSC_MIxS_sediment_potassium_units, blank=False)
-	GSC_MIxS_sediment_redox_potential = models.CharField(max_length=100, choices=GSC_MIxS_sediment_redox_potential_units, blank=False)
-	GSC_MIxS_sediment_salinity = models.CharField(max_length=100, choices=GSC_MIxS_sediment_salinity_units, blank=False)
-	GSC_MIxS_sediment_total_carbon = models.CharField(max_length=100, choices=GSC_MIxS_sediment_total_carbon_units, blank=False)
-	GSC_MIxS_sediment_silicate = models.CharField(max_length=100, choices=GSC_MIxS_sediment_silicate_units, blank=False)
-	GSC_MIxS_sediment_sodium = models.CharField(max_length=100, choices=GSC_MIxS_sediment_sodium_units, blank=False)
-	GSC_MIxS_sediment_total_organic_carbon = models.CharField(max_length=100, choices=GSC_MIxS_sediment_total_organic_carbon_units, blank=False)
-	GSC_MIxS_sediment_water_content = models.CharField(max_length=100, choices=GSC_MIxS_sediment_water_content_units, blank=False)
-	GSC_MIxS_sediment_sulfate = models.CharField(max_length=100, choices=GSC_MIxS_sediment_sulfate_units, blank=False)
-	GSC_MIxS_sediment_sulfide = models.CharField(max_length=100, choices=GSC_MIxS_sediment_sulfide_units, blank=False)
-	GSC_MIxS_sediment_total_nitrogen = models.CharField(max_length=100, choices=GSC_MIxS_sediment_total_nitrogen_units, blank=False)
+	methane = models.CharField(max_length=100, choices=methane_units, blank=False)
+	total_carbon = models.CharField(max_length=100, choices=total_carbon_units, blank=False)
 
 class GSC_MIxS_human_associated(SelfDescribingModel):
 
-	GSC_MIxS_human_associated_sequence_quality_check_choice = [('manual', 'manual'), ('none', 'none'), ('software', 'software')]
-	GSC_MIxS_human_associated_study_completion_status_choice = [('No - adverse event', 'No - adverse event'), ('No - lost to follow up', 'No - lost to follow up'), ('No - non-compliance', 'No - non-compliance'), ('No - other', 'No - other'), ('Yes', 'Yes')]
-	GSC_MIxS_human_associated_geographic_location_country_and_or_sea_choice = [('Afghanistan', 'Afghanistan'), ('Albania', 'Albania'), ('Algeria', 'Algeria'), ('American Samoa', 'American Samoa'), ('Andorra', 'Andorra'), ('Angola', 'Angola'), ('Anguilla', 'Anguilla'), ('Antarctica', 'Antarctica'), ('Antigua and Barbuda', 'Antigua and Barbuda'), ('Arctic Ocean', 'Arctic Ocean'), ('Argentina', 'Argentina'), ('Armenia', 'Armenia'), ('Aruba', 'Aruba'), ('Ashmore and Cartier Islands', 'Ashmore and Cartier Islands'), ('Atlantic Ocean', 'Atlantic Ocean'), ('Australia', 'Australia'), ('Austria', 'Austria'), ('Azerbaijan', 'Azerbaijan'), ('Bahamas', 'Bahamas'), ('Bahrain', 'Bahrain'), ('Baker Island', 'Baker Island'), ('Baltic Sea', 'Baltic Sea'), ('Bangladesh', 'Bangladesh'), ('Barbados', 'Barbados'), ('Bassas da India', 'Bassas da India'), ('Belarus', 'Belarus'), ('Belgium', 'Belgium'), ('Belize', 'Belize'), ('Benin', 'Benin'), ('Bermuda', 'Bermuda'), ('Bhutan', 'Bhutan'), ('Bolivia', 'Bolivia'), ('Borneo', 'Borneo'), ('Bosnia and Herzegovina', 'Bosnia and Herzegovina'), ('Botswana', 'Botswana'), ('Bouvet Island', 'Bouvet Island'), ('Brazil', 'Brazil'), ('British Virgin Islands', 'British Virgin Islands'), ('Brunei', 'Brunei'), ('Bulgaria', 'Bulgaria'), ('Burkina Faso', 'Burkina Faso'), ('Burundi', 'Burundi'), ('Cambodia', 'Cambodia'), ('Cameroon', 'Cameroon'), ('Canada', 'Canada'), ('Cape Verde', 'Cape Verde'), ('Cayman Islands', 'Cayman Islands'), ('Central African Republic', 'Central African Republic'), ('Chad', 'Chad'), ('Chile', 'Chile'), ('China', 'China'), ('Christmas Island', 'Christmas Island'), ('Clipperton Island', 'Clipperton Island'), ('Cocos Islands', 'Cocos Islands'), ('Colombia', 'Colombia'), ('Comoros', 'Comoros'), ('Cook Islands', 'Cook Islands'), ('Coral Sea Islands', 'Coral Sea Islands'), ('Costa Rica', 'Costa Rica'), ("Cote d'Ivoire", "Cote d'Ivoire"), ('Croatia', 'Croatia'), ('Cuba', 'Cuba'), ('Curacao', 'Curacao'), ('Cyprus', 'Cyprus'), ('Czech Republic', 'Czech Republic'), ('Democratic Republic of the Congo', 'Democratic Republic of the Congo'), ('Denmark', 'Denmark'), ('Djibouti', 'Djibouti'), ('Dominica', 'Dominica'), ('Dominican Republic', 'Dominican Republic'), ('East Timor', 'East Timor'), ('Ecuador', 'Ecuador'), ('Egypt', 'Egypt'), ('El Salvador', 'El Salvador'), ('Equatorial Guinea', 'Equatorial Guinea'), ('Eritrea', 'Eritrea'), ('Estonia', 'Estonia'), ('Ethiopia', 'Ethiopia'), ('Europa Island', 'Europa Island'), ('Falkland Islands (Islas Malvinas)', 'Falkland Islands (Islas Malvinas)'), ('Faroe Islands', 'Faroe Islands'), ('Fiji', 'Fiji'), ('Finland', 'Finland'), ('France', 'France'), ('French Guiana', 'French Guiana'), ('French Polynesia', 'French Polynesia'), ('French Southern and Antarctic Lands', 'French Southern and Antarctic Lands'), ('Gabon', 'Gabon'), ('Gambia', 'Gambia'), ('Gaza Strip', 'Gaza Strip'), ('Georgia', 'Georgia'), ('Germany', 'Germany'), ('Ghana', 'Ghana'), ('Gibraltar', 'Gibraltar'), ('Glorioso Islands', 'Glorioso Islands'), ('Greece', 'Greece'), ('Greenland', 'Greenland'), ('Grenada', 'Grenada'), ('Guadeloupe', 'Guadeloupe'), ('Guam', 'Guam'), ('Guatemala', 'Guatemala'), ('Guernsey', 'Guernsey'), ('Guinea', 'Guinea'), ('Guinea-Bissau', 'Guinea-Bissau'), ('Guyana', 'Guyana'), ('Haiti', 'Haiti'), ('Heard Island and McDonald Islands', 'Heard Island and McDonald Islands'), ('Honduras', 'Honduras'), ('Hong Kong', 'Hong Kong'), ('Howland Island', 'Howland Island'), ('Hungary', 'Hungary'), ('Iceland', 'Iceland'), ('India', 'India'), ('Indian Ocean', 'Indian Ocean'), ('Indonesia', 'Indonesia'), ('Iran', 'Iran'), ('Iraq', 'Iraq'), ('Ireland', 'Ireland'), ('Isle of Man', 'Isle of Man'), ('Israel', 'Israel'), ('Italy', 'Italy'), ('Jamaica', 'Jamaica'), ('Jan Mayen', 'Jan Mayen'), ('Japan', 'Japan'), ('Jarvis Island', 'Jarvis Island'), ('Jersey', 'Jersey'), ('Johnston Atoll', 'Johnston Atoll'), ('Jordan', 'Jordan'), ('Juan de Nova Island', 'Juan de Nova Island'), ('Kazakhstan', 'Kazakhstan'), ('Kenya', 'Kenya'), ('Kerguelen Archipelago', 'Kerguelen Archipelago'), ('Kingman Reef', 'Kingman Reef'), ('Kiribati', 'Kiribati'), ('Kosovo', 'Kosovo'), ('Kuwait', 'Kuwait'), ('Kyrgyzstan', 'Kyrgyzstan'), ('Laos', 'Laos'), ('Latvia', 'Latvia'), ('Lebanon', 'Lebanon'), ('Lesotho', 'Lesotho'), ('Liberia', 'Liberia'), ('Libya', 'Libya'), ('Liechtenstein', 'Liechtenstein'), ('Lithuania', 'Lithuania'), ('Luxembourg', 'Luxembourg'), ('Macau', 'Macau'), ('Macedonia', 'Macedonia'), ('Madagascar', 'Madagascar'), ('Malawi', 'Malawi'), ('Malaysia', 'Malaysia'), ('Maldives', 'Maldives'), ('Mali', 'Mali'), ('Malta', 'Malta'), ('Marshall Islands', 'Marshall Islands'), ('Martinique', 'Martinique'), ('Mauritania', 'Mauritania'), ('Mauritius', 'Mauritius'), ('Mayotte', 'Mayotte'), ('Mediterranean Sea', 'Mediterranean Sea'), ('Mexico', 'Mexico'), ('Micronesia', 'Micronesia'), ('Midway Islands', 'Midway Islands'), ('Moldova', 'Moldova'), ('Monaco', 'Monaco'), ('Mongolia', 'Mongolia'), ('Montenegro', 'Montenegro'), ('Montserrat', 'Montserrat'), ('Morocco', 'Morocco'), ('Mozambique', 'Mozambique'), ('Myanmar', 'Myanmar'), ('Namibia', 'Namibia'), ('Nauru', 'Nauru'), ('Navassa Island', 'Navassa Island'), ('Nepal', 'Nepal'), ('Netherlands', 'Netherlands'), ('New Caledonia', 'New Caledonia'), ('New Zealand', 'New Zealand'), ('Nicaragua', 'Nicaragua'), ('Niger', 'Niger'), ('Nigeria', 'Nigeria'), ('Niue', 'Niue'), ('Norfolk Island', 'Norfolk Island'), ('North Korea', 'North Korea'), ('North Sea', 'North Sea'), ('Northern Mariana Islands', 'Northern Mariana Islands'), ('Norway', 'Norway'), ('Oman', 'Oman'), ('Pacific Ocean', 'Pacific Ocean'), ('Pakistan', 'Pakistan'), ('Palau', 'Palau'), ('Palmyra Atoll', 'Palmyra Atoll'), ('Panama', 'Panama'), ('Papua New Guinea', 'Papua New Guinea'), ('Paracel Islands', 'Paracel Islands'), ('Paraguay', 'Paraguay'), ('Peru', 'Peru'), ('Philippines', 'Philippines'), ('Pitcairn Islands', 'Pitcairn Islands'), ('Poland', 'Poland'), ('Portugal', 'Portugal'), ('Puerto Rico', 'Puerto Rico'), ('Qatar', 'Qatar'), ('Republic of the Congo', 'Republic of the Congo'), ('Reunion', 'Reunion'), ('Romania', 'Romania'), ('Ross Sea', 'Ross Sea'), ('Russia', 'Russia'), ('Rwanda', 'Rwanda'), ('Saint Helena', 'Saint Helena'), ('Saint Kitts and Nevis', 'Saint Kitts and Nevis'), ('Saint Lucia', 'Saint Lucia'), ('Saint Pierre and Miquelon', 'Saint Pierre and Miquelon'), ('Saint Vincent and the Grenadines', 'Saint Vincent and the Grenadines'), ('Samoa', 'Samoa'), ('San Marino', 'San Marino'), ('Sao Tome and Principe', 'Sao Tome and Principe'), ('Saudi Arabia', 'Saudi Arabia'), ('Senegal', 'Senegal'), ('Serbia', 'Serbia'), ('Seychelles', 'Seychelles'), ('Sierra Leone', 'Sierra Leone'), ('Singapore', 'Singapore'), ('Sint Maarten', 'Sint Maarten'), ('Slovakia', 'Slovakia'), ('Slovenia', 'Slovenia'), ('Solomon Islands', 'Solomon Islands'), ('Somalia', 'Somalia'), ('South Africa', 'South Africa'), ('South Georgia and the South Sandwich Islands', 'South Georgia and the South Sandwich Islands'), ('South Korea', 'South Korea'), ('Southern Ocean', 'Southern Ocean'), ('Spain', 'Spain'), ('Spratly Islands', 'Spratly Islands'), ('Sri Lanka', 'Sri Lanka'), ('Sudan', 'Sudan'), ('Suriname', 'Suriname'), ('Svalbard', 'Svalbard'), ('Swaziland', 'Swaziland'), ('Sweden', 'Sweden'), ('Switzerland', 'Switzerland'), ('Syria', 'Syria'), ('Taiwan', 'Taiwan'), ('Tajikistan', 'Tajikistan'), ('Tanzania', 'Tanzania'), ('Tasman Sea', 'Tasman Sea'), ('Thailand', 'Thailand'), ('Togo', 'Togo'), ('Tokelau', 'Tokelau'), ('Tonga', 'Tonga'), ('Trinidad and Tobago', 'Trinidad and Tobago'), ('Tromelin Island', 'Tromelin Island'), ('Tunisia', 'Tunisia'), ('Turkey', 'Turkey'), ('Turkmenistan', 'Turkmenistan'), ('Turks and Caicos Islands', 'Turks and Caicos Islands'), ('Tuvalu', 'Tuvalu'), ('USA', 'USA'), ('Uganda', 'Uganda'), ('Ukraine', 'Ukraine'), ('United Arab Emirates', 'United Arab Emirates'), ('United Kingdom', 'United Kingdom'), ('Uruguay', 'Uruguay'), ('Uzbekistan', 'Uzbekistan'), ('Vanuatu', 'Vanuatu'), ('Venezuela', 'Venezuela'), ('Viet Nam', 'Viet Nam'), ('Virgin Islands', 'Virgin Islands'), ('Wake Island', 'Wake Island'), ('Wallis and Futuna', 'Wallis and Futuna'), ('West Bank', 'West Bank'), ('Western Sahara', 'Western Sahara'), ('Yemen', 'Yemen'), ('Zambia', 'Zambia'), ('Zimbabwe', 'Zimbabwe'), ('missing: control sample', 'missing: control sample'), ('missing: data agreement established pre-2023', 'missing: data agreement established pre-2023'), ('missing: endangered species', 'missing: endangered species'), ('missing: human-identifiable', 'missing: human-identifiable'), ('missing: lab stock', 'missing: lab stock'), ('missing: sample group', 'missing: sample group'), ('missing: synthetic construct', 'missing: synthetic construct'), ('missing: third party data', 'missing: third party data'), ('not applicable', 'not applicable'), ('not collected', 'not collected'), ('not provided', 'not provided'), ('restricted access', 'restricted access')]
-	GSC_MIxS_human_associated_medical_history_performed_choice = [('No', 'No'), ('Yes', 'Yes')]
-	GSC_MIxS_human_associated_urine_collection_method_choice = [('catheter', 'catheter'), ('clean catch', 'clean catch')]
-	GSC_MIxS_human_associated_oxygenation_status_of_sample_choice = [('aerobic', 'aerobic'), ('anaerobic', 'anaerobic')]
-	GSC_MIxS_human_associated_host_HIV_status_choice = [('No', 'No'), ('Yes', 'Yes')]
-	GSC_MIxS_human_associated_IHMC_medication_code_choice = [('01=1=Analgesics/NSAIDS', '01=1=Analgesics/NSAIDS'), ('02=2=Anesthetics', '02=2=Anesthetics'), ('03=3=Antacids/H2 antagonists', '03=3=Antacids/H2 antagonists'), ('04=4=Anti-acne', '04=4=Anti-acne'), ('05=5=Anti-asthma/bronchodilators', '05=5=Anti-asthma/bronchodilators'), ('06=6=Anti-cholesterol/Anti-hyperlipidemic', '06=6=Anti-cholesterol/Anti-hyperlipidemic'), ('07=7=Anti-coagulants', '07=7=Anti-coagulants'), ('08=8=Antibiotics/(anti)-infectives, parasitics, microbials', '08=8=Antibiotics/(anti)-infectives, parasitics, microbials'), ('09=9=Antidepressants/mood-altering drugs', '09=9=Antidepressants/mood-altering drugs'), ('10=10=Antihistamines/ Decongestants', '10=10=Antihistamines/ Decongestants'), ('11=11=Antihypertensives', '11=11=Antihypertensives'), ('12=12=Cardiovascular, other than hyperlipidemic/HTN', '12=12=Cardiovascular, other than hyperlipidemic/HTN'), ('13=13=Contraceptives (oral, implant, injectable)', '13=13=Contraceptives (oral, implant, injectable)'), ('14=14=Emergency/support medications', '14=14=Emergency/support medications'), ('15=15=Endocrine/Metabolic agents', '15=15=Endocrine/Metabolic agents'), ('16=16=GI meds (anti-diarrheal, emetic, spasmodics)', '16=16=GI meds (anti-diarrheal, emetic, spasmodics)'), ('17=17=Herbal/homeopathic products', '17=17=Herbal/homeopathic products'), ('18=18=Hormones/steroids', '18=18=Hormones/steroids'), ('19=19=OTC cold & flu', '19=19=OTC cold & flu'), ('20=20=Vaccine prophylaxis', '20=20=Vaccine prophylaxis'), ('21=21=Vitamins, minerals, food supplements', '21=21=Vitamins, minerals, food supplements'), ('99=99=Other', '99=99=Other')]
-	GSC_MIxS_human_associated_host_occupation_choice = [('01=01 Accounting/Finance', '01=01 Accounting/Finance'), ('02=02 Advertising/Public Relations', '02=02 Advertising/Public Relations'), ('03=03 Arts/Entertainment/Publishing', '03=03 Arts/Entertainment/Publishing'), ('04=04 Automotive', '04=04 Automotive'), ('05=05 Banking/ Mortgage', '05=05 Banking/ Mortgage'), ('06=06 Biotech', '06=06 Biotech'), ('07=07 Broadcast/Journalism', '07=07 Broadcast/Journalism'), ('08=08 Business Development', '08=08 Business Development'), ('09=09 Clerical/Administrative', '09=09 Clerical/Administrative'), ('10=10 Construction/Trades', '10=10 Construction/Trades'), ('11=11 Consultant', '11=11 Consultant'), ('12=12 Customer Services', '12=12 Customer Services'), ('13=13 Design', '13=13 Design'), ('14=14 Education', '14=14 Education'), ('15=15 Engineering', '15=15 Engineering'), ('16=16 Entry Level', '16=16 Entry Level'), ('17=17 Executive', '17=17 Executive'), ('18=18 Food Service', '18=18 Food Service'), ('19=19 Government', '19=19 Government'), ('20=20 Grocery', '20=20 Grocery'), ('21=21 Healthcare', '21=21 Healthcare'), ('22=22 Hospitality', '22=22 Hospitality'), ('23=23 Human Resources', '23=23 Human Resources'), ('24=24 Information Technology', '24=24 Information Technology'), ('25=25 Insurance', '25=25 Insurance'), ('26=26 Law/Legal', '26=26 Law/Legal'), ('27=27 Management', '27=27 Management'), ('28=28 Manufacturing', '28=28 Manufacturing'), ('29=29 Marketing', '29=29 Marketing'), ('30=30 Pharmaceutical', '30=30 Pharmaceutical'), ('31=31 Professional Services', '31=31 Professional Services'), ('32=32 Purchasing', '32=32 Purchasing'), ('33=33 Quality Assurance (QA)', '33=33 Quality Assurance (QA)'), ('34=34 Research', '34=34 Research'), ('35=35 Restaurant', '35=35 Restaurant'), ('36=36 Retail', '36=36 Retail'), ('37=37 Sales', '37=37 Sales'), ('38=38 Science', '38=38 Science'), ('39=39 Security/Law Enforcement', '39=39 Security/Law Enforcement'), ('40=40 Shipping/Distribution', '40=40 Shipping/Distribution'), ('41=41 Strategy', '41=41 Strategy'), ('42=42 Student', '42=42 Student'), ('43=43 Telecommunications', '43=43 Telecommunications'), ('44=44 Training', '44=44 Training'), ('45=45 Transportation', '45=45 Transportation'), ('46=46 Warehouse', '46=46 Warehouse'), ('47=47 Other', '47=47 Other'), ('99=99 Unknown/Refused', '99=99 Unknown/Refused')]
-	GSC_MIxS_human_associated_host_sex_choice = [('female', 'female'), ('hermaphrodite', 'hermaphrodite'), ('male', 'male'), ('missing: control sample', 'missing: control sample'), ('missing: data agreement established pre-2023', 'missing: data agreement established pre-2023'), ('missing: endangered species', 'missing: endangered species'), ('missing: human-identifiable', 'missing: human-identifiable'), ('missing: lab stock', 'missing: lab stock'), ('missing: sample group', 'missing: sample group'), ('missing: synthetic construct', 'missing: synthetic construct'), ('missing: third party data', 'missing: third party data'), ('neuter', 'neuter'), ('not applicable', 'not applicable'), ('not collected', 'not collected'), ('not provided', 'not provided'), ('other', 'other'), ('restricted access', 'restricted access')]
-	GSC_MIxS_human_associated_smoker_choice = [('ex-smoker', 'ex-smoker'), ('non-smoker', 'non-smoker'), ('smoker', 'smoker')]
-	GSC_MIxS_human_associated_trophic_level_choice = [('autotroph', 'autotroph'), ('carboxydotroph', 'carboxydotroph'), ('chemoautotroph', 'chemoautotroph'), ('chemoheterotroph', 'chemoheterotroph'), ('chemolithoautotroph', 'chemolithoautotroph'), ('chemolithotroph', 'chemolithotroph'), ('chemoorganoheterotroph', 'chemoorganoheterotroph'), ('chemoorganotroph', 'chemoorganotroph'), ('chemosynthetic', 'chemosynthetic'), ('chemotroph', 'chemotroph'), ('copiotroph', 'copiotroph'), ('diazotroph', 'diazotroph'), ('facultative autotroph', 'facultative autotroph'), ('heterotroph', 'heterotroph'), ('lithoautotroph', 'lithoautotroph'), ('lithoheterotroph', 'lithoheterotroph'), ('lithotroph', 'lithotroph'), ('methanotroph', 'methanotroph'), ('methylotroph', 'methylotroph'), ('mixotroph', 'mixotroph'), ('obligate chemoautolithotroph', 'obligate chemoautolithotroph'), ('oligotroph', 'oligotroph'), ('organoheterotroph', 'organoheterotroph'), ('organotroph', 'organotroph'), ('photoautotroph', 'photoautotroph'), ('photoheterotroph', 'photoheterotroph'), ('photolithoautotroph', 'photolithoautotroph'), ('photolithotroph', 'photolithotroph'), ('photosynthetic', 'photosynthetic'), ('phototroph', 'phototroph')]
-	GSC_MIxS_human_associated_relationship_to_oxygen_choice = [('aerobe', 'aerobe'), ('anaerobe', 'anaerobe'), ('facultative', 'facultative'), ('microaerophilic', 'microaerophilic'), ('microanaerobe', 'microanaerobe'), ('obligate aerobe', 'obligate aerobe'), ('obligate anaerobe', 'obligate anaerobe')]
-	GSC_MIxS_human_associated_observed_biotic_relationship_choice = [('commensal', 'commensal'), ('free living', 'free living'), ('mutualism', 'mutualism'), ('parasite', 'parasite'), ('symbiont', 'symbiont')]
+	study_completion_status_choice = [('No - adverse event', 'No - adverse event'), ('No - lost to follow up', 'No - lost to follow up'), ('No - non-compliance', 'No - non-compliance'), ('No - other', 'No - other'), ('Yes', 'Yes')]
+	urine_collection_method_choice = [('catheter', 'catheter'), ('clean catch', 'clean catch')]
+	host_HIV_status_choice = [('No', 'No'), ('Yes', 'Yes')]
+	smoker_choice = [('ex-smoker', 'ex-smoker'), ('non-smoker', 'non-smoker'), ('smoker', 'smoker')]
 
-	GSC_MIxS_human_associated_number_of_replicons_validator = "[+-]?[0-9]+"
-	GSC_MIxS_human_associated_extrachromosomal_elements_validator = "[+-]?[0-9]+"
-	GSC_MIxS_human_associated_estimated_size_validator = "[+-]?[0-9]+"
-	GSC_MIxS_human_associated_sample_volume_or_weight_for_DNA_extraction_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_human_associated_library_size_validator = "[+-]?[0-9]+"
-	GSC_MIxS_human_associated_library_reads_sequenced_validator = "[+-]?[0-9]+"
-	GSC_MIxS_human_associated_collection_date_validator = "(^[12][0-9]{3}(-(0[1-9]|1[0-2])(-(0[1-9]|[12][0-9]|3[01])(T[0-9]{2}:[0-9]{2}(:[0-9]{2})?Z?([+-][0-9]{1,2})?)?)?)?(/[0-9]{4}(-[0-9]{2}(-[0-9]{2}(T[0-9]{2}:[0-9]{2}(:[0-9]{2})?Z?([+-][0-9]{1,2})?)?)?)?)?$)|(^not collected$)|(^not provided$)|(^restricted access$)|(^missing: control sample$)|(^missing: sample group$)|(^missing: synthetic construct$)|(^missing: lab stock$)|(^missing: third party data$)|(^missing: data agreement established pre-2023$)|(^missing: endangered species$)|(^missing: human-identifiable$)"
-	GSC_MIxS_human_associated_geographic_location_latitude_validator = "(^[+-]?[0-9]+.?[0-9]{0,8}$)|(^not collected$)|(^not provided$)|(^restricted access$)|(^missing: control sample$)|(^missing: sample group$)|(^missing: synthetic construct$)|(^missing: lab stock$)|(^missing: third party data$)|(^missing: data agreement established pre-2023$)|(^missing: endangered species$)|(^missing: human-identifiable$)"
-	GSC_MIxS_human_associated_geographic_location_longitude_validator = "(^[+-]?[0-9]+.?[0-9]{0,8}$)|(^not collected$)|(^not provided$)|(^restricted access$)|(^missing: control sample$)|(^missing: sample group$)|(^missing: synthetic construct$)|(^missing: lab stock$)|(^missing: third party data$)|(^missing: data agreement established pre-2023$)|(^missing: endangered species$)|(^missing: human-identifiable$)"
-	GSC_MIxS_human_associated_amount_or_size_of_sample_collected_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_human_associated_sample_storage_duration_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_human_associated_sample_storage_temperature_validator = "[+-]?(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_human_associated_host_age_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_human_associated_host_height_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_human_associated_host_body_mass_index_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_human_associated_host_total_mass_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_human_associated_host_body_temperature_validator = "[+-]?(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_human_associated_temperature_validator = "[+-]?(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_human_associated_salinity_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_human_associated_host_pulse_validator = "[+-]?[0-9]+"
 
 	sampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE, default=1)
 	sample = models.ForeignKey(Sample, on_delete=models.CASCADE, default=1)
-	GSC_MIxS_human_associated_project_name= models.CharField(max_length=100, blank=False,help_text="Name of th")
-	GSC_MIxS_human_associated_experimental_factor= models.CharField(max_length=100, blank=True,help_text="Experiment")
-	GSC_MIxS_human_associated_ploidy= models.CharField(max_length=100, blank=True,help_text="The ploidy")
-	GSC_MIxS_human_associated_number_of_replicons= models.CharField(max_length=100, blank=True,help_text="Reports th", validators=[RegexValidator(GSC_MIxS_human_associated_number_of_replicons_validator)])
-	GSC_MIxS_human_associated_extrachromosomal_elements= models.CharField(max_length=100, blank=True,help_text="Do plasmid", validators=[RegexValidator(GSC_MIxS_human_associated_extrachromosomal_elements_validator)])
-	GSC_MIxS_human_associated_estimated_size= models.CharField(max_length=100, blank=True,help_text="The estima", validators=[RegexValidator(GSC_MIxS_human_associated_estimated_size_validator)])
-	GSC_MIxS_human_associated_reference_for_biomaterial= models.CharField(max_length=100, blank=True,help_text="Primary pu")
-	GSC_MIxS_human_associated_annotation_source= models.CharField(max_length=100, blank=True,help_text="For cases ")
-	GSC_MIxS_human_associated_sample_volume_or_weight_for_DNA_extraction= models.CharField(max_length=100, blank=True,help_text="Volume (ml", validators=[RegexValidator(GSC_MIxS_human_associated_sample_volume_or_weight_for_DNA_extraction_validator)])
-	GSC_MIxS_human_associated_nucleic_acid_extraction= models.CharField(max_length=100, blank=True,help_text="A link to ")
-	GSC_MIxS_human_associated_nucleic_acid_amplification= models.CharField(max_length=100, blank=True,help_text="A link to ")
-	GSC_MIxS_human_associated_library_size= models.CharField(max_length=100, blank=True,help_text="Total numb", validators=[RegexValidator(GSC_MIxS_human_associated_library_size_validator)])
-	GSC_MIxS_human_associated_library_reads_sequenced= models.CharField(max_length=100, blank=True,help_text="Total numb", validators=[RegexValidator(GSC_MIxS_human_associated_library_reads_sequenced_validator)])
-	GSC_MIxS_human_associated_library_construction_method= models.CharField(max_length=100, blank=True,help_text="Library co")
-	GSC_MIxS_human_associated_library_vector= models.CharField(max_length=100, blank=True,help_text="Cloning ve")
-	GSC_MIxS_human_associated_library_screening_strategy= models.CharField(max_length=100, blank=True,help_text="Specific e")
-	GSC_MIxS_human_associated_target_gene= models.CharField(max_length=100, blank=True,help_text="Targeted g")
-	GSC_MIxS_human_associated_target_subfragment= models.CharField(max_length=100, blank=True,help_text="Name of su")
-	GSC_MIxS_human_associated_pcr_primers= models.CharField(max_length=100, blank=True,help_text="PCR primer")
-	GSC_MIxS_human_associated_multiplex_identifiers= models.CharField(max_length=100, blank=True,help_text="Molecular ")
-	GSC_MIxS_human_associated_adapters= models.CharField(max_length=100, blank=True,help_text="Adapters p")
-	GSC_MIxS_human_associated_pcr_conditions= models.CharField(max_length=100, blank=True,help_text="Descriptio")
-	GSC_MIxS_human_associated_sequencing_method= models.CharField(max_length=100, blank=True,help_text="Sequencing")
-	GSC_MIxS_human_associated_sequence_quality_check= models.CharField(max_length=100, blank=True,help_text="Indicate i", choices=GSC_MIxS_human_associated_sequence_quality_check_choice)
-	GSC_MIxS_human_associated_chimera_check_software= models.CharField(max_length=100, blank=True,help_text="Tool(s) us")
-	GSC_MIxS_human_associated_relevant_electronic_resources= models.CharField(max_length=100, blank=True,help_text="A related ")
-	GSC_MIxS_human_associated_relevant_standard_operating_procedures= models.CharField(max_length=100, blank=True,help_text="Standard o")
-	GSC_MIxS_human_associated_study_completion_status= models.CharField(max_length=100, blank=True,help_text="specificat", choices=GSC_MIxS_human_associated_study_completion_status_choice)
-	GSC_MIxS_human_associated_negative_control_type= models.CharField(max_length=100, blank=True,help_text="The substa")
-	GSC_MIxS_human_associated_positive_control_type= models.CharField(max_length=100, blank=True,help_text="The substa")
-	GSC_MIxS_human_associated_collection_date= models.CharField(max_length=100, blank=False,help_text="The date t", validators=[RegexValidator(GSC_MIxS_human_associated_collection_date_validator)])
-	GSC_MIxS_human_associated_geographic_location_country_and_or_sea= models.CharField(max_length=100, blank=False,help_text="The locati", choices=GSC_MIxS_human_associated_geographic_location_country_and_or_sea_choice)
-	GSC_MIxS_human_associated_geographic_location_latitude= models.CharField(max_length=100, blank=False,help_text="The geogra", validators=[RegexValidator(GSC_MIxS_human_associated_geographic_location_latitude_validator)])
-	GSC_MIxS_human_associated_geographic_location_longitude= models.CharField(max_length=100, blank=False,help_text="The geogra", validators=[RegexValidator(GSC_MIxS_human_associated_geographic_location_longitude_validator)])
-	GSC_MIxS_human_associated_geographic_location_region_and_locality= models.CharField(max_length=100, blank=True,help_text="The geogra")
-	GSC_MIxS_human_associated_broad_scale_environmental_context= models.CharField(max_length=100, blank=False,help_text="Report the")
-	GSC_MIxS_human_associated_local_environmental_context= models.CharField(max_length=100, blank=False,help_text="Report the")
-	GSC_MIxS_human_associated_environmental_medium= models.CharField(max_length=100, blank=False,help_text="Report the")
-	GSC_MIxS_human_associated_source_material_identifiers= models.CharField(max_length=100, blank=True,help_text="A unique i")
-	GSC_MIxS_human_associated_sample_material_processing= models.CharField(max_length=100, blank=True,help_text="A brief de")
-	GSC_MIxS_human_associated_isolation_and_growth_condition= models.CharField(max_length=100, blank=True,help_text="Publicatio")
-	GSC_MIxS_human_associated_propagation= models.CharField(max_length=100, blank=True,help_text="The type o")
-	GSC_MIxS_human_associated_amount_or_size_of_sample_collected= models.CharField(max_length=100, blank=True,help_text="The total ", validators=[RegexValidator(GSC_MIxS_human_associated_amount_or_size_of_sample_collected_validator)])
-	GSC_MIxS_human_associated_host_body_product= models.CharField(max_length=100, blank=True,help_text="substance ")
-	GSC_MIxS_human_associated_medical_history_performed= models.CharField(max_length=100, blank=True,help_text="whether fu", choices=GSC_MIxS_human_associated_medical_history_performed_choice)
-	GSC_MIxS_human_associated_urine_collection_method= models.CharField(max_length=100, blank=True,help_text="specificat", choices=GSC_MIxS_human_associated_urine_collection_method_choice)
-	GSC_MIxS_human_associated_oxygenation_status_of_sample= models.CharField(max_length=100, blank=True,help_text="oxygenatio", choices=GSC_MIxS_human_associated_oxygenation_status_of_sample_choice)
-	GSC_MIxS_human_associated_organism_count= models.CharField(max_length=100, blank=True,help_text="Total cell")
-	GSC_MIxS_human_associated_sample_storage_duration= models.CharField(max_length=100, blank=True,help_text="duration f", validators=[RegexValidator(GSC_MIxS_human_associated_sample_storage_duration_validator)])
-	GSC_MIxS_human_associated_sample_storage_temperature= models.CharField(max_length=100, blank=True,help_text="temperatur", validators=[RegexValidator(GSC_MIxS_human_associated_sample_storage_temperature_validator)])
-	GSC_MIxS_human_associated_sample_storage_location= models.CharField(max_length=100, blank=True,help_text="location a")
-	GSC_MIxS_human_associated_sample_collection_device= models.CharField(max_length=100, blank=True,help_text="The device")
-	GSC_MIxS_human_associated_sample_collection_method= models.CharField(max_length=100, blank=True,help_text="The method")
-	GSC_MIxS_human_associated_host_HIV_status= models.CharField(max_length=100, blank=True,help_text="HIV status", choices=GSC_MIxS_human_associated_host_HIV_status_choice)
-	GSC_MIxS_human_associated_host_disease_status= models.CharField(max_length=100, blank=True,help_text="list of di")
-	GSC_MIxS_human_associated_lung_pulmonary_disorder= models.CharField(max_length=100, blank=True,help_text="History of")
-	GSC_MIxS_human_associated_lung_nose_throat_disorder= models.CharField(max_length=100, blank=True,help_text="History of")
-	GSC_MIxS_human_associated_blood_blood_disorder= models.CharField(max_length=100, blank=True,help_text="History of")
-	GSC_MIxS_human_associated_urine_kidney_disorder= models.CharField(max_length=100, blank=True,help_text="History of")
-	GSC_MIxS_human_associated_urine_urogenital_tract_disorder= models.CharField(max_length=100, blank=True,help_text="History of")
-	GSC_MIxS_human_associated_host_subject_id= models.CharField(max_length=100, blank=True,help_text="a unique i")
-	GSC_MIxS_human_associated_IHMC_medication_code= models.CharField(max_length=100, blank=True,help_text="can includ", choices=GSC_MIxS_human_associated_IHMC_medication_code_choice)
-	GSC_MIxS_human_associated_host_age= models.CharField(max_length=100, blank=True,help_text="age of hos", validators=[RegexValidator(GSC_MIxS_human_associated_host_age_validator)])
-	GSC_MIxS_human_associated_host_body_site= models.CharField(max_length=100, blank=True,help_text="name of bo")
-	GSC_MIxS_human_associated_drug_usage= models.CharField(max_length=100, blank=True,help_text="any drug u")
-	GSC_MIxS_human_associated_host_height= models.CharField(max_length=100, blank=True,help_text="the height", validators=[RegexValidator(GSC_MIxS_human_associated_host_height_validator)])
-	GSC_MIxS_human_associated_host_body_mass_index= models.CharField(max_length=100, blank=True,help_text="body mass ", validators=[RegexValidator(GSC_MIxS_human_associated_host_body_mass_index_validator)])
-	GSC_MIxS_human_associated_ethnicity= models.CharField(max_length=100, blank=True,help_text="A category")
-	GSC_MIxS_human_associated_host_occupation= models.CharField(max_length=100, blank=True,help_text="most frequ", choices=GSC_MIxS_human_associated_host_occupation_choice)
-	GSC_MIxS_human_associated_host_total_mass= models.CharField(max_length=100, blank=True,help_text="total mass", validators=[RegexValidator(GSC_MIxS_human_associated_host_total_mass_validator)])
-	GSC_MIxS_human_associated_host_phenotype= models.CharField(max_length=100, blank=True,help_text="phenotype ")
-	GSC_MIxS_human_associated_host_body_temperature= models.CharField(max_length=100, blank=True,help_text="core body ", validators=[RegexValidator(GSC_MIxS_human_associated_host_body_temperature_validator)])
-	GSC_MIxS_human_associated_host_sex= models.CharField(max_length=100, blank=True,help_text="Gender or ", choices=GSC_MIxS_human_associated_host_sex_choice)
-	GSC_MIxS_human_associated_host_scientific_name= models.CharField(max_length=100, blank=True,help_text="Scientific")
-	GSC_MIxS_human_associated_presence_of_pets_or_farm_animals= models.CharField(max_length=100, blank=True,help_text="specificat")
-	GSC_MIxS_human_associated_temperature= models.CharField(max_length=100, blank=True,help_text="temperatur", validators=[RegexValidator(GSC_MIxS_human_associated_temperature_validator)])
-	GSC_MIxS_human_associated_salinity= models.CharField(max_length=100, blank=True,help_text="The total ", validators=[RegexValidator(GSC_MIxS_human_associated_salinity_validator)])
-	GSC_MIxS_human_associated_smoker= models.CharField(max_length=100, blank=True,help_text="specificat", choices=GSC_MIxS_human_associated_smoker_choice)
-	GSC_MIxS_human_associated_major_diet_change_in_last_six_months= models.CharField(max_length=100, blank=True,help_text="specificat")
-	GSC_MIxS_human_associated_weight_loss_in_last_three_months= models.CharField(max_length=100, blank=True,help_text="specificat")
-	GSC_MIxS_human_associated_travel_outside_the_country_in_last_six_months= models.CharField(max_length=100, blank=True,help_text="specificat")
-	GSC_MIxS_human_associated_host_diet= models.CharField(max_length=100, blank=True,help_text="type of di")
-	GSC_MIxS_human_associated_twin_sibling_presence= models.CharField(max_length=100, blank=True,help_text="specificat")
-	GSC_MIxS_human_associated_host_last_meal= models.CharField(max_length=100, blank=True,help_text="content of")
-	GSC_MIxS_human_associated_amniotic_fluid_gestation_state= models.CharField(max_length=100, blank=True,help_text="specificat")
-	GSC_MIxS_human_associated_host_family_relationship= models.CharField(max_length=100, blank=True,help_text="relationsh")
-	GSC_MIxS_human_associated_amniotic_fluid_maternal_health_status= models.CharField(max_length=100, blank=True,help_text="specificat")
-	GSC_MIxS_human_associated_host_genotype= models.CharField(max_length=100, blank=True,help_text="observed g")
-	GSC_MIxS_human_associated_amniotic_fluid_foetal_health_status= models.CharField(max_length=100, blank=True,help_text="specificat")
-	GSC_MIxS_human_associated_host_pulse= models.CharField(max_length=100, blank=True,help_text="resting pu", validators=[RegexValidator(GSC_MIxS_human_associated_host_pulse_validator)])
-	GSC_MIxS_human_associated_amniotic_fluid_color= models.CharField(max_length=100, blank=True,help_text="specificat")
-	GSC_MIxS_human_associated_subspecific_genetic_lineage= models.CharField(max_length=100, blank=True,help_text="Informatio")
-	GSC_MIxS_human_associated_trophic_level= models.CharField(max_length=100, blank=True,help_text="Trophic le", choices=GSC_MIxS_human_associated_trophic_level_choice)
-	GSC_MIxS_human_associated_relationship_to_oxygen= models.CharField(max_length=100, blank=True,help_text="Is this or", choices=GSC_MIxS_human_associated_relationship_to_oxygen_choice)
-	GSC_MIxS_human_associated_known_pathogenicity= models.CharField(max_length=100, blank=True,help_text="To what is")
-	GSC_MIxS_human_associated_encoded_traits= models.CharField(max_length=100, blank=True,help_text="Should inc")
-	GSC_MIxS_human_associated_observed_biotic_relationship= models.CharField(max_length=100, blank=True,help_text="Is it free", choices=GSC_MIxS_human_associated_observed_biotic_relationship_choice)
-	GSC_MIxS_human_associated_chemical_administration= models.CharField(max_length=100, blank=True,help_text="list of ch")
-	GSC_MIxS_human_associated_perturbation= models.CharField(max_length=100, blank=True,help_text="type of pe")
+	study_completion_status= models.CharField(max_length=100, blank=True,help_text="specificat", choices=study_completion_status_choice)
+	urine_collection_method= models.CharField(max_length=100, blank=True,help_text="specificat", choices=urine_collection_method_choice)
+	host_HIV_status= models.CharField(max_length=100, blank=True,help_text="HIV status", choices=host_HIV_status_choice)
+	lung_pulmonary_disorder= models.CharField(max_length=100, blank=True,help_text="History of")
+	lung_nose_throat_disorder= models.CharField(max_length=100, blank=True,help_text="History of")
+	blood_blood_disorder= models.CharField(max_length=100, blank=True,help_text="History of")
+	urine_kidney_disorder= models.CharField(max_length=100, blank=True,help_text="History of")
+	urine_urogenital_tract_disorder= models.CharField(max_length=100, blank=True,help_text="History of")
+	drug_usage= models.CharField(max_length=100, blank=True,help_text="any drug u")
+	presence_of_pets_or_farm_animals= models.CharField(max_length=100, blank=True,help_text="specificat")
+	smoker= models.CharField(max_length=100, blank=True,help_text="specificat", choices=smoker_choice)
+	major_diet_change_in_last_six_months= models.CharField(max_length=100, blank=True,help_text="specificat")
+	weight_loss_in_last_three_months= models.CharField(max_length=100, blank=True,help_text="specificat")
+	travel_outside_the_country_in_last_six_months= models.CharField(max_length=100, blank=True,help_text="specificat")
+	twin_sibling_presence= models.CharField(max_length=100, blank=True,help_text="specificat")
+	amniotic_fluid_gestation_state= models.CharField(max_length=100, blank=True,help_text="specificat")
+	amniotic_fluid_maternal_health_status= models.CharField(max_length=100, blank=True,help_text="specificat")
+	amniotic_fluid_foetal_health_status= models.CharField(max_length=100, blank=True,help_text="specificat")
+	amniotic_fluid_color= models.CharField(max_length=100, blank=True,help_text="specificat")
 
 	fields = {
-		'GSC_MIxS_human_associated_project_name': 'project name',
-		'GSC_MIxS_human_associated_experimental_factor': 'experimental factor',
-		'GSC_MIxS_human_associated_ploidy': 'ploidy',
-		'GSC_MIxS_human_associated_number_of_replicons': 'number of replicons',
-		'GSC_MIxS_human_associated_extrachromosomal_elements': 'extrachromosomal elements',
-		'GSC_MIxS_human_associated_estimated_size': 'estimated size',
-		'GSC_MIxS_human_associated_reference_for_biomaterial': 'reference for biomaterial',
-		'GSC_MIxS_human_associated_annotation_source': 'annotation source',
-		'GSC_MIxS_human_associated_sample_volume_or_weight_for_DNA_extraction': 'sample volume or weight for DNA extraction',
-		'GSC_MIxS_human_associated_nucleic_acid_extraction': 'nucleic acid extraction',
-		'GSC_MIxS_human_associated_nucleic_acid_amplification': 'nucleic acid amplification',
-		'GSC_MIxS_human_associated_library_size': 'library size',
-		'GSC_MIxS_human_associated_library_reads_sequenced': 'library reads sequenced',
-		'GSC_MIxS_human_associated_library_construction_method': 'library construction method',
-		'GSC_MIxS_human_associated_library_vector': 'library vector',
-		'GSC_MIxS_human_associated_library_screening_strategy': 'library screening strategy',
-		'GSC_MIxS_human_associated_target_gene': 'target gene',
-		'GSC_MIxS_human_associated_target_subfragment': 'target subfragment',
-		'GSC_MIxS_human_associated_pcr_primers': 'pcr primers',
-		'GSC_MIxS_human_associated_multiplex_identifiers': 'multiplex identifiers',
-		'GSC_MIxS_human_associated_adapters': 'adapters',
-		'GSC_MIxS_human_associated_pcr_conditions': 'pcr conditions',
-		'GSC_MIxS_human_associated_sequencing_method': 'sequencing method',
-		'GSC_MIxS_human_associated_sequence_quality_check': 'sequence quality check',
-		'GSC_MIxS_human_associated_chimera_check_software': 'chimera check software',
-		'GSC_MIxS_human_associated_relevant_electronic_resources': 'relevant electronic resources',
-		'GSC_MIxS_human_associated_relevant_standard_operating_procedures': 'relevant standard operating procedures',
-		'GSC_MIxS_human_associated_study_completion_status': 'study completion status',
-		'GSC_MIxS_human_associated_negative_control_type': 'negative control type',
-		'GSC_MIxS_human_associated_positive_control_type': 'positive control type',
-		'GSC_MIxS_human_associated_collection_date': 'collection date',
-		'GSC_MIxS_human_associated_geographic_location_country_and_or_sea': 'geographic location (country and/or sea)',
-		'GSC_MIxS_human_associated_geographic_location_latitude': 'geographic location (latitude)',
-		'GSC_MIxS_human_associated_geographic_location_longitude': 'geographic location (longitude)',
-		'GSC_MIxS_human_associated_geographic_location_region_and_locality': 'geographic location (region and locality)',
-		'GSC_MIxS_human_associated_broad_scale_environmental_context': 'broad-scale environmental context',
-		'GSC_MIxS_human_associated_local_environmental_context': 'local environmental context',
-		'GSC_MIxS_human_associated_environmental_medium': 'environmental medium',
-		'GSC_MIxS_human_associated_source_material_identifiers': 'source material identifiers',
-		'GSC_MIxS_human_associated_sample_material_processing': 'sample material processing',
-		'GSC_MIxS_human_associated_isolation_and_growth_condition': 'isolation and growth condition',
-		'GSC_MIxS_human_associated_propagation': 'propagation',
-		'GSC_MIxS_human_associated_amount_or_size_of_sample_collected': 'amount or size of sample collected',
-		'GSC_MIxS_human_associated_host_body_product': 'host body product',
-		'GSC_MIxS_human_associated_medical_history_performed': 'medical history performed',
-		'GSC_MIxS_human_associated_urine_collection_method': 'urine/collection method',
-		'GSC_MIxS_human_associated_oxygenation_status_of_sample': 'oxygenation status of sample',
-		'GSC_MIxS_human_associated_organism_count': 'organism count',
-		'GSC_MIxS_human_associated_sample_storage_duration': 'sample storage duration',
-		'GSC_MIxS_human_associated_sample_storage_temperature': 'sample storage temperature',
-		'GSC_MIxS_human_associated_sample_storage_location': 'sample storage location',
-		'GSC_MIxS_human_associated_sample_collection_device': 'sample collection device',
-		'GSC_MIxS_human_associated_sample_collection_method': 'sample collection method',
-		'GSC_MIxS_human_associated_host_HIV_status': 'host HIV status',
-		'GSC_MIxS_human_associated_host_disease_status': 'host disease status',
-		'GSC_MIxS_human_associated_lung_pulmonary_disorder': 'lung/pulmonary disorder',
-		'GSC_MIxS_human_associated_lung_nose_throat_disorder': 'lung/nose-throat disorder',
-		'GSC_MIxS_human_associated_blood_blood_disorder': 'blood/blood disorder',
-		'GSC_MIxS_human_associated_urine_kidney_disorder': 'urine/kidney disorder',
-		'GSC_MIxS_human_associated_urine_urogenital_tract_disorder': 'urine/urogenital tract disorder',
-		'GSC_MIxS_human_associated_host_subject_id': 'host subject id',
-		'GSC_MIxS_human_associated_IHMC_medication_code': 'IHMC medication code',
-		'GSC_MIxS_human_associated_host_age': 'host age',
-		'GSC_MIxS_human_associated_host_body_site': 'host body site',
-		'GSC_MIxS_human_associated_drug_usage': 'drug usage',
-		'GSC_MIxS_human_associated_host_height': 'host height',
-		'GSC_MIxS_human_associated_host_body_mass_index': 'host body-mass index',
-		'GSC_MIxS_human_associated_ethnicity': 'ethnicity',
-		'GSC_MIxS_human_associated_host_occupation': 'host occupation',
-		'GSC_MIxS_human_associated_host_total_mass': 'host total mass',
-		'GSC_MIxS_human_associated_host_phenotype': 'host phenotype',
-		'GSC_MIxS_human_associated_host_body_temperature': 'host body temperature',
-		'GSC_MIxS_human_associated_host_sex': 'host sex',
-		'GSC_MIxS_human_associated_host_scientific_name': 'host scientific name',
-		'GSC_MIxS_human_associated_presence_of_pets_or_farm_animals': 'presence of pets or farm animals',
-		'GSC_MIxS_human_associated_temperature': 'temperature',
-		'GSC_MIxS_human_associated_salinity': 'salinity',
-		'GSC_MIxS_human_associated_smoker': 'smoker',
-		'GSC_MIxS_human_associated_major_diet_change_in_last_six_months': 'major diet change in last six months',
-		'GSC_MIxS_human_associated_weight_loss_in_last_three_months': 'weight loss in last three months',
-		'GSC_MIxS_human_associated_travel_outside_the_country_in_last_six_months': 'travel outside the country in last six months',
-		'GSC_MIxS_human_associated_host_diet': 'host diet',
-		'GSC_MIxS_human_associated_twin_sibling_presence': 'twin sibling presence',
-		'GSC_MIxS_human_associated_host_last_meal': 'host last meal',
-		'GSC_MIxS_human_associated_amniotic_fluid_gestation_state': 'amniotic fluid/gestation state',
-		'GSC_MIxS_human_associated_host_family_relationship': 'host family relationship',
-		'GSC_MIxS_human_associated_amniotic_fluid_maternal_health_status': 'amniotic fluid/maternal health status',
-		'GSC_MIxS_human_associated_host_genotype': 'host genotype',
-		'GSC_MIxS_human_associated_amniotic_fluid_foetal_health_status': 'amniotic fluid/foetal health status',
-		'GSC_MIxS_human_associated_host_pulse': 'host pulse',
-		'GSC_MIxS_human_associated_amniotic_fluid_color': 'amniotic fluid/color',
-		'GSC_MIxS_human_associated_subspecific_genetic_lineage': 'subspecific genetic lineage',
-		'GSC_MIxS_human_associated_trophic_level': 'trophic level',
-		'GSC_MIxS_human_associated_relationship_to_oxygen': 'relationship to oxygen',
-		'GSC_MIxS_human_associated_known_pathogenicity': 'known pathogenicity',
-		'GSC_MIxS_human_associated_encoded_traits': 'encoded traits',
-		'GSC_MIxS_human_associated_observed_biotic_relationship': 'observed biotic relationship',
-		'GSC_MIxS_human_associated_chemical_administration': 'chemical administration',
-		'GSC_MIxS_human_associated_perturbation': 'perturbation',
+		'study_completion_status': 'study completion status',
+		'urine_collection_method': 'urine/collection method',
+		'host_HIV_status': 'host HIV status',
+		'lung_pulmonary_disorder': 'lung/pulmonary disorder',
+		'lung_nose_throat_disorder': 'lung/nose-throat disorder',
+		'blood_blood_disorder': 'blood/blood disorder',
+		'urine_kidney_disorder': 'urine/kidney disorder',
+		'urine_urogenital_tract_disorder': 'urine/urogenital tract disorder',
+		'drug_usage': 'drug usage',
+		'presence_of_pets_or_farm_animals': 'presence of pets or farm animals',
+		'smoker': 'smoker',
+		'major_diet_change_in_last_six_months': 'major diet change in last six months',
+		'weight_loss_in_last_three_months': 'weight loss in last three months',
+		'travel_outside_the_country_in_last_six_months': 'travel outside the country in last six months',
+		'twin_sibling_presence': 'twin sibling presence',
+		'amniotic_fluid_gestation_state': 'amniotic fluid/gestation state',
+		'amniotic_fluid_maternal_health_status': 'amniotic fluid/maternal health status',
+		'amniotic_fluid_foetal_health_status': 'amniotic fluid/foetal health status',
+		'amniotic_fluid_color': 'amniotic fluid/color',
 	}
 
 	name = 'GSC_MIxS_human_associated'
 
 class GSC_MIxS_human_associated_unit(SelfDescribingModel):
 
-	GSC_MIxS_human_associated_sample_volume_or_weight_for_DNA_extraction_units = [('g', 'g'), ('mL', 'mL'), ('mg', 'mg'), ('ng', 'ng')]
-	GSC_MIxS_human_associated_geographic_location_latitude_units = [('DD', 'DD')]
-	GSC_MIxS_human_associated_geographic_location_longitude_units = [('DD', 'DD')]
-	GSC_MIxS_human_associated_amount_or_size_of_sample_collected_units = [('L', 'L'), ('g', 'g'), ('kg', 'kg'), ('m2', 'm2'), ('m3', 'm3')]
-	GSC_MIxS_human_associated_sample_storage_duration_units = [('days', 'days'), ('hours', 'hours'), ('months', 'months'), ('weeks', 'weeks'), ('years', 'years')]
-	GSC_MIxS_human_associated_sample_storage_temperature_units = [('°C', '°C')]
-	GSC_MIxS_human_associated_host_age_units = [('centuries', 'centuries'), ('days', 'days'), ('decades', 'decades'), ('hours', 'hours'), ('minutes', 'minutes'), ('months', 'months'), ('seconds', 'seconds'), ('weeks', 'weeks'), ('years', 'years')]
-	GSC_MIxS_human_associated_host_height_units = [('cm', 'cm'), ('m', 'm'), ('mm', 'mm')]
-	GSC_MIxS_human_associated_host_body_mass_index_units = [('kg/m2', 'kg/m2')]
-	GSC_MIxS_human_associated_host_total_mass_units = [('g', 'g'), ('kg', 'kg')]
-	GSC_MIxS_human_associated_host_body_temperature_units = [('ºC', 'ºC')]
-	GSC_MIxS_human_associated_temperature_units = [('ºC', 'ºC')]
-	GSC_MIxS_human_associated_salinity_units = [('psu', 'psu')]
-	GSC_MIxS_human_associated_weight_loss_in_last_three_months_units = [('g', 'g'), ('kg', 'kg')]
-	GSC_MIxS_human_associated_host_pulse_units = [('bpm', 'bpm')]
+	weight_loss_in_last_three_months_units = [('g', 'g'), ('kg', 'kg')]
 
 	fields = {
-		'GSC_MIxS_human_associated_sample_volume_or_weight_for_DNA_extraction': 'sample volume or weight for DNA extraction',
-		'GSC_MIxS_human_associated_geographic_location_latitude': 'geographic location (latitude)',
-		'GSC_MIxS_human_associated_geographic_location_longitude': 'geographic location (longitude)',
-		'GSC_MIxS_human_associated_amount_or_size_of_sample_collected': 'amount or size of sample collected',
-		'GSC_MIxS_human_associated_sample_storage_duration': 'sample storage duration',
-		'GSC_MIxS_human_associated_sample_storage_temperature': 'sample storage temperature',
-		'GSC_MIxS_human_associated_host_age': 'host age',
-		'GSC_MIxS_human_associated_host_height': 'host height',
-		'GSC_MIxS_human_associated_host_body_mass_index': 'host body-mass index',
-		'GSC_MIxS_human_associated_host_total_mass': 'host total mass',
-		'GSC_MIxS_human_associated_host_body_temperature': 'host body temperature',
-		'GSC_MIxS_human_associated_temperature': 'temperature',
-		'GSC_MIxS_human_associated_salinity': 'salinity',
-		'GSC_MIxS_human_associated_weight_loss_in_last_three_months': 'weight loss in last three months',
-		'GSC_MIxS_human_associated_host_pulse': 'host pulse',
+		'weight_loss_in_last_three_months': 'weight loss in last three months',
 	}
 
 	name = 'GSC_MIxS_human_associated'
 
 	sampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE, default=1)
 	sample = models.ForeignKey(Sample, on_delete=models.CASCADE, default=1)
-	GSC_MIxS_human_associated_sample_volume_or_weight_for_DNA_extraction = models.CharField(max_length=100, choices=GSC_MIxS_human_associated_sample_volume_or_weight_for_DNA_extraction_units, blank=False)
-	GSC_MIxS_human_associated_geographic_location_latitude = models.CharField(max_length=100, choices=GSC_MIxS_human_associated_geographic_location_latitude_units, blank=False)
-	GSC_MIxS_human_associated_geographic_location_longitude = models.CharField(max_length=100, choices=GSC_MIxS_human_associated_geographic_location_longitude_units, blank=False)
-	GSC_MIxS_human_associated_amount_or_size_of_sample_collected = models.CharField(max_length=100, choices=GSC_MIxS_human_associated_amount_or_size_of_sample_collected_units, blank=False)
-	GSC_MIxS_human_associated_sample_storage_duration = models.CharField(max_length=100, choices=GSC_MIxS_human_associated_sample_storage_duration_units, blank=False)
-	GSC_MIxS_human_associated_sample_storage_temperature = models.CharField(max_length=100, choices=GSC_MIxS_human_associated_sample_storage_temperature_units, blank=False)
-	GSC_MIxS_human_associated_host_age = models.CharField(max_length=100, choices=GSC_MIxS_human_associated_host_age_units, blank=False)
-	GSC_MIxS_human_associated_host_height = models.CharField(max_length=100, choices=GSC_MIxS_human_associated_host_height_units, blank=False)
-	GSC_MIxS_human_associated_host_body_mass_index = models.CharField(max_length=100, choices=GSC_MIxS_human_associated_host_body_mass_index_units, blank=False)
-	GSC_MIxS_human_associated_host_total_mass = models.CharField(max_length=100, choices=GSC_MIxS_human_associated_host_total_mass_units, blank=False)
-	GSC_MIxS_human_associated_host_body_temperature = models.CharField(max_length=100, choices=GSC_MIxS_human_associated_host_body_temperature_units, blank=False)
-	GSC_MIxS_human_associated_temperature = models.CharField(max_length=100, choices=GSC_MIxS_human_associated_temperature_units, blank=False)
-	GSC_MIxS_human_associated_salinity = models.CharField(max_length=100, choices=GSC_MIxS_human_associated_salinity_units, blank=False)
-	GSC_MIxS_human_associated_weight_loss_in_last_three_months = models.CharField(max_length=100, choices=GSC_MIxS_human_associated_weight_loss_in_last_three_months_units, blank=False)
-	GSC_MIxS_human_associated_host_pulse = models.CharField(max_length=100, choices=GSC_MIxS_human_associated_host_pulse_units, blank=False)
+	weight_loss_in_last_three_months = models.CharField(max_length=100, choices=weight_loss_in_last_three_months_units, blank=False)
 
 class GSC_MIxS_air(SelfDescribingModel):
 
-	GSC_MIxS_air_sequence_quality_check_choice = [('manual', 'manual'), ('none', 'none'), ('software', 'software')]
-	GSC_MIxS_air_geographic_location_country_and_or_sea_choice = [('Afghanistan', 'Afghanistan'), ('Albania', 'Albania'), ('Algeria', 'Algeria'), ('American Samoa', 'American Samoa'), ('Andorra', 'Andorra'), ('Angola', 'Angola'), ('Anguilla', 'Anguilla'), ('Antarctica', 'Antarctica'), ('Antigua and Barbuda', 'Antigua and Barbuda'), ('Arctic Ocean', 'Arctic Ocean'), ('Argentina', 'Argentina'), ('Armenia', 'Armenia'), ('Aruba', 'Aruba'), ('Ashmore and Cartier Islands', 'Ashmore and Cartier Islands'), ('Atlantic Ocean', 'Atlantic Ocean'), ('Australia', 'Australia'), ('Austria', 'Austria'), ('Azerbaijan', 'Azerbaijan'), ('Bahamas', 'Bahamas'), ('Bahrain', 'Bahrain'), ('Baker Island', 'Baker Island'), ('Baltic Sea', 'Baltic Sea'), ('Bangladesh', 'Bangladesh'), ('Barbados', 'Barbados'), ('Bassas da India', 'Bassas da India'), ('Belarus', 'Belarus'), ('Belgium', 'Belgium'), ('Belize', 'Belize'), ('Benin', 'Benin'), ('Bermuda', 'Bermuda'), ('Bhutan', 'Bhutan'), ('Bolivia', 'Bolivia'), ('Borneo', 'Borneo'), ('Bosnia and Herzegovina', 'Bosnia and Herzegovina'), ('Botswana', 'Botswana'), ('Bouvet Island', 'Bouvet Island'), ('Brazil', 'Brazil'), ('British Virgin Islands', 'British Virgin Islands'), ('Brunei', 'Brunei'), ('Bulgaria', 'Bulgaria'), ('Burkina Faso', 'Burkina Faso'), ('Burundi', 'Burundi'), ('Cambodia', 'Cambodia'), ('Cameroon', 'Cameroon'), ('Canada', 'Canada'), ('Cape Verde', 'Cape Verde'), ('Cayman Islands', 'Cayman Islands'), ('Central African Republic', 'Central African Republic'), ('Chad', 'Chad'), ('Chile', 'Chile'), ('China', 'China'), ('Christmas Island', 'Christmas Island'), ('Clipperton Island', 'Clipperton Island'), ('Cocos Islands', 'Cocos Islands'), ('Colombia', 'Colombia'), ('Comoros', 'Comoros'), ('Cook Islands', 'Cook Islands'), ('Coral Sea Islands', 'Coral Sea Islands'), ('Costa Rica', 'Costa Rica'), ("Cote d'Ivoire", "Cote d'Ivoire"), ('Croatia', 'Croatia'), ('Cuba', 'Cuba'), ('Curacao', 'Curacao'), ('Cyprus', 'Cyprus'), ('Czech Republic', 'Czech Republic'), ('Democratic Republic of the Congo', 'Democratic Republic of the Congo'), ('Denmark', 'Denmark'), ('Djibouti', 'Djibouti'), ('Dominica', 'Dominica'), ('Dominican Republic', 'Dominican Republic'), ('East Timor', 'East Timor'), ('Ecuador', 'Ecuador'), ('Egypt', 'Egypt'), ('El Salvador', 'El Salvador'), ('Equatorial Guinea', 'Equatorial Guinea'), ('Eritrea', 'Eritrea'), ('Estonia', 'Estonia'), ('Ethiopia', 'Ethiopia'), ('Europa Island', 'Europa Island'), ('Falkland Islands (Islas Malvinas)', 'Falkland Islands (Islas Malvinas)'), ('Faroe Islands', 'Faroe Islands'), ('Fiji', 'Fiji'), ('Finland', 'Finland'), ('France', 'France'), ('French Guiana', 'French Guiana'), ('French Polynesia', 'French Polynesia'), ('French Southern and Antarctic Lands', 'French Southern and Antarctic Lands'), ('Gabon', 'Gabon'), ('Gambia', 'Gambia'), ('Gaza Strip', 'Gaza Strip'), ('Georgia', 'Georgia'), ('Germany', 'Germany'), ('Ghana', 'Ghana'), ('Gibraltar', 'Gibraltar'), ('Glorioso Islands', 'Glorioso Islands'), ('Greece', 'Greece'), ('Greenland', 'Greenland'), ('Grenada', 'Grenada'), ('Guadeloupe', 'Guadeloupe'), ('Guam', 'Guam'), ('Guatemala', 'Guatemala'), ('Guernsey', 'Guernsey'), ('Guinea', 'Guinea'), ('Guinea-Bissau', 'Guinea-Bissau'), ('Guyana', 'Guyana'), ('Haiti', 'Haiti'), ('Heard Island and McDonald Islands', 'Heard Island and McDonald Islands'), ('Honduras', 'Honduras'), ('Hong Kong', 'Hong Kong'), ('Howland Island', 'Howland Island'), ('Hungary', 'Hungary'), ('Iceland', 'Iceland'), ('India', 'India'), ('Indian Ocean', 'Indian Ocean'), ('Indonesia', 'Indonesia'), ('Iran', 'Iran'), ('Iraq', 'Iraq'), ('Ireland', 'Ireland'), ('Isle of Man', 'Isle of Man'), ('Israel', 'Israel'), ('Italy', 'Italy'), ('Jamaica', 'Jamaica'), ('Jan Mayen', 'Jan Mayen'), ('Japan', 'Japan'), ('Jarvis Island', 'Jarvis Island'), ('Jersey', 'Jersey'), ('Johnston Atoll', 'Johnston Atoll'), ('Jordan', 'Jordan'), ('Juan de Nova Island', 'Juan de Nova Island'), ('Kazakhstan', 'Kazakhstan'), ('Kenya', 'Kenya'), ('Kerguelen Archipelago', 'Kerguelen Archipelago'), ('Kingman Reef', 'Kingman Reef'), ('Kiribati', 'Kiribati'), ('Kosovo', 'Kosovo'), ('Kuwait', 'Kuwait'), ('Kyrgyzstan', 'Kyrgyzstan'), ('Laos', 'Laos'), ('Latvia', 'Latvia'), ('Lebanon', 'Lebanon'), ('Lesotho', 'Lesotho'), ('Liberia', 'Liberia'), ('Libya', 'Libya'), ('Liechtenstein', 'Liechtenstein'), ('Lithuania', 'Lithuania'), ('Luxembourg', 'Luxembourg'), ('Macau', 'Macau'), ('Macedonia', 'Macedonia'), ('Madagascar', 'Madagascar'), ('Malawi', 'Malawi'), ('Malaysia', 'Malaysia'), ('Maldives', 'Maldives'), ('Mali', 'Mali'), ('Malta', 'Malta'), ('Marshall Islands', 'Marshall Islands'), ('Martinique', 'Martinique'), ('Mauritania', 'Mauritania'), ('Mauritius', 'Mauritius'), ('Mayotte', 'Mayotte'), ('Mediterranean Sea', 'Mediterranean Sea'), ('Mexico', 'Mexico'), ('Micronesia', 'Micronesia'), ('Midway Islands', 'Midway Islands'), ('Moldova', 'Moldova'), ('Monaco', 'Monaco'), ('Mongolia', 'Mongolia'), ('Montenegro', 'Montenegro'), ('Montserrat', 'Montserrat'), ('Morocco', 'Morocco'), ('Mozambique', 'Mozambique'), ('Myanmar', 'Myanmar'), ('Namibia', 'Namibia'), ('Nauru', 'Nauru'), ('Navassa Island', 'Navassa Island'), ('Nepal', 'Nepal'), ('Netherlands', 'Netherlands'), ('New Caledonia', 'New Caledonia'), ('New Zealand', 'New Zealand'), ('Nicaragua', 'Nicaragua'), ('Niger', 'Niger'), ('Nigeria', 'Nigeria'), ('Niue', 'Niue'), ('Norfolk Island', 'Norfolk Island'), ('North Korea', 'North Korea'), ('North Sea', 'North Sea'), ('Northern Mariana Islands', 'Northern Mariana Islands'), ('Norway', 'Norway'), ('Oman', 'Oman'), ('Pacific Ocean', 'Pacific Ocean'), ('Pakistan', 'Pakistan'), ('Palau', 'Palau'), ('Palmyra Atoll', 'Palmyra Atoll'), ('Panama', 'Panama'), ('Papua New Guinea', 'Papua New Guinea'), ('Paracel Islands', 'Paracel Islands'), ('Paraguay', 'Paraguay'), ('Peru', 'Peru'), ('Philippines', 'Philippines'), ('Pitcairn Islands', 'Pitcairn Islands'), ('Poland', 'Poland'), ('Portugal', 'Portugal'), ('Puerto Rico', 'Puerto Rico'), ('Qatar', 'Qatar'), ('Republic of the Congo', 'Republic of the Congo'), ('Reunion', 'Reunion'), ('Romania', 'Romania'), ('Ross Sea', 'Ross Sea'), ('Russia', 'Russia'), ('Rwanda', 'Rwanda'), ('Saint Helena', 'Saint Helena'), ('Saint Kitts and Nevis', 'Saint Kitts and Nevis'), ('Saint Lucia', 'Saint Lucia'), ('Saint Pierre and Miquelon', 'Saint Pierre and Miquelon'), ('Saint Vincent and the Grenadines', 'Saint Vincent and the Grenadines'), ('Samoa', 'Samoa'), ('San Marino', 'San Marino'), ('Sao Tome and Principe', 'Sao Tome and Principe'), ('Saudi Arabia', 'Saudi Arabia'), ('Senegal', 'Senegal'), ('Serbia', 'Serbia'), ('Seychelles', 'Seychelles'), ('Sierra Leone', 'Sierra Leone'), ('Singapore', 'Singapore'), ('Sint Maarten', 'Sint Maarten'), ('Slovakia', 'Slovakia'), ('Slovenia', 'Slovenia'), ('Solomon Islands', 'Solomon Islands'), ('Somalia', 'Somalia'), ('South Africa', 'South Africa'), ('South Georgia and the South Sandwich Islands', 'South Georgia and the South Sandwich Islands'), ('South Korea', 'South Korea'), ('Southern Ocean', 'Southern Ocean'), ('Spain', 'Spain'), ('Spratly Islands', 'Spratly Islands'), ('Sri Lanka', 'Sri Lanka'), ('Sudan', 'Sudan'), ('Suriname', 'Suriname'), ('Svalbard', 'Svalbard'), ('Swaziland', 'Swaziland'), ('Sweden', 'Sweden'), ('Switzerland', 'Switzerland'), ('Syria', 'Syria'), ('Taiwan', 'Taiwan'), ('Tajikistan', 'Tajikistan'), ('Tanzania', 'Tanzania'), ('Tasman Sea', 'Tasman Sea'), ('Thailand', 'Thailand'), ('Togo', 'Togo'), ('Tokelau', 'Tokelau'), ('Tonga', 'Tonga'), ('Trinidad and Tobago', 'Trinidad and Tobago'), ('Tromelin Island', 'Tromelin Island'), ('Tunisia', 'Tunisia'), ('Turkey', 'Turkey'), ('Turkmenistan', 'Turkmenistan'), ('Turks and Caicos Islands', 'Turks and Caicos Islands'), ('Tuvalu', 'Tuvalu'), ('USA', 'USA'), ('Uganda', 'Uganda'), ('Ukraine', 'Ukraine'), ('United Arab Emirates', 'United Arab Emirates'), ('United Kingdom', 'United Kingdom'), ('Uruguay', 'Uruguay'), ('Uzbekistan', 'Uzbekistan'), ('Vanuatu', 'Vanuatu'), ('Venezuela', 'Venezuela'), ('Viet Nam', 'Viet Nam'), ('Virgin Islands', 'Virgin Islands'), ('Wake Island', 'Wake Island'), ('Wallis and Futuna', 'Wallis and Futuna'), ('West Bank', 'West Bank'), ('Western Sahara', 'Western Sahara'), ('Yemen', 'Yemen'), ('Zambia', 'Zambia'), ('Zimbabwe', 'Zimbabwe'), ('missing: control sample', 'missing: control sample'), ('missing: data agreement established pre-2023', 'missing: data agreement established pre-2023'), ('missing: endangered species', 'missing: endangered species'), ('missing: human-identifiable', 'missing: human-identifiable'), ('missing: lab stock', 'missing: lab stock'), ('missing: sample group', 'missing: sample group'), ('missing: synthetic construct', 'missing: synthetic construct'), ('missing: third party data', 'missing: third party data'), ('not applicable', 'not applicable'), ('not collected', 'not collected'), ('not provided', 'not provided'), ('restricted access', 'restricted access')]
-	GSC_MIxS_air_ventilation_type_choice = [('forced ventilation', 'forced ventilation'), ('mechanical ventilation', 'mechanical ventilation'), ('natural ventilation', 'natural ventilation')]
-	GSC_MIxS_air_oxygenation_status_of_sample_choice = [('aerobic', 'aerobic'), ('anaerobic', 'anaerobic')]
-	GSC_MIxS_air_trophic_level_choice = [('autotroph', 'autotroph'), ('carboxydotroph', 'carboxydotroph'), ('chemoautotroph', 'chemoautotroph'), ('chemoheterotroph', 'chemoheterotroph'), ('chemolithoautotroph', 'chemolithoautotroph'), ('chemolithotroph', 'chemolithotroph'), ('chemoorganoheterotroph', 'chemoorganoheterotroph'), ('chemoorganotroph', 'chemoorganotroph'), ('chemosynthetic', 'chemosynthetic'), ('chemotroph', 'chemotroph'), ('copiotroph', 'copiotroph'), ('diazotroph', 'diazotroph'), ('facultative autotroph', 'facultative autotroph'), ('heterotroph', 'heterotroph'), ('lithoautotroph', 'lithoautotroph'), ('lithoheterotroph', 'lithoheterotroph'), ('lithotroph', 'lithotroph'), ('methanotroph', 'methanotroph'), ('methylotroph', 'methylotroph'), ('mixotroph', 'mixotroph'), ('obligate chemoautolithotroph', 'obligate chemoautolithotroph'), ('oligotroph', 'oligotroph'), ('organoheterotroph', 'organoheterotroph'), ('organotroph', 'organotroph'), ('photoautotroph', 'photoautotroph'), ('photoheterotroph', 'photoheterotroph'), ('photolithoautotroph', 'photolithoautotroph'), ('photolithotroph', 'photolithotroph'), ('photosynthetic', 'photosynthetic'), ('phototroph', 'phototroph')]
-	GSC_MIxS_air_relationship_to_oxygen_choice = [('aerobe', 'aerobe'), ('anaerobe', 'anaerobe'), ('facultative', 'facultative'), ('microaerophilic', 'microaerophilic'), ('microanaerobe', 'microanaerobe'), ('obligate aerobe', 'obligate aerobe'), ('obligate anaerobe', 'obligate anaerobe')]
-	GSC_MIxS_air_observed_biotic_relationship_choice = [('commensal', 'commensal'), ('free living', 'free living'), ('mutualism', 'mutualism'), ('parasite', 'parasite'), ('symbiont', 'symbiont')]
+	ventilation_type_choice = [('forced ventilation', 'forced ventilation'), ('mechanical ventilation', 'mechanical ventilation'), ('natural ventilation', 'natural ventilation')]
 
-	GSC_MIxS_air_number_of_replicons_validator = "[+-]?[0-9]+"
-	GSC_MIxS_air_extrachromosomal_elements_validator = "[+-]?[0-9]+"
-	GSC_MIxS_air_estimated_size_validator = "[+-]?[0-9]+"
-	GSC_MIxS_air_sample_volume_or_weight_for_DNA_extraction_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_air_library_size_validator = "[+-]?[0-9]+"
-	GSC_MIxS_air_library_reads_sequenced_validator = "[+-]?[0-9]+"
-	GSC_MIxS_air_collection_date_validator = "(^[12][0-9]{3}(-(0[1-9]|1[0-2])(-(0[1-9]|[12][0-9]|3[01])(T[0-9]{2}:[0-9]{2}(:[0-9]{2})?Z?([+-][0-9]{1,2})?)?)?)?(/[0-9]{4}(-[0-9]{2}(-[0-9]{2}(T[0-9]{2}:[0-9]{2}(:[0-9]{2})?Z?([+-][0-9]{1,2})?)?)?)?)?$)|(^not collected$)|(^not provided$)|(^restricted access$)|(^missing: control sample$)|(^missing: sample group$)|(^missing: synthetic construct$)|(^missing: lab stock$)|(^missing: third party data$)|(^missing: data agreement established pre-2023$)|(^missing: endangered species$)|(^missing: human-identifiable$)"
-	GSC_MIxS_air_altitude_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_air_geographic_location_latitude_validator = "(^[+-]?[0-9]+.?[0-9]{0,8}$)|(^not collected$)|(^not provided$)|(^restricted access$)|(^missing: control sample$)|(^missing: sample group$)|(^missing: synthetic construct$)|(^missing: lab stock$)|(^missing: third party data$)|(^missing: data agreement established pre-2023$)|(^missing: endangered species$)|(^missing: human-identifiable$)"
-	GSC_MIxS_air_geographic_location_longitude_validator = "(^[+-]?[0-9]+.?[0-9]{0,8}$)|(^not collected$)|(^not provided$)|(^restricted access$)|(^missing: control sample$)|(^missing: sample group$)|(^missing: synthetic construct$)|(^missing: lab stock$)|(^missing: third party data$)|(^missing: data agreement established pre-2023$)|(^missing: endangered species$)|(^missing: human-identifiable$)"
-	GSC_MIxS_air_elevation_validator = "[+-]?(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_air_ventilation_rate_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_air_amount_or_size_of_sample_collected_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_air_sample_storage_duration_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_air_sample_storage_temperature_validator = "[+-]?(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_air_barometric_pressure_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_air_humidity_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_air_solar_irradiance_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_air_wind_speed_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_air_temperature_validator = "[+-]?(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_air_carbon_dioxide_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_air_carbon_monoxide_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_air_oxygen_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_air_air_particulate_matter_concentration_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_air_methane_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_air_salinity_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	ventilation_rate_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	barometric_pressure_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	humidity_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	solar_irradiance_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	wind_speed_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	carbon_dioxide_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	carbon_monoxide_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	oxygen_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	air_particulate_matter_concentration_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
 
 	sampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE, default=1)
 	sample = models.ForeignKey(Sample, on_delete=models.CASCADE, default=1)
-	GSC_MIxS_air_project_name= models.CharField(max_length=100, blank=False,help_text="Name of th")
-	GSC_MIxS_air_experimental_factor= models.CharField(max_length=100, blank=True,help_text="Experiment")
-	GSC_MIxS_air_ploidy= models.CharField(max_length=100, blank=True,help_text="The ploidy")
-	GSC_MIxS_air_number_of_replicons= models.CharField(max_length=100, blank=True,help_text="Reports th", validators=[RegexValidator(GSC_MIxS_air_number_of_replicons_validator)])
-	GSC_MIxS_air_extrachromosomal_elements= models.CharField(max_length=100, blank=True,help_text="Do plasmid", validators=[RegexValidator(GSC_MIxS_air_extrachromosomal_elements_validator)])
-	GSC_MIxS_air_estimated_size= models.CharField(max_length=100, blank=True,help_text="The estima", validators=[RegexValidator(GSC_MIxS_air_estimated_size_validator)])
-	GSC_MIxS_air_reference_for_biomaterial= models.CharField(max_length=100, blank=True,help_text="Primary pu")
-	GSC_MIxS_air_annotation_source= models.CharField(max_length=100, blank=True,help_text="For cases ")
-	GSC_MIxS_air_sample_volume_or_weight_for_DNA_extraction= models.CharField(max_length=100, blank=True,help_text="Volume (ml", validators=[RegexValidator(GSC_MIxS_air_sample_volume_or_weight_for_DNA_extraction_validator)])
-	GSC_MIxS_air_nucleic_acid_extraction= models.CharField(max_length=100, blank=True,help_text="A link to ")
-	GSC_MIxS_air_nucleic_acid_amplification= models.CharField(max_length=100, blank=True,help_text="A link to ")
-	GSC_MIxS_air_library_size= models.CharField(max_length=100, blank=True,help_text="Total numb", validators=[RegexValidator(GSC_MIxS_air_library_size_validator)])
-	GSC_MIxS_air_library_reads_sequenced= models.CharField(max_length=100, blank=True,help_text="Total numb", validators=[RegexValidator(GSC_MIxS_air_library_reads_sequenced_validator)])
-	GSC_MIxS_air_library_construction_method= models.CharField(max_length=100, blank=True,help_text="Library co")
-	GSC_MIxS_air_library_vector= models.CharField(max_length=100, blank=True,help_text="Cloning ve")
-	GSC_MIxS_air_library_screening_strategy= models.CharField(max_length=100, blank=True,help_text="Specific e")
-	GSC_MIxS_air_target_gene= models.CharField(max_length=100, blank=True,help_text="Targeted g")
-	GSC_MIxS_air_target_subfragment= models.CharField(max_length=100, blank=True,help_text="Name of su")
-	GSC_MIxS_air_pcr_primers= models.CharField(max_length=100, blank=True,help_text="PCR primer")
-	GSC_MIxS_air_multiplex_identifiers= models.CharField(max_length=100, blank=True,help_text="Molecular ")
-	GSC_MIxS_air_adapters= models.CharField(max_length=100, blank=True,help_text="Adapters p")
-	GSC_MIxS_air_pcr_conditions= models.CharField(max_length=100, blank=True,help_text="Descriptio")
-	GSC_MIxS_air_sequencing_method= models.CharField(max_length=100, blank=True,help_text="Sequencing")
-	GSC_MIxS_air_sequence_quality_check= models.CharField(max_length=100, blank=True,help_text="Indicate i", choices=GSC_MIxS_air_sequence_quality_check_choice)
-	GSC_MIxS_air_chimera_check_software= models.CharField(max_length=100, blank=True,help_text="Tool(s) us")
-	GSC_MIxS_air_relevant_electronic_resources= models.CharField(max_length=100, blank=True,help_text="A related ")
-	GSC_MIxS_air_relevant_standard_operating_procedures= models.CharField(max_length=100, blank=True,help_text="Standard o")
-	GSC_MIxS_air_negative_control_type= models.CharField(max_length=100, blank=True,help_text="The substa")
-	GSC_MIxS_air_positive_control_type= models.CharField(max_length=100, blank=True,help_text="The substa")
-	GSC_MIxS_air_collection_date= models.CharField(max_length=100, blank=False,help_text="The date t", validators=[RegexValidator(GSC_MIxS_air_collection_date_validator)])
-	GSC_MIxS_air_altitude= models.CharField(max_length=100, blank=False,help_text="The altitu", validators=[RegexValidator(GSC_MIxS_air_altitude_validator)])
-	GSC_MIxS_air_geographic_location_country_and_or_sea= models.CharField(max_length=100, blank=False,help_text="The locati", choices=GSC_MIxS_air_geographic_location_country_and_or_sea_choice)
-	GSC_MIxS_air_geographic_location_latitude= models.CharField(max_length=100, blank=False,help_text="The geogra", validators=[RegexValidator(GSC_MIxS_air_geographic_location_latitude_validator)])
-	GSC_MIxS_air_geographic_location_longitude= models.CharField(max_length=100, blank=False,help_text="The geogra", validators=[RegexValidator(GSC_MIxS_air_geographic_location_longitude_validator)])
-	GSC_MIxS_air_geographic_location_region_and_locality= models.CharField(max_length=100, blank=True,help_text="The geogra")
-	GSC_MIxS_air_broad_scale_environmental_context= models.CharField(max_length=100, blank=False,help_text="Report the")
-	GSC_MIxS_air_local_environmental_context= models.CharField(max_length=100, blank=False,help_text="Report the")
-	GSC_MIxS_air_environmental_medium= models.CharField(max_length=100, blank=False,help_text="Report the")
-	GSC_MIxS_air_elevation= models.CharField(max_length=100, blank=True,help_text="The elevat", validators=[RegexValidator(GSC_MIxS_air_elevation_validator)])
-	GSC_MIxS_air_ventilation_rate= models.CharField(max_length=100, blank=True,help_text="ventilatio", validators=[RegexValidator(GSC_MIxS_air_ventilation_rate_validator)])
-	GSC_MIxS_air_ventilation_type= models.CharField(max_length=100, blank=True,help_text="The intent", choices=GSC_MIxS_air_ventilation_type_choice)
-	GSC_MIxS_air_source_material_identifiers= models.CharField(max_length=100, blank=True,help_text="A unique i")
-	GSC_MIxS_air_sample_material_processing= models.CharField(max_length=100, blank=True,help_text="A brief de")
-	GSC_MIxS_air_isolation_and_growth_condition= models.CharField(max_length=100, blank=True,help_text="Publicatio")
-	GSC_MIxS_air_propagation= models.CharField(max_length=100, blank=True,help_text="The type o")
-	GSC_MIxS_air_amount_or_size_of_sample_collected= models.CharField(max_length=100, blank=True,help_text="The total ", validators=[RegexValidator(GSC_MIxS_air_amount_or_size_of_sample_collected_validator)])
-	GSC_MIxS_air_oxygenation_status_of_sample= models.CharField(max_length=100, blank=True,help_text="oxygenatio", choices=GSC_MIxS_air_oxygenation_status_of_sample_choice)
-	GSC_MIxS_air_organism_count= models.CharField(max_length=100, blank=True,help_text="Total cell")
-	GSC_MIxS_air_sample_storage_duration= models.CharField(max_length=100, blank=True,help_text="duration f", validators=[RegexValidator(GSC_MIxS_air_sample_storage_duration_validator)])
-	GSC_MIxS_air_sample_storage_temperature= models.CharField(max_length=100, blank=True,help_text="temperatur", validators=[RegexValidator(GSC_MIxS_air_sample_storage_temperature_validator)])
-	GSC_MIxS_air_sample_storage_location= models.CharField(max_length=100, blank=True,help_text="location a")
-	GSC_MIxS_air_sample_collection_device= models.CharField(max_length=100, blank=True,help_text="The device")
-	GSC_MIxS_air_sample_collection_method= models.CharField(max_length=100, blank=True,help_text="The method")
-	GSC_MIxS_air_host_disease_status= models.CharField(max_length=100, blank=True,help_text="list of di")
-	GSC_MIxS_air_host_scientific_name= models.CharField(max_length=100, blank=True,help_text="Scientific")
-	GSC_MIxS_air_barometric_pressure= models.CharField(max_length=100, blank=True,help_text="force per ", validators=[RegexValidator(GSC_MIxS_air_barometric_pressure_validator)])
-	GSC_MIxS_air_humidity= models.CharField(max_length=100, blank=True,help_text="amount of ", validators=[RegexValidator(GSC_MIxS_air_humidity_validator)])
-	GSC_MIxS_air_pollutants= models.CharField(max_length=100, blank=True,help_text="pollutant ")
-	GSC_MIxS_air_solar_irradiance= models.CharField(max_length=100, blank=True,help_text="the amount", validators=[RegexValidator(GSC_MIxS_air_solar_irradiance_validator)])
-	GSC_MIxS_air_wind_direction= models.CharField(max_length=100, blank=True,help_text="wind direc")
-	GSC_MIxS_air_wind_speed= models.CharField(max_length=100, blank=True,help_text="speed of w", validators=[RegexValidator(GSC_MIxS_air_wind_speed_validator)])
-	GSC_MIxS_air_temperature= models.CharField(max_length=100, blank=True,help_text="temperatur", validators=[RegexValidator(GSC_MIxS_air_temperature_validator)])
-	GSC_MIxS_air_carbon_dioxide= models.CharField(max_length=100, blank=True,help_text="carbon dio", validators=[RegexValidator(GSC_MIxS_air_carbon_dioxide_validator)])
-	GSC_MIxS_air_carbon_monoxide= models.CharField(max_length=100, blank=True,help_text="carbon mon", validators=[RegexValidator(GSC_MIxS_air_carbon_monoxide_validator)])
-	GSC_MIxS_air_oxygen= models.CharField(max_length=100, blank=True,help_text="oxygen (ga", validators=[RegexValidator(GSC_MIxS_air_oxygen_validator)])
-	GSC_MIxS_air_air_particulate_matter_concentration= models.CharField(max_length=100, blank=True,help_text="Concentrat", validators=[RegexValidator(GSC_MIxS_air_air_particulate_matter_concentration_validator)])
-	GSC_MIxS_air_volatile_organic_compounds= models.CharField(max_length=100, blank=True,help_text="concentrat")
-	GSC_MIxS_air_methane= models.CharField(max_length=100, blank=True,help_text="methane (g", validators=[RegexValidator(GSC_MIxS_air_methane_validator)])
-	GSC_MIxS_air_salinity= models.CharField(max_length=100, blank=True,help_text="The total ", validators=[RegexValidator(GSC_MIxS_air_salinity_validator)])
-	GSC_MIxS_air_subspecific_genetic_lineage= models.CharField(max_length=100, blank=True,help_text="Informatio")
-	GSC_MIxS_air_trophic_level= models.CharField(max_length=100, blank=True,help_text="Trophic le", choices=GSC_MIxS_air_trophic_level_choice)
-	GSC_MIxS_air_relationship_to_oxygen= models.CharField(max_length=100, blank=True,help_text="Is this or", choices=GSC_MIxS_air_relationship_to_oxygen_choice)
-	GSC_MIxS_air_known_pathogenicity= models.CharField(max_length=100, blank=True,help_text="To what is")
-	GSC_MIxS_air_encoded_traits= models.CharField(max_length=100, blank=True,help_text="Should inc")
-	GSC_MIxS_air_observed_biotic_relationship= models.CharField(max_length=100, blank=True,help_text="Is it free", choices=GSC_MIxS_air_observed_biotic_relationship_choice)
-	GSC_MIxS_air_chemical_administration= models.CharField(max_length=100, blank=True,help_text="list of ch")
-	GSC_MIxS_air_perturbation= models.CharField(max_length=100, blank=True,help_text="type of pe")
+	ventilation_rate= models.CharField(max_length=100, blank=True,help_text="ventilatio", validators=[RegexValidator(ventilation_rate_validator)])
+	ventilation_type= models.CharField(max_length=100, blank=True,help_text="The intent", choices=ventilation_type_choice)
+	barometric_pressure= models.CharField(max_length=100, blank=True,help_text="force per ", validators=[RegexValidator(barometric_pressure_validator)])
+	humidity= models.CharField(max_length=100, blank=True,help_text="amount of ", validators=[RegexValidator(humidity_validator)])
+	pollutants= models.CharField(max_length=100, blank=True,help_text="pollutant ")
+	solar_irradiance= models.CharField(max_length=100, blank=True,help_text="the amount", validators=[RegexValidator(solar_irradiance_validator)])
+	wind_direction= models.CharField(max_length=100, blank=True,help_text="wind direc")
+	wind_speed= models.CharField(max_length=100, blank=True,help_text="speed of w", validators=[RegexValidator(wind_speed_validator)])
+	carbon_dioxide= models.CharField(max_length=100, blank=True,help_text="carbon dio", validators=[RegexValidator(carbon_dioxide_validator)])
+	carbon_monoxide= models.CharField(max_length=100, blank=True,help_text="carbon mon", validators=[RegexValidator(carbon_monoxide_validator)])
+	oxygen= models.CharField(max_length=100, blank=True,help_text="oxygen (ga", validators=[RegexValidator(oxygen_validator)])
+	air_particulate_matter_concentration= models.CharField(max_length=100, blank=True,help_text="Concentrat", validators=[RegexValidator(air_particulate_matter_concentration_validator)])
+	volatile_organic_compounds= models.CharField(max_length=100, blank=True,help_text="concentrat")
 
 	fields = {
-		'GSC_MIxS_air_project_name': 'project name',
-		'GSC_MIxS_air_experimental_factor': 'experimental factor',
-		'GSC_MIxS_air_ploidy': 'ploidy',
-		'GSC_MIxS_air_number_of_replicons': 'number of replicons',
-		'GSC_MIxS_air_extrachromosomal_elements': 'extrachromosomal elements',
-		'GSC_MIxS_air_estimated_size': 'estimated size',
-		'GSC_MIxS_air_reference_for_biomaterial': 'reference for biomaterial',
-		'GSC_MIxS_air_annotation_source': 'annotation source',
-		'GSC_MIxS_air_sample_volume_or_weight_for_DNA_extraction': 'sample volume or weight for DNA extraction',
-		'GSC_MIxS_air_nucleic_acid_extraction': 'nucleic acid extraction',
-		'GSC_MIxS_air_nucleic_acid_amplification': 'nucleic acid amplification',
-		'GSC_MIxS_air_library_size': 'library size',
-		'GSC_MIxS_air_library_reads_sequenced': 'library reads sequenced',
-		'GSC_MIxS_air_library_construction_method': 'library construction method',
-		'GSC_MIxS_air_library_vector': 'library vector',
-		'GSC_MIxS_air_library_screening_strategy': 'library screening strategy',
-		'GSC_MIxS_air_target_gene': 'target gene',
-		'GSC_MIxS_air_target_subfragment': 'target subfragment',
-		'GSC_MIxS_air_pcr_primers': 'pcr primers',
-		'GSC_MIxS_air_multiplex_identifiers': 'multiplex identifiers',
-		'GSC_MIxS_air_adapters': 'adapters',
-		'GSC_MIxS_air_pcr_conditions': 'pcr conditions',
-		'GSC_MIxS_air_sequencing_method': 'sequencing method',
-		'GSC_MIxS_air_sequence_quality_check': 'sequence quality check',
-		'GSC_MIxS_air_chimera_check_software': 'chimera check software',
-		'GSC_MIxS_air_relevant_electronic_resources': 'relevant electronic resources',
-		'GSC_MIxS_air_relevant_standard_operating_procedures': 'relevant standard operating procedures',
-		'GSC_MIxS_air_negative_control_type': 'negative control type',
-		'GSC_MIxS_air_positive_control_type': 'positive control type',
-		'GSC_MIxS_air_collection_date': 'collection date',
-		'GSC_MIxS_air_altitude': 'altitude',
-		'GSC_MIxS_air_geographic_location_country_and_or_sea': 'geographic location (country and/or sea)',
-		'GSC_MIxS_air_geographic_location_latitude': 'geographic location (latitude)',
-		'GSC_MIxS_air_geographic_location_longitude': 'geographic location (longitude)',
-		'GSC_MIxS_air_geographic_location_region_and_locality': 'geographic location (region and locality)',
-		'GSC_MIxS_air_broad_scale_environmental_context': 'broad-scale environmental context',
-		'GSC_MIxS_air_local_environmental_context': 'local environmental context',
-		'GSC_MIxS_air_environmental_medium': 'environmental medium',
-		'GSC_MIxS_air_elevation': 'elevation',
-		'GSC_MIxS_air_ventilation_rate': 'ventilation rate',
-		'GSC_MIxS_air_ventilation_type': 'ventilation type',
-		'GSC_MIxS_air_source_material_identifiers': 'source material identifiers',
-		'GSC_MIxS_air_sample_material_processing': 'sample material processing',
-		'GSC_MIxS_air_isolation_and_growth_condition': 'isolation and growth condition',
-		'GSC_MIxS_air_propagation': 'propagation',
-		'GSC_MIxS_air_amount_or_size_of_sample_collected': 'amount or size of sample collected',
-		'GSC_MIxS_air_oxygenation_status_of_sample': 'oxygenation status of sample',
-		'GSC_MIxS_air_organism_count': 'organism count',
-		'GSC_MIxS_air_sample_storage_duration': 'sample storage duration',
-		'GSC_MIxS_air_sample_storage_temperature': 'sample storage temperature',
-		'GSC_MIxS_air_sample_storage_location': 'sample storage location',
-		'GSC_MIxS_air_sample_collection_device': 'sample collection device',
-		'GSC_MIxS_air_sample_collection_method': 'sample collection method',
-		'GSC_MIxS_air_host_disease_status': 'host disease status',
-		'GSC_MIxS_air_host_scientific_name': 'host scientific name',
-		'GSC_MIxS_air_barometric_pressure': 'barometric pressure',
-		'GSC_MIxS_air_humidity': 'humidity',
-		'GSC_MIxS_air_pollutants': 'pollutants',
-		'GSC_MIxS_air_solar_irradiance': 'solar irradiance',
-		'GSC_MIxS_air_wind_direction': 'wind direction',
-		'GSC_MIxS_air_wind_speed': 'wind speed',
-		'GSC_MIxS_air_temperature': 'temperature',
-		'GSC_MIxS_air_carbon_dioxide': 'carbon dioxide',
-		'GSC_MIxS_air_carbon_monoxide': 'carbon monoxide',
-		'GSC_MIxS_air_oxygen': 'oxygen',
-		'GSC_MIxS_air_air_particulate_matter_concentration': 'air particulate matter concentration',
-		'GSC_MIxS_air_volatile_organic_compounds': 'volatile organic compounds',
-		'GSC_MIxS_air_methane': 'methane',
-		'GSC_MIxS_air_salinity': 'salinity',
-		'GSC_MIxS_air_subspecific_genetic_lineage': 'subspecific genetic lineage',
-		'GSC_MIxS_air_trophic_level': 'trophic level',
-		'GSC_MIxS_air_relationship_to_oxygen': 'relationship to oxygen',
-		'GSC_MIxS_air_known_pathogenicity': 'known pathogenicity',
-		'GSC_MIxS_air_encoded_traits': 'encoded traits',
-		'GSC_MIxS_air_observed_biotic_relationship': 'observed biotic relationship',
-		'GSC_MIxS_air_chemical_administration': 'chemical administration',
-		'GSC_MIxS_air_perturbation': 'perturbation',
+		'ventilation_rate': 'ventilation rate',
+		'ventilation_type': 'ventilation type',
+		'barometric_pressure': 'barometric pressure',
+		'humidity': 'humidity',
+		'pollutants': 'pollutants',
+		'solar_irradiance': 'solar irradiance',
+		'wind_direction': 'wind direction',
+		'wind_speed': 'wind speed',
+		'carbon_dioxide': 'carbon dioxide',
+		'carbon_monoxide': 'carbon monoxide',
+		'oxygen': 'oxygen',
+		'air_particulate_matter_concentration': 'air particulate matter concentration',
+		'volatile_organic_compounds': 'volatile organic compounds',
 	}
 
 	name = 'GSC_MIxS_air'
 
 class GSC_MIxS_air_unit(SelfDescribingModel):
 
-	GSC_MIxS_air_sample_volume_or_weight_for_DNA_extraction_units = [('g', 'g'), ('mL', 'mL'), ('mg', 'mg'), ('ng', 'ng')]
-	GSC_MIxS_air_altitude_units = [('m', 'm')]
-	GSC_MIxS_air_geographic_location_latitude_units = [('DD', 'DD')]
-	GSC_MIxS_air_geographic_location_longitude_units = [('DD', 'DD')]
-	GSC_MIxS_air_elevation_units = [('m', 'm')]
-	GSC_MIxS_air_ventilation_rate_units = [('L/sec', 'L/sec'), ('m3/min', 'm3/min')]
-	GSC_MIxS_air_amount_or_size_of_sample_collected_units = [('L', 'L'), ('g', 'g'), ('kg', 'kg'), ('m2', 'm2'), ('m3', 'm3')]
-	GSC_MIxS_air_sample_storage_duration_units = [('days', 'days'), ('hours', 'hours'), ('months', 'months'), ('weeks', 'weeks'), ('years', 'years')]
-	GSC_MIxS_air_sample_storage_temperature_units = [('°C', '°C')]
-	GSC_MIxS_air_barometric_pressure_units = [('Torr', 'Torr'), ('in. Hg', 'in. Hg'), ('millibar(hPa)', 'millibar(hPa)'), ('mm Hg', 'mm Hg')]
-	GSC_MIxS_air_humidity_units = [('%', '%'), ('g/m3', 'g/m3')]
-	GSC_MIxS_air_pollutants_units = [('M/L', 'M/L'), ('g', 'g'), ('mg/L', 'mg/L')]
-	GSC_MIxS_air_solar_irradiance_units = [('W/m2', 'W/m2')]
-	GSC_MIxS_air_wind_speed_units = [('km/h', 'km/h'), ('m/s', 'm/s')]
-	GSC_MIxS_air_temperature_units = [('ºC', 'ºC')]
-	GSC_MIxS_air_carbon_dioxide_units = [('µmol/L', 'µmol/L')]
-	GSC_MIxS_air_carbon_monoxide_units = [('µM/L', 'µM/L')]
-	GSC_MIxS_air_oxygen_units = [('mg/L', 'mg/L'), ('parts/million', 'parts/million')]
-	GSC_MIxS_air_air_particulate_matter_concentration_units = [('µg/m3', 'µg/m3')]
-	GSC_MIxS_air_volatile_organic_compounds_units = [('parts/million', 'parts/million'), ('µg/m3', 'µg/m3')]
-	GSC_MIxS_air_methane_units = [('µM/L', 'µM/L')]
-	GSC_MIxS_air_salinity_units = [('psu', 'psu')]
+	ventilation_rate_units = [('L/sec', 'L/sec'), ('m3/min', 'm3/min')]
+	barometric_pressure_units = [('Torr', 'Torr'), ('in. Hg', 'in. Hg'), ('millibar(hPa)', 'millibar(hPa)'), ('mm Hg', 'mm Hg')]
+	humidity_units = [('%', '%'), ('g/m3', 'g/m3')]
+	pollutants_units = [('M/L', 'M/L'), ('g', 'g'), ('mg/L', 'mg/L')]
+	solar_irradiance_units = [('W/m2', 'W/m2')]
+	wind_speed_units = [('km/h', 'km/h'), ('m/s', 'm/s')]
+	carbon_dioxide_units = [('µmol/L', 'µmol/L')]
+	carbon_monoxide_units = [('µM/L', 'µM/L')]
+	oxygen_units = [('mg/L', 'mg/L'), ('parts/million', 'parts/million')]
+	air_particulate_matter_concentration_units = [('µg/m3', 'µg/m3')]
+	volatile_organic_compounds_units = [('parts/million', 'parts/million'), ('µg/m3', 'µg/m3')]
 
 	fields = {
-		'GSC_MIxS_air_sample_volume_or_weight_for_DNA_extraction': 'sample volume or weight for DNA extraction',
-		'GSC_MIxS_air_altitude': 'altitude',
-		'GSC_MIxS_air_geographic_location_latitude': 'geographic location (latitude)',
-		'GSC_MIxS_air_geographic_location_longitude': 'geographic location (longitude)',
-		'GSC_MIxS_air_elevation': 'elevation',
-		'GSC_MIxS_air_ventilation_rate': 'ventilation rate',
-		'GSC_MIxS_air_amount_or_size_of_sample_collected': 'amount or size of sample collected',
-		'GSC_MIxS_air_sample_storage_duration': 'sample storage duration',
-		'GSC_MIxS_air_sample_storage_temperature': 'sample storage temperature',
-		'GSC_MIxS_air_barometric_pressure': 'barometric pressure',
-		'GSC_MIxS_air_humidity': 'humidity',
-		'GSC_MIxS_air_pollutants': 'pollutants',
-		'GSC_MIxS_air_solar_irradiance': 'solar irradiance',
-		'GSC_MIxS_air_wind_speed': 'wind speed',
-		'GSC_MIxS_air_temperature': 'temperature',
-		'GSC_MIxS_air_carbon_dioxide': 'carbon dioxide',
-		'GSC_MIxS_air_carbon_monoxide': 'carbon monoxide',
-		'GSC_MIxS_air_oxygen': 'oxygen',
-		'GSC_MIxS_air_air_particulate_matter_concentration': 'air particulate matter concentration',
-		'GSC_MIxS_air_volatile_organic_compounds': 'volatile organic compounds',
-		'GSC_MIxS_air_methane': 'methane',
-		'GSC_MIxS_air_salinity': 'salinity',
+		'ventilation_rate': 'ventilation rate',
+		'barometric_pressure': 'barometric pressure',
+		'humidity': 'humidity',
+		'pollutants': 'pollutants',
+		'solar_irradiance': 'solar irradiance',
+		'wind_speed': 'wind speed',
+		'carbon_dioxide': 'carbon dioxide',
+		'carbon_monoxide': 'carbon monoxide',
+		'oxygen': 'oxygen',
+		'air_particulate_matter_concentration': 'air particulate matter concentration',
+		'volatile_organic_compounds': 'volatile organic compounds',
 	}
 
 	name = 'GSC_MIxS_air'
 
 	sampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE, default=1)
 	sample = models.ForeignKey(Sample, on_delete=models.CASCADE, default=1)
-	GSC_MIxS_air_sample_volume_or_weight_for_DNA_extraction = models.CharField(max_length=100, choices=GSC_MIxS_air_sample_volume_or_weight_for_DNA_extraction_units, blank=False)
-	GSC_MIxS_air_altitude = models.CharField(max_length=100, choices=GSC_MIxS_air_altitude_units, blank=False)
-	GSC_MIxS_air_geographic_location_latitude = models.CharField(max_length=100, choices=GSC_MIxS_air_geographic_location_latitude_units, blank=False)
-	GSC_MIxS_air_geographic_location_longitude = models.CharField(max_length=100, choices=GSC_MIxS_air_geographic_location_longitude_units, blank=False)
-	GSC_MIxS_air_elevation = models.CharField(max_length=100, choices=GSC_MIxS_air_elevation_units, blank=False)
-	GSC_MIxS_air_ventilation_rate = models.CharField(max_length=100, choices=GSC_MIxS_air_ventilation_rate_units, blank=False)
-	GSC_MIxS_air_amount_or_size_of_sample_collected = models.CharField(max_length=100, choices=GSC_MIxS_air_amount_or_size_of_sample_collected_units, blank=False)
-	GSC_MIxS_air_sample_storage_duration = models.CharField(max_length=100, choices=GSC_MIxS_air_sample_storage_duration_units, blank=False)
-	GSC_MIxS_air_sample_storage_temperature = models.CharField(max_length=100, choices=GSC_MIxS_air_sample_storage_temperature_units, blank=False)
-	GSC_MIxS_air_barometric_pressure = models.CharField(max_length=100, choices=GSC_MIxS_air_barometric_pressure_units, blank=False)
-	GSC_MIxS_air_humidity = models.CharField(max_length=100, choices=GSC_MIxS_air_humidity_units, blank=False)
-	GSC_MIxS_air_pollutants = models.CharField(max_length=100, choices=GSC_MIxS_air_pollutants_units, blank=False)
-	GSC_MIxS_air_solar_irradiance = models.CharField(max_length=100, choices=GSC_MIxS_air_solar_irradiance_units, blank=False)
-	GSC_MIxS_air_wind_speed = models.CharField(max_length=100, choices=GSC_MIxS_air_wind_speed_units, blank=False)
-	GSC_MIxS_air_temperature = models.CharField(max_length=100, choices=GSC_MIxS_air_temperature_units, blank=False)
-	GSC_MIxS_air_carbon_dioxide = models.CharField(max_length=100, choices=GSC_MIxS_air_carbon_dioxide_units, blank=False)
-	GSC_MIxS_air_carbon_monoxide = models.CharField(max_length=100, choices=GSC_MIxS_air_carbon_monoxide_units, blank=False)
-	GSC_MIxS_air_oxygen = models.CharField(max_length=100, choices=GSC_MIxS_air_oxygen_units, blank=False)
-	GSC_MIxS_air_air_particulate_matter_concentration = models.CharField(max_length=100, choices=GSC_MIxS_air_air_particulate_matter_concentration_units, blank=False)
-	GSC_MIxS_air_volatile_organic_compounds = models.CharField(max_length=100, choices=GSC_MIxS_air_volatile_organic_compounds_units, blank=False)
-	GSC_MIxS_air_methane = models.CharField(max_length=100, choices=GSC_MIxS_air_methane_units, blank=False)
-	GSC_MIxS_air_salinity = models.CharField(max_length=100, choices=GSC_MIxS_air_salinity_units, blank=False)
+	ventilation_rate = models.CharField(max_length=100, choices=ventilation_rate_units, blank=False)
+	barometric_pressure = models.CharField(max_length=100, choices=barometric_pressure_units, blank=False)
+	humidity = models.CharField(max_length=100, choices=humidity_units, blank=False)
+	pollutants = models.CharField(max_length=100, choices=pollutants_units, blank=False)
+	solar_irradiance = models.CharField(max_length=100, choices=solar_irradiance_units, blank=False)
+	wind_speed = models.CharField(max_length=100, choices=wind_speed_units, blank=False)
+	carbon_dioxide = models.CharField(max_length=100, choices=carbon_dioxide_units, blank=False)
+	carbon_monoxide = models.CharField(max_length=100, choices=carbon_monoxide_units, blank=False)
+	oxygen = models.CharField(max_length=100, choices=oxygen_units, blank=False)
+	air_particulate_matter_concentration = models.CharField(max_length=100, choices=air_particulate_matter_concentration_units, blank=False)
+	volatile_organic_compounds = models.CharField(max_length=100, choices=volatile_organic_compounds_units, blank=False)
 
 class GSC_MIxS_microbial_mat_biolfilm(SelfDescribingModel):
 
-	GSC_MIxS_microbial_mat_biolfilm_sequence_quality_check_choice = [('manual', 'manual'), ('none', 'none'), ('software', 'software')]
-	GSC_MIxS_microbial_mat_biolfilm_geographic_location_country_and_or_sea_choice = [('Afghanistan', 'Afghanistan'), ('Albania', 'Albania'), ('Algeria', 'Algeria'), ('American Samoa', 'American Samoa'), ('Andorra', 'Andorra'), ('Angola', 'Angola'), ('Anguilla', 'Anguilla'), ('Antarctica', 'Antarctica'), ('Antigua and Barbuda', 'Antigua and Barbuda'), ('Arctic Ocean', 'Arctic Ocean'), ('Argentina', 'Argentina'), ('Armenia', 'Armenia'), ('Aruba', 'Aruba'), ('Ashmore and Cartier Islands', 'Ashmore and Cartier Islands'), ('Atlantic Ocean', 'Atlantic Ocean'), ('Australia', 'Australia'), ('Austria', 'Austria'), ('Azerbaijan', 'Azerbaijan'), ('Bahamas', 'Bahamas'), ('Bahrain', 'Bahrain'), ('Baker Island', 'Baker Island'), ('Baltic Sea', 'Baltic Sea'), ('Bangladesh', 'Bangladesh'), ('Barbados', 'Barbados'), ('Bassas da India', 'Bassas da India'), ('Belarus', 'Belarus'), ('Belgium', 'Belgium'), ('Belize', 'Belize'), ('Benin', 'Benin'), ('Bermuda', 'Bermuda'), ('Bhutan', 'Bhutan'), ('Bolivia', 'Bolivia'), ('Borneo', 'Borneo'), ('Bosnia and Herzegovina', 'Bosnia and Herzegovina'), ('Botswana', 'Botswana'), ('Bouvet Island', 'Bouvet Island'), ('Brazil', 'Brazil'), ('British Virgin Islands', 'British Virgin Islands'), ('Brunei', 'Brunei'), ('Bulgaria', 'Bulgaria'), ('Burkina Faso', 'Burkina Faso'), ('Burundi', 'Burundi'), ('Cambodia', 'Cambodia'), ('Cameroon', 'Cameroon'), ('Canada', 'Canada'), ('Cape Verde', 'Cape Verde'), ('Cayman Islands', 'Cayman Islands'), ('Central African Republic', 'Central African Republic'), ('Chad', 'Chad'), ('Chile', 'Chile'), ('China', 'China'), ('Christmas Island', 'Christmas Island'), ('Clipperton Island', 'Clipperton Island'), ('Cocos Islands', 'Cocos Islands'), ('Colombia', 'Colombia'), ('Comoros', 'Comoros'), ('Cook Islands', 'Cook Islands'), ('Coral Sea Islands', 'Coral Sea Islands'), ('Costa Rica', 'Costa Rica'), ("Cote d'Ivoire", "Cote d'Ivoire"), ('Croatia', 'Croatia'), ('Cuba', 'Cuba'), ('Curacao', 'Curacao'), ('Cyprus', 'Cyprus'), ('Czech Republic', 'Czech Republic'), ('Democratic Republic of the Congo', 'Democratic Republic of the Congo'), ('Denmark', 'Denmark'), ('Djibouti', 'Djibouti'), ('Dominica', 'Dominica'), ('Dominican Republic', 'Dominican Republic'), ('East Timor', 'East Timor'), ('Ecuador', 'Ecuador'), ('Egypt', 'Egypt'), ('El Salvador', 'El Salvador'), ('Equatorial Guinea', 'Equatorial Guinea'), ('Eritrea', 'Eritrea'), ('Estonia', 'Estonia'), ('Ethiopia', 'Ethiopia'), ('Europa Island', 'Europa Island'), ('Falkland Islands (Islas Malvinas)', 'Falkland Islands (Islas Malvinas)'), ('Faroe Islands', 'Faroe Islands'), ('Fiji', 'Fiji'), ('Finland', 'Finland'), ('France', 'France'), ('French Guiana', 'French Guiana'), ('French Polynesia', 'French Polynesia'), ('French Southern and Antarctic Lands', 'French Southern and Antarctic Lands'), ('Gabon', 'Gabon'), ('Gambia', 'Gambia'), ('Gaza Strip', 'Gaza Strip'), ('Georgia', 'Georgia'), ('Germany', 'Germany'), ('Ghana', 'Ghana'), ('Gibraltar', 'Gibraltar'), ('Glorioso Islands', 'Glorioso Islands'), ('Greece', 'Greece'), ('Greenland', 'Greenland'), ('Grenada', 'Grenada'), ('Guadeloupe', 'Guadeloupe'), ('Guam', 'Guam'), ('Guatemala', 'Guatemala'), ('Guernsey', 'Guernsey'), ('Guinea', 'Guinea'), ('Guinea-Bissau', 'Guinea-Bissau'), ('Guyana', 'Guyana'), ('Haiti', 'Haiti'), ('Heard Island and McDonald Islands', 'Heard Island and McDonald Islands'), ('Honduras', 'Honduras'), ('Hong Kong', 'Hong Kong'), ('Howland Island', 'Howland Island'), ('Hungary', 'Hungary'), ('Iceland', 'Iceland'), ('India', 'India'), ('Indian Ocean', 'Indian Ocean'), ('Indonesia', 'Indonesia'), ('Iran', 'Iran'), ('Iraq', 'Iraq'), ('Ireland', 'Ireland'), ('Isle of Man', 'Isle of Man'), ('Israel', 'Israel'), ('Italy', 'Italy'), ('Jamaica', 'Jamaica'), ('Jan Mayen', 'Jan Mayen'), ('Japan', 'Japan'), ('Jarvis Island', 'Jarvis Island'), ('Jersey', 'Jersey'), ('Johnston Atoll', 'Johnston Atoll'), ('Jordan', 'Jordan'), ('Juan de Nova Island', 'Juan de Nova Island'), ('Kazakhstan', 'Kazakhstan'), ('Kenya', 'Kenya'), ('Kerguelen Archipelago', 'Kerguelen Archipelago'), ('Kingman Reef', 'Kingman Reef'), ('Kiribati', 'Kiribati'), ('Kosovo', 'Kosovo'), ('Kuwait', 'Kuwait'), ('Kyrgyzstan', 'Kyrgyzstan'), ('Laos', 'Laos'), ('Latvia', 'Latvia'), ('Lebanon', 'Lebanon'), ('Lesotho', 'Lesotho'), ('Liberia', 'Liberia'), ('Libya', 'Libya'), ('Liechtenstein', 'Liechtenstein'), ('Lithuania', 'Lithuania'), ('Luxembourg', 'Luxembourg'), ('Macau', 'Macau'), ('Macedonia', 'Macedonia'), ('Madagascar', 'Madagascar'), ('Malawi', 'Malawi'), ('Malaysia', 'Malaysia'), ('Maldives', 'Maldives'), ('Mali', 'Mali'), ('Malta', 'Malta'), ('Marshall Islands', 'Marshall Islands'), ('Martinique', 'Martinique'), ('Mauritania', 'Mauritania'), ('Mauritius', 'Mauritius'), ('Mayotte', 'Mayotte'), ('Mediterranean Sea', 'Mediterranean Sea'), ('Mexico', 'Mexico'), ('Micronesia', 'Micronesia'), ('Midway Islands', 'Midway Islands'), ('Moldova', 'Moldova'), ('Monaco', 'Monaco'), ('Mongolia', 'Mongolia'), ('Montenegro', 'Montenegro'), ('Montserrat', 'Montserrat'), ('Morocco', 'Morocco'), ('Mozambique', 'Mozambique'), ('Myanmar', 'Myanmar'), ('Namibia', 'Namibia'), ('Nauru', 'Nauru'), ('Navassa Island', 'Navassa Island'), ('Nepal', 'Nepal'), ('Netherlands', 'Netherlands'), ('New Caledonia', 'New Caledonia'), ('New Zealand', 'New Zealand'), ('Nicaragua', 'Nicaragua'), ('Niger', 'Niger'), ('Nigeria', 'Nigeria'), ('Niue', 'Niue'), ('Norfolk Island', 'Norfolk Island'), ('North Korea', 'North Korea'), ('North Sea', 'North Sea'), ('Northern Mariana Islands', 'Northern Mariana Islands'), ('Norway', 'Norway'), ('Oman', 'Oman'), ('Pacific Ocean', 'Pacific Ocean'), ('Pakistan', 'Pakistan'), ('Palau', 'Palau'), ('Palmyra Atoll', 'Palmyra Atoll'), ('Panama', 'Panama'), ('Papua New Guinea', 'Papua New Guinea'), ('Paracel Islands', 'Paracel Islands'), ('Paraguay', 'Paraguay'), ('Peru', 'Peru'), ('Philippines', 'Philippines'), ('Pitcairn Islands', 'Pitcairn Islands'), ('Poland', 'Poland'), ('Portugal', 'Portugal'), ('Puerto Rico', 'Puerto Rico'), ('Qatar', 'Qatar'), ('Republic of the Congo', 'Republic of the Congo'), ('Reunion', 'Reunion'), ('Romania', 'Romania'), ('Ross Sea', 'Ross Sea'), ('Russia', 'Russia'), ('Rwanda', 'Rwanda'), ('Saint Helena', 'Saint Helena'), ('Saint Kitts and Nevis', 'Saint Kitts and Nevis'), ('Saint Lucia', 'Saint Lucia'), ('Saint Pierre and Miquelon', 'Saint Pierre and Miquelon'), ('Saint Vincent and the Grenadines', 'Saint Vincent and the Grenadines'), ('Samoa', 'Samoa'), ('San Marino', 'San Marino'), ('Sao Tome and Principe', 'Sao Tome and Principe'), ('Saudi Arabia', 'Saudi Arabia'), ('Senegal', 'Senegal'), ('Serbia', 'Serbia'), ('Seychelles', 'Seychelles'), ('Sierra Leone', 'Sierra Leone'), ('Singapore', 'Singapore'), ('Sint Maarten', 'Sint Maarten'), ('Slovakia', 'Slovakia'), ('Slovenia', 'Slovenia'), ('Solomon Islands', 'Solomon Islands'), ('Somalia', 'Somalia'), ('South Africa', 'South Africa'), ('South Georgia and the South Sandwich Islands', 'South Georgia and the South Sandwich Islands'), ('South Korea', 'South Korea'), ('Southern Ocean', 'Southern Ocean'), ('Spain', 'Spain'), ('Spratly Islands', 'Spratly Islands'), ('Sri Lanka', 'Sri Lanka'), ('Sudan', 'Sudan'), ('Suriname', 'Suriname'), ('Svalbard', 'Svalbard'), ('Swaziland', 'Swaziland'), ('Sweden', 'Sweden'), ('Switzerland', 'Switzerland'), ('Syria', 'Syria'), ('Taiwan', 'Taiwan'), ('Tajikistan', 'Tajikistan'), ('Tanzania', 'Tanzania'), ('Tasman Sea', 'Tasman Sea'), ('Thailand', 'Thailand'), ('Togo', 'Togo'), ('Tokelau', 'Tokelau'), ('Tonga', 'Tonga'), ('Trinidad and Tobago', 'Trinidad and Tobago'), ('Tromelin Island', 'Tromelin Island'), ('Tunisia', 'Tunisia'), ('Turkey', 'Turkey'), ('Turkmenistan', 'Turkmenistan'), ('Turks and Caicos Islands', 'Turks and Caicos Islands'), ('Tuvalu', 'Tuvalu'), ('USA', 'USA'), ('Uganda', 'Uganda'), ('Ukraine', 'Ukraine'), ('United Arab Emirates', 'United Arab Emirates'), ('United Kingdom', 'United Kingdom'), ('Uruguay', 'Uruguay'), ('Uzbekistan', 'Uzbekistan'), ('Vanuatu', 'Vanuatu'), ('Venezuela', 'Venezuela'), ('Viet Nam', 'Viet Nam'), ('Virgin Islands', 'Virgin Islands'), ('Wake Island', 'Wake Island'), ('Wallis and Futuna', 'Wallis and Futuna'), ('West Bank', 'West Bank'), ('Western Sahara', 'Western Sahara'), ('Yemen', 'Yemen'), ('Zambia', 'Zambia'), ('Zimbabwe', 'Zimbabwe'), ('missing: control sample', 'missing: control sample'), ('missing: data agreement established pre-2023', 'missing: data agreement established pre-2023'), ('missing: endangered species', 'missing: endangered species'), ('missing: human-identifiable', 'missing: human-identifiable'), ('missing: lab stock', 'missing: lab stock'), ('missing: sample group', 'missing: sample group'), ('missing: synthetic construct', 'missing: synthetic construct'), ('missing: third party data', 'missing: third party data'), ('not applicable', 'not applicable'), ('not collected', 'not collected'), ('not provided', 'not provided'), ('restricted access', 'restricted access')]
-	GSC_MIxS_microbial_mat_biolfilm_oxygenation_status_of_sample_choice = [('aerobic', 'aerobic'), ('anaerobic', 'anaerobic')]
-	GSC_MIxS_microbial_mat_biolfilm_trophic_level_choice = [('autotroph', 'autotroph'), ('carboxydotroph', 'carboxydotroph'), ('chemoautotroph', 'chemoautotroph'), ('chemoheterotroph', 'chemoheterotroph'), ('chemolithoautotroph', 'chemolithoautotroph'), ('chemolithotroph', 'chemolithotroph'), ('chemoorganoheterotroph', 'chemoorganoheterotroph'), ('chemoorganotroph', 'chemoorganotroph'), ('chemosynthetic', 'chemosynthetic'), ('chemotroph', 'chemotroph'), ('copiotroph', 'copiotroph'), ('diazotroph', 'diazotroph'), ('facultative autotroph', 'facultative autotroph'), ('heterotroph', 'heterotroph'), ('lithoautotroph', 'lithoautotroph'), ('lithoheterotroph', 'lithoheterotroph'), ('lithotroph', 'lithotroph'), ('methanotroph', 'methanotroph'), ('methylotroph', 'methylotroph'), ('mixotroph', 'mixotroph'), ('obligate chemoautolithotroph', 'obligate chemoautolithotroph'), ('oligotroph', 'oligotroph'), ('organoheterotroph', 'organoheterotroph'), ('organotroph', 'organotroph'), ('photoautotroph', 'photoautotroph'), ('photoheterotroph', 'photoheterotroph'), ('photolithoautotroph', 'photolithoautotroph'), ('photolithotroph', 'photolithotroph'), ('photosynthetic', 'photosynthetic'), ('phototroph', 'phototroph')]
-	GSC_MIxS_microbial_mat_biolfilm_relationship_to_oxygen_choice = [('aerobe', 'aerobe'), ('anaerobe', 'anaerobe'), ('facultative', 'facultative'), ('microaerophilic', 'microaerophilic'), ('microanaerobe', 'microanaerobe'), ('obligate aerobe', 'obligate aerobe'), ('obligate anaerobe', 'obligate anaerobe')]
-	GSC_MIxS_microbial_mat_biolfilm_observed_biotic_relationship_choice = [('commensal', 'commensal'), ('free living', 'free living'), ('mutualism', 'mutualism'), ('parasite', 'parasite'), ('symbiont', 'symbiont')]
 
-	GSC_MIxS_microbial_mat_biolfilm_number_of_replicons_validator = "[+-]?[0-9]+"
-	GSC_MIxS_microbial_mat_biolfilm_extrachromosomal_elements_validator = "[+-]?[0-9]+"
-	GSC_MIxS_microbial_mat_biolfilm_estimated_size_validator = "[+-]?[0-9]+"
-	GSC_MIxS_microbial_mat_biolfilm_sample_volume_or_weight_for_DNA_extraction_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_microbial_mat_biolfilm_library_size_validator = "[+-]?[0-9]+"
-	GSC_MIxS_microbial_mat_biolfilm_library_reads_sequenced_validator = "[+-]?[0-9]+"
-	GSC_MIxS_microbial_mat_biolfilm_collection_date_validator = "(^[12][0-9]{3}(-(0[1-9]|1[0-2])(-(0[1-9]|[12][0-9]|3[01])(T[0-9]{2}:[0-9]{2}(:[0-9]{2})?Z?([+-][0-9]{1,2})?)?)?)?(/[0-9]{4}(-[0-9]{2}(-[0-9]{2}(T[0-9]{2}:[0-9]{2}(:[0-9]{2})?Z?([+-][0-9]{1,2})?)?)?)?)?$)|(^not collected$)|(^not provided$)|(^restricted access$)|(^missing: control sample$)|(^missing: sample group$)|(^missing: synthetic construct$)|(^missing: lab stock$)|(^missing: third party data$)|(^missing: data agreement established pre-2023$)|(^missing: endangered species$)|(^missing: human-identifiable$)"
-	GSC_MIxS_microbial_mat_biolfilm_altitude_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_microbial_mat_biolfilm_geographic_location_latitude_validator = "(^[+-]?[0-9]+.?[0-9]{0,8}$)|(^not collected$)|(^not provided$)|(^restricted access$)|(^missing: control sample$)|(^missing: sample group$)|(^missing: synthetic construct$)|(^missing: lab stock$)|(^missing: third party data$)|(^missing: data agreement established pre-2023$)|(^missing: endangered species$)|(^missing: human-identifiable$)"
-	GSC_MIxS_microbial_mat_biolfilm_geographic_location_longitude_validator = "(^[+-]?[0-9]+.?[0-9]{0,8}$)|(^not collected$)|(^not provided$)|(^restricted access$)|(^missing: control sample$)|(^missing: sample group$)|(^missing: synthetic construct$)|(^missing: lab stock$)|(^missing: third party data$)|(^missing: data agreement established pre-2023$)|(^missing: endangered species$)|(^missing: human-identifiable$)"
-	GSC_MIxS_microbial_mat_biolfilm_depth_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_microbial_mat_biolfilm_elevation_validator = "[+-]?(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_microbial_mat_biolfilm_amount_or_size_of_sample_collected_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_microbial_mat_biolfilm_sample_storage_duration_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_microbial_mat_biolfilm_sample_storage_temperature_validator = "[+-]?(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_microbial_mat_biolfilm_alkalinity_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_microbial_mat_biolfilm_mean_friction_velocity_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_microbial_mat_biolfilm_mean_peak_friction_velocity_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_microbial_mat_biolfilm_pressure_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_microbial_mat_biolfilm_temperature_validator = "[+-]?(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_microbial_mat_biolfilm_turbidity_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_microbial_mat_biolfilm_pH_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_microbial_mat_biolfilm_alkyl_diethers_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_microbial_mat_biolfilm_aminopeptidase_activity_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_microbial_mat_biolfilm_ammonium_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_microbial_mat_biolfilm_bacterial_carbon_production_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_microbial_mat_biolfilm_bishomohopanol_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_microbial_mat_biolfilm_bromide_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_microbial_mat_biolfilm_calcium_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_microbial_mat_biolfilm_carbon_nitrogen_ratio_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_microbial_mat_biolfilm_chloride_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_microbial_mat_biolfilm_chlorophyll_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_microbial_mat_biolfilm_diether_lipids_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_microbial_mat_biolfilm_dissolved_carbon_dioxide_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_microbial_mat_biolfilm_dissolved_hydrogen_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_microbial_mat_biolfilm_dissolved_inorganic_carbon_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_microbial_mat_biolfilm_dissolved_organic_carbon_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_microbial_mat_biolfilm_dissolved_organic_nitrogen_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_microbial_mat_biolfilm_methane_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_microbial_mat_biolfilm_dissolved_oxygen_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_microbial_mat_biolfilm_glucosidase_activity_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_microbial_mat_biolfilm_magnesium_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_microbial_mat_biolfilm_n_alkanes_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_microbial_mat_biolfilm_nitrate_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_microbial_mat_biolfilm_nitrite_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_microbial_mat_biolfilm_nitrogen_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_microbial_mat_biolfilm_organic_carbon_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_microbial_mat_biolfilm_organic_matter_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_microbial_mat_biolfilm_organic_nitrogen_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_microbial_mat_biolfilm_particulate_organic_carbon_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_microbial_mat_biolfilm_petroleum_hydrocarbon_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_microbial_mat_biolfilm_phaeopigments_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_microbial_mat_biolfilm_phosphate_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_microbial_mat_biolfilm_phospholipid_fatty_acid_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_microbial_mat_biolfilm_potassium_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_microbial_mat_biolfilm_redox_potential_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_microbial_mat_biolfilm_salinity_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_microbial_mat_biolfilm_total_carbon_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_microbial_mat_biolfilm_silicate_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_microbial_mat_biolfilm_sodium_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_microbial_mat_biolfilm_total_organic_carbon_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_microbial_mat_biolfilm_water_content_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_microbial_mat_biolfilm_sulfate_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_microbial_mat_biolfilm_sulfide_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	GSC_MIxS_microbial_mat_biolfilm_total_nitrogen_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	turbidity_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
 
 	sampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE, default=1)
 	sample = models.ForeignKey(Sample, on_delete=models.CASCADE, default=1)
-	GSC_MIxS_microbial_mat_biolfilm_project_name= models.CharField(max_length=100, blank=False,help_text="Name of th")
-	GSC_MIxS_microbial_mat_biolfilm_experimental_factor= models.CharField(max_length=100, blank=True,help_text="Experiment")
-	GSC_MIxS_microbial_mat_biolfilm_ploidy= models.CharField(max_length=100, blank=True,help_text="The ploidy")
-	GSC_MIxS_microbial_mat_biolfilm_number_of_replicons= models.CharField(max_length=100, blank=True,help_text="Reports th", validators=[RegexValidator(GSC_MIxS_microbial_mat_biolfilm_number_of_replicons_validator)])
-	GSC_MIxS_microbial_mat_biolfilm_extrachromosomal_elements= models.CharField(max_length=100, blank=True,help_text="Do plasmid", validators=[RegexValidator(GSC_MIxS_microbial_mat_biolfilm_extrachromosomal_elements_validator)])
-	GSC_MIxS_microbial_mat_biolfilm_estimated_size= models.CharField(max_length=100, blank=True,help_text="The estima", validators=[RegexValidator(GSC_MIxS_microbial_mat_biolfilm_estimated_size_validator)])
-	GSC_MIxS_microbial_mat_biolfilm_reference_for_biomaterial= models.CharField(max_length=100, blank=True,help_text="Primary pu")
-	GSC_MIxS_microbial_mat_biolfilm_annotation_source= models.CharField(max_length=100, blank=True,help_text="For cases ")
-	GSC_MIxS_microbial_mat_biolfilm_sample_volume_or_weight_for_DNA_extraction= models.CharField(max_length=100, blank=True,help_text="Volume (ml", validators=[RegexValidator(GSC_MIxS_microbial_mat_biolfilm_sample_volume_or_weight_for_DNA_extraction_validator)])
-	GSC_MIxS_microbial_mat_biolfilm_nucleic_acid_extraction= models.CharField(max_length=100, blank=True,help_text="A link to ")
-	GSC_MIxS_microbial_mat_biolfilm_nucleic_acid_amplification= models.CharField(max_length=100, blank=True,help_text="A link to ")
-	GSC_MIxS_microbial_mat_biolfilm_library_size= models.CharField(max_length=100, blank=True,help_text="Total numb", validators=[RegexValidator(GSC_MIxS_microbial_mat_biolfilm_library_size_validator)])
-	GSC_MIxS_microbial_mat_biolfilm_library_reads_sequenced= models.CharField(max_length=100, blank=True,help_text="Total numb", validators=[RegexValidator(GSC_MIxS_microbial_mat_biolfilm_library_reads_sequenced_validator)])
-	GSC_MIxS_microbial_mat_biolfilm_library_construction_method= models.CharField(max_length=100, blank=True,help_text="Library co")
-	GSC_MIxS_microbial_mat_biolfilm_library_vector= models.CharField(max_length=100, blank=True,help_text="Cloning ve")
-	GSC_MIxS_microbial_mat_biolfilm_library_screening_strategy= models.CharField(max_length=100, blank=True,help_text="Specific e")
-	GSC_MIxS_microbial_mat_biolfilm_target_gene= models.CharField(max_length=100, blank=True,help_text="Targeted g")
-	GSC_MIxS_microbial_mat_biolfilm_target_subfragment= models.CharField(max_length=100, blank=True,help_text="Name of su")
-	GSC_MIxS_microbial_mat_biolfilm_pcr_primers= models.CharField(max_length=100, blank=True,help_text="PCR primer")
-	GSC_MIxS_microbial_mat_biolfilm_multiplex_identifiers= models.CharField(max_length=100, blank=True,help_text="Molecular ")
-	GSC_MIxS_microbial_mat_biolfilm_adapters= models.CharField(max_length=100, blank=True,help_text="Adapters p")
-	GSC_MIxS_microbial_mat_biolfilm_pcr_conditions= models.CharField(max_length=100, blank=True,help_text="Descriptio")
-	GSC_MIxS_microbial_mat_biolfilm_sequencing_method= models.CharField(max_length=100, blank=True,help_text="Sequencing")
-	GSC_MIxS_microbial_mat_biolfilm_sequence_quality_check= models.CharField(max_length=100, blank=True,help_text="Indicate i", choices=GSC_MIxS_microbial_mat_biolfilm_sequence_quality_check_choice)
-	GSC_MIxS_microbial_mat_biolfilm_chimera_check_software= models.CharField(max_length=100, blank=True,help_text="Tool(s) us")
-	GSC_MIxS_microbial_mat_biolfilm_relevant_electronic_resources= models.CharField(max_length=100, blank=True,help_text="A related ")
-	GSC_MIxS_microbial_mat_biolfilm_relevant_standard_operating_procedures= models.CharField(max_length=100, blank=True,help_text="Standard o")
-	GSC_MIxS_microbial_mat_biolfilm_negative_control_type= models.CharField(max_length=100, blank=True,help_text="The substa")
-	GSC_MIxS_microbial_mat_biolfilm_positive_control_type= models.CharField(max_length=100, blank=True,help_text="The substa")
-	GSC_MIxS_microbial_mat_biolfilm_collection_date= models.CharField(max_length=100, blank=False,help_text="The date t", validators=[RegexValidator(GSC_MIxS_microbial_mat_biolfilm_collection_date_validator)])
-	GSC_MIxS_microbial_mat_biolfilm_altitude= models.CharField(max_length=100, blank=True,help_text="The altitu", validators=[RegexValidator(GSC_MIxS_microbial_mat_biolfilm_altitude_validator)])
-	GSC_MIxS_microbial_mat_biolfilm_geographic_location_country_and_or_sea= models.CharField(max_length=100, blank=False,help_text="The locati", choices=GSC_MIxS_microbial_mat_biolfilm_geographic_location_country_and_or_sea_choice)
-	GSC_MIxS_microbial_mat_biolfilm_geographic_location_latitude= models.CharField(max_length=100, blank=False,help_text="The geogra", validators=[RegexValidator(GSC_MIxS_microbial_mat_biolfilm_geographic_location_latitude_validator)])
-	GSC_MIxS_microbial_mat_biolfilm_geographic_location_longitude= models.CharField(max_length=100, blank=False,help_text="The geogra", validators=[RegexValidator(GSC_MIxS_microbial_mat_biolfilm_geographic_location_longitude_validator)])
-	GSC_MIxS_microbial_mat_biolfilm_geographic_location_region_and_locality= models.CharField(max_length=100, blank=True,help_text="The geogra")
-	GSC_MIxS_microbial_mat_biolfilm_depth= models.CharField(max_length=100, blank=False,help_text="The vertic", validators=[RegexValidator(GSC_MIxS_microbial_mat_biolfilm_depth_validator)])
-	GSC_MIxS_microbial_mat_biolfilm_broad_scale_environmental_context= models.CharField(max_length=100, blank=False,help_text="Report the")
-	GSC_MIxS_microbial_mat_biolfilm_local_environmental_context= models.CharField(max_length=100, blank=False,help_text="Report the")
-	GSC_MIxS_microbial_mat_biolfilm_environmental_medium= models.CharField(max_length=100, blank=False,help_text="Report the")
-	GSC_MIxS_microbial_mat_biolfilm_elevation= models.CharField(max_length=100, blank=False,help_text="The elevat", validators=[RegexValidator(GSC_MIxS_microbial_mat_biolfilm_elevation_validator)])
-	GSC_MIxS_microbial_mat_biolfilm_source_material_identifiers= models.CharField(max_length=100, blank=True,help_text="A unique i")
-	GSC_MIxS_microbial_mat_biolfilm_sample_material_processing= models.CharField(max_length=100, blank=True,help_text="A brief de")
-	GSC_MIxS_microbial_mat_biolfilm_isolation_and_growth_condition= models.CharField(max_length=100, blank=True,help_text="Publicatio")
-	GSC_MIxS_microbial_mat_biolfilm_propagation= models.CharField(max_length=100, blank=True,help_text="The type o")
-	GSC_MIxS_microbial_mat_biolfilm_amount_or_size_of_sample_collected= models.CharField(max_length=100, blank=True,help_text="The total ", validators=[RegexValidator(GSC_MIxS_microbial_mat_biolfilm_amount_or_size_of_sample_collected_validator)])
-	GSC_MIxS_microbial_mat_biolfilm_biomass= models.CharField(max_length=100, blank=True,help_text="amount of ")
-	GSC_MIxS_microbial_mat_biolfilm_oxygenation_status_of_sample= models.CharField(max_length=100, blank=True,help_text="oxygenatio", choices=GSC_MIxS_microbial_mat_biolfilm_oxygenation_status_of_sample_choice)
-	GSC_MIxS_microbial_mat_biolfilm_organism_count= models.CharField(max_length=100, blank=True,help_text="Total cell")
-	GSC_MIxS_microbial_mat_biolfilm_sample_storage_duration= models.CharField(max_length=100, blank=True,help_text="duration f", validators=[RegexValidator(GSC_MIxS_microbial_mat_biolfilm_sample_storage_duration_validator)])
-	GSC_MIxS_microbial_mat_biolfilm_sample_storage_temperature= models.CharField(max_length=100, blank=True,help_text="temperatur", validators=[RegexValidator(GSC_MIxS_microbial_mat_biolfilm_sample_storage_temperature_validator)])
-	GSC_MIxS_microbial_mat_biolfilm_sample_storage_location= models.CharField(max_length=100, blank=True,help_text="location a")
-	GSC_MIxS_microbial_mat_biolfilm_sample_collection_device= models.CharField(max_length=100, blank=True,help_text="The device")
-	GSC_MIxS_microbial_mat_biolfilm_sample_collection_method= models.CharField(max_length=100, blank=True,help_text="The method")
-	GSC_MIxS_microbial_mat_biolfilm_host_disease_status= models.CharField(max_length=100, blank=True,help_text="list of di")
-	GSC_MIxS_microbial_mat_biolfilm_host_scientific_name= models.CharField(max_length=100, blank=True,help_text="Scientific")
-	GSC_MIxS_microbial_mat_biolfilm_alkalinity= models.CharField(max_length=100, blank=True,help_text="alkalinity", validators=[RegexValidator(GSC_MIxS_microbial_mat_biolfilm_alkalinity_validator)])
-	GSC_MIxS_microbial_mat_biolfilm_mean_friction_velocity= models.CharField(max_length=100, blank=True,help_text="measuremen", validators=[RegexValidator(GSC_MIxS_microbial_mat_biolfilm_mean_friction_velocity_validator)])
-	GSC_MIxS_microbial_mat_biolfilm_mean_peak_friction_velocity= models.CharField(max_length=100, blank=True,help_text="measuremen", validators=[RegexValidator(GSC_MIxS_microbial_mat_biolfilm_mean_peak_friction_velocity_validator)])
-	GSC_MIxS_microbial_mat_biolfilm_pressure= models.CharField(max_length=100, blank=True,help_text="pressure t", validators=[RegexValidator(GSC_MIxS_microbial_mat_biolfilm_pressure_validator)])
-	GSC_MIxS_microbial_mat_biolfilm_temperature= models.CharField(max_length=100, blank=True,help_text="temperatur", validators=[RegexValidator(GSC_MIxS_microbial_mat_biolfilm_temperature_validator)])
-	GSC_MIxS_microbial_mat_biolfilm_turbidity= models.CharField(max_length=100, blank=True,help_text="turbidity ", validators=[RegexValidator(GSC_MIxS_microbial_mat_biolfilm_turbidity_validator)])
-	GSC_MIxS_microbial_mat_biolfilm_pH= models.CharField(max_length=100, blank=True,help_text="pH measure", validators=[RegexValidator(GSC_MIxS_microbial_mat_biolfilm_pH_validator)])
-	GSC_MIxS_microbial_mat_biolfilm_alkyl_diethers= models.CharField(max_length=100, blank=True,help_text="concentrat", validators=[RegexValidator(GSC_MIxS_microbial_mat_biolfilm_alkyl_diethers_validator)])
-	GSC_MIxS_microbial_mat_biolfilm_aminopeptidase_activity= models.CharField(max_length=100, blank=True,help_text="measuremen", validators=[RegexValidator(GSC_MIxS_microbial_mat_biolfilm_aminopeptidase_activity_validator)])
-	GSC_MIxS_microbial_mat_biolfilm_ammonium= models.CharField(max_length=100, blank=True,help_text="concentrat", validators=[RegexValidator(GSC_MIxS_microbial_mat_biolfilm_ammonium_validator)])
-	GSC_MIxS_microbial_mat_biolfilm_bacterial_carbon_production= models.CharField(max_length=100, blank=True,help_text="measuremen", validators=[RegexValidator(GSC_MIxS_microbial_mat_biolfilm_bacterial_carbon_production_validator)])
-	GSC_MIxS_microbial_mat_biolfilm_bishomohopanol= models.CharField(max_length=100, blank=True,help_text="concentrat", validators=[RegexValidator(GSC_MIxS_microbial_mat_biolfilm_bishomohopanol_validator)])
-	GSC_MIxS_microbial_mat_biolfilm_bromide= models.CharField(max_length=100, blank=True,help_text="concentrat", validators=[RegexValidator(GSC_MIxS_microbial_mat_biolfilm_bromide_validator)])
-	GSC_MIxS_microbial_mat_biolfilm_calcium= models.CharField(max_length=100, blank=True,help_text="concentrat", validators=[RegexValidator(GSC_MIxS_microbial_mat_biolfilm_calcium_validator)])
-	GSC_MIxS_microbial_mat_biolfilm_carbon_nitrogen_ratio= models.CharField(max_length=100, blank=True,help_text="ratio of a", validators=[RegexValidator(GSC_MIxS_microbial_mat_biolfilm_carbon_nitrogen_ratio_validator)])
-	GSC_MIxS_microbial_mat_biolfilm_chloride= models.CharField(max_length=100, blank=True,help_text="concentrat", validators=[RegexValidator(GSC_MIxS_microbial_mat_biolfilm_chloride_validator)])
-	GSC_MIxS_microbial_mat_biolfilm_chlorophyll= models.CharField(max_length=100, blank=True,help_text="concentrat", validators=[RegexValidator(GSC_MIxS_microbial_mat_biolfilm_chlorophyll_validator)])
-	GSC_MIxS_microbial_mat_biolfilm_diether_lipids= models.CharField(max_length=100, blank=True,help_text="concentrat", validators=[RegexValidator(GSC_MIxS_microbial_mat_biolfilm_diether_lipids_validator)])
-	GSC_MIxS_microbial_mat_biolfilm_dissolved_carbon_dioxide= models.CharField(max_length=100, blank=True,help_text="concentrat", validators=[RegexValidator(GSC_MIxS_microbial_mat_biolfilm_dissolved_carbon_dioxide_validator)])
-	GSC_MIxS_microbial_mat_biolfilm_dissolved_hydrogen= models.CharField(max_length=100, blank=True,help_text="concentrat", validators=[RegexValidator(GSC_MIxS_microbial_mat_biolfilm_dissolved_hydrogen_validator)])
-	GSC_MIxS_microbial_mat_biolfilm_dissolved_inorganic_carbon= models.CharField(max_length=100, blank=True,help_text="dissolved ", validators=[RegexValidator(GSC_MIxS_microbial_mat_biolfilm_dissolved_inorganic_carbon_validator)])
-	GSC_MIxS_microbial_mat_biolfilm_dissolved_organic_carbon= models.CharField(max_length=100, blank=True,help_text="concentrat", validators=[RegexValidator(GSC_MIxS_microbial_mat_biolfilm_dissolved_organic_carbon_validator)])
-	GSC_MIxS_microbial_mat_biolfilm_dissolved_organic_nitrogen= models.CharField(max_length=100, blank=True,help_text="dissolved ", validators=[RegexValidator(GSC_MIxS_microbial_mat_biolfilm_dissolved_organic_nitrogen_validator)])
-	GSC_MIxS_microbial_mat_biolfilm_methane= models.CharField(max_length=100, blank=True,help_text="methane (g", validators=[RegexValidator(GSC_MIxS_microbial_mat_biolfilm_methane_validator)])
-	GSC_MIxS_microbial_mat_biolfilm_dissolved_oxygen= models.CharField(max_length=100, blank=True,help_text="concentrat", validators=[RegexValidator(GSC_MIxS_microbial_mat_biolfilm_dissolved_oxygen_validator)])
-	GSC_MIxS_microbial_mat_biolfilm_glucosidase_activity= models.CharField(max_length=100, blank=True,help_text="measuremen", validators=[RegexValidator(GSC_MIxS_microbial_mat_biolfilm_glucosidase_activity_validator)])
-	GSC_MIxS_microbial_mat_biolfilm_magnesium= models.CharField(max_length=100, blank=True,help_text="concentrat", validators=[RegexValidator(GSC_MIxS_microbial_mat_biolfilm_magnesium_validator)])
-	GSC_MIxS_microbial_mat_biolfilm_n_alkanes= models.CharField(max_length=100, blank=True,help_text="concentrat", validators=[RegexValidator(GSC_MIxS_microbial_mat_biolfilm_n_alkanes_validator)])
-	GSC_MIxS_microbial_mat_biolfilm_nitrate= models.CharField(max_length=100, blank=True,help_text="concentrat", validators=[RegexValidator(GSC_MIxS_microbial_mat_biolfilm_nitrate_validator)])
-	GSC_MIxS_microbial_mat_biolfilm_nitrite= models.CharField(max_length=100, blank=True,help_text="concentrat", validators=[RegexValidator(GSC_MIxS_microbial_mat_biolfilm_nitrite_validator)])
-	GSC_MIxS_microbial_mat_biolfilm_nitrogen= models.CharField(max_length=100, blank=True,help_text="concentrat", validators=[RegexValidator(GSC_MIxS_microbial_mat_biolfilm_nitrogen_validator)])
-	GSC_MIxS_microbial_mat_biolfilm_organic_carbon= models.CharField(max_length=100, blank=True,help_text="concentrat", validators=[RegexValidator(GSC_MIxS_microbial_mat_biolfilm_organic_carbon_validator)])
-	GSC_MIxS_microbial_mat_biolfilm_organic_matter= models.CharField(max_length=100, blank=True,help_text="concentrat", validators=[RegexValidator(GSC_MIxS_microbial_mat_biolfilm_organic_matter_validator)])
-	GSC_MIxS_microbial_mat_biolfilm_organic_nitrogen= models.CharField(max_length=100, blank=True,help_text="concentrat", validators=[RegexValidator(GSC_MIxS_microbial_mat_biolfilm_organic_nitrogen_validator)])
-	GSC_MIxS_microbial_mat_biolfilm_particulate_organic_carbon= models.CharField(max_length=100, blank=True,help_text="concentrat", validators=[RegexValidator(GSC_MIxS_microbial_mat_biolfilm_particulate_organic_carbon_validator)])
-	GSC_MIxS_microbial_mat_biolfilm_petroleum_hydrocarbon= models.CharField(max_length=100, blank=True,help_text="concentrat", validators=[RegexValidator(GSC_MIxS_microbial_mat_biolfilm_petroleum_hydrocarbon_validator)])
-	GSC_MIxS_microbial_mat_biolfilm_phaeopigments= models.CharField(max_length=100, blank=True,help_text="concentrat", validators=[RegexValidator(GSC_MIxS_microbial_mat_biolfilm_phaeopigments_validator)])
-	GSC_MIxS_microbial_mat_biolfilm_phosphate= models.CharField(max_length=100, blank=True,help_text="concentrat", validators=[RegexValidator(GSC_MIxS_microbial_mat_biolfilm_phosphate_validator)])
-	GSC_MIxS_microbial_mat_biolfilm_phospholipid_fatty_acid= models.CharField(max_length=100, blank=True,help_text="concentrat", validators=[RegexValidator(GSC_MIxS_microbial_mat_biolfilm_phospholipid_fatty_acid_validator)])
-	GSC_MIxS_microbial_mat_biolfilm_potassium= models.CharField(max_length=100, blank=True,help_text="concentrat", validators=[RegexValidator(GSC_MIxS_microbial_mat_biolfilm_potassium_validator)])
-	GSC_MIxS_microbial_mat_biolfilm_redox_potential= models.CharField(max_length=100, blank=True,help_text="redox pote", validators=[RegexValidator(GSC_MIxS_microbial_mat_biolfilm_redox_potential_validator)])
-	GSC_MIxS_microbial_mat_biolfilm_salinity= models.CharField(max_length=100, blank=True,help_text="The total ", validators=[RegexValidator(GSC_MIxS_microbial_mat_biolfilm_salinity_validator)])
-	GSC_MIxS_microbial_mat_biolfilm_total_carbon= models.CharField(max_length=100, blank=True,help_text="total carb", validators=[RegexValidator(GSC_MIxS_microbial_mat_biolfilm_total_carbon_validator)])
-	GSC_MIxS_microbial_mat_biolfilm_silicate= models.CharField(max_length=100, blank=True,help_text="concentrat", validators=[RegexValidator(GSC_MIxS_microbial_mat_biolfilm_silicate_validator)])
-	GSC_MIxS_microbial_mat_biolfilm_sodium= models.CharField(max_length=100, blank=True,help_text="sodium con", validators=[RegexValidator(GSC_MIxS_microbial_mat_biolfilm_sodium_validator)])
-	GSC_MIxS_microbial_mat_biolfilm_total_organic_carbon= models.CharField(max_length=100, blank=True,help_text="Definition", validators=[RegexValidator(GSC_MIxS_microbial_mat_biolfilm_total_organic_carbon_validator)])
-	GSC_MIxS_microbial_mat_biolfilm_water_content= models.CharField(max_length=100, blank=True,help_text="water cont", validators=[RegexValidator(GSC_MIxS_microbial_mat_biolfilm_water_content_validator)])
-	GSC_MIxS_microbial_mat_biolfilm_sulfate= models.CharField(max_length=100, blank=True,help_text="concentrat", validators=[RegexValidator(GSC_MIxS_microbial_mat_biolfilm_sulfate_validator)])
-	GSC_MIxS_microbial_mat_biolfilm_sulfide= models.CharField(max_length=100, blank=True,help_text="concentrat", validators=[RegexValidator(GSC_MIxS_microbial_mat_biolfilm_sulfide_validator)])
-	GSC_MIxS_microbial_mat_biolfilm_total_nitrogen= models.CharField(max_length=100, blank=True,help_text="total nitr", validators=[RegexValidator(GSC_MIxS_microbial_mat_biolfilm_total_nitrogen_validator)])
-	GSC_MIxS_microbial_mat_biolfilm_subspecific_genetic_lineage= models.CharField(max_length=100, blank=True,help_text="Informatio")
-	GSC_MIxS_microbial_mat_biolfilm_trophic_level= models.CharField(max_length=100, blank=True,help_text="Trophic le", choices=GSC_MIxS_microbial_mat_biolfilm_trophic_level_choice)
-	GSC_MIxS_microbial_mat_biolfilm_relationship_to_oxygen= models.CharField(max_length=100, blank=True,help_text="Is this or", choices=GSC_MIxS_microbial_mat_biolfilm_relationship_to_oxygen_choice)
-	GSC_MIxS_microbial_mat_biolfilm_known_pathogenicity= models.CharField(max_length=100, blank=True,help_text="To what is")
-	GSC_MIxS_microbial_mat_biolfilm_encoded_traits= models.CharField(max_length=100, blank=True,help_text="Should inc")
-	GSC_MIxS_microbial_mat_biolfilm_observed_biotic_relationship= models.CharField(max_length=100, blank=True,help_text="Is it free", choices=GSC_MIxS_microbial_mat_biolfilm_observed_biotic_relationship_choice)
-	GSC_MIxS_microbial_mat_biolfilm_chemical_administration= models.CharField(max_length=100, blank=True,help_text="list of ch")
-	GSC_MIxS_microbial_mat_biolfilm_perturbation= models.CharField(max_length=100, blank=True,help_text="type of pe")
+	turbidity= models.CharField(max_length=100, blank=True,help_text="turbidity ", validators=[RegexValidator(turbidity_validator)])
 
 	fields = {
-		'GSC_MIxS_microbial_mat_biolfilm_project_name': 'project name',
-		'GSC_MIxS_microbial_mat_biolfilm_experimental_factor': 'experimental factor',
-		'GSC_MIxS_microbial_mat_biolfilm_ploidy': 'ploidy',
-		'GSC_MIxS_microbial_mat_biolfilm_number_of_replicons': 'number of replicons',
-		'GSC_MIxS_microbial_mat_biolfilm_extrachromosomal_elements': 'extrachromosomal elements',
-		'GSC_MIxS_microbial_mat_biolfilm_estimated_size': 'estimated size',
-		'GSC_MIxS_microbial_mat_biolfilm_reference_for_biomaterial': 'reference for biomaterial',
-		'GSC_MIxS_microbial_mat_biolfilm_annotation_source': 'annotation source',
-		'GSC_MIxS_microbial_mat_biolfilm_sample_volume_or_weight_for_DNA_extraction': 'sample volume or weight for DNA extraction',
-		'GSC_MIxS_microbial_mat_biolfilm_nucleic_acid_extraction': 'nucleic acid extraction',
-		'GSC_MIxS_microbial_mat_biolfilm_nucleic_acid_amplification': 'nucleic acid amplification',
-		'GSC_MIxS_microbial_mat_biolfilm_library_size': 'library size',
-		'GSC_MIxS_microbial_mat_biolfilm_library_reads_sequenced': 'library reads sequenced',
-		'GSC_MIxS_microbial_mat_biolfilm_library_construction_method': 'library construction method',
-		'GSC_MIxS_microbial_mat_biolfilm_library_vector': 'library vector',
-		'GSC_MIxS_microbial_mat_biolfilm_library_screening_strategy': 'library screening strategy',
-		'GSC_MIxS_microbial_mat_biolfilm_target_gene': 'target gene',
-		'GSC_MIxS_microbial_mat_biolfilm_target_subfragment': 'target subfragment',
-		'GSC_MIxS_microbial_mat_biolfilm_pcr_primers': 'pcr primers',
-		'GSC_MIxS_microbial_mat_biolfilm_multiplex_identifiers': 'multiplex identifiers',
-		'GSC_MIxS_microbial_mat_biolfilm_adapters': 'adapters',
-		'GSC_MIxS_microbial_mat_biolfilm_pcr_conditions': 'pcr conditions',
-		'GSC_MIxS_microbial_mat_biolfilm_sequencing_method': 'sequencing method',
-		'GSC_MIxS_microbial_mat_biolfilm_sequence_quality_check': 'sequence quality check',
-		'GSC_MIxS_microbial_mat_biolfilm_chimera_check_software': 'chimera check software',
-		'GSC_MIxS_microbial_mat_biolfilm_relevant_electronic_resources': 'relevant electronic resources',
-		'GSC_MIxS_microbial_mat_biolfilm_relevant_standard_operating_procedures': 'relevant standard operating procedures',
-		'GSC_MIxS_microbial_mat_biolfilm_negative_control_type': 'negative control type',
-		'GSC_MIxS_microbial_mat_biolfilm_positive_control_type': 'positive control type',
-		'GSC_MIxS_microbial_mat_biolfilm_collection_date': 'collection date',
-		'GSC_MIxS_microbial_mat_biolfilm_altitude': 'altitude',
-		'GSC_MIxS_microbial_mat_biolfilm_geographic_location_country_and_or_sea': 'geographic location (country and/or sea)',
-		'GSC_MIxS_microbial_mat_biolfilm_geographic_location_latitude': 'geographic location (latitude)',
-		'GSC_MIxS_microbial_mat_biolfilm_geographic_location_longitude': 'geographic location (longitude)',
-		'GSC_MIxS_microbial_mat_biolfilm_geographic_location_region_and_locality': 'geographic location (region and locality)',
-		'GSC_MIxS_microbial_mat_biolfilm_depth': 'depth',
-		'GSC_MIxS_microbial_mat_biolfilm_broad_scale_environmental_context': 'broad-scale environmental context',
-		'GSC_MIxS_microbial_mat_biolfilm_local_environmental_context': 'local environmental context',
-		'GSC_MIxS_microbial_mat_biolfilm_environmental_medium': 'environmental medium',
-		'GSC_MIxS_microbial_mat_biolfilm_elevation': 'elevation',
-		'GSC_MIxS_microbial_mat_biolfilm_source_material_identifiers': 'source material identifiers',
-		'GSC_MIxS_microbial_mat_biolfilm_sample_material_processing': 'sample material processing',
-		'GSC_MIxS_microbial_mat_biolfilm_isolation_and_growth_condition': 'isolation and growth condition',
-		'GSC_MIxS_microbial_mat_biolfilm_propagation': 'propagation',
-		'GSC_MIxS_microbial_mat_biolfilm_amount_or_size_of_sample_collected': 'amount or size of sample collected',
-		'GSC_MIxS_microbial_mat_biolfilm_biomass': 'biomass',
-		'GSC_MIxS_microbial_mat_biolfilm_oxygenation_status_of_sample': 'oxygenation status of sample',
-		'GSC_MIxS_microbial_mat_biolfilm_organism_count': 'organism count',
-		'GSC_MIxS_microbial_mat_biolfilm_sample_storage_duration': 'sample storage duration',
-		'GSC_MIxS_microbial_mat_biolfilm_sample_storage_temperature': 'sample storage temperature',
-		'GSC_MIxS_microbial_mat_biolfilm_sample_storage_location': 'sample storage location',
-		'GSC_MIxS_microbial_mat_biolfilm_sample_collection_device': 'sample collection device',
-		'GSC_MIxS_microbial_mat_biolfilm_sample_collection_method': 'sample collection method',
-		'GSC_MIxS_microbial_mat_biolfilm_host_disease_status': 'host disease status',
-		'GSC_MIxS_microbial_mat_biolfilm_host_scientific_name': 'host scientific name',
-		'GSC_MIxS_microbial_mat_biolfilm_alkalinity': 'alkalinity',
-		'GSC_MIxS_microbial_mat_biolfilm_mean_friction_velocity': 'mean friction velocity',
-		'GSC_MIxS_microbial_mat_biolfilm_mean_peak_friction_velocity': 'mean peak friction velocity',
-		'GSC_MIxS_microbial_mat_biolfilm_pressure': 'pressure',
-		'GSC_MIxS_microbial_mat_biolfilm_temperature': 'temperature',
-		'GSC_MIxS_microbial_mat_biolfilm_turbidity': 'turbidity',
-		'GSC_MIxS_microbial_mat_biolfilm_pH': 'pH',
-		'GSC_MIxS_microbial_mat_biolfilm_alkyl_diethers': 'alkyl diethers',
-		'GSC_MIxS_microbial_mat_biolfilm_aminopeptidase_activity': 'aminopeptidase activity',
-		'GSC_MIxS_microbial_mat_biolfilm_ammonium': 'ammonium',
-		'GSC_MIxS_microbial_mat_biolfilm_bacterial_carbon_production': 'bacterial carbon production',
-		'GSC_MIxS_microbial_mat_biolfilm_bishomohopanol': 'bishomohopanol',
-		'GSC_MIxS_microbial_mat_biolfilm_bromide': 'bromide',
-		'GSC_MIxS_microbial_mat_biolfilm_calcium': 'calcium',
-		'GSC_MIxS_microbial_mat_biolfilm_carbon_nitrogen_ratio': 'carbon/nitrogen ratio',
-		'GSC_MIxS_microbial_mat_biolfilm_chloride': 'chloride',
-		'GSC_MIxS_microbial_mat_biolfilm_chlorophyll': 'chlorophyll',
-		'GSC_MIxS_microbial_mat_biolfilm_diether_lipids': 'diether lipids',
-		'GSC_MIxS_microbial_mat_biolfilm_dissolved_carbon_dioxide': 'dissolved carbon dioxide',
-		'GSC_MIxS_microbial_mat_biolfilm_dissolved_hydrogen': 'dissolved hydrogen',
-		'GSC_MIxS_microbial_mat_biolfilm_dissolved_inorganic_carbon': 'dissolved inorganic carbon',
-		'GSC_MIxS_microbial_mat_biolfilm_dissolved_organic_carbon': 'dissolved organic carbon',
-		'GSC_MIxS_microbial_mat_biolfilm_dissolved_organic_nitrogen': 'dissolved organic nitrogen',
-		'GSC_MIxS_microbial_mat_biolfilm_methane': 'methane',
-		'GSC_MIxS_microbial_mat_biolfilm_dissolved_oxygen': 'dissolved oxygen',
-		'GSC_MIxS_microbial_mat_biolfilm_glucosidase_activity': 'glucosidase activity',
-		'GSC_MIxS_microbial_mat_biolfilm_magnesium': 'magnesium',
-		'GSC_MIxS_microbial_mat_biolfilm_n_alkanes': 'n-alkanes',
-		'GSC_MIxS_microbial_mat_biolfilm_nitrate': 'nitrate',
-		'GSC_MIxS_microbial_mat_biolfilm_nitrite': 'nitrite',
-		'GSC_MIxS_microbial_mat_biolfilm_nitrogen': 'nitrogen',
-		'GSC_MIxS_microbial_mat_biolfilm_organic_carbon': 'organic carbon',
-		'GSC_MIxS_microbial_mat_biolfilm_organic_matter': 'organic matter',
-		'GSC_MIxS_microbial_mat_biolfilm_organic_nitrogen': 'organic nitrogen',
-		'GSC_MIxS_microbial_mat_biolfilm_particulate_organic_carbon': 'particulate organic carbon',
-		'GSC_MIxS_microbial_mat_biolfilm_petroleum_hydrocarbon': 'petroleum hydrocarbon',
-		'GSC_MIxS_microbial_mat_biolfilm_phaeopigments': 'phaeopigments',
-		'GSC_MIxS_microbial_mat_biolfilm_phosphate': 'phosphate',
-		'GSC_MIxS_microbial_mat_biolfilm_phospholipid_fatty_acid': 'phospholipid fatty acid',
-		'GSC_MIxS_microbial_mat_biolfilm_potassium': 'potassium',
-		'GSC_MIxS_microbial_mat_biolfilm_redox_potential': 'redox potential',
-		'GSC_MIxS_microbial_mat_biolfilm_salinity': 'salinity',
-		'GSC_MIxS_microbial_mat_biolfilm_total_carbon': 'total carbon',
-		'GSC_MIxS_microbial_mat_biolfilm_silicate': 'silicate',
-		'GSC_MIxS_microbial_mat_biolfilm_sodium': 'sodium',
-		'GSC_MIxS_microbial_mat_biolfilm_total_organic_carbon': 'total organic carbon',
-		'GSC_MIxS_microbial_mat_biolfilm_water_content': 'water content',
-		'GSC_MIxS_microbial_mat_biolfilm_sulfate': 'sulfate',
-		'GSC_MIxS_microbial_mat_biolfilm_sulfide': 'sulfide',
-		'GSC_MIxS_microbial_mat_biolfilm_total_nitrogen': 'total nitrogen',
-		'GSC_MIxS_microbial_mat_biolfilm_subspecific_genetic_lineage': 'subspecific genetic lineage',
-		'GSC_MIxS_microbial_mat_biolfilm_trophic_level': 'trophic level',
-		'GSC_MIxS_microbial_mat_biolfilm_relationship_to_oxygen': 'relationship to oxygen',
-		'GSC_MIxS_microbial_mat_biolfilm_known_pathogenicity': 'known pathogenicity',
-		'GSC_MIxS_microbial_mat_biolfilm_encoded_traits': 'encoded traits',
-		'GSC_MIxS_microbial_mat_biolfilm_observed_biotic_relationship': 'observed biotic relationship',
-		'GSC_MIxS_microbial_mat_biolfilm_chemical_administration': 'chemical administration',
-		'GSC_MIxS_microbial_mat_biolfilm_perturbation': 'perturbation',
+		'turbidity': 'turbidity',
 	}
 
 	name = 'GSC_MIxS_microbial_mat_biolfilm'
 
 class GSC_MIxS_microbial_mat_biolfilm_unit(SelfDescribingModel):
 
-	GSC_MIxS_microbial_mat_biolfilm_sample_volume_or_weight_for_DNA_extraction_units = [('g', 'g'), ('mL', 'mL'), ('mg', 'mg'), ('ng', 'ng')]
-	GSC_MIxS_microbial_mat_biolfilm_altitude_units = [('m', 'm')]
-	GSC_MIxS_microbial_mat_biolfilm_geographic_location_latitude_units = [('DD', 'DD')]
-	GSC_MIxS_microbial_mat_biolfilm_geographic_location_longitude_units = [('DD', 'DD')]
-	GSC_MIxS_microbial_mat_biolfilm_depth_units = [('m', 'm')]
-	GSC_MIxS_microbial_mat_biolfilm_elevation_units = [('m', 'm')]
-	GSC_MIxS_microbial_mat_biolfilm_amount_or_size_of_sample_collected_units = [('L', 'L'), ('g', 'g'), ('kg', 'kg'), ('m2', 'm2'), ('m3', 'm3')]
-	GSC_MIxS_microbial_mat_biolfilm_biomass_units = [('g', 'g'), ('kg', 'kg'), ('t', 't')]
-	GSC_MIxS_microbial_mat_biolfilm_sample_storage_duration_units = [('days', 'days'), ('hours', 'hours'), ('months', 'months'), ('weeks', 'weeks'), ('years', 'years')]
-	GSC_MIxS_microbial_mat_biolfilm_sample_storage_temperature_units = [('°C', '°C')]
-	GSC_MIxS_microbial_mat_biolfilm_alkalinity_units = [('mEq/L', 'mEq/L')]
-	GSC_MIxS_microbial_mat_biolfilm_mean_friction_velocity_units = [('m/s', 'm/s')]
-	GSC_MIxS_microbial_mat_biolfilm_mean_peak_friction_velocity_units = [('m/s', 'm/s')]
-	GSC_MIxS_microbial_mat_biolfilm_pressure_units = [('atm', 'atm'), ('bar', 'bar')]
-	GSC_MIxS_microbial_mat_biolfilm_temperature_units = [('ºC', 'ºC')]
-	GSC_MIxS_microbial_mat_biolfilm_turbidity_units = [('FTU', 'FTU'), ('NTU', 'NTU')]
-	GSC_MIxS_microbial_mat_biolfilm_alkyl_diethers_units = [('M/L', 'M/L'), ('µg/L', 'µg/L')]
-	GSC_MIxS_microbial_mat_biolfilm_aminopeptidase_activity_units = [('mol/L/h', 'mol/L/h')]
-	GSC_MIxS_microbial_mat_biolfilm_ammonium_units = [('µmol/L', 'µmol/L')]
-	GSC_MIxS_microbial_mat_biolfilm_bacterial_carbon_production_units = [('ng/h', 'ng/h')]
-	GSC_MIxS_microbial_mat_biolfilm_bishomohopanol_units = [('µg/L', 'µg/L'), ('µg/g', 'µg/g')]
-	GSC_MIxS_microbial_mat_biolfilm_bromide_units = [('parts/million', 'parts/million'), ('µmol/L', 'µmol/L')]
-	GSC_MIxS_microbial_mat_biolfilm_calcium_units = [('mg/L', 'mg/L'), ('parts/million', 'parts/million'), ('µmol/L', 'µmol/L')]
-	GSC_MIxS_microbial_mat_biolfilm_chloride_units = [('mg/L', 'mg/L')]
-	GSC_MIxS_microbial_mat_biolfilm_chlorophyll_units = [('mg/m3', 'mg/m3'), ('µg/L', 'µg/L')]
-	GSC_MIxS_microbial_mat_biolfilm_diether_lipids_units = [('ng/L', 'ng/L')]
-	GSC_MIxS_microbial_mat_biolfilm_dissolved_carbon_dioxide_units = [('µmol/L', 'µmol/L')]
-	GSC_MIxS_microbial_mat_biolfilm_dissolved_hydrogen_units = [('µmol/L', 'µmol/L')]
-	GSC_MIxS_microbial_mat_biolfilm_dissolved_inorganic_carbon_units = [('µg/L', 'µg/L')]
-	GSC_MIxS_microbial_mat_biolfilm_dissolved_organic_carbon_units = [('µmol/L', 'µmol/L')]
-	GSC_MIxS_microbial_mat_biolfilm_dissolved_organic_nitrogen_units = [('mg/L', 'mg/L'), ('µg/L', 'µg/L')]
-	GSC_MIxS_microbial_mat_biolfilm_methane_units = [('µM/L', 'µM/L')]
-	GSC_MIxS_microbial_mat_biolfilm_dissolved_oxygen_units = [('µmol/kg', 'µmol/kg')]
-	GSC_MIxS_microbial_mat_biolfilm_glucosidase_activity_units = [('mol/L/h', 'mol/L/h')]
-	GSC_MIxS_microbial_mat_biolfilm_magnesium_units = [('mg/L', 'mg/L'), ('mol/L', 'mol/L'), ('parts/million', 'parts/million')]
-	GSC_MIxS_microbial_mat_biolfilm_n_alkanes_units = [('µmol/L', 'µmol/L')]
-	GSC_MIxS_microbial_mat_biolfilm_nitrate_units = [('µmol/L', 'µmol/L')]
-	GSC_MIxS_microbial_mat_biolfilm_nitrite_units = [('µmol/L', 'µmol/L')]
-	GSC_MIxS_microbial_mat_biolfilm_nitrogen_units = [('µmol/L', 'µmol/L')]
-	GSC_MIxS_microbial_mat_biolfilm_organic_carbon_units = [('µmol/L', 'µmol/L')]
-	GSC_MIxS_microbial_mat_biolfilm_organic_matter_units = [('µg/L', 'µg/L')]
-	GSC_MIxS_microbial_mat_biolfilm_organic_nitrogen_units = [('µg/L', 'µg/L')]
-	GSC_MIxS_microbial_mat_biolfilm_particulate_organic_carbon_units = [('µg/L', 'µg/L')]
-	GSC_MIxS_microbial_mat_biolfilm_petroleum_hydrocarbon_units = [('µmol/L', 'µmol/L')]
-	GSC_MIxS_microbial_mat_biolfilm_phaeopigments_units = [('mg/m3', 'mg/m3'), ('µg/L', 'µg/L')]
-	GSC_MIxS_microbial_mat_biolfilm_phosphate_units = [('µmol/L', 'µmol/L')]
-	GSC_MIxS_microbial_mat_biolfilm_phospholipid_fatty_acid_units = [('mol/L', 'mol/L'), ('mol/g', 'mol/g')]
-	GSC_MIxS_microbial_mat_biolfilm_potassium_units = [('parts/million', 'parts/million'), ('µmol/L', 'µmol/L')]
-	GSC_MIxS_microbial_mat_biolfilm_redox_potential_units = [('mV', 'mV')]
-	GSC_MIxS_microbial_mat_biolfilm_salinity_units = [('psu', 'psu')]
-	GSC_MIxS_microbial_mat_biolfilm_total_carbon_units = [('µg/L', 'µg/L')]
-	GSC_MIxS_microbial_mat_biolfilm_silicate_units = [('µmol/L', 'µmol/L')]
-	GSC_MIxS_microbial_mat_biolfilm_sodium_units = [('parts/million', 'parts/million'), ('µmol/L', 'µmol/L')]
-	GSC_MIxS_microbial_mat_biolfilm_total_organic_carbon_units = [('g/kg', 'g/kg')]
-	GSC_MIxS_microbial_mat_biolfilm_water_content_units = [('cm3/cm3', 'cm3/cm3'), ('g/g', 'g/g')]
-	GSC_MIxS_microbial_mat_biolfilm_sulfate_units = [('mg/L', 'mg/L'), ('µmol/L', 'µmol/L')]
-	GSC_MIxS_microbial_mat_biolfilm_sulfide_units = [('mg/L', 'mg/L'), ('µmol/L', 'µmol/L')]
-	GSC_MIxS_microbial_mat_biolfilm_total_nitrogen_units = [('µg/L', 'µg/L'), ('µmol/L', 'µmol/L')]
+	turbidity_units = [('FTU', 'FTU'), ('NTU', 'NTU')]
 
 	fields = {
-		'GSC_MIxS_microbial_mat_biolfilm_sample_volume_or_weight_for_DNA_extraction': 'sample volume or weight for DNA extraction',
-		'GSC_MIxS_microbial_mat_biolfilm_altitude': 'altitude',
-		'GSC_MIxS_microbial_mat_biolfilm_geographic_location_latitude': 'geographic location (latitude)',
-		'GSC_MIxS_microbial_mat_biolfilm_geographic_location_longitude': 'geographic location (longitude)',
-		'GSC_MIxS_microbial_mat_biolfilm_depth': 'depth',
-		'GSC_MIxS_microbial_mat_biolfilm_elevation': 'elevation',
-		'GSC_MIxS_microbial_mat_biolfilm_amount_or_size_of_sample_collected': 'amount or size of sample collected',
-		'GSC_MIxS_microbial_mat_biolfilm_biomass': 'biomass',
-		'GSC_MIxS_microbial_mat_biolfilm_sample_storage_duration': 'sample storage duration',
-		'GSC_MIxS_microbial_mat_biolfilm_sample_storage_temperature': 'sample storage temperature',
-		'GSC_MIxS_microbial_mat_biolfilm_alkalinity': 'alkalinity',
-		'GSC_MIxS_microbial_mat_biolfilm_mean_friction_velocity': 'mean friction velocity',
-		'GSC_MIxS_microbial_mat_biolfilm_mean_peak_friction_velocity': 'mean peak friction velocity',
-		'GSC_MIxS_microbial_mat_biolfilm_pressure': 'pressure',
-		'GSC_MIxS_microbial_mat_biolfilm_temperature': 'temperature',
-		'GSC_MIxS_microbial_mat_biolfilm_turbidity': 'turbidity',
-		'GSC_MIxS_microbial_mat_biolfilm_alkyl_diethers': 'alkyl diethers',
-		'GSC_MIxS_microbial_mat_biolfilm_aminopeptidase_activity': 'aminopeptidase activity',
-		'GSC_MIxS_microbial_mat_biolfilm_ammonium': 'ammonium',
-		'GSC_MIxS_microbial_mat_biolfilm_bacterial_carbon_production': 'bacterial carbon production',
-		'GSC_MIxS_microbial_mat_biolfilm_bishomohopanol': 'bishomohopanol',
-		'GSC_MIxS_microbial_mat_biolfilm_bromide': 'bromide',
-		'GSC_MIxS_microbial_mat_biolfilm_calcium': 'calcium',
-		'GSC_MIxS_microbial_mat_biolfilm_chloride': 'chloride',
-		'GSC_MIxS_microbial_mat_biolfilm_chlorophyll': 'chlorophyll',
-		'GSC_MIxS_microbial_mat_biolfilm_diether_lipids': 'diether lipids',
-		'GSC_MIxS_microbial_mat_biolfilm_dissolved_carbon_dioxide': 'dissolved carbon dioxide',
-		'GSC_MIxS_microbial_mat_biolfilm_dissolved_hydrogen': 'dissolved hydrogen',
-		'GSC_MIxS_microbial_mat_biolfilm_dissolved_inorganic_carbon': 'dissolved inorganic carbon',
-		'GSC_MIxS_microbial_mat_biolfilm_dissolved_organic_carbon': 'dissolved organic carbon',
-		'GSC_MIxS_microbial_mat_biolfilm_dissolved_organic_nitrogen': 'dissolved organic nitrogen',
-		'GSC_MIxS_microbial_mat_biolfilm_methane': 'methane',
-		'GSC_MIxS_microbial_mat_biolfilm_dissolved_oxygen': 'dissolved oxygen',
-		'GSC_MIxS_microbial_mat_biolfilm_glucosidase_activity': 'glucosidase activity',
-		'GSC_MIxS_microbial_mat_biolfilm_magnesium': 'magnesium',
-		'GSC_MIxS_microbial_mat_biolfilm_n_alkanes': 'n-alkanes',
-		'GSC_MIxS_microbial_mat_biolfilm_nitrate': 'nitrate',
-		'GSC_MIxS_microbial_mat_biolfilm_nitrite': 'nitrite',
-		'GSC_MIxS_microbial_mat_biolfilm_nitrogen': 'nitrogen',
-		'GSC_MIxS_microbial_mat_biolfilm_organic_carbon': 'organic carbon',
-		'GSC_MIxS_microbial_mat_biolfilm_organic_matter': 'organic matter',
-		'GSC_MIxS_microbial_mat_biolfilm_organic_nitrogen': 'organic nitrogen',
-		'GSC_MIxS_microbial_mat_biolfilm_particulate_organic_carbon': 'particulate organic carbon',
-		'GSC_MIxS_microbial_mat_biolfilm_petroleum_hydrocarbon': 'petroleum hydrocarbon',
-		'GSC_MIxS_microbial_mat_biolfilm_phaeopigments': 'phaeopigments',
-		'GSC_MIxS_microbial_mat_biolfilm_phosphate': 'phosphate',
-		'GSC_MIxS_microbial_mat_biolfilm_phospholipid_fatty_acid': 'phospholipid fatty acid',
-		'GSC_MIxS_microbial_mat_biolfilm_potassium': 'potassium',
-		'GSC_MIxS_microbial_mat_biolfilm_redox_potential': 'redox potential',
-		'GSC_MIxS_microbial_mat_biolfilm_salinity': 'salinity',
-		'GSC_MIxS_microbial_mat_biolfilm_total_carbon': 'total carbon',
-		'GSC_MIxS_microbial_mat_biolfilm_silicate': 'silicate',
-		'GSC_MIxS_microbial_mat_biolfilm_sodium': 'sodium',
-		'GSC_MIxS_microbial_mat_biolfilm_total_organic_carbon': 'total organic carbon',
-		'GSC_MIxS_microbial_mat_biolfilm_water_content': 'water content',
-		'GSC_MIxS_microbial_mat_biolfilm_sulfate': 'sulfate',
-		'GSC_MIxS_microbial_mat_biolfilm_sulfide': 'sulfide',
-		'GSC_MIxS_microbial_mat_biolfilm_total_nitrogen': 'total nitrogen',
+		'turbidity': 'turbidity',
 	}
 
 	name = 'GSC_MIxS_microbial_mat_biolfilm'
 
 	sampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE, default=1)
 	sample = models.ForeignKey(Sample, on_delete=models.CASCADE, default=1)
-	GSC_MIxS_microbial_mat_biolfilm_sample_volume_or_weight_for_DNA_extraction = models.CharField(max_length=100, choices=GSC_MIxS_microbial_mat_biolfilm_sample_volume_or_weight_for_DNA_extraction_units, blank=False)
-	GSC_MIxS_microbial_mat_biolfilm_altitude = models.CharField(max_length=100, choices=GSC_MIxS_microbial_mat_biolfilm_altitude_units, blank=False)
-	GSC_MIxS_microbial_mat_biolfilm_geographic_location_latitude = models.CharField(max_length=100, choices=GSC_MIxS_microbial_mat_biolfilm_geographic_location_latitude_units, blank=False)
-	GSC_MIxS_microbial_mat_biolfilm_geographic_location_longitude = models.CharField(max_length=100, choices=GSC_MIxS_microbial_mat_biolfilm_geographic_location_longitude_units, blank=False)
-	GSC_MIxS_microbial_mat_biolfilm_depth = models.CharField(max_length=100, choices=GSC_MIxS_microbial_mat_biolfilm_depth_units, blank=False)
-	GSC_MIxS_microbial_mat_biolfilm_elevation = models.CharField(max_length=100, choices=GSC_MIxS_microbial_mat_biolfilm_elevation_units, blank=False)
-	GSC_MIxS_microbial_mat_biolfilm_amount_or_size_of_sample_collected = models.CharField(max_length=100, choices=GSC_MIxS_microbial_mat_biolfilm_amount_or_size_of_sample_collected_units, blank=False)
-	GSC_MIxS_microbial_mat_biolfilm_biomass = models.CharField(max_length=100, choices=GSC_MIxS_microbial_mat_biolfilm_biomass_units, blank=False)
-	GSC_MIxS_microbial_mat_biolfilm_sample_storage_duration = models.CharField(max_length=100, choices=GSC_MIxS_microbial_mat_biolfilm_sample_storage_duration_units, blank=False)
-	GSC_MIxS_microbial_mat_biolfilm_sample_storage_temperature = models.CharField(max_length=100, choices=GSC_MIxS_microbial_mat_biolfilm_sample_storage_temperature_units, blank=False)
-	GSC_MIxS_microbial_mat_biolfilm_alkalinity = models.CharField(max_length=100, choices=GSC_MIxS_microbial_mat_biolfilm_alkalinity_units, blank=False)
-	GSC_MIxS_microbial_mat_biolfilm_mean_friction_velocity = models.CharField(max_length=100, choices=GSC_MIxS_microbial_mat_biolfilm_mean_friction_velocity_units, blank=False)
-	GSC_MIxS_microbial_mat_biolfilm_mean_peak_friction_velocity = models.CharField(max_length=100, choices=GSC_MIxS_microbial_mat_biolfilm_mean_peak_friction_velocity_units, blank=False)
-	GSC_MIxS_microbial_mat_biolfilm_pressure = models.CharField(max_length=100, choices=GSC_MIxS_microbial_mat_biolfilm_pressure_units, blank=False)
-	GSC_MIxS_microbial_mat_biolfilm_temperature = models.CharField(max_length=100, choices=GSC_MIxS_microbial_mat_biolfilm_temperature_units, blank=False)
-	GSC_MIxS_microbial_mat_biolfilm_turbidity = models.CharField(max_length=100, choices=GSC_MIxS_microbial_mat_biolfilm_turbidity_units, blank=False)
-	GSC_MIxS_microbial_mat_biolfilm_alkyl_diethers = models.CharField(max_length=100, choices=GSC_MIxS_microbial_mat_biolfilm_alkyl_diethers_units, blank=False)
-	GSC_MIxS_microbial_mat_biolfilm_aminopeptidase_activity = models.CharField(max_length=100, choices=GSC_MIxS_microbial_mat_biolfilm_aminopeptidase_activity_units, blank=False)
-	GSC_MIxS_microbial_mat_biolfilm_ammonium = models.CharField(max_length=100, choices=GSC_MIxS_microbial_mat_biolfilm_ammonium_units, blank=False)
-	GSC_MIxS_microbial_mat_biolfilm_bacterial_carbon_production = models.CharField(max_length=100, choices=GSC_MIxS_microbial_mat_biolfilm_bacterial_carbon_production_units, blank=False)
-	GSC_MIxS_microbial_mat_biolfilm_bishomohopanol = models.CharField(max_length=100, choices=GSC_MIxS_microbial_mat_biolfilm_bishomohopanol_units, blank=False)
-	GSC_MIxS_microbial_mat_biolfilm_bromide = models.CharField(max_length=100, choices=GSC_MIxS_microbial_mat_biolfilm_bromide_units, blank=False)
-	GSC_MIxS_microbial_mat_biolfilm_calcium = models.CharField(max_length=100, choices=GSC_MIxS_microbial_mat_biolfilm_calcium_units, blank=False)
-	GSC_MIxS_microbial_mat_biolfilm_chloride = models.CharField(max_length=100, choices=GSC_MIxS_microbial_mat_biolfilm_chloride_units, blank=False)
-	GSC_MIxS_microbial_mat_biolfilm_chlorophyll = models.CharField(max_length=100, choices=GSC_MIxS_microbial_mat_biolfilm_chlorophyll_units, blank=False)
-	GSC_MIxS_microbial_mat_biolfilm_diether_lipids = models.CharField(max_length=100, choices=GSC_MIxS_microbial_mat_biolfilm_diether_lipids_units, blank=False)
-	GSC_MIxS_microbial_mat_biolfilm_dissolved_carbon_dioxide = models.CharField(max_length=100, choices=GSC_MIxS_microbial_mat_biolfilm_dissolved_carbon_dioxide_units, blank=False)
-	GSC_MIxS_microbial_mat_biolfilm_dissolved_hydrogen = models.CharField(max_length=100, choices=GSC_MIxS_microbial_mat_biolfilm_dissolved_hydrogen_units, blank=False)
-	GSC_MIxS_microbial_mat_biolfilm_dissolved_inorganic_carbon = models.CharField(max_length=100, choices=GSC_MIxS_microbial_mat_biolfilm_dissolved_inorganic_carbon_units, blank=False)
-	GSC_MIxS_microbial_mat_biolfilm_dissolved_organic_carbon = models.CharField(max_length=100, choices=GSC_MIxS_microbial_mat_biolfilm_dissolved_organic_carbon_units, blank=False)
-	GSC_MIxS_microbial_mat_biolfilm_dissolved_organic_nitrogen = models.CharField(max_length=100, choices=GSC_MIxS_microbial_mat_biolfilm_dissolved_organic_nitrogen_units, blank=False)
-	GSC_MIxS_microbial_mat_biolfilm_methane = models.CharField(max_length=100, choices=GSC_MIxS_microbial_mat_biolfilm_methane_units, blank=False)
-	GSC_MIxS_microbial_mat_biolfilm_dissolved_oxygen = models.CharField(max_length=100, choices=GSC_MIxS_microbial_mat_biolfilm_dissolved_oxygen_units, blank=False)
-	GSC_MIxS_microbial_mat_biolfilm_glucosidase_activity = models.CharField(max_length=100, choices=GSC_MIxS_microbial_mat_biolfilm_glucosidase_activity_units, blank=False)
-	GSC_MIxS_microbial_mat_biolfilm_magnesium = models.CharField(max_length=100, choices=GSC_MIxS_microbial_mat_biolfilm_magnesium_units, blank=False)
-	GSC_MIxS_microbial_mat_biolfilm_n_alkanes = models.CharField(max_length=100, choices=GSC_MIxS_microbial_mat_biolfilm_n_alkanes_units, blank=False)
-	GSC_MIxS_microbial_mat_biolfilm_nitrate = models.CharField(max_length=100, choices=GSC_MIxS_microbial_mat_biolfilm_nitrate_units, blank=False)
-	GSC_MIxS_microbial_mat_biolfilm_nitrite = models.CharField(max_length=100, choices=GSC_MIxS_microbial_mat_biolfilm_nitrite_units, blank=False)
-	GSC_MIxS_microbial_mat_biolfilm_nitrogen = models.CharField(max_length=100, choices=GSC_MIxS_microbial_mat_biolfilm_nitrogen_units, blank=False)
-	GSC_MIxS_microbial_mat_biolfilm_organic_carbon = models.CharField(max_length=100, choices=GSC_MIxS_microbial_mat_biolfilm_organic_carbon_units, blank=False)
-	GSC_MIxS_microbial_mat_biolfilm_organic_matter = models.CharField(max_length=100, choices=GSC_MIxS_microbial_mat_biolfilm_organic_matter_units, blank=False)
-	GSC_MIxS_microbial_mat_biolfilm_organic_nitrogen = models.CharField(max_length=100, choices=GSC_MIxS_microbial_mat_biolfilm_organic_nitrogen_units, blank=False)
-	GSC_MIxS_microbial_mat_biolfilm_particulate_organic_carbon = models.CharField(max_length=100, choices=GSC_MIxS_microbial_mat_biolfilm_particulate_organic_carbon_units, blank=False)
-	GSC_MIxS_microbial_mat_biolfilm_petroleum_hydrocarbon = models.CharField(max_length=100, choices=GSC_MIxS_microbial_mat_biolfilm_petroleum_hydrocarbon_units, blank=False)
-	GSC_MIxS_microbial_mat_biolfilm_phaeopigments = models.CharField(max_length=100, choices=GSC_MIxS_microbial_mat_biolfilm_phaeopigments_units, blank=False)
-	GSC_MIxS_microbial_mat_biolfilm_phosphate = models.CharField(max_length=100, choices=GSC_MIxS_microbial_mat_biolfilm_phosphate_units, blank=False)
-	GSC_MIxS_microbial_mat_biolfilm_phospholipid_fatty_acid = models.CharField(max_length=100, choices=GSC_MIxS_microbial_mat_biolfilm_phospholipid_fatty_acid_units, blank=False)
-	GSC_MIxS_microbial_mat_biolfilm_potassium = models.CharField(max_length=100, choices=GSC_MIxS_microbial_mat_biolfilm_potassium_units, blank=False)
-	GSC_MIxS_microbial_mat_biolfilm_redox_potential = models.CharField(max_length=100, choices=GSC_MIxS_microbial_mat_biolfilm_redox_potential_units, blank=False)
-	GSC_MIxS_microbial_mat_biolfilm_salinity = models.CharField(max_length=100, choices=GSC_MIxS_microbial_mat_biolfilm_salinity_units, blank=False)
-	GSC_MIxS_microbial_mat_biolfilm_total_carbon = models.CharField(max_length=100, choices=GSC_MIxS_microbial_mat_biolfilm_total_carbon_units, blank=False)
-	GSC_MIxS_microbial_mat_biolfilm_silicate = models.CharField(max_length=100, choices=GSC_MIxS_microbial_mat_biolfilm_silicate_units, blank=False)
-	GSC_MIxS_microbial_mat_biolfilm_sodium = models.CharField(max_length=100, choices=GSC_MIxS_microbial_mat_biolfilm_sodium_units, blank=False)
-	GSC_MIxS_microbial_mat_biolfilm_total_organic_carbon = models.CharField(max_length=100, choices=GSC_MIxS_microbial_mat_biolfilm_total_organic_carbon_units, blank=False)
-	GSC_MIxS_microbial_mat_biolfilm_water_content = models.CharField(max_length=100, choices=GSC_MIxS_microbial_mat_biolfilm_water_content_units, blank=False)
-	GSC_MIxS_microbial_mat_biolfilm_sulfate = models.CharField(max_length=100, choices=GSC_MIxS_microbial_mat_biolfilm_sulfate_units, blank=False)
-	GSC_MIxS_microbial_mat_biolfilm_sulfide = models.CharField(max_length=100, choices=GSC_MIxS_microbial_mat_biolfilm_sulfide_units, blank=False)
-	GSC_MIxS_microbial_mat_biolfilm_total_nitrogen = models.CharField(max_length=100, choices=GSC_MIxS_microbial_mat_biolfilm_total_nitrogen_units, blank=False)
+	turbidity = models.CharField(max_length=100, choices=turbidity_units, blank=False)
 
 
