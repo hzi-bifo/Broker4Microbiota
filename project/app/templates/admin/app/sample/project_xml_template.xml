@@ -1,0 +1,11 @@
+<PROJECT_SET>
+{% for project in projects %}
+   <PROJECT alias="{{ project.project_alias }}">
+      <TITLE>C{{ project.project_title }}</TITLE>
+      <DESCRIPTION>{{ project.project_description }}</DESCRIPTION>
+      <SUBMISSION_PROJECT>
+         <SEQUENCING_PROJECT/>
+      </SUBMISSION_PROJECT>
+   </PROJECT>
+{% endfor %}
+</PROJECT_SET>
