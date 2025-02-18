@@ -199,12 +199,12 @@ def produceModels(data, model_data, field_names):
     return model_data
 
 # Path to the directory containing the XML files
-xml_dir = f"{settings.ROOT_DIR}/project/static/xml"
+xml_dir = f"{settings.BASE_DIR}/static/xml"
 
 # Path to the directory where the JSON files will be saved
-json_dir = f"{settings.ROOT_DIR}/project/static/json"
+json_dir = f"{settings.BASE_DIR}/static/json"
 
-models_dir = f"{settings.ROOT_DIR}/project/app"
+models_dir = f"{settings.BASE_DIR}/app"
 
 jqtree_path = os.path.join(json_dir, 'jqtree.json')
 
