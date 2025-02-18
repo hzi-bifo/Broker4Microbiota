@@ -232,6 +232,15 @@ def samples_view(request, project_id, order_id):
                 except:
                     pass
 
+                unitchecklist_class_name = Sampleset.checklist_structure[checklist_name]['unitchecklist_class_name']
+                unitchecklist_item_class =  getattr(importlib.import_module("app.models"), unitchecklist_class_name)
+                
+                try:
+                    unitchecklist_item_class.objects.filter(sampleset=sample_set).delete()
+                except:
+                    pass
+
+
             # Delete all existing samples for the order
             try:
                 Sample.objects.filter(order=order).delete()
@@ -255,6 +264,11 @@ def samples_view(request, project_id, order_id):
                     checklist_item_instance = checklist_item_class(sampleset = sample_set, sample = sample)
                     checklist_item_instance.setFieldsFromResponse(sample_info)
                     checklist_item_instance.save()
+                    unitchecklist_class_name = Sampleset.checklist_structure[checklist_name]['unitchecklist_class_name']
+                    unitchecklist_item_class =  getattr(importlib.import_module("app.models"), unitchecklist_class_name)
+                    unitchecklist_item_instance = unitchecklist_item_class(sampleset = sample_set, sample = sample)
+                    # unitchecklist_item_instance.setFieldsFromResponse(sample_info)
+                    unitchecklist_item_instance.save()
 
                 print(f"Processing sample {sample.id}")
 

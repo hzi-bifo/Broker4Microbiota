@@ -334,31 +334,32 @@ class Sample(SelfDescribingModel):
 
     name = 'Sample'
 
-    # @property
-    # def getAttributes(self):
-    # 	# go through each of the fields within eah of the checklists
-    #     # get the checklists for this sample    
+    @property
+    def getAttributes(self):
+    	# go through each of the fields within eah of the checklists
+        # get the checklists for this sample    
         
-    #     output = ""
-    #     checklists = Sampleset.objects.filter(order=self.order).first().checklists
+        output = ""
+        sampleset = Sampleset.objects.filter(order=self.order).first()
+        checklists = sampleset.checklists
  
-    #     for checklist in json.loads(json.dumps(checklists)):
-    #         checklist_name = checklist
-    #         checklist_code = Sampleset.checklist_structure[checklist_name]['checklist_code']  
-    #         checklist_class_name = Sampleset.checklist_structure[checklist_name]['checklist_class_name']
-    #         checklist_item_class =  getattr(importlib.import_module("app.models"), checklist_class_name)
-    #         checklist_item_instance = checklist_item_class.objects.filter(sample = self, order=self.order).first()
+        for checklist in json.loads(json.dumps(checklists)):
+            checklist_name = checklist
+            checklist_code = Sampleset.checklist_structure[checklist_name]['checklist_code']  
+            checklist_class_name = Sampleset.checklist_structure[checklist_name]['checklist_class_name']
+            checklist_item_class =  getattr(importlib.import_module("app.models"), checklist_class_name)
+            checklist_item_instance = checklist_item_class.objects.filter(sample = self, sampleset=sampleset).first()
             
-    #         include = []
-    #         exclude = []
+            include = []
+            exclude = []
 
-    #         attributes = checklist_item_instance.getSubAttributes(exclude, include)
+            attributes = checklist_item_instance.getSubAttributes(exclude, include)
 
-    #         attributes = attributes + f"<SAMPLE_ATTRIBUTE><TAG>ena-checklist</TAG><VALUE>{checklist_code}</VALUE></SAMPLE_ATTRIBUTE>\n"
+            attributes = attributes + f"<SAMPLE_ATTRIBUTE><TAG>ena-checklist</TAG><VALUE>{checklist_code}</VALUE></SAMPLE_ATTRIBUTE>\n"
 
-    #         output = output + f'{attributes}\n'
+            output = output + f'{attributes}\n'
 
-    #     return output    
+        return output    
 
 
 
