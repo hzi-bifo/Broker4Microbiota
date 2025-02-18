@@ -125,8 +125,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 ENA_USERNAME = os.environ.get('ENA_USERNAME')
 ENA_PASSWORD = os.environ.get('ENA_PASSWORD')
 
-ROOT_DIR = os.environ.get('ROOT_DIR')
-LOCAL_DIR = f"{ROOT_DIR}/project/media/test"
+LOCAL_DIR = f"{BASE_DIR}/media/test"
 JAR_LOCATION = '/home/gary/Downloads/webin-cli-8.1.0.jar'
 
 MAG_NEXTFLOW_COMMAND_STEM = 'nextflow run main.nf'

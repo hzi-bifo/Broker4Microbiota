@@ -17,6 +17,7 @@ from xml.etree import ElementTree as ET
 import logging
 import json
 import shutil
+from pathlib import Path
 
 logger = logging.getLogger(__name__)
 
@@ -415,6 +416,7 @@ class ProjectSubmissionAdmin(admin.ModelAdmin):
     def register_project(self, request, queryset):
         for project_submission in queryset:
             try:
+                Path(settings.LOCAL_DIR).mkdir(parents=True, exist_ok=True)
                 # Save XML content to files for debugging
                 project_xml_filename = os.path.join(settings.LOCAL_DIR, f"project_{project_submission.id}.xml")
                 project_submission_xml_filename = os.path.join(settings.LOCAL_DIR, f"submission_{project_submission.id}.xml")
