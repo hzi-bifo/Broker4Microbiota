@@ -1,0 +1,4 @@
+sample,group,short_reads_1,short_reads_2,long_reads
+{% for sequence in sequences %}
+{{ sequence.sample.sample_id }}, 1, {{ sequence.file_1}}, {{ sequence.file_2}},
+{% endfor %}

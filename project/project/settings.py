@@ -129,6 +129,12 @@ ROOT_DIR = os.environ.get('ROOT_DIR')
 LOCAL_DIR = f"{ROOT_DIR}/project/media/test"
 JAR_LOCATION = '/home/gary/Downloads/webin-cli-8.1.0.jar'
 
+MAG_NEXTFLOW_COMMAND_STEM = 'nextflow run main.nf'
+MAG_PROFILE = 'singularity'
+MAG_ADDITIONAL_OPTIONS = '--skip_prokka --skip_concoct --skip_mhm2 --skip_binqc'
+MAG_NEXTFLOW_EXECUTOR = 'slurm'
+MAG_NEXTFLOW_CLUSTER_OPTIONS = '--qos=long'
+
 PIXELS_PER_CHAR = 8
 
 LOGGING = {

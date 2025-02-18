@@ -10,7 +10,7 @@ from django.core.files.base import ContentFile
 from django.conf import settings
 from Bio import SeqIO
 from io import StringIO
-from .models import Order, Sample, Submission, ReadSubmission, Pipelines, Sequence, SequenceTemplate, Project, ProjectSubmission
+from .models import Order, Sample, Submission, ReadSubmission, Pipelines, Sequence, SequenceTemplate, Project, ProjectSubmission, MagRun, SubMGRun
 from .forms import CreateGZForm
 from django.template.loader import render_to_string
 from xml.etree import ElementTree as ET
@@ -37,7 +37,7 @@ admin.site.register(SequenceTemplate, SequenceTemplateAdmin)
 class SequenceAdmin(admin.ModelAdmin):
     list_display = ('sample', 'sequence_template', 'file_1', 'file_2')
 
-    actions = ['generate_xml_and_create_read_submission']
+    actions = ['generate_xml_and_create_read_submission', 'create_mag_run']
 
     def generate_xml_and_create_read_submission(self, request, queryset):
         selected_sequences = queryset
@@ -63,6 +63,31 @@ class SequenceAdmin(admin.ModelAdmin):
 
 
     generate_xml_and_create_read_submission.short_description = 'Generate XML and create Read Submission'
+
+    def create_mag_run(self, request, queryset):
+        selected_sequences = queryset
+
+        mag_run = MagRun.objects.create()
+        mag_run.sequence_set.set(selected_sequences)
+        
+        context = {
+            'sequences': selected_sequences,
+        }
+        samplesheet_content = render_to_string('admin/app/sample/mag_sampleseheet.csv', context)
+        mag_run.samplesheet_content = json.dumps(samplesheet_content)
+
+        context = {
+            'settings': settings,
+        }
+        cluster_config = render_to_string('admin/app/sample/mag_cluster_config.cfg', context)
+        mag_run.cluster_config = json.dumps(cluster_config)
+
+        mag_run.save()
+
+        self.message_user(request, f'Successfully created MAG run')
+
+
+    create_mag_run.short_description = 'Create a MAG run'
 
 admin.site.register(Sequence, SequenceAdmin)
 
@@ -211,9 +236,6 @@ class SampleAdmin(admin.ModelAdmin):
         self.message_user(request, f'Successfully created Submission {submission.id} with {selected_samples.count()} samples')
 
     generate_xml_and_create_submission.short_description = 'Generate XML and create Submission'
-
- 
-
 
 admin.site.register(Sample, SampleAdmin)
 
@@ -442,13 +464,13 @@ class ProjectSubmissionAdmin(admin.ModelAdmin):
                             raise Exception(f"Failed to register project submission {project_submission.id}. Response: {response.content}")
                     for child in root:
                         if child.tag == 'PROJECT':
-                                project_alias = child.attrib['alias']
-                                project_accession_number = child.attrib['accession']
-                                Project.objects.filter(project_alias=project_alias).update(study_accession_id=project_accession_number)
+                                alias = child.attrib['alias']
+                                accession_number = child.attrib['accession']
+                                Project.objects.filter(alias=alias).update(study_accession_id=accession_number)
                                 for grandchild in child:
                                     if grandchild.tag == 'EXT_ID':
                                         alternative_accession_number = grandchild.attrib['accession']
-                                        Project.objects.filter(project_alias=project_alias).update(alternative_accession_id=alternative_accession_number)
+                                        Project.objects.filter(alias=alias).update(alternative_accession_id=alternative_accession_number)
                     project_submission.accession_status = 'submitted'
                     project_submission.save()
                     self.message_user(request, "Project submission registered successfully.", messages.SUCCESS)
@@ -479,3 +501,19 @@ class PipelinesAdmin(admin.ModelAdmin):
     order.short_description = 'Order'
 
 admin.site.register(Pipelines, PipelinesAdmin)
+
+class MagRunAdmin(admin.ModelAdmin):
+    list_display = ('magRun_id', 'status')
+
+    actions = ['start_run']
+
+    def start_run(self, request, queryset):
+        for mag_run in queryset:
+            # Create a new temporary folder for the run
+            id = random.randint(1000000, 9999999)
+            run_folder = os.path.join(settings.LOCAL_DIR, f"{id}")
+            os.makedirs(run_folder)
+
+    start_run.short_description = "Register sample with ENA"
+
+admin.site.register(MagRun, MagRunAdmin)
