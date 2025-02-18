@@ -126,7 +126,7 @@ ENA_USERNAME = os.environ.get('ENA_USERNAME')
 ENA_PASSWORD = os.environ.get('ENA_PASSWORD')
 
 LOCAL_DIR = f"{BASE_DIR}/media/test"
-JAR_LOCATION = '/home/gary/Downloads/webin-cli-8.1.0.jar'
+JAR_LOCATION = f"{BASE_DIR}/webin-cli-8.1.0.jar"
 
 MAG_NEXTFLOW_COMMAND_STEM = 'nextflow run main.nf'
 MAG_PROFILE = 'singularity'

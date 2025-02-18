@@ -198,8 +198,8 @@ class SampleAdmin(admin.ModelAdmin):
         for sample in queryset:
             paired_read_1 = os.path.join(settings.LOCAL_DIR, sample.sample_alias + '_1.fastq.gz')
             paired_read_2 = os.path.join(settings.LOCAL_DIR, sample.sample_alias + '_2.fastq.gz')
-            template_1 = os.path.join(settings.LOCAL_DIR, 'template_1.fastq.gz')
-            template_2 = os.path.join(settings.LOCAL_DIR, 'template_2.fastq.gz')
+            template_1 = os.path.join(settings.LOCAL_DIR, '..', 'template_1.fastq.gz')
+            template_2 = os.path.join(settings.LOCAL_DIR, '..', 'template_2.fastq.gz')
 
             # temporary
             shutil.copyfile(template_1, paired_read_1)
