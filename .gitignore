@@ -11,7 +11,11 @@ project/media/test/
 **/debug.log
 **/db.sqlite3
 output.xlsx
-sample*.xml
-project*.xml
-submission*.xml
-
+sample_*.xml
+project_*.xml
+submission_*.xml
+read_*.xml
+template_*.xml
+*.report
+read_manifest*
+webin-cli-8.1.0.jar
