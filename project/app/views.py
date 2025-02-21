@@ -9,10 +9,12 @@ from django.forms import CheckboxSelectMultiple, CheckboxInput, DateInput, model
 from django.http import HttpResponseRedirect, JsonResponse
 from django.urls import reverse, reverse_lazy
 from .forms import OrderForm, SampleForm, SamplesetForm, ProjectForm
-from .models import Order, Sample, Sampleset, Project, STATUS_CHOICES
+from .models import Order, Sample, Sampleset, Project, STATUS_CHOICES, SAMPLE_TYPE_NORMAL, SAMPLE_TYPE_ASSEMBLY, SAMPLE_TYPE_BIN, SAMPLE_TYPE_MAG
+
 from json.decoder import JSONDecodeError
 import importlib
 from django.conf import settings
+from django.http import Http404
 
 logger = logging.getLogger(__name__)
 
@@ -167,12 +169,18 @@ def metadata_view(request, project_id, order_id):
         order = get_object_or_404(Order, pk=order_id, project=project)
 
         # should only be one
-        sample_set = order.sampleset_set.first()
+        sample_set = order.sampleset_set.filter(sample_type=SAMPLE_TYPE_NORMAL).first()
         if not sample_set:
-            sample_set = Sampleset(order=order) 
+            sample_set = Sampleset(order=order, sample_type=SAMPLE_TYPE_NORMAL) 
         form = SamplesetForm(instance=sample_set)
         
         if request.method == 'POST':
+
+            # Check for any samples for order, and abort if any found
+            samples = order.sample_set.filter()
+            if samples:
+                return render(request, 'metadata.html', {'sample_set': sample_set, 'project_id': project_id, 'error_message': 'Cannot change metadata while samples exist'})
+
             if order_id:
                 form = SamplesetForm(request.POST, instance=sample_set)
             else:
@@ -197,18 +205,47 @@ def metadata_view(request, project_id, order_id):
                 #         unitchecklist_item_instance.save()
 
                 # order.save()
+
+                assembly_sample_set = order.sampleset_set.filter(sample_type=SAMPLE_TYPE_ASSEMBLY).first()
+                if not assembly_sample_set:
+                    assembly_sample_set = Sampleset(order=order, sample_type=SAMPLE_TYPE_ASSEMBLY) 
+                assembly_sample_set.checklists = settings.ASSEMBLY_CHECKLIST
+                assembly_sample_set.include = ""
+                assembly_sample_set.exclude = ""
+                assembly_sample_set.custom = ""
+                assembly_sample_set.save()
+                bin_sample_set = order.sampleset_set.filter(sample_type=SAMPLE_TYPE_BIN).first()
+                if not bin_sample_set:
+                    bin_sample_set = Sampleset(order=order, sample_type=SAMPLE_TYPE_BIN)
+                bin_sample_set.checklists = settings.BIN_CHECKLIST
+                bin_sample_set.include = ""
+                bin_sample_set.exclude = ""
+                bin_sample_set.custom = ""
+                bin_sample_set.save()
+                mag_sample_set = order.sampleset_set.filter(sample_type=SAMPLE_TYPE_MAG).first()
+                if not mag_sample_set:
+                    mag_sample_set = Sampleset(order=order, sample_type=SAMPLE_TYPE_MAG)
+                mag_sample_set.checklists = settings.MAG_CHECKLIST
+                mag_sample_set.include = ""
+                mag_sample_set.exclude = ""
+                mag_sample_set.custom = ""
+                mag_sample_set.save()
+
                 return redirect('order_list', project_id=project_id)
             
         return render(request, 'metadata.html', {'sample_set': sample_set, 'project_id': project_id})
     else:
         return redirect('login')
 
-def samples_view(request, project_id, order_id):
+def samples_view(request, project_id, order_id, sample_type):
 
     if request.user.is_authenticated:
         project = get_object_or_404(Project, pk=project_id, user=request.user)
 
         order = get_object_or_404(Order, pk=order_id, project=project)
+
+        if not (sample_type in [SAMPLE_TYPE_NORMAL, SAMPLE_TYPE_ASSEMBLY, SAMPLE_TYPE_BIN, SAMPLE_TYPE_MAG]):
+            raise Http404()
 
         if request.method == 'POST':
             sample_data = json.loads(request.POST.get('sample_data'))
@@ -216,7 +253,7 @@ def samples_view(request, project_id, order_id):
             print(f"Received sample_data: {sample_data}")
 
             # should only be one
-            sample_set = order.sampleset_set.first()
+            sample_set = order.sampleset_set.filter(sample_type=sample_type).first()
 
             checklists = sample_set.checklists
         
@@ -228,7 +265,7 @@ def samples_view(request, project_id, order_id):
                 checklist_item_class =  getattr(importlib.import_module("app.models"), checklist_class_name)
                 
                 try:
-                    checklist_item_class.objects.filter(sampleset=sample_set).delete()
+                    checklist_item_class.objects.filter(sampleset=sample_set, sample_type=sample_type).delete()
                 except:
                     pass
 
@@ -236,21 +273,21 @@ def samples_view(request, project_id, order_id):
                 unitchecklist_item_class =  getattr(importlib.import_module("app.models"), unitchecklist_class_name)
                 
                 try:
-                    unitchecklist_item_class.objects.filter(sampleset=sample_set).delete()
+                    unitchecklist_item_class.objects.filter(sampleset=sample_set, sample_type=sample_type).delete()
                 except:
                     pass
 
 
             # Delete all existing samples for the order
             try:
-                Sample.objects.filter(order=order).delete()
+                Sample.objects.filter(order=order, sample_type=sample_type).delete()
             except: 
                 pass
             
             # Create new samples based on the received data
             for sample_info in sample_data:
 
-                sample=Sample(order = order)
+                sample=Sample(order = order, sample_type=sample_type)
                 sample.setFieldsFromResponse(sample_info)
                 sample.sampleset = sample_set
                 sample.save()
@@ -261,12 +298,12 @@ def samples_view(request, project_id, order_id):
                     checklist_code = Sampleset.checklist_structure[checklist_name]['checklist_code']  
                     checklist_class_name = Sampleset.checklist_structure[checklist_name]['checklist_class_name']
                     checklist_item_class =  getattr(importlib.import_module("app.models"), checklist_class_name)
-                    checklist_item_instance = checklist_item_class(sampleset = sample_set, sample = sample)
+                    checklist_item_instance = checklist_item_class(sampleset = sample_set, sample = sample, sample_type=sample_type)
                     checklist_item_instance.setFieldsFromResponse(sample_info)
                     checklist_item_instance.save()
                     unitchecklist_class_name = Sampleset.checklist_structure[checklist_name]['unitchecklist_class_name']
                     unitchecklist_item_class =  getattr(importlib.import_module("app.models"), unitchecklist_class_name)
-                    unitchecklist_item_instance = unitchecklist_item_class(sampleset = sample_set, sample = sample)
+                    unitchecklist_item_instance = unitchecklist_item_class(sampleset = sample_set, sample = sample, sample_type=sample_type)
                     # unitchecklist_item_instance.setFieldsFromResponse(sample_info)
                     unitchecklist_item_instance.save()
 
@@ -276,12 +313,12 @@ def samples_view(request, project_id, order_id):
 
             return JsonResponse({'success': True})
 
-        samples = order.sample_set.all().order_by('sample_id')
+        samples = order.sample_set.filter(sample_type=sample_type).order_by('sample_id')
 
         print(f"Retrieved samples: {list(samples)}")
 
         # should only be one
-        sample_set = order.sampleset_set.first()
+        sample_set = order.sampleset_set.filter(sample_type=sample_type).first()
 
         checklists = sample_set.checklists
 
@@ -305,14 +342,14 @@ def samples_view(request, project_id, order_id):
 
         pixelsPerChar = settings.PIXELS_PER_CHAR
 
-        nested_headers_checklists.append({'label': '-', 'colspan': 2})
+        nested_headers_checklists.append({'label': '', 'colspan': 2})
         nested_headers_fields = ['Delete', 'Unsaved']
         headers_size = [75,60]
 
-        samples_headers = samples_headers + f"{{ title: 'Delete', renderer: deleteButtonRenderer }},\n{{ title: 'Unsaved', data: 'unsaved', readOnly: true }},\n"
+        samples_headers = samples_headers + f"{{ title: 'Delete', renderer: deleteButtonRenderer }},\n{{ title: 'Unsaved', data: 'status', readOnly: true }},\n"
         sample_headers_array = sample_headers_array + f"Delete: row[1],\nunsaved: row[1],\n"
 
-        sample=Sample(order = order)
+        sample=Sample(order = order, sample_type=sample_type)
 
         samples_headers = samples_headers + sample.getHeaders(inclusions, exclusions)
         (index, sample_headers_array_update) = sample.getHeadersArray(index, inclusions, exclusions)
@@ -353,7 +390,7 @@ def samples_view(request, project_id, order_id):
 
             # get the checklist objects for this sample_set
             try:
-                checklist_entries = checklist_entries_class.objects.filter(sampleset=sample_set) 
+                checklist_entries = checklist_entries_class.objects.filter(sampleset=sample_set, sample_type=sample_type) 
                 checklist_entries_list.append(checklist_entries)
             except:
                 pass
@@ -369,7 +406,7 @@ def samples_view(request, project_id, order_id):
 
             # get the actual data for the checklists for this sample    
             for checklist_type in checklist_entries_list:
-                for checklist in checklist_type.all().filter(sampleset=sample_set, sample=sample):
+                for checklist in checklist_type.all().filter(sampleset=sample_set, sample=sample, sample_type=sample_type):
                     fields = checklist.getFields(inclusions, exclusions)
                     output.update(fields)    
 
@@ -393,6 +430,7 @@ def samples_view(request, project_id, order_id):
                 'nested_headers': nested_headers,
                 'headers_max_size': headers_max_size,
                 'headers_size': headers_size,
+                'sample_type': sample_type,
             })
     else:
         return redirect('login')

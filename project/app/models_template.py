@@ -25,6 +25,11 @@ STATUS_CHOICES = [
     ('uploaded_to_ENA', 'Uploaded to ENA'),
 ]
 
+SAMPLE_TYPE_NORMAL = 1
+SAMPLE_TYPE_ASSEMBLY = 2
+SAMPLE_TYPE_BIN = 3
+SAMPLE_TYPE_MAG = 4
+
 class SelfDescribingModel(models.Model):
 
     class Meta:
@@ -92,7 +97,11 @@ class SelfDescribingModel(models.Model):
                     try:
                         choices = getattr(self, f"{k}_choice")
                         single_choice = [t[0] for t in choices]
-                        headers = headers + f", type: 'autocomplete', source: {single_choice}, strict: true, allowInvalid: true"
+                        if k == "sequence_quality_check":
+                            strict = "true"
+                        else:
+                            strict = "true"
+                        headers = headers + f", type: 'autocomplete', source: {single_choice}, strict: {strict}, allowInvalid: true"
                     except:
                         pass
                     try:
@@ -108,7 +117,11 @@ class SelfDescribingModel(models.Model):
                     try:
                         choices = getattr(self, f"{k}_choice")
                         single_choice = [t[0] for t in choices]
-                        headers = headers + f", type: 'autocomplete', source: {single_choice}, strict: true, allowInvalid: true"
+                        if k == "sequence_quality_check":
+                            strict = "true"
+                        else:
+                            strict = "true"
+                        headers = headers + f", type: 'autocomplete', source: {single_choice}, strict: {strict}, allowInvalid: true"
                     except:
                         pass
                     try:
@@ -280,6 +293,57 @@ class Order(models.Model):
     isolated_from = models.CharField(max_length=100, null=True, blank=True)
     isolation_method = models.CharField(max_length=100, choices=ISOLATION_METHOD_CHOICES, null=True, blank=True)
 
+    def show_metadata(self):
+        # if no samples at all
+        sample_set = self.sampleset_set.filter(sample_type=SAMPLE_TYPE_NORMAL).first()
+        if not sample_set:
+            return True
+    
+        sample = self.sample_set.first()
+        if not sample:
+            return True
+        # sample = Sample.objects.filter(order=self).first()
+
+    def show_samples(self):
+        # metadata exists
+        sample_set = self.sampleset_set.filter(sample_type=SAMPLE_TYPE_NORMAL).first()
+        if not sample_set:
+            return False
+
+        # Maybe this is not needed
+        checklists = sample_set.checklists
+        for checklist in checklists:
+            checklist_class_name = Sampleset.checklist_structure[checklist]['checklist_class_name']
+            checklist_item_class =  getattr(importlib.import_module("app.models"), checklist_class_name)
+            try:
+                checklist_item_instance = checklist_item_class.objects.filter(sampleset=sample_set, sample_type=SAMPLE_TYPE_NORMAL).first()
+                return True
+            except:
+                pass
+
+        return False
+
+    def show_assembly(self):
+        if not self.show_samples():
+            return False
+        
+        assembly = self.assembly_set.first()
+        if not assembly:
+            return False
+
+        return True
+
+    def show_bin(self):
+        if not self.show_samples():
+            return False
+        
+        bin = self.bin_set.first()
+        if not bin:
+            return False
+
+        return True
+
+
 class Sampleset(models.Model):
 
     order = models.ForeignKey(Order, on_delete=models.CASCADE)
@@ -289,6 +353,7 @@ class Sampleset(models.Model):
     include = models.JSONField()
     exclude = models.JSONField()
     custom = models.JSONField()
+    sample_type = models.IntegerField(default=SAMPLE_TYPE_NORMAL)
 
     checklist_structure = {
         %CHECKLIST_STRUCTURE%
@@ -298,6 +363,7 @@ class Sample(SelfDescribingModel):
     order = models.ForeignKey(Order, on_delete=models.CASCADE)
     # from ENA spreadsheet download
 
+    status = models.CharField(max_length=2, null=True, blank=True)
     sample_id = models.CharField(max_length=100, null=True, blank=True)
     tax_id = models.CharField(max_length=100, null=True, blank=True)
     scientific_name = models.CharField(max_length=100, null=True, blank=True)
@@ -306,6 +372,7 @@ class Sample(SelfDescribingModel):
     sample_description = models.CharField(max_length=100, null=True, blank=True)
     sample_accession_number = models.CharField(max_length=100, null=True, blank=True)
     sample_biosample_number = models.CharField(max_length=100, null=True, blank=True)
+    sample_type = models.IntegerField(default=SAMPLE_TYPE_NORMAL)
 
 
     #     investigation_type = models.CharField(max_length=100, null=True, blank=True)
@@ -361,7 +428,23 @@ class Sample(SelfDescribingModel):
 
         return output    
 
+    # Get actual value for each field
+    def getFields(self, include=[], exclude=[]):
+        output = {}
 
+        output['status'] = getattr(self, 'status') or ''
+        # output['status'] = '. '
+
+        if include:
+            for k, v in self.fields.items():
+                if k in include:
+                    output[k] = getattr(self, k) or ''
+        else:
+            for k, v in self.fields.items():
+                if k not in exclude:
+                    output[k] = getattr(self, k) or ''
+
+        return output            
 
 class ProjectSubmission(models.Model):
     projects = models.ManyToManyField(Project)
@@ -471,21 +554,33 @@ class Blah_unitchecklist(SelfDescribingModel):
     sample = models.ForeignKey(Sample, on_delete=models.CASCADE) """
 
 class MagRun(models.Model):
-    sequence = models.ForeignKey(Sequence, on_delete=models.CASCADE)
+    sequences = models.ManyToManyField(Sequence)
 
     magRun_id = models.CharField(max_length=100, null=True, blank=True)
+
+    status = models.CharField(max_length=100, null=True, blank=True)
+
+
+class MagRunInstance(models.Model):
+    MagRun = models.ForeignKey(MagRun, on_delete=models.CASCADE)
+
+    magRunInstance_id = models.CharField(max_length=100, null=True, blank=True)
+
     status = models.CharField(max_length=100, null=True, blank=True)
 
     # Output files
 
 class Assembly(models.Model):
-    magRun = models.ForeignKey(Sequence, on_delete=models.CASCADE)
+    sequence = models.ForeignKey(Sequence, on_delete=models.CASCADE)
+    order = models.ForeignKey(Order, on_delete=models.CASCADE)
+
 
     magRun_assembly_id = models.CharField(max_length=100, null=True, blank=True) 
     file = models.CharField(max_length=255, null=True, blank=True)
 
 class Bin(models.Model):
-    magRun = models.ForeignKey(Sequence, on_delete=models.CASCADE)
+    sequence = models.ForeignKey(Sequence, on_delete=models.CASCADE)
+    order = models.ForeignKey(Order, on_delete=models.CASCADE)
 
     magRun_bin_id = models.CharField(max_length=100, null=True, blank=True)
     file = models.CharField(max_length=255, null=True, blank=True)

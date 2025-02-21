@@ -58,11 +58,22 @@ Comment out for 6.2.2 (MIT)
       {{ nested_headers | safe }},
     afterChange: (changes) => {
       changes?.forEach(([row, prop, oldValue, newValue]) => {
-      if (prop != "unsaved" && hot.getDataAtCell(row, 1) != "x") {
-                  hot.setDataAtCell(row, 1, "x");
-                  unsaved = true;
-                  document.getElementById('save').disabled = false;
-      }
+      if (prop != "status") {
+        cellValue = hot.getDataAtCell(row, 1)
+        if (cellValue) {
+          unsavedValue = cellValue.substring(1,2);
+          if (unsavedValue == "x") {
+            return;
+          }
+          protect = cellValue.substring(0,1);
+        } else {
+          protect = " ";
+        }
+        newCellValue = protect + "x";
+        hot.setDataAtCell(row, 1, newCellValue);
+        unsaved = true;
+        document.getElementById('save').disabled = false;
+      }  
       });
     }
   };
@@ -87,7 +98,8 @@ Comment out for 6.2.2 (MIT)
       var rowIndex = hot.countRows();
     }
     hot.alter('insert_row_above', rowIndex, 1, newRow);
-    hot.setDataAtCell(rowIndex, 1, "x");
+
+    hot.setDataAtCell(rowIndex, 1, " x");
     unsaved = true;
     document.getElementById('save').disabled = false;
   }
@@ -117,13 +129,14 @@ Comment out for 6.2.2 (MIT)
 
     hot.batch(() => {
       for (let rowIndex = 0; rowIndex < hot.countRows(); rowIndex++) {
-        hot.setDataAtCell(rowIndex, 1, "");
+        protect = hot.getDataAtCell(rowIndex, 1).substring(0,1);
+        hot.setDataAtCell(rowIndex, 1, protect + " ");
       }
     });
 
     console.log('Sending sample data:', sampleData);
 
-    fetch("{% url 'samples_view' project_id=project_id order_id=order.id %}", {
+    fetch("{% url 'samples_view' project_id=project_id order_id=order.id sample_type=sample_type %}", {
       method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
@@ -150,11 +163,20 @@ Comment out for 6.2.2 (MIT)
   }
 
   function deleteButtonRenderer(instance, td, row, col, prop, value, cellProperties) {
+
     Handsontable.renderers.TextRenderer.apply(this, arguments);
     td.innerHTML = '';
     var button = document.createElement('button');
     button.innerHTML = 'Delete';
     button.addEventListener('click', function () {
+      cellValue = hot.getDataAtCell(row, 1);
+      if (cellValue) {
+        protect = cellValue.substring(0,1);
+        if (protect == ".") {
+          alert("Cannot delete this row, as there are sequences or analyses associated with it.");
+          return td;
+        } 
+      } 
       instance.alter('remove_row', row); // Delete the row on button click
       unsaved = true;
       document.getElementById('save').disabled = false;

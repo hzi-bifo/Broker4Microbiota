@@ -25,6 +25,11 @@ STATUS_CHOICES = [
     ('uploaded_to_ENA', 'Uploaded to ENA'),
 ]
 
+SAMPLE_TYPE_NORMAL = 1
+SAMPLE_TYPE_ASSEMBLY = 2
+SAMPLE_TYPE_BIN = 3
+SAMPLE_TYPE_MAG = 4
+
 class SelfDescribingModel(models.Model):
 
     class Meta:
@@ -35,7 +40,7 @@ class SelfDescribingModel(models.Model):
         class_name = type(self).__name__
         unit_class_name = f"{class_name}_unit"
         unitchecklist_class =  getattr(importlib.import_module("app.models"), unit_class_name)
-        unitchecklist_item_instance = unitchecklist_class.objects.filter(sampleset=self.sampleset).first()
+        unitchecklist_item_instance = unitchecklist_class.objects.filter(order=self.order).first()
 
         output = ""
         if include:
@@ -92,7 +97,11 @@ class SelfDescribingModel(models.Model):
                     try:
                         choices = getattr(self, f"{k}_choice")
                         single_choice = [t[0] for t in choices]
-                        headers = headers + f", type: 'autocomplete', source: {single_choice}, strict: true, allowInvalid: true"
+                        if k == "sequence_quality_check":
+                            strict = "true"
+                        else:
+                            strict = "true"
+                        headers = headers + f", type: 'autocomplete', source: {single_choice}, strict: {strict}, allowInvalid: true"
                     except:
                         pass
                     try:
@@ -108,7 +117,11 @@ class SelfDescribingModel(models.Model):
                     try:
                         choices = getattr(self, f"{k}_choice")
                         single_choice = [t[0] for t in choices]
-                        headers = headers + f", type: 'autocomplete', source: {single_choice}, strict: true, allowInvalid: true"
+                        if k == "sequence_quality_check":
+                            strict = "true"
+                        else:
+                            strict = "true"
+                        headers = headers + f", type: 'autocomplete', source: {single_choice}, strict: {strict}, allowInvalid: true"
                     except:
                         pass
                     try:
@@ -280,6 +293,57 @@ class Order(models.Model):
     isolated_from = models.CharField(max_length=100, null=True, blank=True)
     isolation_method = models.CharField(max_length=100, choices=ISOLATION_METHOD_CHOICES, null=True, blank=True)
 
+    def show_metadata(self):
+        # if no samples at all
+        sample_set = self.sampleset_set.filter(sample_type=SAMPLE_TYPE_NORMAL).first()
+        if not sample_set:
+            return True
+    
+        sample = self.sample_set.first()
+        if not sample:
+            return True
+        # sample = Sample.objects.filter(order=self).first()
+
+    def show_samples(self):
+        # metadata exists
+        sample_set = self.sampleset_set.filter(sample_type=SAMPLE_TYPE_NORMAL).first()
+        if not sample_set:
+            return False
+
+        # Maybe this is not needed
+        checklists = sample_set.checklists
+        for checklist in checklists:
+            checklist_class_name = Sampleset.checklist_structure[checklist]['checklist_class_name']
+            checklist_item_class =  getattr(importlib.import_module("app.models"), checklist_class_name)
+            try:
+                checklist_item_instance = checklist_item_class.objects.filter(sampleset=sample_set, sample_type=SAMPLE_TYPE_NORMAL).first()
+                return True
+            except:
+                pass
+
+        return False
+
+    def show_assembly(self):
+        if not self.show_samples():
+            return False
+        
+        assembly = self.assembly_set.first()
+        if not assembly:
+            return False
+
+        return True
+
+    def show_bin(self):
+        if not self.show_samples():
+            return False
+        
+        bin = self.bin_set.first()
+        if not bin:
+            return False
+
+        return True
+
+
 class Sampleset(models.Model):
 
     order = models.ForeignKey(Order, on_delete=models.CASCADE)
@@ -289,6 +353,7 @@ class Sampleset(models.Model):
     include = models.JSONField()
     exclude = models.JSONField()
     custom = models.JSONField()
+    sample_type = models.IntegerField(default=SAMPLE_TYPE_NORMAL)
 
     checklist_structure = {
         'GSC_MIxS_wastewater_sludge': {"checklist_code": "ERC000023", 'checklist_class_name': 'GSC_MIxS_wastewater_sludge', 'unitchecklist_class_name': 'GSC_MIxS_wastewater_sludge_unit'},
@@ -313,6 +378,7 @@ class Sample(SelfDescribingModel):
     order = models.ForeignKey(Order, on_delete=models.CASCADE)
     # from ENA spreadsheet download
 
+    status = models.CharField(max_length=2, null=True, blank=True)
     sample_id = models.CharField(max_length=100, null=True, blank=True)
     tax_id = models.CharField(max_length=100, null=True, blank=True)
     scientific_name = models.CharField(max_length=100, null=True, blank=True)
@@ -321,6 +387,7 @@ class Sample(SelfDescribingModel):
     sample_description = models.CharField(max_length=100, null=True, blank=True)
     sample_accession_number = models.CharField(max_length=100, null=True, blank=True)
     sample_biosample_number = models.CharField(max_length=100, null=True, blank=True)
+    sample_type = models.IntegerField(default=SAMPLE_TYPE_NORMAL)
 
 
     #     investigation_type = models.CharField(max_length=100, null=True, blank=True)
@@ -376,7 +443,23 @@ class Sample(SelfDescribingModel):
 
         return output    
 
+    # Get actual value for each field
+    def getFields(self, include=[], exclude=[]):
+        output = {}
 
+        output['status'] = getattr(self, 'status') or ''
+        # output['status'] = '. '
+
+        if include:
+            for k, v in self.fields.items():
+                if k in include:
+                    output[k] = getattr(self, k) or ''
+        else:
+            for k, v in self.fields.items():
+                if k not in exclude:
+                    output[k] = getattr(self, k) or ''
+
+        return output            
 
 class ProjectSubmission(models.Model):
     projects = models.ManyToManyField(Project)
@@ -486,21 +569,33 @@ class Blah_unitchecklist(SelfDescribingModel):
     sample = models.ForeignKey(Sample, on_delete=models.CASCADE) """
 
 class MagRun(models.Model):
-    sequence = models.ForeignKey(Sequence, on_delete=models.CASCADE)
+    sequences = models.ManyToManyField(Sequence)
 
     magRun_id = models.CharField(max_length=100, null=True, blank=True)
+
+    status = models.CharField(max_length=100, null=True, blank=True)
+
+
+class MagRunInstance(models.Model):
+    MagRun = models.ForeignKey(MagRun, on_delete=models.CASCADE)
+
+    magRunInstance_id = models.CharField(max_length=100, null=True, blank=True)
+
     status = models.CharField(max_length=100, null=True, blank=True)
 
     # Output files
 
 class Assembly(models.Model):
-    magRun = models.ForeignKey(Sequence, on_delete=models.CASCADE)
+    sequence = models.ForeignKey(Sequence, on_delete=models.CASCADE)
+    order = models.ForeignKey(Order, on_delete=models.CASCADE)
+
 
     magRun_assembly_id = models.CharField(max_length=100, null=True, blank=True) 
     file = models.CharField(max_length=255, null=True, blank=True)
 
 class Bin(models.Model):
-    magRun = models.ForeignKey(Sequence, on_delete=models.CASCADE)
+    sequence = models.ForeignKey(Sequence, on_delete=models.CASCADE)
+    order = models.ForeignKey(Order, on_delete=models.CASCADE)
 
     magRun_bin_id = models.CharField(max_length=100, null=True, blank=True)
     file = models.CharField(max_length=255, null=True, blank=True)
@@ -572,6 +667,7 @@ class GSC_MIxS_wastewater_sludge(SelfDescribingModel):
 
 	sampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE, default=1)
 	sample = models.ForeignKey(Sample, on_delete=models.CASCADE, default=1)
+	sample_type = models.IntegerField(default=1)
 	project_name= models.CharField(max_length=100, blank=False,help_text="Name of th")
 	experimental_factor= models.CharField(max_length=100, blank=True,help_text="Experiment")
 	ploidy= models.CharField(max_length=100, blank=True,help_text="The ploidy")
@@ -818,6 +914,7 @@ class GSC_MIxS_wastewater_sludge_unit(SelfDescribingModel):
 
 	sampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE, default=1)
 	sample = models.ForeignKey(Sample, on_delete=models.CASCADE, default=1)
+	sample_type = models.IntegerField(default=1)
 	sample_volume_or_weight_for_DNA_extraction = models.CharField(max_length=100, choices=sample_volume_or_weight_for_DNA_extraction_units, blank=False)
 	geographic_location_latitude = models.CharField(max_length=100, choices=geographic_location_latitude_units, blank=False)
 	geographic_location_longitude = models.CharField(max_length=100, choices=geographic_location_longitude_units, blank=False)
@@ -878,6 +975,7 @@ class GSC_MIxS_miscellaneous_natural_or_artificial_environment(SelfDescribingMod
 
 	sampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE, default=1)
 	sample = models.ForeignKey(Sample, on_delete=models.CASCADE, default=1)
+	sample_type = models.IntegerField(default=1)
 	altitude= models.CharField(max_length=100, blank=True,help_text="The altitu", validators=[RegexValidator(altitude_validator)])
 	elevation= models.CharField(max_length=100, blank=True,help_text="The elevat", validators=[RegexValidator(elevation_validator)])
 	biomass= models.CharField(max_length=100, blank=True,help_text="amount of ")
@@ -1002,6 +1100,7 @@ class GSC_MIxS_miscellaneous_natural_or_artificial_environment_unit(SelfDescribi
 
 	sampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE, default=1)
 	sample = models.ForeignKey(Sample, on_delete=models.CASCADE, default=1)
+	sample_type = models.IntegerField(default=1)
 	altitude = models.CharField(max_length=100, choices=altitude_units, blank=False)
 	elevation = models.CharField(max_length=100, choices=elevation_units, blank=False)
 	biomass = models.CharField(max_length=100, choices=biomass_units, blank=False)
@@ -1048,6 +1147,7 @@ class GSC_MIxS_human_skin(SelfDescribingModel):
 
 	sampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE, default=1)
 	sample = models.ForeignKey(Sample, on_delete=models.CASCADE, default=1)
+	sample_type = models.IntegerField(default=1)
 	host_body_product= models.CharField(max_length=100, blank=True,help_text="substance ")
 	medical_history_performed= models.CharField(max_length=100, blank=True,help_text="whether fu", choices=medical_history_performed_choice)
 	dermatology_disorder= models.CharField(max_length=100, blank=True,help_text="History of")
@@ -1122,6 +1222,7 @@ class GSC_MIxS_human_skin_unit(SelfDescribingModel):
 
 	sampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE, default=1)
 	sample = models.ForeignKey(Sample, on_delete=models.CASCADE, default=1)
+	sample_type = models.IntegerField(default=1)
 	host_age = models.CharField(max_length=100, choices=host_age_units, blank=False)
 	host_height = models.CharField(max_length=100, choices=host_height_units, blank=False)
 	host_body_mass_index = models.CharField(max_length=100, choices=host_body_mass_index_units, blank=False)
@@ -1137,6 +1238,7 @@ class ENA_default_sample_checklist(SelfDescribingModel):
 
 	sampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE, default=1)
 	sample = models.ForeignKey(Sample, on_delete=models.CASCADE, default=1)
+	sample_type = models.IntegerField(default=1)
 	cell_type= models.CharField(max_length=100, blank=True,help_text="cell type ")
 	dev_stage= models.CharField(max_length=100, blank=True,help_text="if the sam")
 	germline= models.CharField(max_length=100, blank=True,help_text="the sample")
@@ -1205,6 +1307,7 @@ class ENA_default_sample_checklist_unit(SelfDescribingModel):
 
 	sampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE, default=1)
 	sample = models.ForeignKey(Sample, on_delete=models.CASCADE, default=1)
+	sample_type = models.IntegerField(default=1)
 
 class GSC_MIxS_plant_associated(SelfDescribingModel):
 
@@ -1216,6 +1319,7 @@ class GSC_MIxS_plant_associated(SelfDescribingModel):
 
 	sampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE, default=1)
 	sample = models.ForeignKey(Sample, on_delete=models.CASCADE, default=1)
+	sample_type = models.IntegerField(default=1)
 	host_dry_mass= models.CharField(max_length=100, blank=True,help_text="measuremen", validators=[RegexValidator(host_dry_mass_validator)])
 	plant_product= models.CharField(max_length=100, blank=True,help_text="substance ")
 	host_wet_mass= models.CharField(max_length=100, blank=True,help_text="measuremen", validators=[RegexValidator(host_wet_mass_validator)])
@@ -1306,6 +1410,7 @@ class GSC_MIxS_plant_associated_unit(SelfDescribingModel):
 
 	sampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE, default=1)
 	sample = models.ForeignKey(Sample, on_delete=models.CASCADE, default=1)
+	sample_type = models.IntegerField(default=1)
 	host_dry_mass = models.CharField(max_length=100, choices=host_dry_mass_units, blank=False)
 	host_wet_mass = models.CharField(max_length=100, choices=host_wet_mass_units, blank=False)
 	host_length = models.CharField(max_length=100, choices=host_length_units, blank=False)
@@ -1350,6 +1455,7 @@ class GSC_MIxS_water(SelfDescribingModel):
 
 	sampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE, default=1)
 	sample = models.ForeignKey(Sample, on_delete=models.CASCADE, default=1)
+	sample_type = models.IntegerField(default=1)
 	atmospheric_data= models.CharField(max_length=100, blank=True,help_text="measuremen")
 	conductivity= models.CharField(max_length=100, blank=True,help_text="electrical", validators=[RegexValidator(conductivity_validator)])
 	fluorescence= models.CharField(max_length=100, blank=True,help_text="raw (volts", validators=[RegexValidator(fluorescence_validator)])
@@ -1500,6 +1606,7 @@ class GSC_MIxS_water_unit(SelfDescribingModel):
 
 	sampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE, default=1)
 	sample = models.ForeignKey(Sample, on_delete=models.CASCADE, default=1)
+	sample_type = models.IntegerField(default=1)
 	conductivity = models.CharField(max_length=100, choices=conductivity_units, blank=False)
 	fluorescence = models.CharField(max_length=100, choices=fluorescence_units, blank=False)
 	light_intensity = models.CharField(max_length=100, choices=light_intensity_units, blank=False)
@@ -1552,6 +1659,7 @@ class GSC_MIxS_soil(SelfDescribingModel):
 
 	sampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE, default=1)
 	sample = models.ForeignKey(Sample, on_delete=models.CASCADE, default=1)
+	sample_type = models.IntegerField(default=1)
 	slope_gradient= models.CharField(max_length=100, blank=True,help_text="commonly c", validators=[RegexValidator(slope_gradient_validator)])
 	slope_aspect= models.CharField(max_length=100, blank=True,help_text="the direct")
 	profile_position= models.CharField(max_length=100, blank=True,help_text="cross-sect", choices=profile_position_choice)
@@ -1678,6 +1786,7 @@ class GSC_MIxS_soil_unit(SelfDescribingModel):
 
 	sampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE, default=1)
 	sample = models.ForeignKey(Sample, on_delete=models.CASCADE, default=1)
+	sample_type = models.IntegerField(default=1)
 	slope_gradient = models.CharField(max_length=100, choices=slope_gradient_units, blank=False)
 	sample_weight_for_DNA_extraction = models.CharField(max_length=100, choices=sample_weight_for_DNA_extraction_units, blank=False)
 	microbial_biomass = models.CharField(max_length=100, choices=microbial_biomass_units, blank=False)
@@ -1694,6 +1803,7 @@ class GSC_MIxS_human_gut(SelfDescribingModel):
 
 	sampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE, default=1)
 	sample = models.ForeignKey(Sample, on_delete=models.CASCADE, default=1)
+	sample_type = models.IntegerField(default=1)
 	gastrointestinal_tract_disorder= models.CharField(max_length=100, blank=True,help_text="History of")
 	liver_disorder= models.CharField(max_length=100, blank=True,help_text="History of")
 	special_diet= models.CharField(max_length=100, blank=True,help_text="specificat")
@@ -1716,6 +1826,7 @@ class GSC_MIxS_human_gut_unit(SelfDescribingModel):
 
 	sampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE, default=1)
 	sample = models.ForeignKey(Sample, on_delete=models.CASCADE, default=1)
+	sample_type = models.IntegerField(default=1)
 
 class GSC_MIxS_host_associated(SelfDescribingModel):
 
@@ -1725,6 +1836,7 @@ class GSC_MIxS_host_associated(SelfDescribingModel):
 
 	sampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE, default=1)
 	sample = models.ForeignKey(Sample, on_delete=models.CASCADE, default=1)
+	sample_type = models.IntegerField(default=1)
 	host_body_habitat= models.CharField(max_length=100, blank=True,help_text="original b")
 	host_growth_conditions= models.CharField(max_length=100, blank=True,help_text="literature")
 	host_substrate= models.CharField(max_length=100, blank=True,help_text="the growth")
@@ -1761,6 +1873,7 @@ class GSC_MIxS_host_associated_unit(SelfDescribingModel):
 
 	sampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE, default=1)
 	sample = models.ForeignKey(Sample, on_delete=models.CASCADE, default=1)
+	sample_type = models.IntegerField(default=1)
 	host_blood_pressure_diastolic = models.CharField(max_length=100, choices=host_blood_pressure_diastolic_units, blank=False)
 	host_blood_pressure_systolic = models.CharField(max_length=100, choices=host_blood_pressure_systolic_units, blank=False)
 
@@ -1771,6 +1884,7 @@ class GSC_MIxS_human_vaginal(SelfDescribingModel):
 
 	sampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE, default=1)
 	sample = models.ForeignKey(Sample, on_delete=models.CASCADE, default=1)
+	sample_type = models.IntegerField(default=1)
 	gynecological_disorder= models.CharField(max_length=100, blank=True,help_text="History of")
 	urogenital_disorder= models.CharField(max_length=100, blank=True,help_text="History of")
 	menarche= models.CharField(max_length=100, blank=True,help_text="date of mo")
@@ -1807,6 +1921,7 @@ class GSC_MIxS_human_vaginal_unit(SelfDescribingModel):
 
 	sampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE, default=1)
 	sample = models.ForeignKey(Sample, on_delete=models.CASCADE, default=1)
+	sample_type = models.IntegerField(default=1)
 
 class GSC_MIxS_human_oral(SelfDescribingModel):
 
@@ -1815,6 +1930,7 @@ class GSC_MIxS_human_oral(SelfDescribingModel):
 
 	sampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE, default=1)
 	sample = models.ForeignKey(Sample, on_delete=models.CASCADE, default=1)
+	sample_type = models.IntegerField(default=1)
 	nose_mouth_teeth_throat_disorder= models.CharField(max_length=100, blank=True,help_text="History of")
 	time_since_last_toothbrushing= models.CharField(max_length=100, blank=True,help_text="specificat", validators=[RegexValidator(time_since_last_toothbrushing_validator)])
 
@@ -1837,6 +1953,7 @@ class GSC_MIxS_human_oral_unit(SelfDescribingModel):
 
 	sampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE, default=1)
 	sample = models.ForeignKey(Sample, on_delete=models.CASCADE, default=1)
+	sample_type = models.IntegerField(default=1)
 	time_since_last_toothbrushing = models.CharField(max_length=100, choices=time_since_last_toothbrushing_units, blank=False)
 
 class GSC_MIxS_sediment(SelfDescribingModel):
@@ -1847,6 +1964,7 @@ class GSC_MIxS_sediment(SelfDescribingModel):
 
 	sampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE, default=1)
 	sample = models.ForeignKey(Sample, on_delete=models.CASCADE, default=1)
+	sample_type = models.IntegerField(default=1)
 	methane= models.CharField(max_length=100, blank=True,help_text="methane (g", validators=[RegexValidator(methane_validator)])
 	total_carbon= models.CharField(max_length=100, blank=True,help_text="total carb", validators=[RegexValidator(total_carbon_validator)])
 
@@ -1871,6 +1989,7 @@ class GSC_MIxS_sediment_unit(SelfDescribingModel):
 
 	sampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE, default=1)
 	sample = models.ForeignKey(Sample, on_delete=models.CASCADE, default=1)
+	sample_type = models.IntegerField(default=1)
 	methane = models.CharField(max_length=100, choices=methane_units, blank=False)
 	total_carbon = models.CharField(max_length=100, choices=total_carbon_units, blank=False)
 
@@ -1884,6 +2003,7 @@ class GSC_MIxS_human_associated(SelfDescribingModel):
 
 	sampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE, default=1)
 	sample = models.ForeignKey(Sample, on_delete=models.CASCADE, default=1)
+	sample_type = models.IntegerField(default=1)
 	study_completion_status= models.CharField(max_length=100, blank=True,help_text="specificat", choices=study_completion_status_choice)
 	urine_collection_method= models.CharField(max_length=100, blank=True,help_text="specificat", choices=urine_collection_method_choice)
 	host_HIV_status= models.CharField(max_length=100, blank=True,help_text="HIV status", choices=host_HIV_status_choice)
@@ -1940,6 +2060,7 @@ class GSC_MIxS_human_associated_unit(SelfDescribingModel):
 
 	sampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE, default=1)
 	sample = models.ForeignKey(Sample, on_delete=models.CASCADE, default=1)
+	sample_type = models.IntegerField(default=1)
 	weight_loss_in_last_three_months = models.CharField(max_length=100, choices=weight_loss_in_last_three_months_units, blank=False)
 
 class GSC_MIxS_air(SelfDescribingModel):
@@ -1958,6 +2079,7 @@ class GSC_MIxS_air(SelfDescribingModel):
 
 	sampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE, default=1)
 	sample = models.ForeignKey(Sample, on_delete=models.CASCADE, default=1)
+	sample_type = models.IntegerField(default=1)
 	ventilation_rate= models.CharField(max_length=100, blank=True,help_text="ventilatio", validators=[RegexValidator(ventilation_rate_validator)])
 	ventilation_type= models.CharField(max_length=100, blank=True,help_text="The intent", choices=ventilation_type_choice)
 	barometric_pressure= models.CharField(max_length=100, blank=True,help_text="force per ", validators=[RegexValidator(barometric_pressure_validator)])
@@ -2022,6 +2144,7 @@ class GSC_MIxS_air_unit(SelfDescribingModel):
 
 	sampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE, default=1)
 	sample = models.ForeignKey(Sample, on_delete=models.CASCADE, default=1)
+	sample_type = models.IntegerField(default=1)
 	ventilation_rate = models.CharField(max_length=100, choices=ventilation_rate_units, blank=False)
 	barometric_pressure = models.CharField(max_length=100, choices=barometric_pressure_units, blank=False)
 	humidity = models.CharField(max_length=100, choices=humidity_units, blank=False)
@@ -2041,6 +2164,7 @@ class GSC_MIxS_microbial_mat_biolfilm(SelfDescribingModel):
 
 	sampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE, default=1)
 	sample = models.ForeignKey(Sample, on_delete=models.CASCADE, default=1)
+	sample_type = models.IntegerField(default=1)
 	turbidity= models.CharField(max_length=100, blank=True,help_text="turbidity ", validators=[RegexValidator(turbidity_validator)])
 
 	fields = {
@@ -2061,6 +2185,7 @@ class GSC_MIxS_microbial_mat_biolfilm_unit(SelfDescribingModel):
 
 	sampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE, default=1)
 	sample = models.ForeignKey(Sample, on_delete=models.CASCADE, default=1)
+	sample_type = models.IntegerField(default=1)
 	turbidity = models.CharField(max_length=100, choices=turbidity_units, blank=False)
 
 
