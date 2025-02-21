@@ -136,6 +136,10 @@ MAG_NEXTFLOW_CLUSTER_OPTIONS = '--qos=long'
 
 PIXELS_PER_CHAR = 8
 
+ASSEMBLY_CHECKLIST = "x"
+BIN_CHECKLIST = "x"
+MAG_CHECKLIST = "x"
+
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,

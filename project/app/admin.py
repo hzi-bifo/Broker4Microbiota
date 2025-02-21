@@ -69,12 +69,12 @@ class SequenceAdmin(admin.ModelAdmin):
         selected_sequences = queryset
 
         mag_run = MagRun.objects.create()
-        mag_run.sequence_set.set(selected_sequences)
+        mag_run.sequences.set(selected_sequences)
         
         context = {
             'sequences': selected_sequences,
         }
-        samplesheet_content = render_to_string('admin/app/sample/mag_sampleseheet.csv', context)
+        samplesheet_content = render_to_string('admin/app/sample/mag_samplesheet.csv', context)
         mag_run.samplesheet_content = json.dumps(samplesheet_content)
 
         context = {
@@ -507,15 +507,34 @@ admin.site.register(Pipelines, PipelinesAdmin)
 class MagRunAdmin(admin.ModelAdmin):
     list_display = ('magRun_id', 'status')
 
-    actions = ['start_run']
+    actions = ['start_run', 'update_status']
 
     def start_run(self, request, queryset):
         for mag_run in queryset:
+
+            # chedck there is no other instance of this run running
+
             # Create a new temporary folder for the run
             id = random.randint(1000000, 9999999)
             run_folder = os.path.join(settings.LOCAL_DIR, f"{id}")
             os.makedirs(run_folder)
 
-    start_run.short_description = "Register sample with ENA"
+            # Create a mag run instance
+
+            # kick off the job
+
+            # save the process id
+
+    start_run.short_description = 'Run MAG pipeline'
+
+    def update_status(seld, request, queryset):
+        for mag_run in queryset:
+            # get the corresponding MagRunInstance_id and then process id
+
+            # if process id is not running, check for result products and set status accordingly
+            # if process ended successfully, create assembly and bin objects as required
+            pass
+
+    update_status.short_description = 'Update status of MAG run'
 
 admin.site.register(MagRun, MagRunAdmin)

@@ -72,7 +72,7 @@ class OrderForm(forms.ModelForm):
 class SamplesetForm(forms.ModelForm):
     class Meta:
         model = Sampleset
-        exclude = ['order']
+        exclude = ['order', 'sample_type']
 
         # self.fields['checklists'] = json.loads('[]')
         # self.fields['include'] = json.loads('[]')

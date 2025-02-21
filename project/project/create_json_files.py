@@ -79,6 +79,7 @@ def produceModels(data, model_data, field_names):
     checklist_header = checklist_header + f"class {model_name}(SelfDescribingModel):\n"
     checklist_output = checklist_output + f"\tsampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE, default=1)\n"
     checklist_output = checklist_output + f"\tsample = models.ForeignKey(Sample, on_delete=models.CASCADE, default=1)\n"
+    checklist_output = checklist_output + f"\tsample_type = models.IntegerField(default=1)\n"
 
     checklist_name_output = f"\tname = '{checklist_name}'\n"
 
@@ -89,6 +90,7 @@ def produceModels(data, model_data, field_names):
     unitchecklist_header = unitchecklist_header + f"class {model_name}_unit(SelfDescribingModel):\n"
     unitchecklist_output = unitchecklist_output + f"\tsampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE, default=1)\n"
     unitchecklist_output = unitchecklist_output + f"\tsample = models.ForeignKey(Sample, on_delete=models.CASCADE, default=1)\n"
+    unitchecklist_output = unitchecklist_output + f"\tsample_type = models.IntegerField(default=1)\n"
 
     unitchecklist_name_output = f"\tname = '{checklist_name}'\n"
 
