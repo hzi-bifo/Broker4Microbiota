@@ -18,6 +18,9 @@ import logging
 import json
 import shutil
 from pathlib import Path
+from django_q.tasks import async_task, result
+from . import hooks, async_calls
+import importlib
 
 logger = logging.getLogger(__name__)
 
@@ -75,13 +78,13 @@ class SequenceAdmin(admin.ModelAdmin):
             'sequences': selected_sequences,
         }
         samplesheet_content = render_to_string('admin/app/sample/mag_samplesheet.csv', context)
-        mag_run.samplesheet_content = json.dumps(samplesheet_content)
+        mag_run.samplesheet_content = samplesheet_content
 
         context = {
             'settings': settings,
         }
         cluster_config = render_to_string('admin/app/sample/mag_cluster_config.cfg', context)
-        mag_run.cluster_config = json.dumps(cluster_config)
+        mag_run.cluster_config = cluster_config
 
         mag_run.save()
 
@@ -519,15 +522,25 @@ class MagRunAdmin(admin.ModelAdmin):
             run_folder = os.path.join(settings.LOCAL_DIR, f"{id}")
             os.makedirs(run_folder)
 
-            # Create a mag run instance
+            with open(os.path.join(run_folder, 'samplesheet.csv'), 'w') as file:
+                print(mag_run.samplesheet_content, file=file)
 
+            with open(os.path.join(run_folder, 'cluster_config.cfg'), 'w') as file:
+                print(mag_run.cluster_config, file=file)
+
+            # Create a mag run instance
+            # completed_process = subprocess.run(f"sleep 30; echo hello", shell=True, capture_output=True)
+            # completed_process.stdout
             # kick off the job
 
+            run_folder = f"/home/gary/git/django_ngs_metadata_collection/project/media/test/nfout2"
+
+            async_calls.run_mag(mag_run, run_folder)
             # save the process id
 
     start_run.short_description = 'Run MAG pipeline'
 
-    def update_status(seld, request, queryset):
+    def update_status(self, request, queryset):
         for mag_run in queryset:
             # get the corresponding MagRunInstance_id and then process id
 
@@ -536,5 +549,6 @@ class MagRunAdmin(admin.ModelAdmin):
             pass
 
     update_status.short_description = 'Update status of MAG run'
+
 
 admin.site.register(MagRun, MagRunAdmin)

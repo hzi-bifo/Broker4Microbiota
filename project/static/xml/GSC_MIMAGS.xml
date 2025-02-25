@@ -1,0 +1,1633 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CHECKLIST_SET>
+<CHECKLIST accession="ERC000047" checklistType="Sample">
+    <IDENTIFIERS>
+        <PRIMARY_ID>ERC000047</PRIMARY_ID>
+    </IDENTIFIERS>
+    <DESCRIPTOR>
+        <LABEL>GSC MIMAGS</LABEL>
+        <NAME>GSC MIMAGS</NAME>
+        <DESCRIPTION>Genomic Standards Consortium package extension for reporting of measurements and observations obtained from the environment where the sample was obtained. By choosing the environmental package, a selection of fields can be made from a relevant subsets of the GSC terms.</DESCRIPTION>
+        <AUTHORITY>ENA</AUTHORITY>
+        <FIELD_GROUP restrictionType="Any number or none of the fields">
+            <NAME>Organism characteristics: ecosystem</NAME>
+            <DESCRIPTION>ecosystem and relationships ( Organism characteristics got too big)</DESCRIPTION>
+            <FIELD>
+                <LABEL>relationship to oxygen</LABEL>
+                <NAME>relationship to oxygen</NAME>
+                <DESCRIPTION>Is this organism an aerobe, anaerobe? Please note that aerobic and anaerobic are valid descriptors for microbial environments</DESCRIPTION>
+                <FIELD_TYPE>
+                    <TEXT_CHOICE_FIELD>
+                        <TEXT_VALUE>
+                            <VALUE>aerobe</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>anaerobe</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>facultative</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>microaerophilic</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>microanaerobe</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>obligate aerobe</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>obligate anaerobe</VALUE>
+                        </TEXT_VALUE>
+                    </TEXT_CHOICE_FIELD>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>single</MULTIPLICITY>
+            </FIELD>
+        </FIELD_GROUP>
+        <FIELD_GROUP restrictionType="Any number or none of the fields">
+            <NAME>sample collection: methods, storage and transport</NAME>
+            <DESCRIPTION>sample collection: methods, storage and transport (sample collection became unmanageable)</DESCRIPTION>
+            <FIELD>
+                <LABEL>sample collection device</LABEL>
+                <SYNONYM>Sample Collection Device</SYNONYM>
+                <SYNONYM>samp_collec_device</SYNONYM>
+                <NAME>sample collection device</NAME>
+                <DESCRIPTION>The device used to collect an environmental sample. It is recommended to use terms listed under environmental sampling device (http://purl.obolibrary.org/obo/ENVO) and/or terms listed under specimen collection device (http://purl.obolibrary.org/obo/GENEPIO_0002094).</DESCRIPTION>
+                <FIELD_TYPE>
+                    <TEXT_FIELD/>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>single</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>sample collection method</LABEL>
+                <SYNONYM>samp_collec_method</SYNONYM>
+                <SYNONYM>sample collection device or method</SYNONYM>
+                <SYNONYM>sample_collec_method</SYNONYM>
+                <NAME>sample collection method</NAME>
+                <DESCRIPTION>The method employed for collecting the sample. Can be provided in the form of a PMID, DOI, url or text.</DESCRIPTION>
+                <FIELD_TYPE>
+                    <TEXT_FIELD/>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>single</MULTIPLICITY>
+            </FIELD>
+        </FIELD_GROUP>
+        <FIELD_GROUP restrictionType="Any number or none of the fields">
+            <NAME>sample collection: core sample properties</NAME>
+            <FIELD>
+                <LABEL>metagenomic source</LABEL>
+                <NAME>metagenomic source</NAME>
+                <DESCRIPTION>The metagenomic source of the sample. This value should contain “metagenome” and be in the taxonomy database e.g. wastewater metagenome or human gut metagenome. Please note “metagenome” alone will not be accepted. Check here for more details on metagenome taxonomy: https://ena-docs.readthedocs.io/en/latest/faq_taxonomy.html#environmental-taxonomic-classifications</DESCRIPTION>
+                <FIELD_TYPE>
+                    <TAXON_FIELD restrictionType="Permitted taxa"/>
+                </FIELD_TYPE>
+                <MANDATORY>mandatory</MANDATORY>
+                <MULTIPLICITY>single</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>sample derived from</LABEL>
+                <NAME>sample derived from</NAME>
+                <DESCRIPTION>Reference to parental sample(s) or original run(s) that the assembly is derived from. The referenced samples or runs should already be registered in INSDC. This should be formatted as one of the following. A single sample/run e.g. ERSxxxxxx OR a comma separated list e.g. ERSxxxxxx,ERSxxxxxx OR a range e.g. ERSxxxxxx-ERSxxxxxx</DESCRIPTION>
+                <FIELD_TYPE>
+                    <TEXT_FIELD>
+                        <REGEX_VALUE>(^[ESD]R[SR]\d{6,}(,[ESD]R[SR]\d{6,})*$)|(^SAM[END][AG]?\d+(,SAM[END][AG]?\d+)*$)|(^EGA[NR]\d{11}(,EGA[NR]\d{11})*$)|(^[ESD]R[SR]\d{6,}-[ESD]R[SR]\d{6,}$)|(^SAM[END][AG]?\d+-SAM[END][AG]?\d+$)|(^EGA[NR]\d{11}-EGA[NR]\d{11}$)</REGEX_VALUE>
+                    </TEXT_FIELD>
+                </FIELD_TYPE>
+                <MANDATORY>mandatory</MANDATORY>
+                <MULTIPLICITY>single</MULTIPLICITY>
+            </FIELD>
+        </FIELD_GROUP>
+        <FIELD_GROUP restrictionType="Any number or none of the fields">
+            <NAME>non-sample terms: study or project</NAME>
+            <FIELD>
+                <LABEL>project name</LABEL>
+                <NAME>project name</NAME>
+                <DESCRIPTION>Name of the project within which the sequencing was organized</DESCRIPTION>
+                <FIELD_TYPE>
+                    <TEXT_FIELD/>
+                </FIELD_TYPE>
+                <MANDATORY>mandatory</MANDATORY>
+                <MULTIPLICITY>single</MULTIPLICITY>
+            </FIELD>
+        </FIELD_GROUP>
+        <FIELD_GROUP restrictionType="Any number or none of the fields">
+            <NAME>non-sample terms</NAME>
+            <FIELD>
+                <LABEL>multiplex identifiers</LABEL>
+                <NAME>multiplex identifiers</NAME>
+                <DESCRIPTION>Molecular barcodes, called Multiplex Identifiers (MIDs), that are used to specifically tag unique samples in a sequencing run. Sequence should be reported in uppercase letters</DESCRIPTION>
+                <FIELD_TYPE>
+                    <TEXT_FIELD/>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>single</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>relevant electronic resources</LABEL>
+                <NAME>relevant electronic resources</NAME>
+                <DESCRIPTION>A related resource that is referenced, cited, or otherwise associated to the sequence in the format of a PMID, DOI or URL</DESCRIPTION>
+                <FIELD_TYPE>
+                    <TEXT_FIELD/>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>single</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>relevant standard operating procedures</LABEL>
+                <NAME>relevant standard operating procedures</NAME>
+                <DESCRIPTION>Standard operating procedures used in assembly and/or annotation of genomes, metagenomes or environmental sequences in the format of a PMID, DOI or URL</DESCRIPTION>
+                <FIELD_TYPE>
+                    <TEXT_FIELD/>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>single</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>number of standard tRNAs extracted</LABEL>
+                <NAME>number of standard tRNAs extracted</NAME>
+                <DESCRIPTION>The total number of tRNAs identified from the bin, SAG or MAG</DESCRIPTION>
+                <FIELD_TYPE>
+                    <TEXT_FIELD>
+                        <REGEX_VALUE>[+-]?[0-9]+</REGEX_VALUE>
+                    </TEXT_FIELD>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>single</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>feature prediction</LABEL>
+                <NAME>feature prediction</NAME>
+                <DESCRIPTION>Method used to predict UViGs features such as ORFs, integration site, etc. Add names and versions of software(s), parameters used</DESCRIPTION>
+                <FIELD_TYPE>
+                    <TEXT_FIELD/>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>single</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>similarity search method</LABEL>
+                <NAME>similarity search method</NAME>
+                <DESCRIPTION>Tool used to compare ORFs with database, along with version and cutoffs used. Add names and versions of software(s), parameters used</DESCRIPTION>
+                <FIELD_TYPE>
+                    <TEXT_FIELD/>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>single</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>16s recovered</LABEL>
+                <SYNONYM>x 16s recovered</SYNONYM>
+                <SYNONYM>x_16s_recover</SYNONYM>
+                <NAME>16s recovered</NAME>
+                <DESCRIPTION>Can a 16S gene be recovered from the submitted bin, SAG or MAG?</DESCRIPTION>
+                <FIELD_TYPE>
+                    <TEXT_CHOICE_FIELD>
+                        <TEXT_VALUE>
+                            <VALUE>No</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Yes</VALUE>
+                        </TEXT_VALUE>
+                    </TEXT_CHOICE_FIELD>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>single</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>16S recovery software</LABEL>
+                <SYNONYM>16S recovery software</SYNONYM>
+                <SYNONYM>x_16s_recover_software</SYNONYM>
+                <NAME>16S recovery software</NAME>
+                <DESCRIPTION>Tools used for 16S rRNA gene extraction. Add names and versions of software(s), parameters used</DESCRIPTION>
+                <FIELD_TYPE>
+                    <TEXT_FIELD/>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>single</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>tRNA extraction software</LABEL>
+                <NAME>tRNA extraction software</NAME>
+                <DESCRIPTION>Tools used for tRNA identification. Add names and versions of software(s), parameters used</DESCRIPTION>
+                <FIELD_TYPE>
+                    <TEXT_FIELD/>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>single</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>completeness score</LABEL>
+                <NAME>completeness score</NAME>
+                <DESCRIPTION>Completeness score is typically based on either the fraction of markers found as compared to a database or the percent of a genome found as compared to a closely related reference genome. Completeness score is one of 3 attributes which in combination reflect the standard quality of a MAG, see here for more information: https://ena-docs.readthedocs.io/en/latest/faq_metagenomes.html. Mandatory for all samples directly linked with SAGs or MAGs.</DESCRIPTION>
+                <UNITS>
+                    <UNIT>%</UNIT>
+                </UNITS>
+                <FIELD_TYPE>
+                    <TEXT_FIELD>
+                        <REGEX_VALUE>^(\d|[1-9]\d|\d\.\d{1,2}|[1-9]\d\.\d{1,2}|100)$</REGEX_VALUE>
+                    </TEXT_FIELD>
+                </FIELD_TYPE>
+                <MANDATORY>mandatory</MANDATORY>
+                <MULTIPLICITY>single</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>completeness software</LABEL>
+                <NAME>completeness software</NAME>
+                <DESCRIPTION>Tools used for completion estimate, i.e. checkm, anvi&apos;o, busco. Mandatory for all samples directly linked with SAGs or MAGs.</DESCRIPTION>
+                <FIELD_TYPE>
+                    <TEXT_FIELD/>
+                </FIELD_TYPE>
+                <MANDATORY>mandatory</MANDATORY>
+                <MULTIPLICITY>single</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>completeness approach</LABEL>
+                <NAME>completeness approach</NAME>
+                <DESCRIPTION>The approach used to determine the completeness of a given bin, SAG or MAG, which would typically make use of a set of conserved marker genes or a closely related reference genome. For UViG completeness, include reference genome or group used, and contig feature suggesting a complete genome</DESCRIPTION>
+                <FIELD_TYPE>
+                    <TEXT_FIELD/>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>single</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>contamination score</LABEL>
+                <NAME>contamination score</NAME>
+                <DESCRIPTION>The contamination score is based on the fraction of single-copy genes that are observed more than once in a query genome. Contamination score is one of 3 attributes which in combination reflect the standard quality of a MAG, see here for more information: https://ena-docs.readthedocs.io/en/latest/faq_metagenomes.html. If contamination ≥ 10% then please submit as a binned assembly. In SAGs, contamination score is mandatory for prokaryotes and optional for eukaryotes.</DESCRIPTION>
+                <UNITS>
+                    <UNIT>%</UNIT>
+                </UNITS>
+                <FIELD_TYPE>
+                    <TEXT_FIELD>
+                        <REGEX_VALUE>^(\d|[1-9]\d|\d\.\d{1,2}|[1-9]\d\.\d{1,2}|100)$</REGEX_VALUE>
+                    </TEXT_FIELD>
+                </FIELD_TYPE>
+                <MANDATORY>mandatory</MANDATORY>
+                <MULTIPLICITY>single</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>contamination screening input</LABEL>
+                <NAME>contamination screening input</NAME>
+                <DESCRIPTION>The type of sequence data used as input</DESCRIPTION>
+                <FIELD_TYPE>
+                    <TEXT_CHOICE_FIELD>
+                        <TEXT_VALUE>
+                            <VALUE>contigs</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>reads</VALUE>
+                        </TEXT_VALUE>
+                    </TEXT_CHOICE_FIELD>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>single</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>contamination screening parameters</LABEL>
+                <NAME>contamination screening parameters</NAME>
+                <DESCRIPTION>Specific parameters used in the decontamination sofware, such as reference database, coverage, and kmers. Combinations of these parameters may also be used, i.e. kmer and coverage, or reference database and kmer</DESCRIPTION>
+                <FIELD_TYPE>
+                    <TEXT_FIELD/>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>single</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>decontamination software</LABEL>
+                <NAME>decontamination software</NAME>
+                <DESCRIPTION>Tool(s) used in contamination screening</DESCRIPTION>
+                <FIELD_TYPE>
+                    <TEXT_FIELD/>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>single</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>binning software</LABEL>
+                <NAME>binning software</NAME>
+                <DESCRIPTION>Tool(s) used for the extraction of genomes from metagenomic datasets, where possible include a product ID (PID) of the tool(s) used. E.g. MetaCluster-TA (RRID:SCR_004599) or MaxBin (biotools:maxbin)</DESCRIPTION>
+                <FIELD_TYPE>
+                    <TEXT_FIELD/>
+                </FIELD_TYPE>
+                <MANDATORY>mandatory</MANDATORY>
+                <MULTIPLICITY>single</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>reassembly post binning</LABEL>
+                <NAME>reassembly post binning</NAME>
+                <DESCRIPTION>Has an assembly been performed on a genome bin extracted from a metagenomic assembly?</DESCRIPTION>
+                <UNITS>
+                    <UNIT>No</UNIT>
+                    <UNIT>Yes</UNIT>
+                </UNITS>
+                <FIELD_TYPE>
+                    <TEXT_CHOICE_FIELD>
+                        <TEXT_VALUE>
+                            <VALUE>No</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Yes</VALUE>
+                        </TEXT_VALUE>
+                    </TEXT_CHOICE_FIELD>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>single</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>MAG coverage software</LABEL>
+                <NAME>MAG coverage software</NAME>
+                <DESCRIPTION>Tool(s) used to determine the genome coverage if coverage is used as a binning parameter in the extraction of genomes from metagenomic datasets e.g. bwa, bbmap, bowtie, other</DESCRIPTION>
+                <FIELD_TYPE>
+                    <TEXT_FIELD/>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>single</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>assembly quality</LABEL>
+                <SYNONYM>assembly_quality</SYNONYM>
+                <NAME>assembly quality</NAME>
+                <DESCRIPTION>The assembly quality category is based on sets of criteria outlined for each assembly quality category. For MISAG/MIMAG; Finished: Single, validated, contiguous sequence per replicon without gaps or ambiguities with a consensus error rate equivalent to Q50 or better. High Quality Draft:Multiple fragments where gaps span repetitive regions. Presence of the 23S, 16S and 5S rRNA genes and at least 18 tRNAs. Medium Quality Draft:Many fragments with little to no review of assembly other than reporting of standard assembly statistics. Low Quality Draft:Many fragments with little to no review of assembly other than reporting of standard assembly statistics. Assembly statistics include, but are not limited to total assembly size, number of contigs, contig N50/L50, and maximum contig length. For MIUVIG; Finished: Single, validated, contiguous sequence per replicon without gaps or ambiguities, with extensive manual review and editing to annotate putative gene functions and transcriptional units. High-quality draft genome: One or multiple fragments, totaling ≥ 90% of the expected genome or replicon sequence or predicted complete. Genome fragment(s): One or multiple fragments, totalling &lt; 90% of the expected genome or replicon sequence, or for which no genome size could be estimated.</DESCRIPTION>
+                <FIELD_TYPE>
+                    <TEXT_CHOICE_FIELD>
+                        <TEXT_VALUE>
+                            <VALUE>Many fragments with little to no review of assembly other than reporting of standard assembly statistics</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Multiple fragments where gaps span repetitive regions. Presence of the 23S, 16S, and 5S rRNA genes and at least 18 tRNAs</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Single contiguous sequence without gaps or ambiguities with a consensus error rate equivalent to Q50 or better</VALUE>
+                        </TEXT_VALUE>
+                    </TEXT_CHOICE_FIELD>
+                </FIELD_TYPE>
+                <MANDATORY>mandatory</MANDATORY>
+                <MULTIPLICITY>single</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>binning parameters</LABEL>
+                <NAME>binning parameters</NAME>
+                <DESCRIPTION>The parameters that have been applied during the extraction of genomes from metagenomic datasets e.g. coverage and kmer</DESCRIPTION>
+                <FIELD_TYPE>
+                    <TEXT_FIELD/>
+                </FIELD_TYPE>
+                <MANDATORY>mandatory</MANDATORY>
+                <MULTIPLICITY>single</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>taxonomic identity marker</LABEL>
+                <NAME>taxonomic identity marker</NAME>
+                <DESCRIPTION>The phylogenetic marker(s) used to assign an organism name to the bin, SAG or MAG. Examples are 16S gene, multi-marker approach or other e.g. rpoB gene. Mandatory for all samples directly linked with SAGs or MAGs.</DESCRIPTION>
+                <FIELD_TYPE>
+                    <TEXT_FIELD/>
+                </FIELD_TYPE>
+                <MANDATORY>mandatory</MANDATORY>
+                <MULTIPLICITY>single</MULTIPLICITY>
+            </FIELD>
+        </FIELD_GROUP>
+        <FIELD_GROUP restrictionType="Any number or none of the fields">
+            <NAME>Collection event information</NAME>
+            <FIELD>
+                <LABEL>isolation_source</LABEL>
+                <NAME>isolation_source</NAME>
+                <DESCRIPTION>describes the physical, environmental and/or local geographical source of the biological sample from which the sample was derived</DESCRIPTION>
+                <FIELD_TYPE>
+                    <TEXT_FIELD/>
+                </FIELD_TYPE>
+                <MANDATORY>mandatory</MANDATORY>
+                <MULTIPLICITY>single</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>collection date</LABEL>
+                <SYNONYM>Event Date/Time</SYNONYM>
+                <SYNONYM>collection_date</SYNONYM>
+                <NAME>collection date</NAME>
+                <DESCRIPTION>The date the sample was collected with the intention of sequencing, either as an instance (single point in time) or interval. In case no exact time is available, the date/time can be right truncated i.e. all of these are valid ISO8601 compliant times: 2008-01-23T19:23:10+00:00; 2008-01-23T19:23:10; 2008-01-23; 2008-01; 2008.</DESCRIPTION>
+                <FIELD_TYPE>
+                    <TEXT_FIELD>
+                        <REGEX_VALUE>(^[12][0-9]{3}(-(0[1-9]|1[0-2])(-(0[1-9]|[12][0-9]|3[01])(T[0-9]{2}:[0-9]{2}(:[0-9]{2})?Z?([+-][0-9]{1,2})?)?)?)?(/[0-9]{4}(-[0-9]{2}(-[0-9]{2}(T[0-9]{2}:[0-9]{2}(:[0-9]{2})?Z?([+-][0-9]{1,2})?)?)?)?)?$)|(^not applicable$)|(^not collected$)|(^not provided$)|(^restricted access$)|(^missing: control sample$)|(^missing: sample group$)|(^missing: synthetic construct$)|(^missing: lab stock$)|(^missing: third party data$)|(^missing: data agreement established pre-2023$)|(^missing: endangered species$)|(^missing: human-identifiable$)|(^missing$)</REGEX_VALUE>
+                    </TEXT_FIELD>
+                </FIELD_TYPE>
+                <MANDATORY>mandatory</MANDATORY>
+                <MULTIPLICITY>single</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>altitude</LABEL>
+                <SYNONYM>geographic location (altitude)</SYNONYM>
+                <NAME>altitude</NAME>
+                <DESCRIPTION>The altitude of the sample is the vertical distance between Earth&apos;s surface above Sea Level and the sampled position in the air.</DESCRIPTION>
+                <UNITS>
+                    <UNIT>m</UNIT>
+                </UNITS>
+                <FIELD_TYPE>
+                    <TEXT_FIELD>
+                        <REGEX_VALUE>((0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?)|((^not collected$)|(^not provided$)|(^restricted access$)|(^missing: control sample$)|(^missing: sample group$)|(^missing: synthetic construct$)|(^missing: lab stock$)|(^missing: third party data$)|(^missing: data agreement established pre-2023$)|(^missing: endangered species$)|(^missing: human-identifiable$)|(^missing$))</REGEX_VALUE>
+                    </TEXT_FIELD>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>single</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>geographic location (latitude)</LABEL>
+                <NAME>geographic location (latitude)</NAME>
+                <DESCRIPTION>The geographical origin of the sample as defined by latitude. The values should be reported in decimal degrees and in WGS84 system</DESCRIPTION>
+                <UNITS>
+                    <UNIT>DD</UNIT>
+                </UNITS>
+                <FIELD_TYPE>
+                    <TEXT_FIELD>
+                        <REGEX_VALUE>(^[+-]?[0-9]+.?[0-9]{0,8}$)|(^not applicable$)|(^not collected$)|(^not provided$)|(^restricted access$)|(^missing: control sample$)|(^missing: sample group$)|(^missing: synthetic construct$)|(^missing: lab stock$)|(^missing: third party data$)|(^missing: data agreement established pre-2023$)|(^missing: endangered species$)|(^missing: human-identifiable$)|(^missing$)</REGEX_VALUE>
+                    </TEXT_FIELD>
+                </FIELD_TYPE>
+                <MANDATORY>mandatory</MANDATORY>
+                <MULTIPLICITY>single</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>geographic location (longitude)</LABEL>
+                <NAME>geographic location (longitude)</NAME>
+                <DESCRIPTION>The geographical origin of the sample as defined by longitude. The values should be reported in decimal degrees and in WGS84 system</DESCRIPTION>
+                <UNITS>
+                    <UNIT>DD</UNIT>
+                </UNITS>
+                <FIELD_TYPE>
+                    <TEXT_FIELD>
+                        <REGEX_VALUE>(^[+-]?[0-9]+.?[0-9]{0,8}$)|(^not applicable$)|(^not collected$)|(^not provided$)|(^restricted access$)|(^missing: control sample$)|(^missing: sample group$)|(^missing: synthetic construct$)|(^missing: lab stock$)|(^missing: third party data$)|(^missing: data agreement established pre-2023$)|(^missing: endangered species$)|(^missing: human-identifiable$)|(^missing$)</REGEX_VALUE>
+                    </TEXT_FIELD>
+                </FIELD_TYPE>
+                <MANDATORY>mandatory</MANDATORY>
+                <MULTIPLICITY>single</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>geographic location (region and locality)</LABEL>
+                <NAME>geographic location (region and locality)</NAME>
+                <DESCRIPTION>The geographical origin of the sample as defined by the specific region name followed by the locality name.</DESCRIPTION>
+                <FIELD_TYPE>
+                    <TEXT_FIELD/>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>single</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>broad-scale environmental context</LABEL>
+                <SYNONYM>environment (biome)</SYNONYM>
+                <NAME>broad-scale environmental context</NAME>
+                <DESCRIPTION>Report the major environmental system the sample or specimen came from. The system(s) identified should have a coarse spatial grain, to provide the general environmental context of where the sampling was done (e.g. in the desert or a rainforest). We recommend using subclasses of EnvO’s biome class: http://purl.obolibrary.org/obo/ENVO_00000428. EnvO documentation about how to use the field: https://github.com/EnvironmentOntology/envo/wiki/Using-ENVO-with-MIxS.</DESCRIPTION>
+                <FIELD_TYPE>
+                    <TEXT_FIELD/>
+                </FIELD_TYPE>
+                <MANDATORY>mandatory</MANDATORY>
+                <MULTIPLICITY>single</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>local environmental context</LABEL>
+                <SYNONYM>environment (feature)</SYNONYM>
+                <NAME>local environmental context</NAME>
+                <DESCRIPTION>Report the entity or entities which are in the sample or specimen’s local vicinity and which you believe have significant causal influences on your sample or specimen. We recommend using EnvO terms which are of smaller spatial grain than your entry for &quot;broad-scale environmental context&quot;. Terms, such as anatomical sites, from other OBO Library ontologies which interoperate with EnvO (e.g. UBERON) are accepted in this field. EnvO documentation about how to use the field: https://github.com/EnvironmentOntology/envo/wiki/Using-ENVO-with-MIxS.</DESCRIPTION>
+                <FIELD_TYPE>
+                    <TEXT_FIELD/>
+                </FIELD_TYPE>
+                <MANDATORY>mandatory</MANDATORY>
+                <MULTIPLICITY>single</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>environmental medium</LABEL>
+                <SYNONYM>environment (material)</SYNONYM>
+                <NAME>environmental medium</NAME>
+                <DESCRIPTION>Report the environmental material(s) immediately surrounding the sample or specimen at the time of sampling. We recommend using subclasses of &apos;environmental material&apos; (http://purl.obolibrary.org/obo/ENVO_00010483). EnvO documentation about how to use the field: https://github.com/EnvironmentOntology/envo/wiki/Using-ENVO-with-MIxS . Terms from other OBO ontologies are permissible as long as they reference mass/volume nouns (e.g. air, water, blood) and not discrete, countable entities (e.g. a tree, a leaf, a table top).</DESCRIPTION>
+                <FIELD_TYPE>
+                    <TEXT_FIELD/>
+                </FIELD_TYPE>
+                <MANDATORY>mandatory</MANDATORY>
+                <MULTIPLICITY>single</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>elevation</LABEL>
+                <SYNONYM>geographic location (elevation)</SYNONYM>
+                <NAME>elevation</NAME>
+                <DESCRIPTION>The elevation of the sampling site as measured by the vertical distance from mean sea level.</DESCRIPTION>
+                <UNITS>
+                    <UNIT>m</UNIT>
+                </UNITS>
+                <FIELD_TYPE>
+                    <TEXT_FIELD>
+                        <REGEX_VALUE>([+-]?(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?)|((^not collected$)|(^not provided$)|(^restricted access$)|(^missing: control sample$)|(^missing: sample group$)|(^missing: synthetic construct$)|(^missing: lab stock$)|(^missing: third party data$)|(^missing: data agreement established pre-2023$)|(^missing: endangered species$)|(^missing: human-identifiable$)|(^missing$))</REGEX_VALUE>
+                    </TEXT_FIELD>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>single</MULTIPLICITY>
+            </FIELD>
+        </FIELD_GROUP>
+        <FIELD_GROUP restrictionType="Any number or none of the fields">
+            <NAME>sample collection</NAME>
+            <FIELD>
+                <LABEL>amount or size of sample collected</LABEL>
+                <NAME>amount or size of sample collected</NAME>
+                <DESCRIPTION>The total amount or size (volume (ml), mass (g) or area (m2) ) of sample collected.</DESCRIPTION>
+                <UNITS>
+                    <UNIT>L</UNIT>
+                    <UNIT>g</UNIT>
+                    <UNIT>kg</UNIT>
+                    <UNIT>m2</UNIT>
+                    <UNIT>m3</UNIT>
+                </UNITS>
+                <FIELD_TYPE>
+                    <TEXT_FIELD>
+                        <REGEX_VALUE>(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?</REGEX_VALUE>
+                    </TEXT_FIELD>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>single</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>size fraction selected</LABEL>
+                <NAME>size fraction selected</NAME>
+                <DESCRIPTION>Filtering pore size used in sample preparation e.g. 0-0.22 micrometer</DESCRIPTION>
+                <FIELD_TYPE>
+                    <TEXT_FIELD/>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>single</MULTIPLICITY>
+            </FIELD>
+        </FIELD_GROUP>
+        <FIELD_GROUP restrictionType="Any number or none of the fields">
+            <NAME>Organism characteristics</NAME>
+            <DESCRIPTION>Characteristics of the source organism</DESCRIPTION>
+            <FIELD>
+                <LABEL>geographic location (country and/or sea)</LABEL>
+                <SYNONYM>geographic location (country and/or sea)</SYNONYM>
+                <NAME>geographic location (country and/or sea)</NAME>
+                <DESCRIPTION>The geographical origin of where the sample was collected from, with the intention of sequencing, as defined by the country or sea name. Country or sea names should be chosen from the INSDC country list (http://insdc.org/country.html).</DESCRIPTION>
+                <FIELD_TYPE>
+                    <TEXT_CHOICE_FIELD>
+                        <TEXT_VALUE>
+                            <VALUE>Afghanistan</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Albania</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Algeria</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>American Samoa</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Andorra</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Angola</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Anguilla</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Antarctica</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Antigua and Barbuda</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Arctic Ocean</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Argentina</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Armenia</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Aruba</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Ashmore and Cartier Islands</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Atlantic Ocean</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Australia</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Austria</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Azerbaijan</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Bahamas</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Bahrain</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Baker Island</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Baltic Sea</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Bangladesh</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Barbados</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Bassas da India</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Belarus</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Belgium</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Belize</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Benin</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Bermuda</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Bhutan</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Bolivia</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Borneo</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Bosnia and Herzegovina</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Botswana</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Bouvet Island</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Brazil</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>British Virgin Islands</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Brunei</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Bulgaria</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Burkina Faso</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Burundi</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Cambodia</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Cameroon</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Canada</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Cape Verde</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Cayman Islands</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Central African Republic</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Chad</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Chile</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>China</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Christmas Island</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Clipperton Island</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Cocos Islands</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Colombia</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Comoros</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Cook Islands</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Coral Sea Islands</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Costa Rica</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Cote d&apos;Ivoire</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Croatia</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Cuba</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Curacao</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Cyprus</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Czechia</VALUE>
+                            <SYNONYM>Czech Republic</SYNONYM>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Democratic Republic of the Congo</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Denmark</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Djibouti</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Dominica</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Dominican Republic</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>East Timor</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Ecuador</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Egypt</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>El Salvador</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Equatorial Guinea</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Eritrea</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Estonia</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Ethiopia</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Europa Island</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Falkland Islands (Islas Malvinas)</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Faroe Islands</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Fiji</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Finland</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>France</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>French Guiana</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>French Polynesia</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>French Southern and Antarctic Lands</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Gabon</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Gambia</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Gaza Strip</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Georgia</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Germany</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Ghana</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Gibraltar</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Glorioso Islands</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Greece</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Greenland</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Grenada</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Guadeloupe</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Guam</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Guatemala</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Guernsey</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Guinea</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Guinea-Bissau</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Guyana</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Haiti</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Heard Island and McDonald Islands</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Honduras</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Hong Kong</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Howland Island</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Hungary</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Iceland</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>India</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Indian Ocean</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Indonesia</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Iran</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Iraq</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Ireland</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Isle of Man</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Israel</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Italy</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Jamaica</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Jan Mayen</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Japan</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Jarvis Island</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Jersey</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Johnston Atoll</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Jordan</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Juan de Nova Island</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Kazakhstan</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Kenya</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Kerguelen Archipelago</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Kingman Reef</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Kiribati</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Kosovo</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Kuwait</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Kyrgyzstan</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Laos</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Latvia</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Lebanon</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Lesotho</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Liberia</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Libya</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Liechtenstein</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Lithuania</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Luxembourg</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Macau</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Macedonia</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Madagascar</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Malawi</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Malaysia</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Maldives</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Mali</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Malta</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Marshall Islands</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Martinique</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Mauritania</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Mauritius</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Mayotte</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Mediterranean Sea</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Mexico</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Micronesia</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Midway Islands</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Moldova</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Monaco</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Mongolia</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Montenegro</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Montserrat</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Morocco</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Mozambique</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Myanmar</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Namibia</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Nauru</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Navassa Island</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Nepal</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Netherlands</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>New Caledonia</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>New Zealand</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Nicaragua</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Niger</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Nigeria</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Niue</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Norfolk Island</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>North Korea</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>North Sea</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Northern Mariana Islands</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Norway</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Oman</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Pacific Ocean</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Pakistan</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Palau</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Palmyra Atoll</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Panama</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Papua New Guinea</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Paracel Islands</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Paraguay</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Peru</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Philippines</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Pitcairn Islands</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Poland</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Portugal</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Puerto Rico</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Qatar</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Republic of the Congo</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Reunion</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Romania</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Ross Sea</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Russia</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Rwanda</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Saint Helena</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Saint Kitts and Nevis</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Saint Lucia</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Saint Pierre and Miquelon</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Saint Vincent and the Grenadines</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Samoa</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>San Marino</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Sao Tome and Principe</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Saudi Arabia</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Senegal</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Serbia</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Seychelles</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Sierra Leone</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Singapore</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Sint Maarten</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Slovakia</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Slovenia</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Solomon Islands</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Somalia</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>South Africa</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>South Georgia and the South Sandwich Islands</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>South Korea</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Southern Ocean</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Spain</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Spratly Islands</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Sri Lanka</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Sudan</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Suriname</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Svalbard</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Swaziland</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Sweden</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Switzerland</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Syria</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Taiwan</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Tajikistan</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Tanzania</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Tasman Sea</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Thailand</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Togo</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Tokelau</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Tonga</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Trinidad and Tobago</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Tromelin Island</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Tunisia</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Turkey</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Turkmenistan</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Turks and Caicos Islands</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Tuvalu</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>USA</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Uganda</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Ukraine</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>United Arab Emirates</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>United Kingdom</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Uruguay</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Uzbekistan</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Vanuatu</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Venezuela</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Viet Nam</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Virgin Islands</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Wake Island</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Wallis and Futuna</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>West Bank</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Western Sahara</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Yemen</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Zambia</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>Zimbabwe</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>missing</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>missing: control sample</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>missing: data agreement established pre-2023</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>missing: endangered species</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>missing: human-identifiable</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>missing: lab stock</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>missing: sample group</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>missing: synthetic construct</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>missing: third party data</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>not applicable</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>not collected</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>not provided</VALUE>
+                        </TEXT_VALUE>
+                        <TEXT_VALUE>
+                            <VALUE>restricted access</VALUE>
+                        </TEXT_VALUE>
+                    </TEXT_CHOICE_FIELD>
+                </FIELD_TYPE>
+                <MANDATORY>mandatory</MANDATORY>
+                <MULTIPLICITY>single</MULTIPLICITY>
+            </FIELD>
+        </FIELD_GROUP>
+        <FIELD_GROUP restrictionType="Any number or none of the fields">
+            <NAME>Pointer to physical material</NAME>
+            <DESCRIPTION>References to sample or sample source material in physical resources</DESCRIPTION>
+            <FIELD>
+                <LABEL>source material identifiers</LABEL>
+                <NAME>source material identifiers</NAME>
+                <DESCRIPTION>A unique identifier assigned to a material sample (as defined by http://rs.tdwg.org/dwc/terms/materialSampleID, and as opposed to a particular digital record of a material sample) used for extracting nucleic acids, and subsequent sequencing. The identifier can refer either to the original material collected or to any derived sub-samples. The INSDC qualifiers /specimen_voucher, /bio_material, or /culture_collection may or may not share the same value as the source_mat_id field. For instance, the /specimen_voucher qualifier and source_mat_id may both contain &apos;UAM:Herps:14&apos; , referring to both the specimen voucher and sampled tissue with the same identifier. However, the /culture_collection qualifier may refer to a value from an initial culture (e.g. ATCC:11775) while source_mat_id would refer to an identifier from some derived culture from which the nucleic acids were extracted (e.g. xatc123 or ark:/2154/R2).</DESCRIPTION>
+                <FIELD_TYPE>
+                    <TEXT_FIELD/>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>single</MULTIPLICITY>
+            </FIELD>
+        </FIELD_GROUP>
+        <FIELD_GROUP restrictionType="Any number or none of the fields">
+            <NAME>experimental factor and block</NAME>
+            <DESCRIPTION>experimental factor and block</DESCRIPTION>
+            <FIELD>
+                <LABEL>experimental factor</LABEL>
+                <NAME>experimental factor</NAME>
+                <DESCRIPTION>Experimental factors are essentially the variable aspects of an experiment design which can be used to describe an experiment, or set of experiments, in an increasingly detailed manner. This field accepts ontology terms from Experimental Factor Ontology (EFO) and/or Ontology for Biomedical Investigations (OBI). For a browser of EFO (v 2.95) terms, please see http://purl.bioontology.org/ontology/EFO; for a browser of OBI (v 2018-02-12) terms please see http://purl.bioontology.org/ontology/OBI. E.g. time series design [EFO:EFO_0001779]</DESCRIPTION>
+                <FIELD_TYPE>
+                    <TEXT_FIELD/>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>single</MULTIPLICITY>
+            </FIELD>
+        </FIELD_GROUP>
+        <FIELD_GROUP restrictionType="Any number or none of the fields">
+            <NAME>Organism characteristics: genetic</NAME>
+            <DESCRIPTION>The genetic based characteristics of organisms (Organism characteristics field group became too large)</DESCRIPTION>
+            <FIELD>
+                <LABEL>taxonomic classification</LABEL>
+                <NAME>taxonomic classification</NAME>
+                <DESCRIPTION>Method used for taxonomic classification, along with reference database used, classification rank, and thresholds used to classify new genomes. Expected values are: classification method, database name, and other parameters e.g. vConTACT vContact2 (references from NCBI RefSeq v83, genus rank classification, default parameters)</DESCRIPTION>
+                <FIELD_TYPE>
+                    <TEXT_FIELD/>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>single</MULTIPLICITY>
+            </FIELD>
+        </FIELD_GROUP>
+        <FIELD_GROUP restrictionType="Any number or none of the fields">
+            <NAME>Reference</NAME>
+            <FIELD>
+                <LABEL>annotation source</LABEL>
+                <SYNONYM>annotation</SYNONYM>
+                <NAME>annotation source</NAME>
+                <DESCRIPTION>For cases where annotation was provided by a community jamboree or model organism database rather than by a specific submitter</DESCRIPTION>
+                <FIELD_TYPE>
+                    <TEXT_FIELD/>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>single</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>reference for biomaterial</LABEL>
+                <NAME>reference for biomaterial</NAME>
+                <DESCRIPTION>Primary publication if isolated before genome publication; otherwise, primary genome report. Mandatory for MIGS of bacteria and archaea.</DESCRIPTION>
+                <FIELD_TYPE>
+                    <TEXT_FIELD/>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>single</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>reference database(s)</LABEL>
+                <NAME>reference database(s)</NAME>
+                <DESCRIPTION>List of database(s) used for ORF annotation, along with version number and reference to website or publication</DESCRIPTION>
+                <FIELD_TYPE>
+                    <TEXT_FIELD/>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>single</MULTIPLICITY>
+            </FIELD>
+        </FIELD_GROUP>
+        <FIELD_GROUP restrictionType="Any number or none of the fields">
+            <NAME>sample processing</NAME>
+            <DESCRIPTION>Any aspects collected about the processing of the sample once it has been collected. if the sample underwent cell lysis.</DESCRIPTION>
+            <FIELD>
+                <LABEL>sample material processing</LABEL>
+                <NAME>sample material processing</NAME>
+                <DESCRIPTION>A brief description of any processing applied to the sample during or after retrieving the sample from environment, or a link to the relevant protocol(s) performed.</DESCRIPTION>
+                <FIELD_TYPE>
+                    <TEXT_FIELD/>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>single</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>nucleic acid extraction</LABEL>
+                <NAME>nucleic acid extraction</NAME>
+                <DESCRIPTION>A link to a literature reference, electronic resource or a standard operating procedure (SOP), that describes the material separation to recover the nucleic acid fraction from a sample</DESCRIPTION>
+                <FIELD_TYPE>
+                    <TEXT_FIELD/>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>single</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>nucleic acid amplification</LABEL>
+                <NAME>nucleic acid amplification</NAME>
+                <DESCRIPTION>A link to a literature reference, electronic resource or a standard operating procedure (SOP), that describes the enzymatic amplification (PCR, TMA, NASBA) of specific nucleic acids</DESCRIPTION>
+                <FIELD_TYPE>
+                    <TEXT_FIELD/>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>single</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>library size</LABEL>
+                <NAME>library size</NAME>
+                <DESCRIPTION>Total number of clones in the library prepared for the project</DESCRIPTION>
+                <FIELD_TYPE>
+                    <TEXT_FIELD>
+                        <REGEX_VALUE>[+-]?[0-9]+</REGEX_VALUE>
+                    </TEXT_FIELD>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>single</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>library reads sequenced</LABEL>
+                <NAME>library reads sequenced</NAME>
+                <DESCRIPTION>Total number of clones sequenced from the library</DESCRIPTION>
+                <FIELD_TYPE>
+                    <TEXT_FIELD>
+                        <REGEX_VALUE>[+-]?[0-9]+</REGEX_VALUE>
+                    </TEXT_FIELD>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>single</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>library vector</LABEL>
+                <NAME>library vector</NAME>
+                <DESCRIPTION>Cloning vector type(s) used in construction of libraries</DESCRIPTION>
+                <FIELD_TYPE>
+                    <TEXT_FIELD/>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>single</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>library screening strategy</LABEL>
+                <NAME>library screening strategy</NAME>
+                <DESCRIPTION>Specific enrichment or screening methods applied before and/or after creating clone libraries in order to select a specific group of sequences</DESCRIPTION>
+                <FIELD_TYPE>
+                    <TEXT_FIELD/>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>single</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>assembly software</LABEL>
+                <NAME>assembly software</NAME>
+                <DESCRIPTION>Tool(s) used for assembly, including version number and parameters in the format {software};{version};{parameters} e.g. metaSPAdes;3.11.0;kmer set 21,33,55,77,99,121, default parameters otherwise</DESCRIPTION>
+                <FIELD_TYPE>
+                    <TEXT_FIELD/>
+                </FIELD_TYPE>
+                <MANDATORY>recommended</MANDATORY>
+                <MULTIPLICITY>single</MULTIPLICITY>
+            </FIELD>
+            <FIELD>
+                <LABEL>adapters</LABEL>
+                <NAME>adapters</NAME>
+                <DESCRIPTION>Adapters provide priming sequences for both amplification and sequencing of the sample-library fragments. Both adapters should be reported; in uppercase letters</DESCRIPTION>
+                <FIELD_TYPE>
+                    <TEXT_FIELD/>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>single</MULTIPLICITY>
+            </FIELD>
+        </FIELD_GROUP>
+        <FIELD_GROUP restrictionType="Any number or none of the fields">
+            <NAME>Environmental information</NAME>
+            <DESCRIPTION>Environmental information if not host associated.</DESCRIPTION>
+            <FIELD>
+                <LABEL>depth</LABEL>
+                <SYNONYM>Depth</SYNONYM>
+                <SYNONYM>geographic location (depth)</SYNONYM>
+                <NAME>depth</NAME>
+                <DESCRIPTION>The vertical distance below local surface, e.g. for sediment or soil samples depth is measured from sediment or soil surface, respectively. Depth can be reported as an interval for subsurface samples.</DESCRIPTION>
+                <UNITS>
+                    <UNIT>m</UNIT>
+                    <UNIT>mm</UNIT>
+                </UNITS>
+                <FIELD_TYPE>
+                    <TEXT_FIELD>
+                        <REGEX_VALUE>((0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?)|((^not collected$)|(^not provided$)|(^restricted access$)|(^missing: control sample$)|(^missing: sample group$)|(^missing: synthetic construct$)|(^missing: lab stock$)|(^missing: third party data$)|(^missing: data agreement established pre-2023$)|(^missing: endangered species$)|(^missing: human-identifiable$)|(^missing$))</REGEX_VALUE>
+                    </TEXT_FIELD>
+                </FIELD_TYPE>
+                <MANDATORY>optional</MANDATORY>
+                <MULTIPLICITY>single</MULTIPLICITY>
+            </FIELD>
+        </FIELD_GROUP>
+    </DESCRIPTOR>
+</CHECKLIST>
+</CHECKLIST_SET>

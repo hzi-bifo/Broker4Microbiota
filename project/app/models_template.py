@@ -559,14 +559,17 @@ class MagRun(models.Model):
     magRun_id = models.CharField(max_length=100, null=True, blank=True)
 
     status = models.CharField(max_length=100, null=True, blank=True)
-
+    samplesheet_content = models.CharField(max_length=100, null=True, blank=True)
+    cluster_config = models.CharField(max_length=100, null=True, blank=True)
 
 class MagRunInstance(models.Model):
     MagRun = models.ForeignKey(MagRun, on_delete=models.CASCADE)
 
     magRunInstance_id = models.CharField(max_length=100, null=True, blank=True)
+    uuid = models.CharField(max_length=100, null=True, blank=True)
 
     status = models.CharField(max_length=100, null=True, blank=True)
+    run_folder = models.CharField(max_length=100, null=True, blank=True)
 
     # Output files
 

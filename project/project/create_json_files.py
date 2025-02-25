@@ -98,7 +98,7 @@ def produceModels(data, model_data, field_names):
         fieldgroup_name = fieldgroup['NAME']
         model_fieldgroup_name = fieldgroup_name
         for field in fieldgroup['FIELD']:
-            field_name = field['NAME'].replace(' ', '_').replace('(', '').replace(')', '').replace('/', '_').replace('-', '_')
+            field_name = re.sub("^16S", 'sixteen_s', re.sub("^16s", 'sixteen_s', field['NAME'].replace(' ', '_').replace('(', '').replace(')', '').replace('/', '_').replace('-', '_')))
             original_field_name = field['NAME'] # .replace(' ', '_').replace('(', '').replace(')', '').replace('/', '_').replace('-', '_')
 
             field_description = ''
@@ -156,6 +156,12 @@ def produceModels(data, model_data, field_names):
             except:
                 pass         
 
+            try:
+                if field['FIELD_TYPE']['TAXON_FIELD']:
+                    field_type = "TEXT"
+            except:
+                pass            
+
             if  field_type == '':
                 print(f'Unknown field type: {field_name}')
 
@@ -174,7 +180,7 @@ def produceModels(data, model_data, field_names):
 
                 checklist_output = checklist_output + f"\t{field_name }= "
                 if field_type == 'TEXT' or field_type == 'TEXT_CHOICES':
-                    checklist_output = checklist_output + f"models.CharField(max_length=100, blank={field_blank}"
+                    checklist_output = checklist_output + f"models.CharField(max_length=120, blank={field_blank}"
                 if field_description:
                     checklist_output = checklist_output + f",help_text=\"{field_description}\""
                 if field_validator:
@@ -188,7 +194,7 @@ def produceModels(data, model_data, field_names):
                 checklist_fields_output = checklist_fields_output + f"\t\t'{field_name}': '{original_field_name}',\n"
 
                 if field_units_name:
-                    unitchecklist_output = unitchecklist_output + f"\t{field_name } = models.CharField(max_length=100, choices={field_units_name}, blank=False)\n"
+                    unitchecklist_output = unitchecklist_output + f"\t{field_name } = models.CharField(max_length=120, choices={field_units_name}, blank=False)\n"
                     
                     unit_output = unit_output + f"\t{field_units_name} = {field_units}\n"
 

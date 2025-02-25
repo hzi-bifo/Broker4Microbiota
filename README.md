@@ -21,6 +21,7 @@ This project is developed with Django. To set up and run the project locally, fo
 - Python (3.8 or newer)
 - pip (Python package installer)
 - Nextflow (see https://www.nextflow.io/docs/latest/install.html). Please test the installation using `nextflow run nf-core/mag -profile test,docker --outdir test`
+- add nexflow to conda env
 
 ### Setting Up a Virtual Environment
 
@@ -42,6 +43,7 @@ pip install phonenumbers
 pip install django-widget-tweaks
 pip install django-phonenumber-field
 pip install xmltodict
+pip install django-q2
 ```
 
 ### Running the Project

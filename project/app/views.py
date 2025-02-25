@@ -209,7 +209,7 @@ def metadata_view(request, project_id, order_id):
                 assembly_sample_set = order.sampleset_set.filter(sample_type=SAMPLE_TYPE_ASSEMBLY).first()
                 if not assembly_sample_set:
                     assembly_sample_set = Sampleset(order=order, sample_type=SAMPLE_TYPE_ASSEMBLY) 
-                assembly_sample_set.checklists = settings.ASSEMBLY_CHECKLIST
+                assembly_sample_set.checklists = sample_set.checklists
                 assembly_sample_set.include = ""
                 assembly_sample_set.exclude = ""
                 assembly_sample_set.custom = ""
@@ -217,7 +217,7 @@ def metadata_view(request, project_id, order_id):
                 bin_sample_set = order.sampleset_set.filter(sample_type=SAMPLE_TYPE_BIN).first()
                 if not bin_sample_set:
                     bin_sample_set = Sampleset(order=order, sample_type=SAMPLE_TYPE_BIN)
-                bin_sample_set.checklists = settings.BIN_CHECKLIST
+                bin_sample_set.checklists = [settings.BIN_CHECKLIST]
                 bin_sample_set.include = ""
                 bin_sample_set.exclude = ""
                 bin_sample_set.custom = ""
@@ -225,7 +225,7 @@ def metadata_view(request, project_id, order_id):
                 mag_sample_set = order.sampleset_set.filter(sample_type=SAMPLE_TYPE_MAG).first()
                 if not mag_sample_set:
                     mag_sample_set = Sampleset(order=order, sample_type=SAMPLE_TYPE_MAG)
-                mag_sample_set.checklists = settings.MAG_CHECKLIST
+                mag_sample_set.checklists = [settings.MAG_CHECKLIST]
                 mag_sample_set.include = ""
                 mag_sample_set.exclude = ""
                 mag_sample_set.custom = ""
