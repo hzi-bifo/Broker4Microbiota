@@ -29,7 +29,19 @@ INSTALLED_APPS = [
     'app',
     'phonenumber_field',
     'widget_tweaks',
+    'django_q',
 ]
+
+Q_CLUSTER = {
+    'name': 'DjangORM',
+    'workers': 8,
+    'timeout': 9999999,
+    'retry': 99999999,
+    'ack_failures': True,
+    'queue_limit': 50,
+    'bulk': 10,
+    'orm': 'default'
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -128,7 +140,7 @@ ENA_PASSWORD = os.environ.get('ENA_PASSWORD')
 LOCAL_DIR = f"{BASE_DIR}/media/test"
 JAR_LOCATION = f"{BASE_DIR}/webin-cli-8.1.0.jar"
 
-MAG_NEXTFLOW_COMMAND_STEM = 'nextflow run main.nf'
+MAG_NEXTFLOW_COMMAND_STEM = 'nextflow run hzi-bifo/mag'
 MAG_PROFILE = 'singularity'
 MAG_ADDITIONAL_OPTIONS = '--skip_prokka --skip_concoct --skip_mhm2 --skip_binqc'
 MAG_NEXTFLOW_EXECUTOR = 'slurm'
@@ -136,9 +148,8 @@ MAG_NEXTFLOW_CLUSTER_OPTIONS = '--qos=long'
 
 PIXELS_PER_CHAR = 8
 
-ASSEMBLY_CHECKLIST = "x"
-BIN_CHECKLIST = "x"
-MAG_CHECKLIST = "x"
+BIN_CHECKLIST = "ENA_binned_metagenome"
+MAG_CHECKLIST = "GSC_MIMAGS"
 
 LOGGING = {
     'version': 1,
