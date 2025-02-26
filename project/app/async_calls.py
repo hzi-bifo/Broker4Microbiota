@@ -15,6 +15,10 @@ def run_mag(mag_run, run_folder):
     mag_run.save()
 
 
+    # command = f"nextflow run nf-core/mag -profile docker -c {config_path} --outdir {output_folder}"
+    # process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    # stdout, stderr = process.communicate()
+
     # async_task('subprocess.run', settings.MAG_NEXTFLOW_COMMAND_STEM, f" --input {sample_sheet}", f" -profile {settings.MAG_PROFILE}", f" -c {cluster_config}", f" --outdir {run_folder}", " ", settings.MAG_ADDITIONAL_OPTIONS, shell=True, capture_output=True, hook='app.hooks.print_result')
     uuid = async_task('subprocess.run', 'sleep 30', shell=True, capture_output=True, hook='app.hooks.process_mag_result')
 
