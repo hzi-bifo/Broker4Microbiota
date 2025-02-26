@@ -40,7 +40,7 @@ class SelfDescribingModel(models.Model):
         class_name = type(self).__name__
         unit_class_name = f"{class_name}_unit"
         unitchecklist_class =  getattr(importlib.import_module("app.models"), unit_class_name)
-        unitchecklist_item_instance = unitchecklist_class.objects.filter(order=self.order).first()
+        unitchecklist_item_instance = unitchecklist_class.objects.filter(sampleset=self.sampleset).first()
 
         output = ""
         if include:
@@ -478,34 +478,22 @@ class ProjectSubmission(models.Model):
     def __str__(self):
         return f"Submission for Project" #  {self.project.id}
 
-
-
-class SequenceTemplate(models.Model):
-    name = models.CharField(max_length=100, null=True, blank=True)
-    platform = models.CharField(max_length=100, null=True, blank=True)
-    insert_size = models.CharField(max_length=100, null=True, blank=True)
-    library_name = models.CharField(max_length=100, null=True, blank=True)
-    library_source = models.CharField(max_length=100, null=True, blank=True)
-    library_selection = models.CharField(max_length=100, null=True, blank=True)
-    library_strategy = models.CharField(max_length=100, null=True, blank=True)
-
-class Sequence(models.Model):
+class Read(models.Model):
     sample = models.ForeignKey(Sample, on_delete=models.CASCADE)
-    sequence_template = models.ForeignKey(SequenceTemplate, on_delete=models.CASCADE)
     file_1 = models.CharField(max_length=255, null=True, blank=True)
     file_2 = models.CharField(max_length=255, null=True, blank=True)
     experiment_accession_number = models.CharField(max_length=100, null=True, blank=True)
     run_accession_number = models.CharField(max_length=100, null=True, blank=True)
 
-class Submission(models.Model):
+class SampleSubmission(models.Model):
     samples = models.ManyToManyField(Sample)
     sample_object_xml = models.TextField(null=True, blank=True)
-    submission_object_xml = models.TextField(null=True, blank=True)
+    sampleSubmission_object_xml = models.TextField(null=True, blank=True)
     receipt_xml = models.TextField(null=True, blank=True)
     accession_status = models.CharField(max_length=100, null=True, blank=True)
 
     def __str__(self):
-        return f"Submission for Order " # {self.order.id}
+        return f"SampleSubmission for Order " # {self.order.id}
 
 class ReadSubmission(models.Model):
     name = models.CharField(max_length=100, null=True, blank=True)
@@ -575,7 +563,7 @@ class Blah_unitchecklist(SelfDescribingModel):
     sample = models.ForeignKey(Sample, on_delete=models.CASCADE) """
 
 class MagRun(models.Model):
-    sequences = models.ManyToManyField(Sequence)
+    reads = models.ManyToManyField(Read)
 
     status = models.CharField(max_length=100, null=True, blank=True)
     samplesheet_content = models.CharField(max_length=100, null=True, blank=True)
@@ -592,13 +580,13 @@ class MagRunInstance(models.Model):
     # Output files
 
 class Assembly(models.Model):
-    sequence = models.ForeignKey(Sequence, on_delete=models.CASCADE)
+    read = models.ForeignKey(Read, on_delete=models.CASCADE)
     order = models.ForeignKey(Order, on_delete=models.CASCADE)
 
     file = models.CharField(max_length=255, null=True, blank=True)
 
 class Bin(models.Model):
-    sequence = models.ForeignKey(Sequence, on_delete=models.CASCADE)
+    read = models.ForeignKey(Read, on_delete=models.CASCADE)
     order = models.ForeignKey(Order, on_delete=models.CASCADE)
 
     file = models.CharField(max_length=255, null=True, blank=True)
@@ -607,7 +595,7 @@ class SubMGRun(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE)
 
     samples = models.ManyToManyField(Sample)
-    sequences = models.ManyToManyField(Sequence)
+    reads = models.ManyToManyField(Read)
     # assembly_samples = models.ManyToManyField(Sample)
     # bin_samples = models.ManyToManyField(Sample)
     # mag_samples = models.ManyToManyField(Sample)

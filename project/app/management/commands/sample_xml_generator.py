@@ -22,10 +22,10 @@ class Command(BaseCommand):
 
         xml_content = render_to_string('admin/sample_xml_template.xml', context)
 
-        submission = Submission.objects.create(
+        sampleSubmission = Submission.objects.create(
             order=order,
             sample_object_xml=xml_content,
         )
-        submission.samples.set(samples)
+        sampleSubmission.samples.set(samples)
 
         self.stdout.write(self.style.SUCCESS(f'Successfully created Submission {submission.id} with {samples.count()} samples'))

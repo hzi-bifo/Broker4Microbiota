@@ -20,18 +20,18 @@ def process_mag_result(task):
 
         run_folder = mag_run_instance.run_folder
 
-        sequences = mag_run.sequences.all()
-        for sequence in sequences:
-            file_name = re.sub(f"_R1.fastq.gz", f"", sequence.file_1.split('/')[-1])
+        reads = mag_run.reads.all()
+        for read in reads:
+            file_name = re.sub(f"_R1.fastq.gz", f"", re.sub(f"_1.fastq.gz", f"", read.file_1.split('/')[-1]))
 
-            sample = sequence.sample
+            sample = read.sample
             order = sample.order
             project = order.project
 
             assembly_file_path = f"{run_folder}/Assembly/MEGAHIT/MEGAHIT-{file_name}.contigs.fa.gz"
             assembly_file = Path(assembly_file_path)
             if assembly_file.is_file():
-                assembly = Assembly(sequence=sequence, file=assembly_file_path, order=order)
+                assembly = Assembly(read=read, file=assembly_file_path, order=order)
                 assembly.save()
             else:
                 mag_run_instance.status = 'partial'
@@ -40,7 +40,7 @@ def process_mag_result(task):
             bin_file_path = f"{run_folder}/GenomeBinning/MaxBin2/Maxbin2_bins/MEGAHIT-MaxBin2-{file_name}.[0-9][0-9][0-9].fa.gz"
             bin_files = glob.glob(bin_file_path)
             for bin_file in bin_files:
-                bin = Bin(sequence=sequence, file=bin_file_path, order=order)
+                bin = Bin(read=read, file=bin_file_path, order=order)
                 bin.save()
             if bin_files == []:
                 mag_run_instance.status = 'partial'

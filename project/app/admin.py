@@ -10,7 +10,7 @@ from django.core.files.base import ContentFile
 from django.conf import settings
 from Bio import SeqIO
 from io import StringIO
-from .models import Order, Sample, Submission, ReadSubmission, Pipelines, Sequence, Project, ProjectSubmission, MagRun, SubMGRun
+from .models import Order, Sample, SampleSubmission, ReadSubmission, Pipelines, Read, Project, ProjectSubmission, MagRun, SubMGRun, Bin, Assembly
 from .forms import CreateGZForm
 from django.template.loader import render_to_string
 from xml.etree import ElementTree as ET
@@ -25,49 +25,49 @@ import importlib
 logger = logging.getLogger(__name__)
 
 class OrderAdmin(admin.ModelAdmin):
-    list_display = ('name', 'date', 'quote_no', 'billing_address', 'ag_and_hzi', 'contact_phone', 'email', 'data_delivery', 'signature', 'experiment_title', 'dna', 'rna', 'method', 'buffer', 'organism', 'isolated_from', 'isolation_method')
+    list_display = ('id', 'name', 'date', 'quote_no', 'billing_address', 'ag_and_hzi', 'contact_phone', 'email', 'data_delivery', 'signature', 'experiment_title', 'dna', 'rna', 'method', 'buffer', 'organism', 'isolated_from', 'isolation_method')
 
 admin.site.register(Order, OrderAdmin)
 
 
-class SequenceAdmin(admin.ModelAdmin):
-    list_display = ('sample', 'sequence_template', 'file_1', 'file_2')
+class ReadAdmin(admin.ModelAdmin):
+    list_display = ('id', 'sample', 'file_1', 'file_2')
 
-    actions = ['generate_xml_and_create_read_submission', 'create_mag_run']
+    actions = ['generate_xml_and_create_read_submission', 'create_mag_run', 'generate_submg_run']
 
     def generate_xml_and_create_read_submission(self, request, queryset):
-        selected_sequences = queryset
+        selected_reads = queryset
 
         read_submission = ReadSubmission.objects.create(read_object_txt_list=json.dumps([]))
 
         txt_list = {}
-        for sequence in selected_sequences:
+        for read in selected_reads:
             context = {
-                'sequence': sequence,
-                'sequence_template': sequence.sequence_template,
-                'project': sequence.sample.order.project,
-                'sample': sequence.sample,
+                'read': read,
+                'project': read.sample.order.project,
+                'sample': read.sample,
+                'order': read.sample.order,
             }
             read_txt_content = render_to_string('admin/app/sample/read_manifest.txt', context)
-            txt_list[sequence.sample_id] = read_txt_content
+            txt_list[read.sample_id] = read_txt_content
         read_submission.read_object_txt_list = json.dumps(txt_list)
-        read_submission.name = f"{sequence.sample.sample_id}"
+        read_submission.name = f"{read.sample.sample_id}"
 
         read_submission.save()
 
-        self.message_user(request, f'Successfully created ReadSubmission {read_submission.name} with {selected_sequences.count()} samples')
+        self.message_user(request, f'Successfully created ReadSubmission {read_submission.name} with {selected_reads.count()} samples')
 
 
     generate_xml_and_create_read_submission.short_description = 'Generate XML and create Read Submission'
 
     def create_mag_run(self, request, queryset):
-        selected_sequences = queryset
+        selected_reads = queryset
 
         mag_run = MagRun.objects.create()
-        mag_run.sequences.set(selected_sequences)
+        mag_run.reads.set(selected_reads)
         
         context = {
-            'sequences': selected_sequences,
+            'reads': selected_reads,
         }
         samplesheet_content = render_to_string('admin/app/sample/mag_samplesheet.csv', context)
         mag_run.samplesheet_content = samplesheet_content
@@ -85,13 +85,18 @@ class SequenceAdmin(admin.ModelAdmin):
 
     create_mag_run.short_description = 'Create a MAG run'
 
-admin.site.register(Sequence, SequenceAdmin)
+    def generate_submg_run(self, request, queryset):
+        pass
+
+    generate_submg_run.short_description = 'Generate SubMG run for this object and all parents'
+
+admin.site.register(Read, ReadAdmin)
 
 
 class ProjectAdmin(admin.ModelAdmin):
-    list_display = ('user', 'title', 'alias', 'description', 'study_accession_id', 'alternative_accession_id')
+    list_display = ('id', 'user', 'title', 'alias', 'description', 'study_accession_id', 'alternative_accession_id')
 
-    actions = ['generate_xml_and_create_project_submission']
+    actions = ['generate_xml_and_create_project_submission', 'generate_submg_run']
 
     def generate_xml_and_create_project_submission(self, request, queryset):
         selected_projects = queryset
@@ -118,11 +123,16 @@ class ProjectAdmin(admin.ModelAdmin):
 
     generate_xml_and_create_project_submission.short_description = 'Generate XML and create Project Submission'
 
+    def generate_submg_run(self, request, queryset):
+        pass
+
+    generate_submg_run.short_description = 'Generate SubMG run for this object and all parents'
+
 admin.site.register(Project, ProjectAdmin)
 
 
 class SampleAdmin(admin.ModelAdmin):
-    list_display = (tuple(Sample().getFields().keys()))
+    list_display = ('id',) + (tuple(Sample().getFields().keys()))
 
     # temporary - this needs to be passed through properly
     # checklists = ['GSC_MIxS_wastewater_sludge']
@@ -138,58 +148,58 @@ class SampleAdmin(admin.ModelAdmin):
 
     # proper set of checklists for GMAK, ENA
 
-    actions = ['generate_xml_and_create_submission', 'run_mag_pipeline', 'create_sequences']
+    actions = ['generate_xml_and_create_sample_submission', 'create_test_reads', 'generate_submg_run']
 
-    def run_mag_pipeline(self, request, queryset):
+    # def run_mag_pipeline(self, request, queryset):
         
-        selected_samples = queryset
+    #     selected_samples = queryset
 
-        # Generate a unique run_id
-        timestamp = int(time.time())
-        random_num = random.randint(1000, 9999)
-        run_id = f"{timestamp}_{random_num}"
+    #     # Generate a unique run_id
+    #     timestamp = int(time.time())
+    #     random_num = random.randint(1000, 9999)
+    #     run_id = f"{timestamp}_{random_num}"
 
-        pipeline = Pipelines.objects.create(run_id=run_id)
-        pipeline.samples.set(selected_samples)
+    #     pipeline = Pipelines.objects.create(run_id=run_id)
+    #     pipeline.samples.set(selected_samples)
 
-        # Generate samplesheet.csv
-        samplesheet_content = "sample,group,short_reads_1,short_reads_2,long_reads\n"
-        for sample in selected_samples:
-            samplesheet_content += f"{sample.alias},0,{sample.filename_forward},{sample.filename_reverse},\n"
-        samplesheet_path = os.path.join(settings.MEDIA_ROOT, 'sample_files', f"{run_id}_samplesheet.csv")
-        with open(samplesheet_path, 'w') as file:
-            file.write(samplesheet_content)
-        logger.info(f"Generated samplesheet.csv at: {samplesheet_path}")
+    #     # Generate samplesheet.csv
+    #     samplesheet_content = "sample,group,short_reads_1,short_reads_2,long_reads\n"
+    #     for sample in selected_samples:
+    #         samplesheet_content += f"{sample.alias},0,{sample.filename_forward},{sample.filename_reverse},\n"
+    #     samplesheet_path = os.path.join(settings.MEDIA_ROOT, 'sample_files', f"{run_id}_samplesheet.csv")
+    #     with open(samplesheet_path, 'w') as file:
+    #         file.write(samplesheet_content)
+    #     logger.info(f"Generated samplesheet.csv at: {samplesheet_path}")
 
-        # Generate config file
-        config_path = os.path.join(settings.MEDIA_ROOT, 'sample_files', f"{run_id}.config")
-        test_config_path = os.path.join(settings.MEDIA_ROOT,'sample_files', "test.config")
-        with open(test_config_path, 'r') as file:
-            config_content = file.read()
-        config_content = config_content.replace("input                         = 'samplesheet.csv'", f"input                         = '{samplesheet_path}'")
-        with open(config_path, 'w') as file:
-            file.write(config_content)
-        logger.info(f"Generated config file at: {config_path}")
+    #     # Generate config file
+    #     config_path = os.path.join(settings.MEDIA_ROOT, 'sample_files', f"{run_id}.config")
+    #     test_config_path = os.path.join(settings.MEDIA_ROOT,'sample_files', "test.config")
+    #     with open(test_config_path, 'r') as file:
+    #         config_content = file.read()
+    #     config_content = config_content.replace("input                         = 'samplesheet.csv'", f"input                         = '{samplesheet_path}'")
+    #     with open(config_path, 'w') as file:
+    #         file.write(config_content)
+    #     logger.info(f"Generated config file at: {config_path}")
 
-        # Run nextflow command
-        output_folder = os.path.join(settings.MEDIA_ROOT, 'sample_files', f"{run_id}_out")
-        log_path = os.path.join(output_folder, f"{run_id}.log")
-        command = f"nextflow run nf-core/mag -profile docker -c {config_path} --outdir {output_folder}"
-        process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        stdout, stderr = process.communicate()
+    #     # Run nextflow command
+    #     output_folder = os.path.join(settings.MEDIA_ROOT, 'sample_files', f"{run_id}_out")
+    #     log_path = os.path.join(output_folder, f"{run_id}.log")
+    #     command = f"nextflow run nf-core/mag -profile docker -c {config_path} --outdir {output_folder}"
+    #     process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    #     stdout, stderr = process.communicate()
 
-        # Save pipeline details
-        pipeline.status = 'running'
-        pipeline.output_folder = output_folder
-        with open(log_path, 'w') as file:
-            file.write(stdout.decode())
-        pipeline.save()
+    #     # Save pipeline details
+    #     pipeline.status = 'running'
+    #     pipeline.output_folder = output_folder
+    #     with open(log_path, 'w') as file:
+    #         file.write(stdout.decode())
+    #     pipeline.save()
 
-        self.message_user(request, f'Started MAG pipeline for {selected_samples.count()} samples')
+    #     self.message_user(request, f'Started MAG pipeline for {selected_samples.count()} samples')
 
-    run_mag_pipeline.short_description = 'Run MAG pipeline'
+    # run_mag_pipeline.short_description = 'Run MAG pipeline'
 
-    def create_sequences(self, request, queryset):
+    def create_test_reads(self, request, queryset):
         for sample in queryset:
             paired_read_1 = os.path.join(settings.LOCAL_DIR, sample.sample_alias + '_1.fastq.gz')
             paired_read_2 = os.path.join(settings.LOCAL_DIR, sample.sample_alias + '_2.fastq.gz')
@@ -200,66 +210,70 @@ class SampleAdmin(admin.ModelAdmin):
             shutil.copyfile(template_1, paired_read_1)
             shutil.copyfile(template_2, paired_read_2)
 
-            # takes first template object - temporary
             if os.path.isfile(paired_read_1) and os.path.isfile(paired_read_2):
-                sequence = Sequence.objects.create(sample=sample, file_1=paired_read_1, file_2=paired_read_2)
-                sequence.save()
+                read = Read.objects.create(sample=sample, file_1=paired_read_1, file_2=paired_read_2)
+                read.save()
 
-    create_sequences.short_description = 'Generate sequences'
+    create_test_reads.short_description = 'Generate reads'
 
-    def generate_xml_and_create_submission(self, request, queryset):
+    def generate_xml_and_create_sample_submission(self, request, queryset):
         selected_samples = queryset
 
-        submission = Submission.objects.create()
-        submission.samples.set(selected_samples)
+        sampleSubmission = SampleSubmission.objects.create()
+        sampleSubmission.samples.set(selected_samples)
 
         context = {
             'samples': selected_samples,
         }
 
         sample_xml_content = render_to_string('admin/app/sample/sample_xml_template.xml', context)
-        submission.sample_object_xml = sample_xml_content
+        sampleSubmission.sample_object_xml = sample_xml_content
 
-        file_path = os.path.join(settings.BASE_DIR, 'app', 'templates', 'admin', 'app', 'sample', 'submission_template.xml')
+        file_path = os.path.join(settings.BASE_DIR, 'app', 'templates', 'admin', 'app', 'sample', 'sampleSubmission_template.xml')
         with open(file_path, 'r') as file:
-            submission_xml_content = file.read()
-            print(submission_xml_content)  # Debugging: Check the content
+            sampleSubmission_xml_content = file.read()
+            print(sampleSubmission_xml_content)  # Debugging: Check the content
 
-        submission.submission_object_xml = submission_xml_content
+        sampleSubmission.sampleSubmission_object_xml = sampleSubmission_xml_content
 
-        submission.save()
+        sampleSubmission.save()
 
-        self.message_user(request, f'Successfully created Submission {submission.id} with {selected_samples.count()} samples')
+        self.message_user(request, f'Successfully created SampleSubmission {sampleSubmission.id} with {selected_samples.count()} samples')
 
-    generate_xml_and_create_submission.short_description = 'Generate XML and create Submission'
+    generate_xml_and_create_sample_submission.short_description = 'Generate XML and create SampleSubmission'
+
+    def generate_submg_run(self, request, queryset):
+        pass
+
+    generate_submg_run.short_description = 'Generate SubMG run for this object and all parents'
 
 admin.site.register(Sample, SampleAdmin)
 
 
 
-class SubmissionAdmin(admin.ModelAdmin):
-    list_display = ('id', 'sample_count', 'accession_status', 'submission_object_xml')
+class SampleSubmissionAdmin(admin.ModelAdmin):
+    list_display = ('id', 'sample_count', 'accession_status', 'sampleSubmission_object_xml')
     
-    actions = ['register_sample']
+    actions = ['register_samples']
 
     def sample_count(self, obj):
         return obj.samples.count()
     sample_count.short_description = 'Number of Samples'
 
-    def register_sample(self, request, queryset):
-        for submission in queryset:
+    def register_samples(self, request, queryset):
+        for sampleSubmission in queryset:
             try:
                 # Save XML content to files for debugging
-                sample_xml_filename = os.path.join(settings.LOCAL_DIR, f"sample_{submission.id}.xml")
-                submission_xml_filename = os.path.join(settings.LOCAL_DIR, f"submission_{submission.id}.xml")
+                sample_xml_filename = os.path.join(settings.LOCAL_DIR, f"sample_{sampleSubmission.id}.xml")
+                sampleSubmission_xml_filename = os.path.join(settings.LOCAL_DIR, f"sampleSubmission_{sampleSubmission.id}.xml")
                 with open(sample_xml_filename, 'w') as sample_file:
-                    sample_file.write(submission.sample_object_xml)
-                with open(submission_xml_filename, 'w') as submission_file:
-                    submission_file.write(submission.submission_object_xml)
+                    sample_file.write(sampleSubmission.sample_object_xml)
+                with open(sampleSubmission_xml_filename, 'w') as sampleSubmission_file:
+                    sampleSubmission_file.write(sampleSubmission.sampleSubmission_object_xml)
 
-                # Prepare files for submission
+                # Prepare files for sampleSubmission
                 files = {
-                    'SUBMISSION': (submission_xml_filename, open(submission_xml_filename, 'rb')),
+                    'SUBMISSION': (sampleSubmission_xml_filename, open(sampleSubmission_xml_filename, 'rb')),
                     'SAMPLE': (sample_xml_filename, open(sample_xml_filename, 'rb')),
                 }
 
@@ -291,49 +305,49 @@ class SubmissionAdmin(admin.ModelAdmin):
                     # Parse the XML response
                     root = ET.fromstring(response.content)
                     receipt_xml = ET.tostring(root, encoding='unicode')
-                    submission.receipt_xml = receipt_xml
+                    sampleSubmission.receipt_xml = receipt_xml
                     if root.tag == 'RECEIPT':
                         success = root.attrib['success']
                         if success != 'true':
-                            raise Exception(f"Failed to register submission {submission.id}. Response: {response.content}")
+                            raise Exception(f"Failed to register sampleSubmission {sampleSubmission.id}. Response: {response.content}")
                     for child in root:
                         if child.tag == 'SAMPLE':
                                 sample_alias = child.attrib['alias']
                                 sample_accession_number = child.attrib['accession']
-                                submission.samples.filter(sample_alias=sample_alias).update(sample_accession_number=sample_accession_number)
+                                sampleSubmission.samples.filter(sample_alias=sample_alias).update(sample_accession_number=sample_accession_number)
                                 for grandchild in child:
                                     if grandchild.tag == 'EXT_ID':
                                         sample_biosample_number = grandchild.attrib['accession']
-                                        submission.samples.filter(sample_alias=sample_alias).update(sample_biosample_number=sample_biosample_number)
-                    submission.accession_status = 'submitted'
-                    submission.save()
-                    self.message_user(request, "Submission registered successfully.", messages.SUCCESS)
+                                        sampleSubmission.samples.filter(sample_alias=sample_alias).update(sample_biosample_number=sample_biosample_number)
+                    sampleSubmission.accession_status = 'submitted'
+                    sampleSubmission.save()
+                    self.message_user(request, "SampleSubmission registered successfully.", messages.SUCCESS)
                 else:
-                    logger.error(f"Failed to register submission {submission.id}. Response: {response.content}")
-                    self.message_user(request, "Failed to register submission.", messages.ERROR)
+                    logger.error(f"Failed to register sampleSubmission {sampleSubmission.id}. Response: {response.content}")
+                    self.message_user(request, "Failed to register sampleSubmission.", messages.ERROR)
             except Exception as e:
-                logger.exception(f"Error registering submission {submission.id}: {e}")
-                self.message_user(request, "An error occurred while registering the submission.", messages.ERROR)
+                logger.exception(f"Error registering sampleSubmission {sampleSubmission.id}: {e}")
+                self.message_user(request, "An error occurred while registering the sampleSubmission.", messages.ERROR)
 
-    register_sample.short_description = "Register sample with ENA"
+    register_samples.short_description = "Register sample with ENA"
 
-admin.site.register(Submission, SubmissionAdmin)
+admin.site.register(SampleSubmission, SampleSubmissionAdmin)
 
 class ReadSubmissionAdmin(admin.ModelAdmin):
     list_display = ('id', 'sample_count', 'accession_status', 'read_object_txt_list')
     
-    actions = ['register_sample']
+    actions = ['register_reads']
 
     def sample_count(self, obj):
         return obj.samples.count()
     sample_count.short_description = 'Number of Samples'
 
-    def register_sample(self, request, queryset):
+    def register_reads(self, request, queryset):
         for read_submission in queryset:
             count = 0
             read_object_txt_list = json.loads(read_submission.read_object_txt_list)
             for sample_id in read_object_txt_list.keys():
-                sequence = Sequence.objects.get(sample_id=sample_id)
+                read = Read.objects.get(sample_id=sample_id)
                 read_object_txt = read_object_txt_list[sample_id]
                 # Save the read manifest to a file
                 read_manifest_filename = os.path.join(settings.LOCAL_DIR, f"read_manifest_{read_submission.id}{count}.txt")
@@ -378,12 +392,12 @@ class ReadSubmissionAdmin(admin.ModelAdmin):
                         for child in root:
                             if child.tag == 'RUN':
                                 run_accession_number = child.attrib['accession']
-                                # read_submission.samples.filter(sample_id=sample_id).first().sequences.filter(sample_id=sample_id).update(run_accession_number=run_accession_number)
-                                Sequence.objects.filter(sample_id=sample_id).update(run_accession_number=run_accession_number)
+                                # read_submission.samples.filter(sample_id=sample_id).first().reads.filter(sample_id=sample_id).update(run_accession_number=run_accession_number)
+                                Read.objects.filter(sample_id=sample_id).update(run_accession_number=run_accession_number)
                             if child.tag == "EXPERIMENT":
                                 experiment_accession_number = child.attrib['accession']
-                                # read_submission.samples.filter(sample_id=sample_id).first().sequences.filter(sample_id=sample_id).update(experiment_accession_number=experiment_accession_number)
-                                Sequence.objects.filter(sample_id=sample_id).update(experiment_accession_number=experiment_accession_number)
+                                # read_submission.samples.filter(sample_id=sample_id).first().reads.filter(sample_id=sample_id).update(experiment_accession_number=experiment_accession_number)
+                                Read.objects.filter(sample_id=sample_id).update(experiment_accession_number=experiment_accession_number)
                         read_submission.accession_status = 'submitted'
                         read_submission.save()
                         self.message_user(request, "Read submission registered successfully.", messages.SUCCESS)
@@ -394,7 +408,7 @@ class ReadSubmissionAdmin(admin.ModelAdmin):
                     
                 count = count + 1
 
-    register_sample.short_description = "Register sample with ENA"
+    register_reads.short_description = "Register sample with ENA"
 
 admin.site.register(ReadSubmission, ReadSubmissionAdmin)
 
@@ -402,13 +416,13 @@ admin.site.register(ReadSubmission, ReadSubmissionAdmin)
 class ProjectSubmissionAdmin(admin.ModelAdmin):
     list_display = ('id', 'project_object_xml', 'receipt_xml', 'submission_object_xml', 'accession_status')
     
-    actions = ['register_project']
+    actions = ['register_projects']
 
     def project_count(self, obj):
         return obj.projects.count()
     project_count.short_description = 'Number of Projects'
 
-    def register_project(self, request, queryset):
+    def register_projects(self, request, queryset):
         for project_submission in queryset:
             try:
                 Path(settings.LOCAL_DIR).mkdir(parents=True, exist_ok=True)
@@ -478,31 +492,15 @@ class ProjectSubmissionAdmin(admin.ModelAdmin):
                 logger.exception(f"Error registering project submission {project_submission.id}: {e}")
                 self.message_user(request, "An error occurred while registering the project submission.", messages.ERROR)
 
-    register_project.short_description = "Register sample with ENA"
+    register_projects.short_description = "Register sample with ENA"
 
 admin.site.register(ProjectSubmission, ProjectSubmissionAdmin)
 
 
-class PipelinesAdmin(admin.ModelAdmin):
-    list_display = ('run_id', 'status', 'output_folder', 'sample_count', 'order')
-    
-    def sample_count(self, obj):
-        return obj.samples.count()
-    sample_count.short_description = 'Number of Samples'
-    
-    def order(self, obj):
-        samples = obj.samples.all()
-        if samples:
-            return samples.first().order
-        return None
-    order.short_description = 'Order'
-
-admin.site.register(Pipelines, PipelinesAdmin)
-
 class MagRunAdmin(admin.ModelAdmin):
-    list_display = ('samplesheet_content', 'status')
+    list_display = ('id', 'samplesheet_content', 'status')
 
-    actions = ['start_run', 'update_status']
+    actions = ['start_run']
 
     def start_run(self, request, queryset):
         for mag_run in queryset:
@@ -532,15 +530,41 @@ class MagRunAdmin(admin.ModelAdmin):
 
     start_run.short_description = 'Run MAG pipeline'
 
-    def update_status(self, request, queryset):
-        for mag_run in queryset:
-            # get the corresponding MagRunInstance_id and then process id
-
-            # if process id is not running, check for result products and set status accordingly
-            # if process ended successfully, create assembly and bin objects as required
-            pass
-
-    update_status.short_description = 'Update status of MAG run'
-
-
 admin.site.register(MagRun, MagRunAdmin)
+
+class SubMGRunAdmin(admin.ModelAdmin):
+    list_display = ('id', 'type', 'status')
+
+    actions = ['start_run']
+
+    def start_run(self, request, queryset):
+        pass
+
+    start_run.short_description = 'Run MAG pipeline'
+
+admin.site.register(SubMGRun, SubMGRunAdmin)
+
+
+class AssemblyAdmin(admin.ModelAdmin):
+    list_display = ('id', 'file')
+
+    actions = ['generate_submg_run']
+
+    def generate_submg_run(self, request, queryset):
+        pass
+
+    generate_submg_run.short_description = 'Generate SubMG run for this object and all parents'
+
+admin.site.register(Assembly, AssemblyAdmin)
+
+class BinAdmin(admin.ModelAdmin):
+    list_display = ('id', 'file')
+
+    actions = ['generate_submg_run']
+
+    def generate_submg_run(self, request, queryset):
+        pass
+
+    generate_submg_run.short_description = 'Generate SubMG run for this object and all parents'
+
+admin.site.register(Bin, BinAdmin)
