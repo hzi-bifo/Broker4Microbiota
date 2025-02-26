@@ -286,12 +286,17 @@ class Order(models.Model):
     experiment_title = models.CharField(max_length=100, null=True, blank=True)
     dna = models.CharField(max_length=20, null=True, blank=True)
     rna = models.CharField(max_length=20, null=True, blank=True)
-    library = models.CharField(max_length=20, choices=LIBRARY_CHOICES, null=True, blank=True)
     method = models.CharField(max_length=100, null=True, blank=True)
     buffer = models.CharField(max_length=100, null=True, blank=True)
     organism = models.CharField(max_length=100, null=True, blank=True)
     isolated_from = models.CharField(max_length=100, null=True, blank=True)
     isolation_method = models.CharField(max_length=100, choices=ISOLATION_METHOD_CHOICES, null=True, blank=True)
+    platform = models.CharField(max_length=100, null=True, blank=True, default="OXFORD_NANOPORE")
+    insert_size = models.CharField(max_length=100, null=True, blank=True, default="2")
+    library_name = models.CharField(max_length=100, null=True, blank=True, default="PCRtest")
+    library_source = models.CharField(max_length=100, null=True, blank=True, default="GENOMIC")
+    library_selection = models.CharField(max_length=100, null=True, blank=True, default="PCR")
+    library_strategy = models.CharField(max_length=100, null=True, blank=True, default="WGS")
 
     def show_metadata(self):
         # if no samples at all
@@ -456,21 +461,8 @@ class ProjectSubmission(models.Model):
     def __str__(self):
         return f"Submission for Project" #  {self.project.id}
 
-
-
-class SequenceTemplate(models.Model):
-    template_id = models.CharField(max_length=100, null=True, blank=True)
-    name = models.CharField(max_length=100, null=True, blank=True)
-    platform = models.CharField(max_length=100, null=True, blank=True)
-    insert_size = models.CharField(max_length=100, null=True, blank=True)
-    library_name = models.CharField(max_length=100, null=True, blank=True)
-    library_source = models.CharField(max_length=100, null=True, blank=True)
-    library_selection = models.CharField(max_length=100, null=True, blank=True)
-    library_strategy = models.CharField(max_length=100, null=True, blank=True)
-
 class Sequence(models.Model):
     sample = models.ForeignKey(Sample, on_delete=models.CASCADE)
-    sequence_template = models.ForeignKey(SequenceTemplate, on_delete=models.CASCADE)
     file_1 = models.CharField(max_length=255, null=True, blank=True)
     file_2 = models.CharField(max_length=255, null=True, blank=True)
     experiment_accession_number = models.CharField(max_length=100, null=True, blank=True)
@@ -556,8 +548,6 @@ class Blah_unitchecklist(SelfDescribingModel):
 class MagRun(models.Model):
     sequences = models.ManyToManyField(Sequence)
 
-    magRun_id = models.CharField(max_length=100, null=True, blank=True)
-
     status = models.CharField(max_length=100, null=True, blank=True)
     samplesheet_content = models.CharField(max_length=100, null=True, blank=True)
     cluster_config = models.CharField(max_length=100, null=True, blank=True)
@@ -565,7 +555,6 @@ class MagRun(models.Model):
 class MagRunInstance(models.Model):
     MagRun = models.ForeignKey(MagRun, on_delete=models.CASCADE)
 
-    magRunInstance_id = models.CharField(max_length=100, null=True, blank=True)
     uuid = models.CharField(max_length=100, null=True, blank=True)
 
     status = models.CharField(max_length=100, null=True, blank=True)
@@ -577,21 +566,16 @@ class Assembly(models.Model):
     sequence = models.ForeignKey(Sequence, on_delete=models.CASCADE)
     order = models.ForeignKey(Order, on_delete=models.CASCADE)
 
-
-    magRun_assembly_id = models.CharField(max_length=100, null=True, blank=True) 
     file = models.CharField(max_length=255, null=True, blank=True)
 
 class Bin(models.Model):
     sequence = models.ForeignKey(Sequence, on_delete=models.CASCADE)
     order = models.ForeignKey(Order, on_delete=models.CASCADE)
 
-    magRun_bin_id = models.CharField(max_length=100, null=True, blank=True)
     file = models.CharField(max_length=255, null=True, blank=True)
 
 class SubMGRun(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE)
-
-    subMGRun_id = models.CharField(max_length=100, null=True, blank=True)
 
     samples = models.ManyToManyField(Sample)
     sequences = models.ManyToManyField(Sequence)
