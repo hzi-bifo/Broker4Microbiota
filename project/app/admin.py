@@ -10,7 +10,7 @@ from django.core.files.base import ContentFile
 from django.conf import settings
 from Bio import SeqIO
 from io import StringIO
-from .models import Order, Sample, Submission, ReadSubmission, Pipelines, Sequence, SequenceTemplate, Project, ProjectSubmission, MagRun, SubMGRun
+from .models import Order, Sample, Submission, ReadSubmission, Pipelines, Sequence, Project, ProjectSubmission, MagRun, SubMGRun
 from .forms import CreateGZForm
 from django.template.loader import render_to_string
 from xml.etree import ElementTree as ET
@@ -25,17 +25,9 @@ import importlib
 logger = logging.getLogger(__name__)
 
 class OrderAdmin(admin.ModelAdmin):
-    list_display = ('name', 'date', 'quote_no', 'billing_address', 'ag_and_hzi', 'contact_phone', 'email', 'data_delivery', 'signature', 'experiment_title', 'dna', 'rna', 'library', 'method', 'buffer', 'organism', 'isolated_from', 'isolation_method')
+    list_display = ('name', 'date', 'quote_no', 'billing_address', 'ag_and_hzi', 'contact_phone', 'email', 'data_delivery', 'signature', 'experiment_title', 'dna', 'rna', 'method', 'buffer', 'organism', 'isolated_from', 'isolation_method')
 
 admin.site.register(Order, OrderAdmin)
-
-
-
-class SequenceTemplateAdmin(admin.ModelAdmin):
-    list_display = ('name', 'platform', 'insert_size', 'library_name', 'library_source', 'library_selection', 'library_strategy')
-
-admin.site.register(SequenceTemplate, SequenceTemplateAdmin)
-
 
 
 class SequenceAdmin(admin.ModelAdmin):
@@ -210,7 +202,7 @@ class SampleAdmin(admin.ModelAdmin):
 
             # takes first template object - temporary
             if os.path.isfile(paired_read_1) and os.path.isfile(paired_read_2):
-                sequence = Sequence.objects.create(sample=sample, file_1=paired_read_1, file_2=paired_read_2, sequence_template=SequenceTemplate.objects.first())
+                sequence = Sequence.objects.create(sample=sample, file_1=paired_read_1, file_2=paired_read_2)
                 sequence.save()
 
     create_sequences.short_description = 'Generate sequences'
@@ -508,7 +500,7 @@ class PipelinesAdmin(admin.ModelAdmin):
 admin.site.register(Pipelines, PipelinesAdmin)
 
 class MagRunAdmin(admin.ModelAdmin):
-    list_display = ('magRun_id', 'status')
+    list_display = ('samplesheet_content', 'status')
 
     actions = ['start_run', 'update_status']
 
