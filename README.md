@@ -44,6 +44,7 @@ pip install django-widget-tweaks
 pip install django-phonenumber-field
 pip install xmltodict
 pip install django-q2
+pip install nextflow
 ```
 
 ### Running the Project

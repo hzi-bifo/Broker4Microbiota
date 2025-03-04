@@ -132,7 +132,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+DEFAULT_AUTO_FIqELD = 'django.db.models.BigAutoField'
 
 ENA_USERNAME = os.environ.get('ENA_USERNAME')
 ENA_PASSWORD = os.environ.get('ENA_PASSWORD')
@@ -140,11 +140,15 @@ ENA_PASSWORD = os.environ.get('ENA_PASSWORD')
 LOCAL_DIR = f"{BASE_DIR}/media/test"
 JAR_LOCATION = f"{BASE_DIR}/webin-cli-8.1.0.jar"
 
-MAG_NEXTFLOW_COMMAND_STEM = 'nextflow run hzi-bifo/mag'
+MAG_NEXTFLOW_COMMAND_STEM = '/net/broker/test/miniconda3/envs/broker/bin/nextflow run hzi-bifo/mag'
 MAG_PROFILE = 'singularity'
 MAG_ADDITIONAL_OPTIONS = '--skip_prokka --skip_concoct --skip_mhm2 --skip_binqc'
 MAG_NEXTFLOW_EXECUTOR = 'slurm'
 MAG_NEXTFLOW_CLUSTER_OPTIONS = '--qos=long'
+MAG_NEXTFLOW_CLUSTER_CORES = 4
+MAG_NEXTFLOW_CLUSTER_MEMORY = '64000'
+MAG_NEXTFLOW_CLUSTER_QUEUE = 'cpu'
+MAG_NEXTFLOW_CLUSTER_TIME_LIMIT = '1'
 
 PIXELS_PER_CHAR = 8
 

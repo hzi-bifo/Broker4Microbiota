@@ -229,7 +229,7 @@ class SampleAdmin(admin.ModelAdmin):
         sample_xml_content = render_to_string('admin/app/sample/sample_xml_template.xml', context)
         sampleSubmission.sample_object_xml = sample_xml_content
 
-        file_path = os.path.join(settings.BASE_DIR, 'app', 'templates', 'admin', 'app', 'sample', 'sampleSubmission_template.xml')
+        file_path = os.path.join(settings.BASE_DIR, 'app', 'templates', 'admin', 'app', 'sample', 'submission_template.xml')
         with open(file_path, 'r') as file:
             sampleSubmission_xml_content = file.read()
             print(sampleSubmission_xml_content)  # Debugging: Check the content
@@ -522,8 +522,6 @@ class MagRunAdmin(admin.ModelAdmin):
             # completed_process = subprocess.run(f"sleep 30; echo hello", shell=True, capture_output=True)
             # completed_process.stdout
             # kick off the job
-
-            run_folder = f"/home/gary/git/django_ngs_metadata_collection/project/media/test/nfout2"
 
             async_calls.run_mag(mag_run, run_folder)
             # save the process id
