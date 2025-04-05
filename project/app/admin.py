@@ -10,7 +10,8 @@ from django.core.files.base import ContentFile
 from django.conf import settings
 from Bio import SeqIO
 from io import StringIO
-from .models import Order, Sample, SampleSubmission, ReadSubmission, Pipelines, Read, Project, ProjectSubmission, MagRun, SubMGRun, Bin, Assembly
+from .models import Order, Sample, SampleSubmission, ReadSubmission, Pipelines, Read, Project, ProjectSubmission, MagRun, SubMGRun, Bin, Assembly, SAMPLE_TYPE_NORMAL, SAMPLE_TYPE_ASSEMBLY, SAMPLE_TYPE_BIN, SAMPLE_TYPE_MAG, Alignment, Mag
+
 from .forms import CreateGZForm
 from django.template.loader import render_to_string
 from xml.etree import ElementTree as ET
@@ -33,7 +34,7 @@ admin.site.register(Order, OrderAdmin)
 class ReadAdmin(admin.ModelAdmin):
     list_display = ('id', 'sample', 'file_1', 'file_2')
 
-    actions = ['generate_xml_and_create_read_submission', 'create_mag_run', 'generate_submg_run']
+    actions = ['generate_xml_and_create_read_submission', 'create_mag_run']
 
     def generate_xml_and_create_read_submission(self, request, queryset):
         selected_reads = queryset
@@ -85,18 +86,13 @@ class ReadAdmin(admin.ModelAdmin):
 
     create_mag_run.short_description = 'Create a MAG run'
 
-    def generate_submg_run(self, request, queryset):
-        pass
-
-    generate_submg_run.short_description = 'Generate SubMG run for this object and all parents'
-
 admin.site.register(Read, ReadAdmin)
 
 
 class ProjectAdmin(admin.ModelAdmin):
     list_display = ('id', 'user', 'title', 'alias', 'description', 'study_accession_id', 'alternative_accession_id')
 
-    actions = ['generate_xml_and_create_project_submission', 'generate_submg_run']
+    actions = ['generate_xml_and_create_project_submission', 'generate_submg_run_including_children']
 
     def generate_xml_and_create_project_submission(self, request, queryset):
         selected_projects = queryset
@@ -123,16 +119,152 @@ class ProjectAdmin(admin.ModelAdmin):
 
     generate_xml_and_create_project_submission.short_description = 'Generate XML and create Project Submission'
 
-    def generate_submg_run(self, request, queryset):
-        pass
+    def generate_submg_run_including_children(self, request, queryset):
 
-    generate_submg_run.short_description = 'Generate SubMG run for this object and all parents'
+        # create dependency object, which is a dictionary of object lists
+        projects = []
+        orders = []
+        samples = []
+        assembly_samples = []
+        bin_samples = []
+        mag_samples = []
+        reads = []
+        assemblys = []
+        bins = []
+        alignments = []
+
+        for project in queryset:
+            if not project.submitted and project not in projects:
+                projects.append(project)
+            for order in project.order_set.all():
+                if not order.submitted and order not in orders:
+                    orders.append(order)
+                for sample in order.sample_set.filter(sample_type=SAMPLE_TYPE_NORMAL):
+                    # dependencies
+                    if not sample.submitted and sample not in samples:
+                        samples.append(sample)         
+                    # Get all reads for this sample
+                    for read in sample.read_set.all():
+                        if not read.submitted and read not in reads:
+                            reads.append(read)
+                        # Get all assemblies for this read
+                        for assembly in order.assembly_set.all():
+                            if not assembly.submitted and assembly not in assemblys:
+                                assemblys.append(assembly)
+                            # Get all assembly samples for this assembly
+                            for assembly_sample in Sample.objects.filter(sample_type=SAMPLE_TYPE_ASSEMBLY, assembly=assembly):
+                                if not assembly_sample.submitted and assembly_sample not in samples:
+                                    assembly_samples.append(assembly_sample)
+                        # Get all bins for this read           
+                        for bin in order.bin_set.all():
+                            if not bin.submitted and bin not in bins:
+                                bins.append(bin)
+                            # Get all bin samples for this bin
+                            for bin_sample in Sample.objects.filter(sample_type=SAMPLE_TYPE_BIN, bin=bin):
+                                if not bin_sample.submitted and bin_sample not in samples:
+                                    bin_samples.append(bin_sample)
+                            # Get all mag samples for this bin
+                            for mag_sample in Sample.objects.filter(sample_type=SAMPLE_TYPE_MAG, bin=bin):
+                                if not mag_sample.submitted and mag_sample not in samples:
+                                    mag_samples.append(mag_sample)
+                        for alignment in order.alignment_set.all():
+                            if not alignment.submitted and alignment not in alignments:
+                                alignments.append(alignment)
+
+            yaml = []
+            yaml.extend(project.getSubMGYAML())
+
+            tax_id = []
+            scientific_name = []
+            for sample in samples:
+                tax_id = sample.getSubMGTaxId(tax_id)
+                scientific_name = sample.getSubMGScientificName(scientific_name)
+                if len(tax_id) != 1:
+                    raise Exception(f"Multiple tax ids found for sample {sample.sample_id}")
+                if len(scientific_name) != 1:
+                    raise Exception(f"Multiple scientific names found for sample {sample.sample_id}")
+                yaml.extend(sample.getSubMGTaxIdYAML(tax_id))
+                yaml.extend(sample.getSubMGScientificNameYAML(scientific_name))
+                break
+
+            sequencingPlatforms = []
+            for order in orders:
+                sequencingPlatforms = order.getSubMGSequencingPlatforms(sequencingPlatforms)
+                yaml.extend(order.getSubMGYAML(sequencingPlatforms))
+            yaml.extend(Sample.getSubMGYAMLHeader())
+            for sample in samples:
+                yaml.extend(sample.getSubMGYAML(SAMPLE_TYPE_NORMAL))
+
+            yaml.extend(Read.getSubMGYAMLHeader())
+            for read in reads:
+                yaml.extend(read.getSubMGYAML())
+            if assemblys:
+                yaml.extend(Assembly.getSubMGYAMLHeader())
+            for assembly in assemblys:
+                yaml.extend(assembly.getSubMGYAML())
+            if len(assembly_samples) != 1:
+                raise Exception(f"Multiple assembly samples found for assembly")
+            for assembly_sample in assembly_samples:
+                yaml.extend(assembly_sample.getSubMGYAML(SAMPLE_TYPE_ASSEMBLY))
+            yaml.extend(Assembly.getSubMGYAMLFooter())
+
+            if bins:
+                yaml.extend(Bin.getSubMGYAMLHeader())
+            for bin in bins:
+                yaml.extend(bin.getSubMGYAML())
+                break
+            tax_ids = {}
+            for bin_sample in bin_samples:
+                bin = bin_sample.bin
+                tax_ids[bin.file.split('/')[-1].replace(".fa.gz", "")] = [bin_sample.scientific_name, bin_sample.tax_id]
+            for bin in bins:
+                yaml.extend(bin.getSubMGYAMLTaxIDYAML(tax_ids))
+                break 
+            for bin_sample in bin_samples:
+                yaml.extend(bin_sample.getSubMGYAML(SAMPLE_TYPE_BIN))
+                break
+            yaml.extend(Bin.getSubMGYAMLFooter())
+
+            if mag_samples:
+                yaml.extend(Mag.getSubMGYAMLHeader())
+            mag_data = {}
+            for mag_sample in mag_samples:
+                bin = mag_sample.bin
+                mag_data[bin.bin_number] = mag_sample.mag_data
+            for mag_sample in mag_samples:
+                yaml.extend(Mag.getSubMGYAMLMagDataYAML(mag_sample.mag_data))
+                break
+            for mag_sample in mag_samples:
+                yaml.extend(mag_sample.getSubMGYAML(SAMPLE_TYPE_MAG))
+                break
+
+            if alignments:
+                yaml.extend(Alignment.getSubMGYAMLHeader())
+            for alignment in alignments:
+                yaml.extend(alignment.getSubMGYAML())
+                break
+
+            subMG_run = SubMGRun.objects.create(order=order)
+            output = '\n'.join(yaml)
+            subMG_run.yaml = output
+ 
+            output_file_path = "/tmp/output.txt"
+
+            with open(output_file_path, 'w') as output_file:
+                print(output, file=output_file)
+ 
+            subMG_run.save()
+
+        return
+    
+    generate_submg_run_including_children.short_description = 'Generate SubMG run for this object, all dependencies, and all child objects'
 
 admin.site.register(Project, ProjectAdmin)
 
 
 class SampleAdmin(admin.ModelAdmin):
-    list_display = ('id',) + (tuple(Sample().getFields().keys()))
+    list_display = ('id', 'sample_type','assembly', 'bin') + (tuple(Sample().getFields().keys()))
+    list_filter = ('sample_type',)
 
     # temporary - this needs to be passed through properly
     # checklists = ['GSC_MIxS_wastewater_sludge']
@@ -148,7 +280,7 @@ class SampleAdmin(admin.ModelAdmin):
 
     # proper set of checklists for GMAK, ENA
 
-    actions = ['generate_xml_and_create_sample_submission', 'create_test_reads', 'generate_submg_run']
+    actions = ['generate_xml_and_create_sample_submission', 'create_test_reads']
 
     # def run_mag_pipeline(self, request, queryset):
         
@@ -242,10 +374,36 @@ class SampleAdmin(admin.ModelAdmin):
 
     generate_xml_and_create_sample_submission.short_description = 'Generate XML and create SampleSubmission'
 
-    def generate_submg_run(self, request, queryset):
-        pass
+    # def generate_submg_run(self, request, queryset):
 
-    generate_submg_run.short_description = 'Generate SubMG run for this object and all parents'
+    #     # create dependency object, which is a dictionary of object lists
+    #     projects = []
+    #     samples = []
+    #     reads = []
+    #     assemblies = []
+    #     bins = []
+    #     # if normal sample, each order and project, checking if already submitted (and mark as submitted), and whether already in list (don't add more than once)
+    #     for sample in queryset:
+    #         if not sample.submitted and sample not in samples:
+    #             samples.append(sample)
+    #             order = sample.order
+    #             project = order.project
+    #             if not project.submitted and project not in projects:
+    #                 projects.append(project)
+
+    #     subMG_run = SubMGRun.objects.create(order=order)
+    #     subMG_run.projects.set(projects)
+    #     subMG_run.samples.set(samples)
+    #     subMG_run.reads.set(reads)
+    #     subMG_run.assemblys.set(assemblies)
+    #     subMG_run.bins.set(bins)
+    #     subMG_run.save()
+
+    #     return
+
+    # generate_submg_run.short_description = 'Generate SubMG run for this object and all dependencies'
+
+
 
 admin.site.register(Sample, SampleAdmin)
 
@@ -536,7 +694,54 @@ class SubMGRunAdmin(admin.ModelAdmin):
     actions = ['start_run']
 
     def start_run(self, request, queryset):
-        pass
+        for submg_run in queryset:
+
+            # chedck there is no other instance of this run running
+
+            # Create a new temporary folder for the run
+            id = random.randint(1000000, 9999999)
+            run_folder = os.path.join(settings.LOCAL_DIR, f"{id}")
+            os.makedirs(run_folder)
+
+            with open(os.path.join(run_folder, 'submg.yaml'), 'w') as file:
+                print(submg_run.yaml, file=file)
+
+            # Create a mag run instance
+            # completed_process = subprocess.run(f"sleep 30; echo hello", shell=True, capture_output=True)
+            # completed_process.stdout
+            # kick off the job
+
+            async_calls.run_submg(submg_run, run_folder)
+            # save the process id
+
+
+
+        # cconstruct yaml - for objects not yet submitted
+        # get project details out from project
+        # get sample details out from sample, set as samplee
+        # get read details out from read, set as read
+        # get assembly details out from assembly, set as assembly
+        # get bin details out from bin, set as bin
+        # get mag details out from mag, set as mag
+
+        # each object should output its own yaml - bins and mags will need to be adjused to store taxon, mag files
+        # BAM files??
+        # Remember multiplicity for samples
+
+        # run job
+
+        # hook needs to update accession, and set object status as complete
+
+        # projects 
+        # samples 
+        # reads 
+        ### assembly_samples 
+        ### bin_samples 
+        ### mag_samples
+        # assemblys 
+        # bins 
+        # mags
+
 
     start_run.short_description = 'Run MAG pipeline'
 
@@ -546,23 +751,21 @@ admin.site.register(SubMGRun, SubMGRunAdmin)
 class AssemblyAdmin(admin.ModelAdmin):
     list_display = ('id', 'file')
 
-    actions = ['generate_submg_run']
+    actions = []
 
-    def generate_submg_run(self, request, queryset):
-        pass
-
-    generate_submg_run.short_description = 'Generate SubMG run for this object and all parents'
 
 admin.site.register(Assembly, AssemblyAdmin)
 
 class BinAdmin(admin.ModelAdmin):
     list_display = ('id', 'file')
 
-    actions = ['generate_submg_run']
-
-    def generate_submg_run(self, request, queryset):
-        pass
-
-    generate_submg_run.short_description = 'Generate SubMG run for this object and all parents'
+    actions = []
 
 admin.site.register(Bin, BinAdmin)
+
+class AlignmentAdmin(admin.ModelAdmin):
+    list_display = ('id', 'file')
+
+    actions = []
+
+admin.site.register(Alignment, AlignmentAdmin)

@@ -142,7 +142,7 @@ JAR_LOCATION = f"{BASE_DIR}/webin-cli-8.1.0.jar"
 
 MAG_NEXTFLOW_COMMAND_STEM = '/net/broker/test/miniconda3/envs/broker/bin/nextflow run hzi-bifo/mag'
 MAG_PROFILE = 'singularity'
-MAG_ADDITIONAL_OPTIONS = '--skip_prokka --skip_concoct --skip_mhm2 --skip_binqc'
+MAG_ADDITIONAL_OPTIONS = '--skip_prokka --skip_concoct --skip_mhm2 --binqc_tool checkm' # --skip_binqc
 MAG_NEXTFLOW_EXECUTOR = 'slurm'
 MAG_NEXTFLOW_CLUSTER_OPTIONS = '--qos=long'
 MAG_NEXTFLOW_CLUSTER_CORES = 4

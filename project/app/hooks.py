@@ -1,5 +1,5 @@
 from django_q.tasks import async_task, result
-from .models import MagRun, MagRunInstance, Assembly, Bin, Order
+from .models import MagRun, MagRunInstance, Assembly, Bin, Order, Alignment
 import re
 from pathlib import Path
 import glob
@@ -46,5 +46,17 @@ def process_mag_result(task):
                 mag_run_instance.status = 'partial'
                 mag_run.status = 'partial'
 
+            alignment_file_path = f"{run_folder}/Assembly/MEGAHIT/{sample.sample_id}.sorted.bam"
+            alignment_files = Path(alignment_file_path)
+            for alignment_file in alignment_files:
+                alignment = Alignment(read=read, file=alignment_file, order=order)
+                alignment.save()
+            if alignment_files == []:
+                mag_run_instance.status = 'partial'
+                mag_run.status = 'partial'
+
         mag_run_instance.save()
         mag_run.save()
+
+def process_submg_result(task):
+    pass
