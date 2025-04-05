@@ -45,6 +45,8 @@ pip install django-phonenumber-field
 pip install xmltodict
 pip install django-q2
 pip install nextflow
+conda install bwa
+conda install samtools
 ```
 
 ### Running the Project

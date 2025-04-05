@@ -5,6 +5,7 @@ from django.db.models import JSONField
 from django.core.validators import RegexValidator
 import importlib
 import json
+from pathlib import Path
 
 LIBRARY_CHOICES = [
     ('choice1', 'Choice 1'),
@@ -70,6 +71,42 @@ class SelfDescribingModel(models.Model):
                         pass
                     output = output + f"</SAMPLE_ATTRIBUTE>\n"            
         return output
+
+    def getSubAttributesYAML(self, indent="", include=[], exclude=[]):
+
+
+        class_name = type(self).__name__
+        unit_class_name = f"{class_name}_unit"
+        unitchecklist_class =  getattr(importlib.import_module("app.models"), unit_class_name)
+        unitchecklist_item_instance = unitchecklist_class.objects.filter(sampleset=self.sampleset).first()
+
+        yaml = []
+        if include:
+            for k, v in self.fields.items():
+                if k in include:
+                    yaml.append(f"{indent}{v}: \"{getattr(self, k).replace('\n', '|')}\"")
+                    try:
+                        unitoption = getattr(unitchecklist_item_instance, k + "_units")[0][0]
+                        current_unitoption = getattr(unitchecklist_item_instance, f"{k}")
+                        if current_unitoption != '':
+                            unitoption = current_unitoption   
+                        # output = output + f"<UNITS>{unitoption}</UNITS>\n"
+                    except:
+                        pass
+        else:
+            for k, v in self.fields.items():
+                if k not in exclude:
+                    yaml.append(f"{indent}{v}: \"{getattr(self, k).replace('\n', '|')}\"")
+                    try:
+                        unitoption = getattr(unitchecklist_item_instance, k + "_units")[0][0]
+                        current_unitoption = getattr(unitchecklist_item_instance, f"{k}")
+                        if current_unitoption != '':
+                            unitoption = current_unitoption   
+                        # output = output + f"<UNITS>{unitoption}</UNITS>\n"
+                    except:
+                        pass
+        return yaml
+
 
     # Get actual value for each field
     def getFields(self, include=[], exclude=[]):
@@ -271,6 +308,15 @@ class Project(models.Model):
     description = models.TextField(null=True, blank=True)
     study_accession_id = models.CharField(max_length=100, null=True, blank=True)
     alternative_accession_id = models.CharField(max_length=100, null=True, blank=True)
+    submitted = models.BooleanField(default=False)
+
+    def getSubMGYAML(self):
+
+        yaml = []
+        yaml.append(f"STUDY: \"{self.study_accession_id}\"")
+        yaml.append(f"PROJECT_NAME: \"{self.title}\"")
+
+        return yaml
 
 class Order(models.Model):
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
@@ -297,6 +343,9 @@ class Order(models.Model):
     library_source = models.CharField(max_length=100, null=True, blank=True, default="GENOMIC")
     library_selection = models.CharField(max_length=100, null=True, blank=True, default="PCR")
     library_strategy = models.CharField(max_length=100, null=True, blank=True, default="WGS")
+    sequencing_instrument = models.CharField(max_length=100, null=True, blank=True, default="Illumina HiSeq 1500")
+
+    submitted = models.BooleanField(default=False)
 
     def show_metadata(self):
         # if no samples at all
@@ -348,6 +397,21 @@ class Order(models.Model):
 
         return True
 
+    def getSubMGSequencingPlatforms(self, platformList):
+        
+        if self.platform not in platformList:
+            platformList.append(self.platform)
+
+        return ', '.join(f'"{p}"' for p in platformList)
+        return platformList
+
+    def getSubMGYAML(self, platformList):
+
+        yaml = []
+        
+        yaml.append(f"SEQUENCING_PLATFORMS: [{platformList}]")
+
+        return yaml
 
 class Sampleset(models.Model):
 
@@ -378,6 +442,11 @@ class Sample(SelfDescribingModel):
     sample_accession_number = models.CharField(max_length=100, null=True, blank=True)
     sample_biosample_number = models.CharField(max_length=100, null=True, blank=True)
     sample_type = models.IntegerField(default=SAMPLE_TYPE_NORMAL)
+    submitted = models.BooleanField(default=False)
+    assembly = models.ForeignKey('app.Assembly', on_delete=models.SET_NULL, blank=True, null=True)
+    bin = models.ForeignKey('app.Bin', on_delete=models.SET_NULL, blank=True, null=True)
+    mag_data = models.CharField(max_length=100, null=True, blank=True)
+
 
 
     #     investigation_type = models.CharField(max_length=100, null=True, blank=True)
@@ -451,6 +520,95 @@ class Sample(SelfDescribingModel):
 
         return output            
 
+    def getSubMGYAMLHeader():
+
+        yaml = []
+        
+        yaml.append(f"NEW_SAMPLES:")
+                    
+        return yaml
+
+    def getSubMGTaxId(self, tax_id):
+
+        if self.tax_id not in tax_id:
+            tax_id.append(self.tax_id)
+
+        return tax_id
+
+    def getSubMGTaxIdYAML(self, tax_id):
+
+        yaml = []
+
+        yaml.append(f"METAGENOME_TAXID: \"{tax_id[0]}\"")
+
+        return yaml
+
+    def getSubMGScientificName(self, scientific_name):
+
+        if self.scientific_name not in scientific_name:
+            scientific_name.append(self.scientific_name)
+
+        return scientific_name
+
+    def getSubMGScientificNameYAML(self, scientific_name):
+
+        yaml = []
+
+        yaml.append(f"METAGENOME_SCIENTIFIC_NAME: \"{scientific_name[0]}\"")
+
+        return yaml
+    
+    def getSubMGYAML(self, sample_type):
+
+        indent = f"  "
+
+        yaml = []
+        yaml_sample = []
+        yaml_additional = []
+
+        # go through checklist
+        # search for specific sample fields and append to sample
+        # take everything else and append to additional
+        # check for multiplicity, replace returns with |
+                    
+        sampleset = Sampleset.objects.filter(order=self.order, sample_type=sample_type).first()
+        checklists = sampleset.checklists
+ 
+        for checklist in json.loads(json.dumps(checklists)):
+            checklist_name = checklist
+            checklist_code = Sampleset.checklist_structure[checklist_name]['checklist_code']  
+            checklist_class_name = Sampleset.checklist_structure[checklist_name]['checklist_class_name']
+            checklist_item_class =  getattr(importlib.import_module("app.models"), checklist_class_name)
+            checklist_item_instance = checklist_item_class.objects.filter(sample = self, sampleset=sampleset).first()
+            
+            include = ["collection_date", "geographic_location_country_and_or_sea"]
+            exclude = []
+
+            indent = f"  "
+
+            yaml_sample.extend(checklist_item_instance.getSubAttributesYAML(indent, include, exclude))
+
+            include = []
+            exclude = ["collection_date", "geographic_location_country_and_or_sea", "metagenomic_source"]
+
+            indent = f"    "
+
+            yaml_additional.extend(checklist_item_instance.getSubAttributesYAML(indent, include, exclude))
+
+            # attributes = attributes + f"<SAMPLE_ATTRIBUTE><TAG>ena-checklist</TAG><VALUE>{checklist_code}</VALUE></SAMPLE_ATTRIBUTE>\n"
+            
+        indent = f"  "    
+
+        if sample_type == SAMPLE_TYPE_NORMAL:
+            yaml.append(f"- TITLE: \"{self.sample_title}\"")
+        if sample_type == SAMPLE_TYPE_NORMAL or sample_type == SAMPLE_TYPE_ASSEMBLY:
+            yaml.extend(yaml_sample)
+        yaml.append(f"{indent}ADDITIONAL_SAMPLESHEET_FIELDS:")
+        yaml.extend(yaml_additional)
+
+        return yaml    
+
+
 class ProjectSubmission(models.Model):
     projects = models.ManyToManyField(Project)
     project_object_xml = models.TextField(null=True, blank=True)
@@ -467,6 +625,41 @@ class Read(models.Model):
     file_2 = models.CharField(max_length=255, null=True, blank=True)
     experiment_accession_number = models.CharField(max_length=100, null=True, blank=True)
     run_accession_number = models.CharField(max_length=100, null=True, blank=True)
+    submitted = models.BooleanField(default=False)
+
+    def getSubMGYAMLHeader():
+
+        yaml = []
+        
+        yaml.append(f"PAIRED_END_READS:")
+                    
+        return yaml
+
+
+    def getSubMGYAML(self):
+
+        indent = f"  "
+
+        yaml = []
+        yaml.append(f"- NAME: \"{self.sample.sample_title}\"")
+        yaml.append(f"{indent}PLATFORM: \"{self.sample.order.platform}\"")
+        yaml.append(f"{indent}LIBRARY_NAME: \"{self.sample.order.library_name}\"")
+        yaml.append(f"{indent}SEQUENCING_INSTRUMENT: \"{self.sample.order.sequencing_instrument}\"")
+        yaml.append(f"{indent}LIBRARY_SOURCE: \"{self.sample.order.library_source}\"")
+        yaml.append(f"{indent}LIBRARY_SELECTION: \"{self.sample.order.library_selection}\"")
+        yaml.append(f"{indent}LIBRARY_STRATEGY: \"{self.sample.order.library_strategy}\"")
+        yaml.append(f"{indent}INSERT_SIZE: \"{self.sample.order.insert_size}\"")
+        yaml.append(f"{indent}FASTQ1_FILE: \"{self.file_1.replace(".gz","")}\"")
+        yaml.append(f"{indent}FASTQ2_FILE: \"{self.file_2.replace(".gz","")}\"")
+        yaml.append(f"{indent}RELATED_SAMPLE_TITLE: \"{self.sample.sample_title}\"")
+        yaml.append(f"{indent}ADDITIONAL_MANIFEST_FIELDS:")
+
+        return yaml
+
+
+
+
+
 
 class SampleSubmission(models.Model):
     samples = models.ManyToManyField(Sample)
@@ -553,7 +746,7 @@ class MagRun(models.Model):
     cluster_config = models.CharField(max_length=100, null=True, blank=True)
 
 class MagRunInstance(models.Model):
-    MagRun = models.ForeignKey(MagRun, on_delete=models.CASCADE)
+    magRun = models.ForeignKey(MagRun, on_delete=models.CASCADE)
 
     uuid = models.CharField(max_length=100, null=True, blank=True)
 
@@ -563,33 +756,204 @@ class MagRunInstance(models.Model):
     # Output files
 
 class Assembly(models.Model):
-    read = models.ForeignKey(Read, on_delete=models.CASCADE)
+    read = models.ManyToManyField(Read)
     order = models.ForeignKey(Order, on_delete=models.CASCADE)
 
+    assembly_software = models.CharField(max_length=255, null=True, blank=True)
     file = models.CharField(max_length=255, null=True, blank=True)
+    submitted = models.BooleanField(default=False)
 
+    def getSubMGYAMLHeader():
+
+        yaml = []
+        
+        yaml.append(f"ASSEMBLY:")
+                    
+        return yaml
+
+
+    def getSubMGYAML(self):
+
+        indent = f"  "
+
+        yaml = []
+        yaml.append(f"{indent}ASSEMBLY_NAME: \"{self.order.project.title}_coasm\"")
+        yaml.append(f"{indent}ASSEMBLY_SOFTWARE: \"{self.assembly_software}\"")
+        yaml.append(f"{indent}ISOLATION_SOURCE: \"UNKNOWN\"")
+        yaml.append(f"{indent}FASTA_FILE: \"{self.file}\"")
+
+        # Separate call to assembly sample
+        
+        return yaml
+
+    def getSubMGYAMLFooter():
+
+        indent = f"  "
+
+        yaml = []
+        
+        yaml.append(f"{indent}ADDITIONAL_MANIFEST_FIELDS:")
+                    
+        return yaml
+    
 class Bin(models.Model):
+    read = models.ManyToManyField(Read)
+    order = models.ForeignKey(Order, on_delete=models.CASCADE)
+
+    bin_number = models.CharField(max_length=255, null=True, blank=True)
+    completeness_software = models.CharField(max_length=255, null=True, blank=True)
+    binning_software = models.CharField(max_length=255, null=True, blank=True)
+    quality_file = models.CharField(max_length=255, null=True, blank=True)
+    file = models.CharField(max_length=255, null=True, blank=True)
+    submitted = models.BooleanField(default=False)
+
+    def getSubMGYAMLHeader():
+
+        yaml = []
+        
+        yaml.append(f"BINS:")
+                    
+        return yaml
+
+
+    def getSubMGYAML(self):
+
+        indent = f"  "
+
+        yaml = []
+        yaml.append(f"{indent}BINS_DIRECTORY: \"{self.file.rsplit('/', 1)[0]}\"")
+        yaml.append(f"{indent}COMPLETENESS_SOFTWARE: \"{self.completeness_software}\"")
+        yaml.append(f"{indent}QUALITY_FILE: \"{self.quality_file}\"")
+        yaml.append(f"{indent}BINNING_SOFTWARE: \"{self.binning_software}\"")
+        yaml.append(f"{indent}ISOLATION_SOURCE: \"UNKNOWN\"")
+        # yaml.append(f"{indent}FASTA_FILE: \"{self.file}\"")
+
+        # Separate call to bin sample
+        
+        return yaml
+
+    def getSubMGYAMLTaxIDYAML(self, tax_ids):
+
+        indent = f"  "
+
+        # tax_id_path = Path(self.file.split('/', 1)[0] + "/tax_ids.txt")
+        tax_id_path = Path("/tmp/tax_ids.txt")
+
+        with open(tax_id_path, 'w') as tax_id_file:
+            print(f"Bin_id\tScientific_name\tTax_id", file=tax_id_file)
+            for tax_id in tax_ids:
+                print(f"{tax_id}\t{tax_ids[tax_id][0]}\t{tax_ids[tax_id][1]}", file=tax_id_file)
+
+        yaml = []
+
+        yaml.append(f"{indent}MANUAL_TAXONOMY_FILE: \"{tax_id_path}\"")
+        # yaml.append(f"{indent}NCBI_TAXONOMY_FILES:")
+
+        return yaml
+
+    def getSubMGYAMLFooter():
+
+        indent = f"  "
+
+        yaml = []
+        
+        yaml.append(f"{indent}ADDITIONAL_MANIFEST_FIELDS:")
+                    
+        return yaml
+    
+class Mag(models.Model):
+
+    def getSubMGYAMLHeader():
+
+        yaml = []
+        
+        yaml.append(f"MAGS:")
+                    
+        return yaml    
+
+    def getSubMGYAMLMagDataYAML(mag_data):
+
+        indent = f"  "
+
+        mag_data_path = "/tmp/mag_data.txt"
+
+        with open(mag_data_path, 'w') as mag_data_file:
+            print(mag_data, file=mag_data_file)
+
+        yaml = []
+
+        yaml.append(f"{indent}MAG_METADATA_FILE: \"{mag_data_path}\"")
+
+        return yaml
+
+    def getSubMGYAMLFooter():
+
+        indent = f"  "
+
+        yaml = []
+        
+        yaml.append(f"{indent}ADDITIONAL_MANIFEST_FIELDS:")
+                    
+        return yaml    
+
+class Alignment(models.Model):
+
     read = models.ForeignKey(Read, on_delete=models.CASCADE)
+    assembly = models.ForeignKey(Assembly, on_delete=models.CASCADE)
     order = models.ForeignKey(Order, on_delete=models.CASCADE)
 
     file = models.CharField(max_length=255, null=True, blank=True)
+    submitted = models.BooleanField(default=False)
+
+    def getSubMGYAMLHeader():
+
+        yaml = []
+        
+        yaml.append(f"BAM_FILES:")
+                    
+        return yaml
+
+
+    def getSubMGYAML(self):
+
+        indent = f"  "
+
+        yaml = []
+        yaml.append(f"{indent}- \"{self.file}\"")
+
+        # Separate call to assembly sample
+        
+        return yaml
+
 
 class SubMGRun(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE)
 
+    projects = models.ManyToManyField(Project)
     samples = models.ManyToManyField(Sample)
     reads = models.ManyToManyField(Read)
     # assembly_samples = models.ManyToManyField(Sample)
     # bin_samples = models.ManyToManyField(Sample)
     # mag_samples = models.ManyToManyField(Sample)
-    assembly = models.ManyToManyField(Assembly)
+    assemblys = models.ManyToManyField(Assembly)
     bins = models.ManyToManyField(Bin)
     # mags = models.ManyToManyField(Bin)
 
     type = models.CharField(max_length=100, null=True, blank=True)
     status = models.CharField(max_length=100, null=True, blank=True)
 
-    yaml = models.JSONField()
+    yaml = models.CharField(max_length=100, null=True, blank=True)
 
     # Accession stuff
+    # Mark things as submitted files
+
+class SubMGRunInstance(models.Model):
+    subMGRun = models.ForeignKey(SubMGRun, on_delete=models.CASCADE)
+
+    uuid = models.CharField(max_length=100, null=True, blank=True)
+
+    status = models.CharField(max_length=100, null=True, blank=True)
+    run_folder = models.CharField(max_length=100, null=True, blank=True)
+
     # Output files
+
