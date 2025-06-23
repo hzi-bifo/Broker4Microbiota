@@ -10,6 +10,8 @@ from django.http import HttpResponseRedirect, JsonResponse
 from django.urls import reverse, reverse_lazy
 from .forms import OrderForm, SampleForm, SamplesetForm, ProjectForm
 from .models import Order, Sample, Sampleset, Project, STATUS_CHOICES, SAMPLE_TYPE_NORMAL, SAMPLE_TYPE_ASSEMBLY, SAMPLE_TYPE_BIN, SAMPLE_TYPE_MAG
+from django_q.tasks import async_task, result
+from .hooks import process_submg_result_inner
 
 from json.decoder import JSONDecodeError
 import importlib
@@ -454,7 +456,16 @@ def samples_view(request, project_id, order_id, sample_type):
     # take the longest number of checklist name, and field name an use this to send column width
 
 
+def test_submg(request):
+    if request.user.is_authenticated:
+        id = "48"
+        returncode = 0
 
+        hooks = process_submg_result_inner(returncode, id)
+
+        return redirect('project_list')   
+    else:
+        return redirect('login')
 
 
 

@@ -213,6 +213,36 @@ class SelfDescribingModel(models.Model):
                 value = ''
             setattr(self, k, value)
 
+    # Populate instance fields from a subMG response
+    def setFieldsFromSubMG(self, assembly_sample_alias, assembly_sample_title, assembly_sample_name, assembly_sample_attributes):
+
+        for k, v in self.fields.items():
+            value = ''
+            # do k lookup
+            if k == 'sample_id':
+                pass
+            elif k == 'sample_title':
+                value = assembly_sample_title
+            elif k == 'sample_alias':
+                value = assembly_sample_alias
+            elif k == 'scientific_name':
+                value = assembly_sample_name['SCIENTIFIC_NAME']
+            elif k == 'tax_id':
+                value = assembly_sample_name['TAXON_ID']
+            else:
+                try:
+                    for overattribute in assembly_sample_attributes:
+                        for attribute in overattribute:
+                            if attribute != "SAMPLE_ATTRIBUTE":
+                                for items in attribute:
+                                    if items['TAG'] == k.replace('_', ' '):
+                                        value = items['VALUE']
+                                        break
+                except:
+                    pass
+
+            setattr(self, k, value)
+
     # Get the headers for the HoT (including choices)
     def getValidators(self, include=[], exclude=[] ):
 
@@ -530,7 +560,7 @@ class Sample(SelfDescribingModel):
 
     def getSubMGTaxId(self, tax_id):
 
-        if self.tax_id not in tax_id:
+        if self.tax_id not in tax_id and self.tax_id != '':
             tax_id.append(self.tax_id)
 
         return tax_id
@@ -545,7 +575,7 @@ class Sample(SelfDescribingModel):
 
     def getSubMGScientificName(self, scientific_name):
 
-        if self.scientific_name not in scientific_name:
+        if self.scientific_name not in scientific_name and self.scientific_name != '':
             scientific_name.append(self.scientific_name)
 
         return scientific_name
@@ -606,7 +636,7 @@ class Sample(SelfDescribingModel):
         yaml.append(f"{indent}ADDITIONAL_SAMPLESHEET_FIELDS:")
         yaml.extend(yaml_additional)
 
-        return yaml    
+        return yaml
 
 
 class ProjectSubmission(models.Model):
@@ -623,6 +653,10 @@ class Read(models.Model):
     sample = models.ForeignKey(Sample, on_delete=models.CASCADE)
     file_1 = models.CharField(max_length=255, null=True, blank=True)
     file_2 = models.CharField(max_length=255, null=True, blank=True)
+    uncompressed_file_1 = models.CharField(max_length=255, null=True, blank=True)
+    uncompressed_file_2 = models.CharField(max_length=255, null=True, blank=True)    
+    read_file_checksum_1 = models.CharField(max_length=255, null=True, blank=True)
+    read_file_checksum_2 = models.CharField(max_length=255, null=True, blank=True)    
     experiment_accession_number = models.CharField(max_length=100, null=True, blank=True)
     run_accession_number = models.CharField(max_length=100, null=True, blank=True)
     submitted = models.BooleanField(default=False)
@@ -649,8 +683,8 @@ class Read(models.Model):
         yaml.append(f"{indent}LIBRARY_SELECTION: \"{self.sample.order.library_selection}\"")
         yaml.append(f"{indent}LIBRARY_STRATEGY: \"{self.sample.order.library_strategy}\"")
         yaml.append(f"{indent}INSERT_SIZE: \"{self.sample.order.insert_size}\"")
-        yaml.append(f"{indent}FASTQ1_FILE: \"{self.file_1.replace(".gz","")}\"")
-        yaml.append(f"{indent}FASTQ2_FILE: \"{self.file_2.replace(".gz","")}\"")
+        yaml.append(f"{indent}FASTQ1_FILE: \"{self.file_1}\"")
+        yaml.append(f"{indent}FASTQ2_FILE: \"{self.file_2}\"")   
         yaml.append(f"{indent}RELATED_SAMPLE_TITLE: \"{self.sample.sample_title}\"")
         yaml.append(f"{indent}ADDITIONAL_MANIFEST_FIELDS:")
 
@@ -762,6 +796,7 @@ class Assembly(models.Model):
     assembly_software = models.CharField(max_length=255, null=True, blank=True)
     file = models.CharField(max_length=255, null=True, blank=True)
     submitted = models.BooleanField(default=False)
+    assembly_accession_number = models.CharField(max_length=100, null=True, blank=True)
 
     def getSubMGYAMLHeader():
 
@@ -806,6 +841,7 @@ class Bin(models.Model):
     quality_file = models.CharField(max_length=255, null=True, blank=True)
     file = models.CharField(max_length=255, null=True, blank=True)
     submitted = models.BooleanField(default=False)
+    bin_accession_number = models.CharField(max_length=100, null=True, blank=True)
 
     def getSubMGYAMLHeader():
 

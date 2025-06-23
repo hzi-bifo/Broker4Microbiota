@@ -22,6 +22,8 @@ from pathlib import Path
 from django_q.tasks import async_task, result
 from . import hooks, async_calls
 import importlib
+import hashlib
+from .utils import calculate_md5, gzip_file
 
 logger = logging.getLogger(__name__)
 
@@ -147,26 +149,26 @@ class ProjectAdmin(admin.ModelAdmin):
                     for read in sample.read_set.all():
                         if not read.submitted and read not in reads:
                             reads.append(read)
-                        # Get all assemblies for this read
-                        for assembly in order.assembly_set.all():
-                            if not assembly.submitted and assembly not in assemblys:
-                                assemblys.append(assembly)
-                            # Get all assembly samples for this assembly
-                            for assembly_sample in Sample.objects.filter(sample_type=SAMPLE_TYPE_ASSEMBLY, assembly=assembly):
-                                if not assembly_sample.submitted and assembly_sample not in samples:
-                                    assembly_samples.append(assembly_sample)
-                        # Get all bins for this read           
-                        for bin in order.bin_set.all():
-                            if not bin.submitted and bin not in bins:
-                                bins.append(bin)
-                            # Get all bin samples for this bin
-                            for bin_sample in Sample.objects.filter(sample_type=SAMPLE_TYPE_BIN, bin=bin):
-                                if not bin_sample.submitted and bin_sample not in samples:
-                                    bin_samples.append(bin_sample)
-                            # Get all mag samples for this bin
-                            for mag_sample in Sample.objects.filter(sample_type=SAMPLE_TYPE_MAG, bin=bin):
-                                if not mag_sample.submitted and mag_sample not in samples:
-                                    mag_samples.append(mag_sample)
+                        # Get all assemblies for this order
+                for assembly in order.assembly_set.all():
+                    if not assembly.submitted and assembly not in assemblys:
+                        assemblys.append(assembly)
+                    # Get all assembly samples for this assembly
+                    for assembly_sample in Sample.objects.filter(sample_type=SAMPLE_TYPE_ASSEMBLY, assembly=assembly):
+                        if not assembly_sample.submitted and assembly_sample not in samples:
+                            assembly_samples.append(assembly_sample)
+                    # Get all bins for this order           
+                    for bin in order.bin_set.all():
+                        if not bin.submitted and bin not in bins:
+                            bins.append(bin)
+                        # Get all bin samples for this bin
+                        for bin_sample in Sample.objects.filter(sample_type=SAMPLE_TYPE_BIN, bin=bin):
+                            if not bin_sample.submitted and bin_sample not in samples:
+                                bin_samples.append(bin_sample)
+                        # Get all mag samples for this bin
+                        for mag_sample in Sample.objects.filter(sample_type=SAMPLE_TYPE_MAG, bin=bin):
+                            if not mag_sample.submitted and mag_sample not in samples:
+                                mag_samples.append(mag_sample)
                         for alignment in order.alignment_set.all():
                             if not alignment.submitted and alignment not in alignments:
                                 alignments.append(alignment)
@@ -176,17 +178,17 @@ class ProjectAdmin(admin.ModelAdmin):
 
             tax_id = []
             scientific_name = []
-            for sample in samples:
+            for sample in Sample.objects.filter(sample_type=SAMPLE_TYPE_MAG, order=order):
                 tax_id = sample.getSubMGTaxId(tax_id)
                 scientific_name = sample.getSubMGScientificName(scientific_name)
-                if len(tax_id) != 1:
-                    raise Exception(f"Multiple tax ids found for sample {sample.sample_id}")
-                if len(scientific_name) != 1:
-                    raise Exception(f"Multiple scientific names found for sample {sample.sample_id}")
-                yaml.extend(sample.getSubMGTaxIdYAML(tax_id))
-                yaml.extend(sample.getSubMGScientificNameYAML(scientific_name))
-                break
-
+            
+            if len(tax_id) != 1:
+                raise Exception(f"No tax id found for samples")
+            if len(scientific_name) != 1:
+                raise Exception(f"No scientific name found for sample")
+            yaml.extend(sample.getSubMGTaxIdYAML(tax_id))
+            yaml.extend(sample.getSubMGScientificNameYAML(scientific_name))
+            
             sequencingPlatforms = []
             for order in orders:
                 sequencingPlatforms = order.getSubMGSequencingPlatforms(sequencingPlatforms)
@@ -331,22 +333,49 @@ class SampleAdmin(admin.ModelAdmin):
 
     # run_mag_pipeline.short_description = 'Run MAG pipeline'
 
+
+
     def create_test_reads(self, request, queryset):
+
+        template_number = 1
         for sample in queryset:
+
+            # uncompressed_template_1 = os.path.join(settings.LOCAL_DIR, '..', 'template_1.fastq')
+            # uncompressed_template_2 = os.path.join(settings.LOCAL_DIR, '..', 'template_2.fastq')
+            # uncompressed_paired_read_1 = os.path.join(settings.LOCAL_DIR, sample.sample_alias + '_1.fastq')
+            # uncompressed_paired_read_2 = os.path.join(settings.LOCAL_DIR, sample.sample_alias + '_2.fastq')
+
+            template_1_path = f"template_{template_number}_1.fastq.gz"
+            template_2_path = f"template_{template_number}_2.fastq.gz"
+
+            template_1 = os.path.join(settings.LOCAL_DIR, '..', template_1_path)
+            template_2 = os.path.join(settings.LOCAL_DIR, '..', template_2_path)
             paired_read_1 = os.path.join(settings.LOCAL_DIR, sample.sample_alias + '_1.fastq.gz')
             paired_read_2 = os.path.join(settings.LOCAL_DIR, sample.sample_alias + '_2.fastq.gz')
-            template_1 = os.path.join(settings.LOCAL_DIR, '..', 'template_1.fastq.gz')
-            template_2 = os.path.join(settings.LOCAL_DIR, '..', 'template_2.fastq.gz')
 
             # temporary
             shutil.copyfile(template_1, paired_read_1)
             shutil.copyfile(template_2, paired_read_2)
 
+            # shutil.copyfile(uncompressed_template_1, uncompressed_paired_read_1)
+            # shutil.copyfile(uncompressed_template_2, uncompressed_paired_read_2)            
+
+            # gzip_file(uncompressed_paired_read_1, paired_read_1)
+            # gzip_file(uncompressed_paired_read_2, paired_read_2)
+
+            paired_read_1_hash = calculate_md5(paired_read_1)
+            paired_read_2_hash = calculate_md5(paired_read_2)
+
             if os.path.isfile(paired_read_1) and os.path.isfile(paired_read_2):
-                read = Read.objects.create(sample=sample, file_1=paired_read_1, file_2=paired_read_2)
+                read = Read.objects.create(sample=sample, file_1=paired_read_1, file_2=paired_read_2, read_file_checksum_1=paired_read_1_hash, read_file_checksum_2=paired_read_2_hash)
                 read.save()
 
+            template_number += 1
+
     create_test_reads.short_description = 'Generate reads'
+
+
+
 
     def generate_xml_and_create_sample_submission(self, request, queryset):
         selected_samples = queryset
@@ -743,7 +772,7 @@ class SubMGRunAdmin(admin.ModelAdmin):
         # mags
 
 
-    start_run.short_description = 'Run MAG pipeline'
+    start_run.short_description = 'Run SubMG'
 
 admin.site.register(SubMGRun, SubMGRunAdmin)
 
