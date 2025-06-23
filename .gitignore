@@ -19,3 +19,5 @@ template_*.xml
 *.report
 read_manifest*
 webin-cli-8.1.0.jar
+project/media/*.gz
+project/media/*.fastq
