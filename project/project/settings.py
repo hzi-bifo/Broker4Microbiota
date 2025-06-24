@@ -155,6 +155,10 @@ PIXELS_PER_CHAR = 8
 BIN_CHECKLIST = "ENA_binned_metagenome"
 MAG_CHECKLIST = "GSC_MIMAGS"
 
+USE_SLURM_FOR_SUBMG = os.environ.get('USE_SLURM_FOR_SUBMG')
+
+CONDA_PATH = os.environ.get('CONDA_PATH')
+
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
