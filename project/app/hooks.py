@@ -11,7 +11,7 @@ def process_mag_result(task):
 
 
     mag_run_instance = MagRunInstance.objects.get(uuid=task.id)
-    mag_run = MagRun.objects.get(id=mag_run_instance.MagRun.id)
+    mag_run = MagRun.objects.get(id=mag_run_instance.magRun.id)
 
     if task.result.returncode != 0:
         mag_run_instance.status = 'failed'
@@ -33,8 +33,9 @@ def process_mag_result(task):
             assembly_file_path = f"{run_folder}/Assembly/MEGAHIT/MEGAHIT-{sample.sample_id}.contigs.fa.gz"
             assembly_file = Path(assembly_file_path)
             if assembly_file.is_file():
-                assembly = Assembly(read=read, file=assembly_file, order=order)
+                assembly = Assembly(file=assembly_file, order=order)
                 assembly.save()
+                assembly.read.add(read)
             else:
                 mag_run_instance.status = 'partial'
                 mag_run.status = 'partial'
@@ -42,16 +43,18 @@ def process_mag_result(task):
             bin_file_path = f"{run_folder}/GenomeBinning/MaxBin2/Maxbin2_bins/MEGAHIT-MaxBin2-{sample.sample_id}.[0-9][0-9][0-9].fa.gz"
             bin_files = glob.glob(bin_file_path)
             for bin_file in bin_files:
-                bin = Bin(read=read, file=bin_file, order=order)
+                bin = Bin(file=bin_file, order=order)
+                bin.quality_file = f"{run_folder}/GenomeBinning/QC/checkm_summary.tsv"
                 bin.save()
+                bin.read.add(read)
             if bin_files == []:
                 mag_run_instance.status = 'partial'
                 mag_run.status = 'partial'
 
-            alignment_file_path = f"{run_folder}/Assembly/MEGAHIT/{sample.sample_id}.sorted.bam"
-            alignment_files = Path(alignment_file_path)
+            alignment_file_path = f"{run_folder}/{sample.sample_id}.sorted.bam"
+            alignment_files = glob.glob(alignment_file_path)
             for alignment_file in alignment_files:
-                alignment = Alignment(read=read, file=alignment_file, order=order)
+                alignment = Alignment(file=alignment_file, order=order, assembly=assembly, read=read)
                 alignment.save()
             if alignment_files == []:
                 mag_run_instance.status = 'partial'

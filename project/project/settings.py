@@ -144,7 +144,7 @@ MAG_NEXTFLOW_COMMAND_STEM = '/net/broker/test/miniconda3/envs/broker/bin/nextflo
 MAG_PROFILE = 'singularity'
 MAG_ADDITIONAL_OPTIONS = '--skip_prokka --skip_concoct --skip_mhm2 --binqc_tool checkm' # --skip_binqc
 MAG_NEXTFLOW_EXECUTOR = 'slurm'
-MAG_NEXTFLOW_CLUSTER_OPTIONS = '--qos=long'
+MAG_NEXTFLOW_CLUSTER_OPTIONS = '--qos=broker'
 MAG_NEXTFLOW_CLUSTER_CORES = 4
 MAG_NEXTFLOW_CLUSTER_MEMORY = '64000'
 MAG_NEXTFLOW_CLUSTER_QUEUE = 'cpu'

@@ -458,6 +458,7 @@ def samples_view(request, project_id, order_id, sample_type):
 
 def test_submg(request):
     if request.user.is_authenticated:
+        # /home/gary/git/django_ngs_metadata_collection/project/media/test/1519574
         id = "48"
         returncode = 0
 

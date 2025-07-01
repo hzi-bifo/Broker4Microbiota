@@ -154,24 +154,28 @@ class ProjectAdmin(admin.ModelAdmin):
                     if not assembly.submitted and assembly not in assemblys:
                         assemblys.append(assembly)
                     # Get all assembly samples for this assembly
+
                     for assembly_sample in Sample.objects.filter(sample_type=SAMPLE_TYPE_ASSEMBLY, assembly=assembly):
-                        if not assembly_sample.submitted and assembly_sample not in samples:
-                            assembly_samples.append(assembly_sample)
+                       if not assembly_sample.submitted and assembly_sample not in samples:
+                           assembly_samples.append(assembly_sample)
+                    
                     # Get all bins for this order           
-                    for bin in order.bin_set.all():
-                        if not bin.submitted and bin not in bins:
-                            bins.append(bin)
-                        # Get all bin samples for this bin
-                        for bin_sample in Sample.objects.filter(sample_type=SAMPLE_TYPE_BIN, bin=bin):
-                            if not bin_sample.submitted and bin_sample not in samples:
-                                bin_samples.append(bin_sample)
-                        # Get all mag samples for this bin
-                        for mag_sample in Sample.objects.filter(sample_type=SAMPLE_TYPE_MAG, bin=bin):
-                            if not mag_sample.submitted and mag_sample not in samples:
-                                mag_samples.append(mag_sample)
-                        for alignment in order.alignment_set.all():
-                            if not alignment.submitted and alignment not in alignments:
-                                alignments.append(alignment)
+                for bin in order.bin_set.all():
+                    if not bin.submitted and bin not in bins:
+                        bins.append(bin)
+                    # Get all bin samples for this bin
+
+                    for bin_sample in Sample.objects.filter(sample_type=SAMPLE_TYPE_BIN, bin=bin):
+                       if not bin_sample.submitted and bin_sample not in samples:
+                           bin_samples.append(bin_sample)
+
+                # Get all mag samples for this bin
+                for mag_sample in Sample.objects.filter(sample_type=SAMPLE_TYPE_MAG, bin=bin):
+                    if not mag_sample.submitted and mag_sample not in samples:
+                        mag_samples.append(mag_sample)
+                for alignment in order.alignment_set.all():
+                    if not alignment.submitted and alignment not in alignments:
+                        alignments.append(alignment)
 
             yaml = []
             yaml.extend(project.getSubMGYAML())
@@ -204,10 +208,10 @@ class ProjectAdmin(admin.ModelAdmin):
                 yaml.extend(Assembly.getSubMGYAMLHeader())
             for assembly in assemblys:
                 yaml.extend(assembly.getSubMGYAML())
-            if len(assembly_samples) != 1:
-                raise Exception(f"Multiple assembly samples found for assembly")
+            # if len(assembly_samples) != 1:
+            #    raise Exception(f"Multiple assembly samples found for assembly")
             for assembly_sample in assembly_samples:
-                yaml.extend(assembly_sample.getSubMGYAML(SAMPLE_TYPE_ASSEMBLY))
+               yaml.extend(assembly_sample.getSubMGYAML(SAMPLE_TYPE_ASSEMBLY))
             yaml.extend(Assembly.getSubMGYAMLFooter())
 
             if bins:
@@ -223,8 +227,8 @@ class ProjectAdmin(admin.ModelAdmin):
                 yaml.extend(bin.getSubMGYAMLTaxIDYAML(tax_ids))
                 break 
             for bin_sample in bin_samples:
-                yaml.extend(bin_sample.getSubMGYAML(SAMPLE_TYPE_BIN))
-                break
+               yaml.extend(bin_sample.getSubMGYAML(SAMPLE_TYPE_BIN))
+               break
             yaml.extend(Bin.getSubMGYAMLFooter())
 
             if mag_samples:
