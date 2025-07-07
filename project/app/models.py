@@ -415,6 +415,15 @@ class Order(models.Model):
             
         return True  # Metadata setup is completed
 
+    def is_order_created(self):
+        # Always True for existing orders - this step is completed when order exists
+        return True
+    
+    def is_waiting_for_facility(self):
+        # Return True if order is in facility-managed states
+        facility_states = ['ready_for_sequencing', 'sequencing_in_progress', 'sequencing_completed', 'data_processing', 'data_delivered']
+        return self.status in facility_states
+
     def show_samples(self):
         # metadata exists
         sample_set = self.sampleset_set.filter(sample_type=SAMPLE_TYPE_NORMAL).first()

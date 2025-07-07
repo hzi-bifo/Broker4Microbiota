@@ -83,19 +83,27 @@ Order List
             <!-- Workflow Progress -->
             <div class="workflow-progress">
               <div class="progress-steps">
-                <!-- Step 1: Metadata -->
-                <div class="progress-step {% if not order.show_metadata %}active{% else %}completed{% endif %}">
+                <!-- Step 1: Create Order -->
+                <div class="progress-step completed">
                   <div class="step-icon">
-                    {% if not order.show_metadata %}
-                      <i class="fas fa-clipboard-list"></i>
-                    {% else %}
-                      <i class="fas fa-check-circle"></i>
-                    {% endif %}
+                    <i class="fas fa-check-circle"></i>
                   </div>
-                  <div class="step-label">Metadata Setup</div>
+                  <div class="step-label">Create Order</div>
                 </div>
                 
-                <!-- Step 2: Samples -->
+                <!-- Step 2: Metadata Setup -->
+                <div class="progress-step {% if not order.show_metadata %}active{% else %}completed{% endif %}">
+                  <div class="step-icon">
+                    {% if order.show_metadata %}
+                      <i class="fas fa-check-circle"></i>
+                    {% else %}
+                      <i class="fas fa-clipboard-list"></i>
+                    {% endif %}
+                  </div>
+                  <div class="step-label">Configure Metadata</div>
+                </div>
+                
+                <!-- Step 3: Sample Data -->
                 <div class="progress-step {% if order.show_metadata and not order.show_samples %}active{% elif order.show_samples %}completed{% endif %}">
                   <div class="step-icon">
                     {% if order.show_samples %}
@@ -106,25 +114,10 @@ Order List
                       <i class="fas fa-dna disabled"></i>
                     {% endif %}
                   </div>
-                  <div class="step-label">Sample Data</div>
+                  <div class="step-label">Add Samples</div>
                 </div>
                 
-                <!-- Step 3: Analysis (Optional) -->
-                <div class="progress-step {% if order.show_samples and order.show_assembly %}completed{% elif order.show_samples %}optional{% endif %}">
-                  <div class="step-icon">
-                    {% if order.show_assembly %}
-                      <i class="fas fa-check-circle"></i>
-                    {% elif order.show_samples %}
-                      <i class="fas fa-microscope"></i>
-                    {% else %}
-                      <i class="fas fa-microscope disabled"></i>
-                    {% endif %}
-                  </div>
-                  <div class="step-label">Analysis</div>
-                  <div class="step-optional">(Optional)</div>
-                </div>
-                
-                <!-- Step 4: Ready for Sequencing -->
+                <!-- Step 4: Review & Submit -->
                 <div class="progress-step {% if order.show_samples and order.status == 'draft' %}active{% elif order.status != 'draft' %}completed{% endif %}">
                   <div class="step-icon">
                     {% if order.status != 'draft' %}
@@ -135,8 +128,19 @@ Order List
                       <i class="fas fa-rocket disabled"></i>
                     {% endif %}
                   </div>
-                  <div class="step-label">Submit</div>
+                  <div class="step-label">Review & Submit</div>
                 </div>
+                
+                <!-- Step 5: Sequencing (Waiting/Admin) -->
+                {% if order.is_waiting_for_facility %}
+                <div class="progress-step active">
+                  <div class="step-icon">
+                    <i class="fas fa-clock"></i>
+                  </div>
+                  <div class="step-label">Sequencing</div>
+                  <div class="step-optional">(In Progress)</div>
+                </div>
+                {% endif %}
               </div>
             </div>
 
@@ -146,7 +150,7 @@ Order List
                 <div class="action-guidance">
                   <h4 class="action-title">
                     <i class="fas fa-clipboard-list"></i>
-                    Next Step: Configure Metadata Checklists
+                    Step 2: Configure Metadata Checklists
                   </h4>
                   <p class="action-description">
                     Define MIxS (Minimum Information about any Sequence) standards for your samples. This determines what metadata fields you'll need to fill out.
@@ -163,7 +167,7 @@ Order List
                 <div class="action-guidance">
                   <h4 class="action-title">
                     <i class="fas fa-dna"></i>
-                    Next Step: Add Sample Data
+                    Step 3: Add Sample Data
                   </h4>
                   <p class="action-description">
                     Enter detailed information about your samples following the MIxS standards you've configured.
@@ -180,10 +184,10 @@ Order List
                 <div class="action-guidance">
                   <h4 class="action-title">
                     <i class="fas fa-rocket"></i>
-                    Ready to Submit for Sequencing
+                    Step 4: Review & Submit for Sequencing
                   </h4>
                   <p class="action-description">
-                    Your order is complete! You can optionally add analysis samples (Assembly, Binning, MAG) or submit for sequencing now.
+                    Your order is complete! Review your order details and submit for sequencing. You can optionally add analysis samples (Assembly, Binning, MAG) before submitting.
                   </p>
                   <div class="buttons">
                     {% if order.can_advance_status %}
@@ -197,24 +201,40 @@ Order List
                     {% endif %}
                   </div>
                 </div>
-              {% else %}
+              {% elif order.is_waiting_for_facility %}
                 <div class="action-guidance">
                   <h4 class="action-title">
                     <i class="fas fa-clock"></i>
-                    Order in Progress
+                    Step 5: Sequencing in Progress
                   </h4>
                   <p class="action-description">
-                    Your order has been submitted and is being processed by the sequencing center.
+                    Your order has been submitted and is being processed by the sequencing facility. You will be notified when sequencing is complete and data is available.
                   </p>
-                  {% if order.can_advance_status %}
+                  <div class="notification is-info is-light">
+                    <p><strong>Current Status:</strong> {{ order.get_status_display }}</p>
+                    {% if order.status_notes %}
+                      <p><strong>Notes:</strong> {{ order.status_notes }}</p>
+                    {% endif %}
+                  </div>
+                  {% if order.can_advance_status and user.is_staff %}
                     <button class="button is-primary is-medium" 
                             onclick="advanceStatus({{ order.id }}, '{{ order.get_next_status }}')">
                       <span class="icon">
                         <i class="fas fa-arrow-right"></i>
                       </span>
-                      <span>Advance Status</span>
+                      <span>Advance Status (Admin)</span>
                     </button>
                   {% endif %}
+                </div>
+              {% else %}
+                <div class="action-guidance">
+                  <h4 class="action-title">
+                    <i class="fas fa-check-circle"></i>
+                    Order Completed
+                  </h4>
+                  <p class="action-description">
+                    Your sequencing order has been completed successfully!
+                  </p>
                 </div>
               {% endif %}
             </div>
