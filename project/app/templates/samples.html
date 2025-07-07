@@ -1,27 +1,220 @@
 {% extends 'base.html' %}
 
 {% block title %}
-Add and update Samples
+{% if samples_data %}Update Samples{% else %}Add Samples{% endif %}
 {% endblock title %}
 
 {% block content %}
-<section class="section">
-  <div class="container">
-    <h2 class="title has-text-centered">Update Samples</h2>
-
-    <div class="has-text-centered mb-4">
-      <button id="add" class="button is-primary" onclick="addNewRow()">Add New Row</button>
+<div class="sample-page-wrapper">
+  <!-- Main Content Area -->
+  <div class="sample-main-content">
+    <section class="section">
+      <div class="container-fluid">
+        <!-- Order Context Header -->
+        <div class="order-context-header">
+      <div class="level">
+        <div class="level-left">
+          <div class="level-item">
+            <div>
+              <h1 class="title is-4">
+                <i class="fas fa-dna has-text-primary"></i>
+                {% if samples_data %}Update Samples{% else %}Add Samples{% endif %}
+              </h1>
+              <p class="subtitle is-6">
+                Order #{{ order.id }} - {{ order.get_selected_checklist|default:"No checklist selected" }}
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="level-right">
+          <div class="level-item">
+            <button class="button is-light is-hidden-desktop" onclick="toggleSidebar()">
+              <span class="icon">
+                <i class="fas fa-info-circle"></i>
+              </span>
+              <span>Field Info</span>
+            </button>
+          </div>
+          <div class="level-item">
+            <button class="button is-light" onclick="toggleFullscreen()">
+              <span class="icon">
+                <i class="fas fa-expand"></i>
+              </span>
+              <span>Fullscreen</span>
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
 
-    <div id="handsontable-container" class="hot"></div>
 
-    <div class="has-text-centered mt-4">
-      <button id="save" class="button is-success" onclick="validateSampleData()">Save Samples</button>
-      <button id="cancel" class="button is-link" onclick="redirectToOrders()">Back to Order Overview</button>
+    <!-- Action Buttons -->
+    <div class="sample-actions mb-4">
+      <div class="level">
+        <div class="level-left">
+          <div class="level-item">
+            <button id="add" class="button is-primary" onclick="addNewRow()">
+              <span class="icon">
+                <i class="fas fa-plus"></i>
+              </span>
+              <span>Add Sample</span>
+            </button>
+          </div>
+          <div class="level-item">
+            <button class="button is-light" onclick="addMultipleRows()">
+              <span class="icon">
+                <i class="fas fa-layer-group"></i>
+              </span>
+              <span>Add Multiple Samples</span>
+            </button>
+          </div>
+          <div class="level-item">
+            <div class="dropdown is-hoverable">
+              <div class="dropdown-trigger">
+                <button class="button is-light" aria-haspopup="true" aria-controls="dropdown-menu">
+                  <span class="icon">
+                    <i class="fas fa-ellipsis-h"></i>
+                  </span>
+                  <span>More Actions</span>
+                  <span class="icon is-small">
+                    <i class="fas fa-angle-down" aria-hidden="true"></i>
+                  </span>
+                </button>
+              </div>
+              <div class="dropdown-menu" id="dropdown-menu" role="menu">
+                <div class="dropdown-content">
+                  <a class="dropdown-item" onclick="deleteSelectedRows()">
+                    <span class="icon is-small">
+                      <i class="fas fa-trash"></i>
+                    </span>
+                    <span>Delete Selected</span>
+                  </a>
+                  <a class="dropdown-item" onclick="duplicateSelectedRow()">
+                    <span class="icon is-small">
+                      <i class="fas fa-copy"></i>
+                    </span>
+                    <span>Duplicate Selected</span>
+                  </a>
+                  <hr class="dropdown-divider">
+                  <a class="dropdown-item" onclick="exportData()">
+                    <span class="icon is-small">
+                      <i class="fas fa-download"></i>
+                    </span>
+                    <span>Export as CSV</span>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="level-right">
+          <div class="level-item">
+            <p class="sample-count">
+              <strong>{{ samples_data|length }}</strong> sample{{ samples_data|length|pluralize }} loaded
+            </p>
+          </div>
+        </div>
+      </div>
     </div>
 
+        <!-- Table Container -->
+        <div class="table-container-wrapper">
+          <div id="handsontable-container" class="hot"></div>
+        </div>
+
+        <!-- Save Actions -->
+        <div class="save-actions mt-5">
+          <div class="level">
+            <div class="level-left">
+              <div class="level-item">
+                <button id="cancel" class="button is-light is-medium" onclick="redirectToOrders()">
+                  <span class="icon">
+                    <i class="fas fa-arrow-left"></i>
+                  </span>
+                  <span>Back to Order Overview</span>
+                </button>
+              </div>
+            </div>
+            <div class="level-right">
+              <div class="level-item">
+                <button id="save" class="button is-success is-medium" onclick="validateSampleData()" disabled>
+                  <span class="icon">
+                    <i class="fas fa-save"></i>
+                  </span>
+                  <span>Save Samples</span>
+                </button>
+              </div>
+              <div class="level-item">
+                <button class="button is-primary is-medium" onclick="saveAndContinue()" disabled>
+                  <span class="icon">
+                    <i class="fas fa-save"></i>
+                  </span>
+                  <span>Save & Continue</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
   </div>
-</section>
+  
+  <!-- Field Info Sidebar (Always Visible) -->
+  <div id="field-info-sidebar" class="field-info-sidebar is-active">
+    <div class="field-info-panel">
+      <div class="panel-header">
+        <h3 class="title is-5">
+          <i class="fas fa-info-circle"></i>
+          Field Information
+        </h3>
+        <button class="delete is-medium is-hidden-desktop" onclick="toggleSidebar()"></button>
+      </div>
+      
+      <div class="panel-content">
+        <!-- How to Use Section -->
+        <div class="help-section-sidebar">
+          <h4 class="title is-6 has-text-weight-semibold">
+            <i class="fas fa-question-circle"></i>
+            How to use this interface
+          </h4>
+          <div class="content is-small">
+            <ul>
+              <li><strong>Each row = One sample</strong></li>
+              <li><strong>Column colors:</strong>
+                <ul>
+                  <li><span class="column-indicator facility-required"></span> <strong>Blue</strong> - Facility required</li>
+                  <li><span class="column-indicator checklist-field"></span> <strong>Green</strong> - {{ order.get_selected_checklist|default:"Checklist" }} fields</li>
+                  <li><span class="column-indicator optional-field"></span> <strong>Orange</strong> - Optional fields</li>
+                </ul>
+              </li>
+              <li><strong>Navigation:</strong>
+                <ul>
+                  <li><kbd>Tab</kbd> - Next cell</li>
+                  <li><kbd>Enter</kbd> - Move down</li>
+                  <li><kbd>Ctrl+S</kbd> - Save</li>
+                  <li><kbd>Ctrl+N</kbd> - New row</li>
+                </ul>
+              </li>
+              <li><strong>Click any cell</strong> to see its field details below</li>
+            </ul>
+          </div>
+        </div>
+        
+        <hr class="my-3">
+        
+        <!-- Field Details Section -->
+        <div id="field-info-content">
+          <div class="has-text-centered has-text-grey-light" style="padding: 2rem;">
+            <i class="fas fa-mouse-pointer fa-2x mb-2"></i>
+            <p class="is-size-7">Click on any cell to see detailed field information</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+</div>
 
 <!--
 Comment out for 6.2.2 (MIT)
@@ -36,6 +229,33 @@ Comment out for 6.2.2 (MIT)
   var unsaved = false;
   var first_failing_cell = null;
   document.getElementById('save').disabled = true;
+  document.querySelector('.button.is-primary.is-medium[onclick="saveAndContinue()"]').disabled = true;
+
+  // Field metadata from server
+  var fieldMetadata = {{ field_metadata | safe }};
+  
+  // Define column categories for color coding
+  var facilityColumns = ['sample_id', 'tax_id', 'scientific_name', 'sample_alias', 'sample_title', 'sample_description'];
+  var checklistColumns = [];
+  var optionalColumns = [];
+
+  // Parse nested headers to categorize columns
+  var nestedHeaders = {{ nested_headers | safe }};
+  if (nestedHeaders && nestedHeaders.length > 0) {
+    var checklistHeaders = nestedHeaders[0];
+    for (var i = 2; i < checklistHeaders.length; i++) {
+      if (checklistHeaders[i].label && checklistHeaders[i].label !== 'sample') {
+        // This is a checklist section
+        var startCol = 0;
+        for (var j = 0; j < i; j++) {
+          startCol += checklistHeaders[j].colspan || 1;
+        }
+        for (var k = 0; k < (checklistHeaders[i].colspan || 1); k++) {
+          checklistColumns.push(startCol + k);
+        }
+      }
+    }
+  }
 
   var hotElement = document.querySelector('#handsontable-container');
   var hotSettings = {
@@ -43,19 +263,48 @@ Comment out for 6.2.2 (MIT)
     columns: {{ samples_headers | safe }},
     hiddenColumns: {
       columns: [],
-      indicators: false  // Show a small indicator where columns are hidden
+      indicators: false
     },
     minSpareRows: 0,
     rowHeaders: true,
-    // colWidths: [75,25, 100, 100],
-    // colWidths: {{headers_max_size | safe}} * 4,
     colWidths: {{ headers_size | safe }},
     contextMenu: true,
     width: '100%',
-    stretchH: 'all', // Optionally stretch the columns to fit the width
+    height: 600, // Increased default height
+    stretchH: 'all',
     licenseKey: 'non-commercial-and-evaluation',
-    nestedHeaders:
-      {{ nested_headers | safe }},
+    nestedHeaders: {{ nested_headers | safe }},
+    fixedColumnsLeft: 3, // Fix first 3 columns including delete and status
+    manualColumnFreeze: true,
+    afterGetColHeader: function(col, TH) {
+      // Color code the headers based on column type
+      if (col < 2) return; // Skip delete and status columns
+      
+      var fieldIndex = col - 2; // Adjust for the first two columns
+      var columnName = this.getColHeader(col, -1); // Get the bottom header
+      
+      if (facilityColumns.includes(columnName) || fieldIndex < 6) {
+        TH.classList.add('facility-column-header');
+      } else if (checklistColumns.includes(col)) {
+        TH.classList.add('checklist-column-header');
+      } else {
+        TH.classList.add('optional-column-header');
+      }
+    },
+    cells: function(row, col) {
+      var cellProperties = {};
+      
+      // Make sample_id read-only after initial creation
+      if (col === 2) { // sample_id column (adjusted for delete and status columns)
+        var data = this.instance.getDataAtRow(row);
+        if (data && data[2] && data[2].length > 0) {
+          cellProperties.readOnly = true;
+          cellProperties.className = 'readonly-cell';
+        }
+      }
+      
+      return cellProperties;
+    },
     afterChange: (changes) => {
       changes?.forEach(([row, prop, oldValue, newValue]) => {
       if (prop != "status") {
@@ -73,11 +322,239 @@ Comment out for 6.2.2 (MIT)
         hot.setDataAtCell(row, 1, newCellValue);
         unsaved = true;
         document.getElementById('save').disabled = false;
+        document.querySelector('.button.is-primary.is-medium[onclick="saveAndContinue()"]').disabled = false;
+        updateSampleCount();
       }  
       });
+    },
+    afterRemoveRow: function() {
+      updateSampleCount();
+    },
+    afterCreateRow: function() {
+      updateSampleCount();
     }
   };
   var hot = new Handsontable(hotElement, hotSettings);
+  
+  // Sidebar is always visible, adjust main content
+  document.querySelector('.sample-main-content').classList.add('sidebar-open');
+  
+  // Track currently selected column
+  var currentSelectedColumn = null;
+  
+  // Add click handler to show field info
+  hot.addHook('afterSelection', function(row, col, row2, col2) {
+    if (col >= 2) { // Skip delete and status columns
+      var columnName = hot.getColHeader(col, -1);
+      showFieldInfo(columnName);
+      
+      // Highlight the selected column header
+      if (currentSelectedColumn !== null) {
+        var prevHeader = hot.getCell(-1, currentSelectedColumn);
+        if (prevHeader) {
+          prevHeader.classList.remove('selected-column-header');
+        }
+      }
+      
+      currentSelectedColumn = col;
+      var header = hot.getCell(-1, col);
+      if (header) {
+        header.classList.add('selected-column-header');
+      }
+    }
+  });
+  
+  // Function to show field information in sidebar
+  function showFieldInfo(fieldName) {
+    var fieldInfo = fieldMetadata[fieldName];
+    if (!fieldInfo) {
+      // Try to find by label if not found by name
+      for (var key in fieldMetadata) {
+        if (fieldMetadata[key].label === fieldName) {
+          fieldInfo = fieldMetadata[key];
+          break;
+        }
+      }
+    }
+    
+    if (fieldInfo) {
+      var sidebar = document.getElementById('field-info-sidebar');
+      var content = document.getElementById('field-info-content');
+      
+      // Build the field info HTML
+      var html = '<div class="field-info">';
+      
+      // Field name and label
+      html += '<div class="field-header">';
+      html += '<h4 class="title is-6">' + (fieldInfo.label || fieldName) + '</h4>';
+      if (fieldInfo.name && fieldInfo.name !== fieldInfo.label) {
+        html += '<p class="subtitle is-7 has-text-grey">Field: ' + fieldInfo.name + '</p>';
+      }
+      html += '</div>';
+      
+      // Required/Optional badge
+      html += '<div class="field-badges mb-3">';
+      if (fieldInfo.required) {
+        html += '<span class="tag is-danger is-light"><i class="fas fa-asterisk mr-1"></i>Required</span>';
+      } else {
+        html += '<span class="tag is-info is-light"><i class="fas fa-circle mr-1"></i>Optional</span>';
+      }
+      
+      if (fieldInfo.checklist) {
+        html += ' <span class="tag is-success is-light"><i class="fas fa-clipboard-list mr-1"></i>' + fieldInfo.checklist + '</span>';
+      }
+      
+      // Add column type indicator
+      if (facilityColumns.includes(fieldInfo.name)) {
+        html += ' <span class="tag is-primary is-light"><i class="fas fa-building mr-1"></i>Facility Field</span>';
+      }
+      html += '</div>';
+      
+      // Help text
+      if (fieldInfo.help_text) {
+        html += '<div class="field-section">';
+        html += '<h5 class="title is-7 has-text-weight-semibold">Description</h5>';
+        html += '<p class="content is-small">' + fieldInfo.help_text + '</p>';
+        html += '</div>';
+      }
+      
+      // Allowed values
+      if (fieldInfo.choices && fieldInfo.choices.length > 0) {
+        html += '<div class="field-section">';
+        html += '<h5 class="title is-7 has-text-weight-semibold">Allowed Values (' + fieldInfo.choices.length + ')</h5>';
+        html += '<div class="allowed-values">';
+        
+        if (fieldInfo.choices.length <= 10) {
+          // Show all values if 10 or fewer
+          fieldInfo.choices.forEach(function(choice) {
+            html += '<div class="allowed-value">';
+            html += '<code>' + choice.value + '</code>';
+            if (choice.label && choice.label !== choice.value) {
+              html += ' <span class="has-text-grey">(' + choice.label + ')</span>';
+            }
+            html += '</div>';
+          });
+        } else {
+          // Show first 5 values with search for longer lists
+          html += '<input class="input is-small mb-2" type="text" placeholder="Search values..." onkeyup="filterAllowedValues(this, \'' + fieldInfo.name + '\')"></input>';
+          html += '<div class="allowed-values-list" id="values-' + fieldInfo.name + '">';
+          fieldInfo.choices.slice(0, 5).forEach(function(choice) {
+            html += '<div class="allowed-value">';
+            html += '<code>' + choice.value + '</code>';
+            if (choice.label && choice.label !== choice.value) {
+              html += ' <span class="has-text-grey">(' + choice.label + ')</span>';
+            }
+            html += '</div>';
+          });
+          html += '<div class="has-text-grey-light is-size-7 mt-2">...and ' + (fieldInfo.choices.length - 5) + ' more values</div>';
+          html += '</div>';
+        }
+        html += '</div>';
+        html += '</div>';
+      }
+      
+      // Units
+      if (fieldInfo.units && fieldInfo.units.length > 0) {
+        html += '<div class="field-section">';
+        html += '<h5 class="title is-7 has-text-weight-semibold">Measurement Units</h5>';
+        html += '<div class="tags">';
+        fieldInfo.units.forEach(function(unit) {
+          html += '<span class="tag is-light">' + unit.label + '</span>';
+        });
+        html += '</div>';
+        html += '</div>';
+      }
+      
+      // Validation pattern
+      if (fieldInfo.validator_pattern) {
+        html += '<div class="field-section">';
+        html += '<h5 class="title is-7 has-text-weight-semibold">Validation Pattern</h5>';
+        html += '<div class="notification is-light is-warning">';
+        html += '<p class="is-size-7 mb-2">This field must match the following pattern:</p>';
+        html += '<code class="is-size-7">' + escapeHtml(fieldInfo.validator_pattern) + '</code>';
+        html += '</div>';
+        html += '</div>';
+      }
+      
+      // Max length
+      if (fieldInfo.max_length) {
+        html += '<div class="field-section">';
+        html += '<p class="is-size-7"><strong>Max Length:</strong> ' + fieldInfo.max_length + ' characters</p>';
+        html += '</div>';
+      }
+      
+      // Add quick tips for common validation patterns
+      if (fieldInfo.validator_pattern) {
+        html += '<div class="field-section">';
+        html += '<h5 class="title is-7 has-text-weight-semibold">Format Examples</h5>';
+        html += '<div class="content is-small">';
+        
+        // Provide examples based on common patterns
+        if (fieldInfo.validator_pattern.includes('[0-9]')) {
+          html += '<p><i class="fas fa-check has-text-success"></i> Numbers: 123, 45.6, 1.23e4</p>';
+        }
+        if (fieldInfo.validator_pattern.includes('DD')) {
+          html += '<p><i class="fas fa-check has-text-success"></i> Decimal degrees: -90.12345</p>';
+        }
+        if (fieldInfo.name.includes('date')) {
+          html += '<p><i class="fas fa-check has-text-success"></i> Date format: YYYY-MM-DD</p>';
+        }
+        if (fieldInfo.validator_pattern.includes('[Ee][+-]')) {
+          html += '<p><i class="fas fa-check has-text-success"></i> Scientific notation allowed</p>';
+        }
+        
+        html += '</div>';
+        html += '</div>';
+      }
+      
+      html += '</div>';
+      
+      content.innerHTML = html;
+      // Sidebar is always visible, no need to toggle
+      
+      // Store full choices for search functionality
+      if (fieldInfo.choices && fieldInfo.choices.length > 10) {
+        window['fieldChoices_' + fieldInfo.name] = fieldInfo.choices;
+      }
+    }
+  }
+  
+  function filterAllowedValues(input, fieldName) {
+    var searchTerm = input.value.toLowerCase();
+    var choices = window['fieldChoices_' + fieldName];
+    var container = document.getElementById('values-' + fieldName);
+    
+    if (!choices) return;
+    
+    var filtered = choices.filter(function(choice) {
+      return choice.value.toLowerCase().includes(searchTerm) || 
+             (choice.label && choice.label.toLowerCase().includes(searchTerm));
+    });
+    
+    var html = '';
+    filtered.slice(0, 20).forEach(function(choice) {
+      html += '<div class="allowed-value">';
+      html += '<code>' + choice.value + '</code>';
+      if (choice.label && choice.label !== choice.value) {
+        html += ' <span class="has-text-grey">(' + choice.label + ')</span>';
+      }
+      html += '</div>';
+    });
+    
+    if (filtered.length > 20) {
+      html += '<div class="has-text-grey-light is-size-7 mt-2">Showing 20 of ' + filtered.length + ' matches</div>';
+    } else if (filtered.length === 0) {
+      html += '<div class="has-text-grey-light is-size-7">No matches found</div>';
+    }
+    
+    container.innerHTML = html;
+  }
+  
+  // Toggle sidebar for mobile
+  function toggleSidebar() {
+    var sidebar = document.getElementById('field-info-sidebar');
+    sidebar.classList.toggle('is-active');
+  }
 
   hot.addHook('afterValidate', function(isValid, value, row, prop, source) {
     if (!isValid) {
@@ -102,6 +579,111 @@ Comment out for 6.2.2 (MIT)
     hot.setDataAtCell(rowIndex, 1, " x");
     unsaved = true;
     document.getElementById('save').disabled = false;
+    document.querySelector('.button.is-primary.is-medium[onclick="saveAndContinue()"]').disabled = false;
+  }
+
+  function addMultipleRows() {
+    var count = prompt("How many samples would you like to add?", "5");
+    if (count && !isNaN(count) && count > 0) {
+      count = parseInt(count);
+      hot.batch(() => {
+        for (var i = 0; i < count; i++) {
+          var rowIndex = hot.countRows();
+          hot.alter('insert_row_above', rowIndex, 1);
+          hot.setDataAtCell(rowIndex, 1, " x");
+        }
+      });
+      unsaved = true;
+      document.getElementById('save').disabled = false;
+      document.querySelector('.button.is-primary.is-medium[onclick="saveAndContinue()"]').disabled = false;
+    }
+  }
+
+  function deleteSelectedRows() {
+    var selected = hot.getSelected();
+    if (selected && selected.length > 0) {
+      if (confirm('Are you sure you want to delete the selected rows?')) {
+        var rowsToDelete = [];
+        for (var i = 0; i < selected.length; i++) {
+          for (var row = selected[i][0]; row <= selected[i][2]; row++) {
+            if (rowsToDelete.indexOf(row) === -1) {
+              rowsToDelete.push(row);
+            }
+          }
+        }
+        rowsToDelete.sort((a, b) => b - a); // Sort descending
+        rowsToDelete.forEach(row => {
+          hot.alter('remove_row', row);
+        });
+        unsaved = true;
+        document.getElementById('save').disabled = false;
+        document.querySelector('.button.is-primary.is-medium[onclick="saveAndContinue()"]').disabled = false;
+      }
+    } else {
+      alert('Please select rows to delete');
+    }
+  }
+
+  function duplicateSelectedRow() {
+    var selected = hot.getSelected();
+    if (selected && selected.length > 0) {
+      var sourceRow = selected[0][0];
+      var rowData = hot.getDataAtRow(sourceRow).slice();
+      rowData[2] = ''; // Clear sample_id for the duplicate
+      var newRowIndex = sourceRow + 1;
+      hot.alter('insert_row_above', newRowIndex, 1);
+      hot.populateFromArray(newRowIndex, 0, [rowData]);
+      hot.setDataAtCell(newRowIndex, 1, " x");
+      unsaved = true;
+      document.getElementById('save').disabled = false;
+      document.querySelector('.button.is-primary.is-medium[onclick="saveAndContinue()"]').disabled = false;
+    } else {
+      alert('Please select a row to duplicate');
+    }
+  }
+
+  function exportData() {
+    var data = hot.getData();
+    var headers = [];
+    for (var i = 0; i < hot.countCols(); i++) {
+      headers.push(hot.getColHeader(i));
+    }
+    
+    var csv = headers.join(',') + '\n';
+    data.forEach(row => {
+      csv += row.map(cell => `"${cell || ''}"`).join(',') + '\n';
+    });
+    
+    var blob = new Blob([csv], { type: 'text/csv' });
+    var url = window.URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = 'samples_order_{{ order.id }}.csv';
+    a.click();
+    window.URL.revokeObjectURL(url);
+  }
+
+  function toggleFullscreen() {
+    var wrapper = document.querySelector('.sample-page-wrapper');
+    if (!document.fullscreenElement) {
+      wrapper.requestFullscreen().then(() => {
+        hot.updateSettings({ height: window.innerHeight - 200 });
+        document.querySelector('.fa-expand').classList.replace('fa-expand', 'fa-compress');
+      });
+    } else {
+      document.exitFullscreen().then(() => {
+        hot.updateSettings({ height: 600 });
+        document.querySelector('.fa-compress').classList.replace('fa-compress', 'fa-expand');
+      });
+    }
+  }
+
+  function updateSampleCount() {
+    var count = hot.countRows();
+    var countElement = document.querySelector('.sample-count');
+    if (countElement) {
+      countElement.innerHTML = '<strong>' + count + '</strong> sample' + (count !== 1 ? 's' : '') + ' loaded';
+    }
   }
 
   function validateSampleData() {
@@ -116,7 +698,7 @@ Comment out for 6.2.2 (MIT)
     })
   }
 
-  function saveSampleData() {
+  function saveSampleData(redirectAfter = false) {
 
     var sampleData = hot.getData().map(function (row, index) {
       return {
@@ -126,15 +708,25 @@ Comment out for 6.2.2 (MIT)
 
     unsaved = false;
     document.getElementById('save').disabled = true;
+    document.querySelector('.button.is-primary.is-medium[onclick="saveAndContinue()"]').disabled = true;
 
     hot.batch(() => {
       for (let rowIndex = 0; rowIndex < hot.countRows(); rowIndex++) {
-        protect = hot.getDataAtCell(rowIndex, 1).substring(0,1);
-        hot.setDataAtCell(rowIndex, 1, protect + " ");
+        var cellValue = hot.getDataAtCell(rowIndex, 1);
+        if (cellValue) {
+          protect = cellValue.substring(0,1);
+          hot.setDataAtCell(rowIndex, 1, protect + " ");
+        }
       }
     });
 
     console.log('Sending sample data:', sampleData);
+
+    // Show loading state
+    var saveButton = document.getElementById('save');
+    var originalText = saveButton.innerHTML;
+    saveButton.innerHTML = '<span class="icon"><i class="fas fa-spinner fa-spin"></i></span><span>Saving...</span>';
+    saveButton.classList.add('is-loading');
 
     fetch("{% url 'samples_view' project_id=project_id order_id=order.id sample_type=sample_type %}", {
       method: 'POST',
@@ -146,10 +738,48 @@ Comment out for 6.2.2 (MIT)
     })
     .then(function (response) {
       console.log('Sample data saved successfully');
+      saveButton.innerHTML = originalText;
+      saveButton.classList.remove('is-loading');
+      
+      // Show success notification
+      var notification = document.createElement('div');
+      notification.className = 'notification is-success is-light';
+      notification.innerHTML = '<button class="delete"></button>Samples saved successfully!';
+      document.querySelector('.container').insertBefore(notification, document.querySelector('.order-context-header'));
+      
+      notification.querySelector('.delete').addEventListener('click', function() {
+        notification.remove();
+      });
+      
+      setTimeout(() => {
+        notification.remove();
+      }, 3000);
+      
+      if (redirectAfter) {
+        setTimeout(() => {
+          window.location.href = "{% url 'order_list' project_id=project_id %}";
+        }, 1000);
+      }
     })
     .catch(function (error) {
       console.error('Error saving sample data:', error);
+      saveButton.innerHTML = originalText;
+      saveButton.classList.remove('is-loading');
+      
+      // Show error notification
+      var notification = document.createElement('div');
+      notification.className = 'notification is-danger is-light';
+      notification.innerHTML = '<button class="delete"></button>Error saving samples. Please try again.';
+      document.querySelector('.container').insertBefore(notification, document.querySelector('.order-context-header'));
+      
+      notification.querySelector('.delete').addEventListener('click', function() {
+        notification.remove();
+      });
     });
+  }
+
+  function saveAndContinue() {
+    saveSampleData(true);
   }
 
   function redirectToOrders() {
@@ -186,9 +816,11 @@ Comment out for 6.2.2 (MIT)
     return td;
   }
 
-  // Utility function to generate a unique ID
+  // Utility function to generate a unique sample ID
   function generateUniqueId() {
-    return 'id-' + Math.random().toString(36).substr(2, 16);
+    var timestamp = new Date().getTime();
+    var random = Math.random().toString(36).substr(2, 5).toUpperCase();
+    return 'S-' + timestamp + '-' + random;
   }
 
   // Hook to handle new rows, adding a unique ID to each
@@ -198,7 +830,84 @@ Comment out for 6.2.2 (MIT)
       // Ensure each new row gets a unique ID
       hot.setDataAtRowProp(row, 'sample_id', generateUniqueId());
     }
-  }); 
+  });
+
+  // Keyboard shortcuts
+  document.addEventListener('keydown', function(e) {
+    // Ctrl/Cmd + S to save
+    if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+      e.preventDefault();
+      if (!document.getElementById('save').disabled) {
+        validateSampleData();
+      }
+    }
+    // Ctrl/Cmd + N to add new row
+    if ((e.ctrlKey || e.metaKey) && e.key === 'n') {
+      e.preventDefault();
+      addNewRow();
+    }
+    // F11 for fullscreen
+    if (e.key === 'F11') {
+      e.preventDefault();
+      toggleFullscreen();
+    }
+  });
+
+  // Initialize sample count on page load
+  updateSampleCount();
+  
+  // Helper function to escape HTML
+  function escapeHtml(text) {
+    var map = {
+      '&': '&amp;',
+      '<': '&lt;',
+      '>': '&gt;',
+      '"': '&quot;',
+      "'": '&#039;'
+    };
+    return text.replace(/[&<>"']/g, function(m) { return map[m]; });
+  }
+  
+  // Handle window resize
+  window.addEventListener('resize', function() {
+    if (window.innerWidth > 1024) {
+      // Remove overlay on larger screens
+      document.querySelector('.sidebar-overlay').classList.remove('is-active');
+    }
+  });
+  
+  // Check screen size on load and resize
+  function checkScreenSize() {
+    var sidebar = document.getElementById('field-info-sidebar');
+    var mainContent = document.querySelector('.sample-main-content');
+    
+    if (window.innerWidth > 1200) {
+      // Desktop: sidebar always visible
+      sidebar.classList.add('is-active');
+      mainContent.classList.add('sidebar-open');
+    } else {
+      // Mobile/tablet: sidebar hidden by default
+      sidebar.classList.remove('is-active');
+      mainContent.classList.remove('sidebar-open');
+    }
+  }
+  
+  // Initialize on load
+  checkScreenSize();
+  
+  // Handle resize
+  window.addEventListener('resize', checkScreenSize);
+
+  // Add visual indicators for readonly cells
+  hot.updateSettings({
+    afterRenderer: function(TD, row, col, prop, value, cellProperties) {
+      if (cellProperties.readOnly) {
+        TD.style.background = '#f5f5f5';
+        TD.style.color = '#7a7a7a';
+        TD.title = 'This field is read-only';
+      }
+    }
+  });
 
 </script>
 

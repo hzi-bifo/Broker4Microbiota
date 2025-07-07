@@ -394,6 +394,37 @@ def samples_view(request, project_id, order_id, sample_type):
 
         headers_max_size = sample.getHeadersMaxSize(headers_max_size, inclusions, exclusions)
 
+        # Build field metadata for the UI
+        field_metadata = {}
+        
+        # Get metadata for Sample fields
+        sample_model = Sample
+        for field_obj in sample_model._meta.get_fields():
+            if hasattr(field_obj, 'name') and hasattr(field_obj, 'help_text'):
+                field_name = field_obj.name
+                field_info = {
+                    'name': field_name,
+                    'label': sample.fields.get(field_name, field_name),
+                    'help_text': field_obj.help_text or '',
+                    'required': not field_obj.blank if hasattr(field_obj, 'blank') else False,
+                    'max_length': getattr(field_obj, 'max_length', None),
+                    'choices': None,
+                    'validator_pattern': None
+                }
+                
+                # Check for choices
+                if hasattr(field_obj, 'choices') and field_obj.choices:
+                    field_info['choices'] = [{'value': c[0], 'label': c[1]} for c in field_obj.choices]
+                
+                # Check for validators
+                if hasattr(field_obj, 'validators') and field_obj.validators:
+                    for validator in field_obj.validators:
+                        if hasattr(validator, 'regex'):
+                            field_info['validator_pattern'] = validator.regex.pattern
+                            break
+                
+                field_metadata[field_name] = field_info
+        
         # construct headers and array (to pass data back in POST) for HoT, for checklists
         checklist_entries_list = []
         for checklist in checklists:
@@ -418,6 +449,53 @@ def samples_view(request, project_id, order_id, sample_type):
 
             validators = validators + checklist_entries_class().getValidators(inclusions, exclusions)
 
+            # Get field metadata for this checklist
+            checklist_model = checklist_entries_class
+            for field in checklist_model._meta.get_fields():
+                if hasattr(field, 'name') and hasattr(field, 'help_text'):
+                    field_name = field.name
+                    if field_name in ['id', 'sampleset', 'sample', 'sample_type']:
+                        continue
+                        
+                    field_info = {
+                        'name': field_name,
+                        'label': checklist_model().fields.get(field_name, field_name),
+                        'help_text': field.help_text or '',
+                        'required': not field.blank if hasattr(field, 'blank') else False,
+                        'max_length': getattr(field, 'max_length', None),
+                        'choices': None,
+                        'validator_pattern': None,
+                        'checklist': checklist_name
+                    }
+                    
+                    # Check for choices - look for field_name_choice attribute
+                    choice_attr_name = f"{field_name}_choice"
+                    if hasattr(checklist_model, choice_attr_name):
+                        choices = getattr(checklist_model, choice_attr_name)
+                        field_info['choices'] = [{'value': c[0], 'label': c[1]} for c in choices]
+                    elif hasattr(field, 'choices') and field.choices:
+                        field_info['choices'] = [{'value': c[0], 'label': c[1]} for c in field.choices]
+                    
+                    # Check for validators
+                    if hasattr(field, 'validators') and field.validators:
+                        for validator in field.validators:
+                            if hasattr(validator, 'regex'):
+                                field_info['validator_pattern'] = validator.regex.pattern
+                                break
+                    
+                    # Check for units (for unit fields)
+                    units_attr_name = f"{field_name}_units"
+                    unit_class_name = f"{checklist_class_name}_unit"
+                    try:
+                        unit_class = getattr(importlib.import_module("app.models"), unit_class_name)
+                        if hasattr(unit_class, units_attr_name):
+                            units = getattr(unit_class, units_attr_name)
+                            field_info['units'] = [{'value': u[0], 'label': u[1]} for u in units]
+                    except:
+                        pass
+                    
+                    field_metadata[field_name] = field_info
+            
             # get the checklist objects for this sample_set
             try:
                 checklist_entries = checklist_entries_class.objects.filter(sampleset=sample_set, sample_type=sample_type) 
@@ -461,6 +539,7 @@ def samples_view(request, project_id, order_id, sample_type):
                 'headers_max_size': headers_max_size,
                 'headers_size': headers_size,
                 'sample_type': sample_type,
+                'field_metadata': json.dumps(field_metadata),
             })
     else:
         return redirect('login')
