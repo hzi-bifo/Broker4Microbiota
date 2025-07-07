@@ -376,6 +376,34 @@
     margin-top: 0.25rem;
 }
 
+/* Project Context Header */
+.project-context {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border-radius: 12px;
+    padding: 1.5rem;
+    border: 1px solid #e0e0e0;
+    margin-bottom: 2rem;
+}
+
+.project-context .title {
+    color: #363636;
+    margin-bottom: 0.5rem;
+}
+
+.project-context .title i {
+    margin-right: 0.5rem;
+}
+
+.project-context .subtitle {
+    margin-bottom: 0;
+    line-height: 1.4;
+}
+
+/* Orders Section */
+.orders-section {
+    margin-bottom: 2rem;
+}
+
 /* Order Cards Styling */
 .orders-container {
     max-width: 900px;

@@ -139,9 +139,12 @@ class OrderListView(ListView):
         return orders
 
     def get_context_data(self, **kwargs):
-        # Add project_id to the context
+        # Add project_id and project to the context
         context = super().get_context_data(**kwargs)
-        context['project_id'] = self.kwargs['project_id']
+        project_id = self.kwargs['project_id']
+        project = get_object_or_404(Project, pk=project_id, user=self.request.user)
+        context['project_id'] = project_id
+        context['project'] = project
         return context
 
 def order_view(request, project_id=None, order_id=None):

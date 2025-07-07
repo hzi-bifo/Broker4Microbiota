@@ -7,10 +7,46 @@ Order List
 {% block content %}
 <section class="section">
   <div class="container">
-    <h2 class="title has-text-centered">{{ site_settings.organization_short_name }} Sequencing Orders</h2>
-    <p class="has-text-centered">
-      Track your sequencing orders from submission to data delivery. Each order is associated with one or more samples following MIxS standards.
-    </p>
+    <!-- Project Context Header -->
+    <div class="project-context mb-5">
+      <div class="level">
+        <div class="level-left">
+          <div class="level-item">
+            <div>
+              <h1 class="title is-4 mb-1">
+                <i class="fas fa-folder-open has-text-primary"></i>
+                {{ project.title }}
+              </h1>
+              <p class="subtitle is-6 has-text-grey">
+                <strong>Project:</strong> {{ project.alias }} • 
+                <strong>Orders:</strong> {{ orders|length }}
+                {% if project.description %}
+                • {{ project.description|truncatechars:80 }}
+                {% endif %}
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="level-right">
+          <div class="level-item">
+            <a href="{% url 'project_list' %}" class="button is-light">
+              <span class="icon">
+                <i class="fas fa-arrow-left"></i>
+              </span>
+              <span>Back to Projects</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Orders Section -->
+    <div class="orders-section">
+      <h2 class="title has-text-centered">Sequencing Orders</h2>
+      <p class="has-text-centered">
+        Track your sequencing orders from submission to data delivery. Each order is associated with one or more samples following MIxS standards.
+      </p>
+    </div>
     {% if orders %}
       <div class="orders-container">
         {% for order in orders %}
@@ -241,12 +277,6 @@ Order List
             <i class="fas fa-plus"></i>
           </span>
           <span>Request New Order</span>
-        </a>
-        <a href="{% url 'project_list' %}" class="button is-link is-light is-medium ml-3">
-          <span class="icon">
-            <i class="fas fa-arrow-left"></i>
-          </span>
-          <span>Back to Projects</span>
         </a>
     </div>
 
