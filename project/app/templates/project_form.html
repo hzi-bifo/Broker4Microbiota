@@ -27,123 +27,89 @@
           {% endif %}
 
           <!-- Title Field -->
-          <div class="form-field-group">
-            <div class="form-field-main">
-              <div class="field-wrapper">
-                <label class="{% if form.title.field.required %}required{% endif %}">
-                  <i class="fas fa-heading"></i> {{ form.title.label }}
-                </label>
-                {{ form.title|add_class:"input" }}
-                {% if form.title.errors %}
-                  {% for error in form.title.errors %}
-                    <p class="field-error">{{ error }}</p>
-                  {% endfor %}
-                {% endif %}
-              </div>
+          <div class="field">
+            <label class="label {% if form.title.field.required %}required{% endif %}">
+              <i class="fas fa-heading"></i> {{ form.title.label }}
+            </label>
+            <div class="control">
+              {{ form.title|add_class:"input" }}
             </div>
-            <div class="form-field-help">
-              <h4>Project Title</h4>
-              <p>Choose a descriptive title that clearly identifies your research project or study. This will be the main identifier for your project throughout the system.</p>
-            </div>
+            <p class="help">Choose a descriptive title that clearly identifies your research project or study.</p>
+            {% if form.title.errors %}
+              {% for error in form.title.errors %}
+                <p class="help is-danger">{{ error }}</p>
+              {% endfor %}
+            {% endif %}
           </div>
 
           <!-- Alias Field -->
-          <div class="form-field-group">
-            <div class="form-field-main">
-              <div class="field-wrapper">
-                <label class="{% if form.alias.field.required %}required{% endif %}">
-                  <i class="fas fa-tag"></i> {{ form.alias.label }}
-                </label>
-                {{ form.alias|add_class:"input" }}
-                {% if form.alias.errors %}
-                  {% for error in form.alias.errors %}
-                    <p class="field-error">{{ error }}</p>
-                  {% endfor %}
-                {% endif %}
-              </div>
+          <div class="field">
+            <label class="label {% if form.alias.field.required %}required{% endif %}">
+              <i class="fas fa-tag"></i> {{ form.alias.label }}
+            </label>
+            <div class="control">
+              {{ form.alias|add_class:"input" }}
             </div>
-            <div class="form-field-help">
-              <h4>Project Alias</h4>
-              <p>A short, unique identifier for your project. This could be an internal code or abbreviation used by your lab or institution.</p>
-            </div>
+            <p class="help">A short, unique identifier for your project (e.g., internal code or lab abbreviation).</p>
+            {% if form.alias.errors %}
+              {% for error in form.alias.errors %}
+                <p class="help is-danger">{{ error }}</p>
+              {% endfor %}
+            {% endif %}
           </div>
 
           <!-- Description Field -->
-          <div class="form-field-group">
-            <div class="form-field-main">
-              <div class="field-wrapper">
-                <label class="{% if form.description.field.required %}required{% endif %}">
-                  <i class="fas fa-align-left"></i> {{ form.description.label }}
-                </label>
-                {{ form.description|add_class:"textarea" }}
-                {% if form.description.errors %}
-                  {% for error in form.description.errors %}
-                    <p class="field-error">{{ error }}</p>
-                  {% endfor %}
-                {% endif %}
-              </div>
+          <div class="field">
+            <label class="label {% if form.description.field.required %}required{% endif %}">
+              <i class="fas fa-align-left"></i> {{ form.description.label }}
+            </label>
+            <div class="control">
+              {{ form.description|add_class:"textarea" }}
             </div>
-            <div class="form-field-help">
-              <h4>Project Description</h4>
-              <p>Provide a comprehensive description including:</p>
-              <ul style="margin-top: 0.5rem; padding-left: 1.25rem;">
-                <li>Research objectives and hypotheses</li>
-                <li>Sample types and collection methods</li>
-                <li>Experimental design overview</li>
-                <li>Expected outcomes</li>
-              </ul>
-            </div>
+            <p class="help">Include research objectives, sample types, experimental design, and expected outcomes.</p>
+            {% if form.description.errors %}
+              {% for error in form.description.errors %}
+                <p class="help is-danger">{{ error }}</p>
+              {% endfor %}
+            {% endif %}
           </div>
 
           <!-- Submitted Checkbox -->
-          <div class="form-field-group">
-            <div class="form-field-main">
-              <div class="field-wrapper checkbox-wrapper">
+          <div class="field">
+            <div class="control">
+              <label class="checkbox">
                 {{ form.submitted }}
-                <label for="{{ form.submitted.id_for_label }}">
-                  Already submitted to ENA
-                </label>
-              </div>
-            </div>
-            <div class="form-field-help">
-              <h4>ENA Submission Status</h4>
-              <p>Check this box only if this project has already been submitted to the European Nucleotide Archive (ENA) and has received an accession number.</p>
+                Already submitted to ENA
+                <span class="help-icon" data-tooltip="Check this only if this project has already been submitted to the European Nucleotide Archive (ENA) and has received an accession number.">
+                  <i class="fas fa-question-circle"></i>
+                </span>
+              </label>
             </div>
           </div>
 
           <!-- Study Accession ID (Read-only) -->
           {% if form.study_accession_id %}
-          <div class="form-field-group">
-            <div class="form-field-main">
-              <div class="field-wrapper">
-                <label>
-                  <i class="fas fa-database"></i> {{ form.study_accession_id.label }}
-                </label>
-                {{ form.study_accession_id|add_class:"input" }}
-              </div>
+          <div class="field">
+            <label class="label">
+              <i class="fas fa-database"></i> {{ form.study_accession_id.label }}
+            </label>
+            <div class="control">
+              {{ form.study_accession_id|add_class:"input" }}
             </div>
-            <div class="form-field-help">
-              <h4>Study Accession</h4>
-              <p>This field will be automatically populated after successful submission to ENA. Format: PRJEB######</p>
-            </div>
+            <p class="help">Automatically populated after ENA submission (Format: PRJEB######)</p>
           </div>
           {% endif %}
 
           <!-- Alternative Accession ID (Read-only) -->
           {% if form.alternative_accession_id %}
-          <div class="form-field-group">
-            <div class="form-field-main">
-              <div class="field-wrapper">
-                <label>
-                  <i class="fas fa-key"></i> {{ form.alternative_accession_id.label }}
-                </label>
-                {{ form.alternative_accession_id|add_class:"input" }}
-              </div>
+          <div class="field">
+            <label class="label">
+              <i class="fas fa-key"></i> {{ form.alternative_accession_id.label }}
+            </label>
+            <div class="control">
+              {{ form.alternative_accession_id|add_class:"input" }}
             </div>
-            <div class="form-field-help">
-              <h4>Alternative ID</h4>
-              <p>An optional alternative identifier, such as a BioProject ID or other database reference.</p>
-            </div>
+            <p class="help">Optional alternative identifier (e.g., BioProject ID)</p>
           </div>
           {% endif %}
 
@@ -192,20 +158,24 @@ document.addEventListener('DOMContentLoaded', function() {
   
   inputs.forEach(input => {
     input.addEventListener('blur', function() {
-      if (this.hasAttribute('required') || this.closest('.field-wrapper').querySelector('label.required')) {
+      // Check if field is required
+      const field = this.closest('.field');
+      const label = field.querySelector('.label.required');
+      
+      if (this.hasAttribute('required') || label) {
         if (this.value.trim() === '') {
-          this.classList.add('is-invalid');
-          this.classList.remove('is-valid');
+          this.classList.add('is-danger');
+          this.classList.remove('is-success');
         } else {
-          this.classList.add('is-valid');
-          this.classList.remove('is-invalid');
+          this.classList.add('is-success');
+          this.classList.remove('is-danger');
         }
       }
     });
     
     // Remove validation classes on focus
     input.addEventListener('focus', function() {
-      this.classList.remove('is-valid', 'is-invalid');
+      this.classList.remove('is-success', 'is-danger');
     });
   });
 });

@@ -1,6 +1,15 @@
 
 # TODO
 
+## Improvements Made (2025-07-07)
+
+### Form Help Text Redesign
+- Changed from two-column layout to inline help text below fields
+- Added tooltips for additional information (e.g., checkbox help)
+- More compact and follows UX best practices
+- Help text is always visible and doesn't take extra horizontal space
+- Added question mark icons for complex fields that show tooltips on hover
+
 - [x] when user accesses /projects/ but there is no project, add a text description (that can be maybe changed also in the site configureaiton admin panel) that calls the user to create a new sequencing projec. This should change to a different text once there are samples, then it should be clear when the user should request a new one, or when they should edit / config the old one
 
 
