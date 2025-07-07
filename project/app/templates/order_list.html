@@ -109,6 +109,9 @@ Order List
                     {% endif %}
                   </div>
                   <div class="step-label">Configure Metadata</div>
+                  {% if order.show_metadata and order.get_selected_checklist %}
+                    <div class="step-info">{{ order.get_selected_checklist }}</div>
+                  {% endif %}
                 </div>
                 
                 <!-- Step 3: Sample Data -->
@@ -123,6 +126,9 @@ Order List
                     {% endif %}
                   </div>
                   <div class="step-label">Add Samples</div>
+                  {% if order.show_samples %}
+                    <div class="step-info">{{ order.get_sample_count }} sample{{ order.get_sample_count|pluralize }}</div>
+                  {% endif %}
                 </div>
                 
                 <!-- Step 4: Review & Submit -->
@@ -246,6 +252,45 @@ Order List
                 </div>
               {% endif %}
             </div>
+
+            <!-- Edit Previous Steps -->
+            {% if order.show_metadata or order.show_samples or order.status != 'draft' %}
+            <div class="edit-actions">
+              <h5 class="edit-title">Edit Previous Steps</h5>
+              <div class="edit-buttons">
+                <!-- Edit Order Details -->
+                <a href="{% url 'order_edit' project_id=project_id order_id=order.id %}" 
+                   class="button is-light is-small">
+                  <span class="icon is-small">
+                    <i class="fas fa-edit"></i>
+                  </span>
+                  <span>Edit Order Details</span>
+                </a>
+                
+                <!-- Edit Metadata Checklist -->
+                {% if order.show_metadata %}
+                <a href="{% url 'metadata_view' project_id=project_id order_id=order.id %}" 
+                   class="button is-light is-small">
+                  <span class="icon is-small">
+                    <i class="fas fa-clipboard-list"></i>
+                  </span>
+                  <span>Change Checklist</span>
+                </a>
+                {% endif %}
+                
+                <!-- Edit Sample Data -->
+                {% if order.show_samples %}
+                <a href="{% url 'samples_view' project_id=project_id order_id=order.id sample_type=1%}" 
+                   class="button is-light is-small">
+                  <span class="icon is-small">
+                    <i class="fas fa-dna"></i>
+                  </span>
+                  <span>Edit Samples</span>
+                </a>
+                {% endif %}
+              </div>
+            </div>
+            {% endif %}
 
             <!-- Optional Actions -->
             {% if order.show_samples %}

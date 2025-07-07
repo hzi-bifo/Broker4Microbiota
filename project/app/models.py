@@ -425,23 +425,43 @@ class Order(models.Model):
         return self.status in facility_states
 
     def show_samples(self):
-        # metadata exists
+        # Check if actual sample data has been created (not just metadata configured)
+        # This should return True only when samples have been added, not just when checklist is selected
         sample_set = self.sampleset_set.filter(sample_type=SAMPLE_TYPE_NORMAL).first()
         if not sample_set:
             return False
-
-        # Maybe this is not needed
-        checklists = sample_set.checklists
-        for checklist in checklists:
-            checklist_class_name = Sampleset.checklist_structure[checklist]['checklist_class_name']
-            checklist_item_class =  getattr(importlib.import_module("app.models"), checklist_class_name)
-            try:
-                checklist_item_instance = checklist_item_class.objects.filter(sampleset=sample_set, sample_type=SAMPLE_TYPE_NORMAL).first()
-                return True
-            except:
-                pass
-
-        return False
+        
+        # Check if metadata checklist is configured first
+        if not sample_set.checklists:
+            return False
+            
+        # Now check if actual Sample objects exist for this order
+        actual_samples = self.sample_set.filter(sample_type=SAMPLE_TYPE_NORMAL)
+        return actual_samples.exists()  # Returns True only if samples were actually created
+    
+    def get_selected_checklist(self):
+        """Return the name of the selected metadata checklist in a human-readable format"""
+        sample_set = self.sampleset_set.filter(sample_type=SAMPLE_TYPE_NORMAL).first()
+        if not sample_set or not sample_set.checklists:
+            return None
+            
+        try:
+            import json
+            checklists = json.loads(sample_set.checklists) if isinstance(sample_set.checklists, str) else sample_set.checklists
+            if checklists and len(checklists) > 0:
+                # Convert checklist key back to readable name
+                checklist_key = checklists[0]
+                # Convert underscore format back to readable name
+                readable_name = checklist_key.replace('_', ' ')
+                return readable_name
+        except:
+            pass
+            
+        return None
+    
+    def get_sample_count(self):
+        """Return the number of samples added to this order"""
+        return self.sample_set.filter(sample_type=SAMPLE_TYPE_NORMAL).count()
 
     def show_assembly(self):
         if not self.show_samples():
