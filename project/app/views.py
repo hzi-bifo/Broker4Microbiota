@@ -164,8 +164,14 @@ def order_view(request, project_id=None, order_id=None):
                 order = form.save(commit=False)
                 order.project = project
                 order.save()
-
+                
+                messages.success(request, f'Order #{order.id} has been created successfully!')
                 return redirect('order_list', project_id=project_id)
+            else:
+                messages.error(request, 'Please correct the errors below before submitting the form.')
+                for field, errors in form.errors.items():
+                    for error in errors:
+                        messages.error(request, f'{field.capitalize()}: {error}')
 
         return render(request, 'order_form.html', {'form': form, 'project_id': project_id})
     else:

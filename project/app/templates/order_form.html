@@ -489,14 +489,12 @@
               </span>
               <span>Clear Form</span>
             </button>
-            {% if debug %}
             <button type="button" class="button is-info is-light" onclick="fillExampleData()">
               <span class="icon">
                 <i class="fas fa-magic"></i>
               </span>
               <span>Fill Example Data</span>
             </button>
-            {% endif %}
             <a href="{% url 'order_list' project_id %}" class="button is-light">
               <span class="icon">
                 <i class="fas fa-times"></i>
@@ -533,8 +531,8 @@ function fillExampleData() {
     'experiment_title': 'Gut Microbiome Analysis in IBD Patients',
     'organism': 'Human gut microbiome',
     'isolated_from': 'Human fecal samples',
-    'date': '2024-07-07',
-    'dna': '50 ng/μL, A260/280: 1.8',
+    'date': '2025-01-21',
+    'dna': '50 ng/μL',
     'rna': 'Not applicable',
     'method': 'DNA extraction using QIAamp PowerFecal Pro DNA Kit',
     'buffer': 'TE buffer, pH 8.0',
