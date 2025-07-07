@@ -2880,6 +2880,18 @@ class SiteSettings(models.Model):
         blank=True
     )
     
+    # Metadata Checklist Customization
+    metadata_checklist_title = models.CharField(
+        max_length=200,
+        default="Configure Metadata Checklists",
+        help_text="Title shown on metadata checklist selection page"
+    )
+    metadata_checklist_description = models.TextField(
+        default="Select the appropriate MIxS (Minimum Information about any Sequence) standard for your samples. This determines what metadata fields you'll need to fill out.",
+        help_text="Description shown on metadata checklist selection page",
+        blank=True
+    )
+    
     # Metadata
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

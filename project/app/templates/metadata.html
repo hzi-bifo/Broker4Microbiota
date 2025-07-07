@@ -2,196 +2,442 @@
 {% load static %}
 
 {% block title %}
-Metadata List
+Configure Metadata Checklists
 {% endblock title %}
 
 {% block content %}
 <section class="section">
   <div class="container">
-    <h2 class="title has-text-centered">Metadata checklists / extensions</h2>
-    <form method="post" class="box">
-    {% csrf_token %}
-    <p class="has-text-centered">
-      Search for and select the appropriate checklists / extensions for the samples.
-    </p>
-    <div>
-        <input id="search-term" autofocus></input>
-        <button id="search">Search</button>
-    </div>
-    <div id="tree-container" style="display: flex;">
-      <div id="tree1"></div>
-      <div id="description-box" style="margin-left: 20px; padding: 10px; border: 1px solid #ddd; width: 300px;">
-          <h3><em>Node Description</em></h3><br>
-          <p id="description-content">Select a node to see the description here.</p>
+    <!-- Header -->
+    <div class="form-card">
+      <div class="form-card-header">
+        <h2>{{ site_settings.metadata_checklist_title|default:"Configure Metadata Checklists" }}</h2>
+        <p>{{ site_settings.metadata_checklist_description|default:"Select the appropriate MIxS (Minimum Information about any Sequence) standard for your samples. This determines what metadata fields you'll need to fill out." }}</p>
+      </div>
+      
+      <div class="form-card-body">
+        <!-- Search Box -->
+        <div class="search-section mb-5">
+          <div class="field">
+            <label class="label">Search Checklists</label>
+            <div class="control has-icons-left">
+              <input class="input is-medium" type="text" id="checklist-search" placeholder="Type to search checklists (e.g., 'water', 'human', 'soil')...">
+              <span class="icon is-left">
+                <i class="fas fa-search"></i>
+              </span>
+            </div>
+            <p class="help">Filter checklists by keyword to find the most suitable one for your sample type.</p>
+          </div>
+          
+          <!-- Quick Filter Tags -->
+          <div class="quick-filters mt-3">
+            <span class="tag is-light filter-tag" data-filter="human">Human</span>
+            <span class="tag is-light filter-tag" data-filter="water">Water</span>
+            <span class="tag is-light filter-tag" data-filter="soil">Soil</span>
+            <span class="tag is-light filter-tag" data-filter="plant">Plant</span>
+            <span class="tag is-light filter-tag" data-filter="air">Air</span>
+            <span class="tag is-light filter-tag" data-filter="microbial">Microbial</span>
+            <span class="tag is-light filter-tag" data-filter="">All</span>
+          </div>
+        </div>
+
+        <!-- Checklist Cards Grid -->
+        <form method="post" id="checklist-form">
+          {% csrf_token %}
+          
+          <div class="checklist-grid" id="checklist-grid">
+            <!-- Cards will be populated by JavaScript -->
+          </div>
+          
+          <!-- Hidden form fields -->
+          <input type="hidden" id="checklists" name="checklists" value="{{ sample_set.checklists|default:'[]' }}">
+          <input type="hidden" id="include" name="include" value="{{ sample_set.include|default:'[]' }}">
+          <input type="hidden" id="exclude" name="exclude" value="{{ sample_set.exclude|default:'[]' }}">
+          <input type="hidden" id="custom" name="custom" value="{{ sample_set.custom|default:'[]' }}">
+          
+          <!-- Form Actions -->
+          <div class="form-actions">
+            <button type="submit" class="button is-primary is-medium" id="proceed-btn" disabled>
+              <span class="icon">
+                <i class="fas fa-arrow-right"></i>
+              </span>
+              <span>Proceed to Sample Data</span>
+            </button>
+            <a href="{% url 'order_list' project_id=project_id %}" class="button is-light is-medium">
+              <span class="icon">
+                <i class="fas fa-arrow-left"></i>
+              </span>
+              <span>Back to Orders</span>
+            </a>
+          </div>
+        </form>
       </div>
     </div>
-    <textarea id="checklists" name="checklists" rows="4" cols="50" placeholder="Selected nodes will appear here...">{{ sample_set.checklists }}</textarea>
-    <textarea id="include" name="include" rows="4" cols="50" placeholder=""  style="display:none;">{{ sample_set.include }}</textarea>
-    <textarea id="exclude" name="exclude" rows="4" cols="50" placeholder=""  style="display:none;">{{ sample_set.exclude }}</textarea>
-    <textarea id="custom" name="custom" rows="4" cols="50" placeholder=""  style="display:none;">{{ sample_set.custom }}</textarea>
-    <div class="has-text-centered mt-4">
-        <button type="submit" class="button is-primary">Save</button>
-        <a href="{% url 'order_list' project_id=project_id %}" class="button is-primary">Cancel</a>
-    </div>
-    </form>
   </div>
 </section>
 
+<!-- Checklist Preview Modal -->
+<div class="modal" id="preview-modal">
+  <div class="modal-background"></div>
+  <div class="modal-card">
+    <header class="modal-card-head">
+      <p class="modal-card-title" id="modal-title">Checklist Preview</p>
+      <button class="delete" aria-label="close" id="close-modal"></button>
+    </header>
+    <section class="modal-card-body">
+      <div id="modal-content">
+        <p>Loading preview...</p>
+      </div>
+    </section>
+    <footer class="modal-card-foot">
+      <button class="button" id="close-modal-btn">Close</button>
+    </footer>
+  </div>
+</div>
+
 <script>
-  
-    const $tree = $("#tree1");
+// Checklist data - will be populated from the JSON file
+let checklistData = [];
+let selectedChecklist = null;
 
-    let foundMatch = false;
-
-    $.getJSON("{% static 'json/jqtree.json' %}", function(responseData) {
-        var treeData = responseData;
-        $tree.tree({
-            autoOpen: false,
-            data: treeData,
-            useContextMenu: false,
-            onCreateLi: (node, $el) => {
-                // Remove any existing whitespace from the element
-                $el.find('.jqtree-element').contents().filter(function() {
-                    return this.nodeType === 3; // NodeType 3 is a text node (whitespace)
-                }).remove();
-
-                let $actionLink;
-                // Check if the node is a top-level item (i.e., root node)
-                if (node.getLevel() === 1) {
-                    // Create the select link for top-level nodes
-                    $actionLink = $('<a>', {
-                        href: '#node-' + node.id,
-                        class: 'select',
-                        'data-node-id': node.id,
-                        text: ' select'
-                    });
-                } 
-                // Check if the node is a third-level item (i.e., grandchild node)
-                else if (node.getLevel() === 3) {
-                    // Create the description link for third-level nodes
-                    $actionLink = $('<a>', {
-                    href: '#node-' + node.id,
-                    class: 'description',
-                    'data-node-id': node.id,
-                    text: ' description'
-                    });
-                } else {  
-                }
-
-                // Remove all extra whitespace around the links
-                $el.contents().filter(function() {
-                    return this.nodeType === 3; // Text node
-                }).remove();
-
-                // Append the link with no extra text nodes
-                $el.find('.jqtree-element').append(document.createTextNode(' ')).append($actionLink);
-                if (foundMatch && !node.openForMatch && !node.parent.matches) {
-                    $el.addClass("hidden-node");
-                }
-
-                if (node.matches) {
-                    $el.addClass("highlight-node");
-                }
-            },
-        });
-    });
-
-
-    // Click event for 'select' button to add the node name to the text box
-    $tree.on('click', '.select', function(e) {
-        e.preventDefault();  // Prevent the default link action
-
-        // Get the node id from the clicked element
-        var node_id = $(e.target).data('node-id');
-        var node = $tree.tree('getNodeById', node_id);
-
-        if (node) {
-            // Find the textarea and append the node name
-            var $textarea = $('#checklists');
-            var currentText = $textarea.val();
-
-            // Add the selected node's name to the textarea, separated by a newline
-            $textarea.val('["' + node.name.replace(/ /g, "_") + '"]');
-
-            // temporary
-            var $textarea = $('#include');
-            var currentText = $textarea.val();
-
-            // Add the selected node's name to the textarea, separated by a newline
-            $textarea.val('["' + node.name.replace(/ /g, "_") + '"]');
-
-            var $textarea = $('#exclude');
-            var currentText = $textarea.val();
-
-            // Add the selected node's name to the textarea, separated by a newline
-            $textarea.val('["' + node.name.replace(/ /g, "_") + '"]');
-
-            var $textarea = $('#custom');
-            var currentText = $textarea.val();
-
-            // Add the selected node's name to the textarea, separated by a newline
-            $textarea.val('["' + node.name.replace(/ /g, "_") + '"]');
-        }
-    });
-
-    // Click event for 'description' button to show the node description
-    $tree.on('click', '.description', function(e) {
-        e.preventDefault();  // Prevent default link action
-
-        // Get the node id from the clicked element
-        var node_id = $(e.target).data('node-id');
-        var node = $tree.tree('getNodeById', node_id);
-
-        if (node) {
-            // Display the node's description in the description box
-            $('#description-content').text(node.description || 'No description available.');
-        }
-    });
-
-    $("#search").on("click", () => {
-        const searchTerm = $("#search-term").val().toLowerCase();
-        const tree = $tree.tree("getTree");
-
-        if (!searchTerm) {
-            foundMatch = false;
-
-            tree.iterate((node) => {
-                node['openForMatch'] = false;
-                node["matches"] = false;
-                return true;
-            });
-
-            $tree.tree("refresh");
-            return;
-        }
-
-        foundMatch = false;
-
-        tree.iterate((node) => {
-            const matches = node.name.toLowerCase().includes(searchTerm);
-            node["openForMatch"] = matches;
-            node["matches"] = matches;
-
-            if (matches) {
-                foundMatch = true;
-
-                if (node.isFolder()) {
-                    node.is_open = true;
-                }
-
-                let parent = node.parent;
-                while (parent) {
-                    parent["openForMatch"] = true;
-                    parent.is_open = true;
-                    parent = parent.parent;
-                }
+// Load checklist data
+$.getJSON("{% static 'json/jqtree.json' %}", function(data) {
+    checklistData = data;
+    renderChecklistCards();
+    
+    // Set initial selection if exists
+    const currentSelection = $('#checklists').val();
+    if (currentSelection && currentSelection !== '[]') {
+        try {
+            const parsed = JSON.parse(currentSelection);
+            if (parsed.length > 0) {
+                selectChecklist(parsed[0]);
             }
+        } catch (e) {
+            console.log('Could not parse current selection');
+        }
+    }
+});
 
-            return true;
-        });
+// Checklist definitions with descriptions and categories
+const checklistInfo = {
+    'GSC_MIxS_wastewater_sludge': {
+        title: 'Wastewater Sludge',
+        description: 'For samples from wastewater treatment facilities, sludge, and sewage systems.',
+        category: 'environmental',
+        icon: 'fas fa-industry',
+        keywords: ['wastewater', 'sludge', 'sewage', 'treatment', 'industrial']
+    },
+    'GSC_MIxS_miscellaneous_natural_or_artificial_environment': {
+        title: 'Miscellaneous Environment',
+        description: 'For samples from diverse natural or artificial environments not covered by other checklists.',
+        category: 'environmental',
+        icon: 'fas fa-globe',
+        keywords: ['miscellaneous', 'environment', 'general', 'diverse']
+    },
+    'GSC_MIxS_human_skin': {
+        title: 'Human Skin',
+        description: 'For microbiome samples from human skin surfaces and dermatological studies.',
+        category: 'human',
+        icon: 'fas fa-user',
+        keywords: ['human', 'skin', 'dermatology', 'microbiome']
+    },
+    'ENA_default_sample_checklist': {
+        title: 'ENA Default',
+        description: 'Basic European Nucleotide Archive checklist for general sequencing samples.',
+        category: 'general',
+        icon: 'fas fa-list',
+        keywords: ['default', 'basic', 'general', 'ena']
+    },
+    'GSC_MIxS_plant_associated': {
+        title: 'Plant Associated',
+        description: 'For samples from plant surfaces, rhizosphere, or plant-associated microbiomes.',
+        category: 'biological',
+        icon: 'fas fa-leaf',
+        keywords: ['plant', 'rhizosphere', 'botanical', 'vegetation']
+    },
+    'GSC_MIxS_water': {
+        title: 'Water',
+        description: 'For aquatic samples including freshwater, marine, groundwater, and other water bodies.',
+        category: 'environmental',
+        icon: 'fas fa-water',
+        keywords: ['water', 'aquatic', 'marine', 'freshwater', 'groundwater']
+    },
+    'GSC_MIxS_soil': {
+        title: 'Soil',
+        description: 'For soil samples including agricultural, forest, desert, and other terrestrial soils.',
+        category: 'environmental',
+        icon: 'fas fa-mountain',
+        keywords: ['soil', 'terrestrial', 'agricultural', 'earth']
+    },
+    'GSC_MIxS_human_gut': {
+        title: 'Human Gut',
+        description: 'For human gastrointestinal microbiome samples and gut-related studies.',
+        category: 'human',
+        icon: 'fas fa-user-md',
+        keywords: ['human', 'gut', 'gastrointestinal', 'microbiome', 'intestinal']
+    },
+    'GSC_MIxS_host_associated': {
+        title: 'Host Associated',
+        description: 'For samples from various host organisms including animals and their microbiomes.',
+        category: 'biological',
+        icon: 'fas fa-paw',
+        keywords: ['host', 'animal', 'associated', 'symbiotic']
+    },
+    'GSC_MIxS_human_vaginal': {
+        title: 'Human Vaginal',
+        description: 'For human vaginal microbiome samples and gynecological studies.',
+        category: 'human',
+        icon: 'fas fa-female',
+        keywords: ['human', 'vaginal', 'gynecological', 'microbiome']
+    },
+    'GSC_MIxS_human_oral': {
+        title: 'Human Oral',
+        description: 'For human oral cavity samples including saliva, plaque, and dental studies.',
+        category: 'human',
+        icon: 'fas fa-teeth',
+        keywords: ['human', 'oral', 'dental', 'saliva', 'mouth']
+    },
+    'ENA_binned_metagenome': {
+        title: 'Binned Metagenome',
+        description: 'For metagenomic samples that will be binned into individual genome assemblies.',
+        category: 'genomic',
+        icon: 'fas fa-cubes',
+        keywords: ['metagenome', 'binned', 'assembly', 'genomic']
+    },
+    'GSC_MIxS_sediment': {
+        title: 'Sediment',
+        description: 'For sediment samples from aquatic environments, cores, and geological studies.',
+        category: 'environmental',
+        icon: 'fas fa-layer-group',
+        keywords: ['sediment', 'geological', 'core', 'aquatic']
+    },
+    'GSC_MIxS_human_associated': {
+        title: 'Human Associated',
+        description: 'For general human-associated samples not covered by specific body site checklists.',
+        category: 'human',
+        icon: 'fas fa-user-circle',
+        keywords: ['human', 'associated', 'general']
+    },
+    'GSC_MIxS_air': {
+        title: 'Air',
+        description: 'For atmospheric and aerosol samples including indoor and outdoor air studies.',
+        category: 'environmental',
+        icon: 'fas fa-wind',
+        keywords: ['air', 'atmospheric', 'aerosol', 'airborne']
+    },
+    'GSC_MIxS_microbial_mat_biolfilm': {
+        title: 'Microbial Mat/Biofilm',
+        description: 'For microbial mat and biofilm samples from various environments.',
+        category: 'microbial',
+        icon: 'fas fa-microscope',
+        keywords: ['microbial', 'biofilm', 'mat', 'bacterial']
+    }
+};
 
-        $tree.tree("refresh");
+function renderChecklistCards() {
+    const grid = document.getElementById('checklist-grid');
+    grid.innerHTML = '';
+    
+    checklistData.forEach(checklist => {
+        const checklistKey = checklist.name.replace(/\s+/g, '_');
+        const info = checklistInfo[checklistKey] || {
+            title: checklist.name,
+            description: 'Standard MIxS checklist for sequencing metadata.',
+            category: 'general',
+            icon: 'fas fa-list',
+            keywords: [checklist.name.toLowerCase()]
+        };
+        
+        // Count fields
+        const fieldCount = checklist.children ? 
+            checklist.children.reduce((total, section) => 
+                total + (section.children ? section.children.length : 0), 0) : 0;
+        
+        const card = document.createElement('div');
+        card.className = 'checklist-card';
+        card.setAttribute('data-checklist', checklistKey);
+        card.setAttribute('data-keywords', info.keywords.join(' '));
+        
+        card.innerHTML = `
+            <div class="card">
+                <div class="card-content">
+                    <div class="media">
+                        <div class="media-left">
+                            <span class="icon is-large has-text-primary">
+                                <i class="${info.icon} fa-2x"></i>
+                            </span>
+                        </div>
+                        <div class="media-content">
+                            <p class="title is-5">${info.title}</p>
+                            <p class="subtitle is-6">${info.description}</p>
+                        </div>
+                    </div>
+                    
+                    <div class="content">
+                        <div class="field-count">
+                            <span class="tag is-info is-light">
+                                <i class="fas fa-list-ul"></i>&nbsp;${fieldCount} fields
+                            </span>
+                            <span class="tag is-light">${info.category}</span>
+                        </div>
+                        
+                        <div class="card-actions mt-3">
+                            <label class="radio">
+                                <input type="radio" name="selected-checklist" value="${checklistKey}">
+                                <span class="radio-label">Select this checklist</span>
+                            </label>
+                            <button type="button" class="button is-small is-outlined preview-btn" data-checklist="${checklistKey}">
+                                <span class="icon is-small">
+                                    <i class="fas fa-eye"></i>
+                                </span>
+                                <span>Preview Fields</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        grid.appendChild(card);
     });
+    
+    // Add event listeners
+    setupEventListeners();
+}
 
+function setupEventListeners() {
+    // Search functionality
+    document.getElementById('checklist-search').addEventListener('input', function(e) {
+        filterChecklists(e.target.value);
+    });
+    
+    // Quick filter tags
+    document.querySelectorAll('.filter-tag').forEach(tag => {
+        tag.addEventListener('click', function() {
+            const filter = this.getAttribute('data-filter');
+            document.getElementById('checklist-search').value = filter;
+            filterChecklists(filter);
+            
+            // Update active tag
+            document.querySelectorAll('.filter-tag').forEach(t => t.classList.remove('is-primary'));
+            this.classList.add('is-primary');
+        });
+    });
+    
+    // Radio button selection
+    document.querySelectorAll('input[name="selected-checklist"]').forEach(radio => {
+        radio.addEventListener('change', function() {
+            if (this.checked) {
+                selectChecklist(this.value);
+            }
+        });
+    });
+    
+    // Preview buttons
+    document.querySelectorAll('.preview-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const checklistKey = this.getAttribute('data-checklist');
+            showPreview(checklistKey);
+        });
+    });
+    
+    // Modal close buttons
+    document.getElementById('close-modal').addEventListener('click', closeModal);
+    document.getElementById('close-modal-btn').addEventListener('click', closeModal);
+    document.querySelector('.modal-background').addEventListener('click', closeModal);
+}
+
+function filterChecklists(searchTerm) {
+    const cards = document.querySelectorAll('.checklist-card');
+    const term = searchTerm.toLowerCase();
+    
+    cards.forEach(card => {
+        const keywords = card.getAttribute('data-keywords');
+        const title = card.querySelector('.title').textContent.toLowerCase();
+        const description = card.querySelector('.subtitle').textContent.toLowerCase();
+        
+        const matches = !term || 
+            keywords.includes(term) || 
+            title.includes(term) || 
+            description.includes(term);
+        
+        card.style.display = matches ? 'block' : 'none';
+    });
+}
+
+function selectChecklist(checklistKey) {
+    selectedChecklist = checklistKey;
+    
+    // Update visual selection
+    document.querySelectorAll('.checklist-card').forEach(card => {
+        card.classList.remove('selected');
+    });
+    
+    const selectedCard = document.querySelector(`[data-checklist="${checklistKey}"]`);
+    if (selectedCard) {
+        selectedCard.classList.add('selected');
+        selectedCard.querySelector('input[type="radio"]').checked = true;
+    }
+    
+    // Update form fields
+    document.getElementById('checklists').value = `["${checklistKey}"]`;
+    document.getElementById('include').value = `["${checklistKey}"]`;
+    document.getElementById('exclude').value = `["${checklistKey}"]`;
+    document.getElementById('custom').value = `["${checklistKey}"]`;
+    
+    // Enable proceed button
+    document.getElementById('proceed-btn').disabled = false;
+    document.getElementById('proceed-btn').classList.remove('is-loading');
+}
+
+function showPreview(checklistKey) {
+    const checklist = checklistData.find(c => c.name.replace(/\s+/g, '_') === checklistKey);
+    const info = checklistInfo[checklistKey];
+    
+    document.getElementById('modal-title').textContent = `${info.title} - Field Preview`;
+    
+    let content = `<h4 class="title is-5">${info.description}</h4>`;
+    
+    if (checklist && checklist.children) {
+        content += '<div class="preview-sections">';
+        
+        checklist.children.forEach(section => {
+            if (section.children && section.children.length > 0) {
+                content += `
+                    <div class="preview-section">
+                        <h5 class="subtitle is-6">${section.name}</h5>
+                        <div class="preview-fields">
+                `;
+                
+                // Show first 5 fields as examples
+                const fieldsToShow = section.children.slice(0, 5);
+                fieldsToShow.forEach(field => {
+                    content += `
+                        <div class="preview-field">
+                            <strong>${field.name}</strong>
+                            ${field.description ? `<p class="help">${field.description}</p>` : ''}
+                        </div>
+                    `;
+                });
+                
+                if (section.children.length > 5) {
+                    content += `<p class="has-text-grey">... and ${section.children.length - 5} more fields</p>`;
+                }
+                
+                content += '</div></div>';
+            }
+        });
+        
+        content += '</div>';
+    }
+    
+    document.getElementById('modal-content').innerHTML = content;
+    document.getElementById('preview-modal').classList.add('is-active');
+}
+
+function closeModal() {
+    document.getElementById('preview-modal').classList.remove('is-active');
+}
 </script>
 {% endblock content %}
