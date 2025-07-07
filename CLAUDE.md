@@ -2,43 +2,103 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-
-
-# Standard Workflow
+## Standard Workflow
 
 First, think through the problem, read the codebase for relevant files, and write a plan to [PROJECTPLAN.md](PROJECTPLAN.md).
 The plan should have a list of todo items that you can check off as you complete them. Before you begin working, check in with me and I will verify the plan. Then, begin working on the todo items, marking them as complete as you go. Please, at every step of the way, just give me a high-level explanation of what changes you made. Make every task and code change as simple as possible. We want to avoid making any massive or complex changes. Every change should impact as little code as possible. Everything is about simplicity. Finally, add a review section to the [PROJECTPLAN.md](PROJECTPLAN.md) file with a summary of the changes you made and any other relevant information.
 
-## High-level architecture
-
-
-
 ## Project Overview
 
-This is a Django application for managing sequencing orders and metadata collection for a bioinformatics facility. The system integrates with the European Nucleotide Archive (ENA) for sample submission and supports 17 different MIxS (Minimum Information about any (x) Sequence) checklists.
+Broker4Microbiota is a Django-based metadata collection and management system for microbiome sequencing facilities. It streamlines the process of collecting sequencing orders, managing sample metadata according to MIxS standards, and submitting data to the European Nucleotide Archive (ENA). The system supports both manual data entry and programmatic submissions through integration with bioinformatics pipelines.
 
-## Key Technologies
+## Technical Architecture
 
-- **Django 5.0+** - Web framework
-- **Python 3.8+** - Programming language
-- **SQLite** - Default database
+### Core Technologies
+
+- **Django 5.0+** - Web framework providing MVC architecture
+- **Python 3.8+** - Primary programming language
+- **SQLite** - Default database (production should use PostgreSQL/MySQL)
 - **django-q2** - Task queue for asynchronous pipeline execution
-- **Nextflow** - For running nf-core/mag bioinformatics pipeline
-- **Biopython** - Biological data processing
-- **Handsontable** - Spreadsheet-like UI for data entry
+- **Handsontable 14.1.0** - Spreadsheet UI for bulk data entry
+- **jQuery 3.7.1** - JavaScript library for DOM manipulation
+- **Nextflow** - Workflow engine for nf-core/mag pipeline
+- **Biopython** - For FASTA/FASTQ file processing
+- **xmltodict** - XML parsing for ENA submissions
+
+### Database Schema
+
+#### Core Models Hierarchy
+```
+User (Django Auth)
+ └── Project (study-level metadata)
+      └── Order (sequencing run metadata)
+           ├── Sampleset (checklist configuration)
+           ├── Sample (biological sample)
+           │    ├── Read (sequencing files)
+           │    ├── Assembly (optional)
+           │    └── Bin (optional)
+           ├── Assembly
+           ├── Bin
+           └── Alignment
+```
+
+#### Key Model Relationships
+
+- **Project** → User: Many-to-One (users can have multiple projects)
+- **Order** → Project: Many-to-One (projects can have multiple orders)
+- **Sample** → Order: Many-to-One (orders can have multiple samples)
+- **Read** → Sample: Many-to-One (samples can have multiple read files)
+- **Checklist Models** → Sample & Sampleset: One-to-One (dynamic based on selection)
+
+#### MIxS Checklist Models
+
+The system includes 17 pairs of checklist models following GSC MIxS standards:
+- Each environment type has a main model and a unit model
+- Examples: `GSC_MIxS_water`, `GSC_MIxS_soil`, `GSC_MIxS_human_gut`
+- Dynamically loaded based on user selection in `Sampleset.checklists`
+
+### URL Structure and Views
+
+#### Authentication Flow
+```
+/                    → login_view (entry point)
+/register/           → register_view
+/logout/             → logout_view
+```
+
+#### Main Application Flow
+```
+/projects/                              → ProjectListView
+/project/create/                        → project_view (create)
+/project/<id>/edit/                     → project_view (edit)
+/project/<id>/orders/                   → OrderListView
+/project/<id>/orders/create/            → order_view (create)
+/project/<id>/orders/<id>/metadata/     → metadata_view
+/project/<id>/orders/<id>/samples/<type>/ → samples_view
+```
+
+#### View Functions
+
+- **Authentication Views**: Handle user registration, login, logout
+- **Project Views**: CRUD operations for projects
+- **Order Views**: CRUD operations for sequencing orders
+- **Metadata View**: Interactive tree UI for selecting MIxS checklists
+- **Samples View**: Handsontable interface for bulk sample data entry
 
 ## Essential Commands
 
 ### Development Server
 ```bash
+source venv/bin/activate           # Activate virtual environment first!
 cd project
-python manage.py runserver
+python manage.py runserver         # Start on http://127.0.0.1:8000/
 ```
 
 ### Database Operations
 ```bash
 python manage.py makemigrations    # Create new migrations after model changes
 python manage.py migrate           # Apply migrations
+python manage.py createsuperuser   # Create admin user
 ```
 
 ### Static Files
@@ -58,66 +118,231 @@ python manage.py sample_xml_generator                         # Generate sample 
 python manage.py qcluster          # Start the django-q2 task queue worker
 ```
 
-## Architecture Overview
+### Testing & Linting
+```bash
+python manage.py test              # Run tests (currently empty)
+# No linting configuration found - consider adding flake8/black
+```
 
-### Core Models (app/models.py)
-- **User** - Django auth system for user management
-- **Order** - Sequencing orders linked to users
-- **Sample** - Biological samples linked to orders
-- **MIxS Metadata** - Environmental metadata following MIxS standards
-- **PipelineRun** - Tracks Nextflow pipeline executions
+## Code Organization
 
-### Key Views (app/views.py)
-- User authentication (register/login/logout)
-- Order management (CRUD operations)
-- Sample management with bulk operations
-- MIxS metadata forms dynamically generated from XML templates
-- Admin-only features: pipeline execution, ENA submission
+### Directory Structure
+```
+project/
+├── app/                           # Main Django application
+│   ├── models.py                  # Database models (1500+ lines)
+│   ├── views.py                   # View logic (1000+ lines)
+│   ├── forms.py                   # Django forms
+│   ├── admin.py                   # Admin customizations
+│   ├── urls.py                    # App URL routing
+│   ├── utils.py                   # Helper functions
+│   ├── async_calls.py             # Async task definitions
+│   ├── management/commands/       # Custom Django commands
+│   └── templates/                 # HTML templates
+├── project/                       # Django project settings
+│   ├── settings.py                # Main settings file
+│   └── urls.py                    # Root URL configuration
+├── static/                        # Static assets
+│   ├── xml/                       # MIxS XML templates (17 files)
+│   ├── json/                      # JSON configurations
+│   ├── hot/                       # Handsontable assets
+│   └── js/                        # JavaScript files
+└── media/                         # User uploads
+```
 
-### Background Processing
-- Uses django-q2 for asynchronous task execution
-- Primary use case: Running nf-core/mag pipeline on sample sets
-- Configured with very long timeouts for bioinformatics pipelines
+### Key Files and Their Purposes
 
-### Data Flow
-1. Users create orders and associate samples
-2. Samples are linked to MIxS environmental standards
-3. Admin can export samples to ENA with auto-generated XML
-4. Admin can run bioinformatics pipelines on sample sets
-5. Results are tracked in the database
+#### Models (`app/models.py`)
+- **SelfDescribingModel**: Abstract base class for models that generate XML/YAML
+- **Project**: Study-level metadata (title, description, ENA accession)
+- **Order**: Sequencing run metadata (platform, strategy, contact info)
+- **Sample**: Core sample data with dynamic attributes from checklists
+- **Read**: Sequencing file paths and checksums
+- **Submission models**: Track ENA submission status
+- **Pipeline models**: Track bioinformatics pipeline runs
 
-## Environment Configuration
+#### Views (`app/views.py`)
+- **Authentication**: Login, logout, registration
+- **CRUD operations**: Projects, orders, samples
+- **metadata_view**: Complex tree UI for checklist selection
+- **samples_view**: Handsontable integration for bulk editing
 
-Copy `TEMPLATE.env` to `.env` and set:
+#### Forms (`app/forms.py`)
+- **ProjectForm**: Project creation/editing
+- **OrderForm**: Order creation with field customization
+- **BinForm**, **AssemblyForm**: Specialized sample types
+
+#### Admin (`app/admin.py`)
+- Custom admin actions for ENA submission
+- Pipeline execution triggers
+- Bulk operations on samples
+- XML generation and validation
+
+### Frontend Architecture
+
+#### Templates
+- **base.html**: Main layout with Bootstrap styling
+- **metadata.html**: jqTree integration for checklist selection
+- **samples.html**: Handsontable spreadsheet interface
+- **order_list.html**: Dashboard showing orders with action buttons
+
+#### JavaScript Components
+- **Handsontable**: Provides Excel-like editing for sample data
+- **jqTree**: Renders hierarchical checklist selection
+- **Custom JS**: Form validation and dynamic UI updates
+
+### Data Processing Flow
+
+1. **User Registration/Login**
+   - Standard Django auth system
+   - User isolation enforced at view level
+
+2. **Project Creation**
+   - Basic metadata collection
+   - ENA study accession tracking
+
+3. **Order Management**
+   - Sequencing parameters (Illumina/Nanopore)
+   - Library preparation details
+   - Contact information
+
+4. **Metadata Configuration**
+   - Interactive tree selection of MIxS checklists
+   - Saved as JSON in Sampleset model
+   - Determines which fields appear in sample forms
+
+5. **Sample Data Entry**
+   - Handsontable provides spreadsheet interface
+   - Dynamic columns based on selected checklists
+   - Validation based on MIxS requirements
+
+6. **ENA Submission (Admin only)**
+   - XML generation from model data
+   - Batch submission support
+   - Accession number tracking
+
+7. **Pipeline Execution (Admin only)**
+   - Triggers Nextflow pipelines
+   - Tracks run status in database
+   - Results linked back to samples
+
+## Configuration and Environment
+
+### Environment Variables
+Copy `TEMPLATE.env` to `.env` and configure:
 ```bash
 ENA_USERNAME=Webin-XXXXXX      # ENA submission account
+ENA_USER=                       # Alternative ENA username field
 ENA_PASSWORD=XXXXXXXXXX         # ENA password
 ROOT_DIR=$HOME/git/django_ngs_metadata_collection
 USE_SLURM_FOR_SUBMG=False      # Set to True for HPC environments
 CONDA_PATH=                     # Path to conda installation if using Slurm
 ```
 
-## MIxS Standards Configuration
+### Django Settings (`project/settings.py`)
+- **SECRET_KEY**: Change for production!
+- **DEBUG**: Set to False in production
+- **ALLOWED_HOSTS**: Configure for your domain
+- **DATABASES**: Default SQLite, use PostgreSQL/MySQL for production
+- **STATIC_ROOT**: Where collectstatic puts files
+- **MEDIA_ROOT**: User upload directory
 
-- XML templates stored in `staticfiles/xml/EnvironmentID.xml`
-- Supported environments defined in `app/mixs_metadata_standards.py`
-- After modifying XML files, run `python manage.py collectstatic`
+### MIxS Standards Configuration
+- XML templates: `project/static/xml/*.xml`
+- JSON configs: `project/static/json/*.json`
+- Checklist mapping: `app/models.py:Sampleset.checklist_structure`
+- After changes: `python manage.py collectstatic`
 
-## Testing
+## Common Development Tasks
 
-Currently no test suite implemented. Test file exists at `project/app/tests.py` but is empty.
+### Adding a New MIxS Checklist
+1. Add XML template to `static/xml/NewEnvironment.xml`
+2. Add JSON config to `static/json/NewEnvironment.json`
+3. Update `Sampleset.checklist_structure` in models.py
+4. Create model classes: `GSC_MIxS_new_environment` and `GSC_MIxS_new_environment_unit`
+5. Run migrations: `python manage.py makemigrations && python manage.py migrate`
+6. Run `python manage.py collectstatic`
 
-## Important Files and Locations
+### Modifying Order Form Fields
+1. Edit `OrderForm` class in `app/forms.py`
+2. Update corresponding fields in `Order` model (`app/models.py`)
+3. Run migrations
+4. Update template if needed (`templates/order_form.html`)
 
-- Main settings: `project/project/settings.py`
-- URL routing: `project/project/urls.py` and `project/app/urls.py`
-- Form definitions: `project/app/forms.py`
-- Admin customizations: `project/app/admin.py`
-- Static assets: `project/staticfiles/` (XML templates, CSS, JS)
-- Handsontable integration: `project/app/templates/app/handsontable.html`
+### Adding Custom Sample Attributes
+1. Add to relevant checklist model in `models.py`
+2. Update the corresponding XML template
+3. Run migrations and collectstatic
+4. Fields automatically appear in Handsontable
 
-## Security Notes
+### Working with Handsontable
+- Configuration: `templates/samples.html`
+- Column definitions generated from model fields
+- Validators defined in model's `getValidators()` method
+- Headers from model's `getHeaders()` method
 
-- Default SECRET_KEY in settings.py should be changed for production
-- DEBUG = True should be set to False in production
-- ENA credentials must be kept secure in environment variables
+## Admin Interface Customizations
+
+### Custom Admin Actions
+- **Generate SUBMG config**: Creates SubMG YAML files
+- **Generate sample XMLs**: Prepares ENA submission files
+- **Run MAG cluster**: Triggers nf-core/mag pipeline
+- **Create gzipped files**: Compresses sequencing files
+
+### Admin-Only Features
+- ENA submission workflow
+- Pipeline execution
+- Bulk sample operations
+- Direct database editing
+
+## API Endpoints and Integration Points
+
+### ENA Integration
+- Submission endpoint: Admin actions trigger XML generation
+- Uses Webin REST API for submissions
+- Tracks accession numbers in database
+
+### Excel Import/Export
+- Custom management command: `sync_excel`
+- Bidirectional sync with Excel files
+- Preserves relationships and metadata
+
+### Pipeline Integration
+- Nextflow pipeline execution via django-q2
+- MAG and SubMG pipeline support
+- Results tracked in Pipelines model
+
+## Debugging Tips
+
+### Common Issues
+1. **Handsontable not loading**: Check static files collected
+2. **Checklist fields missing**: Verify XML/JSON files match model
+3. **ENA submission fails**: Check credentials and 24-hour wait period
+4. **Pipeline won't start**: Ensure django-q2 cluster is running
+
+### Useful Django Shell Commands
+```python
+# Get all samples for a user
+from app.models import Sample, User
+user = User.objects.get(username='testuser')
+samples = Sample.objects.filter(order__project__user=user)
+
+# Check checklist configuration
+from app.models import Sampleset
+ss = Sampleset.objects.first()
+print(ss.checklists)  # Shows selected checklists
+
+# Debug ENA submission
+from app.models import SampleSubmission
+submission = SampleSubmission.objects.latest('id')
+print(submission.submission_response)
+```
+
+## Security Considerations
+
+1. **User Isolation**: Views filter by `request.user`
+2. **CSRF Protection**: Enabled by default
+3. **SQL Injection**: Use Django ORM, avoid raw queries
+4. **File Uploads**: Validate file types and sizes
+5. **Secrets**: Never commit `.env` file
+6. **Production**: Disable DEBUG, use HTTPS, secure SECRET_KEY

@@ -4,6 +4,7 @@ import logging
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django.contrib.auth import login, logout
+from django.contrib import messages
 from django.views.generic import ListView
 from django.forms import CheckboxSelectMultiple, CheckboxInput, DateInput, modelformset_factory
 from django.http import HttpResponseRedirect, JsonResponse
@@ -26,8 +27,12 @@ def login_view(request):
         if form.is_valid():
             user = form.get_user()
             login(request, user)
-            return redirect('project_list')
+            messages.success(request, f'Welcome back, {user.username}! You have successfully logged in.')
+            # Handle next URL if provided
+            next_url = request.GET.get('next', 'project_list')
+            return redirect(next_url)
         else:
+            messages.error(request, 'Invalid username or password. Please check your credentials and try again.')
             return render(request, 'login.html', {'form': form})
     else:
         if request.user.is_authenticated:
@@ -38,6 +43,7 @@ def login_view(request):
 
 def logout_view(request):
     logout(request)
+    messages.info(request, 'You have been successfully logged out.')
     return redirect('login')
 
 def register_view(request):
@@ -46,7 +52,13 @@ def register_view(request):
         if form.is_valid():
             user = form.save()
             login(request, user)
+            messages.success(request, f'Welcome {user.username}! Your account has been created successfully. You can now submit sequencing orders.')
             return redirect('project_list')
+        else:
+            # Extract and display specific error messages
+            for field, errors in form.errors.items():
+                for error in errors:
+                    messages.error(request, f'{field.capitalize()}: {error}')
     else:
         form = UserCreationForm()
     return render(request, 'register.html', {'form': form})

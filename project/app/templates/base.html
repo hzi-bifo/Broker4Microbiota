@@ -8,6 +8,8 @@
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">
     <link rel="stylesheet" href="{% static 'css/jqtree.css' %}">
+    <link rel="stylesheet" href="{% static 'css/auth.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
       /* Style the container to have a fixed height and enable scrolling */
       #handsontable-container {
@@ -60,6 +62,20 @@
       </div>
     </header>
 
+    <!-- Messages Section -->
+    {% if messages %}
+    <div class="container mt-4">
+      {% for message in messages %}
+      <div class="message is-{{ message.tags }} is-light">
+        <div class="message-body">
+          {{ message }}
+          <button class="delete" aria-label="delete" onclick="this.parentElement.parentElement.remove()"></button>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+
     <main class="section">
       <div class="container">
         {% block content %}{% endblock %}
@@ -72,5 +88,23 @@
         <p>&copy; {% now "Y" %} Helmholtz Centre for Infection Research. All rights reserved.</p>
       </div>
     </footer>
+
+    <!-- Scripts -->
+    <script>
+      // Auto-dismiss messages after 5 seconds
+      document.addEventListener('DOMContentLoaded', function() {
+        const messages = document.querySelectorAll('.message');
+        messages.forEach(function(message) {
+          setTimeout(function() {
+            message.style.transition = 'opacity 0.5s ease';
+            message.style.opacity = '0';
+            setTimeout(function() {
+              message.remove();
+            }, 500);
+          }, 5000);
+        });
+      });
+    </script>
+    {% block scripts %}{% endblock %}
   </body>
 </html>
