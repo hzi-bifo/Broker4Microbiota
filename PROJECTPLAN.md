@@ -33,3 +33,10 @@ short/small description
 - [x] at  http://127.0.0.1:8000/project/create/  subbmitted checkpbox needs content, not sure, I think its "is this already submitted to ENA" 
 - [x] "save" shoudl be more like "submit" right? maybe have a "clear" butten that clears all fields and shows again the example text htere 
 - [x] change "Project" title to something more deteiled, also add there text that woudl guide the user what he is doing here... maybe make text and title editable in the admin site admin page 
+
+## Order form (/project/1/orders/)
+
+- [ ] add here text that can be changed in admin site settings
+- [ ] better formatting here, e.g. spacing between the 2 buttons?
+- [ ] on http://127.0.0.1:8000/project/1/orders/create/, present here eveything in the same style as http://127.0.0.1:8000/project/create/, e.g. with fileld out examples with clear button and with help text and long-form help text? 
+- [] each "order" should have a status, maybe there should be a button "mark completed" also 

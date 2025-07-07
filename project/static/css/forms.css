@@ -66,7 +66,130 @@
     gap: 0.5rem;
 }
 
-/* Help icon tooltips */
+/* Expandable help system */
+.expandable-field {
+    position: relative;
+}
+
+.expand-help {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    margin-left: 0.75rem;
+    cursor: pointer;
+    font-size: 0.875rem;
+    font-weight: normal;
+    color: var(--primary-color, #3273dc);
+    transition: color 0.2s;
+}
+
+.expand-help:hover {
+    color: var(--secondary-color, #2366d1);
+}
+
+.expand-help i {
+    font-size: 1rem;
+}
+
+.expand-help .expand-text {
+    text-decoration: underline;
+}
+
+/* Expanded help content */
+.expanded-help {
+    margin-top: 1rem;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease-out, opacity 0.3s ease-out;
+    opacity: 0;
+}
+
+.expanded-help.active {
+    max-height: 1000px;
+    opacity: 1;
+    transition: max-height 0.3s ease-in, opacity 0.3s ease-in;
+}
+
+.help-content {
+    background-color: #f8f9fa;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.help-content h5 {
+    font-size: 1.125rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    color: #363636;
+}
+
+.help-content h6 {
+    font-size: 0.875rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #4a4a4a;
+}
+
+.help-content p {
+    margin-bottom: 0.75rem;
+    line-height: 1.6;
+}
+
+/* Content boxes */
+.example-box,
+.warning-box,
+.info-box,
+.tip-box,
+.section-box {
+    margin: 1rem 0;
+    padding: 1rem;
+    border-radius: 6px;
+}
+
+.example-box {
+    background-color: #e8f5e9;
+    border-left: 4px solid #4caf50;
+}
+
+.warning-box {
+    background-color: #fff3e0;
+    border-left: 4px solid #ff9800;
+}
+
+.info-box {
+    background-color: #e3f2fd;
+    border-left: 4px solid #2196f3;
+}
+
+.tip-box {
+    background-color: #f3e5f5;
+    border-left: 4px solid #9c27b0;
+}
+
+.section-box {
+    background-color: #ffffff;
+    border: 1px solid #e0e0e0;
+    margin-bottom: 1rem;
+}
+
+.help-content ul {
+    margin-left: 1.5rem;
+    margin-bottom: 0.75rem;
+}
+
+.help-content li {
+    margin-bottom: 0.25rem;
+}
+
+.help-content .example {
+    font-style: italic;
+    color: #666;
+    margin-top: 0.5rem;
+}
+
+/* Help icon tooltips (for checkbox) */
 .help-icon {
     display: inline-flex;
     align-items: center;

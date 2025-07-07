@@ -27,14 +27,45 @@
           {% endif %}
 
           <!-- Title Field -->
-          <div class="field">
+          <div class="field expandable-field">
             <label class="label {% if form.title.field.required %}required{% endif %}">
               <i class="fas fa-heading"></i> {{ form.title.label }}
+              <span class="expand-help" data-field="title">
+                <i class="fas fa-info-circle"></i>
+                <span class="expand-text">More info</span>
+              </span>
             </label>
             <div class="control">
               {{ form.title|add_class:"input" }}
             </div>
             <p class="help">Choose a descriptive title that clearly identifies your research project or study.</p>
+            <div class="expanded-help" id="help-title">
+              <div class="help-content">
+                <h5>Guidelines for Project Title</h5>
+                <p>Your project title should be:</p>
+                <ul>
+                  <li><strong>Descriptive:</strong> Clearly indicate the main focus of your research</li>
+                  <li><strong>Specific:</strong> Include key details like organism, condition, or methodology</li>
+                  <li><strong>Concise:</strong> Aim for 10-20 words maximum</li>
+                </ul>
+                <div class="example-box">
+                  <h6>Good Examples:</h6>
+                  <ul>
+                    <li>"Gut Microbiome Diversity in Patients with Inflammatory Bowel Disease"</li>
+                    <li>"Comparative Metagenomics of Arctic Soil Microbial Communities"</li>
+                    <li>"RNA-Seq Analysis of E. coli Response to Antibiotic Stress"</li>
+                  </ul>
+                </div>
+                <div class="warning-box">
+                  <h6>Avoid:</h6>
+                  <ul>
+                    <li>Generic titles like "Microbiome Study" or "Sequencing Project"</li>
+                    <li>Abbreviations that aren't widely recognized</li>
+                    <li>Internal project codes as the main title</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
             {% if form.title.errors %}
               {% for error in form.title.errors %}
                 <p class="help is-danger">{{ error }}</p>
@@ -43,14 +74,45 @@
           </div>
 
           <!-- Alias Field -->
-          <div class="field">
+          <div class="field expandable-field">
             <label class="label {% if form.alias.field.required %}required{% endif %}">
               <i class="fas fa-tag"></i> {{ form.alias.label }}
+              <span class="expand-help" data-field="alias">
+                <i class="fas fa-info-circle"></i>
+                <span class="expand-text">More info</span>
+              </span>
             </label>
             <div class="control">
               {{ form.alias|add_class:"input" }}
             </div>
             <p class="help">A short, unique identifier for your project (e.g., internal code or lab abbreviation).</p>
+            <div class="expanded-help" id="help-alias">
+              <div class="help-content">
+                <h5>Project Alias Guidelines</h5>
+                <p>The alias serves as a short, memorable identifier for your project. It's often used in file naming and internal references.</p>
+                <div class="info-box">
+                  <h6>Format Recommendations:</h6>
+                  <ul>
+                    <li><strong>Length:</strong> 3-20 characters</li>
+                    <li><strong>Characters:</strong> Letters, numbers, hyphens, and underscores only</li>
+                    <li><strong>Case:</strong> Either all uppercase or consistent casing</li>
+                  </ul>
+                </div>
+                <div class="example-box">
+                  <h6>Common Patterns:</h6>
+                  <ul>
+                    <li><strong>Year-based:</strong> "2024-GUT-001", "MB2024-15"</li>
+                    <li><strong>Lab codes:</strong> "SMITH-LAB-023", "JD-MICROB-5"</li>
+                    <li><strong>Study type:</strong> "COVID-META-3", "IBD-16S-PILOT"</li>
+                    <li><strong>Grant-based:</strong> "NIH-R01-2024", "ERC-2023-MB"</li>
+                  </ul>
+                </div>
+                <div class="tip-box">
+                  <h6>Tips:</h6>
+                  <p>Choose an alias that will still make sense to you and your team in 2-3 years. Avoid using only numbers or overly cryptic abbreviations.</p>
+                </div>
+              </div>
+            </div>
             {% if form.alias.errors %}
               {% for error in form.alias.errors %}
                 <p class="help is-danger">{{ error }}</p>
@@ -59,14 +121,78 @@
           </div>
 
           <!-- Description Field -->
-          <div class="field">
+          <div class="field expandable-field">
             <label class="label {% if form.description.field.required %}required{% endif %}">
               <i class="fas fa-align-left"></i> {{ form.description.label }}
+              <span class="expand-help" data-field="description">
+                <i class="fas fa-info-circle"></i>
+                <span class="expand-text">More info</span>
+              </span>
             </label>
             <div class="control">
               {{ form.description|add_class:"textarea" }}
             </div>
             <p class="help">Include research objectives, sample types, experimental design, and expected outcomes.</p>
+            <div class="expanded-help" id="help-description">
+              <div class="help-content">
+                <h5>Writing an Effective Project Description</h5>
+                <p>A comprehensive project description helps reviewers understand your research and ensures proper sample processing.</p>
+                
+                <div class="section-box">
+                  <h6>1. Research Background (2-3 sentences)</h6>
+                  <p>Briefly explain the context and importance of your study.</p>
+                  <p class="example"><em>Example: "The human gut microbiome plays a crucial role in health and disease. Recent studies suggest altered microbial composition in patients with inflammatory bowel disease (IBD)."</em></p>
+                </div>
+                
+                <div class="section-box">
+                  <h6>2. Objectives and Hypotheses</h6>
+                  <p>Clearly state what you aim to discover or prove.</p>
+                  <ul>
+                    <li>Primary objective</li>
+                    <li>Secondary objectives (if any)</li>
+                    <li>Specific hypotheses to test</li>
+                  </ul>
+                </div>
+                
+                <div class="section-box">
+                  <h6>3. Sample Information</h6>
+                  <p>Describe your samples in detail:</p>
+                  <ul>
+                    <li><strong>Sample types:</strong> stool, soil, water, tissue, etc.</li>
+                    <li><strong>Number of samples:</strong> total count and groups</li>
+                    <li><strong>Collection method:</strong> how samples were obtained</li>
+                    <li><strong>Storage conditions:</strong> -80°C, RNA later, etc.</li>
+                    <li><strong>Special handling:</strong> any specific requirements</li>
+                  </ul>
+                </div>
+                
+                <div class="section-box">
+                  <h6>4. Experimental Design</h6>
+                  <p>Outline your study structure:</p>
+                  <ul>
+                    <li><strong>Study type:</strong> longitudinal, cross-sectional, case-control</li>
+                    <li><strong>Groups:</strong> treatment vs. control, time points</li>
+                    <li><strong>Sequencing approach:</strong> 16S rRNA, shotgun metagenomics, RNA-seq</li>
+                    <li><strong>Target coverage:</strong> desired sequencing depth</li>
+                  </ul>
+                </div>
+                
+                <div class="section-box">
+                  <h6>5. Expected Outcomes</h6>
+                  <p>What do you hope to achieve?</p>
+                  <ul>
+                    <li>Expected findings</li>
+                    <li>Potential applications</li>
+                    <li>Impact on the field</li>
+                  </ul>
+                </div>
+                
+                <div class="tip-box">
+                  <h6>Length Guidelines:</h6>
+                  <p>Aim for 200-500 words. Be comprehensive but concise. Include all relevant details that would help the sequencing facility understand and properly process your samples.</p>
+                </div>
+              </div>
+            </div>
             {% if form.description.errors %}
               {% for error in form.description.errors %}
                 <p class="help is-danger">{{ error }}</p>
@@ -177,6 +303,46 @@ document.addEventListener('DOMContentLoaded', function() {
     input.addEventListener('focus', function() {
       this.classList.remove('is-success', 'is-danger');
     });
+  });
+  
+  // Expandable help functionality
+  const expandButtons = document.querySelectorAll('.expand-help');
+  
+  expandButtons.forEach(button => {
+    button.addEventListener('click', function() {
+      const fieldName = this.getAttribute('data-field');
+      const helpSection = document.getElementById('help-' + fieldName);
+      const expandText = this.querySelector('.expand-text');
+      
+      if (helpSection.classList.contains('active')) {
+        helpSection.classList.remove('active');
+        expandText.textContent = 'More info';
+      } else {
+        helpSection.classList.add('active');
+        expandText.textContent = 'Less info';
+      }
+    });
+  });
+  
+  // Also expand help when clicking on the input field
+  const expandableFields = document.querySelectorAll('.expandable-field');
+  
+  expandableFields.forEach(field => {
+    const input = field.querySelector('.input, .textarea');
+    const expandButton = field.querySelector('.expand-help');
+    
+    if (input && expandButton) {
+      input.addEventListener('focus', function() {
+        const fieldName = expandButton.getAttribute('data-field');
+        const helpSection = document.getElementById('help-' + fieldName);
+        const expandText = expandButton.querySelector('.expand-text');
+        
+        if (!helpSection.classList.contains('active')) {
+          helpSection.classList.add('active');
+          expandText.textContent = 'Less info';
+        }
+      });
+    }
   });
 });
 </script>
