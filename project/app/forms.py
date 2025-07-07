@@ -66,6 +66,13 @@ class OrderForm(forms.ModelForm):
             'organism': forms.TextInput(attrs={'class': 'input'}),
             'isolated_from': forms.TextInput(attrs={'class': 'input'}),
             'isolation_method': forms.Select(attrs={'class': 'select'}),
+            'platform': forms.TextInput(attrs={'class': 'input'}),
+            'insert_size': forms.TextInput(attrs={'class': 'input'}),
+            'library_name': forms.TextInput(attrs={'class': 'input'}),
+            'library_source': forms.TextInput(attrs={'class': 'input'}),
+            'library_selection': forms.TextInput(attrs={'class': 'input'}),
+            'library_strategy': forms.TextInput(attrs={'class': 'input'}),
+            'sequencing_instrument': forms.TextInput(attrs={'class': 'input'}),
         }
         help_texts = {
             'name': 'Enter your full name as it appears on your billing information.',
@@ -85,7 +92,14 @@ class OrderForm(forms.ModelForm):
             'buffer': 'Enter the buffer information.',
             'organism': 'Enter the organism information.',
             'isolated_from': 'Enter the isolated from information.',
-            'isolation_method': 'Select the isolation method.'
+            'isolation_method': 'Select the isolation method.',
+            'platform': 'Enter the sequencing platform to be used.',
+            'insert_size': 'Enter the expected insert size for paired-end sequencing.',
+            'library_name': 'Enter the name identifier for the sequencing library.',
+            'library_source': 'Enter the source material for library construction.',
+            'library_selection': 'Enter the method used for library selection.',
+            'library_strategy': 'Enter the overall sequencing strategy.',
+            'sequencing_instrument': 'Enter the specific sequencing instrument model.'
         }
 
 class SamplesetForm(forms.ModelForm):

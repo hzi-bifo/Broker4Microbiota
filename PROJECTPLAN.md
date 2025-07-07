@@ -44,4 +44,3 @@ short/small description
 - [ ] for development reasons, add a button "fill in example data" thw would fill in example data that looks nice
 - [ ] make a concept and implement that we have for each order a "stauts" information, eg.. that shouwls the user over a longer timie horizon whats happens with the order, at the beginning its like on the useer side to maark it like "ready for sequencing center", save the information in the db.. Then the sequencing center woudl do somethign (nto implement this but write a few lines in CLAUDE.md how thsi shoudl be done), so they change status to "sequenced" or something. So these fields sohlud be pre-determined and one normally following the next one. maybe present all stauts also somehow on the overview at http://127.0.0.1:8000/project/1/orders/, remember the status is per order maybe a nice way to show whats current status and what should be the next one and so on? 
 
-## 

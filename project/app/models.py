@@ -367,6 +367,7 @@ class Order(models.Model):
     organism = models.CharField(max_length=100, null=True, blank=True)
     isolated_from = models.CharField(max_length=100, null=True, blank=True)
     isolation_method = models.CharField(max_length=100, choices=ISOLATION_METHOD_CHOICES, null=True, blank=True)
+    library = models.CharField(max_length=100, choices=LIBRARY_CHOICES, null=True, blank=True)
     platform = models.CharField(max_length=100, null=True, blank=True, default="OXFORD_NANOPORE")
     insert_size = models.CharField(max_length=100, null=True, blank=True, default="2")
     library_name = models.CharField(max_length=100, null=True, blank=True, default="PCRtest")

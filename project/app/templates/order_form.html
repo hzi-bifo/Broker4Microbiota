@@ -167,15 +167,321 @@
                 {% endfor %}
               {% endif %}
             </div>
+
+            <!-- Isolated From Field -->
+            <div class="field">
+              <label class="label {% if form.isolated_from.field.required %}required{% endif %}">
+                <i class="fas fa-vial"></i> {{ form.isolated_from.label }}
+              </label>
+              <div class="control">
+                {{ form.isolated_from|add_class:"input" }}
+              </div>
+              <p class="help">Source of the biological sample</p>
+              {% if form.isolated_from.errors %}
+                {% for error in form.isolated_from.errors %}
+                  <p class="help is-danger">{{ error }}</p>
+                {% endfor %}
+              {% endif %}
+            </div>
+
+            <!-- Date Field -->
+            <div class="field">
+              <label class="label {% if form.date.field.required %}required{% endif %}">
+                <i class="fas fa-calendar"></i> {{ form.date.label }}
+              </label>
+              <div class="control">
+                {{ form.date|add_class:"input" }}
+              </div>
+              <p class="help">Date of the order submission</p>
+              {% if form.date.errors %}
+                {% for error in form.date.errors %}
+                  <p class="help is-danger">{{ error }}</p>
+                {% endfor %}
+              {% endif %}
+            </div>
+          </div>
+
+          <!-- Sample Processing Section -->
+          <div class="form-section">
+            <h4 class="form-section-title">Sample Processing</h4>
+            
+            <!-- DNA Field -->
+            <div class="field">
+              <label class="label {% if form.dna.field.required %}required{% endif %}">
+                <i class="fas fa-dna"></i> {{ form.dna.label }}
+              </label>
+              <div class="control">
+                {{ form.dna|add_class:"input" }}
+              </div>
+              <p class="help">DNA concentration or quality information</p>
+              {% if form.dna.errors %}
+                {% for error in form.dna.errors %}
+                  <p class="help is-danger">{{ error }}</p>
+                {% endfor %}
+              {% endif %}
+            </div>
+
+            <!-- RNA Field -->
+            <div class="field">
+              <label class="label {% if form.rna.field.required %}required{% endif %}">
+                <i class="fas fa-dna"></i> {{ form.rna.label }}
+              </label>
+              <div class="control">
+                {{ form.rna|add_class:"input" }}
+              </div>
+              <p class="help">RNA concentration or quality information</p>
+              {% if form.rna.errors %}
+                {% for error in form.rna.errors %}
+                  <p class="help is-danger">{{ error }}</p>
+                {% endfor %}
+              {% endif %}
+            </div>
+
+            <!-- Method Field -->
+            <div class="field">
+              <label class="label {% if form.method.field.required %}required{% endif %}">
+                <i class="fas fa-cogs"></i> {{ form.method.label }}
+              </label>
+              <div class="control">
+                {{ form.method|add_class:"input" }}
+              </div>
+              <p class="help">Extraction or preparation method used</p>
+              {% if form.method.errors %}
+                {% for error in form.method.errors %}
+                  <p class="help is-danger">{{ error }}</p>
+                {% endfor %}
+              {% endif %}
+            </div>
+
+            <!-- Buffer Field -->
+            <div class="field">
+              <label class="label {% if form.buffer.field.required %}required{% endif %}">
+                <i class="fas fa-tint"></i> {{ form.buffer.label }}
+              </label>
+              <div class="control">
+                {{ form.buffer|add_class:"input" }}
+              </div>
+              <p class="help">Buffer or storage solution used</p>
+              {% if form.buffer.errors %}
+                {% for error in form.buffer.errors %}
+                  <p class="help is-danger">{{ error }}</p>
+                {% endfor %}
+              {% endif %}
+            </div>
+
+            <!-- Isolation Method Field -->
+            <div class="field">
+              <label class="label {% if form.isolation_method.field.required %}required{% endif %}">
+                <i class="fas fa-microscope"></i> {{ form.isolation_method.label }}
+              </label>
+              <div class="control">
+                {{ form.isolation_method|add_class:"select" }}
+              </div>
+              <p class="help">Method used for sample isolation</p>
+              {% if form.isolation_method.errors %}
+                {% for error in form.isolation_method.errors %}
+                  <p class="help is-danger">{{ error }}</p>
+                {% endfor %}
+              {% endif %}
+            </div>
+          </div>
+
+          <!-- Library Information Section -->
+          <div class="form-section">
+            <h4 class="form-section-title">Library Information</h4>
+            
+            <!-- Library Field -->
+            <div class="field">
+              <label class="label {% if form.library.field.required %}required{% endif %}">
+                <i class="fas fa-book"></i> {{ form.library.label }}
+              </label>
+              <div class="control">
+                {{ form.library|add_class:"select" }}
+              </div>
+              <p class="help">Type of sequencing library</p>
+              {% if form.library.errors %}
+                {% for error in form.library.errors %}
+                  <p class="help is-danger">{{ error }}</p>
+                {% endfor %}
+              {% endif %}
+            </div>
+          </div>
+
+          <!-- Sequencing Platform Section -->
+          <div class="form-section">
+            <h4 class="form-section-title">Sequencing Parameters</h4>
+            
+            <!-- Platform Field -->
+            {% if form.platform %}
+            <div class="field">
+              <label class="label {% if form.platform.field.required %}required{% endif %}">
+                <i class="fas fa-microchip"></i> {{ form.platform.label }}
+              </label>
+              <div class="control">
+                {{ form.platform|add_class:"input" }}
+              </div>
+              <p class="help">Sequencing platform to be used</p>
+              {% if form.platform.errors %}
+                {% for error in form.platform.errors %}
+                  <p class="help is-danger">{{ error }}</p>
+                {% endfor %}
+              {% endif %}
+            </div>
+            {% endif %}
+
+            <!-- Insert Size Field -->
+            {% if form.insert_size %}
+            <div class="field">
+              <label class="label {% if form.insert_size.field.required %}required{% endif %}">
+                <i class="fas fa-ruler"></i> {{ form.insert_size.label }}
+              </label>
+              <div class="control">
+                {{ form.insert_size|add_class:"input" }}
+              </div>
+              <p class="help">Expected insert size for paired-end sequencing</p>
+              {% if form.insert_size.errors %}
+                {% for error in form.insert_size.errors %}
+                  <p class="help is-danger">{{ error }}</p>
+                {% endfor %}
+              {% endif %}
+            </div>
+            {% endif %}
+
+            <!-- Library Name Field -->
+            {% if form.library_name %}
+            <div class="field">
+              <label class="label {% if form.library_name.field.required %}required{% endif %}">
+                <i class="fas fa-tag"></i> {{ form.library_name.label }}
+              </label>
+              <div class="control">
+                {{ form.library_name|add_class:"input" }}
+              </div>
+              <p class="help">Name identifier for the sequencing library</p>
+              {% if form.library_name.errors %}
+                {% for error in form.library_name.errors %}
+                  <p class="help is-danger">{{ error }}</p>
+                {% endfor %}
+              {% endif %}
+            </div>
+            {% endif %}
+
+            <!-- Library Source Field -->
+            {% if form.library_source %}
+            <div class="field">
+              <label class="label {% if form.library_source.field.required %}required{% endif %}">
+                <i class="fas fa-dna"></i> {{ form.library_source.label }}
+              </label>
+              <div class="control">
+                {{ form.library_source|add_class:"input" }}
+              </div>
+              <p class="help">Source material for library construction</p>
+              {% if form.library_source.errors %}
+                {% for error in form.library_source.errors %}
+                  <p class="help is-danger">{{ error }}</p>
+                {% endfor %}
+              {% endif %}
+            </div>
+            {% endif %}
+
+            <!-- Library Selection Field -->
+            {% if form.library_selection %}
+            <div class="field">
+              <label class="label {% if form.library_selection.field.required %}required{% endif %}">
+                <i class="fas fa-filter"></i> {{ form.library_selection.label }}
+              </label>
+              <div class="control">
+                {{ form.library_selection|add_class:"input" }}
+              </div>
+              <p class="help">Method used for library selection</p>
+              {% if form.library_selection.errors %}
+                {% for error in form.library_selection.errors %}
+                  <p class="help is-danger">{{ error }}</p>
+                {% endfor %}
+              {% endif %}
+            </div>
+            {% endif %}
+
+            <!-- Library Strategy Field -->
+            {% if form.library_strategy %}
+            <div class="field">
+              <label class="label {% if form.library_strategy.field.required %}required{% endif %}">
+                <i class="fas fa-chess"></i> {{ form.library_strategy.label }}
+              </label>
+              <div class="control">
+                {{ form.library_strategy|add_class:"input" }}
+              </div>
+              <p class="help">Overall sequencing strategy</p>
+              {% if form.library_strategy.errors %}
+                {% for error in form.library_strategy.errors %}
+                  <p class="help is-danger">{{ error }}</p>
+                {% endfor %}
+              {% endif %}
+            </div>
+            {% endif %}
+
+            <!-- Sequencing Instrument Field -->
+            {% if form.sequencing_instrument %}
+            <div class="field">
+              <label class="label {% if form.sequencing_instrument.field.required %}required{% endif %}">
+                <i class="fas fa-cog"></i> {{ form.sequencing_instrument.label }}
+              </label>
+              <div class="control">
+                {{ form.sequencing_instrument|add_class:"input" }}
+              </div>
+              <p class="help">Specific sequencing instrument model</p>
+              {% if form.sequencing_instrument.errors %}
+                {% for error in form.sequencing_instrument.errors %}
+                  <p class="help is-danger">{{ error }}</p>
+                {% endfor %}
+              {% endif %}
+            </div>
+            {% endif %}
+          </div>
+
+          <!-- Additional Fields Section -->
+          <div class="form-section">
+            <h4 class="form-section-title">Additional Information</h4>
+            
+            <!-- Signature Field -->
+            <div class="field">
+              <label class="label {% if form.signature.field.required %}required{% endif %}">
+                <i class="fas fa-signature"></i> {{ form.signature.label }}
+              </label>
+              <div class="control">
+                {{ form.signature|add_class:"input" }}
+              </div>
+              <p class="help">Your digital signature or authorization</p>
+              {% if form.signature.errors %}
+                {% for error in form.signature.errors %}
+                  <p class="help is-danger">{{ error }}</p>
+                {% endfor %}
+              {% endif %}
+            </div>
+
+            <!-- Data Delivery Field -->
+            <div class="field">
+              <label class="label {% if form.data_delivery.field.required %}required{% endif %}">
+                <i class="fas fa-cloud-download-alt"></i> {{ form.data_delivery.label }}
+              </label>
+              <div class="control">
+                {{ form.data_delivery|add_class:"input" }}
+              </div>
+              <p class="help">How would you like to receive your sequencing data?</p>
+              {% if form.data_delivery.errors %}
+                {% for error in form.data_delivery.errors %}
+                  <p class="help is-danger">{{ error }}</p>
+                {% endfor %}
+              {% endif %}
+            </div>
           </div>
 
           <!-- Form Actions -->
           <div class="form-actions">
             <button type="submit" class="button is-primary">
               <span class="icon">
-                <i class="fas fa-check"></i>
+                <i class="fas fa-save"></i>
               </span>
-              <span>Submit Order</span>
+              <span>Create Order</span>
             </button>
             <button type="button" class="button is-light" onclick="clearForm()">
               <span class="icon">
@@ -226,12 +532,21 @@ function fillExampleData() {
     'quote_no': 'QUOTE-2024-001',
     'experiment_title': 'Gut Microbiome Analysis in IBD Patients',
     'organism': 'Human gut microbiome',
-    'dna': 'Yes',
-    'rna': 'No',
+    'isolated_from': 'Human fecal samples',
+    'date': '2024-07-07',
+    'dna': '50 ng/μL, A260/280: 1.8',
+    'rna': 'Not applicable',
     'method': 'DNA extraction using QIAamp PowerFecal Pro DNA Kit',
     'buffer': 'TE buffer, pH 8.0',
-    'isolated_from': 'Human fecal samples',
-    'data_delivery': 'Secure FTP server'
+    'signature': 'Dr. J. Smith',
+    'data_delivery': 'Secure FTP server with download link notification',
+    'platform': 'Illumina NovaSeq',
+    'insert_size': '350',
+    'library_name': 'GUT-LIB-001',
+    'library_source': 'METAGENOMIC',
+    'library_selection': 'RANDOM',
+    'library_strategy': 'WGS',
+    'sequencing_instrument': 'Illumina NovaSeq 6000'
   };
   
   Object.keys(fields).forEach(fieldName => {
@@ -240,6 +555,21 @@ function fillExampleData() {
       input.value = fields[fieldName];
       input.classList.add('is-success');
       input.classList.remove('is-danger');
+    }
+  });
+  
+  // Handle select fields separately
+  const selectFields = {
+    'isolation_method': 'method1',
+    'library': 'choice1'
+  };
+  
+  Object.keys(selectFields).forEach(fieldName => {
+    const select = document.querySelector(`[name="${fieldName}"]`);
+    if (select) {
+      select.value = selectFields[fieldName];
+      select.classList.add('is-success');
+      select.classList.remove('is-danger');
     }
   });
 }
