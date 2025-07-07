@@ -46,7 +46,7 @@ class ProjectForm(forms.ModelForm):
 class OrderForm(forms.ModelForm):
     class Meta:
         model = Order
-        exclude = ['project']
+        exclude = ['project', 'status', 'status_updated_at', 'status_notes', 'submitted']
         widgets = {
             'name': forms.TextInput(attrs={'class': 'input'}),
             'billing_address': forms.Textarea(attrs={'class': 'textarea'}),
