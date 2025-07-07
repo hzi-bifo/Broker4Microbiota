@@ -160,6 +160,25 @@ python manage.py makemigrations
 python manage.py migrate
 ```
 
+### Site Branding Configuration
+
+The application supports customizable branding through the Django admin interface. This allows different organizations to adapt the platform without code changes.
+
+#### Accessing Site Settings
+1. Log in to Django admin at `/admin/` with superuser credentials
+2. Navigate to "Site Settings" 
+3. Edit the settings to customize your instance
+
+#### Configurable Options
+- **Organization Information**: Name, short name, and website URL
+- **Contact Details**: Primary contact email
+- **Visual Branding**: Upload custom logo and favicon
+- **Theme Colors**: Customize primary and secondary colors
+- **Site Identity**: Application name and tagline
+- **Footer Content**: Additional HTML content for the footer
+
+All changes take effect immediately after saving.
+
 ### Configuration of MIxS Sample Checklists
 
 The application comes with 14 MIxS Sample Checklists that are downloaded from https://www.ebi.ac.uk/ena/browser/checklists. These are stored and can be changed and updated under `staticfiles/xml/EnviornmentID.xml`. These IDs should match `MIXS_METADATA_STANDARDS` defined in `mixs_metadata_standards.py`. After the .xml files are changed, run `python manage.py collectstatic` to update the static files. 

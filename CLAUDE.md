@@ -160,6 +160,7 @@ project/
 - **Read**: Sequencing file paths and checksums
 - **Submission models**: Track ENA submission status
 - **Pipeline models**: Track bioinformatics pipeline runs
+- **SiteSettings**: Singleton model for site-wide branding configuration
 
 #### Views (`app/views.py`)
 - **Authentication**: Login, logout, registration
@@ -177,6 +178,12 @@ project/
 - Pipeline execution triggers
 - Bulk operations on samples
 - XML generation and validation
+- SiteSettingsAdmin: Singleton admin for branding configuration
+
+#### Context Processors (`app/context_processors.py`)
+- **site_settings**: Injects branding configuration into all templates
+- Uses caching to minimize database queries
+- Provides fallback values for robustness
 
 ### Frontend Architecture
 
@@ -254,6 +261,16 @@ CONDA_PATH=                     # Path to conda installation if using Slurm
 - After changes: `python manage.py collectstatic`
 
 ## Common Development Tasks
+
+### Managing Site Branding
+1. Access Django admin at `/admin/`
+2. Navigate to "Site Settings"
+3. Update organization info, logos, colors, etc.
+4. Changes are cached for 5 minutes - to force update:
+   ```python
+   from django.core.cache import cache
+   cache.delete('site_settings')
+   ```
 
 ### Adding a New MIxS Checklist
 1. Add XML template to `static/xml/NewEnvironment.xml`
