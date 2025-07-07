@@ -402,6 +402,29 @@
     line-height: 1.4;
 }
 
+.project-info {
+    max-width: 100%;
+}
+
+.project-meta {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin-top: 0.5rem;
+}
+
+.project-meta .tag {
+    font-size: 0.75rem;
+    border-radius: 4px;
+}
+
+.project-description {
+    font-size: 0.875rem;
+    color: #666;
+    line-height: 1.4;
+    margin-top: 0.5rem;
+}
+
 /* Orders Section */
 .orders-section {
     margin-bottom: 2rem;
