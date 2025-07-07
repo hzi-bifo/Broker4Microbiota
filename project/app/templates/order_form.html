@@ -31,14 +31,41 @@
             <h4 class="form-section-title">Contact Information</h4>
             
             <!-- Name Field -->
-            <div class="field">
+            <div class="field expandable-field">
               <label class="label {% if form.name.field.required %}required{% endif %}">
                 <i class="fas fa-user"></i> {{ form.name.label }}
+                <span class="expand-help" data-field="name">
+                  <i class="fas fa-info-circle"></i>
+                  <span class="expand-text">More info</span>
+                </span>
               </label>
               <div class="control">
                 {{ form.name|add_class:"input" }}
               </div>
               <p class="help">Full name for billing and contact purposes</p>
+              <div class="expanded-help" id="help-name">
+                <div class="help-content">
+                  <h5>Contact Name Guidelines</h5>
+                  <p>Please provide the primary contact person's full name for this sequencing order.</p>
+                  <div class="info-box">
+                    <h6>Important:</h6>
+                    <ul>
+                      <li>Use your official name as it appears on institutional documents</li>
+                      <li>Include appropriate titles (Dr., Prof., etc.) if desired</li>
+                      <li>This name will be used for all official correspondence</li>
+                      <li>Billing documents will be addressed to this person</li>
+                    </ul>
+                  </div>
+                  <div class="example-box">
+                    <h6>Examples:</h6>
+                    <ul>
+                      <li>Dr. Jane Smith</li>
+                      <li>Prof. John Doe</li>
+                      <li>Maria García, PhD</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
               {% if form.name.errors %}
                 {% for error in form.name.errors %}
                   <p class="help is-danger">{{ error }}</p>
@@ -47,14 +74,41 @@
             </div>
 
             <!-- Email Field -->
-            <div class="field">
+            <div class="field expandable-field">
               <label class="label {% if form.email.field.required %}required{% endif %}">
                 <i class="fas fa-envelope"></i> {{ form.email.label }}
+                <span class="expand-help" data-field="email">
+                  <i class="fas fa-info-circle"></i>
+                  <span class="expand-text">More info</span>
+                </span>
               </label>
               <div class="control">
                 {{ form.email|add_class:"input" }}
               </div>
               <p class="help">Primary contact email for order updates</p>
+              <div class="expanded-help" id="help-email">
+                <div class="help-content">
+                  <h5>Contact Email Requirements</h5>
+                  <p>This email address will be used for all communication regarding your sequencing order.</p>
+                  <div class="info-box">
+                    <h6>What we'll send:</h6>
+                    <ul>
+                      <li><strong>Order confirmation:</strong> Immediate confirmation of your submission</li>
+                      <li><strong>Status updates:</strong> Progress notifications as your samples are processed</li>
+                      <li><strong>Data delivery:</strong> Links to download your sequencing results</li>
+                      <li><strong>Quality reports:</strong> QC metrics and analysis summaries</li>
+                    </ul>
+                  </div>
+                  <div class="tip-box">
+                    <h6>Best Practices:</h6>
+                    <ul>
+                      <li>Use an institutional email address that you check regularly</li>
+                      <li>Avoid personal email addresses for data security</li>
+                      <li>Consider using a group email if multiple people need updates</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
               {% if form.email.errors %}
                 {% for error in form.email.errors %}
                   <p class="help is-danger">{{ error }}</p>
@@ -137,14 +191,50 @@
             <h4 class="form-section-title">Project Information</h4>
             
             <!-- Experiment Title Field -->
-            <div class="field">
+            <div class="field expandable-field">
               <label class="label {% if form.experiment_title.field.required %}required{% endif %}">
                 <i class="fas fa-flask"></i> {{ form.experiment_title.label }}
+                <span class="expand-help" data-field="experiment_title">
+                  <i class="fas fa-info-circle"></i>
+                  <span class="expand-text">More info</span>
+                </span>
               </label>
               <div class="control">
                 {{ form.experiment_title|add_class:"input" }}
               </div>
               <p class="help">Short title describing the experiment or study</p>
+              <div class="expanded-help" id="help-experiment_title">
+                <div class="help-content">
+                  <h5>Experiment Title Guidelines</h5>
+                  <p>Provide a concise yet descriptive title for your sequencing experiment.</p>
+                  <div class="info-box">
+                    <h6>A good experiment title should:</h6>
+                    <ul>
+                      <li><strong>Be specific:</strong> Include key details about your study</li>
+                      <li><strong>Be concise:</strong> Aim for 5-15 words</li>
+                      <li><strong>Include organism:</strong> Mention the species or sample type</li>
+                      <li><strong>Describe purpose:</strong> What are you investigating?</li>
+                    </ul>
+                  </div>
+                  <div class="example-box">
+                    <h6>Good Examples:</h6>
+                    <ul>
+                      <li>"Gut Microbiome Analysis in IBD Patients"</li>
+                      <li>"E. coli Transcriptome Under Heat Stress"</li>
+                      <li>"Comparative Genomics of Marine Bacteriophages"</li>
+                      <li>"RNA-Seq of Mouse Brain Development Stages"</li>
+                    </ul>
+                  </div>
+                  <div class="warning-box">
+                    <h6>Avoid:</h6>
+                    <ul>
+                      <li>Vague titles like "Sequencing Project" or "Sample Analysis"</li>
+                      <li>Internal lab codes without description</li>
+                      <li>Overly technical jargon</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
               {% if form.experiment_title.errors %}
                 {% for error in form.experiment_title.errors %}
                   <p class="help is-danger">{{ error }}</p>
@@ -489,11 +579,11 @@
               </span>
               <span>Clear Form</span>
             </button>
-            <button type="button" class="button is-info is-light" onclick="fillExampleData()">
+            <button type="button" class="button is-info is-light" onclick="fillDummyData()">
               <span class="icon">
                 <i class="fas fa-magic"></i>
               </span>
-              <span>Fill Example Data</span>
+              <span>Add Dummy Data</span>
             </button>
             <a href="{% url 'order_list' project_id %}" class="button is-light">
               <span class="icon">
@@ -520,7 +610,7 @@ function clearForm() {
 }
 
 // Fill example data function (for development)
-function fillExampleData() {
+function fillDummyData() {
   const fields = {
     'name': 'Dr. Jane Smith',
     'email': 'jane.smith@university.edu',
@@ -595,6 +685,46 @@ document.addEventListener('DOMContentLoaded', function() {
     input.addEventListener('focus', function() {
       this.classList.remove('is-success', 'is-danger');
     });
+  });
+  
+  // Expandable help functionality
+  const expandButtons = document.querySelectorAll('.expand-help');
+  
+  expandButtons.forEach(button => {
+    button.addEventListener('click', function() {
+      const fieldName = this.getAttribute('data-field');
+      const helpSection = document.getElementById('help-' + fieldName);
+      const expandText = this.querySelector('.expand-text');
+      
+      if (helpSection.classList.contains('active')) {
+        helpSection.classList.remove('active');
+        expandText.textContent = 'More info';
+      } else {
+        helpSection.classList.add('active');
+        expandText.textContent = 'Less info';
+      }
+    });
+  });
+  
+  // Auto-expand help when clicking on the input field
+  const expandableFields = document.querySelectorAll('.expandable-field');
+  
+  expandableFields.forEach(field => {
+    const input = field.querySelector('.input, .textarea');
+    const expandButton = field.querySelector('.expand-help');
+    
+    if (input && expandButton) {
+      input.addEventListener('focus', function() {
+        const fieldName = expandButton.getAttribute('data-field');
+        const helpSection = document.getElementById('help-' + fieldName);
+        const expandText = expandButton.querySelector('.expand-text');
+        
+        if (!helpSection.classList.contains('active')) {
+          helpSection.classList.add('active');
+          expandText.textContent = 'Less info';
+        }
+      });
+    }
   });
 });
 </script>

@@ -354,7 +354,15 @@ Order List
                     {% if order.status_notes %}
                       <p><strong>Notes:</strong> {{ order.status_notes }}</p>
                     {% endif %}
-                    <p class="mt-2"><strong>What's next:</strong> Ship your samples to the facility using the instructions provided during submission. You will receive email updates as your order progresses.</p>
+                    <p class="mt-2"><strong>What's next:</strong> Ship your samples to the facility. Click the button below to view shipping instructions.</p>
+                  </div>
+                  <div class="has-text-centered mt-3">
+                    <button class="button is-info" onclick="showSubmissionInstructions()">
+                      <span class="icon">
+                        <i class="fas fa-shipping-fast"></i>
+                      </span>
+                      <span>View Shipping Instructions</span>
+                    </button>
                   </div>
                 </div>
               {% else %}
@@ -516,6 +524,37 @@ function showSubmissionModal(orderId, nextStatus) {
                     <span>Confirm Submission</span>
                 </button>
                 <button class="button" onclick="closeModal(this)">Cancel</button>
+            </footer>
+        </div>
+    `;
+    document.body.appendChild(modal);
+}
+
+function showSubmissionInstructions() {
+    const modal = document.createElement('div');
+    modal.className = 'modal is-active';
+    modal.innerHTML = `
+        <div class="modal-background" onclick="closeModal(this)"></div>
+        <div class="modal-card">
+            <header class="modal-card-head">
+                <p class="modal-card-title">
+                    <i class="fas fa-shipping-fast has-text-info"></i>
+                    Shipping Instructions
+                </p>
+                <button class="delete" aria-label="close" onclick="closeModal(this)"></button>
+            </header>
+            <section class="modal-card-body">
+                <div class="content">
+                    {{ site_settings.submission_instructions|safe }}
+                </div>
+            </section>
+            <footer class="modal-card-foot">
+                <button class="button is-primary" onclick="closeModal(this)">
+                    <span class="icon">
+                        <i class="fas fa-check"></i>
+                    </span>
+                    <span>Got it</span>
+                </button>
             </footer>
         </div>
     `;

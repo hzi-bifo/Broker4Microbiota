@@ -253,14 +253,12 @@
               </span>
               <span>Clear Form</span>
             </button>
-            {% if debug %}
-            <button type="button" class="button is-info is-light" onclick="fillExampleData()">
+            <button type="button" class="button is-info is-light" onclick="fillDummyData()">
               <span class="icon">
                 <i class="fas fa-magic"></i>
               </span>
-              <span>Fill Example Data</span>
+              <span>Add Dummy Data</span>
             </button>
-            {% endif %}
             <a href="{% url 'project_list' %}" class="button is-light">
               <span class="icon">
                 <i class="fas fa-times"></i>
@@ -287,7 +285,7 @@ function clearForm() {
 }
 
 // Fill example data function (for development)
-function fillExampleData() {
+function fillDummyData() {
   const titleInput = document.querySelector('input[name="title"]');
   const aliasInput = document.querySelector('input[name="alias"]');
   const descriptionInput = document.querySelector('textarea[name="description"]');

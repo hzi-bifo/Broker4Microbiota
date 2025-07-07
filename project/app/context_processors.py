@@ -34,6 +34,7 @@ def site_settings(request):
                 'project_form_description': site_settings_obj.project_form_description,
                 'order_form_title': site_settings_obj.order_form_title,
                 'order_form_description': site_settings_obj.order_form_description,
+                'submission_instructions': site_settings_obj.submission_instructions,
                 'logo_url': site_settings_obj.logo.url if site_settings_obj.logo else None,
                 'favicon_url': site_settings_obj.favicon.url if site_settings_obj.favicon else None,
             }
@@ -41,7 +42,7 @@ def site_settings(request):
             # Add default logo fallback
             if not cached_settings['logo_url']:
                 # Use the existing static logo as fallback
-                cached_settings['logo_url'] = os.path.join(django_settings.STATIC_URL, 'images/logo.png')
+                cached_settings['logo_url'] = django_settings.STATIC_URL + 'images/logo.png'
             
             # Cache for 5 minutes
             cache.set('site_settings', cached_settings, 300)
@@ -64,7 +65,8 @@ def site_settings(request):
                 'project_form_description': 'A project represents a study or experiment that groups related sequencing orders. Each project can contain multiple orders for different samples or time points.',
                 'order_form_title': 'Create Sequencing Order',
                 'order_form_description': 'Provide detailed information for your sequencing order including contact details, sample information, and sequencing preferences.',
-                'logo_url': os.path.join(django_settings.STATIC_URL, 'images/logo.png'),
+                'submission_instructions': '<h4>Next Steps After Submission:</h4><ol><li><strong>Ship Your Samples</strong> - Send your samples to our facility using the provided shipping address</li><li><strong>Sample Processing</strong> - We will begin processing once samples are received</li><li><strong>Quality Control</strong> - All samples undergo rigorous QC before sequencing</li><li><strong>Data Delivery</strong> - Sequencing data will be delivered via secure download</li></ol><p><strong>Shipping Address:</strong><br>Sequencing Facility<br>Helmholtz Centre for Infection Research<br>Inhoffenstraße 7<br>38124 Braunschweig, Germany</p><p><strong>Important:</strong> Please include a copy of your order confirmation with your shipment.</p>',
+                'logo_url': django_settings.STATIC_URL + 'images/logo.png',
                 'favicon_url': None,
             }
     
