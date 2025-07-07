@@ -373,10 +373,10 @@ def samples_view(request, project_id, order_id, sample_type):
         pixelsPerChar = settings.PIXELS_PER_CHAR
 
         nested_headers_checklists.append({'label': '', 'colspan': 2})
-        nested_headers_fields = ['Delete', 'Unsaved']
+        nested_headers_fields = ['Delete', 'Saved']
         headers_size = [75,60]
 
-        samples_headers = samples_headers + f"{{ title: 'Delete', renderer: deleteButtonRenderer }},\n{{ title: 'Unsaved', data: 'status', readOnly: true }},\n"
+        samples_headers = samples_headers + f"{{ title: 'Delete', renderer: deleteButtonRenderer }},\n{{ title: 'Saved', data: 'status', readOnly: true, renderer: statusRenderer }},\n"
         sample_headers_array = sample_headers_array + f"Delete: row[1],\nunsaved: row[1],\n"
 
         sample=Sample(order = order, sample_type=sample_type)
