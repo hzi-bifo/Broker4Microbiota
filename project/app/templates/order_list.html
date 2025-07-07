@@ -5,6 +5,72 @@ Order List
 {% endblock title %}
 
 {% block content %}
+<style>
+/* Review Checklist Styling */
+.review-checklist {
+  background: #f8f9fa;
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin: 1.5rem 0;
+}
+
+.checkbox-item {
+  display: flex;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  margin-bottom: 0.75rem;
+  background: white;
+  border: 1px solid #dee2e6;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.checkbox-item:hover {
+  background: #f8f9fa;
+  border-color: #3273dc;
+}
+
+.checkbox-item:last-child {
+  margin-bottom: 0;
+}
+
+.checkbox-item input[type="checkbox"] {
+  margin-right: 1rem;
+  cursor: pointer;
+  width: 18px;
+  height: 18px;
+}
+
+.checkbox-label {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.checkbox-label i {
+  font-size: 1.2rem;
+  width: 30px;
+  text-align: center;
+}
+
+.checkbox-item.checked {
+  background: #e8f5e9;
+  border-color: #4caf50;
+}
+
+.submit-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+/* Submission Instructions Modal */
+.modal-card-body .content {
+  margin: 0;
+}
+</style>
 <section class="section">
   <div class="container">
     <!-- Project Context Header -->
@@ -145,14 +211,18 @@ Order List
                   <div class="step-label">Review & Submit</div>
                 </div>
                 
-                <!-- Step 5: Sequencing (Waiting/Admin) -->
-                {% if order.is_waiting_for_facility %}
-                <div class="progress-step active">
+                <!-- Step 5: Submitted (Waiting for facility) -->
+                {% if order.status != 'draft' %}
+                <div class="progress-step {% if order.is_waiting_for_facility %}active{% else %}completed{% endif %}">
                   <div class="step-icon">
-                    <i class="fas fa-clock"></i>
+                    {% if order.status == 'completed' or order.status == 'data_delivered' %}
+                      <i class="fas fa-check-circle"></i>
+                    {% else %}
+                      <i class="fas fa-clock"></i>
+                    {% endif %}
                   </div>
-                  <div class="step-label">Sequencing</div>
-                  <div class="step-optional">(In Progress)</div>
+                  <div class="step-label">Processing</div>
+                  <div class="step-optional">(By Facility)</div>
                 </div>
                 {% endif %}
               </div>
@@ -201,17 +271,72 @@ Order List
                     Step 4: Review & Submit for Sequencing
                   </h4>
                   <p class="action-description">
-                    Your order is complete! Review your order details and submit for sequencing. You can optionally add analysis samples (Assembly, Binning, MAG) before submitting.
+                    Your order is complete! Please review all sections before submitting for sequencing.
                   </p>
-                  <div class="buttons">
+                  
+                  <!-- Review Checklist -->
+                  <div class="review-checklist">
+                    <h5 class="subtitle is-6 mb-3">Confirm each section is complete:</h5>
+                    
+                    <label class="checkbox-item">
+                      <input type="checkbox" class="review-checkbox" data-order="{{ order.id }}" data-section="order">
+                      <span class="checkbox-label">
+                        <i class="fas fa-file-alt"></i>
+                        <strong>Order Details</strong> - Contact information and delivery preferences
+                      </span>
+                      <a href="{% url 'order_edit' project_id=project_id order_id=order.id %}" 
+                         class="button is-small is-info is-outlined ml-2">
+                        <span class="icon">
+                          <i class="fas fa-edit"></i>
+                        </span>
+                        <span>Edit</span>
+                      </a>
+                    </label>
+                    
+                    <label class="checkbox-item">
+                      <input type="checkbox" class="review-checkbox" data-order="{{ order.id }}" data-section="checklist">
+                      <span class="checkbox-label">
+                        <i class="fas fa-clipboard-list"></i>
+                        <strong>MIxS Checklist</strong> - {{ order.get_selected_checklist|default:"Not selected" }}
+                      </span>
+                      <a href="{% url 'metadata_view' project_id=project_id order_id=order.id %}" 
+                         class="button is-small is-info is-outlined ml-2">
+                        <span class="icon">
+                          <i class="fas fa-edit"></i>
+                        </span>
+                        <span>Change</span>
+                      </a>
+                    </label>
+                    
+                    <label class="checkbox-item">
+                      <input type="checkbox" class="review-checkbox" data-order="{{ order.id }}" data-section="samples">
+                      <span class="checkbox-label">
+                        <i class="fas fa-dna"></i>
+                        <strong>Sample Data</strong> - {{ order.get_sample_count }} sample{{ order.get_sample_count|pluralize }}
+                      </span>
+                      <a href="{% url 'samples_view' project_id=project_id order_id=order.id sample_type=1%}" 
+                         class="button is-small is-info is-outlined ml-2">
+                        <span class="icon">
+                          <i class="fas fa-edit"></i>
+                        </span>
+                        <span>Edit</span>
+                      </a>
+                    </label>
+                  </div>
+                  
+                  <!-- Submit Button (disabled by default) -->
+                  <div class="has-text-centered mt-5">
                     {% if order.can_advance_status %}
-                      <button class="button is-success is-medium" 
-                              onclick="advanceStatus({{ order.id }}, '{{ order.get_next_status }}')">
+                      <button class="button is-success is-large submit-button" 
+                              id="submit-order-{{ order.id }}"
+                              onclick="submitOrder({{ order.id }}, '{{ order.get_next_status }}')"
+                              disabled>
                         <span class="icon">
                           <i class="fas fa-rocket"></i>
                         </span>
                         <span>Submit for Sequencing</span>
                       </button>
+                      <p class="help mt-2">Please confirm all sections above to enable submission</p>
                     {% endif %}
                   </div>
                 </div>
@@ -219,26 +344,18 @@ Order List
                 <div class="action-guidance">
                   <h4 class="action-title">
                     <i class="fas fa-clock"></i>
-                    Step 5: Sequencing in Progress
+                    Order Submitted - Awaiting Processing
                   </h4>
                   <p class="action-description">
-                    Your order has been submitted and is being processed by the sequencing facility. You will be notified when sequencing is complete and data is available.
+                    Your order has been submitted successfully! The sequencing facility will review your order and begin processing your samples.
                   </p>
                   <div class="notification is-info is-light">
                     <p><strong>Current Status:</strong> {{ order.get_status_display }}</p>
                     {% if order.status_notes %}
                       <p><strong>Notes:</strong> {{ order.status_notes }}</p>
                     {% endif %}
+                    <p class="mt-2"><strong>What's next:</strong> Ship your samples to the facility using the instructions provided during submission. You will receive email updates as your order progresses.</p>
                   </div>
-                  {% if order.can_advance_status and user.is_staff %}
-                    <button class="button is-primary is-medium" 
-                            onclick="advanceStatus({{ order.id }}, '{{ order.get_next_status }}')">
-                      <span class="icon">
-                        <i class="fas fa-arrow-right"></i>
-                      </span>
-                      <span>Advance Status (Admin)</span>
-                    </button>
-                  {% endif %}
                 </div>
               {% else %}
                 <div class="action-guidance">
@@ -253,44 +370,6 @@ Order List
               {% endif %}
             </div>
 
-            <!-- Edit Previous Steps -->
-            {% if order.show_metadata or order.show_samples or order.status != 'draft' %}
-            <div class="edit-actions">
-              <h5 class="edit-title">Edit Previous Steps</h5>
-              <div class="edit-buttons">
-                <!-- Edit Order Details -->
-                <a href="{% url 'order_edit' project_id=project_id order_id=order.id %}" 
-                   class="button is-light is-small">
-                  <span class="icon is-small">
-                    <i class="fas fa-edit"></i>
-                  </span>
-                  <span>Edit Order Details</span>
-                </a>
-                
-                <!-- Edit Metadata Checklist -->
-                {% if order.show_metadata %}
-                <a href="{% url 'metadata_view' project_id=project_id order_id=order.id %}" 
-                   class="button is-light is-small">
-                  <span class="icon is-small">
-                    <i class="fas fa-clipboard-list"></i>
-                  </span>
-                  <span>Change Checklist</span>
-                </a>
-                {% endif %}
-                
-                <!-- Edit Sample Data -->
-                {% if order.show_samples %}
-                <a href="{% url 'samples_view' project_id=project_id order_id=order.id sample_type=1%}" 
-                   class="button is-light is-small">
-                  <span class="icon is-small">
-                    <i class="fas fa-dna"></i>
-                  </span>
-                  <span>Edit Samples</span>
-                </a>
-                {% endif %}
-              </div>
-            </div>
-            {% endif %}
 
             <!-- Optional Actions -->
             {% if order.show_samples %}
@@ -356,10 +435,100 @@ Order List
 </section>
 
 <script>
+// Get CSRF token from cookies
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
 function deleteOrder(url, orderId) {
     if (confirm('Are you sure you want to delete this order, and all related objects (samples, reads, analyses)?')) {
         window.location.href = url;
     }
+}
+
+// Handle review checkboxes
+document.addEventListener('DOMContentLoaded', function() {
+    const checkboxes = document.querySelectorAll('.review-checkbox');
+    
+    checkboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', function() {
+            const orderId = this.dataset.order;
+            const checkboxItem = this.closest('.checkbox-item');
+            
+            if (this.checked) {
+                checkboxItem.classList.add('checked');
+            } else {
+                checkboxItem.classList.remove('checked');
+            }
+            
+            // Check if all checkboxes for this order are checked
+            const orderCheckboxes = document.querySelectorAll(`.review-checkbox[data-order="${orderId}"]`);
+            const allChecked = Array.from(orderCheckboxes).every(cb => cb.checked);
+            
+            // Enable/disable submit button
+            const submitButton = document.getElementById(`submit-order-${orderId}`);
+            if (submitButton) {
+                submitButton.disabled = !allChecked;
+            }
+        });
+    });
+});
+
+function submitOrder(orderId, nextStatus) {
+    // Show submission instructions modal
+    showSubmissionModal(orderId, nextStatus);
+}
+
+function showSubmissionModal(orderId, nextStatus) {
+    const modal = document.createElement('div');
+    modal.className = 'modal is-active';
+    modal.innerHTML = `
+        <div class="modal-background" onclick="closeModal(this)"></div>
+        <div class="modal-card">
+            <header class="modal-card-head">
+                <p class="modal-card-title">
+                    <i class="fas fa-check-circle has-text-success"></i>
+                    Order Submission Confirmation
+                </p>
+                <button class="delete" aria-label="close" onclick="closeModal(this)"></button>
+            </header>
+            <section class="modal-card-body">
+                <div class="content">
+                    {{ site_settings.submission_instructions|safe }}
+                </div>
+            </section>
+            <footer class="modal-card-foot">
+                <button class="button is-success" onclick="confirmSubmission(${orderId}, '${nextStatus}')">
+                    <span class="icon">
+                        <i class="fas fa-rocket"></i>
+                    </span>
+                    <span>Confirm Submission</span>
+                </button>
+                <button class="button" onclick="closeModal(this)">Cancel</button>
+            </footer>
+        </div>
+    `;
+    document.body.appendChild(modal);
+}
+
+function closeModal(element) {
+    const modal = element.closest('.modal');
+    modal.remove();
+}
+
+function confirmSubmission(orderId, nextStatus) {
+    advanceStatus(orderId, nextStatus);
 }
 
 function advanceStatus(orderId, nextStatus) {
@@ -372,34 +541,30 @@ function advanceStatus(orderId, nextStatus) {
         'completed': 'Completed'
     };
     
-    const message = `Are you sure you want to advance this order to "${statusNames[nextStatus]}"?`;
-    
-    if (confirm(message)) {
-        // For now, just reload the page - in a real implementation, this would be an AJAX call
-        // TODO: Implement AJAX endpoint for status updates
-        fetch(`/api/orders/${orderId}/advance-status/`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
-            },
-            body: JSON.stringify({
-                'new_status': nextStatus
-            })
+    // For now, just reload the page - in a real implementation, this would be an AJAX call
+    // TODO: Implement AJAX endpoint for status updates
+    fetch(`/api/orders/${orderId}/advance-status/`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken'),
+        },
+        body: JSON.stringify({
+            'new_status': nextStatus
         })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                location.reload();
-            } else {
-                alert('Error updating status: ' + data.error);
-            }
-        })
-        .catch(error => {
-            alert('Error updating status. Please try again.');
-            console.error('Error:', error);
-        });
-    }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            location.reload();
+        } else {
+            alert('Error updating status: ' + data.error);
+        }
+    })
+    .catch(error => {
+        alert('Error updating status. Please try again.');
+        console.error('Error:', error);
+    });
 }
 </script>
 {% endblock content %}

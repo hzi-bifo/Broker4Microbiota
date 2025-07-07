@@ -42,5 +42,42 @@ short/small description
 - [ ] on http://127.0.0.1:8000/project/1/orders/create/, present here eveything in the same style as http://127.0.0.1:8000/project/create/, e.g. with fileld out examples with clear button and with help text and long-form help text? 
 - [ ] each "order" should have a status, maybe there should be a button "mark completed" also 
 - [ ] for development reasons, add a button "fill in example data" thw would fill in example data that looks nice
-- [ ] make a concept and implement that we have for each order a "stauts" information, eg.. that shouwls the user over a longer timie horizon whats happens with the order, at the beginning its like on the useer side to maark it like "ready for sequencing center", save the information in the db.. Then the sequencing center woudl do somethign (nto implement this but write a few lines in CLAUDE.md how thsi shoudl be done), so they change status to "sequenced" or something. So these fields sohlud be pre-determined and one normally following the next one. maybe present all stauts also somehow on the overview at http://127.0.0.1:8000/project/1/orders/, remember the status is per order maybe a nice way to show whats current status and what should be the next one and so on? 
+- [x] make a concept and implement that we have for each order a "stauts" information, eg.. that shouwls the user over a longer timie horizon whats happens with the order, at the beginning its like on the useer side to maark it like "ready for sequencing center", save the information in the db.. Then the sequencing center woudl do somethign (nto implement this but write a few lines in CLAUDE.md how thsi shoudl be done), so they change status to "sequenced" or something. So these fields sohlud be pre-determined and one normally following the next one. maybe present all stauts also somehow on the overview at http://127.0.0.1:8000/project/1/orders/, remember the status is per order maybe a nice way to show whats current status and what should be the next one and so on?
+
+## Admin Panel Integration for Order Management
+
+### Order Status Management (To be implemented)
+- [ ] Add a dedicated admin interface for managing order statuses
+- [ ] Create a dashboard view showing all orders grouped by status:
+  - Draft orders (user hasn't submitted yet)
+  - Ready for Sequencing (user submitted, awaiting facility review)
+  - Sequencing in Progress
+  - Sequencing Completed
+  - Data Processing
+  - Data Delivered
+  - Completed
+- [ ] Highlight newly submitted orders ("Ready for Sequencing") with:
+  - Visual indicators (badge, color coding)
+  - Notification system for admin users
+  - Quick actions to advance status or add notes
+- [ ] Add filters and search functionality:
+  - Filter by status, date submitted, user, project
+  - Search by order ID, sample IDs, user name
+- [ ] Batch actions for admin:
+  - Advance multiple orders to next status
+  - Export order details to CSV/Excel
+  - Generate sequencing worksheets
+- [ ] Order detail view in admin with:
+  - Complete order information
+  - Sample details with MIxS metadata
+  - Status history/timeline
+  - Admin notes/comments section
+  - File attachments (sequencing results, reports)
+- [ ] Email notifications:
+  - Notify users when status changes
+  - Notify admins when new orders are submitted
+- [ ] Integration with sequencing facility workflows:
+  - API endpoints for external systems
+  - Barcode generation for samples
+  - LIMS integration capabilities 
 

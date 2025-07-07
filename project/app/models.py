@@ -2900,6 +2900,27 @@ class SiteSettings(models.Model):
         blank=True
     )
     
+    # Submission Instructions
+    submission_instructions = models.TextField(
+        default="""<h4>Next Steps After Submission:</h4>
+<ol>
+<li><strong>Sample Preparation:</strong> Ensure your samples are properly labeled with the sample IDs you provided.</li>
+<li><strong>Sample Shipping:</strong> Ship your samples to:
+    <address>
+    Sequencing Facility<br>
+    Helmholtz Centre for Infection Research<br>
+    Inhoffenstraße 7<br>
+    38124 Braunschweig, Germany
+    </address>
+</li>
+<li><strong>Include Documentation:</strong> Print and include your order confirmation with the samples.</li>
+<li><strong>Tracking:</strong> You will receive email updates on the status of your sequencing order.</li>
+</ol>
+<p>For questions, contact: <a href="mailto:sequencing@helmholtz-hzi.de">sequencing@helmholtz-hzi.de</a></p>""",
+        help_text="Instructions shown after order submission (HTML allowed)",
+        blank=True
+    )
+    
     # Metadata Checklist Customization
     metadata_checklist_title = models.CharField(
         max_length=200,

@@ -66,6 +66,10 @@ class SiteSettingsAdmin(admin.ModelAdmin):
             'fields': ('project_form_title', 'project_form_description', 'order_form_title', 'order_form_description'),
             'description': 'Customize form titles and descriptions'
         }),
+        ('Order Submission', {
+            'fields': ('submission_instructions',),
+            'description': 'Instructions shown after order submission'
+        }),
         ('System Information', {
             'fields': ('created_at', 'updated_at'),
             'classes': ('collapse',),

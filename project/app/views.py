@@ -9,8 +9,10 @@ from django.views.generic import ListView
 from django.forms import CheckboxSelectMultiple, CheckboxInput, DateInput, modelformset_factory
 from django.http import HttpResponseRedirect, JsonResponse
 from django.urls import reverse, reverse_lazy
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_POST
 from .forms import OrderForm, SampleForm, SamplesetForm, ProjectForm
-from .models import Order, Sample, Sampleset, Project, STATUS_CHOICES, SAMPLE_TYPE_NORMAL, SAMPLE_TYPE_ASSEMBLY, SAMPLE_TYPE_BIN, SAMPLE_TYPE_MAG
+from .models import Order, Sample, Sampleset, Project, STATUS_CHOICES, SAMPLE_TYPE_NORMAL, SAMPLE_TYPE_ASSEMBLY, SAMPLE_TYPE_BIN, SAMPLE_TYPE_MAG, SiteSettings
 from django_q.tasks import async_task, result
 from .hooks import process_submg_result_inner
 
@@ -83,6 +85,13 @@ class ProjectListView(ListView):
         # Check if user has any samples across all projects
         has_samples = Sample.objects.filter(order__project__user=self.request.user).exists()
         context['has_samples'] = has_samples
+        context['site_settings'] = SiteSettings.get_settings()
+        
+        # Add sample count for each project
+        for project in context['projects']:
+            sample_count = Sample.objects.filter(order__project=project).count()
+            project.sample_count = sample_count
+        
         return context
 
 def project_view(request, project_id=None):
@@ -145,6 +154,7 @@ class OrderListView(ListView):
         project = get_object_or_404(Project, pk=project_id, user=self.request.user)
         context['project_id'] = project_id
         context['project'] = project
+        context['site_settings'] = SiteSettings.get_settings()
         return context
 
 def order_view(request, project_id=None, order_id=None):
@@ -574,6 +584,50 @@ def test_submg(request):
         return redirect('project_list')   
     else:
         return redirect('login')
+
+
+@require_POST
+def advance_order_status(request, order_id):
+    """
+    API endpoint to advance order status to the next stage
+    """
+    if not request.user.is_authenticated:
+        return JsonResponse({'success': False, 'error': 'Authentication required'}, status=401)
+    
+    try:
+        # Get the order and verify ownership
+        order = get_object_or_404(Order, pk=order_id, project__user=request.user)
+        
+        # Parse the request body
+        data = json.loads(request.body)
+        new_status = data.get('new_status')
+        
+        # Validate the new status
+        valid_statuses = [choice[0] for choice in Order.STATUS_CHOICES]
+        if new_status not in valid_statuses:
+            return JsonResponse({'success': False, 'error': 'Invalid status'}, status=400)
+        
+        # Update the order status
+        old_status = order.status
+        order.status = new_status
+        order.status_notes = f"Status changed from {old_status} to {new_status} by {request.user.username}"
+        order.save()
+        
+        # Log the status change
+        logger.info(f"Order {order_id} status changed from {old_status} to {new_status} by user {request.user.id}")
+        
+        return JsonResponse({
+            'success': True,
+            'message': 'Status updated successfully',
+            'new_status': new_status,
+            'status_display': order.get_status_display()
+        })
+        
+    except json.JSONDecodeError:
+        return JsonResponse({'success': False, 'error': 'Invalid JSON data'}, status=400)
+    except Exception as e:
+        logger.error(f"Error updating order status: {str(e)}")
+        return JsonResponse({'success': False, 'error': 'An error occurred'}, status=500)
 
 
 

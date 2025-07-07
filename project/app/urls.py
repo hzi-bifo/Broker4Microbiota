@@ -16,4 +16,6 @@ urlpatterns = [
     path('project/<int:project_id>/orders/<int:order_id>/metadata/', views.metadata_view, name='metadata_view'),
     path('project/<int:project_id>/orders/<int:order_id>/samples/<int:sample_type>/', views.samples_view, name='samples_view'),
     path('test_submg/', views.test_submg, name='test_submg'),
+    # API endpoints
+    path('api/orders/<int:order_id>/advance-status/', views.advance_order_status, name='advance_order_status'),
 ]
