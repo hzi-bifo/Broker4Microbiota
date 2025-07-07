@@ -151,14 +151,101 @@ CONDA_PATH=                     # Path to conda installation (if using Slurm)
 3. Your username will be in the format `Webin-XXXXXX`
 4. Add your credentials to the `.env` file (never commit this file to version control)
 
-### Changes on the Order form
+### Dynamic Form Templates System
 
-The Order form can be changed by modifying the class OrderForm in `myapp/forms.py` and the `models.py`file that defines the SQL fields. Updates on the SQL tables requires migration of the table layout.
+The application now supports a dynamic form system that allows different sequencing facilities to customize their forms without modifying code. Forms are defined using JSON templates and can be managed through the Django admin interface.
+
+#### Loading Form Templates
+
+To load the default form templates into the database:
+
+```bash
+python manage.py load_form_templates
+```
+
+This will load the following templates:
+- **Create Sequencing Order v1.0** - Default order form template
+- **HZI Sequencing Order Form v1.0** - Facility-specific order form for Helmholtz Centre
+- **Create New Sequencing Project v1.0** - Default project form template
+
+#### Managing Form Templates
+
+**Via Admin Interface:**
+1. Log in to Django admin at `/admin/` with superuser credentials
+2. Navigate to "Form Templates" under the APP section
+3. Here you can:
+   - View existing templates
+   - Edit JSON schemas directly
+   - Create new templates
+   - Clone existing templates for customization
+   - Activate/deactivate templates
+
+**Via JSON Files:**
+1. Form templates are stored in `project/app/form_templates/`
+2. To create a new template:
+   ```bash
+   # Copy an existing template
+   cp project/app/form_templates/order_form_default.json project/app/form_templates/order_form_mycenter.json
+   
+   # Edit the JSON file with your customizations
+   # Then load it into the database
+   python manage.py load_form_templates --file order_form_mycenter.json
+   ```
+
+#### Customizing Forms
+
+Form templates support:
+- **Field Types**: text, email, phone, number, date, textarea, select, checkbox, file upload, etc.
+- **Validation**: Required fields, regex patterns, min/max values, custom validators
+- **Conditional Fields**: Show/hide fields based on other field values
+- **Expandable Help**: Rich help content that expands on click
+- **Sections**: Organize fields into collapsible sections
+- **Facility-Specific Forms**: Different forms for different facilities
+
+Example of customizing a field in the JSON:
+```json
+{
+  "field_name": "experiment_title",
+  "field_type": "text",
+  "label": "Experiment Title",
+  "required": true,
+  "help_text": "Brief descriptive title",
+  "validation": {
+    "min_length": 10,
+    "max_length": 200
+  },
+  "expandable_help": {
+    "enabled": true,
+    "content": {
+      "title": "Guidelines for Experiment Title",
+      "description": "The title should be concise yet descriptive..."
+    }
+  }
+}
+```
+
+#### Exporting Form Templates
+
+To export current templates from the database:
+```bash
+python manage.py export_form_templates --output-dir exports/
+```
+
+#### Form Template Documentation
+
+For detailed documentation on the form template structure and all available options, see:
+`project/app/form_templates/README.md`
+
+### Changes on the Order form (Legacy Method)
+
+For simple changes, you can still modify the class OrderForm in `myapp/forms.py` and the `models.py` file that defines the SQL fields. Updates on the SQL tables requires migration of the table layout.
 
 ```bash
 python manage.py makemigrations
 python manage.py migrate
 ```
+
+Note: We recommend using the dynamic form templates system for form customization as it doesn't require code changes or deployments.
 
 ### Site Branding Configuration
 
