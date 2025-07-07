@@ -6,3 +6,4 @@ django-widget-tweaks
 django-phonenumber-field
 xmltodict
 django-q2
+Pillow

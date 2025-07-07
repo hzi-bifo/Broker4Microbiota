@@ -2698,3 +2698,121 @@ class GSC_MIMAGS_unit(SelfDescribingModel):
 	sample_type = models.IntegerField(default=1)
 
 
+class SiteSettings(models.Model):
+    """
+    Singleton model for storing site-wide branding and configuration settings.
+    Only one instance of this model should exist.
+    """
+    # Basic Information
+    site_name = models.CharField(
+        max_length=200, 
+        default="Sequencing Order Management",
+        help_text="The name of your application"
+    )
+    organization_name = models.CharField(
+        max_length=200, 
+        default="Helmholtz Centre for Infection Research",
+        help_text="Full name of your organization"
+    )
+    organization_short_name = models.CharField(
+        max_length=50, 
+        default="HZI",
+        help_text="Short name or acronym"
+    )
+    tagline = models.CharField(
+        max_length=500,
+        default="Streamlining sequencing requests and ensuring compliance with MIxS standards",
+        blank=True,
+        help_text="A brief description or tagline for your site"
+    )
+    
+    # Contact Information
+    contact_email = models.EmailField(
+        default="sequencing@helmholtz-hzi.de",
+        help_text="Primary contact email address"
+    )
+    website_url = models.URLField(
+        default="https://www.helmholtz-hzi.de",
+        blank=True,
+        help_text="Organization's main website URL"
+    )
+    
+    # Branding
+    logo = models.ImageField(
+        upload_to='branding/',
+        blank=True,
+        null=True,
+        help_text="Organization logo (recommended size: 200x50px)"
+    )
+    favicon = models.ImageField(
+        upload_to='branding/',
+        blank=True,
+        null=True,
+        help_text="Favicon for browser tab (recommended: 32x32px .ico or .png)"
+    )
+    
+    # Appearance
+    primary_color = models.CharField(
+        max_length=7,
+        default="#3273dc",
+        help_text="Primary theme color in hex format (e.g., #3273dc)",
+        validators=[RegexValidator(
+            regex='^#[0-9a-fA-F]{6}$',
+            message='Enter a valid hex color code (e.g., #3273dc)'
+        )]
+    )
+    secondary_color = models.CharField(
+        max_length=7,
+        default="#2366d1",
+        help_text="Secondary theme color in hex format",
+        validators=[RegexValidator(
+            regex='^#[0-9a-fA-F]{6}$',
+            message='Enter a valid hex color code (e.g., #2366d1)'
+        )]
+    )
+    
+    # Footer
+    footer_text = models.TextField(
+        blank=True,
+        help_text="Additional footer text (HTML allowed)",
+        default=""
+    )
+    
+    # Metadata
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    class Meta:
+        verbose_name = "Site Settings"
+        verbose_name_plural = "Site Settings"
+    
+    def __str__(self):
+        return f"{self.organization_name} Settings"
+    
+    def save(self, *args, **kwargs):
+        """
+        Save method that ensures only one instance exists.
+        If a new instance is being created while one exists, update the existing one instead.
+        """
+        if not self.pk and SiteSettings.objects.exists():
+            # If creating new instance but one already exists, 
+            # update the existing one instead
+            existing = SiteSettings.objects.first()
+            self.pk = existing.pk
+        
+        super().save(*args, **kwargs)
+        
+        # Clear the cache when settings are saved
+        from django.core.cache import cache
+        cache.delete('site_settings')
+    
+    @classmethod
+    def get_settings(cls):
+        """
+        Get the singleton instance of SiteSettings.
+        Creates one with defaults if it doesn't exist.
+        """
+        settings, created = cls.objects.get_or_create(pk=1)
+        return settings
+
+

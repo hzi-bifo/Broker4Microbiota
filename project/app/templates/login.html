@@ -18,7 +18,7 @@ Login - Sequencing Order Management System
         <!-- Context Information -->
         <div class="auth-context">
           <h3>Sequencing Order Management System</h3>
-          <p>This platform streamlines the submission process for sequencing requests at the Helmholtz Centre for Infection Research. By logging in, you can:</p>
+          <p>This platform streamlines the submission process for sequencing requests at {{ site_settings.organization_name }}. By logging in, you can:</p>
           <ul>
             <li>Submit new sequencing orders</li>
             <li>Track the status of your samples</li>
@@ -88,7 +88,7 @@ Login - Sequencing Order Management System
 
         <div class="auth-links">
           <p>Don't have an account? <a href="{% url 'register' %}">Register here</a></p>
-          <p class="mt-2"><small>For assistance, contact: <a href="mailto:sequencing@helmholtz-hzi.de">sequencing@helmholtz-hzi.de</a></small></p>
+          <p class="mt-2"><small>For assistance, contact: <a href="mailto:{{ site_settings.contact_email }}">{{ site_settings.contact_email }}</a></small></p>
         </div>
       </div>
     </div>

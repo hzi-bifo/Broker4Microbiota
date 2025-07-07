@@ -11,7 +11,7 @@ Register - Sequencing Order Management System
     <div class="auth-card">
       <div class="auth-card-header">
         <h2>Create Your Account</h2>
-        <p>Join the Helmholtz Centre for Infection Research sequencing platform</p>
+        <p>Join the {{ site_settings.organization_name }} sequencing platform</p>
       </div>
       
       <div class="auth-card-body">
@@ -111,7 +111,7 @@ Register - Sequencing Order Management System
 
           <!-- Privacy Notice -->
           <div class="privacy-notice">
-            <p><strong>Data Privacy Notice:</strong> By creating an account, you acknowledge that your data will be processed in accordance with GDPR regulations. Your information will be used solely for managing sequencing orders and related scientific activities at the Helmholtz Centre for Infection Research.</p>
+            <p><strong>Data Privacy Notice:</strong> By creating an account, you acknowledge that your data will be processed in accordance with GDPR regulations. Your information will be used solely for managing sequencing orders and related scientific activities at {{ site_settings.organization_name }}.</p>
           </div>
 
           <div class="field">
@@ -126,7 +126,7 @@ Register - Sequencing Order Management System
 
         <div class="auth-links">
           <p>Already have an account? <a href="{% url 'login' %}">Login here</a></p>
-          <p class="mt-2"><small>Questions? Contact: <a href="mailto:sequencing@helmholtz-hzi.de">sequencing@helmholtz-hzi.de</a></small></p>
+          <p class="mt-2"><small>Questions? Contact: <a href="mailto:{{ site_settings.contact_email }}">{{ site_settings.contact_email }}</a></small></p>
         </div>
       </div>
     </div>

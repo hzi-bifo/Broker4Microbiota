@@ -5,12 +5,12 @@ import subprocess
 import gzip
 import requests
 from django.contrib import admin, messages
-from django.shortcuts import render 
+from django.shortcuts import render, redirect 
 from django.core.files.base import ContentFile
 from django.conf import settings
 from Bio import SeqIO
 from io import StringIO
-from .models import Order, Sample, SampleSubmission, ReadSubmission, Pipelines, Read, Project, ProjectSubmission, MagRun, SubMGRun, Bin, Assembly, SAMPLE_TYPE_NORMAL, SAMPLE_TYPE_ASSEMBLY, SAMPLE_TYPE_BIN, SAMPLE_TYPE_MAG, Alignment, Mag
+from .models import Order, Sample, SampleSubmission, ReadSubmission, Pipelines, Read, Project, ProjectSubmission, MagRun, SubMGRun, Bin, Assembly, SAMPLE_TYPE_NORMAL, SAMPLE_TYPE_ASSEMBLY, SAMPLE_TYPE_BIN, SAMPLE_TYPE_MAG, Alignment, Mag, SiteSettings
 
 from .forms import CreateGZForm
 from django.template.loader import render_to_string
@@ -31,6 +31,71 @@ class OrderAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'date', 'quote_no', 'billing_address', 'ag_and_hzi', 'contact_phone', 'email', 'data_delivery', 'signature', 'experiment_title', 'dna', 'rna', 'method', 'buffer', 'organism', 'isolated_from', 'isolation_method')
 
 admin.site.register(Order, OrderAdmin)
+
+
+class SiteSettingsAdmin(admin.ModelAdmin):
+    """
+    Admin interface for SiteSettings model.
+    Ensures only one instance can exist and provides a user-friendly interface.
+    """
+    # Organize fields into logical groups
+    fieldsets = (
+        ('Basic Information', {
+            'fields': ('site_name', 'organization_name', 'organization_short_name', 'tagline')
+        }),
+        ('Contact Information', {
+            'fields': ('contact_email', 'website_url')
+        }),
+        ('Branding', {
+            'fields': ('logo', 'favicon'),
+            'description': 'Upload your organization\'s logo and favicon. Recommended sizes: Logo 200x50px, Favicon 32x32px'
+        }),
+        ('Appearance', {
+            'fields': ('primary_color', 'secondary_color'),
+            'description': 'Customize the color scheme of your application'
+        }),
+        ('Footer', {
+            'fields': ('footer_text',),
+            'description': 'Additional footer content (HTML allowed)'
+        }),
+        ('System Information', {
+            'fields': ('created_at', 'updated_at'),
+            'classes': ('collapse',),
+        }),
+    )
+    
+    readonly_fields = ('created_at', 'updated_at')
+    
+    def has_add_permission(self, request):
+        """
+        Prevent adding more than one SiteSettings instance
+        """
+        return not SiteSettings.objects.exists()
+    
+    def has_delete_permission(self, request, obj=None):
+        """
+        Prevent deletion of SiteSettings
+        """
+        return False
+    
+    def changelist_view(self, request, extra_context=None):
+        """
+        Redirect to the edit page if an instance exists,
+        otherwise show the add page
+        """
+        if SiteSettings.objects.exists():
+            obj = SiteSettings.objects.first()
+            return redirect(f'/admin/app/sitesettings/{obj.pk}/change/')
+        else:
+            return redirect('/admin/app/sitesettings/add/')
+    
+    class Media:
+        css = {
+            'all': ('css/admin-sitesettings.css',)
+        }
+        js = ('js/admin-sitesettings.js',)
+
+admin.site.register(SiteSettings, SiteSettingsAdmin)
 
 
 class ReadAdmin(admin.ModelAdmin):
