@@ -1,0 +1,346 @@
+{
+  "form_id": "order_form_default",
+  "form_type": "order",
+  "form_title": "Create Sequencing Order",
+  "form_description": "Provide detailed information for your sequencing order including contact details, sample information, and sequencing preferences.",
+  "version": "1.0",
+  "sections": [
+    {
+      "section_id": "contact_info",
+      "title": "Contact Information",
+      "icon": "fa-user",
+      "order": 1,
+      "fields": [
+        {
+          "field_name": "name",
+          "field_type": "text",
+          "label": "Full Name",
+          "required": true,
+          "help_text": "Full name for billing and contact purposes",
+          "placeholder": "Dr. Jane Smith",
+          "validation": {
+            "min_length": 2,
+            "max_length": 100
+          },
+          "expandable_help": {
+            "enabled": true,
+            "content": {
+              "title": "Contact Name Guidelines",
+              "description": "Please provide the primary contact person's full name for this sequencing order.",
+              "important": [
+                "Use your official name as it appears on institutional documents",
+                "Include appropriate titles (Dr., Prof., etc.) if desired",
+                "This name will be used for all official correspondence",
+                "Billing documents will be addressed to this person"
+              ],
+              "examples": ["Dr. Jane Smith", "Prof. John Doe", "Maria García, PhD"]
+            }
+          }
+        },
+        {
+          "field_name": "email",
+          "field_type": "email",
+          "label": "Email Address",
+          "required": true,
+          "help_text": "Primary contact email for order updates",
+          "placeholder": "jane.smith@university.edu",
+          "validation": {
+            "pattern": "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$"
+          }
+        },
+        {
+          "field_name": "contact_phone",
+          "field_type": "phone",
+          "label": "Contact Phone",
+          "required": true,
+          "help_text": "Contact phone number for urgent communications",
+          "placeholder": "+49 531 6181-0",
+          "validation": {
+            "pattern": "^[+]?[(]?[0-9]{1,4}[)]?[-\\s\\.]?[(]?[0-9]{1,4}[)]?[-\\s\\.]?[0-9]{1,5}[-\\s\\.]?[0-9]{1,5}$"
+          }
+        }
+      ]
+    },
+    {
+      "section_id": "billing_info",
+      "title": "Billing Information",
+      "icon": "fa-credit-card",
+      "order": 2,
+      "fields": [
+        {
+          "field_name": "billing_address",
+          "field_type": "textarea",
+          "label": "Billing Address",
+          "required": true,
+          "help_text": "Complete billing address for invoicing",
+          "placeholder": "University Research Institute\nMicrobiology Department\nInhoffenstraße 7\n38124 Braunschweig, Germany",
+          "rows": 4,
+          "validation": {
+            "min_length": 20,
+            "max_length": 500
+          }
+        },
+        {
+          "field_name": "ag_and_hzi",
+          "field_type": "text",
+          "label": "Department/Working Group",
+          "required": true,
+          "help_text": "Department or working group information",
+          "placeholder": "AG Microbial Genomics"
+        },
+        {
+          "field_name": "quote_no",
+          "field_type": "text",
+          "label": "Quote Number",
+          "required": false,
+          "help_text": "Reference quote number if applicable",
+          "placeholder": "QUOTE-2024-001"
+        }
+      ]
+    },
+    {
+      "section_id": "project_info",
+      "title": "Project Information",
+      "icon": "fa-flask",
+      "order": 3,
+      "fields": [
+        {
+          "field_name": "experiment_title",
+          "field_type": "text",
+          "label": "Experiment Title",
+          "required": true,
+          "help_text": "Short title describing the experiment or study",
+          "placeholder": "Gut Microbiome Analysis in IBD Patients",
+          "validation": {
+            "min_length": 5,
+            "max_length": 200
+          }
+        },
+        {
+          "field_name": "organism",
+          "field_type": "text",
+          "label": "Organism",
+          "required": true,
+          "help_text": "Target organism(s) for sequencing",
+          "placeholder": "Human gut microbiome"
+        },
+        {
+          "field_name": "isolated_from",
+          "field_type": "text",
+          "label": "Isolated From",
+          "required": true,
+          "help_text": "Source of the biological sample",
+          "placeholder": "Human fecal samples"
+        },
+        {
+          "field_name": "date",
+          "field_type": "date",
+          "label": "Order Date",
+          "required": true,
+          "help_text": "Date of the order submission",
+          "default": "today"
+        }
+      ]
+    },
+    {
+      "section_id": "sample_processing",
+      "title": "Sample Processing",
+      "icon": "fa-vial",
+      "order": 4,
+      "fields": [
+        {
+          "field_name": "dna",
+          "field_type": "text",
+          "label": "DNA Information",
+          "required": false,
+          "help_text": "DNA concentration or quality information",
+          "placeholder": "50 ng/μL"
+        },
+        {
+          "field_name": "rna",
+          "field_type": "text",
+          "label": "RNA Information",
+          "required": false,
+          "help_text": "RNA concentration or quality information",
+          "placeholder": "Not applicable"
+        },
+        {
+          "field_name": "method",
+          "field_type": "text",
+          "label": "Extraction Method",
+          "required": true,
+          "help_text": "Extraction or preparation method used",
+          "placeholder": "DNA extraction using QIAamp PowerFecal Pro DNA Kit"
+        },
+        {
+          "field_name": "buffer",
+          "field_type": "text",
+          "label": "Buffer",
+          "required": false,
+          "help_text": "Buffer or storage solution used",
+          "placeholder": "TE buffer, pH 8.0"
+        },
+        {
+          "field_name": "isolation_method",
+          "field_type": "select",
+          "label": "Isolation Method",
+          "required": true,
+          "help_text": "Method used for sample isolation",
+          "options": [
+            {"value": "method1", "label": "Method 1"},
+            {"value": "method2", "label": "Method 2"},
+            {"value": "other", "label": "Other"}
+          ],
+          "default": "method1"
+        }
+      ]
+    },
+    {
+      "section_id": "library_info",
+      "title": "Library Information",
+      "icon": "fa-book",
+      "order": 5,
+      "fields": [
+        {
+          "field_name": "library",
+          "field_type": "select",
+          "label": "Library Type",
+          "required": true,
+          "help_text": "Type of sequencing library",
+          "options": [
+            {"value": "choice1", "label": "Standard Library"},
+            {"value": "choice2", "label": "PCR-Free Library"},
+            {"value": "other", "label": "Other"}
+          ]
+        }
+      ]
+    },
+    {
+      "section_id": "sequencing_params",
+      "title": "Sequencing Parameters",
+      "icon": "fa-microchip",
+      "order": 6,
+      "collapsible": true,
+      "fields": [
+        {
+          "field_name": "platform",
+          "field_type": "text",
+          "label": "Sequencing Platform",
+          "required": false,
+          "help_text": "Sequencing platform to be used",
+          "placeholder": "Illumina NovaSeq"
+        },
+        {
+          "field_name": "insert_size",
+          "field_type": "number",
+          "label": "Insert Size",
+          "required": false,
+          "help_text": "Expected insert size for paired-end sequencing",
+          "placeholder": "350",
+          "validation": {
+            "min": 100,
+            "max": 1000
+          }
+        },
+        {
+          "field_name": "library_name",
+          "field_type": "text",
+          "label": "Library Name",
+          "required": false,
+          "help_text": "Name identifier for the sequencing library",
+          "placeholder": "GUT-LIB-001"
+        },
+        {
+          "field_name": "library_source",
+          "field_type": "text",
+          "label": "Library Source",
+          "required": false,
+          "help_text": "Source material for library construction",
+          "placeholder": "METAGENOMIC"
+        },
+        {
+          "field_name": "library_selection",
+          "field_type": "text",
+          "label": "Library Selection",
+          "required": false,
+          "help_text": "Method used for library selection",
+          "placeholder": "RANDOM"
+        },
+        {
+          "field_name": "library_strategy",
+          "field_type": "text",
+          "label": "Library Strategy",
+          "required": false,
+          "help_text": "Overall sequencing strategy",
+          "placeholder": "WGS"
+        },
+        {
+          "field_name": "sequencing_instrument",
+          "field_type": "text",
+          "label": "Sequencing Instrument",
+          "required": false,
+          "help_text": "Specific sequencing instrument model",
+          "placeholder": "Illumina NovaSeq 6000"
+        }
+      ]
+    },
+    {
+      "section_id": "additional_info",
+      "title": "Additional Information",
+      "icon": "fa-info-circle",
+      "order": 7,
+      "fields": [
+        {
+          "field_name": "signature",
+          "field_type": "text",
+          "label": "Digital Signature",
+          "required": true,
+          "help_text": "Your digital signature or authorization",
+          "placeholder": "Dr. J. Smith"
+        },
+        {
+          "field_name": "data_delivery",
+          "field_type": "text",
+          "label": "Data Delivery Method",
+          "required": true,
+          "help_text": "How would you like to receive your sequencing data?",
+          "placeholder": "Secure FTP server with download link notification"
+        }
+      ]
+    }
+  ],
+  "form_actions": [
+    {
+      "action_id": "submit",
+      "label": "Create Order",
+      "type": "submit",
+      "style": "primary",
+      "icon": "fa-save"
+    },
+    {
+      "action_id": "clear",
+      "label": "Clear Form",
+      "type": "button",
+      "style": "light",
+      "icon": "fa-eraser",
+      "action": "clearForm"
+    },
+    {
+      "action_id": "dummy_data",
+      "label": "Add Dummy Data",
+      "type": "button",
+      "style": "info",
+      "icon": "fa-magic",
+      "action": "fillDummyData",
+      "show_in_production": false
+    },
+    {
+      "action_id": "cancel",
+      "label": "Cancel",
+      "type": "link",
+      "style": "light",
+      "icon": "fa-times",
+      "href": "{% url 'order_list' project_id %}"
+    }
+  ]
+}

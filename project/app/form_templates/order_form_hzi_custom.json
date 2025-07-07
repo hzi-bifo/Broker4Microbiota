@@ -1,0 +1,342 @@
+{
+  "form_id": "order_form_hzi_custom",
+  "form_type": "order",
+  "form_title": "HZI Sequencing Order Form",
+  "form_description": "Customized order form for Helmholtz Centre for Infection Research with specific requirements.",
+  "version": "1.0",
+  "facility_specific": true,
+  "facility_name": "Helmholtz Centre for Infection Research",
+  "sections": [
+    {
+      "section_id": "hzi_requirements",
+      "title": "HZI-Specific Requirements",
+      "icon": "fa-hospital",
+      "order": 1,
+      "fields": [
+        {
+          "field_name": "hzi_project_code",
+          "field_type": "text",
+          "label": "HZI Project Code",
+          "required": true,
+          "help_text": "Internal HZI project code (format: HZI-YYYY-XXX)",
+          "placeholder": "HZI-2024-001",
+          "validation": {
+            "pattern": "^HZI-\\d{4}-\\d{3}$"
+          }
+        },
+        {
+          "field_name": "biosafety_level",
+          "field_type": "select",
+          "label": "Biosafety Level",
+          "required": true,
+          "help_text": "Biosafety level of the samples",
+          "options": [
+            {"value": "BSL1", "label": "BSL-1 (No known hazard)"},
+            {"value": "BSL2", "label": "BSL-2 (Moderate hazard)"},
+            {"value": "BSL3", "label": "BSL-3 (Serious hazard)"}
+          ],
+          "default": "BSL1"
+        },
+        {
+          "field_name": "ethics_approval",
+          "field_type": "text",
+          "label": "Ethics Approval Number",
+          "required": false,
+          "help_text": "Ethics committee approval number (if applicable)",
+          "placeholder": "HZI-EC-2024-123"
+        },
+        {
+          "field_name": "sample_transport_method",
+          "field_type": "select",
+          "label": "Sample Transport Method",
+          "required": true,
+          "help_text": "How will samples be transported to the facility?",
+          "options": [
+            {"value": "internal", "label": "Internal delivery (within HZI)"},
+            {"value": "courier", "label": "External courier service"},
+            {"value": "personal", "label": "Personal delivery"},
+            {"value": "postal", "label": "Postal service (dry ice)"}
+          ]
+        }
+      ]
+    },
+    {
+      "section_id": "contact_info",
+      "title": "Contact Information",
+      "icon": "fa-user",
+      "order": 2,
+      "fields": [
+        {
+          "field_name": "name",
+          "field_type": "text",
+          "label": "Full Name",
+          "required": true,
+          "help_text": "Full name of the principal investigator",
+          "validation": {
+            "min_length": 2,
+            "max_length": 100
+          }
+        },
+        {
+          "field_name": "hzi_department",
+          "field_type": "select",
+          "label": "HZI Department",
+          "required": true,
+          "help_text": "Select your department at HZI",
+          "options": [
+            {"value": "MOBA", "label": "Molecular Bacteriology"},
+            {"value": "MIIN", "label": "Molecular Infection Biology"},
+            {"value": "MINB", "label": "Microbial Natural Products"},
+            {"value": "BIFO", "label": "Bioinformatics"},
+            {"value": "MSYS", "label": "Microbial Systems Biology"},
+            {"value": "other", "label": "Other"}
+          ]
+        },
+        {
+          "field_name": "email",
+          "field_type": "email",
+          "label": "Email Address",
+          "required": true,
+          "help_text": "HZI email address",
+          "validation": {
+            "pattern": "^[a-zA-Z0-9._%+-]+@helmholtz-hzi\\.de$"
+          }
+        },
+        {
+          "field_name": "contact_phone",
+          "field_type": "phone",
+          "label": "Contact Phone",
+          "required": true,
+          "help_text": "Internal HZI extension or mobile number",
+          "placeholder": "ext. 1234 or +49 531 6181-1234"
+        }
+      ]
+    },
+    {
+      "section_id": "sample_info",
+      "title": "Sample Information",
+      "icon": "fa-vial",
+      "order": 3,
+      "fields": [
+        {
+          "field_name": "sample_type",
+          "field_type": "multiselect",
+          "label": "Sample Types",
+          "required": true,
+          "help_text": "Select all sample types in this order",
+          "options": [
+            {"value": "bacterial_culture", "label": "Bacterial Culture"},
+            {"value": "environmental", "label": "Environmental Sample"},
+            {"value": "clinical", "label": "Clinical Sample"},
+            {"value": "cell_culture", "label": "Cell Culture"},
+            {"value": "viral", "label": "Viral Sample"},
+            {"value": "fungal", "label": "Fungal Sample"}
+          ]
+        },
+        {
+          "field_name": "estimated_samples",
+          "field_type": "number",
+          "label": "Estimated Number of Samples",
+          "required": true,
+          "help_text": "Total number of samples to be sequenced",
+          "validation": {
+            "min": 1,
+            "max": 1000
+          }
+        },
+        {
+          "field_name": "priority_level",
+          "field_type": "radio",
+          "label": "Priority Level",
+          "required": true,
+          "help_text": "Select the urgency of your sequencing request",
+          "options": [
+            {"value": "standard", "label": "Standard (4-6 weeks)"},
+            {"value": "priority", "label": "Priority (2-3 weeks)"},
+            {"value": "urgent", "label": "Urgent (1 week) - requires justification"}
+          ],
+          "default": "standard"
+        },
+        {
+          "field_name": "urgency_justification",
+          "field_type": "textarea",
+          "label": "Urgency Justification",
+          "required": true,
+          "help_text": "Please explain why urgent processing is needed",
+          "rows": 3,
+          "show_if": {
+            "field": "priority_level",
+            "value": "urgent"
+          }
+        }
+      ]
+    },
+    {
+      "section_id": "sequencing_specs",
+      "title": "Sequencing Specifications",
+      "icon": "fa-dna",
+      "order": 4,
+      "fields": [
+        {
+          "field_name": "sequencing_type",
+          "field_type": "select",
+          "label": "Sequencing Type",
+          "required": true,
+          "help_text": "Select the type of sequencing required",
+          "options": [
+            {"value": "illumina_miseq", "label": "Illumina MiSeq"},
+            {"value": "illumina_nextseq", "label": "Illumina NextSeq"},
+            {"value": "illumina_novaseq", "label": "Illumina NovaSeq"},
+            {"value": "nanopore_minion", "label": "Oxford Nanopore MinION"},
+            {"value": "nanopore_promethion", "label": "Oxford Nanopore PromethION"},
+            {"value": "pacbio_sequel", "label": "PacBio Sequel II"}
+          ]
+        },
+        {
+          "field_name": "read_length",
+          "field_type": "select",
+          "label": "Read Length",
+          "required": true,
+          "help_text": "Select desired read length",
+          "options": [
+            {"value": "SR50", "label": "Single-end 50bp"},
+            {"value": "SR75", "label": "Single-end 75bp"},
+            {"value": "SR100", "label": "Single-end 100bp"},
+            {"value": "PE50", "label": "Paired-end 2x50bp"},
+            {"value": "PE75", "label": "Paired-end 2x75bp"},
+            {"value": "PE100", "label": "Paired-end 2x100bp"},
+            {"value": "PE150", "label": "Paired-end 2x150bp"},
+            {"value": "PE250", "label": "Paired-end 2x250bp"},
+            {"value": "PE300", "label": "Paired-end 2x300bp"}
+          ]
+        },
+        {
+          "field_name": "coverage_depth",
+          "field_type": "number",
+          "label": "Target Coverage Depth",
+          "required": true,
+          "help_text": "Desired coverage depth (e.g., 30 for 30x coverage)",
+          "placeholder": "30",
+          "validation": {
+            "min": 1,
+            "max": 1000
+          }
+        }
+      ]
+    },
+    {
+      "section_id": "data_analysis",
+      "title": "Data Analysis Requirements",
+      "icon": "fa-chart-line",
+      "order": 5,
+      "collapsible": true,
+      "fields": [
+        {
+          "field_name": "analysis_required",
+          "field_type": "checkbox",
+          "label": "Bioinformatics analysis required",
+          "help_text": "Check if you need bioinformatics support",
+          "default": false
+        },
+        {
+          "field_name": "analysis_type",
+          "field_type": "multiselect",
+          "label": "Analysis Types",
+          "required": true,
+          "help_text": "Select required analyses",
+          "options": [
+            {"value": "qc", "label": "Quality Control"},
+            {"value": "assembly", "label": "Genome Assembly"},
+            {"value": "annotation", "label": "Genome Annotation"},
+            {"value": "variant_calling", "label": "Variant Calling"},
+            {"value": "rnaseq", "label": "RNA-Seq Analysis"},
+            {"value": "metagenomics", "label": "Metagenomic Analysis"},
+            {"value": "custom", "label": "Custom Analysis"}
+          ],
+          "show_if": {
+            "field": "analysis_required",
+            "value": true
+          }
+        },
+        {
+          "field_name": "custom_analysis_description",
+          "field_type": "textarea",
+          "label": "Custom Analysis Description",
+          "required": true,
+          "help_text": "Describe your custom analysis requirements",
+          "rows": 4,
+          "show_if": {
+            "field": "analysis_type",
+            "operator": "contains",
+            "value": "custom"
+          }
+        }
+      ]
+    },
+    {
+      "section_id": "additional_info",
+      "title": "Additional Information",
+      "icon": "fa-info-circle",
+      "order": 6,
+      "fields": [
+        {
+          "field_name": "special_requirements",
+          "field_type": "textarea",
+          "label": "Special Requirements",
+          "required": false,
+          "help_text": "Any special handling or processing requirements",
+          "rows": 3
+        },
+        {
+          "field_name": "cost_center",
+          "field_type": "text",
+          "label": "Cost Center",
+          "required": true,
+          "help_text": "HZI cost center for billing",
+          "placeholder": "1234567890"
+        },
+        {
+          "field_name": "signature",
+          "field_type": "text",
+          "label": "Digital Signature",
+          "required": true,
+          "help_text": "Type your name to confirm the order",
+          "placeholder": "Dr. Jane Smith"
+        }
+      ]
+    }
+  ],
+  "form_actions": [
+    {
+      "action_id": "submit",
+      "label": "Submit Order",
+      "type": "submit",
+      "style": "primary",
+      "icon": "fa-paper-plane"
+    },
+    {
+      "action_id": "save_draft",
+      "label": "Save as Draft",
+      "type": "button",
+      "style": "secondary",
+      "icon": "fa-save",
+      "action": "saveDraft"
+    },
+    {
+      "action_id": "clear",
+      "label": "Clear Form",
+      "type": "button",
+      "style": "light",
+      "icon": "fa-eraser",
+      "action": "clearForm"
+    },
+    {
+      "action_id": "cancel",
+      "label": "Cancel",
+      "type": "link",
+      "style": "light",
+      "icon": "fa-times",
+      "href": "{% url 'order_list' project_id %}"
+    }
+  ]
+}

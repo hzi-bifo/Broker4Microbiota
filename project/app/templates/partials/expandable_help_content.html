@@ -1,0 +1,112 @@
+{% comment %}
+Partial template for rendering expandable help content.
+The content parameter is a flexible dict/object that can contain various structures.
+{% endcomment %}
+
+{% if content.title %}
+<h5>{{ content.title }}</h5>
+{% endif %}
+
+{% if content.description %}
+<p>{{ content.description }}</p>
+{% endif %}
+
+{% if content.guidelines %}
+<div class="info-box">
+  <ul>
+    {% for guideline in content.guidelines %}
+    <li>{{ guideline|safe }}</li>
+    {% endfor %}
+  </ul>
+</div>
+{% endif %}
+
+{% if content.important %}
+<div class="info-box">
+  <h6>Important:</h6>
+  <ul>
+    {% for item in content.important %}
+    <li>{{ item }}</li>
+    {% endfor %}
+  </ul>
+</div>
+{% endif %}
+
+{% if content.format_recommendations %}
+<div class="info-box">
+  <h6>{{ content.format_recommendations.title }}</h6>
+  <ul>
+    {% for item in content.format_recommendations.items %}
+    <li>{{ item|safe }}</li>
+    {% endfor %}
+  </ul>
+</div>
+{% endif %}
+
+{% if content.patterns %}
+<div class="example-box">
+  <h6>{{ content.patterns.title }}</h6>
+  <ul>
+    {% for item in content.patterns.items %}
+    <li>{{ item|safe }}</li>
+    {% endfor %}
+  </ul>
+</div>
+{% endif %}
+
+{% if content.examples %}
+<div class="example-box">
+  <h6>{{ content.examples.title|default:"Examples:" }}</h6>
+  <ul>
+    {% for example in content.examples.items %}
+    <li>{{ example }}</li>
+    {% endfor %}
+  </ul>
+</div>
+{% endif %}
+
+{% if content.warnings %}
+<div class="warning-box">
+  <h6>{{ content.warnings.title|default:"Warning:" }}</h6>
+  <ul>
+    {% for warning in content.warnings.items %}
+    <li>{{ warning }}</li>
+    {% endfor %}
+  </ul>
+</div>
+{% endif %}
+
+{% if content.sections %}
+{% for section in content.sections %}
+<div class="section-box">
+  <h6>{{ section.title }}</h6>
+  {% if section.description %}
+  <p>{{ section.description }}</p>
+  {% endif %}
+  {% if section.example %}
+  <p class="example"><em>Example: {{ section.example }}</em></p>
+  {% endif %}
+  {% if section.items %}
+  <ul>
+    {% for item in section.items %}
+    <li>{{ item|safe }}</li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+</div>
+{% endfor %}
+{% endif %}
+
+{% if content.tips %}
+<div class="tip-box">
+  <h6>Tips:</h6>
+  <p>{{ content.tips }}</p>
+</div>
+{% endif %}
+
+{% if content.length_guidelines %}
+<div class="tip-box">
+  <h6>Length Guidelines:</h6>
+  <p>{{ content.length_guidelines }}</p>
+</div>
+{% endif %}

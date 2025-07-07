@@ -1,0 +1,101 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Form Templates
+{% endblock title %}
+
+{% block content %}
+<section class="section">
+  <div class="container">
+    <div class="has-text-centered mb-5">
+      <h1 class="title is-3">
+        <i class="fas fa-file-alt has-text-primary"></i>
+        Available Form Templates
+      </h1>
+      <p class="subtitle is-5">
+        Dynamic form templates for different facilities and purposes
+      </p>
+    </div>
+
+    {% for form_type, form_type_display in form_types.items %}
+    <div class="form-type-section mb-6">
+      <h2 class="title is-4">{{ form_type_display }}</h2>
+      
+      <div class="columns is-multiline">
+        {% for template in templates %}
+          {% if template.form_type == form_type %}
+          <div class="column is-one-third">
+            <div class="card">
+              <header class="card-header">
+                <p class="card-header-title">
+                  {{ template.name }}
+                  <span class="tag is-info is-light ml-2">v{{ template.version }}</span>
+                  {% if template.facility_specific %}
+                  <span class="tag is-warning is-light ml-2">{{ template.facility_name }}</span>
+                  {% endif %}
+                </p>
+              </header>
+              <div class="card-content">
+                <div class="content">
+                  {% if template.description %}
+                  <p>{{ template.description|truncatewords:20 }}</p>
+                  {% endif %}
+                  <p class="is-size-7 has-text-grey">
+                    Updated: {{ template.updated_at|date:"M d, Y" }}
+                    {% if template.created_by %}
+                    by {{ template.created_by.username }}
+                    {% endif %}
+                  </p>
+                </div>
+              </div>
+              <footer class="card-footer">
+                <a href="{% url 'preview_form_template' template.id %}" class="card-footer-item">
+                  <span class="icon"><i class="fas fa-eye"></i></span>
+                  <span>Preview</span>
+                </a>
+                {% if template.form_type == 'project' %}
+                <a href="{% url 'dynamic_project_form' template.id %}" class="card-footer-item">
+                  <span class="icon"><i class="fas fa-plus"></i></span>
+                  <span>Use Template</span>
+                </a>
+                {% endif %}
+                {% if user.is_staff %}
+                <a href="/admin/app/formtemplate/{{ template.id }}/change/" class="card-footer-item">
+                  <span class="icon"><i class="fas fa-edit"></i></span>
+                  <span>Edit</span>
+                </a>
+                {% endif %}
+              </footer>
+            </div>
+          </div>
+          {% endif %}
+        {% empty %}
+          <div class="column is-full">
+            <div class="notification is-info is-light">
+              <p>No {{ form_type_display|lower }} templates available.</p>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+    {% endfor %}
+
+    {% if user.is_staff %}
+    <div class="has-text-centered mt-6">
+      <a href="/admin/app/formtemplate/add/" class="button is-primary">
+        <span class="icon">
+          <i class="fas fa-plus"></i>
+        </span>
+        <span>Create New Template</span>
+      </a>
+      <a href="{% url 'admin:index' %}" class="button is-light">
+        <span class="icon">
+          <i class="fas fa-cog"></i>
+        </span>
+        <span>Admin Panel</span>
+      </a>
+    </div>
+    {% endif %}
+  </div>
+</section>
+{% endblock content %}

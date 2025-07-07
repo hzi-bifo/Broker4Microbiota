@@ -1,0 +1,248 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Dynamic Form Template Schema",
+  "description": "Schema for defining dynamic form templates in the sequencing order management system",
+  "type": "object",
+  "required": ["form_id", "form_type", "form_title", "version", "sections"],
+  "properties": {
+    "form_id": {
+      "type": "string",
+      "description": "Unique identifier for the form template",
+      "pattern": "^[a-z0-9_]+$"
+    },
+    "form_type": {
+      "type": "string",
+      "description": "Type of form",
+      "enum": ["project", "order", "sample", "custom"]
+    },
+    "form_title": {
+      "type": "string",
+      "description": "Display title for the form"
+    },
+    "form_description": {
+      "type": "string",
+      "description": "Description of the form's purpose"
+    },
+    "version": {
+      "type": "string",
+      "description": "Version of the form template",
+      "pattern": "^\\d+\\.\\d+(\\.\\d+)?$"
+    },
+    "sections": {
+      "type": "array",
+      "description": "Form sections containing fields",
+      "items": {
+        "$ref": "#/definitions/section"
+      },
+      "minItems": 1
+    },
+    "form_actions": {
+      "type": "array",
+      "description": "Actions available at the form level",
+      "items": {
+        "$ref": "#/definitions/action"
+      }
+    }
+  },
+  "definitions": {
+    "section": {
+      "type": "object",
+      "required": ["section_id", "title", "order", "fields"],
+      "properties": {
+        "section_id": {
+          "type": "string",
+          "pattern": "^[a-z0-9_]+$"
+        },
+        "title": {
+          "type": "string"
+        },
+        "icon": {
+          "type": "string",
+          "description": "Font Awesome icon class"
+        },
+        "order": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "collapsible": {
+          "type": "boolean",
+          "default": false
+        },
+        "collapsed_by_default": {
+          "type": "boolean",
+          "default": false
+        },
+        "fields": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/field"
+          },
+          "minItems": 1
+        }
+      }
+    },
+    "field": {
+      "type": "object",
+      "required": ["field_name", "field_type", "label"],
+      "properties": {
+        "field_name": {
+          "type": "string",
+          "pattern": "^[a-z0-9_]+$"
+        },
+        "field_type": {
+          "type": "string",
+          "enum": [
+            "text", "email", "phone", "number", "date", "datetime",
+            "textarea", "select", "multiselect", "checkbox", "radio",
+            "file", "hidden", "password", "url", "color"
+          ]
+        },
+        "label": {
+          "type": "string"
+        },
+        "required": {
+          "type": "boolean",
+          "default": false
+        },
+        "readonly": {
+          "type": "boolean",
+          "default": false
+        },
+        "help_text": {
+          "type": "string"
+        },
+        "placeholder": {
+          "type": "string"
+        },
+        "default": {
+          "description": "Default value for the field"
+        },
+        "validation": {
+          "$ref": "#/definitions/validation"
+        },
+        "options": {
+          "type": "array",
+          "description": "Options for select/radio fields",
+          "items": {
+            "type": "object",
+            "required": ["value", "label"],
+            "properties": {
+              "value": {
+                "type": "string"
+              },
+              "label": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "rows": {
+          "type": "integer",
+          "description": "Number of rows for textarea",
+          "minimum": 1
+        },
+        "show_if": {
+          "$ref": "#/definitions/conditional"
+        },
+        "expandable_help": {
+          "$ref": "#/definitions/expandableHelp"
+        }
+      }
+    },
+    "validation": {
+      "type": "object",
+      "properties": {
+        "min_length": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "max_length": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "min": {
+          "type": "number"
+        },
+        "max": {
+          "type": "number"
+        },
+        "pattern": {
+          "type": "string",
+          "description": "Regular expression pattern"
+        },
+        "custom": {
+          "type": "string",
+          "description": "Name of custom validation function"
+        }
+      }
+    },
+    "conditional": {
+      "type": "object",
+      "required": ["field", "value"],
+      "properties": {
+        "field": {
+          "type": "string",
+          "description": "Field name to check"
+        },
+        "value": {
+          "description": "Value to match"
+        },
+        "operator": {
+          "type": "string",
+          "enum": ["equals", "not_equals", "contains", "greater_than", "less_than"],
+          "default": "equals"
+        }
+      }
+    },
+    "expandableHelp": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "default": false
+        },
+        "content": {
+          "type": "object",
+          "description": "Flexible content structure for expandable help"
+        }
+      }
+    },
+    "action": {
+      "type": "object",
+      "required": ["action_id", "label", "type"],
+      "properties": {
+        "action_id": {
+          "type": "string",
+          "pattern": "^[a-z0-9_]+$"
+        },
+        "label": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string",
+          "enum": ["submit", "button", "link"]
+        },
+        "style": {
+          "type": "string",
+          "enum": ["primary", "secondary", "success", "danger", "warning", "info", "light", "dark"]
+        },
+        "icon": {
+          "type": "string",
+          "description": "Font Awesome icon class"
+        },
+        "action": {
+          "type": "string",
+          "description": "JavaScript function to call"
+        },
+        "href": {
+          "type": "string",
+          "description": "URL for link type"
+        },
+        "show_in_production": {
+          "type": "boolean",
+          "default": true
+        }
+      }
+    }
+  }
+}

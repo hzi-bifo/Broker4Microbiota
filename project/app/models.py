@@ -2971,3 +2971,132 @@ class SiteSettings(models.Model):
         return settings
 
 
+# Dynamic Form Models
+class FormTemplate(models.Model):
+    """
+    Stores form templates that can be customized per facility or purpose.
+    """
+    FORM_TYPE_CHOICES = [
+        ('project', 'Project Form'),
+        ('order', 'Order Form'),
+        ('sample', 'Sample Form'),
+        ('custom', 'Custom Form'),
+    ]
+    
+    name = models.CharField(
+        max_length=200,
+        help_text="Name of the form template"
+    )
+    form_type = models.CharField(
+        max_length=20,
+        choices=FORM_TYPE_CHOICES,
+        help_text="Type of form this template represents"
+    )
+    description = models.TextField(
+        blank=True,
+        help_text="Description of when to use this form template"
+    )
+    version = models.CharField(
+        max_length=20,
+        default="1.0",
+        help_text="Version of this form template"
+    )
+    is_active = models.BooleanField(
+        default=True,
+        help_text="Whether this form template is currently active"
+    )
+    facility_specific = models.BooleanField(
+        default=False,
+        help_text="Whether this form is specific to a facility"
+    )
+    facility_name = models.CharField(
+        max_length=200,
+        blank=True,
+        help_text="Name of the facility this form is for (if facility_specific)"
+    )
+    json_schema = models.JSONField(
+        default=dict,
+        help_text="JSON schema defining the form structure"
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    created_by = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        null=True,
+        related_name='created_form_templates'
+    )
+    
+    class Meta:
+        ordering = ['-updated_at']
+        unique_together = ['name', 'version', 'facility_name']
+    
+    def __str__(self):
+        return f"{self.name} v{self.version}"
+    
+    def get_form_definition(self):
+        """
+        Returns the form definition from the JSON schema.
+        """
+        return self.json_schema
+    
+    def clone(self, new_name=None, new_version=None):
+        """
+        Creates a clone of this form template.
+        """
+        clone = FormTemplate(
+            name=new_name or f"{self.name} (Copy)",
+            form_type=self.form_type,
+            description=self.description,
+            version=new_version or "1.0",
+            is_active=False,  # Clones start as inactive
+            facility_specific=self.facility_specific,
+            facility_name=self.facility_name,
+            json_schema=self.json_schema,
+            created_by=None  # Will be set by the user cloning
+        )
+        return clone
+
+
+class FormSubmission(models.Model):
+    """
+    Stores submitted form data from dynamic forms.
+    """
+    form_template = models.ForeignKey(
+        FormTemplate,
+        on_delete=models.PROTECT,
+        help_text="The form template used for this submission"
+    )
+    user = models.ForeignKey(
+        User,
+        on_delete=models.PROTECT,
+        help_text="User who submitted the form"
+    )
+    submission_data = models.JSONField(
+        help_text="The submitted form data"
+    )
+    # Optional relationships to existing models
+    project = models.ForeignKey(
+        'Project',
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        help_text="Related project (if applicable)"
+    )
+    order = models.ForeignKey(
+        'Order',
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        help_text="Related order (if applicable)"
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    class Meta:
+        ordering = ['-created_at']
+    
+    def __str__(self):
+        return f"{self.form_template.name} - {self.user.username} - {self.created_at}"
+
+
