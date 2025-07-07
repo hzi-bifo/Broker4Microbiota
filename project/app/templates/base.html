@@ -5,9 +5,10 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
     <link rel="stylesheet" href="{% static 'css/jqtree.css' %}">
+    <link rel="stylesheet" href="{% static 'css/modern.css' %}">
     <link rel="stylesheet" href="{% static 'css/auth.css' %}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -33,34 +34,73 @@
     <title>{% block title %}{% endblock %}</title>
   </head>
   <body>
-    <header class="navbar is-light">
-      <div class="navbar-brand">
-        <a class="navbar-item">
-          <img src="{% static 'images/logo.png' %}" alt="Logo" width="40" height="40">
-        </a>
-      </div>
-      <div class="navbar-menu">
-        <div class="navbar-start">
-          <h1 class="navbar-item title">Sequencing Order Application</h1>
+    <nav class="navbar" role="navigation" aria-label="main navigation">
+      <div class="container">
+        <div class="navbar-brand">
+          <a class="navbar-item" href="{% if user.is_authenticated %}{% url 'project_list' %}{% else %}{% url 'login' %}{% endif %}">
+            <img src="{% static 'images/logo.png' %}" alt="HZI Logo">
+          </a>
+          <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navbarMain">
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+          </a>
         </div>
-        <div class="navbar-end">
-          {% if user.is_authenticated %}
-            <div class="navbar-item">
-              <div class="buttons">
-                <span class="button is-static">Welcome, {{ user.username }}!</span>
-                <a href="{% url 'logout' %}" class="button is-danger">Logout</a>
+
+        <div id="navbarMain" class="navbar-menu">
+          <div class="navbar-start">
+            <h1 class="navbar-item">
+              <span class="has-text-weight-semibold">Sequencing Order Management</span>
+            </h1>
+          </div>
+
+          <div class="navbar-end">
+            {% if user.is_authenticated %}
+              <div class="navbar-item has-dropdown is-hoverable">
+                <a class="navbar-link">
+                  <span class="icon">
+                    <i class="fas fa-user-circle"></i>
+                  </span>
+                  <span>{{ user.username }}</span>
+                </a>
+                <div class="navbar-dropdown is-right">
+                  <a class="navbar-item" href="{% url 'project_list' %}">
+                    <span class="icon">
+                      <i class="fas fa-folder"></i>
+                    </span>
+                    <span>My Projects</span>
+                  </a>
+                  <hr class="navbar-divider">
+                  <a class="navbar-item" href="{% url 'logout' %}">
+                    <span class="icon">
+                      <i class="fas fa-sign-out-alt"></i>
+                    </span>
+                    <span>Logout</span>
+                  </a>
+                </div>
               </div>
-            </div>
-          {% else %}
-            <div class="navbar-item">
-              <div class="buttons">
-                <a href="{% url 'login' %}" class="button is-primary">Login</a>
+            {% else %}
+              <div class="navbar-item">
+                <div class="buttons">
+                  <a href="{% url 'register' %}" class="button is-light">
+                    <span class="icon">
+                      <i class="fas fa-user-plus"></i>
+                    </span>
+                    <span>Register</span>
+                  </a>
+                  <a href="{% url 'login' %}" class="button is-primary">
+                    <span class="icon">
+                      <i class="fas fa-sign-in-alt"></i>
+                    </span>
+                    <span>Login</span>
+                  </a>
+                </div>
               </div>
-            </div>
-          {% endif %}
+            {% endif %}
+          </div>
         </div>
       </div>
-    </header>
+    </nav>
 
     <!-- Messages Section -->
     {% if messages %}
@@ -83,9 +123,39 @@
     </main>
 
     <footer class="footer">
-      <div class="content has-text-centered">
-        <p>This application is developed by the Helmholtz Centre for Infection Research to facilitate sequencing order requests and metadata collection according to the MIxS standards.</p>
-        <p>&copy; {% now "Y" %} Helmholtz Centre for Infection Research. All rights reserved.</p>
+      <div class="container">
+        <div class="content has-text-centered">
+          <p>
+            <strong>Broker4Microbiota</strong> - Sequencing Order Management System<br>
+            Developed by the Helmholtz Centre for Infection Research to streamline sequencing requests and ensure compliance with MIxS standards for microbiome data submission.
+          </p>
+          <div class="is-divider"></div>
+          <div class="columns is-mobile is-centered">
+            <div class="column is-narrow">
+              <p class="has-text-grey-light">
+                <span class="icon-text">
+                  <span class="icon">
+                    <i class="fas fa-envelope"></i>
+                  </span>
+                  <span>sequencing@helmholtz-hzi.de</span>
+                </span>
+              </p>
+            </div>
+            <div class="column is-narrow">
+              <p class="has-text-grey-light">
+                <span class="icon-text">
+                  <span class="icon">
+                    <i class="fas fa-globe"></i>
+                  </span>
+                  <span><a href="https://www.helmholtz-hzi.de" target="_blank" class="has-text-grey-light">www.helmholtz-hzi.de</a></span>
+                </span>
+              </p>
+            </div>
+          </div>
+          <p class="has-text-grey-light">
+            &copy; {% now "Y" %} Helmholtz Centre for Infection Research. All rights reserved.
+          </p>
+        </div>
       </div>
     </footer>
 
@@ -103,6 +173,19 @@
             }, 500);
           }, 5000);
         });
+
+        // Navbar burger functionality
+        const navbarBurgers = Array.prototype.slice.call(document.querySelectorAll('.navbar-burger'), 0);
+        if (navbarBurgers.length > 0) {
+          navbarBurgers.forEach(function(el) {
+            el.addEventListener('click', function() {
+              const target = el.dataset.target;
+              const targetElement = document.getElementById(target);
+              el.classList.toggle('is-active');
+              targetElement.classList.toggle('is-active');
+            });
+          });
+        }
       });
     </script>
     {% block scripts %}{% endblock %}
