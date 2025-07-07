@@ -1,23 +1,50 @@
-**/*.pyc
-**/*.bak
-**/.env
-**/*.old
-**/__pycache__
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
 myenv/
-project/.nextflow
-project/app/migrations
-project/staticfiles/
-project/media/test/
-**/debug.log
-**/db.sqlite3
-output.xlsx
-sample_*.xml
-project_*.xml
-submission_*.xml
-read_*.xml
-template_*.xml
-*.report
-read_manifest*
-webin-cli-8.1.0.jar
-project/media/*.gz
-project/media/*.fastq
+env/
+ENV/
+.venv
+
+# Django
+*.log
+*.pot
+*.pyc
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+media/
+staticfiles/
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Nextflow
+.nextflow/
+.nextflow.log*
+work/
+results/
+test/
+
+# Project specific
+project/static_root/
+*.xlsx
+*.xml
+\!staticfiles/xml/*.xml
+\!project/staticfiles/xml/*.xml
+\!project/static/xml/*.xml
+EOF < /dev/null

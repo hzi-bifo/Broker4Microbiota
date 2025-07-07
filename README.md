@@ -18,63 +18,138 @@ This project is developed with Django. To set up and run the project locally, fo
 
 ### Prerequisites
 
-- Python (3.8 or newer)
+- Python 3.8 or newer
 - pip (Python package installer)
-- Nextflow (see https://www.nextflow.io/docs/latest/install.html). Please test the installation using `nextflow run nf-core/mag -profile test,docker --outdir test`
-- add nexflow to conda env
+- Git
+- Nextflow (for bioinformatics pipelines)
+- Conda (optional, for bioinformatics tools like bwa and samtools)
 
-### Setting Up a Virtual Environment
+### Quick Setup (Recommended)
 
-It's recommended to use a virtual environment for Python projects. This keeps dependencies required by different projects separate. To create a virtual environment, run:
-
-```bash
-python3 -m venv myenv
-source myenv/bin/activate
-```
-
-
-### Installing Dependencies
+We provide an automated setup script that handles most of the installation steps:
 
 ```bash
-pip install Django
-pip install requests
-pip install biopython
-pip install phonenumbers
-pip install django-widget-tweaks
-pip install django-phonenumber-field
-pip install xmltodict
-pip install django-q2
-pip install nextflow
-conda install bwa
-conda install samtools
+# Clone the repository
+git clone https://github.com/hzi-bifo/Broker4Microbiota.git
+cd Broker4Microbiota
+
+# Run the setup script
+./setup.sh
 ```
 
-### Running the Project
+The setup script will:
+- Check Python version compatibility
+- Create a virtual environment
+- Install all Python dependencies
+- Create a `.env` file from the template
+- Set up the Django database
+- Collect static files
+- Optionally create a superuser account
 
-Navigate to the project directory and run:
+### Manual Setup
 
+If you prefer to set up manually or the script doesn't work on your system:
+
+#### 1. Create and activate a virtual environment
+
+```bash
+python3 -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+```
+
+#### 2. Install Python dependencies
+
+```bash
+pip install --upgrade pip
+pip install -r requirements.txt
+```
+
+#### 3. Set up environment variables
+
+```bash
+cp TEMPLATE.env .env
+# Edit .env file with your settings (see Configuration section below)
+```
+
+#### 4. Set up Django
 
 ```bash
 cd project
-python manage.py collectstatic
+python manage.py collectstatic --noinput
+python manage.py makemigrations
+python manage.py migrate
+python manage.py createsuperuser  # Optional: create admin account
+```
+
+#### 5. Install additional tools (optional)
+
+**Nextflow** (required for running bioinformatics pipelines):
+```bash
+# Install Nextflow
+curl -s https://get.nextflow.io | bash
+sudo mv nextflow /usr/local/bin/
+
+# Test Nextflow installation
+nextflow run nf-core/mag -profile test,docker --outdir test
+```
+
+**Bioinformatics tools** (if using Conda):
+```bash
+conda install -c bioconda bwa samtools
+```
+
+### Running the Development Server
+
+After setup is complete:
+
+```bash
+# Make sure virtual environment is activated
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+
+# Start the development server
+cd project
 python manage.py runserver
 ```
 
-This will start the Django development server, and you should be able to access the project at `http://127.0.0.1:8000/`.
+The application will be available at `http://127.0.0.1:8000/`
+
+### Running Background Tasks
+
+To process asynchronous tasks (like pipeline runs), start the Django-Q cluster in a separate terminal:
+
+```bash
+source venv/bin/activate
+cd project
+python manage.py qcluster
+```
 
 
 ## Configuration 
 
-### ENA account
+### Environment Variables
 
-Register an ENA account (see https://ena-docs.readthedocs.io/en/latest/submit/general-guide/registration.html) and add the credentials to your environment. For example, on a Unix-like system, you can add the following lines to your .bashrc, .bash_profile, or .profile file:
+The application uses environment variables for sensitive configuration. After running the setup script or copying `TEMPLATE.env` to `.env`, edit the `.env` file with your settings:
 
 ```bash
-export ENA_USERNAME='Webin-XXXXXX'
-export ENA_PASSWORD='XXXXXXXXXX'
+# ENA (European Nucleotide Archive) credentials
+ENA_USERNAME=Webin-XXXXXX      # Your ENA Webin account username
+ENA_USER=                       # Alternative ENA username field (if needed)
+ENA_PASSWORD=your_password_here # Your ENA account password
+
+# Project paths
+ROOT_DIR=$HOME/git/django_ngs_metadata_collection  # Adjust to your project location
+
+# HPC/Slurm configuration (for computational clusters)
+USE_SLURM_FOR_SUBMG=False      # Set to True if using Slurm job scheduler
+CONDA_PATH=                     # Path to conda installation (if using Slurm)
 ```
 
-after createing an ENA account, please wait 24h due to a known bug that prevents test submissions https://github.com/enasequence/read_docs/issues/161
+### ENA Account Setup
+
+1. **Register an ENA account** at https://ena-docs.readthedocs.io/en/latest/submit/general-guide/registration.html
+2. **Important**: After creating an ENA account, wait 24 hours before attempting submissions due to a [known synchronization issue](https://github.com/enasequence/read_docs/issues/161)
+3. Your username will be in the format `Webin-XXXXXX`
+4. Add your credentials to the `.env` file (never commit this file to version control)
 
 ### Changes on the Order form
 
@@ -141,6 +216,31 @@ This image shows the functionality for associating samples with specific MIxS st
 
 ![TODO](screenshots/image2.png)
 
+
+## Troubleshooting
+
+### Common Issues
+
+**ImportError: No module named 'django'**
+- Make sure you've activated the virtual environment: `source venv/bin/activate`
+- If that doesn't work, reinstall dependencies: `pip install -r requirements.txt`
+
+**Database errors on first run**
+- Run migrations: `cd project && python manage.py migrate`
+- If you get migration conflicts, try: `python manage.py makemigrations && python manage.py migrate`
+
+**Static files not loading (CSS/JS missing)**
+- Run: `cd project && python manage.py collectstatic`
+- Make sure `DEBUG = True` in `project/settings.py` for development
+
+**Permission denied when running setup.sh**
+- Make the script executable: `chmod +x setup.sh`
+- Or run with bash: `bash setup.sh`
+
+**ENA submission failures**
+- Ensure you've waited 24 hours after creating your ENA account
+- Check that your credentials in `.env` are correct
+- Verify your ENA account at https://www.ebi.ac.uk/ena/submit/webin/login
 
 ### Admin View
  
