@@ -403,15 +403,17 @@ class Order(models.Model):
     )
 
     def show_metadata(self):
-        # if no samples at all
+        # Return False if metadata setup is still needed (i.e., when template shows "not order.show_metadata")
+        # Return True if metadata setup is completed
         sample_set = self.sampleset_set.filter(sample_type=SAMPLE_TYPE_NORMAL).first()
         if not sample_set:
-            return True
-    
-        sample = self.sample_set.first()
-        if not sample:
-            return True
-        # sample = Sample.objects.filter(order=self).first()
+            return False  # No sampleset means metadata setup is still needed
+        
+        # Check if sampleset has checklists configured
+        if not sample_set.checklists:
+            return False  # No checklists configured means metadata setup is still needed
+            
+        return True  # Metadata setup is completed
 
     def show_samples(self):
         # metadata exists
