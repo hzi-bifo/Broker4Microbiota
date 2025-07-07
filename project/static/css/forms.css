@@ -495,24 +495,13 @@
 .progress-steps {
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    align-items: flex-start;
     position: relative;
     max-width: 800px;
     margin: 0 auto;
-    flex-wrap: wrap;
-    gap: 1rem;
+    padding: 0 60px;
 }
 
-.progress-steps::before {
-    content: '';
-    position: absolute;
-    top: 24px;
-    left: 48px;
-    right: 48px;
-    height: 2px;
-    background: #e0e0e0;
-    z-index: 1;
-}
 
 .progress-step {
     display: flex;
@@ -521,8 +510,20 @@
     text-align: center;
     position: relative;
     z-index: 2;
-    min-width: 120px;
     flex: 1;
+    max-width: 150px;
+}
+
+/* Connection line between steps */
+.progress-step:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    top: 24px;
+    left: calc(50% + 24px);
+    right: calc(-50% + 24px);
+    height: 2px;
+    background: #e0e0e0;
+    z-index: -1;
 }
 
 .step-icon {
@@ -535,6 +536,9 @@
     font-size: 1.25rem;
     margin-bottom: 0.5rem;
     transition: all 0.3s ease;
+    background: #e0e0e0;
+    color: #999;
+    position: relative;
 }
 
 .progress-step.completed .step-icon {
@@ -556,10 +560,6 @@
     box-shadow: 0 2px 4px rgba(243, 156, 18, 0.3);
 }
 
-.progress-step .step-icon {
-    background: #e0e0e0;
-    color: #999;
-}
 
 .progress-step .step-icon.disabled {
     background: #f5f5f5;
