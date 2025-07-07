@@ -28,6 +28,10 @@ def site_settings(request):
                 'primary_color': site_settings_obj.primary_color,
                 'secondary_color': site_settings_obj.secondary_color,
                 'footer_text': site_settings_obj.footer_text,
+                'empty_projects_text': site_settings_obj.empty_projects_text,
+                'projects_with_samples_text': site_settings_obj.projects_with_samples_text,
+                'project_form_title': site_settings_obj.project_form_title,
+                'project_form_description': site_settings_obj.project_form_description,
                 'logo_url': site_settings_obj.logo.url if site_settings_obj.logo else None,
                 'favicon_url': site_settings_obj.favicon.url if site_settings_obj.favicon else None,
             }
@@ -52,6 +56,10 @@ def site_settings(request):
                 'primary_color': '#3273dc',
                 'secondary_color': '#2366d1',
                 'footer_text': '',
+                'empty_projects_text': 'Welcome to the Sequencing Order Management System! Start by creating your first project to organize and track your sequencing requests.',
+                'projects_with_samples_text': 'You have active sequencing projects. Create a new project for a different study or continue working on your existing projects.',
+                'project_form_title': 'Create New Sequencing Project',
+                'project_form_description': 'A project represents a study or experiment that groups related sequencing orders. Each project can contain multiple orders for different samples or time points.',
                 'logo_url': os.path.join(django_settings.STATIC_URL, 'images/logo.png'),
                 'favicon_url': None,
             }

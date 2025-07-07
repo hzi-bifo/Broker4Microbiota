@@ -2778,6 +2778,30 @@ class SiteSettings(models.Model):
         default=""
     )
     
+    # Empty State Messages
+    empty_projects_text = models.TextField(
+        default="Welcome to the Sequencing Order Management System! Start by creating your first project to organize and track your sequencing requests.",
+        help_text="Message shown when user has no projects",
+        blank=True
+    )
+    projects_with_samples_text = models.TextField(
+        default="You have active sequencing projects. Create a new project for a different study or continue working on your existing projects.",
+        help_text="Message shown when user has projects with samples",
+        blank=True
+    )
+    
+    # Form Customization
+    project_form_title = models.CharField(
+        max_length=200,
+        default="Create New Sequencing Project",
+        help_text="Title shown on project creation form"
+    )
+    project_form_description = models.TextField(
+        default="A project represents a study or experiment that groups related sequencing orders. Each project can contain multiple orders for different samples or time points.",
+        help_text="Description shown on project creation form",
+        blank=True
+    )
+    
     # Metadata
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

@@ -40,7 +40,17 @@ Project List
         </table>
       </div>
     {% else %}
-      <p class="has-text-centered">No projects found.</p>
+      <div class="notification is-info is-light">
+        <div class="has-text-centered">
+          <p class="mb-4">
+            {% if has_samples %}
+              {{ site_settings.projects_with_samples_text }}
+            {% else %}
+              {{ site_settings.empty_projects_text }}
+            {% endif %}
+          </p>
+        </div>
+      </div>
     {% endif %}
     <div class="has-text-centered mt-4">
       <a href="{% url 'project_create' %}" class="button is-primary">Request new project</a>

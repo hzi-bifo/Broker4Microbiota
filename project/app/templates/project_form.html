@@ -1,41 +1,213 @@
 {% extends 'base.html' %}
+{% load widget_tweaks %}
 
 {% block title %}
-Project
+{{ site_settings.project_form_title }}
 {% endblock title %}
 
 {% block content %}
 <section class="section">
   <div class="container">
-    <h2 class="title has-text-centered">Project</h2>
-    <form method="post" class="box">
-      {% csrf_token %}
-      <div class="columns">
-        <div class="column is-two-thirds">
-          {% for field in form %}
-          <div class="field">
-            <label class="label">{{ field.label }}</label>
-            <div class="control">
-              {{ field }}{{ field.help_text }}
+    <div class="form-card">
+      <div class="form-card-header">
+        <h2>{{ site_settings.project_form_title }}</h2>
+        <p>{{ site_settings.project_form_description }}</p>
+      </div>
+      
+      <div class="form-card-body">
+        <form method="post" id="projectForm">
+          {% csrf_token %}
+          
+          {% if form.non_field_errors %}
+            <div class="notification is-danger is-light">
+              {% for error in form.non_field_errors %}
+                {{ error }}
+              {% endfor %}
+            </div>
+          {% endif %}
+
+          <!-- Title Field -->
+          <div class="form-field-group">
+            <div class="form-field-main">
+              <div class="field-wrapper">
+                <label class="{% if form.title.field.required %}required{% endif %}">
+                  <i class="fas fa-heading"></i> {{ form.title.label }}
+                </label>
+                {{ form.title|add_class:"input" }}
+                {% if form.title.errors %}
+                  {% for error in form.title.errors %}
+                    <p class="field-error">{{ error }}</p>
+                  {% endfor %}
+                {% endif %}
+              </div>
+            </div>
+            <div class="form-field-help">
+              <h4>Project Title</h4>
+              <p>Choose a descriptive title that clearly identifies your research project or study. This will be the main identifier for your project throughout the system.</p>
             </div>
           </div>
-          {% endfor %}
-        </div>
-        
+
+          <!-- Alias Field -->
+          <div class="form-field-group">
+            <div class="form-field-main">
+              <div class="field-wrapper">
+                <label class="{% if form.alias.field.required %}required{% endif %}">
+                  <i class="fas fa-tag"></i> {{ form.alias.label }}
+                </label>
+                {{ form.alias|add_class:"input" }}
+                {% if form.alias.errors %}
+                  {% for error in form.alias.errors %}
+                    <p class="field-error">{{ error }}</p>
+                  {% endfor %}
+                {% endif %}
+              </div>
+            </div>
+            <div class="form-field-help">
+              <h4>Project Alias</h4>
+              <p>A short, unique identifier for your project. This could be an internal code or abbreviation used by your lab or institution.</p>
+            </div>
+          </div>
+
+          <!-- Description Field -->
+          <div class="form-field-group">
+            <div class="form-field-main">
+              <div class="field-wrapper">
+                <label class="{% if form.description.field.required %}required{% endif %}">
+                  <i class="fas fa-align-left"></i> {{ form.description.label }}
+                </label>
+                {{ form.description|add_class:"textarea" }}
+                {% if form.description.errors %}
+                  {% for error in form.description.errors %}
+                    <p class="field-error">{{ error }}</p>
+                  {% endfor %}
+                {% endif %}
+              </div>
+            </div>
+            <div class="form-field-help">
+              <h4>Project Description</h4>
+              <p>Provide a comprehensive description including:</p>
+              <ul style="margin-top: 0.5rem; padding-left: 1.25rem;">
+                <li>Research objectives and hypotheses</li>
+                <li>Sample types and collection methods</li>
+                <li>Experimental design overview</li>
+                <li>Expected outcomes</li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- Submitted Checkbox -->
+          <div class="form-field-group">
+            <div class="form-field-main">
+              <div class="field-wrapper checkbox-wrapper">
+                {{ form.submitted }}
+                <label for="{{ form.submitted.id_for_label }}">
+                  Already submitted to ENA
+                </label>
+              </div>
+            </div>
+            <div class="form-field-help">
+              <h4>ENA Submission Status</h4>
+              <p>Check this box only if this project has already been submitted to the European Nucleotide Archive (ENA) and has received an accession number.</p>
+            </div>
+          </div>
+
+          <!-- Study Accession ID (Read-only) -->
+          {% if form.study_accession_id %}
+          <div class="form-field-group">
+            <div class="form-field-main">
+              <div class="field-wrapper">
+                <label>
+                  <i class="fas fa-database"></i> {{ form.study_accession_id.label }}
+                </label>
+                {{ form.study_accession_id|add_class:"input" }}
+              </div>
+            </div>
+            <div class="form-field-help">
+              <h4>Study Accession</h4>
+              <p>This field will be automatically populated after successful submission to ENA. Format: PRJEB######</p>
+            </div>
+          </div>
+          {% endif %}
+
+          <!-- Alternative Accession ID (Read-only) -->
+          {% if form.alternative_accession_id %}
+          <div class="form-field-group">
+            <div class="form-field-main">
+              <div class="field-wrapper">
+                <label>
+                  <i class="fas fa-key"></i> {{ form.alternative_accession_id.label }}
+                </label>
+                {{ form.alternative_accession_id|add_class:"input" }}
+              </div>
+            </div>
+            <div class="form-field-help">
+              <h4>Alternative ID</h4>
+              <p>An optional alternative identifier, such as a BioProject ID or other database reference.</p>
+            </div>
+          </div>
+          {% endif %}
+
+          <!-- Form Actions -->
+          <div class="form-actions">
+            <button type="submit" class="button is-primary">
+              <span class="icon">
+                <i class="fas fa-check"></i>
+              </span>
+              <span>Submit Project</span>
+            </button>
+            <button type="button" class="button is-light" onclick="clearForm()">
+              <span class="icon">
+                <i class="fas fa-eraser"></i>
+              </span>
+              <span>Clear Form</span>
+            </button>
+            <a href="{% url 'project_list' %}" class="button is-light">
+              <span class="icon">
+                <i class="fas fa-times"></i>
+              </span>
+              <span>Cancel</span>
+            </a>
+          </div>
+        </form>
       </div>
-      <div class="field is-grouped">
-        <div class="control">
-          <button type="submit" class="button is-primary">Save</button>
-        </div>
-        <div class="control">
-          <a href="{% url 'project_list' %}" class="button is-link is-light">Cancel</a>
-        </div>
-      </div>
-    </form>
+    </div>
   </div>
 </section>
 {% endblock content %}
 
 {% block scripts %}
+<script>
+// Clear form function
+function clearForm() {
+  if (confirm('Are you sure you want to clear all form fields?')) {
+    document.getElementById('projectForm').reset();
+    // Re-focus on first input
+    document.querySelector('input[type="text"]:not([readonly])').focus();
+  }
+}
 
+// Add real-time validation
+document.addEventListener('DOMContentLoaded', function() {
+  const inputs = document.querySelectorAll('.input, .textarea');
+  
+  inputs.forEach(input => {
+    input.addEventListener('blur', function() {
+      if (this.hasAttribute('required') || this.closest('.field-wrapper').querySelector('label.required')) {
+        if (this.value.trim() === '') {
+          this.classList.add('is-invalid');
+          this.classList.remove('is-valid');
+        } else {
+          this.classList.add('is-valid');
+          this.classList.remove('is-invalid');
+        }
+      }
+    });
+    
+    // Remove validation classes on focus
+    input.addEventListener('focus', function() {
+      this.classList.remove('is-valid', 'is-invalid');
+    });
+  });
+});
+</script>
 {% endblock scripts %}

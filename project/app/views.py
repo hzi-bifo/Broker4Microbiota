@@ -77,6 +77,13 @@ class ProjectListView(ListView):
     def get_queryset(self):
         projects = Project.objects.filter(user=self.request.user)
         return projects
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # Check if user has any samples across all projects
+        has_samples = Sample.objects.filter(order__project__user=self.request.user).exists()
+        context['has_samples'] = has_samples
+        return context
 
 def project_view(request, project_id=None):
     if request.user.is_authenticated:

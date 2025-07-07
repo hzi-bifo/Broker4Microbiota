@@ -10,11 +10,30 @@ class ProjectForm(forms.ModelForm):
         model = Project
         exclude = ['user']
         widgets = {
-            'title': forms.TextInput(attrs={'class': 'input'}),
-            'alias': forms.TextInput(attrs={'class': 'input'}),
-            'description': forms.Textarea(attrs={'class': 'textarea'}),
-            'study_accession_id': forms.TextInput(attrs={'class': 'input','readonly':True}),
-            'alternative_accession_id': forms.TextInput(attrs={'class': 'input','readonly':True}),
+            'title': forms.TextInput(attrs={
+                'class': 'input',
+                'placeholder': 'e.g., Gut Microbiome Study 2024'
+            }),
+            'alias': forms.TextInput(attrs={
+                'class': 'input',
+                'placeholder': 'e.g., GUT-2024-001'
+            }),
+            'description': forms.Textarea(attrs={
+                'class': 'textarea',
+                'placeholder': 'Provide a detailed description of your study objectives, sample types, and experimental design...',
+                'rows': 4
+            }),
+            'study_accession_id': forms.TextInput(attrs={
+                'class': 'input',
+                'readonly': True,
+                'placeholder': 'Will be assigned after ENA submission'
+            }),
+            'alternative_accession_id': forms.TextInput(attrs={
+                'class': 'input',
+                'readonly': True,
+                'placeholder': 'Optional alternative ID'
+            }),
+            'submitted': forms.CheckboxInput(attrs={'class': 'checkbox'}),
         }
         help_texts = {
             'title': 'Enter the title of the project.',

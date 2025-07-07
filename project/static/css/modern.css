@@ -86,6 +86,11 @@
     margin-bottom: 1.5rem;
 }
 
+.footer strong {
+    color: #ffffff;
+    font-weight: 600;
+}
+
 .footer p:last-child {
     font-size: 0.9rem;
     opacity: 0.8;

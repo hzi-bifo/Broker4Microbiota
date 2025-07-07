@@ -1,0 +1,194 @@
+/* Modern Form Styling */
+
+/* Form Card Container */
+.form-card {
+    max-width: 900px;
+    margin: 2rem auto;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07), 0 1px 3px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+.form-card-header {
+    background: linear-gradient(135deg, var(--primary-color, #3273dc) 0%, var(--secondary-color, #2366d1) 100%);
+    color: white;
+    padding: 2rem;
+    text-align: center;
+}
+
+.form-card-header h2 {
+    margin: 0;
+    font-size: 1.75rem;
+    font-weight: 600;
+}
+
+.form-card-header p {
+    margin-top: 0.5rem;
+    opacity: 0.9;
+    font-size: 0.95rem;
+}
+
+.form-card-body {
+    padding: 2rem;
+}
+
+/* Two-column form layout */
+.form-field-group {
+    display: flex;
+    gap: 2rem;
+    margin-bottom: 1.5rem;
+    align-items: flex-start;
+}
+
+.form-field-main {
+    flex: 1;
+}
+
+.form-field-help {
+    flex: 0 0 300px;
+    padding: 1rem;
+    background: #f8f9fa;
+    border-radius: 6px;
+    border-left: 3px solid var(--primary-color, #3273dc);
+}
+
+.form-field-help h4 {
+    font-size: 0.875rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #363636;
+}
+
+.form-field-help p {
+    font-size: 0.875rem;
+    color: #4a4a4a;
+    line-height: 1.5;
+}
+
+/* Field styling */
+.field-wrapper {
+    margin-bottom: 1.5rem;
+}
+
+.field-wrapper label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    color: #363636;
+}
+
+.field-wrapper label.required::after {
+    content: ' *';
+    color: #ff3860;
+}
+
+.field-wrapper .input,
+.field-wrapper .textarea,
+.field-wrapper .select {
+    width: 100%;
+    padding: 0.75rem;
+    border: 2px solid #e0e0e0;
+    border-radius: 6px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.field-wrapper .input:focus,
+.field-wrapper .textarea:focus,
+.field-wrapper .select:focus {
+    outline: none;
+    border-color: var(--primary-color, #3273dc);
+    box-shadow: 0 0 0 3px rgba(50, 115, 220, 0.1);
+}
+
+/* Valid/Invalid states */
+.field-wrapper .input.is-valid,
+.field-wrapper .textarea.is-valid {
+    border-color: #23d160;
+}
+
+.field-wrapper .input.is-invalid,
+.field-wrapper .textarea.is-invalid {
+    border-color: #ff3860;
+}
+
+/* Placeholder styling */
+.field-wrapper .input::placeholder,
+.field-wrapper .textarea::placeholder {
+    color: #b5b5b5;
+    font-style: italic;
+}
+
+/* Checkbox styling */
+.field-wrapper.checkbox-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.field-wrapper.checkbox-wrapper input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+}
+
+.field-wrapper.checkbox-wrapper label {
+    margin-bottom: 0;
+    font-weight: normal;
+    cursor: pointer;
+}
+
+/* Button group */
+.form-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: 1px solid #e0e0e0;
+}
+
+.form-actions .button {
+    padding: 0.75rem 2rem;
+    font-size: 1rem;
+    font-weight: 600;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .form-field-group {
+        flex-direction: column;
+    }
+    
+    .form-field-help {
+        flex: 1;
+    }
+    
+    .form-card-body {
+        padding: 1.5rem;
+    }
+}
+
+/* Loading state */
+.form-loading {
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+/* Error messages */
+.field-error {
+    color: #ff3860;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+}
+
+/* Success message */
+.field-success {
+    color: #23d160;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+}
