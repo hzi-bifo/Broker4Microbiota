@@ -376,6 +376,30 @@ class Order(models.Model):
     sequencing_instrument = models.CharField(max_length=100, null=True, blank=True, default="Illumina HiSeq 1500")
 
     submitted = models.BooleanField(default=False)
+    
+    # Order status tracking
+    STATUS_CHOICES = [
+        ('draft', 'Draft'),
+        ('ready_for_sequencing', 'Ready for Sequencing'),
+        ('sequencing_in_progress', 'Sequencing in Progress'),
+        ('sequencing_completed', 'Sequencing Completed'),
+        ('data_processing', 'Data Processing'),
+        ('data_delivered', 'Data Delivered'),
+        ('completed', 'Completed'),
+    ]
+    
+    status = models.CharField(
+        max_length=30,
+        choices=STATUS_CHOICES,
+        default='draft',
+        help_text="Current status of the sequencing order"
+    )
+    
+    status_updated_at = models.DateTimeField(auto_now=True)
+    status_notes = models.TextField(
+        blank=True,
+        help_text="Additional notes about the current status"
+    )
 
     def show_metadata(self):
         # if no samples at all
@@ -442,6 +466,36 @@ class Order(models.Model):
         yaml.append(f"SEQUENCING_PLATFORMS: [{platformList}]")
 
         return yaml
+    
+    def get_status_display_color(self):
+        """Return appropriate CSS color class for current status"""
+        status_colors = {
+            'draft': 'is-light',
+            'ready_for_sequencing': 'is-info',
+            'sequencing_in_progress': 'is-warning',
+            'sequencing_completed': 'is-primary',
+            'data_processing': 'is-primary',
+            'data_delivered': 'is-success',
+            'completed': 'is-success',
+        }
+        return status_colors.get(self.status, 'is-light')
+    
+    def get_next_status(self):
+        """Return the next logical status in the workflow"""
+        status_progression = {
+            'draft': 'ready_for_sequencing',
+            'ready_for_sequencing': 'sequencing_in_progress',
+            'sequencing_in_progress': 'sequencing_completed',
+            'sequencing_completed': 'data_processing',
+            'data_processing': 'data_delivered',
+            'data_delivered': 'completed',
+            'completed': None,
+        }
+        return status_progression.get(self.status)
+    
+    def can_advance_status(self):
+        """Check if status can be advanced to next stage"""
+        return self.get_next_status() is not None
 
 class Sampleset(models.Model):
 
@@ -2799,6 +2853,18 @@ class SiteSettings(models.Model):
     project_form_description = models.TextField(
         default="A project represents a study or experiment that groups related sequencing orders. Each project can contain multiple orders for different samples or time points.",
         help_text="Description shown on project creation form",
+        blank=True
+    )
+    
+    # Order Form Customization
+    order_form_title = models.CharField(
+        max_length=200,
+        default="Create Sequencing Order",
+        help_text="Title shown on order creation form"
+    )
+    order_form_description = models.TextField(
+        default="Provide detailed information for your sequencing order including contact details, sample information, and sequencing preferences.",
+        help_text="Description shown on order creation form",
         blank=True
     )
     

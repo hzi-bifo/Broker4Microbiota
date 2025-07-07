@@ -63,7 +63,7 @@ class SiteSettingsAdmin(admin.ModelAdmin):
             'description': 'Messages shown on the project list page in different states'
         }),
         ('Form Customization', {
-            'fields': ('project_form_title', 'project_form_description'),
+            'fields': ('project_form_title', 'project_form_description', 'order_form_title', 'order_form_description'),
             'description': 'Customize form titles and descriptions'
         }),
         ('System Information', {

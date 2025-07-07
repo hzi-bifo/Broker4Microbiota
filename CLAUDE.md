@@ -85,6 +85,57 @@ The system includes 17 pairs of checklist models following GSC MIxS standards:
 - **Metadata View**: Interactive tree UI for selecting MIxS checklists
 - **Samples View**: Handsontable interface for bulk sample data entry
 
+### Order Status Workflow
+
+The system implements a comprehensive order status tracking system with the following workflow:
+
+#### Status Progression
+```
+Draft → Ready for Sequencing → Sequencing in Progress → Sequencing Completed → Data Processing → Data Delivered → Completed
+```
+
+#### Status Definitions
+
+1. **Draft**: Initial state when order is created. User can edit all details.
+2. **Ready for Sequencing**: User marks order as complete and ready for the sequencing center.
+3. **Sequencing in Progress**: Sequencing center starts processing the samples.
+4. **Sequencing Completed**: Raw sequencing is finished, data generation complete.
+5. **Data Processing**: Bioinformatics analysis and quality control in progress.
+6. **Data Delivered**: Final processed data delivered to user.
+7. **Completed**: Order workflow finished, project archived.
+
+#### Implementation for Sequencing Center Integration
+
+For sequencing center staff to update order status, implement the following:
+
+**API Endpoint** (to be implemented):
+```python
+# In views.py
+@require_http_methods(["POST"])
+@csrf_exempt  # For API access
+def advance_order_status(request, order_id):
+    """
+    API endpoint for sequencing center to update order status
+    Requires authentication token for security
+    """
+    # Validate authentication token
+    # Update order status with notes
+    # Send notification to user
+    # Log status change for audit trail
+```
+
+**External Integration Points**:
+- **LIMS Integration**: Connect to Laboratory Information Management System
+- **Notification System**: Email/SMS alerts on status changes
+- **API Authentication**: Token-based auth for sequencing center systems
+- **Audit Logging**: Track all status changes with timestamp and user
+
+**Security Considerations**:
+- Use API tokens for sequencing center access
+- Log all status changes for audit trail
+- Validate status transitions (can't skip steps)
+- Rate limiting to prevent abuse
+
 ## Essential Commands
 
 ### Development Server

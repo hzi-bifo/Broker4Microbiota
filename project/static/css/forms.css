@@ -306,6 +306,36 @@
     cursor: pointer;
 }
 
+/* Form sections */
+.form-section {
+    margin-bottom: 2.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.form-section:last-of-type {
+    border-bottom: none;
+    margin-bottom: 1rem;
+}
+
+.form-section-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #363636;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--primary-color, #3273dc);
+    display: inline-block;
+}
+
+/* Status container styling */
+.status-container {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
 /* Responsive */
 @media (max-width: 768px) {
     .form-card-body {
@@ -314,6 +344,15 @@
     
     .form-card {
         margin: 1rem;
+    }
+    
+    .status-container {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .form-section-title {
+        font-size: 1rem;
     }
 }
 

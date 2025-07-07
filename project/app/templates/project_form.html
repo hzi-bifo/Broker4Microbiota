@@ -253,6 +253,14 @@
               </span>
               <span>Clear Form</span>
             </button>
+            {% if debug %}
+            <button type="button" class="button is-info is-light" onclick="fillExampleData()">
+              <span class="icon">
+                <i class="fas fa-magic"></i>
+              </span>
+              <span>Fill Example Data</span>
+            </button>
+            {% endif %}
             <a href="{% url 'project_list' %}" class="button is-light">
               <span class="icon">
                 <i class="fas fa-times"></i>
@@ -276,6 +284,53 @@ function clearForm() {
     // Re-focus on first input
     document.querySelector('input[type="text"]:not([readonly])').focus();
   }
+}
+
+// Fill example data function (for development)
+function fillExampleData() {
+  const titleInput = document.querySelector('input[name="title"]');
+  const aliasInput = document.querySelector('input[name="alias"]');
+  const descriptionInput = document.querySelector('textarea[name="description"]');
+  
+  if (titleInput) {
+    titleInput.value = 'Gut Microbiome Diversity in Patients with Inflammatory Bowel Disease';
+  }
+  
+  if (aliasInput) {
+    aliasInput.value = 'IBD-GUT-2024-001';
+  }
+  
+  if (descriptionInput) {
+    descriptionInput.value = `This study investigates the gut microbiome composition and diversity in patients diagnosed with inflammatory bowel disease (IBD) compared to healthy controls.
+
+Research Objectives:
+- Characterize microbial diversity differences between IBD patients and controls
+- Identify potential biomarkers for disease severity
+- Explore correlations between microbiome composition and treatment response
+
+Sample Information:
+- Sample type: Fecal samples
+- Number of samples: 120 total (60 IBD patients, 60 healthy controls)
+- Collection method: Self-collection kits with preservation buffer
+- Storage: Frozen at -80°C within 2 hours of collection
+
+Experimental Design:
+- Study type: Cross-sectional case-control study
+- Sequencing approach: 16S rRNA gene sequencing (V3-V4 region)
+- Target coverage: 50,000 reads per sample
+- Groups: IBD patients (Crohn's disease and ulcerative colitis) vs. healthy controls
+
+Expected Outcomes:
+We expect to identify distinct microbial signatures associated with IBD, potentially revealing therapeutic targets and improving our understanding of disease pathogenesis.`;
+  }
+  
+  // Trigger validation for filled fields
+  [titleInput, aliasInput, descriptionInput].forEach(input => {
+    if (input) {
+      input.classList.add('is-success');
+      input.classList.remove('is-danger');
+    }
+  });
 }
 
 // Add real-time validation

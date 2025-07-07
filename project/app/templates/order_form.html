@@ -1,41 +1,273 @@
 {% extends 'base.html' %}
+{% load widget_tweaks %}
 
 {% block title %}
-Order Form
+{{ site_settings.order_form_title|default:"Create Sequencing Order" }}
 {% endblock title %}
 
 {% block content %}
 <section class="section">
   <div class="container">
-    <h2 class="title has-text-centered">Order Form</h2>
-    <form method="post" class="box">
-      {% csrf_token %}
-      <div class="columns">
-        <div class="column is-two-thirds">
-          {% for field in form %}
-          <div class="field">
-            <label class="label">{{ field.label }}</label>
-            <div class="control">
-              {{ field }}{{ field.help_text }}
+    <div class="form-card">
+      <div class="form-card-header">
+        <h2>{{ site_settings.order_form_title|default:"Create Sequencing Order" }}</h2>
+        <p>{{ site_settings.order_form_description|default:"Provide detailed information for your sequencing order including contact details, sample information, and sequencing preferences." }}</p>
+      </div>
+      
+      <div class="form-card-body">
+        <form method="post" id="orderForm">
+          {% csrf_token %}
+          
+          {% if form.non_field_errors %}
+            <div class="notification is-danger is-light">
+              {% for error in form.non_field_errors %}
+                {{ error }}
+              {% endfor %}
+            </div>
+          {% endif %}
+
+          <!-- Contact Information Section -->
+          <div class="form-section">
+            <h4 class="form-section-title">Contact Information</h4>
+            
+            <!-- Name Field -->
+            <div class="field">
+              <label class="label {% if form.name.field.required %}required{% endif %}">
+                <i class="fas fa-user"></i> {{ form.name.label }}
+              </label>
+              <div class="control">
+                {{ form.name|add_class:"input" }}
+              </div>
+              <p class="help">Full name for billing and contact purposes</p>
+              {% if form.name.errors %}
+                {% for error in form.name.errors %}
+                  <p class="help is-danger">{{ error }}</p>
+                {% endfor %}
+              {% endif %}
+            </div>
+
+            <!-- Email Field -->
+            <div class="field">
+              <label class="label {% if form.email.field.required %}required{% endif %}">
+                <i class="fas fa-envelope"></i> {{ form.email.label }}
+              </label>
+              <div class="control">
+                {{ form.email|add_class:"input" }}
+              </div>
+              <p class="help">Primary contact email for order updates</p>
+              {% if form.email.errors %}
+                {% for error in form.email.errors %}
+                  <p class="help is-danger">{{ error }}</p>
+                {% endfor %}
+              {% endif %}
+            </div>
+
+            <!-- Phone Field -->
+            <div class="field">
+              <label class="label {% if form.contact_phone.field.required %}required{% endif %}">
+                <i class="fas fa-phone"></i> {{ form.contact_phone.label }}
+              </label>
+              <div class="control">
+                {{ form.contact_phone|add_class:"input" }}
+              </div>
+              <p class="help">Contact phone number for urgent communications</p>
+              {% if form.contact_phone.errors %}
+                {% for error in form.contact_phone.errors %}
+                  <p class="help is-danger">{{ error }}</p>
+                {% endfor %}
+              {% endif %}
             </div>
           </div>
-          {% endfor %}
-        </div>
-        
+
+          <!-- Billing Information Section -->
+          <div class="form-section">
+            <h4 class="form-section-title">Billing Information</h4>
+            
+            <!-- Billing Address Field -->
+            <div class="field">
+              <label class="label {% if form.billing_address.field.required %}required{% endif %}">
+                <i class="fas fa-map-marker-alt"></i> {{ form.billing_address.label }}
+              </label>
+              <div class="control">
+                {{ form.billing_address|add_class:"textarea" }}
+              </div>
+              <p class="help">Complete billing address for invoicing</p>
+              {% if form.billing_address.errors %}
+                {% for error in form.billing_address.errors %}
+                  <p class="help is-danger">{{ error }}</p>
+                {% endfor %}
+              {% endif %}
+            </div>
+
+            <!-- AG and HZI Field -->
+            <div class="field">
+              <label class="label {% if form.ag_and_hzi.field.required %}required{% endif %}">
+                <i class="fas fa-building"></i> {{ form.ag_and_hzi.label }}
+              </label>
+              <div class="control">
+                {{ form.ag_and_hzi|add_class:"input" }}
+              </div>
+              <p class="help">Department or working group information</p>
+              {% if form.ag_and_hzi.errors %}
+                {% for error in form.ag_and_hzi.errors %}
+                  <p class="help is-danger">{{ error }}</p>
+                {% endfor %}
+              {% endif %}
+            </div>
+
+            <!-- Quote Number Field -->
+            <div class="field">
+              <label class="label {% if form.quote_no.field.required %}required{% endif %}">
+                <i class="fas fa-hashtag"></i> {{ form.quote_no.label }}
+              </label>
+              <div class="control">
+                {{ form.quote_no|add_class:"input" }}
+              </div>
+              <p class="help">Reference quote number if applicable</p>
+              {% if form.quote_no.errors %}
+                {% for error in form.quote_no.errors %}
+                  <p class="help is-danger">{{ error }}</p>
+                {% endfor %}
+              {% endif %}
+            </div>
+          </div>
+
+          <!-- Project Information Section -->
+          <div class="form-section">
+            <h4 class="form-section-title">Project Information</h4>
+            
+            <!-- Experiment Title Field -->
+            <div class="field">
+              <label class="label {% if form.experiment_title.field.required %}required{% endif %}">
+                <i class="fas fa-flask"></i> {{ form.experiment_title.label }}
+              </label>
+              <div class="control">
+                {{ form.experiment_title|add_class:"input" }}
+              </div>
+              <p class="help">Short title describing the experiment or study</p>
+              {% if form.experiment_title.errors %}
+                {% for error in form.experiment_title.errors %}
+                  <p class="help is-danger">{{ error }}</p>
+                {% endfor %}
+              {% endif %}
+            </div>
+
+            <!-- Organism Field -->
+            <div class="field">
+              <label class="label {% if form.organism.field.required %}required{% endif %}">
+                <i class="fas fa-dna"></i> {{ form.organism.label }}
+              </label>
+              <div class="control">
+                {{ form.organism|add_class:"input" }}
+              </div>
+              <p class="help">Target organism(s) for sequencing</p>
+              {% if form.organism.errors %}
+                {% for error in form.organism.errors %}
+                  <p class="help is-danger">{{ error }}</p>
+                {% endfor %}
+              {% endif %}
+            </div>
+          </div>
+
+          <!-- Form Actions -->
+          <div class="form-actions">
+            <button type="submit" class="button is-primary">
+              <span class="icon">
+                <i class="fas fa-check"></i>
+              </span>
+              <span>Submit Order</span>
+            </button>
+            <button type="button" class="button is-light" onclick="clearForm()">
+              <span class="icon">
+                <i class="fas fa-eraser"></i>
+              </span>
+              <span>Clear Form</span>
+            </button>
+            {% if debug %}
+            <button type="button" class="button is-info is-light" onclick="fillExampleData()">
+              <span class="icon">
+                <i class="fas fa-magic"></i>
+              </span>
+              <span>Fill Example Data</span>
+            </button>
+            {% endif %}
+            <a href="{% url 'order_list' project_id %}" class="button is-light">
+              <span class="icon">
+                <i class="fas fa-times"></i>
+              </span>
+              <span>Cancel</span>
+            </a>
+          </div>
+        </form>
       </div>
-      <div class="field is-grouped">
-        <div class="control">
-          <button type="submit" class="button is-primary">Save</button>
-        </div>
-        <div class="control">
-          <a href="{% url 'order_list' project_id %}" class="button is-link is-light">Cancel</a>
-        </div>
-      </div>
-    </form>
+    </div>
   </div>
 </section>
 {% endblock content %}
 
 {% block scripts %}
+<script>
+// Clear form function
+function clearForm() {
+  if (confirm('Are you sure you want to clear all form fields?')) {
+    document.getElementById('orderForm').reset();
+    document.querySelector('input[type="text"]:not([readonly])').focus();
+  }
+}
 
+// Fill example data function (for development)
+function fillExampleData() {
+  const fields = {
+    'name': 'Dr. Jane Smith',
+    'email': 'jane.smith@university.edu',
+    'contact_phone': '+49 531 6181-0',
+    'billing_address': 'University Research Institute\nMicrobiology Department\nInhoffenstraße 7\n38124 Braunschweig, Germany',
+    'ag_and_hzi': 'AG Microbial Genomics',
+    'quote_no': 'QUOTE-2024-001',
+    'experiment_title': 'Gut Microbiome Analysis in IBD Patients',
+    'organism': 'Human gut microbiome',
+    'dna': 'Yes',
+    'rna': 'No',
+    'method': 'DNA extraction using QIAamp PowerFecal Pro DNA Kit',
+    'buffer': 'TE buffer, pH 8.0',
+    'isolated_from': 'Human fecal samples',
+    'data_delivery': 'Secure FTP server'
+  };
+  
+  Object.keys(fields).forEach(fieldName => {
+    const input = document.querySelector(`[name="${fieldName}"]`);
+    if (input) {
+      input.value = fields[fieldName];
+      input.classList.add('is-success');
+      input.classList.remove('is-danger');
+    }
+  });
+}
+
+// Add real-time validation
+document.addEventListener('DOMContentLoaded', function() {
+  const inputs = document.querySelectorAll('.input, .textarea, .select');
+  
+  inputs.forEach(input => {
+    input.addEventListener('blur', function() {
+      const field = this.closest('.field');
+      const label = field.querySelector('.label.required');
+      
+      if (this.hasAttribute('required') || label) {
+        if (this.value.trim() === '') {
+          this.classList.add('is-danger');
+          this.classList.remove('is-success');
+        } else {
+          this.classList.add('is-success');
+          this.classList.remove('is-danger');
+        }
+      }
+    });
+    
+    input.addEventListener('focus', function() {
+      this.classList.remove('is-success', 'is-danger');
+    });
+  });
+});
+</script>
 {% endblock scripts %}

@@ -32,6 +32,8 @@ def site_settings(request):
                 'projects_with_samples_text': site_settings_obj.projects_with_samples_text,
                 'project_form_title': site_settings_obj.project_form_title,
                 'project_form_description': site_settings_obj.project_form_description,
+                'order_form_title': site_settings_obj.order_form_title,
+                'order_form_description': site_settings_obj.order_form_description,
                 'logo_url': site_settings_obj.logo.url if site_settings_obj.logo else None,
                 'favicon_url': site_settings_obj.favicon.url if site_settings_obj.favicon else None,
             }
@@ -60,6 +62,8 @@ def site_settings(request):
                 'projects_with_samples_text': 'You have active sequencing projects. Create a new project for a different study or continue working on your existing projects.',
                 'project_form_title': 'Create New Sequencing Project',
                 'project_form_description': 'A project represents a study or experiment that groups related sequencing orders. Each project can contain multiple orders for different samples or time points.',
+                'order_form_title': 'Create Sequencing Order',
+                'order_form_description': 'Provide detailed information for your sequencing order including contact details, sample information, and sequencing preferences.',
                 'logo_url': os.path.join(django_settings.STATIC_URL, 'images/logo.png'),
                 'favicon_url': None,
             }
