@@ -6,19 +6,30 @@ import glob
 import xmltodict
 import json
 import importlib
+import logging
+
+logger = logging.getLogger(__name__)
 
 def process_mag_result(task):
-
-    returncode = task.result.returncode
-    id = task.id
-    process_mag_result_inner(returncode, id)
+    try:
+        returncode = task.result.returncode
+        id = task.id
+        process_mag_result_inner(returncode, id)
+    except Exception as e:
+        logger.error(f"Error processing MAG result for task {task.id}: {str(e)}")
+        raise
 
 
 def process_mag_result_inner(returncode, id):
-
-
-    mag_run_instance = MagRunInstance.objects.get(id=id)
-    mag_run = MagRun.objects.get(id=mag_run_instance.magRun.id)
+    try:
+        mag_run_instance = MagRunInstance.objects.get(id=id)
+        mag_run = MagRun.objects.get(id=mag_run_instance.magRun.id)
+    except MagRunInstance.DoesNotExist:
+        logger.error(f"MagRunInstance with id {id} does not exist")
+        raise ValueError(f"MagRunInstance with id {id} does not exist")
+    except MagRun.DoesNotExist:
+        logger.error(f"MagRun for MagRunInstance {id} does not exist")
+        raise ValueError(f"MagRun for MagRunInstance {id} does not exist")
 
     if returncode != 0:
         mag_run_instance.status = 'failed'
@@ -37,38 +48,64 @@ def process_mag_result_inner(returncode, id):
             order = sample.order
             project = order.project
 
+            assembly = None  # Initialize assembly variable
             assembly_file_path = f"{run_folder}/Assembly/MEGAHIT/MEGAHIT-{sample.sample_id}.contigs.fa.gz"
             assembly_file = Path(assembly_file_path)
             if assembly_file.is_file():
-                assembly = Assembly(file=assembly_file, order=order)
-                assembly.save()
-                assembly.read.add(read)
+                try:
+                    assembly = Assembly(file=str(assembly_file), order=order)
+                    assembly.save()
+                    assembly.read.add(read)
+                except Exception as e:
+                    logger.error(f"Error creating assembly for sample {sample.sample_id}: {str(e)}")
+                    mag_run_instance.status = 'partial'
+                    mag_run.status = 'partial'
             else:
                 mag_run_instance.status = 'partial'
                 mag_run.status = 'partial'
 
             bin_file_path = f"{run_folder}/GenomeBinning/MaxBin2/Maxbin2_bins/MEGAHIT-MaxBin2-{sample.sample_id}.[0-9][0-9][0-9].fa.gz"
-            bin_files = glob.glob(bin_file_path)
-            for bin_file in bin_files:
-                bin = Bin(file=bin_file, order=order)
-                bin.quality_file = f"{run_folder}/GenomeBinning/QC/checkm_summary.tsv"
-                bin.save()
-                bin.read.add(read)
-            if bin_files == []:
-                mag_run_instance.status = 'partial'
-                mag_run.status = 'partial'
+            try:
+                bin_files = glob.glob(bin_file_path)
+                for bin_file in bin_files:
+                    try:
+                        bin = Bin(file=bin_file, order=order)
+                        bin.quality_file = f"{run_folder}/GenomeBinning/QC/checkm_summary.tsv"
+                        bin.save()
+                        bin.read.add(read)
+                    except Exception as e:
+                        logger.error(f"Error creating bin from {bin_file}: {str(e)}")
+                        mag_run_instance.status = 'partial'
+                        mag_run.status = 'partial'
+                if not bin_files:
+                    mag_run_instance.status = 'partial'
+                    mag_run.status = 'partial'
+            except Exception as e:
+                logger.error(f"Error processing bin files: {str(e)}")
 
             alignment_file_path = f"{run_folder}/{sample.sample_id}.sorted.bam"
-            alignment_files = glob.glob(alignment_file_path)
-            for alignment_file in alignment_files:
-                alignment = Alignment(file=alignment_file, order=order, assembly=assembly, read=read)
-                alignment.save()
-            if alignment_files == []:
-                mag_run_instance.status = 'partial'
-                mag_run.status = 'partial'
+            try:
+                alignment_files = glob.glob(alignment_file_path)
+                for alignment_file in alignment_files:
+                    if assembly:  # Only create alignment if assembly exists
+                        try:
+                            alignment = Alignment(file=alignment_file, order=order, assembly=assembly, read=read)
+                            alignment.save()
+                        except Exception as e:
+                            logger.error(f"Error creating alignment from {alignment_file}: {str(e)}")
+                            mag_run_instance.status = 'partial'
+                            mag_run.status = 'partial'
+                if not alignment_files:
+                    mag_run_instance.status = 'partial'
+                    mag_run.status = 'partial'
+            except Exception as e:
+                logger.error(f"Error processing alignment files: {str(e)}")
 
-        mag_run_instance.save()
-        mag_run.save()
+        try:
+            mag_run_instance.save()
+            mag_run.save()
+        except Exception as e:
+            logger.error(f"Error saving MAG run status: {str(e)}")
 
 def process_submg_result(task):
 
@@ -158,13 +195,20 @@ def process_submg_result_inner(returncode, id):
         assembly_file_path = f"{run_folder}/logging/assembly_fasta/webin-cli.report"
         assembly_files = glob.glob(assembly_file_path)
         for assembly_file in assembly_files:
-            assembly = Assembly.objects.get(order=order)
-            with open(assembly_file) as assembly_file_content:
-                for line in assembly_file_content:
-                    if "analysis accession" in line:
-                        assembly_accession_id = line.split('submission: ')[1].replace('\n', '')
-            assembly.assembly_accession_number = assembly_accession_id
-            assembly.save()
+            try:
+                assembly = Assembly.objects.get(order=order)
+                with open(assembly_file) as assembly_file_content:
+                    for line in assembly_file_content:
+                        if "analysis accession" in line:
+                            assembly_accession_id = line.split('submission: ')[1].replace('\n', '')
+                assembly.assembly_accession_number = assembly_accession_id
+                assembly.save()
+            except Assembly.DoesNotExist:
+                logger.error(f"No assembly found for order {order.id}")
+            except FileNotFoundError:
+                logger.error(f"Assembly file not found: {assembly_file}")
+            except Exception as e:
+                logger.error(f"Error processing assembly file {assembly_file}: {str(e)}")
 
 
         # Process assembly samples
