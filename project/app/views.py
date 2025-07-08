@@ -489,7 +489,7 @@ def test_submg(request):
 def test_mag(request):
     if request.user.is_authenticated:
         # /net/broker/test/Broker4Microbiota/project/media/test/3545560
-        id = "29"
+        id = "61"
         returncode = 0
 
         hooks = process_mag_result_inner(returncode, id)
