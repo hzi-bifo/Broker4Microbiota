@@ -9,11 +9,18 @@ import importlib
 
 def process_mag_result(task):
 
+    returncode = task.result.returncode
+    id = task.id
+    process_mag_result_inner(returncode, id)
 
-    mag_run_instance = MagRunInstance.objects.get(uuid=task.id)
+
+def process_mag_result_inner(returncode, id):
+
+
+    mag_run_instance = MagRunInstance.objects.get(id=id)
     mag_run = MagRun.objects.get(id=mag_run_instance.magRun.id)
 
-    if task.result.returncode != 0:
+    if returncode != 0:
         mag_run_instance.status = 'failed'
         mag_run.status = 'failed'
     else:
