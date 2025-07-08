@@ -1,41 +1,402 @@
 {% extends 'base.html' %}
+{% load widget_tweaks %}
 
 {% block title %}
-Project
+{{ site_settings.project_form_title }}
 {% endblock title %}
 
 {% block content %}
 <section class="section">
   <div class="container">
-    <h2 class="title has-text-centered">Project</h2>
-    <form method="post" class="box">
-      {% csrf_token %}
-      <div class="columns">
-        <div class="column is-two-thirds">
-          {% for field in form %}
-          <div class="field">
-            <label class="label">{{ field.label }}</label>
+    <div class="form-card">
+      <div class="form-card-header">
+        <h2>{{ site_settings.project_form_title }}</h2>
+        <p>{{ site_settings.project_form_description }}</p>
+      </div>
+      
+      <div class="form-card-body">
+        <form method="post" id="projectForm">
+          {% csrf_token %}
+          
+          {% if form.non_field_errors %}
+            <div class="notification is-danger is-light">
+              {% for error in form.non_field_errors %}
+                {{ error }}
+              {% endfor %}
+            </div>
+          {% endif %}
+
+          <!-- Title Field -->
+          <div class="field expandable-field">
+            <label class="label {% if form.title.field.required %}required{% endif %}">
+              <i class="fas fa-heading"></i> {{ form.title.label }}
+              <span class="expand-help" data-field="title">
+                <i class="fas fa-info-circle"></i>
+                <span class="expand-text">More info</span>
+              </span>
+            </label>
             <div class="control">
-              {{ field }}{{ field.help_text }}
+              {{ form.title|add_class:"input" }}
+            </div>
+            <p class="help">Choose a descriptive title that clearly identifies your research project or study.</p>
+            <div class="expanded-help" id="help-title">
+              <div class="help-content">
+                <h5>Guidelines for Project Title</h5>
+                <p>Your project title should be:</p>
+                <ul>
+                  <li><strong>Descriptive:</strong> Clearly indicate the main focus of your research</li>
+                  <li><strong>Specific:</strong> Include key details like organism, condition, or methodology</li>
+                  <li><strong>Concise:</strong> Aim for 10-20 words maximum</li>
+                </ul>
+                <div class="example-box">
+                  <h6>Good Examples:</h6>
+                  <ul>
+                    <li>"Gut Microbiome Diversity in Patients with Inflammatory Bowel Disease"</li>
+                    <li>"Comparative Metagenomics of Arctic Soil Microbial Communities"</li>
+                    <li>"RNA-Seq Analysis of E. coli Response to Antibiotic Stress"</li>
+                  </ul>
+                </div>
+                <div class="warning-box">
+                  <h6>Avoid:</h6>
+                  <ul>
+                    <li>Generic titles like "Microbiome Study" or "Sequencing Project"</li>
+                    <li>Abbreviations that aren't widely recognized</li>
+                    <li>Internal project codes as the main title</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            {% if form.title.errors %}
+              {% for error in form.title.errors %}
+                <p class="help is-danger">{{ error }}</p>
+              {% endfor %}
+            {% endif %}
+          </div>
+
+          <!-- Alias Field -->
+          <div class="field expandable-field">
+            <label class="label {% if form.alias.field.required %}required{% endif %}">
+              <i class="fas fa-tag"></i> {{ form.alias.label }}
+              <span class="expand-help" data-field="alias">
+                <i class="fas fa-info-circle"></i>
+                <span class="expand-text">More info</span>
+              </span>
+            </label>
+            <div class="control">
+              {{ form.alias|add_class:"input" }}
+            </div>
+            <p class="help">A short, unique identifier for your project (e.g., internal code or lab abbreviation).</p>
+            <div class="expanded-help" id="help-alias">
+              <div class="help-content">
+                <h5>Project Alias Guidelines</h5>
+                <p>The alias serves as a short, memorable identifier for your project. It's often used in file naming and internal references.</p>
+                <div class="info-box">
+                  <h6>Format Recommendations:</h6>
+                  <ul>
+                    <li><strong>Length:</strong> 3-20 characters</li>
+                    <li><strong>Characters:</strong> Letters, numbers, hyphens, and underscores only</li>
+                    <li><strong>Case:</strong> Either all uppercase or consistent casing</li>
+                  </ul>
+                </div>
+                <div class="example-box">
+                  <h6>Common Patterns:</h6>
+                  <ul>
+                    <li><strong>Year-based:</strong> "2024-GUT-001", "MB2024-15"</li>
+                    <li><strong>Lab codes:</strong> "SMITH-LAB-023", "JD-MICROB-5"</li>
+                    <li><strong>Study type:</strong> "COVID-META-3", "IBD-16S-PILOT"</li>
+                    <li><strong>Grant-based:</strong> "NIH-R01-2024", "ERC-2023-MB"</li>
+                  </ul>
+                </div>
+                <div class="tip-box">
+                  <h6>Tips:</h6>
+                  <p>Choose an alias that will still make sense to you and your team in 2-3 years. Avoid using only numbers or overly cryptic abbreviations.</p>
+                </div>
+              </div>
+            </div>
+            {% if form.alias.errors %}
+              {% for error in form.alias.errors %}
+                <p class="help is-danger">{{ error }}</p>
+              {% endfor %}
+            {% endif %}
+          </div>
+
+          <!-- Description Field -->
+          <div class="field expandable-field">
+            <label class="label {% if form.description.field.required %}required{% endif %}">
+              <i class="fas fa-align-left"></i> {{ form.description.label }}
+              <span class="expand-help" data-field="description">
+                <i class="fas fa-info-circle"></i>
+                <span class="expand-text">More info</span>
+              </span>
+            </label>
+            <div class="control">
+              {{ form.description|add_class:"textarea" }}
+            </div>
+            <p class="help">Include research objectives, sample types, experimental design, and expected outcomes.</p>
+            <div class="expanded-help" id="help-description">
+              <div class="help-content">
+                <h5>Writing an Effective Project Description</h5>
+                <p>A comprehensive project description helps reviewers understand your research and ensures proper sample processing.</p>
+                
+                <div class="section-box">
+                  <h6>1. Research Background (2-3 sentences)</h6>
+                  <p>Briefly explain the context and importance of your study.</p>
+                  <p class="example"><em>Example: "The human gut microbiome plays a crucial role in health and disease. Recent studies suggest altered microbial composition in patients with inflammatory bowel disease (IBD)."</em></p>
+                </div>
+                
+                <div class="section-box">
+                  <h6>2. Objectives and Hypotheses</h6>
+                  <p>Clearly state what you aim to discover or prove.</p>
+                  <ul>
+                    <li>Primary objective</li>
+                    <li>Secondary objectives (if any)</li>
+                    <li>Specific hypotheses to test</li>
+                  </ul>
+                </div>
+                
+                <div class="section-box">
+                  <h6>3. Sample Information</h6>
+                  <p>Describe your samples in detail:</p>
+                  <ul>
+                    <li><strong>Sample types:</strong> stool, soil, water, tissue, etc.</li>
+                    <li><strong>Number of samples:</strong> total count and groups</li>
+                    <li><strong>Collection method:</strong> how samples were obtained</li>
+                    <li><strong>Storage conditions:</strong> -80°C, RNA later, etc.</li>
+                    <li><strong>Special handling:</strong> any specific requirements</li>
+                  </ul>
+                </div>
+                
+                <div class="section-box">
+                  <h6>4. Experimental Design</h6>
+                  <p>Outline your study structure:</p>
+                  <ul>
+                    <li><strong>Study type:</strong> longitudinal, cross-sectional, case-control</li>
+                    <li><strong>Groups:</strong> treatment vs. control, time points</li>
+                    <li><strong>Sequencing approach:</strong> 16S rRNA, shotgun metagenomics, RNA-seq</li>
+                    <li><strong>Target coverage:</strong> desired sequencing depth</li>
+                  </ul>
+                </div>
+                
+                <div class="section-box">
+                  <h6>5. Expected Outcomes</h6>
+                  <p>What do you hope to achieve?</p>
+                  <ul>
+                    <li>Expected findings</li>
+                    <li>Potential applications</li>
+                    <li>Impact on the field</li>
+                  </ul>
+                </div>
+                
+                <div class="tip-box">
+                  <h6>Length Guidelines:</h6>
+                  <p>Aim for 200-500 words. Be comprehensive but concise. Include all relevant details that would help the sequencing facility understand and properly process your samples.</p>
+                </div>
+              </div>
+            </div>
+            {% if form.description.errors %}
+              {% for error in form.description.errors %}
+                <p class="help is-danger">{{ error }}</p>
+              {% endfor %}
+            {% endif %}
+          </div>
+
+          <!-- Submitted Checkbox -->
+          <div class="field">
+            <div class="control">
+              <label class="checkbox">
+                {{ form.submitted }}
+                Already submitted to ENA
+                <span class="help-icon" data-tooltip="Check this only if this project has already been submitted to the European Nucleotide Archive (ENA) and has received an accession number.">
+                  <i class="fas fa-question-circle"></i>
+                </span>
+              </label>
             </div>
           </div>
-          {% endfor %}
-        </div>
-        
+
+          <!-- Study Accession ID (Read-only) -->
+          {% if form.study_accession_id %}
+          <div class="field">
+            <label class="label">
+              <i class="fas fa-database"></i> {{ form.study_accession_id.label }}
+            </label>
+            <div class="control">
+              {{ form.study_accession_id|add_class:"input" }}
+            </div>
+            <p class="help">Automatically populated after ENA submission (Format: PRJEB######)</p>
+          </div>
+          {% endif %}
+
+          <!-- Alternative Accession ID (Read-only) -->
+          {% if form.alternative_accession_id %}
+          <div class="field">
+            <label class="label">
+              <i class="fas fa-key"></i> {{ form.alternative_accession_id.label }}
+            </label>
+            <div class="control">
+              {{ form.alternative_accession_id|add_class:"input" }}
+            </div>
+            <p class="help">Optional alternative identifier (e.g., BioProject ID)</p>
+          </div>
+          {% endif %}
+
+          <!-- Form Actions -->
+          <div class="form-actions">
+            <button type="submit" class="button is-primary">
+              <span class="icon">
+                <i class="fas fa-check"></i>
+              </span>
+              <span>Submit Project</span>
+            </button>
+            <button type="button" class="button is-light" onclick="clearForm()">
+              <span class="icon">
+                <i class="fas fa-eraser"></i>
+              </span>
+              <span>Clear Form</span>
+            </button>
+            <button type="button" class="button is-info is-light" onclick="fillDummyData()">
+              <span class="icon">
+                <i class="fas fa-magic"></i>
+              </span>
+              <span>Add Dummy Data</span>
+            </button>
+            <a href="{% url 'project_list' %}" class="button is-light">
+              <span class="icon">
+                <i class="fas fa-times"></i>
+              </span>
+              <span>Cancel</span>
+            </a>
+          </div>
+        </form>
       </div>
-      <div class="field is-grouped">
-        <div class="control">
-          <button type="submit" class="button is-primary">Save</button>
-        </div>
-        <div class="control">
-          <a href="{% url 'project_list' %}" class="button is-link is-light">Cancel</a>
-        </div>
-      </div>
-    </form>
+    </div>
   </div>
 </section>
 {% endblock content %}
 
 {% block scripts %}
+<script>
+// Clear form function
+function clearForm() {
+  if (confirm('Are you sure you want to clear all form fields?')) {
+    document.getElementById('projectForm').reset();
+    // Re-focus on first input
+    document.querySelector('input[type="text"]:not([readonly])').focus();
+  }
+}
 
+// Fill example data function (for development)
+function fillDummyData() {
+  const titleInput = document.querySelector('input[name="title"]');
+  const aliasInput = document.querySelector('input[name="alias"]');
+  const descriptionInput = document.querySelector('textarea[name="description"]');
+  
+  if (titleInput) {
+    titleInput.value = 'Gut Microbiome Diversity in Patients with Inflammatory Bowel Disease';
+  }
+  
+  if (aliasInput) {
+    aliasInput.value = 'IBD-GUT-2024-001';
+  }
+  
+  if (descriptionInput) {
+    descriptionInput.value = `This study investigates the gut microbiome composition and diversity in patients diagnosed with inflammatory bowel disease (IBD) compared to healthy controls.
+
+Research Objectives:
+- Characterize microbial diversity differences between IBD patients and controls
+- Identify potential biomarkers for disease severity
+- Explore correlations between microbiome composition and treatment response
+
+Sample Information:
+- Sample type: Fecal samples
+- Number of samples: 120 total (60 IBD patients, 60 healthy controls)
+- Collection method: Self-collection kits with preservation buffer
+- Storage: Frozen at -80°C within 2 hours of collection
+
+Experimental Design:
+- Study type: Cross-sectional case-control study
+- Sequencing approach: 16S rRNA gene sequencing (V3-V4 region)
+- Target coverage: 50,000 reads per sample
+- Groups: IBD patients (Crohn's disease and ulcerative colitis) vs. healthy controls
+
+Expected Outcomes:
+We expect to identify distinct microbial signatures associated with IBD, potentially revealing therapeutic targets and improving our understanding of disease pathogenesis.`;
+  }
+  
+  // Trigger validation for filled fields
+  [titleInput, aliasInput, descriptionInput].forEach(input => {
+    if (input) {
+      input.classList.add('is-success');
+      input.classList.remove('is-danger');
+    }
+  });
+}
+
+// Add real-time validation
+document.addEventListener('DOMContentLoaded', function() {
+  const inputs = document.querySelectorAll('.input, .textarea');
+  
+  inputs.forEach(input => {
+    input.addEventListener('blur', function() {
+      // Check if field is required
+      const field = this.closest('.field');
+      const label = field.querySelector('.label.required');
+      
+      if (this.hasAttribute('required') || label) {
+        if (this.value.trim() === '') {
+          this.classList.add('is-danger');
+          this.classList.remove('is-success');
+        } else {
+          this.classList.add('is-success');
+          this.classList.remove('is-danger');
+        }
+      }
+    });
+    
+    // Remove validation classes on focus
+    input.addEventListener('focus', function() {
+      this.classList.remove('is-success', 'is-danger');
+    });
+  });
+  
+  // Expandable help functionality
+  const expandButtons = document.querySelectorAll('.expand-help');
+  
+  expandButtons.forEach(button => {
+    button.addEventListener('click', function() {
+      const fieldName = this.getAttribute('data-field');
+      const helpSection = document.getElementById('help-' + fieldName);
+      const expandText = this.querySelector('.expand-text');
+      
+      if (helpSection.classList.contains('active')) {
+        helpSection.classList.remove('active');
+        expandText.textContent = 'More info';
+      } else {
+        helpSection.classList.add('active');
+        expandText.textContent = 'Less info';
+      }
+    });
+  });
+  
+  // Also expand help when clicking on the input field
+  const expandableFields = document.querySelectorAll('.expandable-field');
+  
+  expandableFields.forEach(field => {
+    const input = field.querySelector('.input, .textarea');
+    const expandButton = field.querySelector('.expand-help');
+    
+    if (input && expandButton) {
+      input.addEventListener('focus', function() {
+        const fieldName = expandButton.getAttribute('data-field');
+        const helpSection = document.getElementById('help-' + fieldName);
+        const expandText = expandButton.querySelector('.expand-text');
+        
+        if (!helpSection.classList.contains('active')) {
+          helpSection.classList.add('active');
+          expandText.textContent = 'Less info';
+        }
+      });
+    }
+  });
+});
+</script>
 {% endblock scripts %}

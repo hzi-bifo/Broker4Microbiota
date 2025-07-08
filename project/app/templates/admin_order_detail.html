@@ -1,0 +1,728 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Order #{{ order.id }} - Admin View
+{% endblock title %}
+
+{% block content %}
+<section class="section">
+  <div class="container is-fluid" style="max-width: 1920px;">
+    <!-- Header with Breadcrumb -->
+    <nav class="breadcrumb mb-4" aria-label="breadcrumbs">
+      <ul>
+        <li><a href="{% url 'admin_dashboard' %}">Dashboard</a></li>
+        <li><a href="{% url 'admin_order_list' %}">Orders</a></li>
+        <li class="is-active"><a href="#" aria-current="page">Order #{{ order.id }}</a></li>
+      </ul>
+    </nav>
+
+    <!-- Order Header -->
+    <div class="box mb-4">
+      <div class="level">
+        <div class="level-left">
+          <div>
+            <h1 class="title is-4 mb-2">
+              Order #{{ order.id }}
+              <span class="tag {{ order.get_status_display_color }} ml-2">
+                {{ order.get_status_display }}
+              </span>
+            </h1>
+            <p class="is-size-7">
+              <strong>Project:</strong> {{ project.title }} • 
+              <strong>User:</strong> {{ project.user.username }} • 
+              <strong>Email:</strong> <a href="mailto:{{ project.user.email }}">{{ project.user.email }}</a> •
+              <strong>Last Updated:</strong> {{ order.status_updated_at|date:"M d, Y H:i" }}
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- Tabs Navigation -->
+    <div class="tabs is-boxed mb-4">
+      <ul>
+        <li class="is-active" data-tab="overview">
+          <a>
+            <span class="icon"><i class="fas fa-info-circle"></i></span>
+            <span>Overview</span>
+          </a>
+        </li>
+        <li data-tab="activity">
+          <a>
+            <span class="icon"><i class="fas fa-history"></i></span>
+            <span>Activity & Notes</span>
+          </a>
+        </li>
+        <li data-tab="actions">
+          <a>
+            <span class="icon"><i class="fas fa-tools"></i></span>
+            <span>Actions</span>
+          </a>
+        </li>
+      </ul>
+    </div>
+
+    <!-- Tab Content -->
+    <div class="tab-content">
+      <!-- Overview Tab -->
+      <div class="tab-pane is-active" id="overview">
+        <div class="columns">
+          <div class="column is-6">
+            <div class="box">
+              <h4 class="title is-6 mb-3">
+                <i class="fas fa-clipboard"></i> Order Information
+              </h4>
+              <table class="table is-fullwidth">
+                <tbody>
+                  <tr>
+                    <th width="40%">Order Name</th>
+                    <td>{{ order.name|default:"-" }}</td>
+                  </tr>
+                  <tr>
+                    <th>Date</th>
+                    <td>{{ order.date|date:"M d, Y"|default:"-" }}</td>
+                  </tr>
+                  <tr>
+                    <th>Contact Email</th>
+                    <td><a href="mailto:{{ order.email }}">{{ order.email|default:"-" }}</a></td>
+                  </tr>
+                  <tr>
+                    <th>Contact Phone</th>
+                    <td>{{ order.contact_phone|default:"-" }}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          
+          <div class="column is-6">
+            <div class="box">
+              <h4 class="title is-6 mb-3">
+                <i class="fas fa-flask"></i> Technical Details
+              </h4>
+              <table class="table is-fullwidth">
+                <tbody>
+                  <tr>
+                    <th width="40%">Experiment Title</th>
+                    <td>{{ order.experiment_title|default:"-" }}</td>
+                  </tr>
+                  <tr>
+                    <th>Platform</th>
+                    <td>{{ order.platform|default:"-" }}</td>
+                  </tr>
+                  <tr>
+                    <th>Library</th>
+                    <td>{{ order.library|default:"-" }}</td>
+                  </tr>
+                  <tr>
+                    <th>Method</th>
+                    <td>{{ order.method|default:"-" }}</td>
+                  </tr>
+                  <tr>
+                    <th>Organism</th>
+                    <td>{{ order.organism|default:"-" }}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Samples Section -->
+        <div class="box">
+          <h4 class="title is-6 mb-3">
+            <i class="fas fa-vials"></i> Samples ({{ samples.count }})
+          </h4>
+          
+          {% if samples %}
+          <div class="table-container">
+            <table class="table is-fullwidth is-striped">
+              <thead>
+                <tr>
+                  <th width="15%">Sample ID</th>
+                  <th width="25%">Title</th>
+                  <th width="20%">Scientific Name</th>
+                  <th width="15%">Collection Date</th>
+                  <th width="15%">Organism</th>
+                  <th width="10%">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for sample in samples %}
+                <tr>
+                  <td>
+                    <strong>{{ sample.sample_id|default:"-" }}</strong>
+                  </td>
+                  <td>{{ sample.sample_title|default:"-" }}</td>
+                  <td><em>{{ sample.scientific_name|default:"-" }}</em></td>
+                  <td>{{ sample.collection_date|default:"-" }}</td>
+                  <td>{{ sample.organism|default:"-" }}</td>
+                  <td>
+                    <button class="button is-small is-info" onclick="showSampleDetails({{ sample.id }})">
+                      <span class="icon">
+                        <i class="fas fa-info-circle"></i>
+                      </span>
+                    </button>
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+          <div class="has-text-centered mt-3">
+            <a href="{% url 'samples_view' project.id order.id 1 %}" 
+               class="button is-primary" target="_blank">
+              <span class="icon"><i class="fas fa-table"></i></span>
+              <span>View/Edit All Samples in Spreadsheet</span>
+            </a>
+          </div>
+          {% else %}
+          <p class="has-text-grey">No samples have been added to this order yet.</p>
+          {% endif %}
+        </div>
+      </div>
+
+      <!-- Activity Tab -->
+      <div class="tab-pane" id="activity">
+        <div class="columns">
+          <div class="column is-8">
+            <div class="box">
+              <h4 class="title is-6">
+                <i class="fas fa-stream"></i> Activity Timeline
+              </h4>
+              
+              <!-- Quick Add Note Form -->
+              <div class="field has-addons mb-5">
+                <div class="control is-expanded">
+                  <input class="input" type="text" placeholder="Add a quick note..." id="quickNote">
+                </div>
+                <div class="control">
+                  <button class="button is-info" onclick="addQuickNote()">
+                    <span class="icon"><i class="fas fa-plus"></i></span>
+                    <span>Add</span>
+                  </button>
+                </div>
+              </div>
+              
+              {% if all_notes %}
+              <div class="timeline">
+                {% for note in all_notes %}
+                <div class="timeline-item">
+                  <div class="timeline-marker {% if note.is_rejection %}is-danger{% elif note.note_type == 'internal' %}is-warning{% else %}is-primary{% endif %}"></div>
+                  <div class="timeline-content">
+                    <div class="box {% if note.note_type == 'internal' %}has-background-warning-light{% endif %}">
+                      <div class="level is-mobile">
+                        <div class="level-left">
+                          <p class="is-size-7 has-text-grey">
+                            <strong>{% if note.user %}{{ note.user.username }}{% else %}System{% endif %}</strong>
+                            • {{ note.created_at|date:"M d, Y H:i" }}
+                          </p>
+                        </div>
+                        <div class="level-right">
+                          {% if note.note_type == 'internal' %}
+                          <span class="tag is-warning">Internal</span>
+                          {% elif note.is_rejection %}
+                          <span class="tag is-danger">Rejection</span>
+                          {% elif note.note_type == 'status_change' %}
+                          <span class="tag is-info">Status Change</span>
+                          {% endif %}
+                        </div>
+                      </div>
+                      
+                      {% if note.note_type == 'status_change' %}
+                      <p class="mb-2">
+                        <span class="tag">{{ note.old_status|title }}</span>
+                        <i class="fas fa-arrow-right mx-2"></i>
+                        <span class="tag {{ order.get_status_display_color }}">{{ note.new_status|title }}</span>
+                      </p>
+                      {% endif %}
+                      
+                      {% if note.content %}
+                      <div class="content is-small">
+                        {{ note.content|linebreaks }}
+                      </div>
+                      {% endif %}
+                    </div>
+                  </div>
+                </div>
+                {% endfor %}
+              </div>
+              {% else %}
+              <p class="has-text-grey">No activity recorded yet.</p>
+              {% endif %}
+            </div>
+          </div>
+          
+          <div class="column is-4">
+            <div class="box">
+              <h4 class="title is-6">
+                <i class="fas fa-filter"></i> Filter Activity
+              </h4>
+              <div class="field">
+                <label class="checkbox">
+                  <input type="checkbox" checked> Status Changes
+                </label>
+              </div>
+              <div class="field">
+                <label class="checkbox">
+                  <input type="checkbox" checked> User Notes
+                </label>
+              </div>
+              <div class="field">
+                <label class="checkbox">
+                  <input type="checkbox" checked> Internal Notes
+                </label>
+              </div>
+              <div class="field">
+                <label class="checkbox">
+                  <input type="checkbox" checked> Rejections
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Actions Tab -->
+      <div class="tab-pane" id="actions">
+        <div class="columns">
+          <div class="column is-4">
+            <!-- Status Update -->
+            <div class="box">
+              <h4 class="title is-6">
+                <i class="fas fa-sync"></i> Update Status
+              </h4>
+              
+              <form method="post" action="{% url 'admin_update_order_status' order.id %}">
+                {% csrf_token %}
+                <div class="field">
+                  <label class="label">New Status</label>
+                  <div class="control">
+                    <div class="select is-fullwidth">
+                      {{ status_form.status }}
+                    </div>
+                  </div>
+                  {% if status_form.status.help_text %}
+                  <p class="help">{{ status_form.status.help_text }}</p>
+                  {% endif %}
+                </div>
+                
+                <div class="field">
+                  <label class="label">Note (Optional)</label>
+                  <div class="control">
+                    {{ status_form.status_note }}
+                  </div>
+                </div>
+                
+                <div class="field">
+                  <button type="submit" class="button is-primary is-fullwidth">
+                    <span class="icon"><i class="fas fa-check"></i></span>
+                    <span>Update Status</span>
+                  </button>
+                </div>
+              </form>
+              
+              {% if can_advance %}
+              <div class="has-text-centered mt-3">
+                <button class="button is-success is-fullwidth" onclick="quickAdvance()">
+                  <span class="icon"><i class="fas fa-arrow-right"></i></span>
+                  <span>Quick Advance to {{ order.get_next_status|title }}</span>
+                </button>
+              </div>
+              {% endif %}
+            </div>
+          </div>
+
+          <div class="column is-4">
+            <!-- Add Note -->
+            <div class="box">
+              <h4 class="title is-6">
+                <i class="fas fa-comment"></i> Add Note
+              </h4>
+              
+              <form method="post" action="{% url 'admin_add_order_note' order.id %}">
+                {% csrf_token %}
+                <div class="field">
+                  <label class="label">Note Type</label>
+                  <div class="control">
+                    <div class="select is-fullwidth">
+                      {{ note_form.note_type }}
+                    </div>
+                  </div>
+                </div>
+                
+                <div class="field">
+                  <label class="label">{{ note_form.content.label }}</label>
+                  <div class="control">
+                    {{ note_form.content }}
+                  </div>
+                </div>
+                
+                <div class="field">
+                  <button type="submit" class="button is-info is-fullwidth">
+                    <span class="icon"><i class="fas fa-plus"></i></span>
+                    <span>Add Note</span>
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+
+          <div class="column is-4">
+            <!-- Reject Order -->
+            <div class="box has-background-danger-light">
+              <h4 class="title is-6">
+                <i class="fas fa-times-circle"></i> Reject Order
+              </h4>
+              
+              <form method="post" action="{% url 'admin_reject_order' order.id %}">
+                {% csrf_token %}
+                <div class="field">
+                  <label class="label">{{ rejection_form.rejection_reason.label }}</label>
+                  <div class="control">
+                    {{ rejection_form.rejection_reason }}
+                  </div>
+                  <p class="help">{{ rejection_form.rejection_reason.help_text }}</p>
+                </div>
+                
+                <div class="field">
+                  <label class="label">{{ rejection_form.new_status.label }}</label>
+                  <div class="control">
+                    <div class="select is-fullwidth">
+                      {{ rejection_form.new_status }}
+                    </div>
+                  </div>
+                </div>
+                
+                <div class="field">
+                  <button type="submit" class="button is-danger is-fullwidth"
+                          onclick="return confirm('Are you sure you want to reject this order? The user will be notified.')">
+                    <span class="icon"><i class="fas fa-ban"></i></span>
+                    <span>Reject & Send Back</span>
+                  </button>
+                </div>
+              </form>
+            </div>
+
+            <!-- Quick Links -->
+            <div class="box mt-4">
+              <h3 class="title is-6">Quick Links</h3>
+              <div class="buttons is-fullwidth">
+                <a href="{% url 'order_edit' project.id order.id %}" 
+                   class="button is-fullwidth is-small" target="_blank">
+                  <span class="icon"><i class="fas fa-external-link-alt"></i></span>
+                  <span>View as User</span>
+                </a>
+                <a href="/admin/app/order/{{ order.id }}/change/" 
+                   class="button is-dark is-fullwidth is-small">
+                  <span class="icon"><i class="fas fa-cog"></i></span>
+                  <span>Django Admin</span>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+/* Clean, Simple Design */
+body {
+  background-color: #f8f9fa;
+}
+
+/* Clean Box Style */
+.box {
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  border-radius: 8px;
+}
+
+.box.has-background-danger-light {
+  background-color: #feecf0;
+}
+
+/* Timeline Improvements */
+.timeline {
+  position: relative;
+  padding-left: 3rem;
+}
+
+.timeline-item {
+  position: relative;
+  padding-bottom: 2rem;
+}
+
+.timeline-item:not(:last-child)::before {
+  content: '';
+  position: absolute;
+  left: -2.25rem;
+  top: 2rem;
+  bottom: 0;
+  width: 2px;
+  background-color: #dbdbdb;
+}
+
+.timeline-marker {
+  position: absolute;
+  left: -2.5rem;
+  top: 0.5rem;
+  width: 1rem;
+  height: 1rem;
+  border-radius: 50%;
+  background-color: #dbdbdb;
+}
+
+.timeline-marker.is-primary {
+  background-color: #3273dc;
+}
+
+.timeline-marker.is-danger {
+  background-color: #ff3860;
+}
+
+.timeline-marker.is-warning {
+  background-color: #ffdd57;
+}
+
+.timeline-content {
+  margin-left: 0;
+}
+
+/* Tab Styles */
+.tabs.is-boxed li.is-active a {
+  background-color: white;
+  border-color: #dbdbdb;
+  border-bottom-color: transparent;
+}
+
+.tab-content {
+  min-height: 500px;
+}
+
+.tab-pane {
+  display: none;
+}
+
+.tab-pane.is-active {
+  display: block;
+}
+
+/* Clean Tables */
+.table {
+  background: transparent;
+}
+
+.table th {
+  font-weight: 600;
+  color: #6c757d;
+  padding: 0.75rem;
+}
+
+.table td {
+  padding: 0.75rem;
+}
+
+/* Buttons - Cleaner */
+.button {
+  border-radius: 6px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  border: none;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+}
+
+.button:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.button.is-primary {
+  background-color: #3273dc;
+  color: white;
+}
+
+.button.is-primary:hover {
+  background-color: #2366d1;
+  color: white;
+}
+
+.button.is-success {
+  background-color: #48c774;
+  color: white;
+}
+
+.button.is-success:hover {
+  background-color: #3ec46d;
+  color: white;
+}
+
+.button.is-info {
+  background-color: #3298dc;
+  color: white;
+}
+
+.button.is-info:hover {
+  background-color: #2388cc;
+  color: white;
+}
+
+.button.is-danger {
+  background-color: #ff3860;
+  color: white;
+}
+
+.button.is-danger:hover {
+  background-color: #ff1f4b;
+  color: white;
+}
+
+.button.is-dark {
+  background-color: #363636;
+  color: white;
+}
+
+.button.is-dark:hover {
+  background-color: #292929;
+  color: white;
+}
+
+/* Form Controls */
+.input, .textarea, .select select {
+  border-radius: 6px;
+  border: 1px solid #dbdbdb;
+  transition: all 0.2s ease;
+}
+
+.input:focus, .textarea:focus, .select select:focus {
+  border-color: #3273dc;
+  box-shadow: 0 0 0 0.125em rgba(50,115,220,.25);
+}
+
+/* Tags */
+.tag {
+  border-radius: 4px;
+  font-weight: 500;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .tabs ul {
+    flex-wrap: wrap;
+  }
+}
+</style>
+
+<script>
+// Tab functionality
+document.addEventListener('DOMContentLoaded', function() {
+  const tabs = document.querySelectorAll('.tabs li');
+  const panes = document.querySelectorAll('.tab-pane');
+  
+  tabs.forEach(tab => {
+    tab.addEventListener('click', function() {
+      const targetTab = this.dataset.tab;
+      
+      // Update active tab
+      tabs.forEach(t => t.classList.remove('is-active'));
+      this.classList.add('is-active');
+      
+      // Update active pane
+      panes.forEach(pane => {
+        pane.classList.remove('is-active');
+        if (pane.id === targetTab) {
+          pane.classList.add('is-active');
+        }
+      });
+    });
+  });
+});
+
+// Quick functions
+function addQuickNote() {
+  const noteContent = document.getElementById('quickNote').value;
+  if (noteContent) {
+    // Create form and submit
+    const form = document.createElement('form');
+    form.method = 'POST';
+    form.action = '{% url "admin_add_order_note" order.id %}';
+    
+    const csrfInput = document.createElement('input');
+    csrfInput.type = 'hidden';
+    csrfInput.name = 'csrfmiddlewaretoken';
+    csrfInput.value = '{{ csrf_token }}';
+    form.appendChild(csrfInput);
+    
+    const typeInput = document.createElement('input');
+    typeInput.type = 'hidden';
+    typeInput.name = 'note_type';
+    typeInput.value = 'internal';
+    form.appendChild(typeInput);
+    
+    const contentInput = document.createElement('input');
+    contentInput.type = 'hidden';
+    contentInput.name = 'content';
+    contentInput.value = noteContent;
+    form.appendChild(contentInput);
+    
+    document.body.appendChild(form);
+    form.submit();
+  }
+}
+
+function quickAdvance() {
+  if (confirm('Advance to {{ order.get_next_status|title }}?')) {
+    const form = document.createElement('form');
+    form.method = 'POST';
+    form.action = '{% url "admin_update_order_status" order.id %}';
+    
+    const csrfInput = document.createElement('input');
+    csrfInput.type = 'hidden';
+    csrfInput.name = 'csrfmiddlewaretoken';
+    csrfInput.value = '{{ csrf_token }}';
+    form.appendChild(csrfInput);
+    
+    const statusInput = document.createElement('input');
+    statusInput.type = 'hidden';
+    statusInput.name = 'status';
+    statusInput.value = '{{ order.get_next_status }}';
+    form.appendChild(statusInput);
+    
+    document.body.appendChild(form);
+    form.submit();
+  }
+}
+
+// Sample details modal
+function showSampleDetails(sampleId) {
+  // For now, just navigate to the samples view
+  // In a future enhancement, this could show a modal with sample details
+  window.open(`{% url 'samples_view' order.project.id order.id 1 %}`, '_blank');
+}
+</script>
+
+<!-- Sample Details Modal Template -->
+<div id="sampleModal" class="modal">
+  <div class="modal-background" onclick="closeSampleModal()"></div>
+  <div class="modal-card">
+    <header class="modal-card-head">
+      <p class="modal-card-title">Sample Details</p>
+      <button class="delete" aria-label="close" onclick="closeSampleModal()"></button>
+    </header>
+    <section class="modal-card-body" id="sampleModalContent">
+      <!-- Sample details will be loaded here -->
+    </section>
+    <footer class="modal-card-foot">
+      <button class="button" onclick="closeSampleModal()">Close</button>
+    </footer>
+  </div>
+</div>
+
+<script>
+function closeSampleModal() {
+  document.getElementById('sampleModal').classList.remove('is-active');
+}
+</script>
+{% endblock content %}

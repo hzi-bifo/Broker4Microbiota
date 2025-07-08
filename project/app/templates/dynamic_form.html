@@ -1,0 +1,317 @@
+{% extends 'base.html' %}
+{% load widget_tweaks %}
+
+{% block title %}
+{{ form_title }}
+{% endblock title %}
+
+{% block content %}
+<section class="section">
+  <div class="container">
+    <div class="form-card">
+      <div class="form-card-header">
+        <h2>{{ form_title }}</h2>
+        {% if form_description %}
+        <p>{{ form_description }}</p>
+        {% endif %}
+        {% if is_preview %}
+        <div class="notification is-info is-light mt-3">
+          <p><strong>Preview Mode:</strong> This is a preview of the form template. No data will be saved.</p>
+        </div>
+        {% endif %}
+      </div>
+      
+      <div class="form-card-body">
+        <form method="post" id="dynamicForm" {% if not is_preview %}action=""{% endif %}>
+          {% csrf_token %}
+          
+          {% if form.non_field_errors %}
+            <div class="notification is-danger is-light">
+              {% for error in form.non_field_errors %}
+                {{ error }}
+              {% endfor %}
+            </div>
+          {% endif %}
+
+          {% for section in sections %}
+          <!-- {{ section.title }} Section -->
+          <div class="form-section {% if section.collapsible %}collapsible{% endif %} {% if section.collapsed_by_default %}collapsed{% endif %}" data-section-id="{{ section.id }}">
+            <h4 class="form-section-title">
+              {% if section.icon %}<i class="fas {{ section.icon }}"></i>{% endif %}
+              {{ section.title }}
+              {% if section.collapsible %}
+              <span class="collapse-toggle">
+                <i class="fas fa-chevron-down"></i>
+              </span>
+              {% endif %}
+            </h4>
+            
+            <div class="section-content">
+              {% for field_info in section.fields %}
+              <div class="field {% if field_info.expandable_help %}expandable-field{% endif %}" 
+                   data-field-name="{{ field_info.name }}"
+                   {% if field_info.show_if %}
+                   data-show-if-field="{{ field_info.show_if.field }}"
+                   data-show-if-value="{{ field_info.show_if.value }}"
+                   data-show-if-operator="{{ field_info.show_if.operator|default:'equals' }}"
+                   style="display: none;"
+                   {% endif %}>
+                <label class="label {% if field_info.field.field.required %}required{% endif %}">
+                  {{ field_info.field.label }}
+                  {% if field_info.expandable_help and field_info.expandable_help.enabled %}
+                  <span class="expand-help" data-field="{{ field_info.name }}">
+                    <i class="fas fa-info-circle"></i>
+                    <span class="expand-text">More info</span>
+                  </span>
+                  {% endif %}
+                </label>
+                <div class="control">
+                  {{ field_info.field|add_class:"input" }}
+                </div>
+                {% if field_info.field.help_text %}
+                <p class="help">{{ field_info.field.help_text }}</p>
+                {% endif %}
+                
+                {% if field_info.expandable_help and field_info.expandable_help.enabled %}
+                <div class="expanded-help" id="help-{{ field_info.name }}">
+                  <div class="help-content">
+                    {% include 'partials/expandable_help_content.html' with content=field_info.expandable_help.content %}
+                  </div>
+                </div>
+                {% endif %}
+                
+                {% if field_info.field.errors %}
+                  {% for error in field_info.field.errors %}
+                    <p class="help is-danger">{{ error }}</p>
+                  {% endfor %}
+                {% endif %}
+              </div>
+              {% endfor %}
+            </div>
+          </div>
+          {% endfor %}
+
+          <!-- Form Actions -->
+          {% if not is_preview %}
+          <div class="form-actions">
+            {% for action in form_actions %}
+              {% if action.type == 'submit' %}
+                <button type="submit" class="button is-{{ action.style|default:'primary' }}">
+                  {% if action.icon %}<span class="icon"><i class="fas {{ action.icon }}"></i></span>{% endif %}
+                  <span>{{ action.label }}</span>
+                </button>
+              {% elif action.type == 'button' %}
+                <button type="button" 
+                        class="button is-{{ action.style|default:'light' }}"
+                        {% if action.action %}onclick="{{ action.action }}()"{% endif %}>
+                  {% if action.icon %}<span class="icon"><i class="fas {{ action.icon }}"></i></span>{% endif %}
+                  <span>{{ action.label }}</span>
+                </button>
+              {% elif action.type == 'link' %}
+                <a href="{{ action.href }}" class="button is-{{ action.style|default:'light' }}">
+                  {% if action.icon %}<span class="icon"><i class="fas {{ action.icon }}"></i></span>{% endif %}
+                  <span>{{ action.label }}</span>
+                </a>
+              {% endif %}
+            {% endfor %}
+          </div>
+          {% endif %}
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock content %}
+
+{% block scripts %}
+<script>
+// Clear form function
+function clearForm() {
+  if (confirm('Are you sure you want to clear all form fields?')) {
+    document.getElementById('dynamicForm').reset();
+    // Clear any validation classes
+    document.querySelectorAll('.is-success, .is-danger').forEach(el => {
+      el.classList.remove('is-success', 'is-danger');
+    });
+    // Focus on first input
+    const firstInput = document.querySelector('input[type="text"]:not([readonly])');
+    if (firstInput) firstInput.focus();
+  }
+}
+
+// Fill dummy data function (would need to be customized per form)
+function fillDummyData() {
+  alert('Dummy data functionality would be implemented based on form type');
+}
+
+// Save draft function
+function saveDraft() {
+  alert('Draft saving functionality would be implemented');
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  // Expandable help functionality
+  const expandButtons = document.querySelectorAll('.expand-help');
+  
+  expandButtons.forEach(button => {
+    button.addEventListener('click', function() {
+      const fieldName = this.getAttribute('data-field');
+      const helpSection = document.getElementById('help-' + fieldName);
+      const expandText = this.querySelector('.expand-text');
+      
+      if (helpSection.classList.contains('active')) {
+        helpSection.classList.remove('active');
+        expandText.textContent = 'More info';
+      } else {
+        helpSection.classList.add('active');
+        expandText.textContent = 'Less info';
+      }
+    });
+  });
+  
+  // Collapsible sections
+  const collapsibleSections = document.querySelectorAll('.form-section.collapsible');
+  
+  collapsibleSections.forEach(section => {
+    const title = section.querySelector('.form-section-title');
+    const content = section.querySelector('.section-content');
+    const toggle = section.querySelector('.collapse-toggle i');
+    
+    title.addEventListener('click', function() {
+      section.classList.toggle('collapsed');
+      if (section.classList.contains('collapsed')) {
+        content.style.display = 'none';
+        toggle.classList.remove('fa-chevron-down');
+        toggle.classList.add('fa-chevron-right');
+      } else {
+        content.style.display = 'block';
+        toggle.classList.remove('fa-chevron-right');
+        toggle.classList.add('fa-chevron-down');
+      }
+    });
+    
+    // Apply initial state
+    if (section.classList.contains('collapsed')) {
+      content.style.display = 'none';
+      toggle.classList.remove('fa-chevron-down');
+      toggle.classList.add('fa-chevron-right');
+    }
+  });
+  
+  // Conditional field visibility
+  const conditionalFields = document.querySelectorAll('[data-show-if-field]');
+  
+  function checkConditionalVisibility() {
+    conditionalFields.forEach(field => {
+      const dependentFieldName = field.getAttribute('data-show-if-field');
+      const expectedValue = field.getAttribute('data-show-if-value');
+      const operator = field.getAttribute('data-show-if-operator') || 'equals';
+      
+      const dependentField = document.querySelector(`[name="${dependentFieldName}"]`);
+      if (dependentField) {
+        let shouldShow = false;
+        const currentValue = dependentField.type === 'checkbox' ? 
+          dependentField.checked : dependentField.value;
+        
+        switch (operator) {
+          case 'equals':
+            shouldShow = String(currentValue) === String(expectedValue);
+            break;
+          case 'not_equals':
+            shouldShow = String(currentValue) !== String(expectedValue);
+            break;
+          case 'contains':
+            shouldShow = String(currentValue).includes(String(expectedValue));
+            break;
+          case 'greater_than':
+            shouldShow = Number(currentValue) > Number(expectedValue);
+            break;
+          case 'less_than':
+            shouldShow = Number(currentValue) < Number(expectedValue);
+            break;
+        }
+        
+        field.style.display = shouldShow ? 'block' : 'none';
+        
+        // Clear field value when hidden
+        if (!shouldShow) {
+          const inputs = field.querySelectorAll('input, select, textarea');
+          inputs.forEach(input => {
+            if (input.type === 'checkbox') {
+              input.checked = false;
+            } else {
+              input.value = '';
+            }
+          });
+        }
+      }
+    });
+  }
+  
+  // Add change listeners to all form fields
+  document.querySelectorAll('input, select, textarea').forEach(field => {
+    field.addEventListener('change', checkConditionalVisibility);
+    if (field.type === 'text' || field.type === 'number') {
+      field.addEventListener('keyup', checkConditionalVisibility);
+    }
+  });
+  
+  // Initial check
+  checkConditionalVisibility();
+  
+  // Form validation
+  const inputs = document.querySelectorAll('.input, .textarea, .select');
+  
+  inputs.forEach(input => {
+    input.addEventListener('blur', function() {
+      const field = this.closest('.field');
+      const label = field.querySelector('.label.required');
+      
+      if (this.hasAttribute('required') || label) {
+        if (this.value.trim() === '') {
+          this.classList.add('is-danger');
+          this.classList.remove('is-success');
+        } else {
+          this.classList.add('is-success');
+          this.classList.remove('is-danger');
+        }
+      }
+    });
+    
+    input.addEventListener('focus', function() {
+      this.classList.remove('is-success', 'is-danger');
+    });
+  });
+});
+</script>
+
+<style>
+/* Collapsible sections */
+.form-section.collapsible .form-section-title {
+  cursor: pointer;
+  user-select: none;
+  position: relative;
+  padding-right: 2rem;
+}
+
+.form-section.collapsible .collapse-toggle {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.form-section.collapsible .collapse-toggle i {
+  transition: transform 0.3s ease;
+}
+
+.section-content {
+  transition: all 0.3s ease;
+}
+
+/* Conditional fields */
+[data-show-if-field] {
+  transition: opacity 0.3s ease;
+}
+</style>
+{% endblock scripts %}

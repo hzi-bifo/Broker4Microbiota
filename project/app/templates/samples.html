@@ -1,27 +1,403 @@
 {% extends 'base.html' %}
 
 {% block title %}
-Add and update Samples
+{% if samples_data %}Update Samples{% else %}Add Samples{% endif %}
 {% endblock title %}
 
 {% block content %}
-<section class="section">
-  <div class="container">
-    <h2 class="title has-text-centered">Update Samples</h2>
+<style>
+/* Clean, structured layout */
+html, body {
+  overflow: hidden;
+  height: 100vh;
+}
 
-    <div class="has-text-centered mb-4">
-      <button id="add" class="button is-primary" onclick="addNewRow()">Add New Row</button>
+/* Override base template wrapper */
+.section {
+  padding: 0 !important;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.container {
+  max-width: 100% !important;
+  width: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  height: 100% !important;
+  flex: 1;
+}
+
+.sample-page-wrapper {
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+}
+
+/* Main layout container */
+.sample-body {
+  flex: 1;
+  display: flex;
+  overflow: hidden;
+  width: 100%;
+  height: calc(100vh - 60px); /* Account for footer */
+}
+
+/* Main content area */
+.sample-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* Combined header and actions bar */
+.sample-actions {
+  min-height: 50px;
+  background: #f8f9fa;
+  border-bottom: 1px solid #dee2e6;
+  padding: 0.75rem 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-shrink: 0;
+  flex-wrap: wrap;
+}
+
+.sample-info {
+  display: flex;
+  align-items: baseline;
+  gap: 1rem;
+  margin-right: 2rem;
+}
+
+.sample-info .title {
+  font-size: 1.1rem;
+  margin: 0;
+  font-weight: 600;
+}
+
+.sample-info .subtitle {
+  font-size: 0.9rem;
+  color: #6c757d;
+  margin: 0;
+}
+
+/* Table container */
+.sample-table {
+  flex: 1;
+  padding: 1rem;
+  overflow: hidden;
+  position: relative;
+}
+
+#handsontable-container {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+/* Right sidebar */
+.sample-sidebar {
+  width: 350px;
+  background: #f8f9fa;
+  border-left: 1px solid #dee2e6;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  transition: margin-right 0.3s ease;
+}
+
+.sample-sidebar.collapsed {
+  margin-right: -350px;
+}
+
+.sidebar-header {
+  height: 50px;
+  background: #fff;
+  border-bottom: 1px solid #dee2e6;
+  padding: 0 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+}
+
+.sidebar-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1rem;
+}
+
+/* Bottom save actions */
+.sample-footer {
+  height: 60px;
+  background: #f8f9fa;
+  border-top: 1px solid #dee2e6;
+  padding: 0 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+  z-index: 20;
+}
+
+/* Simple button styling */
+.button {
+  white-space: nowrap;
+}
+
+/* Fix dropdown positioning */
+.dropdown-menu {
+  position: absolute;
+  z-index: 1000;
+}
+
+/* Column header color coding */
+.facility-column-header {
+  background-color: #e8f5e9 !important;
+  border-color: #4caf50 !important;
+}
+
+.checklist-column-header {
+  background-color: #e3f2fd !important;
+  border-color: #2196f3 !important;
+}
+
+.optional-column-header {
+  background-color: #f5f5f5 !important;
+  border-color: #9e9e9e !important;
+}
+
+.selected-column-header {
+  font-weight: bold !important;
+  text-decoration: underline !important;
+}
+
+/* Delete button styling */
+.htCore tbody tr:hover button.is-danger {
+  opacity: 1;
+  transition: opacity 0.2s;
+}
+
+.htCore tbody button.is-danger {
+  opacity: 0.6;
+}
+
+/* Status icons */
+.htCore .icon.has-text-success {
+  font-size: 1.2rem;
+}
+
+.htCore .icon.has-text-warning {
+  font-size: 1.2rem;
+}
+
+/* Fullscreen mode styles */
+.sample-page-wrapper:fullscreen .sample-actions,
+.sample-page-wrapper:fullscreen .sample-footer,
+.sample-page-wrapper:fullscreen .sample-sidebar {
+  display: none !important;
+}
+
+.sample-page-wrapper:fullscreen .sample-body {
+  height: 100vh;
+}
+
+.sample-page-wrapper:fullscreen .sample-table {
+  padding: 0;
+}
+
+.sample-page-wrapper:fullscreen #handsontable-container {
+  width: 100vw;
+  height: 100vh;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .sample-sidebar {
+    position: absolute;
+    right: 0;
+    top: 0;
+    height: 100%;
+    z-index: 100;
+    box-shadow: -2px 0 5px rgba(0,0,0,0.1);
+  }
+}
+</style>
+
+<div class="sample-page-wrapper">
+  <!-- Main Body -->
+  <div class="sample-body">
+    <!-- Main Content -->
+    <div class="sample-main">
+      <!-- Combined Header and Actions Bar -->
+      <div class="sample-actions">
+        <!-- Title and subtitle -->
+        <div class="sample-info">
+          <h1 class="title">
+            {% if samples_data %}Update Samples{% else %}Add Samples{% endif %}
+          </h1>
+          <span class="subtitle">
+            Order #{{ order.id }} - {{ order.get_selected_checklist|default:"No checklist selected" }}
+          </span>
+        </div>
+        
+        <button class="button is-primary" onclick="addNewRow()">
+          <span class="icon">
+            <i class="fas fa-plus"></i>
+          </span>
+          <span>Add Sample</span>
+        </button>
+        <button class="button is-light" onclick="addMultipleRows()">
+          <span class="icon">
+            <i class="fas fa-layer-group"></i>
+          </span>
+          <span>Add Multiple</span>
+        </button>
+        <div class="dropdown is-hoverable">
+          <div class="dropdown-trigger">
+            <button class="button is-light">
+              <span>More Actions</span>
+              <span class="icon is-small">
+                <i class="fas fa-angle-down"></i>
+              </span>
+            </button>
+          </div>
+          <div class="dropdown-menu" role="menu">
+            <div class="dropdown-content">
+              <a class="dropdown-item" onclick="deleteSelectedRows()">
+                <span class="icon is-small">
+                  <i class="fas fa-trash"></i>
+                </span>
+                <span>Delete Selected</span>
+              </a>
+              <a class="dropdown-item" onclick="duplicateSelectedRow()">
+                <span class="icon is-small">
+                  <i class="fas fa-copy"></i>
+                </span>
+                <span>Duplicate Selected</span>
+              </a>
+              <hr class="dropdown-divider">
+              <a class="dropdown-item" onclick="addDummyData()">
+                <span class="icon is-small">
+                  <i class="fas fa-magic"></i>
+                </span>
+                <span>Add Dummy Data</span>
+              </a>
+              <a class="dropdown-item" onclick="exportData()">
+                <span class="icon is-small">
+                  <i class="fas fa-download"></i>
+                </span>
+                <span>Export as CSV</span>
+              </a>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Spacer to push right-aligned items -->
+        <div style="margin-left: auto; display: flex; align-items: center; gap: 0.5rem;">
+          <button class="button is-light is-small" onclick="toggleFullscreen()">
+            <span class="icon">
+              <i class="fas fa-expand"></i>
+            </span>
+            <span>Fullscreen</span>
+          </button>
+          <span class="sample-count" style="color: #6c757d; font-size: 0.875rem;">
+            <strong>{{ samples_data|length }}</strong> sample{{ samples_data|length|pluralize }} loaded
+          </span>
+        </div>
+      </div>
+      
+      <!-- Table Container -->
+      <div class="sample-table">
+        <div id="handsontable-container"></div>
+      </div>
     </div>
-
-    <div id="handsontable-container" class="hot"></div>
-
-    <div class="has-text-centered mt-4">
-      <button id="save" class="button is-success" onclick="validateSampleData()">Save Samples</button>
-      <button id="cancel" class="button is-link" onclick="redirectToOrders()">Back to Order Overview</button>
+  
+    <!-- Right Sidebar -->
+    <div id="field-info-sidebar" class="sample-sidebar">
+      <div class="sidebar-header">
+        <h3 style="margin: 0; font-size: 1.1rem;">
+          <i class="fas fa-info-circle"></i>
+          Field Information
+        </h3>
+        <button class="delete" onclick="toggleSidebar()"></button>
+      </div>
+      
+      <div class="sidebar-content">
+        <!-- Overview Section -->
+        <div style="background: #fff; padding: 1rem; border-radius: 4px; margin-bottom: 1rem;">
+          <h4 style="font-size: 0.9rem; margin-bottom: 0.5rem;">
+            <i class="fas fa-info-circle"></i>
+            Sample Entry Overview
+          </h4>
+          <p style="font-size: 0.8rem; line-height: 1.4; margin-bottom: 0.5rem;">
+            Here you can specify the samples you want to be sequenced. Each row represents one sample, and you need to provide metadata according to the selected MIxS checklist standards.
+          </p>
+          <p style="font-size: 0.8rem; line-height: 1.4; margin-bottom: 0;">
+            <strong>Column colors:</strong> <span style="color: #4caf50;">Green columns</span> are required facility fields, <span style="color: #2196f3;">blue columns</span> are MIxS checklist fields, and <span style="color: #9e9e9e;">gray columns</span> are optional. Fill in all required fields for each sample.
+          </p>
+        </div>
+        
+        <!-- How to Use Section -->
+        <div style="background: #fff; padding: 1rem; border-radius: 4px; margin-bottom: 1rem;">
+          <h4 style="font-size: 0.9rem; margin-bottom: 0.5rem;">
+            <i class="fas fa-question-circle"></i>
+            How to use this interface
+          </h4>
+          <ul style="font-size: 0.8rem; margin-left: 1rem;">
+            <li>Each row = One sample</li>
+            <li>Click any cell to see field details</li>
+            <li><kbd>Tab</kbd> - Next cell</li>
+            <li><kbd>Enter</kbd> - Move down</li>
+            <li><kbd>Ctrl+S</kbd> - Save</li>
+          </ul>
+        </div>
+        
+        <!-- Field Details Section -->
+        <div id="field-info-content">
+          <div style="text-align: center; color: #999; padding: 2rem;">
+            <i class="fas fa-mouse-pointer" style="font-size: 2rem; margin-bottom: 0.5rem; display: block;"></i>
+            <p style="font-size: 0.8rem;">Click on any cell to see field information</p>
+          </div>
+        </div>
+      </div>
     </div>
-
   </div>
-</section>
+  
+  <!-- Bottom Footer -->
+  <div class="sample-footer">
+    <button class="button is-light" onclick="redirectToOrders()">
+      <span class="icon">
+        <i class="fas fa-arrow-left"></i>
+      </span>
+      <span>Back to Orders</span>
+    </button>
+    <div>
+      <button id="save" class="button is-success" onclick="validateSampleData()" disabled>
+        <span class="icon">
+          <i class="fas fa-save"></i>
+        </span>
+        <span>Save Samples</span>
+      </button>
+      <button class="button is-primary" onclick="saveAndContinue()" disabled>
+        <span class="icon">
+          <i class="fas fa-save"></i>
+        </span>
+        <span>Save & Continue</span>
+      </button>
+    </div>
+  </div>
+  
+</div>
 
 <!--
 Comment out for 6.2.2 (MIT)
@@ -30,83 +406,645 @@ Comment out for 6.2.2 (MIT)
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/handsontable/dist/handsontable.full.css">
 
 <script>
-
+document.addEventListener('DOMContentLoaded', function() {
+  
   {{ validators }}
 
   var unsaved = false;
   var first_failing_cell = null;
   document.getElementById('save').disabled = true;
+  var saveContBtn = document.querySelector('.button.is-primary[onclick="saveAndContinue()"]');
+  if (saveContBtn) saveContBtn.disabled = true;
+  
+  // Custom renderer for delete button
+  function deleteButtonRenderer(instance, td, row, col, prop, value, cellProperties) {
+    Handsontable.renderers.HtmlRenderer.apply(this, arguments);
+    td.innerHTML = '<button class="button is-small is-danger is-light" onclick="deleteRow(' + row + ')" style="padding: 0.25rem 0.5rem;">' +
+                   '<span class="icon is-small"><i class="fas fa-trash"></i></span>' +
+                   '</button>';
+    td.style.textAlign = 'center';
+    return td;
+  }
+  
+  // Custom renderer for status (saved/unsaved)
+  function statusRenderer(instance, td, row, col, prop, value, cellProperties) {
+    Handsontable.renderers.HtmlRenderer.apply(this, arguments);
+    var isSaved = !value || value.indexOf('x') === -1;
+    if (isSaved) {
+      td.innerHTML = '<span class="icon has-text-success"><i class="fas fa-check-circle"></i></span>';
+    } else {
+      td.innerHTML = '<span class="icon has-text-warning"><i class="fas fa-times-circle"></i></span>';
+    }
+    td.style.textAlign = 'center';
+    return td;
+  }
+  
+  // Delete row function
+  window.deleteRow = function(row) {
+    if (confirm('Are you sure you want to delete this sample?')) {
+      window.hot.alter('remove_row', row);
+      unsaved = true;
+      document.getElementById('save').disabled = false;
+      var saveBtn = document.querySelector('.button.is-primary[onclick="saveAndContinue()"]');
+      if (saveBtn) saveBtn.disabled = false;
+      updateSampleCount();
+    }
+  }
+
+  // Field metadata from server
+  var fieldMetadata = {{ field_metadata | safe }};
+  
+  // Define column categories for color coding
+  var facilityColumns = ['sample_id', 'tax_id', 'scientific_name', 'sample_alias', 'sample_title', 'sample_description'];
+  var checklistColumns = [];
+  var optionalColumns = [];
+
+  // Parse nested headers to categorize columns
+  var nestedHeaders = {{ nested_headers | safe }};
+  if (nestedHeaders && nestedHeaders.length > 0) {
+    var checklistHeaders = nestedHeaders[0];
+    for (var i = 2; i < checklistHeaders.length; i++) {
+      if (checklistHeaders[i].label && checklistHeaders[i].label !== 'sample') {
+        // This is a checklist section
+        var startCol = 0;
+        for (var j = 0; j < i; j++) {
+          startCol += checklistHeaders[j].colspan || 1;
+        }
+        for (var k = 0; k < (checklistHeaders[i].colspan || 1); k++) {
+          checklistColumns.push(startCol + k);
+        }
+      }
+    }
+  }
 
   var hotElement = document.querySelector('#handsontable-container');
+  console.log('HOT Element:', hotElement);
+  console.log('Sample data:', {{ samples_data | safe }});
+  
   var hotSettings = {
     data: {{ samples_data | safe }},
     columns: {{ samples_headers | safe }},
     hiddenColumns: {
       columns: [],
-      indicators: false  // Show a small indicator where columns are hidden
+      indicators: false
     },
     minSpareRows: 0,
     rowHeaders: true,
-    // colWidths: [75,25, 100, 100],
-    // colWidths: {{headers_max_size | safe}} * 4,
     colWidths: {{ headers_size | safe }},
     contextMenu: true,
     width: '100%',
-    stretchH: 'all', // Optionally stretch the columns to fit the width
+    height: '100%',
+    stretchH: 'all',
+    autoColumnSize: false,
+    viewportColumnRenderingOffset: 100,
     licenseKey: 'non-commercial-and-evaluation',
-    nestedHeaders:
-      {{ nested_headers | safe }},
+    nestedHeaders: {{ nested_headers | safe }},
+    fixedColumnsLeft: 3,
+    manualColumnFreeze: true,
+    afterGetColHeader: function(col, TH) {
+      // Color code the headers based on column type
+      if (col < 2) return; // Skip delete and status columns
+      
+      var fieldIndex = col - 2; // Adjust for the first two columns
+      var columnName = this.getColHeader(col, -1); // Get the bottom header
+      
+      if (facilityColumns.includes(columnName) || fieldIndex < 6) {
+        TH.classList.add('facility-column-header');
+      } else if (checklistColumns.includes(col)) {
+        TH.classList.add('checklist-column-header');
+      } else {
+        TH.classList.add('optional-column-header');
+      }
+    },
+    cells: function(row, col) {
+      var cellProperties = {};
+      
+      // Make sample_id read-only after initial creation
+      if (col === 2) { // sample_id column (adjusted for delete and status columns)
+        var data = this.instance.getDataAtRow(row);
+        if (data && data[2] && data[2].length > 0) {
+          cellProperties.readOnly = true;
+          cellProperties.className = 'readonly-cell';
+        }
+      }
+      
+      return cellProperties;
+    },
     afterChange: (changes) => {
       changes?.forEach(([row, prop, oldValue, newValue]) => {
       if (prop != "status") {
-        cellValue = hot.getDataAtCell(row, 1)
-        if (cellValue) {
-          unsavedValue = cellValue.substring(1,2);
-          if (unsavedValue == "x") {
-            return;
-          }
-          protect = cellValue.substring(0,1);
-        } else {
-          protect = " ";
-        }
-        newCellValue = protect + "x";
-        hot.setDataAtCell(row, 1, newCellValue);
+        // Mark row as unsaved
+        window.hot.setDataAtCell(row, 1, "x");
         unsaved = true;
         document.getElementById('save').disabled = false;
+        document.querySelector('.button.is-primary[onclick="saveAndContinue()"]').disabled = false;
+        updateSampleCount();
       }  
       });
+    },
+    afterRemoveRow: function() {
+      updateSampleCount();
+    },
+    afterCreateRow: function() {
+      updateSampleCount();
     }
   };
-  var hot = new Handsontable(hotElement, hotSettings);
-
-  hot.addHook('afterValidate', function(isValid, value, row, prop, source) {
-    if (!isValid) {
-      if (first_failing_cell == null) {
-        adjusted_row = row + 1
-        first_failing_cell = "Row:\n" + adjusted_row + "\n\nColumn:\n" + prop + "\n\nValue:\n" + value;
+  // Initialize Handsontable
+  if (typeof Handsontable === 'undefined') {
+    console.error('Handsontable library not loaded!');
+    hotElement.innerHTML = '<div class="notification is-danger">Error: Handsontable library failed to load. Please refresh the page.</div>';
+  } else {
+    console.log('Initializing Handsontable with settings:', hotSettings);
+    var hot = new Handsontable(hotElement, hotSettings);
+    window.hot = hot; // Make it globally accessible
+    
+    // Setup hooks after initialization
+    setupHotHooks();
+    
+    // Ensure proper sizing
+    setTimeout(function() {
+      window.hot.updateSettings({
+        height: hotElement.offsetHeight,
+        width: hotElement.offsetWidth
+      });
+      window.hot.render();
+    }, 100);
+  }
+  
+  // Simple resize handler
+  window.addEventListener('resize', function() {
+    if (window.hot) {
+      window.hot.render();
+    }
+  });
+  
+  // Track currently selected column
+  var currentSelectedColumn = null;
+  
+  // Setup all HOT hooks
+  function setupHotHooks() {
+    // Add click handler to show field info
+    window.hot.addHook('afterSelection', function(row, col, row2, col2) {
+      if (col >= 2) { // Skip delete and status columns
+        var columnName = window.hot.getColHeader(col, -1);
+        showFieldInfo(columnName);
+        
+        // Highlight the selected column header
+        if (currentSelectedColumn !== null) {
+          var prevHeader = window.hot.getCell(-1, currentSelectedColumn);
+          if (prevHeader) {
+            prevHeader.classList.remove('selected-column-header');
+          }
+        }
+        
+        currentSelectedColumn = col;
+        var header = window.hot.getCell(-1, col);
+        if (header) {
+          header.classList.add('selected-column-header');
+        }
+      }
+    });
+    
+    // Add validation hook
+    window.hot.addHook('afterValidate', function(isValid, value, row, prop, source) {
+      if (!isValid) {
+        if (first_failing_cell == null) {
+          adjusted_row = row + 1
+          first_failing_cell = "Row:\n" + adjusted_row + "\n\nColumn:\n" + prop + "\n\nValue:\n" + value;
+        }
+      }
+    });
+    
+    // Hook to handle new rows, adding a unique ID to each
+    window.hot.addHook('afterCreateRow', function(index, amount) {
+      for (let i = 0; i < amount; i++) {
+        let row = index + i;
+        // Ensure each new row gets a unique ID
+        window.hot.setDataAtRowProp(row, 'sample_id', generateUniqueId());
+      }
+    });
+    
+    // Add visual indicators for readonly cells
+    window.hot.updateSettings({
+      afterRenderer: function(TD, row, col, prop, value, cellProperties) {
+        if (cellProperties.readOnly) {
+          TD.style.background = '#f5f5f5';
+          TD.style.color = '#7a7a7a';
+          TD.title = 'This field is read-only';
+        }
+      }
+    });
+  }
+  
+  // Function to show field information in sidebar
+  function showFieldInfo(fieldName) {
+    var fieldInfo = fieldMetadata[fieldName];
+    if (!fieldInfo) {
+      // Try to find by label if not found by name
+      for (var key in fieldMetadata) {
+        if (fieldMetadata[key].label === fieldName) {
+          fieldInfo = fieldMetadata[key];
+          break;
+        }
       }
     }
-});
+    
+    if (fieldInfo) {
+      var sidebar = document.getElementById('field-info-sidebar');
+      var content = document.getElementById('field-info-content');
+      
+      // Build the field info HTML
+      var html = '<div class="field-info">';
+      
+      // Field name and label
+      html += '<div class="field-header" style="margin-bottom: 0.5rem;">';
+      html += '<h4 class="title is-6" style="margin-bottom: 0; display: inline;">' + (fieldInfo.label || fieldName) + '</h4>';
+      if (fieldInfo.name && fieldInfo.name !== fieldInfo.label) {
+        html += '<span class="has-text-grey" style="font-size: 0.875rem; margin-left: 0.5rem;">(' + fieldInfo.name + ')</span>';
+      }
+      html += '</div>';
+      
+      // Required/Optional badge
+      html += '<div class="field-badges mb-3">';
+      if (fieldInfo.required) {
+        html += '<span class="tag is-danger is-light"><i class="fas fa-asterisk mr-1"></i>Required</span>';
+      } else {
+        html += '<span class="tag is-info is-light"><i class="fas fa-circle mr-1"></i>Optional</span>';
+      }
+      
+      if (fieldInfo.checklist) {
+        html += ' <span class="tag is-success is-light"><i class="fas fa-clipboard-list mr-1"></i>' + fieldInfo.checklist + '</span>';
+      }
+      
+      // Add column type indicator
+      if (facilityColumns.includes(fieldInfo.name)) {
+        html += ' <span class="tag is-primary is-light"><i class="fas fa-building mr-1"></i>Facility Field</span>';
+      }
+      html += '</div>';
+      
+      // Help text
+      if (fieldInfo.help_text) {
+        html += '<div class="field-section">';
+        html += '<h5 class="title is-7 has-text-weight-semibold">Description</h5>';
+        html += '<p class="content is-small">' + fieldInfo.help_text + '</p>';
+        html += '</div>';
+      }
+      
+      // Allowed values
+      if (fieldInfo.choices && fieldInfo.choices.length > 0) {
+        html += '<div class="field-section">';
+        html += '<h5 class="title is-7 has-text-weight-semibold">Allowed Values (' + fieldInfo.choices.length + ')</h5>';
+        html += '<div class="allowed-values">';
+        
+        if (fieldInfo.choices.length <= 10) {
+          // Show all values if 10 or fewer
+          fieldInfo.choices.forEach(function(choice) {
+            html += '<div class="allowed-value">';
+            html += '<code>' + choice.value + '</code>';
+            if (choice.label && choice.label !== choice.value) {
+              html += ' <span class="has-text-grey">(' + choice.label + ')</span>';
+            }
+            html += '</div>';
+          });
+        } else {
+          // Show first 5 values with search for longer lists
+          html += '<input class="input is-small mb-2" type="text" placeholder="Search values..." onkeyup="filterAllowedValues(this, \'' + fieldInfo.name + '\')"></input>';
+          html += '<div class="allowed-values-list" id="values-' + fieldInfo.name + '">';
+          fieldInfo.choices.slice(0, 5).forEach(function(choice) {
+            html += '<div class="allowed-value">';
+            html += '<code>' + choice.value + '</code>';
+            if (choice.label && choice.label !== choice.value) {
+              html += ' <span class="has-text-grey">(' + choice.label + ')</span>';
+            }
+            html += '</div>';
+          });
+          html += '<div class="has-text-grey-light is-size-7 mt-2">...and ' + (fieldInfo.choices.length - 5) + ' more values</div>';
+          html += '</div>';
+        }
+        html += '</div>';
+        html += '</div>';
+      }
+      
+      // Units
+      if (fieldInfo.units && fieldInfo.units.length > 0) {
+        html += '<div class="field-section">';
+        html += '<h5 class="title is-7 has-text-weight-semibold">Measurement Units</h5>';
+        html += '<div class="tags">';
+        fieldInfo.units.forEach(function(unit) {
+          html += '<span class="tag is-light">' + unit.label + '</span>';
+        });
+        html += '</div>';
+        html += '</div>';
+      }
+      
+      // Validation pattern
+      if (fieldInfo.validator_pattern) {
+        html += '<div class="field-section">';
+        html += '<h5 class="title is-7 has-text-weight-semibold">Validation Pattern</h5>';
+        html += '<div class="notification is-light is-warning">';
+        html += '<p class="is-size-7 mb-2">This field must match the following pattern:</p>';
+        html += '<code class="is-size-7">' + escapeHtml(fieldInfo.validator_pattern) + '</code>';
+        html += '</div>';
+        html += '</div>';
+      }
+      
+      // Max length
+      if (fieldInfo.max_length) {
+        html += '<div class="field-section">';
+        html += '<p class="is-size-7"><strong>Max Length:</strong> ' + fieldInfo.max_length + ' characters</p>';
+        html += '</div>';
+      }
+      
+      // Add quick tips for common validation patterns
+      if (fieldInfo.validator_pattern) {
+        html += '<div class="field-section">';
+        html += '<h5 class="title is-7 has-text-weight-semibold">Format Examples</h5>';
+        html += '<div class="content is-small">';
+        
+        // Provide examples based on common patterns
+        if (fieldInfo.validator_pattern.includes('[0-9]')) {
+          html += '<p><i class="fas fa-check has-text-success"></i> Numbers: 123, 45.6, 1.23e4</p>';
+        }
+        if (fieldInfo.validator_pattern.includes('DD')) {
+          html += '<p><i class="fas fa-check has-text-success"></i> Decimal degrees: -90.12345</p>';
+        }
+        if (fieldInfo.name.includes('date')) {
+          html += '<p><i class="fas fa-check has-text-success"></i> Date format: YYYY-MM-DD</p>';
+        }
+        if (fieldInfo.validator_pattern.includes('[Ee][+-]')) {
+          html += '<p><i class="fas fa-check has-text-success"></i> Scientific notation allowed</p>';
+        }
+        
+        html += '</div>';
+        html += '</div>';
+      }
+      
+      html += '</div>';
+      
+      content.innerHTML = html;
+      // Sidebar is always visible, no need to toggle
+      
+      // Store full choices for search functionality
+      if (fieldInfo.choices && fieldInfo.choices.length > 10) {
+        window['fieldChoices_' + fieldInfo.name] = fieldInfo.choices;
+      }
+    }
+  }
+  
+  function filterAllowedValues(input, fieldName) {
+    var searchTerm = input.value.toLowerCase();
+    var choices = window['fieldChoices_' + fieldName];
+    var container = document.getElementById('values-' + fieldName);
+    
+    if (!choices) return;
+    
+    var filtered = choices.filter(function(choice) {
+      return choice.value.toLowerCase().includes(searchTerm) || 
+             (choice.label && choice.label.toLowerCase().includes(searchTerm));
+    });
+    
+    var html = '';
+    filtered.slice(0, 20).forEach(function(choice) {
+      html += '<div class="allowed-value">';
+      html += '<code>' + choice.value + '</code>';
+      if (choice.label && choice.label !== choice.value) {
+        html += ' <span class="has-text-grey">(' + choice.label + ')</span>';
+      }
+      html += '</div>';
+    });
+    
+    if (filtered.length > 20) {
+      html += '<div class="has-text-grey-light is-size-7 mt-2">Showing 20 of ' + filtered.length + ' matches</div>';
+    } else if (filtered.length === 0) {
+      html += '<div class="has-text-grey-light is-size-7">No matches found</div>';
+    }
+    
+    container.innerHTML = html;
+  }
+  
+  // Toggle sidebar
+  window.toggleSidebar = function() {
+    var sidebar = document.getElementById('field-info-sidebar');
+    sidebar.classList.toggle('collapsed');
+    
+    // Refresh table layout after transition
+    setTimeout(function() {
+      if (window.hot) {
+        window.hot.render();
+      }
+    }, 350);
+  }
 
-  function addNewRow() {
+
+  window.addNewRow = function() {
     var newRow = ['', '']; // Adjust based on number of columns
 
-    var selectedRow = hot.getSelected();
+    var selectedRow = window.hot.getSelected();
     if (selectedRow && selectedRow.length > 0) {
       var rowIndex = selectedRow[0][0];
     } else {
-      var rowIndex = hot.countRows();
+      var rowIndex = window.hot.countRows();
     }
-    hot.alter('insert_row_above', rowIndex, 1, newRow);
+    window.hot.alter('insert_row_above', rowIndex, 1, newRow);
 
-    hot.setDataAtCell(rowIndex, 1, " x");
+    window.hot.setDataAtCell(rowIndex, 1, "x"); // Mark as unsaved
     unsaved = true;
     document.getElementById('save').disabled = false;
+    document.querySelector('.button.is-primary[onclick="saveAndContinue()"]').disabled = false;
   }
 
-  function validateSampleData() {
+  window.addMultipleRows = function() {
+    var count = prompt("How many samples would you like to add?", "5");
+    if (count && !isNaN(count) && count > 0) {
+      count = parseInt(count);
+      window.hot.batch(() => {
+        for (var i = 0; i < count; i++) {
+          var rowIndex = window.hot.countRows();
+          window.hot.alter('insert_row_above', rowIndex, 1);
+          window.hot.setDataAtCell(rowIndex, 1, "x"); // Mark as unsaved
+        }
+      });
+      unsaved = true;
+      document.getElementById('save').disabled = false;
+      document.querySelector('.button.is-primary[onclick="saveAndContinue()"]').disabled = false;
+    }
+  }
 
-    hot.validateCells((valid) => {
+  window.deleteSelectedRows = function() {
+    var selected = window.hot.getSelected();
+    if (selected && selected.length > 0) {
+      if (confirm('Are you sure you want to delete the selected rows?')) {
+        var rowsToDelete = [];
+        for (var i = 0; i < selected.length; i++) {
+          for (var row = selected[i][0]; row <= selected[i][2]; row++) {
+            if (rowsToDelete.indexOf(row) === -1) {
+              rowsToDelete.push(row);
+            }
+          }
+        }
+        rowsToDelete.sort((a, b) => b - a); // Sort descending
+        rowsToDelete.forEach(row => {
+          window.hot.alter('remove_row', row);
+        });
+        unsaved = true;
+        document.getElementById('save').disabled = false;
+        document.querySelector('.button.is-primary[onclick="saveAndContinue()"]').disabled = false;
+      }
+    } else {
+      alert('Please select rows to delete');
+    }
+  }
+
+  window.duplicateSelectedRow = function() {
+    var selected = window.hot.getSelected();
+    if (selected && selected.length > 0) {
+      var sourceRow = selected[0][0];
+      var rowData = window.hot.getDataAtRow(sourceRow).slice();
+      rowData[2] = ''; // Clear sample_id for the duplicate
+      var newRowIndex = sourceRow + 1;
+      window.hot.alter('insert_row_above', newRowIndex, 1);
+      window.hot.populateFromArray(newRowIndex, 0, [rowData]);
+      window.hot.setDataAtCell(newRowIndex, 1, "x"); // Mark as unsaved
+      unsaved = true;
+      document.getElementById('save').disabled = false;
+      document.querySelector('.button.is-primary[onclick="saveAndContinue()"]').disabled = false;
+    } else {
+      alert('Please select a row to duplicate');
+    }
+  }
+
+  window.addDummyData = function() {
+    var count = prompt("How many dummy samples would you like to add?", "5");
+    if (count && !isNaN(count) && count > 0) {
+      count = parseInt(count);
+      
+      // Example dummy data templates
+      var scientificNames = ['Escherichia coli', 'Bacillus subtilis', 'Pseudomonas aeruginosa', 'Staphylococcus aureus', 'Salmonella enterica'];
+      var sampleTitles = ['Environmental sample', 'Clinical isolate', 'Soil sample', 'Water sample', 'Air sample'];
+      var descriptions = ['Sample collected from environmental source', 'Clinical isolate from patient', 'Soil sample from agricultural field', 'Water sample from river', 'Air sample from urban area'];
+      
+      window.hot.batch(() => {
+        for (var i = 0; i < count; i++) {
+          var rowIndex = window.hot.countRows();
+          var newRow = [];
+          
+          // Create dummy data for each column
+          for (var col = 0; col < window.hot.countCols(); col++) {
+            var colName = window.hot.getColHeader(col, -1);
+            var value = '';
+            
+            // Skip delete and status columns
+            if (col === 0 || col === 1) {
+              value = col === 1 ? 'x' : '';
+            } else if (colName === 'sample_id') {
+              value = 'SAMPLE_' + (Date.now() + i);
+            } else if (colName === 'tax_id') {
+              value = '511145'; // E. coli tax ID
+            } else if (colName === 'scientific_name') {
+              value = scientificNames[i % scientificNames.length];
+            } else if (colName === 'sample_alias') {
+              value = 'sample_alias_' + (i + 1);
+            } else if (colName === 'sample_title') {
+              value = sampleTitles[i % sampleTitles.length];
+            } else if (colName === 'sample_description') {
+              value = descriptions[i % descriptions.length];
+            } else if (colName.includes('date')) {
+              value = new Date().toISOString().split('T')[0]; // Today's date
+            } else if (colName.includes('latitude')) {
+              value = (Math.random() * 180 - 90).toFixed(6); // Random latitude
+            } else if (colName.includes('longitude')) {
+              value = (Math.random() * 360 - 180).toFixed(6); // Random longitude
+            } else if (colName.includes('temperature')) {
+              value = (Math.random() * 30 + 10).toFixed(1); // Random temp 10-40
+            } else if (colName.includes('depth')) {
+              value = (Math.random() * 100).toFixed(1); // Random depth 0-100
+            }
+            
+            newRow.push(value);
+          }
+          
+          window.hot.alter('insert_row_above', rowIndex, 1);
+          window.hot.populateFromArray(rowIndex, 0, [newRow]);
+        }
+      });
+      
+      unsaved = true;
+      document.getElementById('save').disabled = false;
+      document.querySelector('.button.is-primary[onclick="saveAndContinue()"]').disabled = false;
+      updateSampleCount();
+    }
+  }
+
+  window.exportData = function() {
+    var data = window.hot.getData();
+    var headers = [];
+    for (var i = 0; i < window.hot.countCols(); i++) {
+      headers.push(window.hot.getColHeader(i));
+    }
+    
+    var csv = headers.join(',') + '\n';
+    data.forEach(row => {
+      csv += row.map(cell => `"${cell || ''}"`).join(',') + '\n';
+    });
+    
+    var blob = new Blob([csv], { type: 'text/csv' });
+    var url = window.URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = 'samples_order_{{ order.id }}.csv';
+    a.click();
+    window.URL.revokeObjectURL(url);
+  }
+
+  window.toggleFullscreen = function() {
+    var wrapper = document.querySelector('.sample-page-wrapper');
+    if (!document.fullscreenElement) {
+      wrapper.requestFullscreen().then(() => {
+        var icon = document.querySelector('.fa-expand');
+        if (icon) icon.classList.replace('fa-expand', 'fa-compress');
+        
+        // Update HandsOnTable to use full screen dimensions
+        setTimeout(function() {
+          if (window.hot) {
+            window.hot.updateSettings({
+              width: window.innerWidth,
+              height: window.innerHeight
+            });
+            window.hot.render();
+          }
+        }, 100);
+      });
+    } else {
+      document.exitFullscreen().then(() => {
+        var icon = document.querySelector('.fa-compress');
+        if (icon) icon.classList.replace('fa-compress', 'fa-expand');
+        
+        // Restore normal dimensions
+        setTimeout(function() {
+          if (window.hot) {
+            var container = document.getElementById('handsontable-container');
+            window.hot.updateSettings({
+              width: container.offsetWidth,
+              height: container.offsetHeight
+            });
+            window.hot.render();
+          }
+        }, 100);
+      });
+    }
+  }
+
+  window.updateSampleCount = function() {
+    var count = window.hot.countRows();
+    var countElement = document.querySelector('.sample-count');
+    if (countElement) {
+      countElement.innerHTML = '<strong>' + count + '</strong> sample' + (count !== 1 ? 's' : '') + ' loaded';
+    }
+  }
+
+  window.validateSampleData = function() {
+
+    window.hot.validateCells((valid) => {
     if (!valid) {
       alert("At least one cell failing validation\n\nFirst failing cell:\n\n" + first_failing_cell);
       first_failing_cell = null;
@@ -116,9 +1054,9 @@ Comment out for 6.2.2 (MIT)
     })
   }
 
-  function saveSampleData() {
+  window.saveSampleData = function(redirectAfter = false) {
 
-    var sampleData = hot.getData().map(function (row, index) {
+    var sampleData = window.hot.getData().map(function (row, index) {
       return {
         {{ sample_headers_array | safe }}
       };
@@ -126,15 +1064,22 @@ Comment out for 6.2.2 (MIT)
 
     unsaved = false;
     document.getElementById('save').disabled = true;
+    document.querySelector('.button.is-primary[onclick="saveAndContinue()"]').disabled = true;
 
-    hot.batch(() => {
-      for (let rowIndex = 0; rowIndex < hot.countRows(); rowIndex++) {
-        protect = hot.getDataAtCell(rowIndex, 1).substring(0,1);
-        hot.setDataAtCell(rowIndex, 1, protect + " ");
+    // Clear all unsaved markers
+    window.hot.batch(() => {
+      for (let rowIndex = 0; rowIndex < window.hot.countRows(); rowIndex++) {
+        window.hot.setDataAtCell(rowIndex, 1, "");
       }
     });
 
     console.log('Sending sample data:', sampleData);
+
+    // Show loading state
+    var saveButton = document.getElementById('save');
+    var originalText = saveButton.innerHTML;
+    saveButton.innerHTML = '<span class="icon"><i class="fas fa-spinner fa-spin"></i></span><span>Saving...</span>';
+    saveButton.classList.add('is-loading');
 
     fetch("{% url 'samples_view' project_id=project_id order_id=order.id sample_type=sample_type %}", {
       method: 'POST',
@@ -146,13 +1091,51 @@ Comment out for 6.2.2 (MIT)
     })
     .then(function (response) {
       console.log('Sample data saved successfully');
+      saveButton.innerHTML = originalText;
+      saveButton.classList.remove('is-loading');
+      
+      // Show success notification
+      var notification = document.createElement('div');
+      notification.className = 'notification is-success is-light';
+      notification.innerHTML = '<button class="delete"></button>Samples saved successfully!';
+      document.querySelector('.container').insertBefore(notification, document.querySelector('.order-context-header'));
+      
+      notification.querySelector('.delete').addEventListener('click', function() {
+        notification.remove();
+      });
+      
+      setTimeout(() => {
+        notification.remove();
+      }, 3000);
+      
+      if (redirectAfter) {
+        setTimeout(() => {
+          window.location.href = "{% url 'order_list' project_id=project_id %}";
+        }, 1000);
+      }
     })
     .catch(function (error) {
       console.error('Error saving sample data:', error);
+      saveButton.innerHTML = originalText;
+      saveButton.classList.remove('is-loading');
+      
+      // Show error notification
+      var notification = document.createElement('div');
+      notification.className = 'notification is-danger is-light';
+      notification.innerHTML = '<button class="delete"></button>Error saving samples. Please try again.';
+      document.querySelector('.container').insertBefore(notification, document.querySelector('.order-context-header'));
+      
+      notification.querySelector('.delete').addEventListener('click', function() {
+        notification.remove();
+      });
     });
   }
 
-  function redirectToOrders() {
+  window.saveAndContinue = function() {
+    saveSampleData(true);
+  }
+
+  window.redirectToOrders = function() {
     if (unsaved) {
       if (confirm('You have unsaved changes. Are you sure you want to leave this page?')) {
         window.location.href = "{% url 'order_list' project_id=project_id %}";
@@ -169,7 +1152,7 @@ Comment out for 6.2.2 (MIT)
     var button = document.createElement('button');
     button.innerHTML = 'Delete';
     button.addEventListener('click', function () {
-      cellValue = hot.getDataAtCell(row, 1);
+      cellValue = window.hot.getDataAtCell(row, 1);
       if (cellValue) {
         protect = cellValue.substring(0,1);
         if (protect == ".") {
@@ -186,20 +1169,68 @@ Comment out for 6.2.2 (MIT)
     return td;
   }
 
-  // Utility function to generate a unique ID
+  // Utility function to generate a unique sample ID
   function generateUniqueId() {
-    return 'id-' + Math.random().toString(36).substr(2, 16);
+    var timestamp = new Date().getTime();
+    var random = Math.random().toString(36).substr(2, 5).toUpperCase();
+    return 'S-' + timestamp + '-' + random;
   }
 
-  // Hook to handle new rows, adding a unique ID to each
-  hot.addHook('afterCreateRow', function(index, amount) {
-    for (let i = 0; i < amount; i++) {
-      let row = index + i;
-      // Ensure each new row gets a unique ID
-      hot.setDataAtRowProp(row, 'sample_id', generateUniqueId());
-    }
-  }); 
 
+  // Keyboard shortcuts
+  document.addEventListener('keydown', function(e) {
+    // Ctrl/Cmd + S to save
+    if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+      e.preventDefault();
+      if (!document.getElementById('save').disabled) {
+        validateSampleData();
+      }
+    }
+    // Ctrl/Cmd + N to add new row
+    if ((e.ctrlKey || e.metaKey) && e.key === 'n') {
+      e.preventDefault();
+      addNewRow();
+    }
+    // F11 for fullscreen
+    if (e.key === 'F11') {
+      e.preventDefault();
+      toggleFullscreen();
+    }
+  });
+
+  // Initialize sample count on page load
+  updateSampleCount();
+  
+  // Helper function to escape HTML
+  function escapeHtml(text) {
+    var map = {
+      '&': '&amp;',
+      '<': '&lt;',
+      '>': '&gt;',
+      '"': '&quot;',
+      "'": '&#039;'
+    };
+    return text.replace(/[&<>"']/g, function(m) { return map[m]; });
+  }
+  
+  // Handle window resize
+  window.addEventListener('resize', function() {
+    if (window.innerWidth > 1024) {
+      // Remove overlay on larger screens
+      document.querySelector('.sidebar-overlay') && document.querySelector('.sidebar-overlay').classList.remove('is-active');
+    }
+  });
+  
+  // Show sidebar by default on desktop
+  if (window.innerWidth > 768) {
+    var sidebar = document.getElementById('field-info-sidebar');
+    if (sidebar) {
+      sidebar.classList.remove('collapsed');
+    }
+  }
+
+
+}); // End DOMContentLoaded
 </script>
 
 {% endblock content %}

@@ -5,12 +5,12 @@ import subprocess
 import gzip
 import requests
 from django.contrib import admin, messages
-from django.shortcuts import render 
+from django.shortcuts import render, redirect 
 from django.core.files.base import ContentFile
 from django.conf import settings
 from Bio import SeqIO
 from io import StringIO
-from .models import Order, Sample, SampleSubmission, ReadSubmission, Pipelines, Read, Project, ProjectSubmission, MagRun, SubMGRun, Bin, Assembly, SAMPLE_TYPE_NORMAL, SAMPLE_TYPE_ASSEMBLY, SAMPLE_TYPE_BIN, SAMPLE_TYPE_MAG, Alignment, Mag
+from .models import Order, Sample, SampleSubmission, ReadSubmission, Pipelines, Read, Project, ProjectSubmission, MagRun, SubMGRun, Bin, Assembly, SAMPLE_TYPE_NORMAL, SAMPLE_TYPE_ASSEMBLY, SAMPLE_TYPE_BIN, SAMPLE_TYPE_MAG, Alignment, Mag, SiteSettings, StatusNote
 
 from .forms import CreateGZForm
 from django.template.loader import render_to_string
@@ -31,6 +31,93 @@ class OrderAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'date', 'quote_no', 'billing_address', 'ag_and_hzi', 'contact_phone', 'email', 'data_delivery', 'signature', 'experiment_title', 'dna', 'rna', 'method', 'buffer', 'organism', 'isolated_from', 'isolation_method')
 
 admin.site.register(Order, OrderAdmin)
+
+
+class StatusNoteAdmin(admin.ModelAdmin):
+    list_display = ('order', 'user', 'note_type', 'created_at', 'is_rejection')
+    list_filter = ('note_type', 'is_rejection', 'created_at')
+    search_fields = ('order__id', 'user__username', 'content')
+    readonly_fields = ('created_at',)
+    ordering = ('-created_at',)
+
+admin.site.register(StatusNote, StatusNoteAdmin)
+
+
+class SiteSettingsAdmin(admin.ModelAdmin):
+    """
+    Admin interface for SiteSettings model.
+    Ensures only one instance can exist and provides a user-friendly interface.
+    """
+    # Organize fields into logical groups
+    fieldsets = (
+        ('Basic Information', {
+            'fields': ('site_name', 'organization_name', 'organization_short_name', 'tagline')
+        }),
+        ('Contact Information', {
+            'fields': ('contact_email', 'website_url')
+        }),
+        ('Branding', {
+            'fields': ('logo', 'favicon'),
+            'description': 'Upload your organization\'s logo and favicon. Recommended sizes: Logo 200x50px, Favicon 32x32px'
+        }),
+        ('Appearance', {
+            'fields': ('primary_color', 'secondary_color'),
+            'description': 'Customize the color scheme of your application'
+        }),
+        ('Footer', {
+            'fields': ('footer_text',),
+            'description': 'Additional footer content (HTML allowed)'
+        }),
+        ('Empty State Messages', {
+            'fields': ('empty_projects_text', 'projects_with_samples_text'),
+            'description': 'Messages shown on the project list page in different states'
+        }),
+        ('Form Customization', {
+            'fields': ('project_form_title', 'project_form_description', 'order_form_title', 'order_form_description'),
+            'description': 'Customize form titles and descriptions'
+        }),
+        ('Order Submission', {
+            'fields': ('submission_instructions',),
+            'description': 'Instructions shown after order submission'
+        }),
+        ('System Information', {
+            'fields': ('created_at', 'updated_at'),
+            'classes': ('collapse',),
+        }),
+    )
+    
+    readonly_fields = ('created_at', 'updated_at')
+    
+    def has_add_permission(self, request):
+        """
+        Prevent adding more than one SiteSettings instance
+        """
+        return not SiteSettings.objects.exists()
+    
+    def has_delete_permission(self, request, obj=None):
+        """
+        Prevent deletion of SiteSettings
+        """
+        return False
+    
+    def changelist_view(self, request, extra_context=None):
+        """
+        Redirect to the edit page if an instance exists,
+        otherwise show the add page
+        """
+        if SiteSettings.objects.exists():
+            obj = SiteSettings.objects.first()
+            return redirect(f'/admin/app/sitesettings/{obj.pk}/change/')
+        else:
+            return redirect('/admin/app/sitesettings/add/')
+    
+    class Media:
+        css = {
+            'all': ('css/admin-sitesettings.css',)
+        }
+        js = ('js/admin-sitesettings.js',)
+
+admin.site.register(SiteSettings, SiteSettingsAdmin)
 
 
 class ReadAdmin(admin.ModelAdmin):
@@ -804,3 +891,145 @@ class AlignmentAdmin(admin.ModelAdmin):
     actions = []
 
 admin.site.register(Alignment, AlignmentAdmin)
+
+
+# Dynamic Form Admin
+from .models import FormTemplate, FormSubmission
+import json
+
+
+class FormTemplateAdmin(admin.ModelAdmin):
+    """
+    Admin interface for FormTemplate model.
+    """
+    list_display = ('name', 'form_type', 'version', 'facility_name', 'is_active', 'updated_at')
+    list_filter = ('form_type', 'is_active', 'facility_specific')
+    search_fields = ('name', 'description', 'facility_name')
+    readonly_fields = ('created_at', 'updated_at', 'created_by')
+    
+    fieldsets = (
+        ('Basic Information', {
+            'fields': ('name', 'form_type', 'version', 'description')
+        }),
+        ('Facility Settings', {
+            'fields': ('facility_specific', 'facility_name'),
+            'description': 'Specify if this form is for a specific facility'
+        }),
+        ('Form Configuration', {
+            'fields': ('json_schema',),
+            'description': 'JSON schema defining the form structure',
+            'classes': ('wide',)
+        }),
+        ('Status', {
+            'fields': ('is_active',)
+        }),
+        ('Metadata', {
+            'fields': ('created_by', 'created_at', 'updated_at'),
+            'classes': ('collapse',)
+        }),
+    )
+    
+    def save_model(self, request, obj, form, change):
+        if not change:  # Creating new object
+            obj.created_by = request.user
+        super().save_model(request, obj, form, change)
+    
+    def get_readonly_fields(self, request, obj=None):
+        if obj:  # Editing existing object
+            return self.readonly_fields + ('created_by',)
+        return self.readonly_fields
+    
+    actions = ['clone_template', 'export_as_json', 'toggle_active']
+    
+    def clone_template(self, request, queryset):
+        for template in queryset:
+            clone = template.clone()
+            clone.created_by = request.user
+            clone.save()
+            self.message_user(request, f"Successfully cloned '{template.name}'", messages.SUCCESS)
+    clone_template.short_description = "Clone selected templates"
+    
+    def export_as_json(self, request, queryset):
+        # Export selected templates as JSON
+        templates_data = []
+        for template in queryset:
+            templates_data.append({
+                'name': template.name,
+                'form_type': template.form_type,
+                'version': template.version,
+                'description': template.description,
+                'facility_specific': template.facility_specific,
+                'facility_name': template.facility_name,
+                'json_schema': template.json_schema
+            })
+        
+        # For now, just display a message. In a real implementation,
+        # this would download a JSON file
+        self.message_user(request, f"Export functionality would export {len(templates_data)} templates", messages.INFO)
+    export_as_json.short_description = "Export selected templates as JSON"
+    
+    def toggle_active(self, request, queryset):
+        for template in queryset:
+            template.is_active = not template.is_active
+            template.save()
+        self.message_user(request, "Toggled active status for selected templates", messages.SUCCESS)
+    toggle_active.short_description = "Toggle active status"
+
+
+admin.site.register(FormTemplate, FormTemplateAdmin)
+
+
+class FormSubmissionAdmin(admin.ModelAdmin):
+    """
+    Admin interface for FormSubmission model.
+    """
+    list_display = ('id', 'form_template', 'user', 'get_form_type', 'created_at')
+    list_filter = ('form_template__form_type', 'created_at')
+    search_fields = ('user__username', 'form_template__name')
+    readonly_fields = ('form_template', 'user', 'submission_data_pretty', 'project', 'order', 'created_at', 'updated_at')
+    date_hierarchy = 'created_at'
+    
+    fieldsets = (
+        ('Submission Info', {
+            'fields': ('form_template', 'user', 'created_at', 'updated_at')
+        }),
+        ('Related Objects', {
+            'fields': ('project', 'order'),
+            'description': 'Links to related Project or Order objects'
+        }),
+        ('Submission Data', {
+            'fields': ('submission_data_pretty',),
+            'classes': ('wide',)
+        }),
+    )
+    
+    def get_form_type(self, obj):
+        return obj.form_template.get_form_type_display()
+    get_form_type.short_description = 'Form Type'
+    get_form_type.admin_order_field = 'form_template__form_type'
+    
+    def submission_data_pretty(self, obj):
+        """
+        Pretty print the JSON submission data
+        """
+        try:
+            pretty_json = json.dumps(obj.submission_data, indent=2)
+            return pretty_json
+        except:
+            return str(obj.submission_data)
+    submission_data_pretty.short_description = 'Submission Data (Formatted)'
+    
+    def has_add_permission(self, request):
+        # Don't allow manual creation of submissions through admin
+        return False
+    
+    def has_change_permission(self, request, obj=None):
+        # Make submissions read-only
+        return False
+    
+    def has_delete_permission(self, request, obj=None):
+        # Only superusers can delete submissions
+        return request.user.is_superuser
+
+
+admin.site.register(FormSubmission, FormSubmissionAdmin)

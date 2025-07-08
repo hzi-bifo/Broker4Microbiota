@@ -1,5 +1,5 @@
 from django.urls import path
-from . import views
+from . import views, views_admin
 
 urlpatterns = [
     path('', views.login_view, name='login'),
@@ -18,4 +18,16 @@ urlpatterns = [
     path('test_submg/', views.test_submg, name='test_submg'),
     path('test_mag/', views.test_mag, name='test_mag'),
 
+    # API endpoints
+    path('api/orders/<int:order_id>/advance-status/', views.advance_order_status, name='advance_order_status'),
+    
+    # Admin views
+    path('admin-dashboard/', views_admin.admin_dashboard, name='admin_dashboard'),
+    path('admin-dashboard/orders/', views_admin.admin_order_list, name='admin_order_list'),
+    path('admin-dashboard/orders/<int:order_id>/', views_admin.admin_order_detail, name='admin_order_detail'),
+    path('admin-dashboard/orders/<int:order_id>/update-status/', views_admin.admin_update_order_status, name='admin_update_order_status'),
+    path('admin-dashboard/orders/<int:order_id>/add-note/', views_admin.admin_add_order_note, name='admin_add_order_note'),
+    path('admin-dashboard/orders/<int:order_id>/reject/', views_admin.admin_reject_order, name='admin_reject_order'),
+    path('admin-dashboard/orders/export/', views_admin.admin_export_orders, name='admin_export_orders'),
+    path('admin-dashboard/orders/bulk-update/', views_admin.admin_bulk_update_status, name='admin_bulk_update_status'),
 ]

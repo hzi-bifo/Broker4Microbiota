@@ -1,0 +1,418 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Order #{{ order.id }} - Admin View
+{% endblock title %}
+
+{% block content %}
+<section class="section">
+  <div class="container is-fluid">
+    <!-- Header -->
+    <div class="level">
+      <div class="level-left">
+        <div>
+          <h1 class="title is-3">Order #{{ order.id }}</h1>
+          <p class="subtitle is-5">
+            Project: {{ project.title }}
+            <span class="tag is-{{ order.get_status_display_color }} ml-3">
+              {{ order.get_status_display }}
+            </span>
+          </p>
+        </div>
+      </div>
+      <div class="level-right">
+        <a href="{% url 'admin_order_list' %}" class="button is-light">
+          <span class="icon">
+            <i class="fas fa-arrow-left"></i>
+          </span>
+          <span>Back to Orders</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- Status Progress Bar -->
+    <div class="box mb-5">
+      <div class="status-progress">
+        {% for status_code, status_label in order.STATUS_CHOICES %}
+        <div class="progress-item {% if order.status == status_code %}active{% elif forloop.counter0 < order.STATUS_CHOICES|length %}{% for s, l in order.STATUS_CHOICES %}{% if s == order.status %}{% if forloop.parentloop.counter0 < forloop.counter0 %}completed{% endif %}{% endif %}{% endfor %}{% endif %}">
+          <div class="progress-step">
+            <span class="step-number">{{ forloop.counter }}</span>
+          </div>
+          <p class="step-label">{{ status_label }}</p>
+        </div>
+        {% if not forloop.last %}
+        <div class="progress-line"></div>
+        {% endif %}
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- Tabs Navigation -->
+    <div class="tabs is-centered is-boxed is-medium mb-5">
+      <ul>
+        <li class="is-active" data-tab="overview">
+          <a>
+            <span class="icon"><i class="fas fa-info-circle"></i></span>
+            <span>Overview</span>
+          </a>
+        </li>
+        <li data-tab="activity">
+          <a>
+            <span class="icon"><i class="fas fa-history"></i></span>
+            <span>Activity & Notes</span>
+          </a>
+        </li>
+        <li data-tab="actions">
+          <a>
+            <span class="icon"><i class="fas fa-cog"></i></span>
+            <span>Actions</span>
+          </a>
+        </li>
+      </ul>
+    </div>
+
+    <!-- Tab Content -->
+    <div class="tab-content">
+      <!-- Overview Tab -->
+      <div class="tab-pane is-active" id="overview">
+        <div class="columns">
+          <div class="column is-8">
+        <!-- Order Information -->
+        <div class="box">
+          <h2 class="title is-4">Order Information</h2>
+          
+          <div class="columns is-multiline">
+            <div class="column is-6">
+              <div class="field">
+                <label class="label is-small">User</label>
+                <p>{{ project.user.username }} ({{ project.user.email }})</p>
+              </div>
+            </div>
+            <div class="column is-6">
+              <div class="field">
+                <label class="label is-small">Order Name</label>
+                <p>{{ order.name|default:"-" }}</p>
+              </div>
+            </div>
+            <div class="column is-6">
+              <div class="field">
+                <label class="label is-small">Date</label>
+                <p>{{ order.date|date:"M d, Y"|default:"-" }}</p>
+              </div>
+            </div>
+            <div class="column is-6">
+              <div class="field">
+                <label class="label is-small">Last Updated</label>
+                <p>{{ order.status_updated_at|date:"M d, Y H:i" }}</p>
+              </div>
+            </div>
+            <div class="column is-12">
+              <div class="field">
+                <label class="label is-small">Experiment Title</label>
+                <p>{{ order.experiment_title|default:"-" }}</p>
+              </div>
+            </div>
+          </div>
+
+          <hr>
+
+          <h3 class="title is-5">Technical Details</h3>
+          <div class="columns is-multiline">
+            <div class="column is-4">
+              <div class="field">
+                <label class="label is-small">Platform</label>
+                <p>{{ order.platform|default:"-" }}</p>
+              </div>
+            </div>
+            <div class="column is-4">
+              <div class="field">
+                <label class="label is-small">Library</label>
+                <p>{{ order.library|default:"-" }}</p>
+              </div>
+            </div>
+            <div class="column is-4">
+              <div class="field">
+                <label class="label is-small">Method</label>
+                <p>{{ order.method|default:"-" }}</p>
+              </div>
+            </div>
+            <div class="column is-4">
+              <div class="field">
+                <label class="label is-small">Organism</label>
+                <p>{{ order.organism|default:"-" }}</p>
+              </div>
+            </div>
+            <div class="column is-4">
+              <div class="field">
+                <label class="label is-small">Isolated From</label>
+                <p>{{ order.isolated_from|default:"-" }}</p>
+              </div>
+            </div>
+            <div class="column is-4">
+              <div class="field">
+                <label class="label is-small">Isolation Method</label>
+                <p>{{ order.isolation_method|default:"-" }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Samples -->
+        <div class="box">
+          <h2 class="title is-4">Samples ({{ samples.count }})</h2>
+          
+          {% if samples %}
+          <div class="table-container">
+            <table class="table is-fullwidth is-striped">
+              <thead>
+                <tr>
+                  <th>Sample ID</th>
+                  <th>Title</th>
+                  <th>Scientific Name</th>
+                  <th>Collection Date</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for sample in samples %}
+                <tr>
+                  <td>{{ sample.sample_id|default:"-" }}</td>
+                  <td>{{ sample.sample_title|default:"-" }}</td>
+                  <td>{{ sample.scientific_name|default:"-" }}</td>
+                  <td>{{ sample.collection_date|default:"-" }}</td>
+                  <td>
+                    <a href="{% url 'samples_view' project.id order.id 0 %}" 
+                       class="button is-small is-info" target="_blank">
+                      View Details
+                    </a>
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+          {% else %}
+          <p class="has-text-grey">No samples have been added to this order yet.</p>
+          {% endif %}
+        </div>
+
+        <!-- Status History & Notes -->
+        <div class="box">
+          <h2 class="title is-4">Activity Timeline</h2>
+          
+          {% if all_notes %}
+          <div class="timeline">
+            {% for note in all_notes %}
+            <div class="timeline-item {% if note.note_type == 'internal' %}has-background-light{% endif %}">
+              <div class="timeline-marker {% if note.is_rejection %}is-danger{% else %}is-primary{% endif %} is-small"></div>
+              <div class="timeline-content">
+                <p class="heading">
+                  {{ note.created_at|date:"M d, Y H:i" }} - 
+                  {% if note.user %}{{ note.user.username }}{% else %}System{% endif %}
+                  {% if note.note_type == 'internal' %}
+                  <span class="tag is-warning is-light is-small">Internal</span>
+                  {% endif %}
+                </p>
+                
+                {% if note.note_type == 'status_change' %}
+                <p>
+                  Status changed from 
+                  <span class="tag is-light">{{ note.old_status|title }}</span>
+                  to 
+                  <span class="tag is-{{ order.get_status_display_color }}">{{ note.new_status|title }}</span>
+                </p>
+                {% endif %}
+                
+                {% if note.content %}
+                <div class="content is-small">
+                  {{ note.content|linebreaks }}
+                </div>
+                {% endif %}
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+          {% else %}
+          <p class="has-text-grey">No activity recorded yet.</p>
+          {% endif %}
+        </div>
+      </div>
+
+      <!-- Right Column - Actions -->
+      <div class="column is-4">
+        <!-- Status Management -->
+        <div class="box">
+          <h3 class="title is-5">Status Management</h3>
+          
+          <form method="post" action="{% url 'admin_update_order_status' order.id %}">
+            {% csrf_token %}
+            <div class="field">
+              <label class="label">Update Status</label>
+              <div class="control">
+                <div class="select is-fullwidth">
+                  {{ status_form.status }}
+                </div>
+              </div>
+              {% if status_form.status.help_text %}
+              <p class="help">{{ status_form.status.help_text }}</p>
+              {% endif %}
+            </div>
+            
+            <div class="field">
+              <label class="label">Note (Optional)</label>
+              <div class="control">
+                {{ status_form.status_note }}
+              </div>
+            </div>
+            
+            <div class="field">
+              <button type="submit" class="button is-primary is-fullwidth">
+                Update Status
+              </button>
+            </div>
+          </form>
+          
+          {% if can_advance %}
+          <hr>
+          <p class="has-text-centered">
+            <small>Next status: <strong>{{ order.get_next_status|title }}</strong></small>
+          </p>
+          {% endif %}
+        </div>
+
+        <!-- Add Note -->
+        <div class="box">
+          <h3 class="title is-5">Add Note</h3>
+          
+          <form method="post" action="{% url 'admin_add_order_note' order.id %}">
+            {% csrf_token %}
+            <div class="field">
+              <label class="label">Note Type</label>
+              <div class="control">
+                <div class="select is-fullwidth">
+                  {{ note_form.note_type }}
+                </div>
+              </div>
+            </div>
+            
+            <div class="field">
+              <label class="label">{{ note_form.content.label }}</label>
+              <div class="control">
+                {{ note_form.content }}
+              </div>
+            </div>
+            
+            <div class="field">
+              <button type="submit" class="button is-info is-fullwidth">
+                Add Note
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Reject Order -->
+        <div class="box has-background-danger-light">
+          <h3 class="title is-5">Reject Order</h3>
+          
+          <form method="post" action="{% url 'admin_reject_order' order.id %}">
+            {% csrf_token %}
+            <div class="field">
+              <label class="label">{{ rejection_form.rejection_reason.label }}</label>
+              <div class="control">
+                {{ rejection_form.rejection_reason }}
+              </div>
+              <p class="help">{{ rejection_form.rejection_reason.help_text }}</p>
+            </div>
+            
+            <div class="field">
+              <label class="label">{{ rejection_form.new_status.label }}</label>
+              <div class="control">
+                <div class="select is-fullwidth">
+                  {{ rejection_form.new_status }}
+                </div>
+              </div>
+            </div>
+            
+            <div class="field">
+              <button type="submit" class="button is-danger is-fullwidth"
+                      onclick="return confirm('Are you sure you want to reject this order? The user will be notified.')">
+                Reject & Send Back
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="box">
+          <h3 class="title is-5">Quick Actions</h3>
+          <div class="buttons is-fullwidth">
+            <a href="{% url 'order_edit' project.id order.id %}" 
+               class="button is-fullwidth" target="_blank">
+              <span class="icon">
+                <i class="fas fa-external-link-alt"></i>
+              </span>
+              <span>View as User</span>
+            </a>
+            <a href="/admin/app/order/{{ order.id }}/change/" 
+               class="button is-dark is-fullwidth">
+              <span class="icon">
+                <i class="fas fa-cog"></i>
+              </span>
+              <span>Django Admin</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+.timeline {
+  position: relative;
+  padding-left: 2rem;
+}
+
+.timeline-item {
+  position: relative;
+  padding-bottom: 1.5rem;
+}
+
+.timeline-item:not(:last-child)::before {
+  content: '';
+  position: absolute;
+  left: -1.5rem;
+  top: 1.5rem;
+  bottom: 0;
+  width: 2px;
+  background-color: #dbdbdb;
+}
+
+.timeline-marker {
+  position: absolute;
+  left: -1.75rem;
+  top: 0.25rem;
+  width: 1rem;
+  height: 1rem;
+  border-radius: 50%;
+}
+
+.timeline-marker.is-primary {
+  background-color: #3273dc;
+}
+
+.timeline-marker.is-danger {
+  background-color: #ff3860;
+}
+
+.timeline-content {
+  margin-left: 0.5rem;
+}
+
+.field label.label.is-small {
+  font-size: 0.875rem;
+  color: #7a7a7a;
+  margin-bottom: 0.25rem;
+}
+</style>
+{% endblock content %}

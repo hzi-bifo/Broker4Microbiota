@@ -1,0 +1,10 @@
+Django>=5.0
+requests
+biopython
+phonenumbers
+django-widget-tweaks
+django-phonenumber-field
+xmltodict
+django-q2
+Pillow
+jsonschema

@@ -5,46 +5,277 @@ Project List
 {% endblock title %}
 
 {% block content %}
+<style>
+/* Project Cards Styling */
+.projects-container {
+  max-width: 900px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+}
+
+.project-card {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07), 0 1px 3px rgba(0, 0, 0, 0.1);
+  margin-bottom: 2rem;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.project-card:hover {
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1), 0 3px 6px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
+}
+
+/* Project Header */
+.project-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 1.5rem;
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.project-info-card {
+  flex: 1;
+}
+
+.project-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin: 0 0 0.5rem 0;
+  color: #363636;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.project-title i {
+  color: var(--primary-color, #3273dc);
+}
+
+.project-meta-info {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-top: 0.5rem;
+}
+
+.project-actions {
+  display: flex;
+  gap: 0.5rem;
+  align-items: flex-start;
+}
+
+/* Project Body */
+.project-body {
+  padding: 1.5rem;
+}
+
+.project-description {
+  font-size: 0.95rem;
+  color: #666;
+  line-height: 1.5;
+  margin-bottom: 1rem;
+}
+
+.project-stats {
+  display: flex;
+  gap: 2rem;
+  margin-bottom: 1rem;
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.stat-label {
+  font-size: 0.75rem;
+  color: #999;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.stat-value {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #363636;
+}
+
+/* Project Footer */
+.project-footer {
+  background: #fafbfc;
+  border-top: 1px solid #e0e0e0;
+  padding: 1rem 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.footer-info {
+  font-size: 0.875rem;
+  display: flex;
+  align-items: center;
+}
+
+/* Empty State */
+.empty-state {
+  text-align: center;
+  padding: 4rem 2rem;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07);
+}
+
+.empty-state-icon {
+  font-size: 4rem;
+  color: #e0e0e0;
+  margin-bottom: 1rem;
+}
+
+.empty-state-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #363636;
+  margin-bottom: 0.5rem;
+}
+
+.empty-state-description {
+  color: #666;
+  margin-bottom: 2rem;
+  max-width: 500px;
+  margin-left: auto;
+  margin-right: auto;
+}
+</style>
+
 <section class="section">
   <div class="container">
-    <h2 class="title has-text-centered">Project List</h2>
-    <p class="has-text-centered">
-      Each project is associated with one or more orders.
-    </p>
+    <!-- Page Header -->
+    <div class="has-text-centered mb-5">
+      <h1 class="title is-3">
+        <i class="fas fa-folder has-text-primary"></i>
+        Sequencing Projects
+      </h1>
+      <p class="subtitle is-5">
+        Manage your sequencing projects and track order progress
+      </p>
+    </div>
+
     {% if projects %}
-      <div class="table-container">
-        <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
-          <thead>
-            <tr>
-              <th>Project ID</th>
-              <th>Project Actions</th>
-              <th>Orders</th>
-            </tr>
-          </thead>
-          <tbody>
-            {% for project in projects %}
-              <tr>
-                <td>{{ project.id }}</td>
-                <td>
-                  <div class="buttons">
-                    <a href="{% url 'project_edit' project_id=project.id %}" class="button is-small is-info">Edit</a>
-                    <a class="button is-small is-danger" onclick="deleteProject('{% url 'delete_project' project_id=project.id %}')">Delete</a>
-                  </div>
-                </td>
-                <td>
-                  <a href="{% url 'order_list' project.id %}" class="button is-small is-primary">Orders</a>
-                </td>
-              </tr>
-            {% endfor %}
-          </tbody>
-        </table>
+      <div class="projects-container">
+        {% for project in projects %}
+          <div class="project-card">
+            <!-- Project Header -->
+            <div class="project-header">
+              <div class="project-info-card">
+                <h2 class="project-title">
+                  <i class="fas fa-folder-open"></i>
+                  {{ project.title|default:"Untitled Project" }}
+                </h2>
+                <div class="project-meta-info">
+                  <span class="tag is-light">
+                    <strong>ID:</strong>&nbsp;{{ project.alias|default:project.id }}
+                  </span>
+                  {% if project.study_accession_id %}
+                  <span class="tag is-info is-light">
+                    <strong>Study:</strong>&nbsp;{{ project.study_accession_id }}
+                  </span>
+                  {% endif %}
+                </div>
+              </div>
+              <div class="project-actions">
+                <a href="{% url 'project_edit' project_id=project.id %}" 
+                   class="button is-info is-outlined is-small">
+                  <span class="icon">
+                    <i class="fas fa-edit"></i>
+                  </span>
+                  <span>Edit</span>
+                </a>
+                <button class="button is-danger is-outlined is-small" 
+                        onclick="deleteProject('{% url 'delete_project' project_id=project.id %}')">
+                  <span class="icon">
+                    <i class="fas fa-trash"></i>
+                  </span>
+                  <span>Delete</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Project Body -->
+            <div class="project-body">
+              {% if project.description %}
+              <p class="project-description">
+                {{ project.description|truncatechars:150 }}
+              </p>
+              {% endif %}
+              
+              <div class="project-stats">
+                <div class="stat-item">
+                  <span class="stat-label">Orders</span>
+                  <span class="stat-value">{{ project.order_set.count }}</span>
+                </div>
+                <div class="stat-item">
+                  <span class="stat-label">Samples</span>
+                  <span class="stat-value">{{ project.sample_count|default:"0" }}</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Project Footer -->
+            <div class="project-footer">
+              <div class="footer-info">
+                <span class="has-text-grey">
+                  Created {{ project.order_set.first.date|date:"M d, Y"|default:"Recently" }}
+                </span>
+              </div>
+              <a href="{% url 'order_list' project.id %}" 
+                 class="button is-primary">
+                <span class="icon">
+                  <i class="fas fa-list"></i>
+                </span>
+                <span>View Orders</span>
+              </a>
+            </div>
+          </div>
+        {% endfor %}
       </div>
     {% else %}
-      <p class="has-text-centered">No projects found.</p>
+      <div class="projects-container">
+        <div class="empty-state">
+          <div class="empty-state-icon">
+            <i class="fas fa-folder-open"></i>
+          </div>
+          <h2 class="empty-state-title">No Projects Yet</h2>
+          <p class="empty-state-description">
+            {% if has_samples %}
+              {{ site_settings.projects_with_samples_text }}
+            {% else %}
+              {{ site_settings.empty_projects_text }}
+            {% endif %}
+          </p>
+          <a href="{% url 'project_create' %}" class="button is-primary is-medium">
+            <span class="icon">
+              <i class="fas fa-plus"></i>
+            </span>
+            <span>Create Your First Project</span>
+          </a>
+        </div>
+      </div>
     {% endif %}
-    <div class="has-text-centered mt-4">
-      <a href="{% url 'project_create' %}" class="button is-primary">Request new project</a>
+    
+    {% if projects %}
+    <div class="has-text-centered mt-6">
+      <a href="{% url 'project_create' %}" class="button is-primary is-medium">
+        <span class="icon">
+          <i class="fas fa-plus"></i>
+        </span>
+        <span>Create New Project</span>
+      </a>
     </div>
+    {% endif %}
   </div>
 </section>
 

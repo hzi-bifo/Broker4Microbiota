@@ -1,0 +1,238 @@
+{
+  "form_id": "project_form_default",
+  "form_type": "project",
+  "form_title": "Create New Sequencing Project",
+  "form_description": "A project represents a study or experiment that groups related sequencing orders. Each project can contain multiple orders for different samples or time points.",
+  "version": "1.0",
+  "sections": [
+    {
+      "section_id": "basic_info",
+      "title": "Project Information",
+      "order": 1,
+      "fields": [
+        {
+          "field_name": "title",
+          "field_type": "text",
+          "label": "Project Title",
+          "required": true,
+          "help_text": "Choose a descriptive title that clearly identifies your research project or study.",
+          "placeholder": "e.g., Gut Microbiome Study 2024",
+          "validation": {
+            "min_length": 5,
+            "max_length": 200
+          },
+          "expandable_help": {
+            "enabled": true,
+            "content": {
+              "title": "Guidelines for Project Title",
+              "description": "Your project title should be:",
+              "guidelines": [
+                "**Descriptive:** Clearly indicate the main focus of your research",
+                "**Specific:** Include key details like organism, condition, or methodology",
+                "**Concise:** Aim for 10-20 words maximum"
+              ],
+              "examples": {
+                "title": "Good Examples:",
+                "items": [
+                  "Gut Microbiome Diversity in Patients with Inflammatory Bowel Disease",
+                  "Comparative Metagenomics of Arctic Soil Microbial Communities",
+                  "RNA-Seq Analysis of E. coli Response to Antibiotic Stress"
+                ]
+              },
+              "warnings": {
+                "title": "Avoid:",
+                "items": [
+                  "Generic titles like 'Microbiome Study' or 'Sequencing Project'",
+                  "Abbreviations that aren't widely recognized",
+                  "Internal project codes as the main title"
+                ]
+              }
+            }
+          }
+        },
+        {
+          "field_name": "alias",
+          "field_type": "text",
+          "label": "Project Alias",
+          "required": true,
+          "help_text": "A short, unique identifier for your project (e.g., internal code or lab abbreviation).",
+          "placeholder": "e.g., GUT-2024-001",
+          "validation": {
+            "pattern": "^[A-Za-z0-9_-]+$",
+            "min_length": 3,
+            "max_length": 50
+          },
+          "expandable_help": {
+            "enabled": true,
+            "content": {
+              "title": "Project Alias Guidelines",
+              "description": "The alias serves as a short, memorable identifier for your project. It's often used in file naming and internal references.",
+              "format_recommendations": {
+                "title": "Format Recommendations:",
+                "items": [
+                  "**Length:** 3-20 characters",
+                  "**Characters:** Letters, numbers, hyphens, and underscores only",
+                  "**Case:** Either all uppercase or consistent casing"
+                ]
+              },
+              "patterns": {
+                "title": "Common Patterns:",
+                "items": [
+                  "**Year-based:** '2024-GUT-001', 'MB2024-15'",
+                  "**Lab codes:** 'SMITH-LAB-023', 'JD-MICROB-5'",
+                  "**Study type:** 'COVID-META-3', 'IBD-16S-PILOT'",
+                  "**Grant-based:** 'NIH-R01-2024', 'ERC-2023-MB'"
+                ]
+              },
+              "tips": "Choose an alias that will still make sense to you and your team in 2-3 years. Avoid using only numbers or overly cryptic abbreviations."
+            }
+          }
+        },
+        {
+          "field_name": "description",
+          "field_type": "textarea",
+          "label": "Project Description",
+          "required": true,
+          "help_text": "Include research objectives, sample types, experimental design, and expected outcomes.",
+          "placeholder": "Provide a detailed description of your study objectives, sample types, and experimental design...",
+          "rows": 4,
+          "validation": {
+            "min_length": 100,
+            "max_length": 2000
+          },
+          "expandable_help": {
+            "enabled": true,
+            "content": {
+              "title": "Writing an Effective Project Description",
+              "description": "A comprehensive project description helps reviewers understand your research and ensures proper sample processing.",
+              "sections": [
+                {
+                  "title": "1. Research Background (2-3 sentences)",
+                  "description": "Briefly explain the context and importance of your study.",
+                  "example": "The human gut microbiome plays a crucial role in health and disease. Recent studies suggest altered microbial composition in patients with inflammatory bowel disease (IBD)."
+                },
+                {
+                  "title": "2. Objectives and Hypotheses",
+                  "description": "Clearly state what you aim to discover or prove.",
+                  "items": [
+                    "Primary objective",
+                    "Secondary objectives (if any)",
+                    "Specific hypotheses to test"
+                  ]
+                },
+                {
+                  "title": "3. Sample Information",
+                  "description": "Describe your samples in detail:",
+                  "items": [
+                    "**Sample types:** stool, soil, water, tissue, etc.",
+                    "**Number of samples:** total count and groups",
+                    "**Collection method:** how samples were obtained",
+                    "**Storage conditions:** -80°C, RNA later, etc.",
+                    "**Special handling:** any specific requirements"
+                  ]
+                },
+                {
+                  "title": "4. Experimental Design",
+                  "description": "Outline your study structure:",
+                  "items": [
+                    "**Study type:** longitudinal, cross-sectional, case-control",
+                    "**Groups:** treatment vs. control, time points",
+                    "**Sequencing approach:** 16S rRNA, shotgun metagenomics, RNA-seq",
+                    "**Target coverage:** desired sequencing depth"
+                  ]
+                },
+                {
+                  "title": "5. Expected Outcomes",
+                  "description": "What do you hope to achieve?",
+                  "items": [
+                    "Expected findings",
+                    "Potential applications",
+                    "Impact on the field"
+                  ]
+                }
+              ],
+              "length_guidelines": "Aim for 200-500 words. Be comprehensive but concise. Include all relevant details that would help the sequencing facility understand and properly process your samples."
+            }
+          }
+        }
+      ]
+    },
+    {
+      "section_id": "ena_submission",
+      "title": "ENA Submission Status",
+      "order": 2,
+      "collapsible": true,
+      "collapsed_by_default": true,
+      "fields": [
+        {
+          "field_name": "submitted",
+          "field_type": "checkbox",
+          "label": "Already submitted to ENA",
+          "required": false,
+          "help_text": "Check this only if this project has already been submitted to the European Nucleotide Archive (ENA) and has received an accession number.",
+          "default": false
+        },
+        {
+          "field_name": "study_accession_id",
+          "field_type": "text",
+          "label": "Study Accession ID",
+          "required": false,
+          "readonly": true,
+          "help_text": "Automatically populated after ENA submission (Format: PRJEB######)",
+          "placeholder": "Will be assigned after ENA submission",
+          "show_if": {
+            "field": "submitted",
+            "value": true
+          }
+        },
+        {
+          "field_name": "alternative_accession_id",
+          "field_type": "text",
+          "label": "Alternative Accession ID",
+          "required": false,
+          "readonly": true,
+          "help_text": "Optional alternative identifier (e.g., BioProject ID)",
+          "placeholder": "Optional alternative ID",
+          "show_if": {
+            "field": "submitted",
+            "value": true
+          }
+        }
+      ]
+    }
+  ],
+  "form_actions": [
+    {
+      "action_id": "submit",
+      "label": "Submit Project",
+      "type": "submit",
+      "style": "primary",
+      "icon": "fa-check"
+    },
+    {
+      "action_id": "clear",
+      "label": "Clear Form",
+      "type": "button",
+      "style": "light",
+      "icon": "fa-eraser",
+      "action": "clearForm"
+    },
+    {
+      "action_id": "dummy_data",
+      "label": "Add Dummy Data",
+      "type": "button",
+      "style": "info",
+      "icon": "fa-magic",
+      "action": "fillDummyData",
+      "show_in_production": false
+    },
+    {
+      "action_id": "cancel",
+      "label": "Cancel",
+      "type": "link",
+      "style": "light",
+      "icon": "fa-times",
+      "href": "{% url 'project_list' %}"
+    }
+  ]
+}

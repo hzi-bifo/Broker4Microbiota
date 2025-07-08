@@ -1,0 +1,512 @@
+{% extends 'base.html' %}
+
+{% block title %}
+All Orders - Admin
+{% endblock title %}
+
+{% block content %}
+<section class="section">
+  <div class="container is-fluid" style="max-width: 1920px;">
+    <div class="level">
+      <div class="level-left">
+        <h1 class="title is-3">
+          <i class="fas fa-clipboard-list has-text-primary"></i>
+          All Orders
+        </h1>
+      </div>
+      <div class="level-right">
+        <a href="{% url 'admin_dashboard' %}" class="button is-light">
+          <span class="icon">
+            <i class="fas fa-arrow-left"></i>
+          </span>
+          <span>Back to Dashboard</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- Filters -->
+    <div class="box mb-5">
+      <form method="get" action="{% url 'admin_order_list' %}">
+        <div class="columns">
+          <div class="column is-3">
+            <div class="field">
+              <label class="label is-small">Status</label>
+              <div class="control">
+                <div class="select is-fullwidth">
+                  <select name="status">
+                    <option value="">All Statuses</option>
+                    {% for code, label in status_choices %}
+                    <option value="{{ code }}" {% if current_filters.status == code %}selected{% endif %}>
+                      {{ label }}
+                    </option>
+                    {% endfor %}
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="column is-3">
+            <div class="field">
+              <label class="label is-small">User/Email/Order Name</label>
+              <div class="control">
+                <input class="input" type="text" name="user" 
+                       placeholder="Search..." 
+                       value="{{ current_filters.user }}">
+              </div>
+            </div>
+          </div>
+          
+          <div class="column is-2">
+            <div class="field">
+              <label class="label is-small">From Date</label>
+              <div class="control">
+                <input class="input" type="date" name="date_from" 
+                       value="{{ current_filters.date_from }}">
+              </div>
+            </div>
+          </div>
+          
+          <div class="column is-2">
+            <div class="field">
+              <label class="label is-small">To Date</label>
+              <div class="control">
+                <input class="input" type="date" name="date_to" 
+                       value="{{ current_filters.date_to }}">
+              </div>
+            </div>
+          </div>
+          
+          <div class="column is-2">
+            <div class="field">
+              <label class="label is-small">&nbsp;</label>
+              <div class="control">
+                <button type="submit" class="button is-primary is-fullwidth">
+                  <span class="icon">
+                    <i class="fas fa-search"></i>
+                  </span>
+                  <span>Filter</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <!-- Bulk Actions -->
+    <form method="post" action="{% url 'admin_bulk_update_status' %}" id="bulkForm">
+      {% csrf_token %}
+      <div class="level mb-3">
+        <div class="level-left">
+          <div class="level-item">
+            <div class="field has-addons">
+              <div class="control">
+                <span class="select">
+                  <select name="new_status" id="bulkStatus">
+                    <option value="">Select Status...</option>
+                    {% for code, label in status_choices %}
+                    <option value="{{ code }}">{{ label }}</option>
+                    {% endfor %}
+                  </select>
+                </span>
+              </div>
+              <div class="control">
+                <button type="submit" class="button is-info" disabled id="bulkUpdateBtn">
+                  Update Selected
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="level-right">
+          <div class="level-item">
+            <a href="{% url 'admin_export_orders' %}?{{ request.GET.urlencode }}" 
+               class="button is-success">
+              <span class="icon">
+                <i class="fas fa-file-csv"></i>
+              </span>
+              <span>Export to CSV</span>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Orders Table -->
+      <div class="table-container">
+        <table class="table is-fullwidth is-striped is-hoverable">
+          <thead>
+            <tr>
+              <th>
+                <input type="checkbox" id="selectAll">
+              </th>
+              <th>Order ID</th>
+              <th>Project</th>
+              <th>User</th>
+              <th>Email</th>
+              <th>Order Name</th>
+              <th>Status</th>
+              <th>Date</th>
+              <th>Samples</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for order in page_obj %}
+            <tr>
+              <td>
+                <input type="checkbox" name="order_ids" value="{{ order.id }}" class="order-checkbox">
+              </td>
+              <td>
+                <strong>#{{ order.id }}</strong>
+              </td>
+              <td>
+                <a href="{% url 'project_edit' order.project.id %}" target="_blank">
+                  {{ order.project.title|truncatechars:25 }}
+                </a>
+              </td>
+              <td>{{ order.project.user.username }}</td>
+              <td>
+                <a href="mailto:{{ order.project.user.email }}">
+                  {{ order.project.user.email }}
+                </a>
+              </td>
+              <td>{{ order.name|default:"-" }}</td>
+              <td>
+                <span class="tag is-{{ order.get_status_display_color }}">
+                  {{ order.get_status_display }}
+                </span>
+              </td>
+              <td>{{ order.date|date:"M d, Y"|default:"-" }}</td>
+              <td>
+                <span class="tag is-light">
+                  {{ order.sample_count }} samples
+                </span>
+              </td>
+              <td>
+                <div class="buttons">
+                  <a href="{% url 'admin_order_detail' order.id %}" 
+                     class="button is-primary is-small">
+                    <span class="icon">
+                      <i class="fas fa-eye"></i>
+                    </span>
+                    <span>View</span>
+                  </a>
+                  {% if order.can_advance_status %}
+                  <button type="button" 
+                          class="button is-success is-small quick-advance"
+                          data-order-id="{{ order.id }}"
+                          data-next-status="{{ order.get_next_status }}"
+                          title="Advance to next status">
+                    <span class="icon">
+                      <i class="fas fa-arrow-right"></i>
+                    </span>
+                  </button>
+                  {% endif %}
+                </div>
+              </td>
+            </tr>
+            {% empty %}
+            <tr>
+              <td colspan="10" class="has-text-centered has-text-grey">
+                No orders found matching your criteria.
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </form>
+
+    <!-- Pagination -->
+    {% if page_obj.has_other_pages %}
+    <nav class="pagination is-centered mt-5" role="navigation" aria-label="pagination">
+      {% if page_obj.has_previous %}
+      <a href="?page={{ page_obj.previous_page_number }}&{{ request.GET.urlencode }}" 
+         class="pagination-previous">Previous</a>
+      {% else %}
+      <a class="pagination-previous" disabled>Previous</a>
+      {% endif %}
+
+      {% if page_obj.has_next %}
+      <a href="?page={{ page_obj.next_page_number }}&{{ request.GET.urlencode }}" 
+         class="pagination-next">Next</a>
+      {% else %}
+      <a class="pagination-next" disabled>Next</a>
+      {% endif %}
+
+      <ul class="pagination-list">
+        {% for num in page_obj.paginator.page_range %}
+          {% if page_obj.number == num %}
+            <li><a class="pagination-link is-current" aria-current="page">{{ num }}</a></li>
+          {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+            <li><a href="?page={{ num }}&{{ request.GET.urlencode }}" class="pagination-link">{{ num }}</a></li>
+          {% endif %}
+        {% endfor %}
+      </ul>
+    </nav>
+    {% endif %}
+  </div>
+</section>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // Select all checkbox
+  const selectAll = document.getElementById('selectAll');
+  const checkboxes = document.querySelectorAll('.order-checkbox');
+  const bulkUpdateBtn = document.getElementById('bulkUpdateBtn');
+  const bulkStatus = document.getElementById('bulkStatus');
+  
+  selectAll.addEventListener('change', function() {
+    checkboxes.forEach(cb => cb.checked = this.checked);
+    updateBulkButton();
+  });
+  
+  checkboxes.forEach(cb => {
+    cb.addEventListener('change', updateBulkButton);
+  });
+  
+  bulkStatus.addEventListener('change', updateBulkButton);
+  
+  function updateBulkButton() {
+    const hasSelection = Array.from(checkboxes).some(cb => cb.checked);
+    const hasStatus = bulkStatus.value !== '';
+    bulkUpdateBtn.disabled = !hasSelection || !hasStatus;
+  }
+  
+  // Quick advance status
+  document.querySelectorAll('.quick-advance').forEach(btn => {
+    btn.addEventListener('click', function() {
+      const orderId = this.dataset.orderId;
+      const nextStatus = this.dataset.nextStatus;
+      
+      if (confirm('Advance this order to the next status?')) {
+        // Create a form and submit it
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = `/admin-dashboard/orders/${orderId}/update-status/`;
+        
+        const csrfInput = document.createElement('input');
+        csrfInput.type = 'hidden';
+        csrfInput.name = 'csrfmiddlewaretoken';
+        csrfInput.value = '{{ csrf_token }}';
+        form.appendChild(csrfInput);
+        
+        const statusInput = document.createElement('input');
+        statusInput.type = 'hidden';
+        statusInput.name = 'status';
+        statusInput.value = nextStatus;
+        form.appendChild(statusInput);
+        
+        document.body.appendChild(form);
+        form.submit();
+      }
+    });
+  });
+});
+</script>
+
+<style>
+/* Clean, Simple Design */
+body {
+  background-color: #f8f9fa;
+}
+
+/* Clean Box Style */
+.box {
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  border-radius: 8px;
+}
+
+/* Clean Table */
+.table {
+  background: white;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.table th {
+  background-color: #f8f9fa;
+  border-bottom: 2px solid #dee2e6;
+  font-weight: 600;
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #6c757d;
+  padding: 1rem;
+}
+
+.table td {
+  vertical-align: middle;
+  padding: 1rem;
+}
+
+.table.is-hoverable tbody tr:hover {
+  background-color: #f8f9fa;
+}
+
+/* Tags */
+.tag {
+  border-radius: 4px;
+  font-weight: 500;
+}
+
+.tag.is-primary {
+  background-color: #3273dc;
+  color: white;
+}
+
+.tag.is-success {
+  background-color: #48c774;
+  color: white;
+}
+
+.tag.is-warning {
+  background-color: #ffdd57;
+  color: rgba(0,0,0,.7);
+}
+
+.tag.is-danger {
+  background-color: #ff3860;
+  color: white;
+}
+
+.tag.is-info {
+  background-color: #3298dc;
+  color: white;
+}
+
+.tag.is-light {
+  background-color: #f5f5f5;
+  color: #4a4a4a;
+}
+
+/* Buttons - Cleaner */
+.button {
+  border-radius: 6px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  border: none;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+}
+
+.button:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.button.is-primary {
+  background-color: #3273dc;
+  color: white;
+}
+
+.button.is-primary:hover {
+  background-color: #2366d1;
+  color: white;
+}
+
+.button.is-success {
+  background-color: #48c774;
+  color: white;
+}
+
+.button.is-success:hover {
+  background-color: #3ec46d;
+  color: white;
+}
+
+.button.is-info {
+  background-color: #3298dc;
+  color: white;
+}
+
+.button.is-info:hover {
+  background-color: #2388cc;
+  color: white;
+}
+
+.button.is-light {
+  background-color: #f5f5f5;
+  color: #363636;
+}
+
+.button.is-light:hover {
+  background-color: #eeeeee;
+  color: #363636;
+}
+
+/* Form Controls */
+.input, .select select {
+  border-radius: 6px;
+  border: 1px solid #dbdbdb;
+  transition: all 0.2s ease;
+}
+
+.input:focus, .select select:focus {
+  border-color: #3273dc;
+  box-shadow: 0 0 0 0.125em rgba(50,115,220,.25);
+}
+
+.label.is-small {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #6c757d;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 0.5rem;
+}
+
+/* Pagination */
+.pagination {
+  margin-top: 2rem;
+}
+
+.pagination-link, .pagination-previous, .pagination-next {
+  border-radius: 6px;
+  font-weight: 500;
+  min-width: 2.5rem;
+}
+
+.pagination-link.is-current {
+  background-color: #3273dc;
+  border-color: #3273dc;
+}
+
+/* Bulk Actions */
+#bulkUpdateBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Order count display */
+.order-count {
+  font-size: 0.875rem;
+  color: #6c757d;
+  margin-bottom: 1rem;
+  text-align: right;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .table-container {
+    overflow-x: auto;
+  }
+  
+  .buttons {
+    flex-wrap: nowrap;
+  }
+  
+  .button span:not(.icon) {
+    display: none;
+  }
+  
+  .filter-card .columns {
+    margin-bottom: 0;
+  }
+  
+  .filter-card .column {
+    padding: 0.5rem;
+  }
+}
+</style>
+{% endblock content %}

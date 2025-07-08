@@ -375,6 +375,7 @@ class Order(models.Model):
     organism = models.CharField(max_length=100, null=True, blank=True)
     isolated_from = models.CharField(max_length=100, null=True, blank=True)
     isolation_method = models.CharField(max_length=100, choices=ISOLATION_METHOD_CHOICES, null=True, blank=True)
+    library = models.CharField(max_length=100, choices=LIBRARY_CHOICES, null=True, blank=True)
     platform = models.CharField(max_length=100, null=True, blank=True, default="OXFORD_NANOPORE")
     insert_size = models.CharField(max_length=100, null=True, blank=True, default="2")
     library_name = models.CharField(max_length=100, null=True, blank=True, default="PCRtest")
@@ -384,36 +385,91 @@ class Order(models.Model):
     sequencing_instrument = models.CharField(max_length=100, null=True, blank=True, default="Illumina HiSeq 1500")
 
     submitted = models.BooleanField(default=False)
+    
+    # Order status tracking
+    STATUS_CHOICES = [
+        ('draft', 'Draft'),
+        ('ready_for_sequencing', 'Ready for Sequencing'),
+        ('sequencing_in_progress', 'Sequencing in Progress'),
+        ('sequencing_completed', 'Sequencing Completed'),
+        ('data_processing', 'Data Processing'),
+        ('data_delivered', 'Data Delivered'),
+        ('completed', 'Completed'),
+    ]
+    
+    status = models.CharField(
+        max_length=30,
+        choices=STATUS_CHOICES,
+        default='draft',
+        help_text="Current status of the sequencing order"
+    )
+    
+    status_updated_at = models.DateTimeField(auto_now=True)
+    status_notes = models.TextField(
+        blank=True,
+        help_text="Additional notes about the current status"
+    )
 
     def show_metadata(self):
-        # if no samples at all
+        # Return False if metadata setup is still needed (i.e., when template shows "not order.show_metadata")
+        # Return True if metadata setup is completed
         sample_set = self.sampleset_set.filter(sample_type=SAMPLE_TYPE_NORMAL).first()
         if not sample_set:
-            return True
+            return False  # No sampleset means metadata setup is still needed
+        
+        # Check if sampleset has checklists configured
+        if not sample_set.checklists:
+            return False  # No checklists configured means metadata setup is still needed
+            
+        return True  # Metadata setup is completed
+
+    def is_order_created(self):
+        # Always True for existing orders - this step is completed when order exists
+        return True
     
-        sample = self.sample_set.first()
-        if not sample:
-            return True
-        # sample = Sample.objects.filter(order=self).first()
+    def is_waiting_for_facility(self):
+        # Return True if order is in facility-managed states
+        facility_states = ['ready_for_sequencing', 'sequencing_in_progress', 'sequencing_completed', 'data_processing', 'data_delivered']
+        return self.status in facility_states
 
     def show_samples(self):
-        # metadata exists
+        # Check if actual sample data has been created (not just metadata configured)
+        # This should return True only when samples have been added, not just when checklist is selected
         sample_set = self.sampleset_set.filter(sample_type=SAMPLE_TYPE_NORMAL).first()
         if not sample_set:
             return False
-
-        # Maybe this is not needed
-        checklists = sample_set.checklists
-        for checklist in checklists:
-            checklist_class_name = Sampleset.checklist_structure[checklist]['checklist_class_name']
-            checklist_item_class =  getattr(importlib.import_module("app.models"), checklist_class_name)
-            try:
-                checklist_item_instance = checklist_item_class.objects.filter(sampleset=sample_set, sample_type=SAMPLE_TYPE_NORMAL).first()
-                return True
-            except:
-                pass
-
-        return False
+        
+        # Check if metadata checklist is configured first
+        if not sample_set.checklists:
+            return False
+            
+        # Now check if actual Sample objects exist for this order
+        actual_samples = self.sample_set.filter(sample_type=SAMPLE_TYPE_NORMAL)
+        return actual_samples.exists()  # Returns True only if samples were actually created
+    
+    def get_selected_checklist(self):
+        """Return the name of the selected metadata checklist in a human-readable format"""
+        sample_set = self.sampleset_set.filter(sample_type=SAMPLE_TYPE_NORMAL).first()
+        if not sample_set or not sample_set.checklists:
+            return None
+            
+        try:
+            import json
+            checklists = json.loads(sample_set.checklists) if isinstance(sample_set.checklists, str) else sample_set.checklists
+            if checklists and len(checklists) > 0:
+                # Convert checklist key back to readable name
+                checklist_key = checklists[0]
+                # Convert underscore format back to readable name
+                readable_name = checklist_key.replace('_', ' ')
+                return readable_name
+        except:
+            pass
+            
+        return None
+    
+    def get_sample_count(self):
+        """Return the number of samples added to this order"""
+        return self.sample_set.filter(sample_type=SAMPLE_TYPE_NORMAL).count()
 
     def show_assembly(self):
         if not self.show_samples():
@@ -450,6 +506,85 @@ class Order(models.Model):
         yaml.append(f"SEQUENCING_PLATFORMS: [{platformList}]")
 
         return yaml
+    
+    def get_status_display_color(self):
+        """Return appropriate CSS color class for current status"""
+        status_colors = {
+            'draft': 'is-light',
+            'ready_for_sequencing': 'is-info',
+            'sequencing_in_progress': 'is-warning',
+            'sequencing_completed': 'is-primary',
+            'data_processing': 'is-primary',
+            'data_delivered': 'is-success',
+            'completed': 'is-success',
+        }
+        return status_colors.get(self.status, 'is-light')
+    
+    def get_next_status(self):
+        """Return the next logical status in the workflow"""
+        status_progression = {
+            'draft': 'ready_for_sequencing',
+            'ready_for_sequencing': 'sequencing_in_progress',
+            'sequencing_in_progress': 'sequencing_completed',
+            'sequencing_completed': 'data_processing',
+            'data_processing': 'data_delivered',
+            'data_delivered': 'completed',
+            'completed': None,
+        }
+        return status_progression.get(self.status)
+    
+    def can_advance_status(self):
+        """Check if status can be advanced to next stage"""
+        return self.get_next_status() is not None
+    
+    def get_status_history(self):
+        """Return all status changes for this order"""
+        return self.notes.filter(note_type='status_change').order_by('created_at')
+    
+    def get_notes(self, include_internal=False):
+        """Return notes for this order, optionally including internal notes"""
+        if include_internal:
+            return self.notes.all()
+        else:
+            return self.notes.filter(
+                note_type__in=['user_visible', 'status_change', 'rejection']
+            )
+    
+    def add_status_note(self, user, new_status, content=""):
+        """Helper method to add a status change note"""
+        
+        old_status = self.status
+        self.status = new_status
+        self.save()
+        
+        if not content:
+            content = f"Status changed from {self.get_status_display()} to {dict(self.STATUS_CHOICES)[new_status]}"
+        
+        return StatusNote.objects.create(
+            order=self,
+            user=user,
+            note_type='status_change',
+            content=content,
+            old_status=old_status,
+            new_status=new_status
+        )
+    
+    def reject_with_note(self, user, content, new_status='draft'):
+        """Reject the order and add a user-visible note"""
+        
+        old_status = self.status
+        self.status = new_status
+        self.save()
+        
+        return StatusNote.objects.create(
+            order=self,
+            user=user,
+            note_type='rejection',
+            content=content,
+            old_status=old_status,
+            new_status=new_status,
+            is_rejection=True
+        )
 
 class Sampleset(models.Model):
 
@@ -2834,5 +2969,378 @@ class GSC_MIMAGS_unit(SelfDescribingModel):
 	sampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE, default=1)
 	sample = models.ForeignKey(Sample, on_delete=models.CASCADE, default=1)
 	sample_type = models.IntegerField(default=1)
+
+
+class SiteSettings(models.Model):
+    """
+    Singleton model for storing site-wide branding and configuration settings.
+    Only one instance of this model should exist.
+    """
+    # Basic Information
+    site_name = models.CharField(
+        max_length=200, 
+        default="Sequencing Order Management",
+        help_text="The name of your application"
+    )
+    organization_name = models.CharField(
+        max_length=200, 
+        default="Helmholtz Centre for Infection Research",
+        help_text="Full name of your organization"
+    )
+    organization_short_name = models.CharField(
+        max_length=50, 
+        default="HZI",
+        help_text="Short name or acronym"
+    )
+    tagline = models.CharField(
+        max_length=500,
+        default="Streamlining sequencing requests and ensuring compliance with MIxS standards",
+        blank=True,
+        help_text="A brief description or tagline for your site"
+    )
+    
+    # Contact Information
+    contact_email = models.EmailField(
+        default="sequencing@helmholtz-hzi.de",
+        help_text="Primary contact email address"
+    )
+    website_url = models.URLField(
+        default="https://www.helmholtz-hzi.de",
+        blank=True,
+        help_text="Organization's main website URL"
+    )
+    
+    # Branding
+    logo = models.ImageField(
+        upload_to='branding/',
+        blank=True,
+        null=True,
+        help_text="Organization logo (recommended size: 200x50px)"
+    )
+    favicon = models.ImageField(
+        upload_to='branding/',
+        blank=True,
+        null=True,
+        help_text="Favicon for browser tab (recommended: 32x32px .ico or .png)"
+    )
+    
+    # Appearance
+    primary_color = models.CharField(
+        max_length=7,
+        default="#3273dc",
+        help_text="Primary theme color in hex format (e.g., #3273dc)",
+        validators=[RegexValidator(
+            regex='^#[0-9a-fA-F]{6}$',
+            message='Enter a valid hex color code (e.g., #3273dc)'
+        )]
+    )
+    secondary_color = models.CharField(
+        max_length=7,
+        default="#2366d1",
+        help_text="Secondary theme color in hex format",
+        validators=[RegexValidator(
+            regex='^#[0-9a-fA-F]{6}$',
+            message='Enter a valid hex color code (e.g., #2366d1)'
+        )]
+    )
+    
+    # Footer
+    footer_text = models.TextField(
+        blank=True,
+        help_text="Additional footer text (HTML allowed)",
+        default=""
+    )
+    
+    # Empty State Messages
+    empty_projects_text = models.TextField(
+        default="Welcome to the Sequencing Order Management System! Start by creating your first project to organize and track your sequencing requests.",
+        help_text="Message shown when user has no projects",
+        blank=True
+    )
+    projects_with_samples_text = models.TextField(
+        default="You have active sequencing projects. Create a new project for a different study or continue working on your existing projects.",
+        help_text="Message shown when user has projects with samples",
+        blank=True
+    )
+    
+    # Form Customization
+    project_form_title = models.CharField(
+        max_length=200,
+        default="Create New Sequencing Project",
+        help_text="Title shown on project creation form"
+    )
+    project_form_description = models.TextField(
+        default="A project represents a study or experiment that groups related sequencing orders. Each project can contain multiple orders for different samples or time points.",
+        help_text="Description shown on project creation form",
+        blank=True
+    )
+    
+    # Order Form Customization
+    order_form_title = models.CharField(
+        max_length=200,
+        default="Create Sequencing Order",
+        help_text="Title shown on order creation form"
+    )
+    order_form_description = models.TextField(
+        default="Provide detailed information for your sequencing order including contact details, sample information, and sequencing preferences.",
+        help_text="Description shown on order creation form",
+        blank=True
+    )
+    
+    # Submission Instructions
+    submission_instructions = models.TextField(
+        default="""<h4>Next Steps After Submission:</h4>
+<ol>
+<li><strong>Sample Preparation:</strong> Ensure your samples are properly labeled with the sample IDs you provided.</li>
+<li><strong>Sample Shipping:</strong> Ship your samples to:
+    <address>
+    Sequencing Facility<br>
+    Helmholtz Centre for Infection Research<br>
+    Inhoffenstraße 7<br>
+    38124 Braunschweig, Germany
+    </address>
+</li>
+<li><strong>Include Documentation:</strong> Print and include your order confirmation with the samples.</li>
+<li><strong>Tracking:</strong> You will receive email updates on the status of your sequencing order.</li>
+</ol>
+<p>For questions, contact: <a href="mailto:sequencing@helmholtz-hzi.de">sequencing@helmholtz-hzi.de</a></p>""",
+        help_text="Instructions shown after order submission (HTML allowed)",
+        blank=True
+    )
+    
+    # Metadata Checklist Customization
+    metadata_checklist_title = models.CharField(
+        max_length=200,
+        default="Configure Metadata Checklists",
+        help_text="Title shown on metadata checklist selection page"
+    )
+    metadata_checklist_description = models.TextField(
+        default="Select the appropriate MIxS (Minimum Information about any Sequence) standard for your samples. This determines what metadata fields you'll need to fill out.",
+        help_text="Description shown on metadata checklist selection page",
+        blank=True
+    )
+    
+    # Metadata
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    class Meta:
+        verbose_name = "Site Settings"
+        verbose_name_plural = "Site Settings"
+    
+    def __str__(self):
+        return f"{self.organization_name} Settings"
+    
+    def save(self, *args, **kwargs):
+        """
+        Save method that ensures only one instance exists.
+        If a new instance is being created while one exists, update the existing one instead.
+        """
+        if not self.pk and SiteSettings.objects.exists():
+            # If creating new instance but one already exists, 
+            # update the existing one instead
+            existing = SiteSettings.objects.first()
+            self.pk = existing.pk
+        
+        super().save(*args, **kwargs)
+        
+        # Clear the cache when settings are saved
+        from django.core.cache import cache
+        cache.delete('site_settings')
+    
+    @classmethod
+    def get_settings(cls):
+        """
+        Get the singleton instance of SiteSettings.
+        Creates one with defaults if it doesn't exist.
+        """
+        settings, created = cls.objects.get_or_create(pk=1)
+        return settings
+
+
+# Dynamic Form Models
+class FormTemplate(models.Model):
+    """
+    Stores form templates that can be customized per facility or purpose.
+    """
+    FORM_TYPE_CHOICES = [
+        ('project', 'Project Form'),
+        ('order', 'Order Form'),
+        ('sample', 'Sample Form'),
+        ('custom', 'Custom Form'),
+    ]
+    
+    name = models.CharField(
+        max_length=200,
+        help_text="Name of the form template"
+    )
+    form_type = models.CharField(
+        max_length=20,
+        choices=FORM_TYPE_CHOICES,
+        help_text="Type of form this template represents"
+    )
+    description = models.TextField(
+        blank=True,
+        help_text="Description of when to use this form template"
+    )
+    version = models.CharField(
+        max_length=20,
+        default="1.0",
+        help_text="Version of this form template"
+    )
+    is_active = models.BooleanField(
+        default=True,
+        help_text="Whether this form template is currently active"
+    )
+    facility_specific = models.BooleanField(
+        default=False,
+        help_text="Whether this form is specific to a facility"
+    )
+    facility_name = models.CharField(
+        max_length=200,
+        blank=True,
+        help_text="Name of the facility this form is for (if facility_specific)"
+    )
+    json_schema = models.JSONField(
+        default=dict,
+        help_text="JSON schema defining the form structure"
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    created_by = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        null=True,
+        related_name='created_form_templates'
+    )
+    
+    class Meta:
+        ordering = ['-updated_at']
+        unique_together = ['name', 'version', 'facility_name']
+    
+    def __str__(self):
+        return f"{self.name} v{self.version}"
+    
+    def get_form_definition(self):
+        """
+        Returns the form definition from the JSON schema.
+        """
+        return self.json_schema
+    
+    def clone(self, new_name=None, new_version=None):
+        """
+        Creates a clone of this form template.
+        """
+        clone = FormTemplate(
+            name=new_name or f"{self.name} (Copy)",
+            form_type=self.form_type,
+            description=self.description,
+            version=new_version or "1.0",
+            is_active=False,  # Clones start as inactive
+            facility_specific=self.facility_specific,
+            facility_name=self.facility_name,
+            json_schema=self.json_schema,
+            created_by=None  # Will be set by the user cloning
+        )
+        return clone
+
+
+class FormSubmission(models.Model):
+    """
+    Stores submitted form data from dynamic forms.
+    """
+    form_template = models.ForeignKey(
+        FormTemplate,
+        on_delete=models.PROTECT,
+        help_text="The form template used for this submission"
+    )
+    user = models.ForeignKey(
+        User,
+        on_delete=models.PROTECT,
+        help_text="User who submitted the form"
+    )
+    submission_data = models.JSONField(
+        help_text="The submitted form data"
+    )
+    # Optional relationships to existing models
+    project = models.ForeignKey(
+        'Project',
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        help_text="Related project (if applicable)"
+    )
+    order = models.ForeignKey(
+        'Order',
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        help_text="Related order (if applicable)"
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    class Meta:
+        ordering = ['-created_at']
+    
+    def __str__(self):
+        return f"{self.form_template.name} - {self.user.username} - {self.created_at}"
+
+
+class StatusNote(models.Model):
+    """
+    Model to track order status changes and notes (internal and user-visible)
+    """
+    NOTE_TYPE_CHOICES = [
+        ('internal', 'Internal Note'),
+        ('user_visible', 'User Visible Note'),
+        ('status_change', 'Status Change'),
+        ('rejection', 'Rejection Note'),
+    ]
+    
+    order = models.ForeignKey(
+        Order,
+        on_delete=models.CASCADE,
+        related_name='notes'
+    )
+    user = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        null=True,
+        help_text="User who created this note"
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+    note_type = models.CharField(
+        max_length=20,
+        choices=NOTE_TYPE_CHOICES,
+        default='internal'
+    )
+    content = models.TextField(
+        help_text="Note content or status change description"
+    )
+    old_status = models.CharField(
+        max_length=30,
+        blank=True,
+        help_text="Previous status (for status changes)"
+    )
+    new_status = models.CharField(
+        max_length=30,
+        blank=True,
+        help_text="New status (for status changes)"
+    )
+    is_rejection = models.BooleanField(
+        default=False,
+        help_text="Whether this note represents a rejection"
+    )
+    
+    class Meta:
+        ordering = ['-created_at']
+    
+    def __str__(self):
+        return f"{self.get_note_type_display()} for Order #{self.order.id} by {self.user.username if self.user else 'System'}"
+    
+    def is_visible_to_user(self):
+        """Check if this note should be visible to the order owner"""
+        return self.note_type in ['user_visible', 'status_change', 'rejection']
 
 

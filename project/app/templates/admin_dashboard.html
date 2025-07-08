@@ -1,0 +1,420 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Admin Dashboard - Sequencing Center Management
+{% endblock title %}
+
+{% block content %}
+<section class="section">
+  <div class="container is-fluid" style="max-width: 1920px;">
+    <div class="has-text-centered mb-4">
+      <h1 class="title is-4">
+        <i class="fas fa-tachometer-alt has-text-primary"></i>
+        Sequencing Center Admin Dashboard
+      </h1>
+      <p class="subtitle is-6">
+        Manage orders, projects, and track sequencing workflow
+      </p>
+    </div>
+
+    <!-- Statistics Cards -->
+    <div class="columns is-multiline mb-4">
+      <div class="column is-3">
+        <div class="stat-card">
+          <div class="stat-value">{{ stats.total_orders }}</div>
+          <div class="stat-label">Total Orders</div>
+        </div>
+      </div>
+      
+      <div class="column is-3">
+        <div class="stat-card">
+          <div class="stat-value">{{ stats.orders_last_30_days }}</div>
+          <div class="stat-label">Last 30 Days</div>
+        </div>
+      </div>
+      
+      <div class="column is-3">
+        <div class="stat-card has-accent-warning">
+          <div class="stat-value">{{ stats.orders_needing_action }}</div>
+          <div class="stat-label">Awaiting Review</div>
+        </div>
+      </div>
+      
+      <div class="column is-3">
+        <div class="stat-card">
+          <div class="stat-value">{{ stats.active_projects }}</div>
+          <div class="stat-label">Active Projects</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Order Status Pipeline -->
+    <div class="mb-5">
+      <div class="status-pipeline">
+        {% for status in stats.orders_by_status %}
+        <div class="pipeline-stage">
+          <a href="{% url 'admin_order_list' %}?status={{ status.code }}" 
+             class="pipeline-card">
+            <div class="pipeline-count">{{ status.count }}</div>
+            <div class="pipeline-label">{{ status.label }}</div>
+            <div class="pipeline-percent">{{ status.percentage }}%</div>
+          </a>
+          {% if not forloop.last %}
+          <div class="pipeline-arrow">
+            <i class="fas fa-chevron-right"></i>
+          </div>
+          {% endif %}
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- Orders Needing Action -->
+    <div class="section-card mb-5">
+      <div class="section-header">
+        <h2 class="section-title">Orders Awaiting Review</h2>
+        <a href="{% url 'admin_order_list' %}?status=ready_for_sequencing" 
+           class="button is-primary is-small">
+          View All
+        </a>
+      </div>
+      
+      {% if orders_needing_action %}
+      <div class="table-container">
+        <table class="table is-fullwidth is-striped">
+          <thead>
+            <tr>
+              <th>Order ID</th>
+              <th>Project</th>
+              <th>User</th>
+              <th>Submitted</th>
+              <th>Samples</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for order in orders_needing_action %}
+            <tr>
+              <td>#{{ order.id }}</td>
+              <td>{{ order.project.title|truncatechars:30 }}</td>
+              <td>{{ order.project.user.username }}</td>
+              <td>{{ order.status_updated_at|date:"M d, Y" }}</td>
+              <td>{{ order.get_sample_count }}</td>
+              <td>
+                <a href="{% url 'admin_order_detail' order.id %}" 
+                   class="button is-primary">
+                  <span class="icon">
+                    <i class="fas fa-eye"></i>
+                  </span>
+                  <span>Review</span>
+                </a>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      {% else %}
+      <p class="has-text-grey">No orders currently awaiting review.</p>
+      {% endif %}
+    </div>
+
+    <!-- Recent Activity -->
+    <div class="section-card">
+      <h2 class="section-title">Recent Activity</h2>
+      
+      {% if recent_activity %}
+      <div class="timeline">
+        {% for activity in recent_activity %}
+        <div class="timeline-item">
+          <div class="timeline-marker is-primary"></div>
+          <div class="timeline-content">
+            <div class="is-size-7 has-text-grey mb-1">
+              {{ activity.created_at|date:"M d, Y H:i" }}
+              {% if activity.user %} • {{ activity.user.username }}{% endif %}
+            </div>
+            <div>
+              <strong>Order #{{ activity.order.id }}</strong> - 
+              {{ activity.order.project.title|truncatechars:30 }}
+            </div>
+            <div class="mt-1">
+              <span class="tag is-light is-small">{{ activity.old_status|title }}</span>
+              →
+              <span class="tag is-{{ activity.order.get_status_display_color }} is-small">{{ activity.new_status|title }}</span>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+      {% else %}
+      <p class="has-text-grey">No recent activity.</p>
+      {% endif %}
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="has-text-centered mt-6">
+      <div class="buttons is-centered">
+        <a href="{% url 'admin_order_list' %}" class="button is-primary">
+          <span class="icon">
+            <i class="fas fa-list"></i>
+          </span>
+          <span>View All Orders</span>
+        </a>
+        <a href="{% url 'admin_export_orders' %}" class="button is-light">
+          <span class="icon">
+            <i class="fas fa-download"></i>
+          </span>
+          <span>Export Orders</span>
+        </a>
+        <a href="/admin/" class="button is-light">
+          <span class="icon">
+            <i class="fas fa-cog"></i>
+          </span>
+          <span>Django Admin</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+/* Clean, Simple Design */
+body {
+  background-color: #f8f9fa;
+}
+
+/* Statistics Cards */
+.stat-card {
+  background: white;
+  border: 1px solid #e9ecef;
+  border-radius: 6px;
+  padding: 1.25rem;
+  text-align: center;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+  transition: all 0.2s ease;
+  height: 100%;
+}
+
+.stat-card:hover {
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  transform: translateY(-1px);
+}
+
+.stat-value {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #2c3e50;
+  line-height: 1;
+}
+
+.stat-label {
+  font-size: 0.75rem;
+  color: #6c757d;
+  margin-top: 0.25rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.stat-card.has-accent-warning .stat-value {
+  color: #ff9800;
+}
+
+/* Pipeline Styles */
+.status-pipeline {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  padding: 2rem 1rem;
+  overflow-x: auto;
+  background: white;
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+}
+
+.pipeline-stage {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  max-width: 200px;
+  min-width: 140px;
+}
+
+.pipeline-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-decoration: none;
+  padding: 1rem 0.75rem;
+  width: 100%;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.pipeline-card:hover {
+  transform: scale(1.02);
+}
+
+.pipeline-count {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #2c3e50;
+  line-height: 1;
+  margin-bottom: 0.25rem;
+}
+
+.pipeline-label {
+  font-size: 0.75rem;
+  color: #495057;
+  text-align: center;
+  margin-bottom: 0.25rem;
+}
+
+.pipeline-percent {
+  font-size: 0.625rem;
+  color: #6c757d;
+}
+
+.pipeline-arrow {
+  color: #dee2e6;
+  font-size: 1.25rem;
+  margin: 0 -0.5rem;
+  z-index: 1;
+}
+
+/* Section Cards */
+.section-card {
+  background: white;
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  padding: 1.5rem;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.section-title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #2c3e50;
+  margin: 0;
+}
+
+/* Timeline Styles - Simplified */
+.timeline {
+  position: relative;
+  padding-left: 1rem;
+}
+
+.timeline-item {
+  display: flex;
+  align-items: flex-start;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid #f1f3f5;
+  font-size: 0.875rem;
+}
+
+.timeline-item:last-child {
+  border-bottom: none;
+}
+
+.timeline-marker {
+  width: 8px;
+  height: 8px;
+  background-color: #6c757d;
+  border-radius: 50%;
+  margin-right: 1rem;
+  margin-top: 0.5rem;
+  flex-shrink: 0;
+}
+
+.timeline-marker.is-primary {
+  background-color: #3273dc;
+}
+
+.timeline-content {
+  flex: 1;
+}
+
+.timeline-content p {
+  margin-bottom: 0.25rem;
+}
+
+/* Clean Tables */
+.table {
+  background: transparent;
+}
+
+.table th {
+  border-bottom: 2px solid #dee2e6;
+  font-weight: 600;
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #6c757d;
+}
+
+.table td {
+  vertical-align: middle;
+}
+
+/* Buttons - Cleaner */
+.button {
+  border-radius: 6px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  border: none;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+}
+
+.button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.button.is-primary {
+  background-color: #3273dc;
+}
+
+.button.is-primary:hover {
+  background-color: #2366d1;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1200px) {
+  .stat-value {
+    font-size: 1.5rem;
+  }
+  
+  .pipeline-count {
+    font-size: 1.5rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .status-pipeline {
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+  
+  .pipeline-stage {
+    min-width: 45%;
+    flex: 0 0 45%;
+  }
+  
+  .pipeline-arrow {
+    display: none;
+  }
+  
+  .stat-card {
+    margin-bottom: 1rem;
+  }
+}
+</style>
+{% endblock content %}
