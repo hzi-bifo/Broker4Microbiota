@@ -132,7 +132,23 @@ Order List
                 <span class="tag {{ order.get_status_display_color }} is-medium">
                   {{ order.get_status_display }}
                 </span>
-                {% if order.status_notes %}
+                {% if order.latest_user_note %}
+                  <div class="notification is-warning is-light mt-2">
+                    <p class="is-size-7">
+                      <strong>
+                        {% if order.latest_user_note.is_rejection %}
+                          <i class="fas fa-exclamation-triangle"></i> Rejection Note:
+                        {% else %}
+                          <i class="fas fa-info-circle"></i> Note:
+                        {% endif %}
+                      </strong>
+                      {{ order.latest_user_note.content|truncatechars:150 }}
+                    </p>
+                    <p class="is-size-7 has-text-grey">
+                      {{ order.latest_user_note.created_at|date:"M d, Y" }}
+                    </p>
+                  </div>
+                {% elif order.status_notes %}
                   <p class="order-notes">{{ order.status_notes|truncatechars:80 }}</p>
                 {% endif %}
               </div>

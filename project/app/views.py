@@ -155,6 +155,15 @@ class OrderListView(ListView):
         context['project_id'] = project_id
         context['project'] = project
         context['site_settings'] = SiteSettings.get_settings()
+        
+        # Add user-visible notes for each order
+        for order in context['orders']:
+            # Get the latest user-visible note (especially rejections)
+            latest_note = order.notes.filter(
+                note_type__in=['user_visible', 'rejection']
+            ).order_by('-created_at').first()
+            order.latest_user_note = latest_note
+        
         return context
 
 def order_view(request, project_id=None, order_id=None):

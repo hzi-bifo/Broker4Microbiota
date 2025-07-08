@@ -96,6 +96,14 @@
                     </span>
                     <span>My Projects</span>
                   </a>
+                  {% if user.is_staff %}
+                  <a class="navbar-item" href="{% url 'admin_dashboard' %}">
+                    <span class="icon">
+                      <i class="fas fa-tachometer-alt"></i>
+                    </span>
+                    <span>Admin Dashboard</span>
+                  </a>
+                  {% endif %}
                   <hr class="navbar-divider">
                   <a class="navbar-item" href="{% url 'logout' %}">
                     <span class="icon">

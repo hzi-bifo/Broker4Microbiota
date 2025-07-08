@@ -10,7 +10,7 @@ from django.core.files.base import ContentFile
 from django.conf import settings
 from Bio import SeqIO
 from io import StringIO
-from .models import Order, Sample, SampleSubmission, ReadSubmission, Pipelines, Read, Project, ProjectSubmission, MagRun, SubMGRun, Bin, Assembly, SAMPLE_TYPE_NORMAL, SAMPLE_TYPE_ASSEMBLY, SAMPLE_TYPE_BIN, SAMPLE_TYPE_MAG, Alignment, Mag, SiteSettings
+from .models import Order, Sample, SampleSubmission, ReadSubmission, Pipelines, Read, Project, ProjectSubmission, MagRun, SubMGRun, Bin, Assembly, SAMPLE_TYPE_NORMAL, SAMPLE_TYPE_ASSEMBLY, SAMPLE_TYPE_BIN, SAMPLE_TYPE_MAG, Alignment, Mag, SiteSettings, StatusNote
 
 from .forms import CreateGZForm
 from django.template.loader import render_to_string
@@ -31,6 +31,16 @@ class OrderAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'date', 'quote_no', 'billing_address', 'ag_and_hzi', 'contact_phone', 'email', 'data_delivery', 'signature', 'experiment_title', 'dna', 'rna', 'method', 'buffer', 'organism', 'isolated_from', 'isolation_method')
 
 admin.site.register(Order, OrderAdmin)
+
+
+class StatusNoteAdmin(admin.ModelAdmin):
+    list_display = ('order', 'user', 'note_type', 'created_at', 'is_rejection')
+    list_filter = ('note_type', 'is_rejection', 'created_at')
+    search_fields = ('order__id', 'user__username', 'content')
+    readonly_fields = ('created_at',)
+    ordering = ('-created_at',)
+
+admin.site.register(StatusNote, StatusNoteAdmin)
 
 
 class SiteSettingsAdmin(admin.ModelAdmin):

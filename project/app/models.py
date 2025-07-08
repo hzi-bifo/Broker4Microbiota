@@ -528,6 +528,55 @@ class Order(models.Model):
     def can_advance_status(self):
         """Check if status can be advanced to next stage"""
         return self.get_next_status() is not None
+    
+    def get_status_history(self):
+        """Return all status changes for this order"""
+        return self.notes.filter(note_type='status_change').order_by('created_at')
+    
+    def get_notes(self, include_internal=False):
+        """Return notes for this order, optionally including internal notes"""
+        if include_internal:
+            return self.notes.all()
+        else:
+            return self.notes.filter(
+                note_type__in=['user_visible', 'status_change', 'rejection']
+            )
+    
+    def add_status_note(self, user, new_status, content=""):
+        """Helper method to add a status change note"""
+        
+        old_status = self.status
+        self.status = new_status
+        self.save()
+        
+        if not content:
+            content = f"Status changed from {self.get_status_display()} to {dict(self.STATUS_CHOICES)[new_status]}"
+        
+        return StatusNote.objects.create(
+            order=self,
+            user=user,
+            note_type='status_change',
+            content=content,
+            old_status=old_status,
+            new_status=new_status
+        )
+    
+    def reject_with_note(self, user, content, new_status='draft'):
+        """Reject the order and add a user-visible note"""
+        
+        old_status = self.status
+        self.status = new_status
+        self.save()
+        
+        return StatusNote.objects.create(
+            order=self,
+            user=user,
+            note_type='rejection',
+            content=content,
+            old_status=old_status,
+            new_status=new_status,
+            is_rejection=True
+        )
 
 class Sampleset(models.Model):
 
@@ -3098,5 +3147,62 @@ class FormSubmission(models.Model):
     
     def __str__(self):
         return f"{self.form_template.name} - {self.user.username} - {self.created_at}"
+
+
+class StatusNote(models.Model):
+    """
+    Model to track order status changes and notes (internal and user-visible)
+    """
+    NOTE_TYPE_CHOICES = [
+        ('internal', 'Internal Note'),
+        ('user_visible', 'User Visible Note'),
+        ('status_change', 'Status Change'),
+        ('rejection', 'Rejection Note'),
+    ]
+    
+    order = models.ForeignKey(
+        Order,
+        on_delete=models.CASCADE,
+        related_name='notes'
+    )
+    user = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        null=True,
+        help_text="User who created this note"
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+    note_type = models.CharField(
+        max_length=20,
+        choices=NOTE_TYPE_CHOICES,
+        default='internal'
+    )
+    content = models.TextField(
+        help_text="Note content or status change description"
+    )
+    old_status = models.CharField(
+        max_length=30,
+        blank=True,
+        help_text="Previous status (for status changes)"
+    )
+    new_status = models.CharField(
+        max_length=30,
+        blank=True,
+        help_text="New status (for status changes)"
+    )
+    is_rejection = models.BooleanField(
+        default=False,
+        help_text="Whether this note represents a rejection"
+    )
+    
+    class Meta:
+        ordering = ['-created_at']
+    
+    def __str__(self):
+        return f"{self.get_note_type_display()} for Order #{self.order.id} by {self.user.username if self.user else 'System'}"
+    
+    def is_visible_to_user(self):
+        """Check if this note should be visible to the order owner"""
+        return self.note_type in ['user_visible', 'status_change', 'rejection']
 
 
