@@ -8,17 +8,26 @@ import json
 import importlib
 
 def process_mag_result(task):
-
-    returncode = task.result.returncode
-    id = task.id
-    process_mag_result_inner(returncode, id)
+    try:
+        returncode = task.result.returncode
+        id = task.id
+        process_mag_result_inner(returncode, id)
+    except Exception as e:
+        # Log the error and re-raise
+        import logging
+        logger = logging.getLogger(__name__)
+        logger.error(f"Error processing MAG result for task {task.id}: {str(e)}")
+        raise
 
 
 def process_mag_result_inner(returncode, id):
-
-
-    mag_run_instance = MagRunInstance.objects.get(id=id)
-    mag_run = MagRun.objects.get(id=mag_run_instance.magRun.id)
+    try:
+        mag_run_instance = MagRunInstance.objects.get(id=id)
+        mag_run = MagRun.objects.get(id=mag_run_instance.magRun.id)
+    except MagRunInstance.DoesNotExist:
+        raise ValueError(f"MagRunInstance with id {id} does not exist")
+    except MagRun.DoesNotExist:
+        raise ValueError(f"MagRun for MagRunInstance {id} does not exist")
 
     if returncode != 0:
         mag_run_instance.status = 'failed'

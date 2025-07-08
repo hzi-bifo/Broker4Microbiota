@@ -142,7 +142,7 @@ class SelfDescribingModel(models.Model):
                     except:
                         pass
                     if (k == 'assembly' or k == 'bin') and len(extra_choices) > 0:
-						# ['Afghanistan', 'Albania']
+                        # ['Afghanistan', 'Albania']
                         single_choice = extra_choices
                         headers = headers + f", type: 'autocomplete', source: {single_choice}, strict: true, allowInvalid: true"
                     try:
@@ -166,7 +166,7 @@ class SelfDescribingModel(models.Model):
                     except:
                         pass
                     if (k == 'assembly' or k == 'bin') and  len(extra_choices) > 0:
-						# ['Afghanistan', 'Albania']
+                        # ['Afghanistan', 'Albania']
                         single_choice = extra_choices
                         headers = headers + f", type: 'autocomplete', source: {single_choice}, strict: true, allowInvalid: true"
                     try:
@@ -687,21 +687,37 @@ class Sample(SelfDescribingModel):
                 value = ''
 
             if k == 'assembly':
-                if value != '':
-                    assembly_class = getattr(importlib.import_module("app.models"), 'Assembly')
-                    assembly_instance = assembly_class.objects.filter(id=value).first()
-                    if assembly_instance:
-                        self.assembly = assembly_instance
-                    else:
+                if value != '' and value is not None:
+                    # Validate that value is a valid ID (integer)
+                    try:
+                        assembly_id = int(value)
+                        assembly_class = getattr(importlib.import_module("app.models"), 'Assembly')
+                        assembly_instance = assembly_class.objects.filter(id=assembly_id).first()
+                        if assembly_instance:
+                            self.assembly = assembly_instance
+                        else:
+                            self.assembly = None
+                    except (ValueError, TypeError):
+                        # Invalid ID format, set to None
                         self.assembly = None
+                else:
+                    self.assembly = None
             elif k == 'bin':
-                if value != '':
-                    bin_class = getattr(importlib.import_module("app.models"), 'Bin')
-                    bin_instance = bin_class.objects.filter(id=value).first()
-                    if bin_instance:
-                        self.bin = bin_instance
-                    else:
+                if value != '' and value is not None:
+                    # Validate that value is a valid ID (integer)
+                    try:
+                        bin_id = int(value)
+                        bin_class = getattr(importlib.import_module("app.models"), 'Bin')
+                        bin_instance = bin_class.objects.filter(id=bin_id).first()
+                        if bin_instance:
+                            self.bin = bin_instance
+                        else:
+                            self.bin = None
+                    except (ValueError, TypeError):
+                        # Invalid ID format, set to None
                         self.bin = None
+                else:
+                    self.bin = None
             else:
                 setattr(self, k, value)
 
@@ -758,7 +774,7 @@ class Sample(SelfDescribingModel):
                     except:
                         pass
                     if (k == 'assembly' or k == 'bin') and len(extra_choices) > 0:
-						# ['Afghanistan', 'Albania']
+                        # ['Afghanistan', 'Albania']
                         single_choice = extra_choices
                         headers = headers + f", type: 'autocomplete', source: {single_choice}, strict: true, allowInvalid: true"
                     try:
@@ -782,7 +798,7 @@ class Sample(SelfDescribingModel):
                     except:
                         pass
                     if (k == 'assembly' or k == 'bin') and  len(extra_choices) > 0:
-						# ['Afghanistan', 'Albania']
+                        # ['Afghanistan', 'Albania']
                         single_choice = extra_choices
                         headers = headers + f", type: 'autocomplete', source: {single_choice}, strict: true, allowInvalid: true"
                     try:

@@ -4,6 +4,7 @@ import logging
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django.contrib.auth import login, logout
+from django.contrib import messages
 from django.views.generic import ListView
 from django.forms import CheckboxSelectMultiple, CheckboxInput, DateInput, modelformset_factory
 from django.http import HttpResponseRedirect, JsonResponse
@@ -475,28 +476,39 @@ def samples_view(request, project_id, order_id, sample_type):
 
 
 def test_submg(request):
-    if request.user.is_authenticated:
-        # /home/gary/git/django_ngs_metadata_collection/project/media/test/1519574
-        id = "48"
-        returncode = 0
-
-        hooks = process_submg_result_inner(returncode, id)
+    if request.user.is_authenticated and request.user.is_staff:
+        # Test endpoint - staff users only
+        id = request.GET.get('id', '48')  # Default to 48 for backwards compatibility
+        returncode = int(request.GET.get('returncode', '0'))
+        
+        try:
+            result = process_submg_result_inner(returncode, id)
+            messages.success(request, f'SubMG result processed successfully for ID {id}')
+        except Exception as e:
+            messages.error(request, f'Error processing SubMG result: {str(e)}')
+            logger.error(f'Test SubMG endpoint error: {str(e)}')
 
         return redirect('project_list')   
     else:
-        return redirect('login')
+        raise Http404("Not found")
 
 def test_mag(request):
-    if request.user.is_authenticated:
-        # /net/broker/test/Broker4Microbiota/project/media/test/3545560
-        id = "61"
-        returncode = 0
-
-        hooks = process_mag_result_inner(returncode, id)
+    if request.user.is_authenticated and request.user.is_staff:
+        # Test endpoint - staff users only
+        # TODO: Accept ID as parameter from request for flexibility
+        id = request.GET.get('id', '61')  # Default to 61 for backwards compatibility
+        returncode = int(request.GET.get('returncode', '0'))
+        
+        try:
+            result = process_mag_result_inner(returncode, id)
+            messages.success(request, f'MAG result processed successfully for ID {id}')
+        except Exception as e:
+            messages.error(request, f'Error processing MAG result: {str(e)}')
+            logger.error(f'Test MAG endpoint error: {str(e)}')
 
         return redirect('project_list')   
     else:
-        return redirect('login')
+        raise Http404("Not found")
 
 
 
