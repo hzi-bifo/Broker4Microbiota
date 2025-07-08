@@ -499,7 +499,30 @@
     position: relative;
     max-width: 800px;
     margin: 0 auto;
-    padding: 0 60px;
+    padding: 0 20px;
+}
+
+/* Background line connecting all steps */
+.progress-steps::before {
+    content: '';
+    position: absolute;
+    top: 24px;
+    left: 10%;
+    right: 10%;
+    height: 2px;
+    background: #e0e0e0;
+    z-index: 0;
+}
+
+/* Progress line showing completion */
+.progress-line {
+    position: absolute;
+    top: 24px;
+    left: 10%;
+    height: 2px;
+    background: #23d160;
+    z-index: 0;
+    transition: width 0.3s ease;
 }
 
 
@@ -514,17 +537,6 @@
     max-width: 150px;
 }
 
-/* Connection line between steps */
-.progress-step:not(:last-child)::after {
-    content: '';
-    position: absolute;
-    top: 24px;
-    left: calc(50% + 24px);
-    right: calc(-50% + 24px);
-    height: 2px;
-    background: #e0e0e0;
-    z-index: -1;
-}
 
 .step-icon {
     width: 48px;
@@ -546,6 +558,7 @@
     color: white;
     box-shadow: 0 2px 4px rgba(35, 209, 96, 0.3);
 }
+
 
 .progress-step.active .step-icon {
     background: var(--primary-color, #3273dc);
