@@ -12,9 +12,10 @@ from django.urls import reverse, reverse_lazy
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 from .forms import OrderForm, SampleForm, SamplesetForm, ProjectForm
+from .models import Order, Sample, Sampleset, Project, Assembly, Bin, STATUS_CHOICES, SAMPLE_TYPE_NORMAL, SAMPLE_TYPE_ASSEMBLY, SAMPLE_TYPE_BIN, SAMPLE_TYPE_MAG, SiteSettings
 from .models import Order, Sample, Sampleset, Project, STATUS_CHOICES, SAMPLE_TYPE_NORMAL, SAMPLE_TYPE_ASSEMBLY, SAMPLE_TYPE_BIN, SAMPLE_TYPE_MAG, SiteSettings
 from django_q.tasks import async_task, result
-from .hooks import process_submg_result_inner
+from .hooks import process_submg_result_inner, process_mag_result_inner
 
 from json.decoder import JSONDecodeError
 import importlib
@@ -373,6 +374,24 @@ def samples_view(request, project_id, order_id, sample_type):
 
         inclusions = []
         exclusions = []
+        extra_choices = []
+
+        if sample_type == SAMPLE_TYPE_NORMAL:
+            exclusions = "assembly,bin"
+            extra_choices = []
+        elif sample_type == SAMPLE_TYPE_ASSEMBLY:
+            exclusions = "bin_identifier"
+            assemblies = Assembly.objects.filter(order=order)
+            for assembly in assemblies:
+                extra_choices.append(f"{assembly.id}")
+        elif sample_type == SAMPLE_TYPE_BIN:
+            exclusions = "assembly"
+            bins = Bin.objects.filter(order=order)
+            for bin in bins:
+                extra_choices.append(f"{bin.id}")
+        elif sample_type == SAMPLE_TYPE_MAG:
+            exclusions = "assembly,bin"
+            extra_choices = []
 
         validators = ""
 
@@ -400,7 +419,7 @@ def samples_view(request, project_id, order_id, sample_type):
 
         sample=Sample(order = order, sample_type=sample_type)
 
-        samples_headers = samples_headers + sample.getHeaders(inclusions, exclusions)
+        samples_headers = samples_headers + sample.getHeaders(inclusions, exclusions, extra_choices)
         (index, sample_headers_array_update) = sample.getHeadersArray(index, inclusions, exclusions)
         sample_headers_array = sample_headers_array + sample_headers_array_update
 
@@ -594,7 +613,17 @@ def test_submg(request):
     else:
         return redirect('login')
 
+def test_mag(request):
+    if request.user.is_authenticated:
+        # /net/broker/test/Broker4Microbiota/project/media/test/3545560
+        id = "61"
+        returncode = 0
 
+        hooks = process_mag_result_inner(returncode, id)
+        return redirect('project_list')   
+    else:
+        return redirect('login')
+      
 @require_POST
 def advance_order_status(request, order_id):
     """
@@ -637,8 +666,6 @@ def advance_order_status(request, order_id):
     except Exception as e:
         logger.error(f"Error updating order status: {str(e)}")
         return JsonResponse({'success': False, 'error': 'An error occurred'}, status=500)
-
-
 
 
 

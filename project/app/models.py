@@ -123,7 +123,7 @@ class SelfDescribingModel(models.Model):
         return output            
     
     # Get the headers for the HoT (including choices)
-    def getHeaders(self, include=[], exclude=[]):
+    def getHeaders(self, include=[], exclude=[], extra_choices=[]):
 
         headers = ""
 
@@ -141,6 +141,10 @@ class SelfDescribingModel(models.Model):
                         headers = headers + f", type: 'autocomplete', source: {single_choice}, strict: {strict}, allowInvalid: true"
                     except:
                         pass
+                    if (k == 'assembly' or k == 'bin') and len(extra_choices) > 0:
+						# ['Afghanistan', 'Albania']
+                        single_choice = extra_choices
+                        headers = headers + f", type: 'autocomplete', source: {single_choice}, strict: true, allowInvalid: true"
                     try:
                         validator = getattr(self, f"validator: {k}_validator")
                         headers = headers + f", validator: {k}_validator, allowInvalid: true"
@@ -161,6 +165,10 @@ class SelfDescribingModel(models.Model):
                         headers = headers + f", type: 'autocomplete', source: {single_choice}, strict: {strict}, allowInvalid: true"
                     except:
                         pass
+                    if (k == 'assembly' or k == 'bin') and  len(extra_choices) > 0:
+						# ['Afghanistan', 'Albania']
+                        single_choice = extra_choices
+                        headers = headers + f", type: 'autocomplete', source: {single_choice}, strict: true, allowInvalid: true"
                     try:
                         validator = getattr(self, f"{k}_validator")
                         headers = headers + f", validator: {k}_validator, allowInvalid: true"
@@ -653,6 +661,8 @@ class Sample(SelfDescribingModel):
         'sample_alias': 'sample_alias',
         'sample_title': 'sample_title',
         'sample_description': 'sample_description',
+        'assembly': 'assembly_identifier',
+        'bin': 'bin_identifier',
     }
 
     name = 'Sample'
@@ -694,11 +704,23 @@ class Sample(SelfDescribingModel):
         if include:
             for k, v in self.fields.items():
                 if k in include:
-                    output[k] = getattr(self, k) or ''
+                    if k == 'assembly' or k == 'bin':
+                        if getattr(self, k):
+                            output[v] = str(getattr(self, k).id)
+                        else:
+                            output[v] = ''
+                    else:
+                        output[v] = getattr(self, k) or ''
         else:
             for k, v in self.fields.items():
                 if k not in exclude:
-                    output[k] = getattr(self, k) or ''
+                    if k == 'assembly' or k == 'bin':
+                        if getattr(self, k):
+                            output[v] = str(getattr(self, k).id)
+                        else:
+                            output[v] = ''                    
+                    else:
+                        output[v] = getattr(self, k) or ''
 
         return output            
 
@@ -790,6 +812,122 @@ class Sample(SelfDescribingModel):
 
         return yaml
 
+    # Populate instance fields from a response
+    def setFieldsFromResponse(self, response):
+
+        for k, v in self.fields.items():
+            try:
+                value = response[v]
+            except:
+                value = ''
+
+            if k == 'assembly':
+                if value != '':
+                    assembly_class = getattr(importlib.import_module("app.models"), 'Assembly')
+                    assembly_instance = assembly_class.objects.filter(id=value).first()
+                    if assembly_instance:
+                        self.assembly = assembly_instance
+                    else:
+                        self.assembly = None
+            elif k == 'bin':
+                if value != '':
+                    bin_class = getattr(importlib.import_module("app.models"), 'Bin')
+                    bin_instance = bin_class.objects.filter(id=value).first()
+                    if bin_instance:
+                        self.bin = bin_instance
+                    else:
+                        self.bin = None
+            else:
+                setattr(self, k, value)
+
+
+    def getHeaderNames(self, include=[], exclude=[]):
+
+        headerNames = []
+
+        if include:
+            for k, v in self.fields.items():
+                if k in include:
+                    headerNames.append(v)
+        else:
+            for k, v in self.fields.items():
+                if k not in exclude:
+                    headerNames.append(v)
+
+        return headerNames
+
+
+    # Get the headers for returning the data output from HoT
+    def getHeadersArray(self, index, include=[], exclude=[]):
+
+        output = ""
+        if include:
+                for k, v in self.fields.items():
+                    if k in include:
+                        output = output + f"{v}: row[{index}].trim(),\n"
+                        index = index + 1
+        else:
+                for k, v in self.fields.items():
+                    if k not in exclude:
+                        output = output + f"{v}: row[{index}].trim(),\n"
+                        index = index + 1
+
+        return (index, output)    
+
+    def getHeaders(self, include=[], exclude=[], extra_choices=[]):
+
+        headers = ""
+
+        if include:
+            for k, v in self.fields.items():
+                if k in include:
+                    headers = headers + f"{{title: '{k}', data: '{k}'"
+                    try:
+                        choices = getattr(self, f"{k}_choice")
+                        single_choice = [t[0] for t in choices]
+                        if k == "sequence_quality_check":
+                            strict = "true"
+                        else:
+                            strict = "true"
+                        headers = headers + f", type: 'autocomplete', source: {single_choice}, strict: {strict}, allowInvalid: true"
+                    except:
+                        pass
+                    if (k == 'assembly' or k == 'bin') and len(extra_choices) > 0:
+						# ['Afghanistan', 'Albania']
+                        single_choice = extra_choices
+                        headers = headers + f", type: 'autocomplete', source: {single_choice}, strict: true, allowInvalid: true"
+                    try:
+                        validator = getattr(self, f"validator: {k}_validator")
+                        headers = headers + f", validator: {k}_validator, allowInvalid: true"
+                    except:
+                        pass
+                    headers = headers + f"}},\n"
+        else:
+            for k, v in self.fields.items():
+                if k not in exclude:
+                    headers = headers + f"{{title: '{k}', data: '{v}'"
+                    try:
+                        choices = getattr(self, f"{k}_choice")
+                        single_choice = [t[0] for t in choices]
+                        if k == "sequence_quality_check":
+                            strict = "true"
+                        else:
+                            strict = "true"
+                        headers = headers + f", type: 'autocomplete', source: {single_choice}, strict: {strict}, allowInvalid: true"
+                    except:
+                        pass
+                    if (k == 'assembly' or k == 'bin') and  len(extra_choices) > 0:
+						# ['Afghanistan', 'Albania']
+                        single_choice = extra_choices
+                        headers = headers + f", type: 'autocomplete', source: {single_choice}, strict: true, allowInvalid: true"
+                    try:
+                        validator = getattr(self, f"{k}_validator")
+                        headers = headers + f", validator: {k}_validator, allowInvalid: true"
+                    except:
+                        pass
+                    headers = headers + f"}},\n"
+
+        return headers + ""
 
 class ProjectSubmission(models.Model):
     projects = models.ManyToManyField(Project)

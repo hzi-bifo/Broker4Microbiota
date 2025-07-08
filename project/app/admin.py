@@ -256,10 +256,11 @@ class ProjectAdmin(admin.ModelAdmin):
                        if not bin_sample.submitted and bin_sample not in samples:
                            bin_samples.append(bin_sample)
 
-                # Get all mag samples for this bin
-                for mag_sample in Sample.objects.filter(sample_type=SAMPLE_TYPE_MAG, bin=bin):
-                    if not mag_sample.submitted and mag_sample not in samples:
-                        mag_samples.append(mag_sample)
+                    # Get all mag samples for this bin
+                    for mag_sample in Sample.objects.filter(sample_type=SAMPLE_TYPE_MAG, bin=bin):
+                        if not mag_sample.submitted and mag_sample not in samples:
+                            mag_samples.append(mag_sample)
+                            
                 for alignment in order.alignment_set.all():
                     if not alignment.submitted and alignment not in alignments:
                         alignments.append(alignment)
@@ -356,7 +357,8 @@ admin.site.register(Project, ProjectAdmin)
 
 
 class SampleAdmin(admin.ModelAdmin):
-    list_display = ('id', 'sample_type','assembly', 'bin') + (tuple(Sample().getFields().keys()))
+    list_display = ('id', 'sample_type','assembly', 'bin')
+    
     list_filter = ('sample_type',)
 
     # temporary - this needs to be passed through properly
