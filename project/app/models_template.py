@@ -142,7 +142,7 @@ class SelfDescribingModel(models.Model):
                     except:
                         pass
                     if (k == 'assembly' or k == 'bin') and len(extra_choices) > 0:
-						# ['Afghanistan', 'Albania']
+                        # ['Afghanistan', 'Albania']
                         single_choice = extra_choices
                         headers = headers + f", type: 'autocomplete', source: {single_choice}, strict: true, allowInvalid: true"
                     try:
@@ -166,7 +166,7 @@ class SelfDescribingModel(models.Model):
                     except:
                         pass
                     if (k == 'assembly' or k == 'bin') and  len(extra_choices) > 0:
-						# ['Afghanistan', 'Albania']
+                        # ['Afghanistan', 'Albania']
                         single_choice = extra_choices
                         headers = headers + f", type: 'autocomplete', source: {single_choice}, strict: true, allowInvalid: true"
                     try:
@@ -517,7 +517,7 @@ class Sample(SelfDescribingModel):
 
     @property
     def getAttributes(self):
-    	# go through each of the fields within eah of the checklists
+        # go through each of the fields within eah of the checklists
         # get the checklists for this sample    
         
         output = ""
@@ -741,7 +741,7 @@ class Sample(SelfDescribingModel):
                     except:
                         pass
                     if (k == 'assembly' or k == 'bin') and len(extra_choices) > 0:
-						# ['Afghanistan', 'Albania']
+                        # ['Afghanistan', 'Albania']
                         single_choice = extra_choices
                         headers = headers + f", type: 'autocomplete', source: {single_choice}, strict: true, allowInvalid: true"
                     try:
@@ -765,7 +765,7 @@ class Sample(SelfDescribingModel):
                     except:
                         pass
                     if (k == 'assembly' or k == 'bin') and  len(extra_choices) > 0:
-						# ['Afghanistan', 'Albania']
+                        # ['Afghanistan', 'Albania']
                         single_choice = extra_choices
                         headers = headers + f", type: 'autocomplete', source: {single_choice}, strict: true, allowInvalid: true"
                     try:

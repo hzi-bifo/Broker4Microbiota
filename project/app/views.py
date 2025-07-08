@@ -602,27 +602,38 @@ def samples_view(request, project_id, order_id, sample_type):
 
 
 def test_submg(request):
-    if request.user.is_authenticated:
-        # /home/gary/git/django_ngs_metadata_collection/project/media/test/1519574
-        id = "48"
-        returncode = 0
-
-        hooks = process_submg_result_inner(returncode, id)
+    if request.user.is_authenticated and request.user.is_staff:
+        # Test endpoint - staff users only
+        id = request.GET.get('id', '48')  # Default to 48 for backwards compatibility
+        returncode = int(request.GET.get('returncode', '0'))
+        
+        try:
+            result = process_submg_result_inner(returncode, id)
+            messages.success(request, f'SubMG result processed successfully for ID {id}')
+        except Exception as e:
+            messages.error(request, f'Error processing SubMG result: {str(e)}')
+            logger.error(f'Test SubMG endpoint error: {str(e)}')
 
         return redirect('project_list')   
     else:
-        return redirect('login')
+        raise Http404("Not found")
 
 def test_mag(request):
-    if request.user.is_authenticated:
-        # /net/broker/test/Broker4Microbiota/project/media/test/3545560
-        id = "61"
-        returncode = 0
+    if request.user.is_authenticated and request.user.is_staff:
+        # Test endpoint - staff users only
+        id = request.GET.get('id', '61')  # Default to 61 for backwards compatibility
+        returncode = int(request.GET.get('returncode', '0'))
+        
+        try:
+            result = process_mag_result_inner(returncode, id)
+            messages.success(request, f'MAG result processed successfully for ID {id}')
+        except Exception as e:
+            messages.error(request, f'Error processing MAG result: {str(e)}')
+            logger.error(f'Test MAG endpoint error: {str(e)}')
 
-        hooks = process_mag_result_inner(returncode, id)
         return redirect('project_list')   
     else:
-        return redirect('login')
+        raise Http404("Not found")
       
 @require_POST
 def advance_order_status(request, order_id):
