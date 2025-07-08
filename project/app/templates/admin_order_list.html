@@ -32,16 +32,14 @@ All Orders - Admin
             <div class="field">
               <label class="label is-small">Status</label>
               <div class="control">
-                <div class="select is-fullwidth">
-                  <select name="status">
-                    <option value="">All Statuses</option>
-                    {% for code, label in status_choices %}
-                    <option value="{{ code }}" {% if current_filters.status == code %}selected{% endif %}>
-                      {{ label }}
-                    </option>
-                    {% endfor %}
-                  </select>
-                </div>
+                <select name="status" class="input">
+                  <option value="">All Statuses</option>
+                  {% for code, label in status_choices %}
+                  <option value="{{ code }}" {% if current_filters.status == code %}selected{% endif %}>
+                    {{ label }}
+                  </option>
+                  {% endfor %}
+                </select>
               </div>
             </div>
           </div>
@@ -102,14 +100,12 @@ All Orders - Admin
           <div class="level-item">
             <div class="field has-addons">
               <div class="control">
-                <span class="select">
-                  <select name="new_status" id="bulkStatus">
-                    <option value="">Select Status...</option>
-                    {% for code, label in status_choices %}
-                    <option value="{{ code }}">{{ label }}</option>
-                    {% endfor %}
-                  </select>
-                </span>
+                <select name="new_status" id="bulkStatus" class="input">
+                  <option value="">Select Status...</option>
+                  {% for code, label in status_choices %}
+                  <option value="{{ code }}">{{ label }}</option>
+                  {% endfor %}
+                </select>
               </div>
               <div class="control">
                 <button type="submit" class="button is-info" disabled id="bulkUpdateBtn">
@@ -312,6 +308,20 @@ body {
   background-color: #f8f9fa;
 }
 
+/* Override Bulma select wrapper to prevent double borders */
+.select {
+  display: block;
+  position: relative;
+}
+
+.select:not(.is-multiple):not(.is-loading)::after {
+  display: none !important;
+}
+
+.select select {
+  padding-right: 2.5em;
+}
+
 /* Clean Box Style */
 .box {
   box-shadow: 0 1px 3px rgba(0,0,0,0.1);
@@ -436,15 +446,31 @@ body {
 }
 
 /* Form Controls */
-.input, .select select {
+.input, .select select, select.input {
   border-radius: 6px;
   border: 1px solid #dbdbdb;
   transition: all 0.2s ease;
+  background-color: white;
+  padding: calc(0.375em - 1px) calc(0.625em - 1px);
+  font-size: 1rem;
+  line-height: 1.5;
 }
 
-.input:focus, .select select:focus {
+select.input {
+  padding-right: 2.5em;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath fill='%23363636' d='M7 7l3 3 3-3m-3 6l3-3-3-3'/%3E%3C/svg%3E");
+  background-position: right 0.5em center;
+  background-repeat: no-repeat;
+  background-size: 1.5em;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+}
+
+.input:focus, .select select:focus, select.input:focus {
   border-color: #3273dc;
   box-shadow: 0 0 0 0.125em rgba(50,115,220,.25);
+  outline: none;
 }
 
 .label.is-small {

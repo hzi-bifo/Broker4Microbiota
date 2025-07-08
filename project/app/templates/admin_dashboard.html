@@ -5,68 +5,69 @@ Admin Dashboard - Sequencing Center Management
 {% endblock title %}
 
 {% block content %}
-<section class="section">
-  <div class="container is-fluid" style="max-width: 1920px;">
-    <div class="has-text-centered mb-4">
-      <h1 class="title is-4">
-        <i class="fas fa-tachometer-alt has-text-primary"></i>
-        Sequencing Center Admin Dashboard
-      </h1>
-      <p class="subtitle is-6">
-        Manage orders, projects, and track sequencing workflow
-      </p>
-    </div>
-
-    <!-- Statistics Cards -->
-    <div class="columns is-multiline mb-4">
-      <div class="column is-3">
-        <div class="stat-card">
-          <div class="stat-value">{{ stats.total_orders }}</div>
-          <div class="stat-label">Total Orders</div>
-        </div>
+<section class="section pt-3">
+  <div class="container is-fluid">
+    <div class="level mb-4">
+      <div class="level-left">
+        <h1 class="title is-4 mb-0">
+          <i class="fas fa-tachometer-alt has-text-primary mr-2"></i>
+          Sequencing Order Management - Admin View
+        </h1>
       </div>
-      
-      <div class="column is-3">
-        <div class="stat-card">
-          <div class="stat-value">{{ stats.orders_last_30_days }}</div>
-          <div class="stat-label">Last 30 Days</div>
-        </div>
-      </div>
-      
-      <div class="column is-3">
-        <div class="stat-card has-accent-warning">
-          <div class="stat-value">{{ stats.orders_needing_action }}</div>
-          <div class="stat-label">Awaiting Review</div>
-        </div>
-      </div>
-      
-      <div class="column is-3">
-        <div class="stat-card">
-          <div class="stat-value">{{ stats.active_projects }}</div>
-          <div class="stat-label">Active Projects</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Order Status Pipeline -->
-    <div class="mb-5">
-      <div class="status-pipeline">
-        {% for status in stats.orders_by_status %}
-        <div class="pipeline-stage">
-          <a href="{% url 'admin_order_list' %}?status={{ status.code }}" 
-             class="pipeline-card">
-            <div class="pipeline-count">{{ status.count }}</div>
-            <div class="pipeline-label">{{ status.label }}</div>
-            <div class="pipeline-percent">{{ status.percentage }}%</div>
+      <div class="level-right">
+        <div class="buttons">
+          <a href="{% url 'admin_order_list' %}" class="button is-small is-primary">
+            <span class="icon"><i class="fas fa-list"></i></span>
+            <span>All Orders</span>
           </a>
-          {% if not forloop.last %}
-          <div class="pipeline-arrow">
-            <i class="fas fa-chevron-right"></i>
-          </div>
-          {% endif %}
+          <a href="{% url 'admin_export_orders' %}" class="button is-small is-light">
+            <span class="icon"><i class="fas fa-download"></i></span>
+            <span>Export</span>
+          </a>
+          <a href="/admin/" class="button is-small is-dark">
+            <span class="icon"><i class="fas fa-cog"></i></span>
+            <span>Django Admin</span>
+          </a>
         </div>
-        {% endfor %}
       </div>
+    </div>
+
+    <!-- Compact Statistics -->
+    <div class="stats-row mb-4">
+      <div class="stat-item">
+        <span class="stat-value">{{ stats.total_orders }}</span>
+        <span class="stat-label">Total Orders</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-value">{{ stats.orders_last_30_days }}</span>
+        <span class="stat-label">Last 30 Days</span>
+      </div>
+      <div class="stat-item has-warning">
+        <span class="stat-value">{{ stats.orders_needing_action }}</span>
+        <span class="stat-label">Awaiting Review</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-value">{{ stats.active_projects }}</span>
+        <span class="stat-label">Active Projects</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-value">{{ stats.total_users }}</span>
+        <span class="stat-label">Active Users</span>
+      </div>
+    </div>
+
+    <!-- Compact Status Pipeline -->
+    <div class="status-pipeline-compact mb-4">
+      {% for status in stats.orders_by_status %}
+      <a href="{% url 'admin_order_list' %}?status={{ status.code }}" 
+         class="pipeline-item {{ status.color }}">
+        <div class="pipeline-header">
+          <span class="pipeline-count">{{ status.count }}</span>
+          <span class="pipeline-percent">{{ status.percentage }}%</span>
+        </div>
+        <div class="pipeline-label">{{ status.label }}</div>
+      </a>
+      {% endfor %}
     </div>
 
     <!-- Orders Needing Action -->
@@ -151,29 +152,6 @@ Admin Dashboard - Sequencing Center Management
       {% endif %}
     </div>
 
-    <!-- Quick Actions -->
-    <div class="has-text-centered mt-6">
-      <div class="buttons is-centered">
-        <a href="{% url 'admin_order_list' %}" class="button is-primary">
-          <span class="icon">
-            <i class="fas fa-list"></i>
-          </span>
-          <span>View All Orders</span>
-        </a>
-        <a href="{% url 'admin_export_orders' %}" class="button is-light">
-          <span class="icon">
-            <i class="fas fa-download"></i>
-          </span>
-          <span>Export Orders</span>
-        </a>
-        <a href="/admin/" class="button is-light">
-          <span class="icon">
-            <i class="fas fa-cog"></i>
-          </span>
-          <span>Django Admin</span>
-        </a>
-      </div>
-    </div>
   </div>
 </section>
 
@@ -183,31 +161,54 @@ body {
   background-color: #f8f9fa;
 }
 
-/* Statistics Cards */
-.stat-card {
+/* Full width container */
+.container.is-fluid {
+  padding: 0 1.5rem;
+  max-width: 100%;
+}
+
+/* Admin specific styling */
+.section.pt-3 {
+  padding-top: 1rem !important;
+}
+
+/* Compact Statistics Row */
+.stats-row {
+  display: flex;
+  gap: 1rem;
   background: white;
   border: 1px solid #e9ecef;
   border-radius: 6px;
-  padding: 1.25rem;
-  text-align: center;
+  padding: 1rem;
   box-shadow: 0 1px 2px rgba(0,0,0,0.05);
-  transition: all 0.2s ease;
-  height: 100%;
 }
 
-.stat-card:hover {
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-  transform: translateY(-1px);
+.stat-item {
+  flex: 1;
+  text-align: center;
+  padding: 0.5rem;
+  border-right: 1px solid #e9ecef;
+}
+
+.stat-item:last-child {
+  border-right: none;
+}
+
+.stat-item.has-warning .stat-value {
+  color: #ff9f00;
+  font-weight: 600;
 }
 
 .stat-value {
+  display: block;
   font-size: 1.75rem;
-  font-weight: 700;
+  font-weight: 500;
   color: #2c3e50;
   line-height: 1;
 }
 
 .stat-label {
+  display: block;
   font-size: 0.75rem;
   color: #6c757d;
   margin-top: 0.25rem;
@@ -215,72 +216,93 @@ body {
   letter-spacing: 0.5px;
 }
 
-.stat-card.has-accent-warning .stat-value {
-  color: #ff9800;
+/* Compact Status Pipeline */
+.status-pipeline-compact {
+  display: flex;
+  gap: 0.5rem;
+  overflow-x: auto;
+  padding: 0.5rem 0;
 }
 
-/* Pipeline Styles */
-.status-pipeline {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0;
-  padding: 2rem 1rem;
-  overflow-x: auto;
+.pipeline-item {
+  flex: 1;
+  min-width: 120px;
   background: white;
   border: 1px solid #e9ecef;
-  border-radius: 8px;
-  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
-}
-
-.pipeline-stage {
-  display: flex;
-  align-items: center;
-  flex: 1;
-  max-width: 200px;
-  min-width: 140px;
-}
-
-.pipeline-card {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  border-radius: 6px;
+  padding: 0.75rem;
   text-decoration: none;
-  padding: 1rem 0.75rem;
-  width: 100%;
+  color: inherit;
   transition: all 0.2s ease;
   position: relative;
 }
 
-.pipeline-card:hover {
-  transform: scale(1.02);
+.pipeline-item:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.pipeline-item::after {
+  content: '→';
+  position: absolute;
+  right: -1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #cbd5e0;
+  font-size: 0.875rem;
+}
+
+.pipeline-item:last-child::after {
+  display: none;
+}
+
+.pipeline-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.25rem;
 }
 
 .pipeline-count {
-  font-size: 1.75rem;
-  font-weight: 700;
+  font-size: 1.25rem;
+  font-weight: 600;
   color: #2c3e50;
-  line-height: 1;
-  margin-bottom: 0.25rem;
+}
+
+.pipeline-percent {
+  font-size: 0.75rem;
+  color: #6c757d;
 }
 
 .pipeline-label {
   font-size: 0.75rem;
-  color: #495057;
-  text-align: center;
-  margin-bottom: 0.25rem;
+  color: #4a5568;
+  line-height: 1.2;
 }
 
-.pipeline-percent {
-  font-size: 0.625rem;
-  color: #6c757d;
+/* Pipeline Status Colors */
+.pipeline-item.is-light {
+  background-color: #f8f9fa;
 }
 
-.pipeline-arrow {
-  color: #dee2e6;
-  font-size: 1.25rem;
-  margin: 0 -0.5rem;
-  z-index: 1;
+.pipeline-item.is-info {
+  background-color: #e6f3ff;
+  border-color: #3298dc;
+}
+
+.pipeline-item.is-warning {
+  background-color: #fffbeb;
+  border-color: #ffdd57;
+}
+
+.pipeline-item.is-primary {
+  background-color: #e6f0ff;
+  border-color: #3273dc;
+}
+
+.pipeline-item.is-success {
+  background-color: #e6ffed;
+  border-color: #48c774;
 }
 
 /* Section Cards */
@@ -398,22 +420,50 @@ body {
 }
 
 @media (max-width: 768px) {
-  .status-pipeline {
-    flex-wrap: wrap;
-    gap: 1rem;
+  .level {
+    display: block !important;
   }
   
-  .pipeline-stage {
-    min-width: 45%;
-    flex: 0 0 45%;
-  }
-  
-  .pipeline-arrow {
-    display: none;
-  }
-  
-  .stat-card {
+  .level-left, .level-right {
+    display: block;
     margin-bottom: 1rem;
+  }
+  
+  .level-right {
+    text-align: left;
+  }
+  
+  .stats-row {
+    flex-wrap: wrap;
+  }
+  
+  .stat-item {
+    flex: 0 0 48%;
+    margin-bottom: 0.5rem;
+    border-right: none;
+    border-bottom: 1px solid #e9ecef;
+  }
+  
+  .stat-item:nth-child(odd) {
+    border-right: 1px solid #e9ecef;
+  }
+  
+  .stat-item:last-child,
+  .stat-item:nth-last-child(2) {
+    border-bottom: none;
+  }
+  
+  .status-pipeline-compact {
+    flex-wrap: wrap;
+  }
+  
+  .pipeline-item {
+    flex: 0 0 48%;
+    margin-bottom: 0.5rem;
+  }
+  
+  .pipeline-item::after {
+    display: none;
   }
 }
 </style>

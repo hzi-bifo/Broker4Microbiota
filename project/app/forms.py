@@ -154,7 +154,7 @@ class StatusUpdateForm(forms.ModelForm):
         model = Order
         fields = ['status']
         widgets = {
-            'status': forms.Select(attrs={'class': 'select'})
+            'status': forms.Select(attrs={'class': 'form-control'})
         }
     
     def __init__(self, *args, **kwargs):
@@ -174,7 +174,7 @@ class OrderNoteForm(forms.ModelForm):
         model = StatusNote
         fields = ['note_type', 'content']
         widgets = {
-            'note_type': forms.Select(attrs={'class': 'select'}),
+            'note_type': forms.Select(attrs={'class': 'form-control'}),
             'content': forms.Textarea(attrs={'rows': 4, 'class': 'textarea'})
         }
     
@@ -199,7 +199,7 @@ class OrderRejectionForm(forms.Form):
     new_status = forms.ChoiceField(
         choices=[('draft', 'Draft')],
         initial='draft',
-        widget=forms.Select(attrs={'class': 'select'}),
+        widget=forms.Select(attrs={'class': 'form-control'}),
         label="Set Status To",
         help_text="Status to set the order to after rejection"
     )

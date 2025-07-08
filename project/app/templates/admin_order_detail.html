@@ -193,15 +193,25 @@ Order #{{ order.id }} - Admin View
               </h4>
               
               <!-- Quick Add Note Form -->
-              <div class="field has-addons mb-5">
-                <div class="control is-expanded">
-                  <input class="input" type="text" placeholder="Add a quick note..." id="quickNote">
-                </div>
-                <div class="control">
-                  <button class="button is-info" onclick="addQuickNote()">
-                    <span class="icon"><i class="fas fa-plus"></i></span>
-                    <span>Add</span>
-                  </button>
+              <div class="quick-note-panel mb-5">
+                <div class="field">
+                  <div class="field has-addons">
+                    <div class="control is-expanded">
+                      <input class="input" type="text" placeholder="Add a quick note..." id="quickNote" onkeypress="if(event.key === 'Enter') addQuickNote()">
+                    </div>
+                    <div class="control">
+                      <select id="quickNoteType" class="input">
+                        <option value="internal">Internal</option>
+                        <option value="user_visible">User Visible</option>
+                      </select>
+                    </div>
+                    <div class="control">
+                      <button class="button is-info" onclick="addQuickNote()">
+                        <span class="icon"><i class="fas fa-plus"></i></span>
+                        <span>Add</span>
+                      </button>
+                    </div>
+                  </div>
                 </div>
               </div>
               
@@ -286,20 +296,78 @@ Order #{{ order.id }} - Admin View
 
       <!-- Actions Tab -->
       <div class="tab-pane" id="actions">
-        <div class="columns">
-          <div class="column is-4">
-            <!-- Status Update -->
+        <!-- Action Selection -->
+        <div class="action-decision-panel mb-5">
+          <h3 class="has-text-centered mb-4">What would you like to do with this order?</h3>
+          
+          <div class="action-cards">
+            <!-- Update Status Action -->
+            <div class="action-card" data-action="update-status">
+              <div class="action-icon">
+                <i class="fas fa-forward"></i>
+              </div>
+              <h4 class="action-title">Progress Order</h4>
+              <p class="action-desc">Move order to the next workflow stage</p>
+              {% if can_advance %}
+              <button class="button is-primary is-fullwidth mt-3" onclick="selectAction('update-status')">
+                <span class="icon"><i class="fas fa-arrow-right"></i></span>
+                <span>Advance to {{ order.get_next_status|title }}</span>
+              </button>
+              {% else %}
+              <button class="button is-primary is-fullwidth mt-3" onclick="selectAction('update-status')">
+                Update Status
+              </button>
+              {% endif %}
+            </div>
+            
+            <!-- Add Note Action -->
+            <div class="action-card" data-action="add-note">
+              <div class="action-icon">
+                <i class="fas fa-comment"></i>
+              </div>
+              <h4 class="action-title">Add Note</h4>
+              <p class="action-desc">Add internal or user-visible notes</p>
+              <button class="button is-info is-fullwidth mt-3" onclick="selectAction('add-note')">
+                <span class="icon"><i class="fas fa-plus"></i></span>
+                <span>Add Note</span>
+              </button>
+            </div>
+            
+            <!-- Reject Order Action -->
+            <div class="action-card" data-action="reject">
+              <div class="action-icon has-text-danger">
+                <i class="fas fa-times-circle"></i>
+              </div>
+              <h4 class="action-title">Send Back for Review</h4>
+              <p class="action-desc">Request changes from the user</p>
+              <button class="button is-danger is-fullwidth mt-3" onclick="selectAction('reject')">
+                <span class="icon"><i class="fas fa-ban"></i></span>
+                <span>Reject with Feedback</span>
+              </button>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Action Forms (initially hidden) -->
+        <div id="action-forms">
+          <!-- Update Status Form -->
+          <div class="action-form-panel" id="update-status-form" style="display: none;">
+            <button class="button is-small is-light mb-3" onclick="backToActions()">
+              <span class="icon"><i class="fas fa-arrow-left"></i></span>
+              <span>Back to Actions</span>
+            </button>
+            
             <div class="box">
-              <h4 class="title is-6">
-                <i class="fas fa-sync"></i> Update Status
+              <h4 class="title is-5">
+                <i class="fas fa-sync"></i> Update Order Status
               </h4>
               
               <form method="post" action="{% url 'admin_update_order_status' order.id %}">
                 {% csrf_token %}
                 <div class="field">
-                  <label class="label">New Status</label>
+                  <label class="label">Select New Status</label>
                   <div class="control">
-                    <div class="select is-fullwidth">
+                    <div class="select-wrapper">
                       {{ status_form.status }}
                     </div>
                   </div>
@@ -309,77 +377,98 @@ Order #{{ order.id }} - Admin View
                 </div>
                 
                 <div class="field">
-                  <label class="label">Note (Optional)</label>
+                  <label class="label">Add a Note (Optional)</label>
                   <div class="control">
                     {{ status_form.status_note }}
                   </div>
+                  <p class="help">This note will be recorded in the activity timeline</p>
                 </div>
                 
-                <div class="field">
-                  <button type="submit" class="button is-primary is-fullwidth">
-                    <span class="icon"><i class="fas fa-check"></i></span>
-                    <span>Update Status</span>
-                  </button>
+                <div class="field is-grouped is-grouped-right">
+                  <div class="control">
+                    <button type="button" class="button is-light" onclick="backToActions()">
+                      Cancel
+                    </button>
+                  </div>
+                  <div class="control">
+                    <button type="submit" class="button is-primary">
+                      <span class="icon"><i class="fas fa-check"></i></span>
+                      <span>Update Status</span>
+                    </button>
+                  </div>
                 </div>
               </form>
-              
-              {% if can_advance %}
-              <div class="has-text-centered mt-3">
-                <button class="button is-success is-fullwidth" onclick="quickAdvance()">
-                  <span class="icon"><i class="fas fa-arrow-right"></i></span>
-                  <span>Quick Advance to {{ order.get_next_status|title }}</span>
-                </button>
-              </div>
-              {% endif %}
             </div>
           </div>
-
-          <div class="column is-4">
-            <!-- Add Note -->
+          
+          <!-- Add Note Form -->
+          <div class="action-form-panel" id="add-note-form" style="display: none;">
+            <button class="button is-small is-light mb-3" onclick="backToActions()">
+              <span class="icon"><i class="fas fa-arrow-left"></i></span>
+              <span>Back to Actions</span>
+            </button>
+            
             <div class="box">
-              <h4 class="title is-6">
-                <i class="fas fa-comment"></i> Add Note
+              <h4 class="title is-5">
+                <i class="fas fa-comment"></i> Add Note to Order
               </h4>
               
               <form method="post" action="{% url 'admin_add_order_note' order.id %}">
                 {% csrf_token %}
                 <div class="field">
-                  <label class="label">Note Type</label>
+                  <label class="label">Note Visibility</label>
                   <div class="control">
-                    <div class="select is-fullwidth">
+                    <div class="select-wrapper">
                       {{ note_form.note_type }}
                     </div>
                   </div>
+                  <p class="help">Internal notes are only visible to admin staff</p>
                 </div>
                 
                 <div class="field">
-                  <label class="label">{{ note_form.content.label }}</label>
+                  <label class="label">Note Content</label>
                   <div class="control">
                     {{ note_form.content }}
                   </div>
                 </div>
                 
-                <div class="field">
-                  <button type="submit" class="button is-info is-fullwidth">
-                    <span class="icon"><i class="fas fa-plus"></i></span>
-                    <span>Add Note</span>
-                  </button>
+                <div class="field is-grouped is-grouped-right">
+                  <div class="control">
+                    <button type="button" class="button is-light" onclick="backToActions()">
+                      Cancel
+                    </button>
+                  </div>
+                  <div class="control">
+                    <button type="submit" class="button is-info">
+                      <span class="icon"><i class="fas fa-plus"></i></span>
+                      <span>Add Note</span>
+                    </button>
+                  </div>
                 </div>
               </form>
             </div>
           </div>
-
-          <div class="column is-4">
-            <!-- Reject Order -->
+          
+          <!-- Reject Order Form -->
+          <div class="action-form-panel" id="reject-form" style="display: none;">
+            <button class="button is-small is-light mb-3" onclick="backToActions()">
+              <span class="icon"><i class="fas fa-arrow-left"></i></span>
+              <span>Back to Actions</span>
+            </button>
+            
             <div class="box has-background-danger-light">
-              <h4 class="title is-6">
-                <i class="fas fa-times-circle"></i> Reject Order
+              <h4 class="title is-5 has-text-danger">
+                <i class="fas fa-times-circle"></i> Send Order Back for Review
               </h4>
+              
+              <div class="notification is-warning is-light">
+                <p><strong>Important:</strong> The user will be notified and asked to make corrections.</p>
+              </div>
               
               <form method="post" action="{% url 'admin_reject_order' order.id %}">
                 {% csrf_token %}
                 <div class="field">
-                  <label class="label">{{ rejection_form.rejection_reason.label }}</label>
+                  <label class="label">Feedback for User</label>
                   <div class="control">
                     {{ rejection_form.rejection_reason }}
                   </div>
@@ -387,40 +476,47 @@ Order #{{ order.id }} - Admin View
                 </div>
                 
                 <div class="field">
-                  <label class="label">{{ rejection_form.new_status.label }}</label>
+                  <label class="label">Set Order Status To</label>
                   <div class="control">
-                    <div class="select is-fullwidth">
+                    <div class="select-wrapper">
                       {{ rejection_form.new_status }}
                     </div>
                   </div>
                 </div>
                 
-                <div class="field">
-                  <button type="submit" class="button is-danger is-fullwidth"
-                          onclick="return confirm('Are you sure you want to reject this order? The user will be notified.')">
-                    <span class="icon"><i class="fas fa-ban"></i></span>
-                    <span>Reject & Send Back</span>
-                  </button>
+                <div class="field is-grouped is-grouped-right">
+                  <div class="control">
+                    <button type="button" class="button is-light" onclick="backToActions()">
+                      Cancel
+                    </button>
+                  </div>
+                  <div class="control">
+                    <button type="submit" class="button is-danger"
+                            onclick="return confirm('Are you sure you want to reject this order? The user will be notified.')">
+                      <span class="icon"><i class="fas fa-ban"></i></span>
+                      <span>Reject & Send Back</span>
+                    </button>
+                  </div>
                 </div>
               </form>
             </div>
-
-            <!-- Quick Links -->
-            <div class="box mt-4">
-              <h3 class="title is-6">Quick Links</h3>
-              <div class="buttons is-fullwidth">
-                <a href="{% url 'order_edit' project.id order.id %}" 
-                   class="button is-fullwidth is-small" target="_blank">
-                  <span class="icon"><i class="fas fa-external-link-alt"></i></span>
-                  <span>View as User</span>
-                </a>
-                <a href="/admin/app/order/{{ order.id }}/change/" 
-                   class="button is-dark is-fullwidth is-small">
-                  <span class="icon"><i class="fas fa-cog"></i></span>
-                  <span>Django Admin</span>
-                </a>
-              </div>
-            </div>
+          </div>
+        </div>
+        
+        <!-- Quick Links -->
+        <div class="quick-links-panel mt-5">
+          <h4 class="title is-6">Other Actions</h4>
+          <div class="buttons">
+            <a href="{% url 'order_list' project.id %}#order-{{ order.id }}" 
+               class="button is-small is-light" target="_blank">
+              <span class="icon"><i class="fas fa-external-link-alt"></i></span>
+              <span>View in User Dashboard</span>
+            </a>
+            <a href="/admin/app/order/{{ order.id }}/change/" 
+               class="button is-small is-dark">
+              <span class="icon"><i class="fas fa-cog"></i></span>
+              <span>Django Admin</span>
+            </a>
           </div>
         </div>
       </div>
@@ -590,15 +686,119 @@ body {
 }
 
 /* Form Controls */
-.input, .textarea, .select select {
+.input, .textarea {
   border-radius: 6px;
   border: 1px solid #dbdbdb;
   transition: all 0.2s ease;
 }
 
-.input:focus, .textarea:focus, .select select:focus {
+.input:focus, .textarea:focus {
   border-color: #3273dc;
   box-shadow: 0 0 0 0.125em rgba(50,115,220,.25);
+}
+
+/* Select Dropdown Styling */
+.select-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.select-wrapper select,
+select.input {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-color: white;
+  border: 1px solid #dbdbdb;
+  border-radius: 6px;
+  color: #363636;
+  cursor: pointer;
+  font-size: 1rem;
+  width: 100%;
+  padding: 0.625rem 2.5rem 0.625rem 0.75rem;
+  transition: all 0.2s ease;
+  line-height: 1.5;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath fill='%23363636' d='M7 7l3 3 3-3m-3 6l3-3-3-3'/%3E%3C/svg%3E");
+  background-position: right 0.5em center;
+  background-repeat: no-repeat;
+  background-size: 1.5em;
+}
+
+.select-wrapper select:hover,
+select.input:hover {
+  border-color: #b5b5b5;
+}
+
+.select-wrapper select:focus,
+select.input:focus {
+  border-color: #3273dc;
+  box-shadow: 0 0 0 0.125em rgba(50,115,220,.25);
+  outline: none;
+}
+
+/* Action Cards */
+.action-decision-panel {
+  padding: 2rem;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+}
+
+.action-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+.action-card {
+  background: white;
+  border: 2px solid #e9ecef;
+  border-radius: 8px;
+  padding: 2rem;
+  text-align: center;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.action-card:hover {
+  border-color: #3273dc;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.action-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  color: #3273dc;
+}
+
+.action-icon.has-text-danger {
+  color: #ff3860;
+}
+
+.action-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: #2c3e50;
+}
+
+.action-desc {
+  color: #6c757d;
+  margin-bottom: 1rem;
+}
+
+/* Action Form Panels */
+.action-form-panel {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* Quick Links Panel */
+.quick-links-panel {
+  text-align: center;
+  padding-top: 2rem;
+  border-top: 1px solid #e9ecef;
 }
 
 /* Tags */
@@ -614,6 +814,34 @@ body {
   }
 }
 </style>
+
+<script>
+// Action selection functionality
+function selectAction(action) {
+  // Hide decision panel
+  document.querySelector('.action-decision-panel').style.display = 'none';
+  
+  // Show the selected form
+  document.querySelectorAll('.action-form-panel').forEach(panel => {
+    panel.style.display = 'none';
+  });
+  
+  const formPanel = document.getElementById(action + '-form');
+  if (formPanel) {
+    formPanel.style.display = 'block';
+  }
+}
+
+function backToActions() {
+  // Show decision panel
+  document.querySelector('.action-decision-panel').style.display = 'block';
+  
+  // Hide all forms
+  document.querySelectorAll('.action-form-panel').forEach(panel => {
+    panel.style.display = 'none';
+  });
+}
+</script>
 
 <script>
 // Tab functionality
@@ -643,6 +871,8 @@ document.addEventListener('DOMContentLoaded', function() {
 // Quick functions
 function addQuickNote() {
   const noteContent = document.getElementById('quickNote').value;
+  const noteType = document.getElementById('quickNoteType').value;
+  
   if (noteContent) {
     // Create form and submit
     const form = document.createElement('form');
@@ -658,7 +888,7 @@ function addQuickNote() {
     const typeInput = document.createElement('input');
     typeInput.type = 'hidden';
     typeInput.name = 'note_type';
-    typeInput.value = 'internal';
+    typeInput.value = noteType;
     form.appendChild(typeInput);
     
     const contentInput = document.createElement('input');
