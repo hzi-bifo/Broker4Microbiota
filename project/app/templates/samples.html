@@ -387,7 +387,7 @@ html, body {
       <span class="icon">
         <i class="fas fa-arrow-left"></i>
       </span>
-      <span>Back to Orders</span>
+      <span>{% if from_admin %}Back to Admin Dashboard{% else %}Back to Orders{% endif %}</span>
     </button>
     <div>
       <button id="save" class="button is-success" onclick="validateSampleData()" disabled>
@@ -1144,12 +1144,19 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   window.redirectToOrders = function() {
+    var targetUrl;
+    {% if from_admin %}
+      targetUrl = "{% url 'admin_order_detail' order.id %}";
+    {% else %}
+      targetUrl = "{% url 'order_list' project_id=project_id %}";
+    {% endif %}
+    
     if (unsaved) {
       if (confirm('You have unsaved changes. Are you sure you want to leave this page?')) {
-        window.location.href = "{% url 'order_list' project_id=project_id %}";
+        window.location.href = targetUrl;
       }
     } else {
-      window.location.href = "{% url 'order_list' project_id=project_id %}";
+      window.location.href = targetUrl;
     }
   }
 

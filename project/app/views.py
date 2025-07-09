@@ -290,9 +290,16 @@ def metadata_view(request, project_id, order_id):
 def samples_view(request, project_id, order_id, sample_type):
 
     if request.user.is_authenticated:
-        project = get_object_or_404(Project, pk=project_id, user=request.user)
+        # Allow staff/admin users to access any project
+        if request.user.is_staff or request.user.is_superuser:
+            project = get_object_or_404(Project, pk=project_id)
+        else:
+            project = get_object_or_404(Project, pk=project_id, user=request.user)
 
         order = get_object_or_404(Order, pk=order_id, project=project)
+        
+        # Check if accessed from admin dashboard
+        from_admin = request.GET.get('from_admin', 'false').lower() == 'true'
 
         if not (sample_type in [SAMPLE_TYPE_NORMAL, SAMPLE_TYPE_ASSEMBLY, SAMPLE_TYPE_BIN, SAMPLE_TYPE_MAG]):
             raise Http404()
@@ -578,6 +585,7 @@ def samples_view(request, project_id, order_id, sample_type):
                 'headers_size': headers_size,
                 'sample_type': sample_type,
                 'field_metadata': json.dumps(field_metadata),
+                'from_admin': from_admin,
             })
     else:
         return redirect('login')

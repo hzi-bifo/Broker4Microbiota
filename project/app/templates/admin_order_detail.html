@@ -171,7 +171,7 @@ Order #{{ order.id }} - Admin View
             </table>
           </div>
           <div class="has-text-centered mt-3">
-            <a href="{% url 'samples_view' project.id order.id 1 %}" 
+            <a href="{% url 'samples_view' order.project.id order.id 1 %}?from_admin=true" 
                class="button is-primary" target="_blank">
               <span class="icon"><i class="fas fa-table"></i></span>
               <span>View/Edit All Samples in Spreadsheet</span>
@@ -939,7 +939,7 @@ function quickAdvance() {
 function showSampleDetails(sampleId) {
   // For now, just navigate to the samples view
   // In a future enhancement, this could show a modal with sample details
-  window.open(`{% url 'samples_view' order.project.id order.id 1 %}`, '_blank');
+  window.open(`{% url 'samples_view' order.project.id order.id 1 %}?from_admin=true`, '_blank');
 }
 </script>
 
