@@ -44,40 +44,60 @@ short/small description
 - [ ] for development reasons, add a button "fill in example data" thw would fill in example data that looks nice
 - [x] make a concept and implement that we have for each order a "stauts" information, eg.. that shouwls the user over a longer timie horizon whats happens with the order, at the beginning its like on the useer side to maark it like "ready for sequencing center", save the information in the db.. Then the sequencing center woudl do somethign (nto implement this but write a few lines in CLAUDE.md how thsi shoudl be done), so they change status to "sequenced" or something. So these fields sohlud be pre-determined and one normally following the next one. maybe present all stauts also somehow on the overview at http://127.0.0.1:8000/project/1/orders/, remember the status is per order maybe a nice way to show whats current status and what should be the next one and so on?
 
-## Admin Panel Integration for Order Management
 
-### Order Status Management (To be implemented)
-- [ ] Add a dedicated admin interface for managing order statuses
-- [ ] Create a dashboard view showing all orders grouped by status:
-  - Draft orders (user hasn't submitted yet)
-  - Ready for Sequencing (user submitted, awaiting facility review)
-  - Sequencing in Progress
-  - Sequencing Completed
-  - Data Processing
-  - Data Delivered
-  - Completed
-- [ ] Highlight newly submitted orders ("Ready for Sequencing") with:
-  - Visual indicators (badge, color coding)
-  - Notification system for admin users
-  - Quick actions to advance status or add notes
-- [ ] Add filters and search functionality:
-  - Filter by status, date submitted, user, project
-  - Search by order ID, sample IDs, user name
-- [ ] Batch actions for admin:
-  - Advance multiple orders to next status
-  - Export order details to CSV/Excel
-  - Generate sequencing worksheets
-- [ ] Order detail view in admin with:
-  - Complete order information
-  - Sample details with MIxS metadata
-  - Status history/timeline
-  - Admin notes/comments section
-  - File attachments (sequencing results, reports)
-- [ ] Email notifications:
-  - Notify users when status changes
-  - Notify admins when new orders are submitted
-- [ ] Integration with sequencing facility workflows:
-  - API endpoints for external systems
-  - Barcode generation for samples
-  - LIMS integration capabilities 
+## Integration with file system
+- [ ] sample should be able to be associated to reads, e.g. either a single file per sample or a set of files since it could be PE data (e.g. sample 1 is associated to `read_file1.fastq.gz` and `read_file2.fastq.gz`). The path to these reads should be stored in the the table that we already have called app_read, there is a column file 1 and file2, the full file path should be there, its associated to the sample. We have a simluation script that is generating sample entries but its not creating the files its in admin.py in create_test_reads. This is just adding path to the samples but its not creaing file, but creates read objects. 
 
+## Project submission
+
+- manually 
+
+## file upload to ENA of reads only (?)
+
+
+- we need a session ID that can be retrieved manually and be updated to a project
+- or go to "projects" -> select project and "Generate XML and create project submission" -> this will create ad project submitssion objects, which ccreates XML files that can be send to ENA. We have a under "project submisssions" then we have "register samples to ENA" which is currently failing. 
+- this should get an API response which is saved to Project submsissions, in "Recipt xml" this sould be parsed.
+- this requires env varibales in .env 
+- then its get a `study_accession_id"  submission ID in the response I think?
+
+e.g. here 
+
+CREATE TABLE IF NOT EXISTS "app_project" ("id" integer NOT NULL PRIMARY KEY AUTOINCREMENT, "title" varchar(100) NULL, "alias" varchar(100) NULL, "description" text NULL, "study_accession_id" varchar(100) NULL, "alternative_accession_id" varchar(100) NULL, "user_id" integer NOT NULL REFERENCES "auth_user" ("id") DEFERRABLE INITIALLY DEFERRED, "submitted" bool NOT NULL);
+CREATE INDEX "app_project_user_id_d99fd018" ON "app_project" ("user_id");
+
+this shoudl be parsed and shown in the admin panel. 
+
+- smaple uplaod process, todo, its just the registration of a sample
+
+
+
+## Start a MAG run from reads or set of reads
+
+The admin should have the ability to create a MAG run for a single sample or a set of samples. Logically it should be a set of samples 
+- A MAG has has a definition, which is in app_magrun, which is also referencing the reads. The idea. Mayb we can have a better user itnerface to define this run? There is also a app_magruninstance which has a ID, status and references to magrun which has location on disk where the files generated will exist. Magrun will ultimately call nextflow to create these files on disk. 
+
+- There is a admin function that takes a mag runs definition and "Run MAG pipeline" action, this will trigger a asynchounsous job at ... it creates a mag run instance object, mag run instance object references the unqiue path, create script.sh, passed to slurm async_call.py. When the slrum job completes, its then runs an associated hook app.hooks.process_mag_results which is in hooks.py
+
+- when jobs completed its updating mag run status depending on return code and since mag run created various things like genome binning, (created files on disk). the hook is creating objects in django wrapped around on-disk objects. e.g. for each of the reads its looking for the appropriate assembly, hooks.py, line 54, looking up assembly file on disk created by mag run and craeting an assembly object in django referencing that, thats important since we need it later for file upload. so this should be visible in the django admin panel somehow. 
+- when mag workflow si run, its creating files on disk, but django is not knowling anything of that so it creataes objects. 
+- assembly objects, twin objects, and alignment files as well... 
+- at this point we got the mag_run object and alignment object and multiple bins... 
+- [ ]the next step then is to show this in the admin panel what objects are there...
+
+
+- [ ] now its about a "submit" function that should be integrated to the app. 
+
+
+
+- [ ]  we have MAgRun oject it has a stauts, samplesheet content and cluster config... 
+
+# SUBMG
+
+- start a submg run for a project, Go to projecs table, admin script "Generate subMG run for this project" this  creasts sub_mg_runs which creatwes a bit Yaml file, which is a submg yaml file, its the input that submg needs
+
+submg instance reference submg definintion, is path on disk where the acutal yaml file is created. 
+
+when you click on a submg run definitoin and chose action run submg, it creates the ymal file fscript and kicked off, 
+
+yaml file -> submg -> generates 

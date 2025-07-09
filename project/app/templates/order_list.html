@@ -66,6 +66,17 @@ Order List
   opacity: 0.5;
 }
 
+/* Clickable progress step labels */
+.progress-step .step-label a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.progress-step .step-label a:hover {
+  color: #3273dc;
+  text-decoration: underline;
+}
+
 /* Submission Instructions Modal */
 .modal-card-body .content {
   margin: 0;
@@ -178,7 +189,9 @@ Order List
                   <div class="step-icon">
                     <i class="fas fa-check-circle"></i>
                   </div>
-                  <div class="step-label">Create Order</div>
+                  <div class="step-label">
+                    <a href="{% url 'order_edit' project_id=project_id order_id=order.id %}">Create Order</a>
+                  </div>
                 </div>
                 
                 <!-- Step 2: Metadata Setup -->
@@ -190,7 +203,13 @@ Order List
                       <i class="fas fa-clipboard-list"></i>
                     {% endif %}
                   </div>
-                  <div class="step-label">Configure Metadata</div>
+                  <div class="step-label">
+                    {% if order.show_metadata %}
+                      <a href="{% url 'metadata_view' project_id=project_id order_id=order.id %}">Configure Metadata</a>
+                    {% else %}
+                      Configure Metadata
+                    {% endif %}
+                  </div>
                   {% if order.show_metadata and order.get_selected_checklist %}
                     <div class="step-info">{{ order.get_selected_checklist }}</div>
                   {% endif %}
@@ -207,7 +226,13 @@ Order List
                       <i class="fas fa-dna disabled"></i>
                     {% endif %}
                   </div>
-                  <div class="step-label">Add Samples</div>
+                  <div class="step-label">
+                    {% if order.show_samples %}
+                      <a href="{% url 'samples_view' project_id=project_id order_id=order.id sample_type=1 %}">Add Samples</a>
+                    {% else %}
+                      Add Samples
+                    {% endif %}
+                  </div>
                   {% if order.show_samples %}
                     <div class="step-info">{{ order.get_sample_count }} sample{{ order.get_sample_count|pluralize }}</div>
                   {% endif %}
