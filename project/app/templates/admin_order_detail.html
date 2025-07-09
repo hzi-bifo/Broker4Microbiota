@@ -225,7 +225,17 @@ Order #{{ order.id }} - Admin View
                       <div class="level is-mobile">
                         <div class="level-left">
                           <p class="is-size-7 has-text-grey">
-                            <strong>{% if note.user %}{{ note.user.username }}{% else %}System{% endif %}</strong>
+                            <strong>
+                              {% if note.user %}
+                                {% if note.user.first_name or note.user.last_name %}
+                                  {{ note.user.first_name }} {{ note.user.last_name }}
+                                {% else %}
+                                  {{ note.user.username }}
+                                {% endif %}
+                              {% else %}
+                                System
+                              {% endif %}
+                            </strong>
                             • {{ note.created_at|date:"M d, Y H:i" }}
                           </p>
                         </div>

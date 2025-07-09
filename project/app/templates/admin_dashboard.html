@@ -24,6 +24,10 @@ Admin Dashboard - Sequencing Center Management
             <span class="icon"><i class="fas fa-download"></i></span>
             <span>Export</span>
           </a>
+          <a href="{% url 'admin_user_list' %}" class="button is-small is-info">
+            <span class="icon"><i class="fas fa-users"></i></span>
+            <span>Manage Users</span>
+          </a>
           <a href="/admin/" class="button is-small is-dark">
             <span class="icon"><i class="fas fa-cog"></i></span>
             <span>Django Admin</span>
@@ -136,7 +140,13 @@ Admin Dashboard - Sequencing Center Management
           <div class="timeline-content">
             <div class="is-size-7 has-text-grey mb-1">
               {{ activity.created_at|date:"M d, Y H:i" }}
-              {% if activity.user %} • {{ activity.user.username }}{% endif %}
+              {% if activity.user %} • 
+                {% if activity.user.first_name or activity.user.last_name %}
+                  {{ activity.user.first_name }} {{ activity.user.last_name }} ({{ activity.user.username }})
+                {% else %}
+                  {{ activity.user.username }}
+                {% endif %}
+              {% endif %}
             </div>
             <div>
               <strong>Order #{{ activity.order.id }}</strong> - 

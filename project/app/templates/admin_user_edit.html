@@ -1,0 +1,199 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Edit User - {{ edited_user.username }}
+{% endblock title %}
+
+{% block content %}
+<section class="section">
+  <div class="container" style="max-width: 800px;">
+    <nav class="breadcrumb mb-4" aria-label="breadcrumbs">
+      <ul>
+        <li><a href="{% url 'admin_dashboard' %}">Dashboard</a></li>
+        <li><a href="{% url 'admin_user_list' %}">Users</a></li>
+        <li class="is-active"><a href="#" aria-current="page">Edit {{ edited_user.username }}</a></li>
+      </ul>
+    </nav>
+
+    <div class="box">
+      <h1 class="title is-4">
+        <i class="fas fa-user-edit has-text-info"></i>
+        Edit User: {{ edited_user.username }}
+      </h1>
+
+      <form method="post">
+        {% csrf_token %}
+        
+        <div class="columns">
+          <div class="column is-6">
+            <div class="field">
+              <label class="label">{{ form.username.label }}</label>
+              <div class="control has-icons-left">
+                {{ form.username }}
+                <span class="icon is-small is-left">
+                  <i class="fas fa-user"></i>
+                </span>
+              </div>
+              {% if form.username.help_text %}
+              <p class="help">{{ form.username.help_text }}</p>
+              {% endif %}
+              {% if form.username.errors %}
+              <p class="help is-danger">{{ form.username.errors.0 }}</p>
+              {% endif %}
+            </div>
+          </div>
+          
+          <div class="column is-6">
+            <div class="field">
+              <label class="label">{{ form.email.label }}</label>
+              <div class="control has-icons-left">
+                {{ form.email }}
+                <span class="icon is-small is-left">
+                  <i class="fas fa-envelope"></i>
+                </span>
+              </div>
+              {% if form.email.help_text %}
+              <p class="help">{{ form.email.help_text }}</p>
+              {% endif %}
+              {% if form.email.errors %}
+              <p class="help is-danger">{{ form.email.errors.0 }}</p>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+
+        <div class="columns">
+          <div class="column is-6">
+            <div class="field">
+              <label class="label">{{ form.first_name.label }}</label>
+              <div class="control">
+                {{ form.first_name }}
+              </div>
+              {% if form.first_name.errors %}
+              <p class="help is-danger">{{ form.first_name.errors.0 }}</p>
+              {% endif %}
+            </div>
+          </div>
+          
+          <div class="column is-6">
+            <div class="field">
+              <label class="label">{{ form.last_name.label }}</label>
+              <div class="control">
+                {{ form.last_name }}
+              </div>
+              {% if form.last_name.errors %}
+              <p class="help is-danger">{{ form.last_name.errors.0 }}</p>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+
+        <hr>
+
+        <h3 class="title is-5">Permissions</h3>
+        
+        <div class="columns">
+          <div class="column is-4">
+            <div class="field">
+              <label class="checkbox">
+                {{ form.is_active }}
+                <strong>{{ form.is_active.label }}</strong>
+              </label>
+              {% if form.is_active.help_text %}
+              <p class="help">{{ form.is_active.help_text }}</p>
+              {% endif %}
+            </div>
+          </div>
+          
+          <div class="column is-4">
+            <div class="field">
+              <label class="checkbox">
+                {{ form.is_staff }}
+                <strong>{{ form.is_staff.label }}</strong>
+              </label>
+              {% if form.is_staff.help_text %}
+              <p class="help">{{ form.is_staff.help_text }}</p>
+              {% endif %}
+            </div>
+          </div>
+          
+          <div class="column is-4">
+            <div class="field">
+              <label class="checkbox">
+                {{ form.is_superuser }}
+                <strong>{{ form.is_superuser.label }}</strong>
+              </label>
+              {% if form.is_superuser.help_text %}
+              <p class="help">{{ form.is_superuser.help_text }}</p>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+
+        <hr>
+
+        <h3 class="title is-5">User Information</h3>
+        <div class="content">
+          <table class="table is-fullwidth">
+            <tbody>
+              <tr>
+                <th width="30%">Date Joined</th>
+                <td>{{ edited_user.date_joined|date:"M d, Y H:i" }}</td>
+              </tr>
+              <tr>
+                <th>Last Login</th>
+                <td>
+                  {% if edited_user.last_login %}
+                    {{ edited_user.last_login|date:"M d, Y H:i" }}
+                  {% else %}
+                    <span class="has-text-grey">Never logged in</span>
+                  {% endif %}
+                </td>
+              </tr>
+              <tr>
+                <th>Number of Projects</th>
+                <td>{{ edited_user.project_set.count }}</td>
+              </tr>
+              <tr>
+                <th>Number of Orders</th>
+                <td>{{ edited_user.project_set.all|length }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="field is-grouped is-grouped-right">
+          <div class="control">
+            <a href="{% url 'admin_user_list' %}" class="button is-light">
+              Cancel
+            </a>
+          </div>
+          <div class="control">
+            <button type="submit" class="button is-primary">
+              <span class="icon">
+                <i class="fas fa-save"></i>
+              </span>
+              <span>Save Changes</span>
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <!-- Password Reset Section -->
+    <div class="box mt-5">
+      <h3 class="title is-5">
+        <i class="fas fa-key has-text-warning"></i>
+        Password Management
+      </h3>
+      <p class="mb-3">To change this user's password, use the Django admin interface.</p>
+      <a href="/admin/auth/user/{{ edited_user.id }}/password/" class="button is-warning" target="_blank">
+        <span class="icon">
+          <i class="fas fa-external-link-alt"></i>
+        </span>
+        <span>Change Password in Django Admin</span>
+      </a>
+    </div>
+  </div>
+</section>
+{% endblock content %}

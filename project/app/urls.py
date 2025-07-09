@@ -30,4 +30,9 @@ urlpatterns = [
     path('admin-dashboard/orders/<int:order_id>/reject/', views_admin.admin_reject_order, name='admin_reject_order'),
     path('admin-dashboard/orders/export/', views_admin.admin_export_orders, name='admin_export_orders'),
     path('admin-dashboard/orders/bulk-update/', views_admin.admin_bulk_update_status, name='admin_bulk_update_status'),
+    
+    # User management
+    path('admin-dashboard/users/', views_admin.admin_user_list, name='admin_user_list'),
+    path('admin-dashboard/users/<int:user_id>/edit/', views_admin.admin_user_edit, name='admin_user_edit'),
+    path('admin-dashboard/users/create/', views_admin.admin_user_create, name='admin_user_create'),
 ]

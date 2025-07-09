@@ -13,8 +13,9 @@ from django.views.decorators.http import require_http_methods
 from collections import OrderedDict
 import csv
 
-from .models import Order, Project, StatusNote, Sample, User, SAMPLE_TYPE_NORMAL
-from .forms import StatusUpdateForm, OrderNoteForm, OrderRejectionForm
+from .models import Order, Project, StatusNote, Sample, SAMPLE_TYPE_NORMAL
+from django.contrib.auth.models import User
+from .forms import StatusUpdateForm, OrderNoteForm, OrderRejectionForm, UserEditForm, UserCreateForm
 
 
 @staff_member_required
@@ -349,3 +350,95 @@ def admin_bulk_update_status(request):
             messages.error(request, 'Please select orders and a new status')
     
     return redirect('admin_order_list')
+
+
+@staff_member_required
+def admin_user_list(request):
+    """
+    List all users with ability to filter by staff/superuser status
+    """
+    # Get filter parameters
+    user_type = request.GET.get('type', '')
+    search = request.GET.get('search', '')
+    
+    # Start with all users
+    users = User.objects.all()
+    
+    # Apply filters
+    if user_type == 'staff':
+        users = users.filter(is_staff=True)
+    elif user_type == 'superuser':
+        users = users.filter(is_superuser=True)
+    elif user_type == 'regular':
+        users = users.filter(is_staff=False)
+    
+    if search:
+        users = users.filter(
+            Q(username__icontains=search) |
+            Q(first_name__icontains=search) |
+            Q(last_name__icontains=search) |
+            Q(email__icontains=search)
+        )
+    
+    # Order by username
+    users = users.order_by('username')
+    
+    # Pagination
+    paginator = Paginator(users, 25)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    
+    context = {
+        'page_obj': page_obj,
+        'current_filters': {
+            'type': user_type,
+            'search': search,
+        }
+    }
+    
+    return render(request, 'admin_user_list.html', context)
+
+
+@staff_member_required
+def admin_user_edit(request, user_id):
+    """
+    Edit user details
+    """
+    user = get_object_or_404(User, pk=user_id)
+    
+    if request.method == 'POST':
+        form = UserEditForm(request.POST, instance=user)
+        if form.is_valid():
+            form.save()
+            messages.success(request, f'User {user.username} updated successfully')
+            return redirect('admin_user_list')
+    else:
+        form = UserEditForm(instance=user)
+    
+    context = {
+        'form': form,
+        'edited_user': user,
+    }
+    
+    return render(request, 'admin_user_edit.html', context)
+
+
+@staff_member_required
+def admin_user_create(request):
+    """
+    Create a new user
+    """
+    if request.method == 'POST':
+        form = UserCreateForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            messages.success(request, f'User {user.username} created successfully')
+            return redirect('admin_user_list')
+    else:
+        form = UserCreateForm()
+    
+    context = {
+        'form': form,
+    }
+    
+    return render(request, 'admin_user_create.html', context)
