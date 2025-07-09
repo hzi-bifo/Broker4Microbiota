@@ -23,6 +23,8 @@ urlpatterns = [
     
     # Admin views
     path('admin-dashboard/', views_admin.admin_dashboard, name='admin_dashboard'),
+    path('admin-dashboard/projects/', views_admin.admin_project_list, name='admin_project_list'),
+    path('admin-dashboard/projects/<int:project_id>/', views_admin.admin_project_detail, name='admin_project_detail'),
     path('admin-dashboard/orders/', views_admin.admin_order_list, name='admin_order_list'),
     path('admin-dashboard/orders/<int:order_id>/', views_admin.admin_order_detail, name='admin_order_detail'),
     path('admin-dashboard/orders/<int:order_id>/update-status/', views_admin.admin_update_order_status, name='admin_update_order_status'),
@@ -30,6 +32,7 @@ urlpatterns = [
     path('admin-dashboard/orders/<int:order_id>/update-technical/', views_admin.admin_update_technical_details, name='admin_update_technical_details'),
     path('admin-dashboard/samples/<int:sample_id>/fields/', views_admin.admin_get_sample_fields, name='admin_get_sample_fields'),
     path('admin-dashboard/orders/<int:order_id>/reject/', views_admin.admin_reject_order, name='admin_reject_order'),
+    path('admin-dashboard/orders/<int:order_id>/simulate-reads/', views_admin.admin_simulate_reads, name='admin_simulate_reads'),
     path('admin-dashboard/orders/export/', views_admin.admin_export_orders, name='admin_export_orders'),
     path('admin-dashboard/orders/bulk-update/', views_admin.admin_bulk_update_status, name='admin_bulk_update_status'),
     

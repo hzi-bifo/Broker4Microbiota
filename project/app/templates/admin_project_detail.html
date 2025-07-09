@@ -1,0 +1,588 @@
+{% extends 'base.html' %}
+
+{% block title %}
+{{ project.title }} - Project Details
+{% endblock title %}
+
+{% block content %}
+<section class="section">
+  <div class="container is-fluid" style="max-width: 1920px;">
+    <!-- Header with Breadcrumb -->
+    <nav class="breadcrumb mb-4" aria-label="breadcrumbs">
+      <ul>
+        <li><a href="{% url 'admin_dashboard' %}">Dashboard</a></li>
+        <li><a href="{% url 'admin_project_list' %}">Projects</a></li>
+        <li class="is-active"><a href="#" aria-current="page">{{ project.title|truncatechars:50 }}</a></li>
+      </ul>
+    </nav>
+
+    <!-- Project Header -->
+    <div class="box mb-4">
+      <div class="level">
+        <div class="level-left">
+          <div>
+            <h1 class="title is-4 mb-2">
+              {{ project.title }}
+              {% if project.submitted %}
+              <span class="tag is-success ml-2">
+                <span class="icon">
+                  <i class="fas fa-check-circle"></i>
+                </span>
+                <span>ENA Registered</span>
+              </span>
+              {% endif %}
+            </h1>
+            <p class="is-size-7">
+              <strong>User:</strong> {{ project.user.username }} ({{ project.user.email }}) • 
+              <strong>Alias:</strong> {{ project.alias|default:"-" }} •
+              {% if project.study_accession_id %}
+              <strong>ENA Accession:</strong> {{ project.study_accession_id }}
+              {% endif %}
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- File Status Alert -->
+    {% if total_samples > 0 and samples_with_files < total_samples %}
+    <div class="notification is-warning is-light mb-4">
+      <div class="level is-mobile">
+        <div class="level-left">
+          <div class="level-item">
+            <span class="icon">
+              <i class="fas fa-exclamation-triangle"></i>
+            </span>
+          </div>
+          <div class="level-item">
+            <strong>Missing FASTQ files:</strong> Only {{ samples_with_files }} of {{ total_samples }} samples have associated sequencing files.
+          </div>
+        </div>
+        <div class="level-right">
+          <progress class="progress is-warning" value="{{ file_completion }}" max="100">{{ file_completion }}%</progress>
+        </div>
+      </div>
+    </div>
+    {% endif %}
+
+    <!-- Workflow Progress -->
+    <div class="box mb-4">
+      <h4 class="title is-5 mb-4">
+        <i class="fas fa-tasks"></i> Project Workflow Progress
+      </h4>
+      
+      <div class="workflow-container">
+        <div class="workflow-step {% if workflow_status.project_created %}completed{% endif %}">
+          <div class="step-icon">
+            <i class="fas fa-project-diagram"></i>
+          </div>
+          <div class="step-label">Project Created</div>
+        </div>
+        
+        <div class="workflow-arrow">
+          <i class="fas fa-chevron-right"></i>
+        </div>
+        
+        <div class="workflow-step {% if workflow_status.ena_registered %}completed{% endif %}">
+          <div class="step-icon">
+            <i class="fas fa-cloud-upload-alt"></i>
+          </div>
+          <div class="step-label">Register at ENA</div>
+        </div>
+        
+        <div class="workflow-arrow">
+          <i class="fas fa-chevron-right"></i>
+        </div>
+        
+        <div class="workflow-step {% if workflow_status.files_complete %}completed{% endif %}">
+          <div class="step-icon">
+            <i class="fas fa-file-archive"></i>
+          </div>
+          <div class="step-label">Files Complete</div>
+        </div>
+        
+        <div class="workflow-arrow">
+          <i class="fas fa-chevron-right"></i>
+        </div>
+        
+        <div class="workflow-step {% if workflow_status.mag_pipeline_run %}completed{% endif %}">
+          <div class="step-icon">
+            <i class="fas fa-dna"></i>
+          </div>
+          <div class="step-label">Run MAG Pipeline</div>
+        </div>
+        
+        <div class="workflow-arrow">
+          <i class="fas fa-chevron-right"></i>
+        </div>
+        
+        <div class="workflow-step {% if workflow_status.submg_pipeline_run %}completed{% endif %}">
+          <div class="step-icon">
+            <i class="fas fa-microscope"></i>
+          </div>
+          <div class="step-label">Run SubMG</div>
+        </div>
+        
+        <div class="workflow-arrow">
+          <i class="fas fa-chevron-right"></i>
+        </div>
+        
+        <div class="workflow-step {% if workflow_status.assemblies_uploaded %}completed{% endif %}">
+          <div class="step-icon">
+            <i class="fas fa-upload"></i>
+          </div>
+          <div class="step-label">Upload Assemblies</div>
+        </div>
+      </div>
+      
+      <!-- Action Buttons -->
+      <div class="workflow-actions mt-5">
+        <div class="buttons is-centered">
+          <button class="button is-primary" disabled title="Coming soon">
+            <span class="icon">
+              <i class="fas fa-cloud-upload-alt"></i>
+            </span>
+            <span>Register Project at ENA</span>
+          </button>
+          
+          <button class="button is-info" disabled title="Coming soon">
+            <span class="icon">
+              <i class="fas fa-dna"></i>
+            </span>
+            <span>Run MAG Pipeline</span>
+          </button>
+          
+          <button class="button is-warning" disabled title="Coming soon">
+            <span class="icon">
+              <i class="fas fa-microscope"></i>
+            </span>
+            <span>Run SubMG Pipeline</span>
+          </button>
+          
+          <button class="button is-success" disabled title="Coming soon">
+            <span class="icon">
+              <i class="fas fa-upload"></i>
+            </span>
+            <span>Upload Assemblies</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="columns">
+      <!-- Left Column - Statistics -->
+      <div class="column is-4">
+        <!-- Project Info -->
+        <div class="box mb-4">
+          <h4 class="title is-6 mb-3">
+            <i class="fas fa-info-circle"></i> Project Information
+          </h4>
+          <table class="table is-fullwidth">
+            <tbody>
+              <tr>
+                <th>Title</th>
+                <td>{{ project.title }}</td>
+              </tr>
+              <tr>
+                <th>Alias</th>
+                <td>{{ project.alias|default:"-" }}</td>
+              </tr>
+              <tr>
+                <th>Description</th>
+                <td>{{ project.description|default:"-"|linebreaks }}</td>
+              </tr>
+              <tr>
+                <th>ENA Status</th>
+                <td>
+                  {% if project.submitted %}
+                    <span class="has-text-success">
+                      <i class="fas fa-check-circle"></i> Registered
+                    </span>
+                  {% else %}
+                    <span class="has-text-grey">
+                      <i class="fas fa-times-circle"></i> Not Registered
+                    </span>
+                  {% endif %}
+                </td>
+              </tr>
+              {% if project.study_accession_id %}
+              <tr>
+                <th>Study Accession</th>
+                <td><code>{{ project.study_accession_id }}</code></td>
+              </tr>
+              {% endif %}
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Statistics -->
+        <div class="box mb-4">
+          <h4 class="title is-6 mb-3">
+            <i class="fas fa-chart-bar"></i> Statistics
+          </h4>
+          <div class="content">
+            <p><strong>Total Orders:</strong> {{ orders.count }}</p>
+            <p><strong>Total Samples:</strong> {{ total_samples }}</p>
+            <p><strong>Samples with Files:</strong> {{ samples_with_files }}/{{ total_samples }} ({{ file_completion }}%)</p>
+            
+            {% if order_status_counts %}
+            <p class="mt-3"><strong>Order Status Breakdown:</strong></p>
+            <ul>
+              {% for status, count in order_status_counts.items %}
+              <li>{{ status }}: {{ count }}</li>
+              {% endfor %}
+            </ul>
+            {% endif %}
+          </div>
+        </div>
+
+        <!-- Sample File Status -->
+        {% if sample_file_details %}
+        <div class="box">
+          <h4 class="title is-6 mb-3">
+            <i class="fas fa-file"></i> Sample File Status
+          </h4>
+          <div class="content">
+            <table class="table is-narrow is-fullwidth">
+              <thead>
+                <tr>
+                  <th>Sample ID</th>
+                  <th>Files</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for detail in sample_file_details %}
+                <tr>
+                  <td>{{ detail.sample.sample_id|default:detail.sample.sample_alias|truncatechars:20 }}</td>
+                  <td>
+                    {% if detail.has_files %}
+                      <span class="has-text-success">
+                        <i class="fas fa-check"></i> {{ detail.read_count }} file{{ detail.read_count|pluralize }}
+                      </span>
+                    {% else %}
+                      <span class="has-text-danger">
+                        <i class="fas fa-times"></i> Missing
+                      </span>
+                    {% endif %}
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+            {% if has_more_samples %}
+            <p class="has-text-grey is-size-7">Showing first 10 samples...</p>
+            {% endif %}
+          </div>
+        </div>
+        {% endif %}
+      </div>
+
+      <!-- Right Column - Orders -->
+      <div class="column is-8">
+        <div class="box">
+          <h4 class="title is-6 mb-3">
+            <i class="fas fa-clipboard-list"></i> Orders ({{ orders.count }})
+          </h4>
+          
+          {% if orders %}
+          <div class="orders-list">
+            {% for order in orders %}
+            <div class="order-card mb-3">
+              <div class="card">
+                <header class="card-header">
+                  <p class="card-header-title">
+                    Order #{{ order.id }} - {{ order.name|default:"Unnamed" }}
+                    <span class="tag ml-2 {{ order.get_status_display_color }}">
+                      {{ order.get_status_display }}
+                    </span>
+                  </p>
+                  <button class="card-header-icon" aria-label="more options" onclick="toggleOrderDetails({{ order.id }})">
+                    <span class="icon">
+                      <i class="fas fa-angle-down" id="order-toggle-{{ order.id }}"></i>
+                    </span>
+                  </button>
+                </header>
+                <div class="card-content" id="order-details-{{ order.id }}" style="display: none;">
+                  <div class="content">
+                    <table class="table is-narrow is-fullwidth">
+                      <tbody>
+                        <tr>
+                          <th width="30%">Date</th>
+                          <td>{{ order.date|date:"M d, Y"|default:"-" }}</td>
+                        </tr>
+                        <tr>
+                          <th>Contact</th>
+                          <td>{{ order.email|default:"-" }}</td>
+                        </tr>
+                        <tr>
+                          <th>Platform</th>
+                          <td>{{ order.platform|default:"-" }}</td>
+                        </tr>
+                        <tr>
+                          <th>Samples</th>
+                          <td>{{ order.sample_set.count }}</td>
+                        </tr>
+                        <tr>
+                          <th>Status Updated</th>
+                          <td>{{ order.status_updated_at|date:"M d, Y H:i" }}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                    <div class="buttons">
+                      <a href="{% url 'admin_order_detail' order.id %}" class="button is-small is-primary">
+                        <span class="icon">
+                          <i class="fas fa-eye"></i>
+                        </span>
+                        <span>View Order Details</span>
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+          {% else %}
+          <p class="has-text-grey">No orders have been created for this project yet.</p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+/* Clean, Simple Design */
+body {
+  background-color: #f8f9fa;
+}
+
+/* Clean Box Style */
+.box {
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  border-radius: 8px;
+}
+
+/* Workflow Visualization */
+.workflow-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 0;
+  overflow-x: auto;
+}
+
+.workflow-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 100px;
+  opacity: 0.4;
+  transition: opacity 0.3s ease;
+}
+
+.workflow-step.completed {
+  opacity: 1;
+}
+
+.step-icon {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background-color: #f5f5f5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  color: #b5b5b5;
+  margin-bottom: 0.5rem;
+  transition: all 0.3s ease;
+}
+
+.workflow-step.completed .step-icon {
+  background-color: #48c774;
+  color: white;
+}
+
+.step-label {
+  font-size: 0.875rem;
+  text-align: center;
+  max-width: 100px;
+  color: #6c757d;
+}
+
+.workflow-step.completed .step-label {
+  color: #363636;
+  font-weight: 500;
+}
+
+.workflow-arrow {
+  font-size: 1.5rem;
+  color: #dbdbdb;
+  margin: 0 1rem;
+}
+
+.workflow-actions {
+  text-align: center;
+  padding-top: 1rem;
+  border-top: 1px solid #e9ecef;
+}
+
+/* Order Cards */
+.order-card .card {
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  transition: all 0.3s ease;
+}
+
+.order-card .card:hover {
+  box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+}
+
+.card-header {
+  background-color: #f8f9fa;
+}
+
+.card-header-title {
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+/* Clean Table */
+.table {
+  background: transparent;
+}
+
+.table th {
+  font-weight: 600;
+  color: #6c757d;
+  padding: 0.5rem;
+}
+
+.table td {
+  padding: 0.5rem;
+}
+
+.table.is-narrow td, .table.is-narrow th {
+  padding: 0.25rem 0.5rem;
+}
+
+/* Tags */
+.tag {
+  border-radius: 4px;
+  font-weight: 500;
+}
+
+/* Buttons */
+.button {
+  border-radius: 6px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  border: none;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+}
+
+.button:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.button.is-primary {
+  background-color: #3273dc;
+  color: white;
+}
+
+.button.is-primary:hover:not(:disabled) {
+  background-color: #2366d1;
+  color: white;
+}
+
+.button.is-info {
+  background-color: #3298dc;
+  color: white;
+}
+
+.button.is-info:hover:not(:disabled) {
+  background-color: #2388cc;
+  color: white;
+}
+
+.button.is-warning {
+  background-color: #ffdd57;
+  color: rgba(0,0,0,.7);
+}
+
+.button.is-warning:hover:not(:disabled) {
+  background-color: #ffd83d;
+  color: rgba(0,0,0,.7);
+}
+
+.button.is-success {
+  background-color: #48c774;
+  color: white;
+}
+
+.button.is-success:hover:not(:disabled) {
+  background-color: #3ec46d;
+  color: white;
+}
+
+/* Progress bar */
+.progress {
+  width: 150px;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .workflow-container {
+    flex-wrap: wrap;
+  }
+  
+  .workflow-arrow {
+    transform: rotate(90deg);
+    margin: 1rem 0;
+  }
+}
+
+@media (max-width: 768px) {
+  .button span:not(.icon) {
+    display: none;
+  }
+  
+  .workflow-step {
+    min-width: 80px;
+  }
+  
+  .step-icon {
+    width: 50px;
+    height: 50px;
+    font-size: 1.25rem;
+  }
+  
+  .step-label {
+    font-size: 0.75rem;
+  }
+}
+</style>
+
+<script>
+function toggleOrderDetails(orderId) {
+  const details = document.getElementById(`order-details-${orderId}`);
+  const toggle = document.getElementById(`order-toggle-${orderId}`);
+  
+  if (details.style.display === 'none') {
+    details.style.display = 'block';
+    toggle.classList.remove('fa-angle-down');
+    toggle.classList.add('fa-angle-up');
+  } else {
+    details.style.display = 'none';
+    toggle.classList.remove('fa-angle-up');
+    toggle.classList.add('fa-angle-down');
+  }
+}
+</script>
+{% endblock content %}

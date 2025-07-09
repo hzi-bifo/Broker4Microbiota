@@ -219,21 +219,63 @@ Order #{{ order.id }} - Admin View
 
         <!-- Samples Section -->
         <div class="box">
-          <h4 class="title is-6 mb-3">
-            <i class="fas fa-vials"></i> Samples ({{ samples.count }})
-          </h4>
+          <div class="level">
+            <div class="level-left">
+              <h4 class="title is-6 mb-3">
+                <i class="fas fa-vials"></i> Samples ({{ samples.count }})
+                {% if samples.count > 0 %}
+                <span class="tag is-light ml-2">
+                  <span class="icon">
+                    <i class="fas fa-dna"></i>
+                  </span>
+                  <span>{{ samples_with_reads }}/{{ samples.count }} with reads ({{ read_completion_percentage }}%)</span>
+                </span>
+                {% endif %}
+              </h4>
+            </div>
+            <div class="level-right">
+              {% if samples_without_reads > 0 %}
+              <form method="post" action="{% url 'admin_simulate_reads' order.id %}" style="display: inline;">
+                {% csrf_token %}
+                <button type="submit" class="button is-warning is-small" 
+                        onclick="return confirm('This will create simulated FASTQ files for {{ samples_without_reads }} sample{{ samples_without_reads|pluralize }}. Continue?')">
+                  <span class="icon">
+                    <i class="fas fa-magic"></i>
+                  </span>
+                  <span>Simulate Reads</span>
+                </button>
+              </form>
+              {% endif %}
+            </div>
+          </div>
+          
+          {% if samples_without_reads > 0 %}
+          <div class="notification is-warning is-light">
+            <p>
+              <span class="icon">
+                <i class="fas fa-exclamation-triangle"></i>
+              </span>
+              <strong>{{ samples_without_reads }} sample{{ samples_without_reads|pluralize }} missing read files.</strong>
+              Use the "Simulate Reads" button to create test FASTQ files for development/testing.
+            </p>
+            <progress class="progress is-warning is-small mt-2" value="{{ read_completion_percentage }}" max="100">
+              {{ read_completion_percentage }}%
+            </progress>
+          </div>
+          {% endif %}
           
           {% if samples %}
           <div class="table-container">
             <table class="table is-fullwidth is-striped">
               <thead>
                 <tr>
-                  <th width="15%">Sample ID</th>
-                  <th width="25%">Title</th>
-                  <th width="20%">Scientific Name</th>
-                  <th width="15%">Collection Date</th>
-                  <th width="15%">Organism</th>
-                  <th width="10%">Actions</th>
+                  <th width="12%">Sample ID</th>
+                  <th width="20%">Title</th>
+                  <th width="18%">Scientific Name</th>
+                  <th width="12%">Collection Date</th>
+                  <th width="12%">Organism</th>
+                  <th width="12%">Read Files</th>
+                  <th width="14%">Actions</th>
                 </tr>
               </thead>
               <tbody>
@@ -246,6 +288,23 @@ Order #{{ order.id }} - Admin View
                   <td><em>{{ sample.scientific_name|default:"-" }}</em></td>
                   <td>{{ sample.collection_date|default:"-" }}</td>
                   <td>{{ sample.organism|default:"-" }}</td>
+                  <td>
+                    {% if sample.read_set.exists %}
+                      <span class="tag is-success">
+                        <span class="icon">
+                          <i class="fas fa-check"></i>
+                        </span>
+                        <span>{{ sample.read_set.count }} file{{ sample.read_set.count|pluralize:" pair,pairs" }}</span>
+                      </span>
+                    {% else %}
+                      <span class="tag is-light">
+                        <span class="icon">
+                          <i class="fas fa-times"></i>
+                        </span>
+                        <span>No reads</span>
+                      </span>
+                    {% endif %}
+                  </td>
                   <td>
                     <div class="buttons">
                       <button class="button is-small is-info" onclick="showSampleDetails({{ sample.id }})" title="View Details">
@@ -1159,6 +1218,29 @@ function toggleSampleFields(sampleId) {
           }
           
           html += '</div></div>';
+          
+          // Read files section if available
+          if (data.read_files && data.read_files.length > 0) {
+            html += '<div class="mt-4">';
+            html += '<h5 class="subtitle is-6 has-text-weight-semibold mb-3"><i class="fas fa-dna"></i> Sequencing Read Files</h5>';
+            html += '<table class="table is-narrow is-fullwidth">';
+            html += '<thead><tr><th>File Type</th><th>Path</th><th>MD5 Checksum</th></tr></thead>';
+            html += '<tbody>';
+            data.read_files.forEach((read, index) => {
+              html += '<tr>';
+              html += '<td><strong>Forward (R1)</strong></td>';
+              html += `<td class="is-family-monospace is-size-7">${read.file_1}</td>`;
+              html += `<td class="is-family-monospace">${read.checksum_1}</td>`;
+              html += '</tr>';
+              html += '<tr>';
+              html += '<td><strong>Reverse (R2)</strong></td>';
+              html += `<td class="is-family-monospace is-size-7">${read.file_2}</td>`;
+              html += `<td class="is-family-monospace">${read.checksum_2}</td>`;
+              html += '</tr>';
+            });
+            html += '</tbody></table>';
+            html += '</div>';
+          }
           
           fieldsDisplay.innerHTML = html;
         })

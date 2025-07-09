@@ -16,6 +16,10 @@ Admin Dashboard - Sequencing Center Management
       </div>
       <div class="level-right">
         <div class="buttons">
+          <a href="{% url 'admin_project_list' %}" class="button is-small is-success">
+            <span class="icon"><i class="fas fa-project-diagram"></i></span>
+            <span>All Projects</span>
+          </a>
           <a href="{% url 'admin_order_list' %}" class="button is-small is-primary">
             <span class="icon"><i class="fas fa-list"></i></span>
             <span>All Orders</span>
@@ -216,7 +220,7 @@ Admin Dashboard - Sequencing Center Management
           <div class="level-item has-text-grey">
             <small>
               <i class="fas fa-project-diagram mr-1"></i>
-              {{ stats.active_projects }} active project{{ stats.active_projects|pluralize }}
+              {{ stats.total_projects }} total project{{ stats.total_projects|pluralize }} ({{ stats.active_projects }} active)
             </small>
           </div>
           <div class="level-item has-text-grey">

@@ -1,0 +1,438 @@
+{% extends 'base.html' %}
+
+{% block title %}
+All Projects - Admin View
+{% endblock title %}
+
+{% block content %}
+<section class="section">
+  <div class="container is-fluid" style="max-width: 1920px;">
+    <div class="level">
+      <div class="level-left">
+        <h1 class="title is-3">
+          <i class="fas fa-project-diagram has-text-primary"></i>
+          All Projects
+        </h1>
+      </div>
+      <div class="level-right">
+        <a href="{% url 'admin_dashboard' %}" class="button is-light">
+          <span class="icon">
+            <i class="fas fa-arrow-left"></i>
+          </span>
+          <span>Back to Dashboard</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- Summary Cards -->
+    <div class="columns mb-5">
+      <div class="column is-3">
+        <div class="box has-text-centered">
+          <p class="heading">Total Projects</p>
+          <p class="title">{{ total_projects }}</p>
+        </div>
+      </div>
+      <div class="column is-3">
+        <div class="box has-text-centered">
+          <p class="heading">ENA Registered</p>
+          <p class="title has-text-grey">
+            N/A
+          </p>
+        </div>
+      </div>
+      <div class="column is-3">
+        <div class="box has-text-centered">
+          <p class="heading">Files Complete</p>
+          <p class="title has-text-grey">
+            N/A
+          </p>
+        </div>
+      </div>
+      <div class="column is-3">
+        <div class="box has-text-centered">
+          <p class="heading">Active Projects</p>
+          <p class="title has-text-grey">
+            N/A
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Filters -->
+    <div class="box mb-5">
+      <form method="get" action="{% url 'admin_project_list' %}">
+        <div class="columns">
+          <div class="column is-4">
+            <div class="field">
+              <label class="label is-small">Search</label>
+              <div class="control has-icons-left">
+                <input class="input" type="text" name="search" 
+                       placeholder="Project title, alias, user..." 
+                       value="{{ search_query }}">
+                <span class="icon is-left">
+                  <i class="fas fa-search"></i>
+                </span>
+              </div>
+            </div>
+          </div>
+          
+          <div class="column is-3">
+            <div class="field">
+              <label class="label is-small">ENA Status</label>
+              <div class="control">
+                <select name="status" class="input">
+                  <option value="">All Projects</option>
+                  <option value="registered" {% if status_filter == "registered" %}selected{% endif %}>
+                    ENA Registered
+                  </option>
+                  <option value="not_registered" {% if status_filter == "not_registered" %}selected{% endif %}>
+                    Not Registered
+                  </option>
+                </select>
+              </div>
+            </div>
+          </div>
+          
+          <div class="column is-2">
+            <div class="field">
+              <label class="label is-small">&nbsp;</label>
+              <div class="control">
+                <button type="submit" class="button is-primary is-fullwidth">
+                  <span class="icon">
+                    <i class="fas fa-filter"></i>
+                  </span>
+                  <span>Filter</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <!-- Projects Table -->
+    <div class="table-container">
+      <table class="table is-fullwidth is-striped is-hoverable">
+        <thead>
+          <tr>
+            <th>Project</th>
+            <th>User</th>
+            <th>Orders</th>
+            <th>Samples</th>
+            <th>File Status</th>
+            <th>ENA Status</th>
+            <th>Workflow</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for item in page_obj %}
+          <tr>
+            <td>
+              <strong>{{ item.project.title|truncatechars:40 }}</strong>
+              {% if item.project.alias %}
+              <br><small class="has-text-grey">{{ item.project.alias }}</small>
+              {% endif %}
+            </td>
+            <td>
+              <strong>{{ item.project.user.username }}</strong>
+              <br><small class="has-text-grey">{{ item.project.user.email }}</small>
+            </td>
+            <td>
+              <span class="tag is-light">
+                {{ item.order_count }} order{{ item.order_count|pluralize }}
+              </span>
+            </td>
+            <td>
+              <span class="tag is-light">
+                {{ item.sample_count }} sample{{ item.sample_count|pluralize }}
+              </span>
+            </td>
+            <td>
+              {% if item.sample_count > 0 %}
+                <div class="has-text-centered">
+                  <progress class="progress {% if item.has_all_files %}is-success{% elif item.file_completion >= 50 %}is-warning{% else %}is-danger{% endif %} is-small mb-1" 
+                            value="{{ item.file_completion }}" max="100">{{ item.file_completion }}%</progress>
+                  <small>{{ item.samples_with_files }}/{{ item.sample_count }} ({{ item.file_completion }}%)</small>
+                  {% if not item.has_all_files and item.sample_count > 0 %}
+                  <br><span class="has-text-danger is-size-7">
+                    <i class="fas fa-exclamation-triangle"></i> Missing files
+                  </span>
+                  {% endif %}
+                </div>
+              {% else %}
+                <span class="has-text-grey">No samples</span>
+              {% endif %}
+            </td>
+            <td>
+              {% if item.project.submitted %}
+                <span class="tag is-success">
+                  <span class="icon">
+                    <i class="fas fa-check-circle"></i>
+                  </span>
+                  <span>Registered</span>
+                </span>
+                {% if item.project.study_accession_id %}
+                <br><small class="has-text-grey">{{ item.project.study_accession_id }}</small>
+                {% endif %}
+              {% else %}
+                <span class="tag is-light">
+                  <span class="icon">
+                    <i class="fas fa-times-circle"></i>
+                  </span>
+                  <span>Not Registered</span>
+                </span>
+              {% endif %}
+            </td>
+            <td>
+              <div class="buttons are-small">
+                <button class="button is-light" disabled title="Register project at ENA">
+                  <span class="icon">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                  </span>
+                  <span>ENA</span>
+                </button>
+                <button class="button is-light" disabled title="Run MAG pipeline">
+                  <span class="icon">
+                    <i class="fas fa-dna"></i>
+                  </span>
+                  <span>MAG</span>
+                </button>
+              </div>
+            </td>
+            <td>
+              <a href="{% url 'admin_project_detail' item.project.id %}" 
+                 class="button is-primary is-small">
+                <span class="icon">
+                  <i class="fas fa-eye"></i>
+                </span>
+                <span>View</span>
+              </a>
+            </td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="8" class="has-text-centered has-text-grey">
+              No projects found matching your criteria.
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Pagination -->
+    {% if page_obj.has_other_pages %}
+    <nav class="pagination is-centered mt-5" role="navigation" aria-label="pagination">
+      {% if page_obj.has_previous %}
+      <a href="?page={{ page_obj.previous_page_number }}&{{ request.GET.urlencode }}" 
+         class="pagination-previous">Previous</a>
+      {% else %}
+      <a class="pagination-previous" disabled>Previous</a>
+      {% endif %}
+
+      {% if page_obj.has_next %}
+      <a href="?page={{ page_obj.next_page_number }}&{{ request.GET.urlencode }}" 
+         class="pagination-next">Next</a>
+      {% else %}
+      <a class="pagination-next" disabled>Next</a>
+      {% endif %}
+
+      <ul class="pagination-list">
+        {% for num in page_obj.paginator.page_range %}
+          {% if page_obj.number == num %}
+            <li><a class="pagination-link is-current" aria-current="page">{{ num }}</a></li>
+          {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+            <li><a href="?page={{ num }}&{{ request.GET.urlencode }}" class="pagination-link">{{ num }}</a></li>
+          {% endif %}
+        {% endfor %}
+      </ul>
+    </nav>
+    {% endif %}
+  </div>
+</section>
+
+<style>
+/* Clean, Simple Design */
+body {
+  background-color: #f8f9fa;
+}
+
+/* Override Bulma select wrapper to prevent double borders */
+.select {
+  display: block;
+  position: relative;
+}
+
+.select:not(.is-multiple):not(.is-loading)::after {
+  display: none !important;
+}
+
+.select select {
+  padding-right: 2.5em;
+}
+
+/* Clean Box Style */
+.box {
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  border-radius: 8px;
+}
+
+/* Clean Table */
+.table {
+  background: white;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.table th {
+  background-color: #f8f9fa;
+  border-bottom: 2px solid #dee2e6;
+  font-weight: 600;
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #6c757d;
+  padding: 1rem;
+}
+
+.table td {
+  vertical-align: middle;
+  padding: 1rem;
+}
+
+.table.is-hoverable tbody tr:hover {
+  background-color: #f8f9fa;
+}
+
+/* Progress bar styling */
+.progress {
+  height: 0.5rem;
+}
+
+.progress.is-small {
+  height: 0.375rem;
+}
+
+/* Tags */
+.tag {
+  border-radius: 4px;
+  font-weight: 500;
+}
+
+/* Buttons - Cleaner */
+.button {
+  border-radius: 6px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  border: none;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+}
+
+.button:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.button.is-primary {
+  background-color: #3273dc;
+  color: white;
+}
+
+.button.is-primary:hover {
+  background-color: #2366d1;
+  color: white;
+}
+
+.button.is-light {
+  background-color: #f5f5f5;
+  color: #363636;
+}
+
+.button.is-light:hover:not(:disabled) {
+  background-color: #eeeeee;
+  color: #363636;
+}
+
+/* Form Controls */
+.input, .select select, select.input {
+  border-radius: 6px;
+  border: 1px solid #dbdbdb;
+  transition: all 0.2s ease;
+  background-color: white;
+  padding: calc(0.375em - 1px) calc(0.625em - 1px);
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+select.input {
+  padding-right: 2.5em;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath fill='%23363636' d='M7 7l3 3 3-3m-3 6l3-3-3-3'/%3E%3C/svg%3E");
+  background-position: right 0.5em center;
+  background-repeat: no-repeat;
+  background-size: 1.5em;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+}
+
+.input:focus, .select select:focus, select.input:focus {
+  border-color: #3273dc;
+  box-shadow: 0 0 0 0.125em rgba(50,115,220,.25);
+  outline: none;
+}
+
+.label.is-small {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #6c757d;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 0.5rem;
+}
+
+/* Pagination */
+.pagination {
+  margin-top: 2rem;
+}
+
+.pagination-link, .pagination-previous, .pagination-next {
+  border-radius: 6px;
+  font-weight: 500;
+  min-width: 2.5rem;
+}
+
+.pagination-link.is-current {
+  background-color: #3273dc;
+  border-color: #3273dc;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .table-container {
+    overflow-x: auto;
+  }
+  
+  .buttons {
+    flex-wrap: nowrap;
+  }
+  
+  .button span:not(.icon) {
+    display: none;
+  }
+  
+  .columns {
+    margin-bottom: 0;
+  }
+  
+  .column {
+    padding: 0.5rem;
+  }
+}
+</style>
+{% endblock content %}

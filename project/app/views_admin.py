@@ -13,8 +13,12 @@ from django.apps import apps
 from django.views.decorators.http import require_http_methods
 from collections import OrderedDict
 import csv
+import os
+import shutil
+import hashlib
+from django.conf import settings
 
-from .models import Order, Project, StatusNote, Sample, SAMPLE_TYPE_NORMAL, Sampleset
+from .models import Order, Project, StatusNote, Sample, SAMPLE_TYPE_NORMAL, Sampleset, Read
 from django.contrib.auth.models import User
 from .forms import StatusUpdateForm, OrderNoteForm, OrderRejectionForm, UserEditForm, UserCreateForm, TechnicalDetailsForm
 
@@ -36,6 +40,7 @@ def admin_dashboard(request):
         'orders_needing_action': Order.objects.filter(
             status='ready_for_sequencing'
         ).count(),
+        'total_projects': Project.objects.count(),
         'active_projects': Project.objects.filter(
             order__status__in=['ready_for_sequencing', 'sequencing_in_progress', 'data_processing']
         ).distinct().count(),
@@ -162,8 +167,8 @@ def admin_order_detail(request, order_id):
     """
     order = get_object_or_404(Order, id=order_id)
     
-    # Get all samples for this order
-    samples = Sample.objects.filter(order=order, sample_type=SAMPLE_TYPE_NORMAL)
+    # Get all samples for this order with read information
+    samples = Sample.objects.filter(order=order, sample_type=SAMPLE_TYPE_NORMAL).prefetch_related('read_set')
     
     # Get MIxS checklist information
     sampleset = order.sampleset_set.filter(sample_type=SAMPLE_TYPE_NORMAL).first()
@@ -181,6 +186,19 @@ def admin_order_detail(request, order_id):
     # Get status history and notes
     status_history = order.get_status_history()
     all_notes = order.get_notes(include_internal=True)
+    
+    # Calculate read statistics
+    samples_with_reads = 0
+    samples_without_reads = 0
+    for sample in samples:
+        if sample.read_set.exists():
+            samples_with_reads += 1
+        else:
+            samples_without_reads += 1
+    
+    read_completion_percentage = 0
+    if samples.count() > 0:
+        read_completion_percentage = int((samples_with_reads / samples.count()) * 100)
     
     # Initialize forms
     status_form = StatusUpdateForm(instance=order)
@@ -202,6 +220,9 @@ def admin_order_detail(request, order_id):
         'technical_form': technical_form,
         'can_advance': order.can_advance_status(),
         'next_status': order.get_next_status(),
+        'samples_with_reads': samples_with_reads,
+        'samples_without_reads': samples_without_reads,
+        'read_completion_percentage': read_completion_percentage,
     }
     
     return render(request, 'admin_order_detail.html', context)
@@ -506,6 +527,19 @@ def admin_get_sample_fields(request, sample_id):
             if value:
                 fields_data['core_fields'][field_name.replace('_', ' ').title()] = value
     
+    # Add read file information
+    reads = Read.objects.filter(sample=sample)
+    if reads.exists():
+        fields_data['read_files'] = []
+        for read in reads:
+            read_info = {
+                'file_1': read.file_1 if read.file_1 else 'Not specified',
+                'file_2': read.file_2 if read.file_2 else 'Not specified',
+                'checksum_1': read.read_file_checksum_1[:8] + '...' if read.read_file_checksum_1 else 'N/A',
+                'checksum_2': read.read_file_checksum_2[:8] + '...' if read.read_file_checksum_2 else 'N/A',
+            }
+            fields_data['read_files'].append(read_info)
+    
     # Get checklist-specific fields
     if sampleset and sampleset.checklists:
         for checklist_name in sampleset.checklists:
@@ -531,3 +565,273 @@ def admin_get_sample_fields(request, sample_id):
                     pass
     
     return JsonResponse(fields_data)
+
+
+@staff_member_required
+def admin_project_list(request):
+    """
+    List all projects with statistics for admin view
+    """
+    # Get filter parameters
+    search_query = request.GET.get('search', '')
+    status_filter = request.GET.get('status', '')
+    
+    # Base queryset with annotations for statistics
+    projects = Project.objects.all().annotate(
+        order_count=Count('order'),
+        sample_count=Count('order__sample', filter=Q(order__sample__sample_type=SAMPLE_TYPE_NORMAL)),
+    ).select_related('user')
+    
+    # Apply filters
+    if search_query:
+        projects = projects.filter(
+            Q(title__icontains=search_query) |
+            Q(alias__icontains=search_query) |
+            Q(user__username__icontains=search_query) |
+            Q(user__email__icontains=search_query)
+        )
+    
+    if status_filter == 'registered':
+        projects = projects.filter(submitted=True)
+    elif status_filter == 'not_registered':
+        projects = projects.filter(submitted=False)
+    
+    # Calculate additional statistics for each project
+    project_stats = []
+    for project in projects:
+        # Get all samples for this project
+        samples = Sample.objects.filter(
+            order__project=project,
+            sample_type=SAMPLE_TYPE_NORMAL
+        )
+        
+        # Count samples with files
+        samples_with_files = 0
+        for sample in samples:
+            reads = Read.objects.filter(sample=sample)
+            if reads.exists() and any(read.file_1 or read.file_2 for read in reads):
+                samples_with_files += 1
+        
+        # Calculate file completion percentage
+        file_completion = 0
+        if samples.count() > 0:
+            file_completion = int((samples_with_files / samples.count()) * 100)
+        
+        # Get latest order status for the project
+        latest_order = project.order_set.order_by('-status_updated_at').first()
+        
+        project_stats.append({
+            'project': project,
+            'order_count': project.order_count,
+            'sample_count': project.sample_count,
+            'samples_with_files': samples_with_files,
+            'file_completion': file_completion,
+            'latest_order_status': latest_order.get_status_display() if latest_order else 'No orders',
+            'has_all_files': samples_with_files == samples.count() and samples.count() > 0
+        })
+    
+    # Pagination
+    paginator = Paginator(project_stats, 20)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    
+    context = {
+        'page_obj': page_obj,
+        'search_query': search_query,
+        'status_filter': status_filter,
+        'total_projects': len(project_stats),
+    }
+    
+    return render(request, 'admin_project_list.html', context)
+
+
+@staff_member_required
+def admin_project_detail(request, project_id):
+    """
+    Detailed view of a project with workflow and statistics
+    """
+    project = get_object_or_404(Project, id=project_id)
+    
+    # Get all orders for this project
+    orders = project.order_set.all().order_by('-date')
+    
+    # Calculate project statistics
+    total_samples = Sample.objects.filter(
+        order__project=project,
+        sample_type=SAMPLE_TYPE_NORMAL
+    ).count()
+    
+    # Count samples with files
+    samples_with_files = 0
+    samples = Sample.objects.filter(
+        order__project=project,
+        sample_type=SAMPLE_TYPE_NORMAL
+    )
+    
+    sample_file_details = []
+    for sample in samples:
+        reads = Read.objects.filter(sample=sample)
+        has_files = reads.exists() and any(read.file_1 or read.file_2 for read in reads)
+        if has_files:
+            samples_with_files += 1
+        
+        sample_file_details.append({
+            'sample': sample,
+            'has_files': has_files,
+            'read_count': reads.count()
+        })
+    
+    # Calculate file completion percentage
+    file_completion = 0
+    if total_samples > 0:
+        file_completion = int((samples_with_files / total_samples) * 100)
+    
+    # Check for existing pipeline runs (for future use)
+    # pipeline_runs = Pipelines.objects.filter(samples__order__project=project).distinct()
+    
+    # Workflow status (all disabled for now)
+    workflow_status = {
+        'project_created': True,
+        'ena_registered': project.submitted,
+        'files_complete': samples_with_files == total_samples and total_samples > 0,
+        'mag_pipeline_run': False,  # Will be implemented later
+        'submg_pipeline_run': False,  # Will be implemented later
+        'assemblies_uploaded': False,  # Will be implemented later
+    }
+    
+    # Order statistics by status
+    order_status_counts = {}
+    for status_code, status_label in Order.STATUS_CHOICES:
+        count = orders.filter(status=status_code).count()
+        if count > 0:
+            order_status_counts[status_label] = count
+    
+    context = {
+        'project': project,
+        'orders': orders,
+        'total_samples': total_samples,
+        'samples_with_files': samples_with_files,
+        'file_completion': file_completion,
+        'workflow_status': workflow_status,
+        'order_status_counts': order_status_counts,
+        'sample_file_details': sample_file_details[:10],  # Show first 10 samples
+        'has_more_samples': len(sample_file_details) > 10,
+    }
+    
+    return render(request, 'admin_project_detail.html', context)
+
+
+def calculate_md5(file_path):
+    """Calculate MD5 hash of a file"""
+    hash_md5 = hashlib.md5()
+    with open(file_path, "rb") as f:
+        for chunk in iter(lambda: f.read(4096), b""):
+            hash_md5.update(chunk)
+    return hash_md5.hexdigest()
+
+
+@staff_member_required
+@require_http_methods(["POST"])
+def admin_simulate_reads(request, order_id):
+    """
+    Simulate reads for all samples in an order
+    Based on the create_test_reads admin action
+    """
+    order = get_object_or_404(Order, id=order_id)
+    
+    # Get all samples for this order
+    samples = Sample.objects.filter(order=order, sample_type=SAMPLE_TYPE_NORMAL)
+    
+    if not samples.exists():
+        messages.error(request, 'No samples found for this order')
+        return redirect('admin_order_detail', order_id=order.id)
+    
+    # Create LOCAL_DIR if it doesn't exist
+    local_dir = getattr(settings, 'LOCAL_DIR', os.path.join(settings.MEDIA_ROOT, 'simulated_reads'))
+    os.makedirs(local_dir, exist_ok=True)
+    
+    template_number = 1
+    created_reads = 0
+    
+    for sample in samples:
+        # Skip if sample already has reads
+        if Read.objects.filter(sample=sample).exists():
+            continue
+            
+        # Use template files or create dummy files
+        template_1_path = f"template_{template_number}_1.fastq.gz"
+        template_2_path = f"template_{template_number}_2.fastq.gz"
+        
+        # Look for templates in parent directory of LOCAL_DIR
+        template_1 = os.path.join(os.path.dirname(local_dir), template_1_path)
+        template_2 = os.path.join(os.path.dirname(local_dir), template_2_path)
+        
+        # If templates don't exist, create dummy files
+        if not os.path.exists(template_1):
+            template_1 = os.path.join(local_dir, 'dummy_template_1.fastq.gz')
+            if not os.path.exists(template_1):
+                # Create a dummy gzipped file
+                import gzip
+                with gzip.open(template_1, 'wb') as f:
+                    f.write(b'@DUMMY\nACGT\n+\nIIII\n')
+        
+        if not os.path.exists(template_2):
+            template_2 = os.path.join(local_dir, 'dummy_template_2.fastq.gz')
+            if not os.path.exists(template_2):
+                import gzip
+                with gzip.open(template_2, 'wb') as f:
+                    f.write(b'@DUMMY\nTGCA\n+\nIIII\n')
+        
+        # Create simulated read files
+        sample_alias = sample.sample_alias or f"sample_{sample.id}"
+        paired_read_1 = os.path.join(local_dir, f"{sample_alias}_1.fastq.gz")
+        paired_read_2 = os.path.join(local_dir, f"{sample_alias}_2.fastq.gz")
+        
+        # Copy or create files
+        try:
+            if os.path.exists(template_1) and os.path.exists(template_2):
+                shutil.copyfile(template_1, paired_read_1)
+                shutil.copyfile(template_2, paired_read_2)
+            else:
+                # Create dummy files directly
+                import gzip
+                with gzip.open(paired_read_1, 'wb') as f:
+                    f.write(f'@{sample_alias}_read1\nACGTACGTACGT\n+\nIIIIIIIIIIII\n'.encode())
+                with gzip.open(paired_read_2, 'wb') as f:
+                    f.write(f'@{sample_alias}_read2\nTGCATGCATGCA\n+\nIIIIIIIIIIII\n'.encode())
+            
+            # Calculate checksums
+            paired_read_1_hash = calculate_md5(paired_read_1)
+            paired_read_2_hash = calculate_md5(paired_read_2)
+            
+            # Create Read object
+            if os.path.isfile(paired_read_1) and os.path.isfile(paired_read_2):
+                read = Read.objects.create(
+                    sample=sample, 
+                    file_1=paired_read_1, 
+                    file_2=paired_read_2, 
+                    read_file_checksum_1=paired_read_1_hash, 
+                    read_file_checksum_2=paired_read_2_hash
+                )
+                created_reads += 1
+                
+        except Exception as e:
+            messages.error(request, f'Error creating reads for sample {sample_alias}: {str(e)}')
+            continue
+        
+        template_number += 1
+    
+    if created_reads > 0:
+        messages.success(request, f'Successfully simulated reads for {created_reads} samples')
+        
+        # Add a note about the simulation
+        StatusNote.objects.create(
+            order=order,
+            user=request.user,
+            note_type='internal',
+            content=f'Simulated FASTQ reads for {created_reads} samples'
+        )
+    else:
+        messages.info(request, 'All samples already have associated reads')
+    
+    return redirect('admin_order_detail', order_id=order.id)
