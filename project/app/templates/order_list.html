@@ -77,6 +77,135 @@ Order List
   text-decoration: underline;
 }
 
+/* Order Notes Styling */
+.order-note-banner {
+  padding: 0.75rem 1rem;
+  font-size: 0.875rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  border-radius: 8px 8px 0 0;
+  margin: -1px -1px 0 -1px; /* Compensate for parent border */
+}
+
+.order-note-banner.is-rejection {
+  background: #fff3cd;
+  color: #856404;
+  border-bottom: 1px solid #ffeaa7;
+}
+
+.order-note-banner.is-info {
+  background: #e3f2fd;
+  color: #0d47a1;
+  border-bottom: 1px solid #bbdefb;
+}
+
+.order-card {
+  position: relative;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+  overflow: hidden;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  transition: box-shadow 0.3s;
+}
+
+.order-card:hover {
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.order-header {
+  padding: 1.5rem;
+  background: #fafafa;
+  border-bottom: 1px solid #e0e0e0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.order-info {
+  flex: 1;
+}
+
+.order-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  display: inline-block;
+  margin-right: 1rem;
+}
+
+.order-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.workflow-progress {
+  padding: 1.5rem;
+  background: white;
+}
+
+.progress-steps {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+}
+
+.progress-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  z-index: 1;
+}
+
+.step-icon {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: #f0f0f0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  margin-bottom: 0.5rem;
+}
+
+.progress-step.completed .step-icon {
+  background: #48c774;
+  color: white;
+}
+
+.progress-step.active .step-icon {
+  background: #3273dc;
+  color: white;
+}
+
+.step-label {
+  font-size: 0.875rem;
+  text-align: center;
+}
+
+.step-info {
+  font-size: 0.75rem;
+  color: #666;
+  text-align: center;
+  margin-top: 0.25rem;
+}
+
+.current-action {
+  padding: 1.5rem;
+  background: #f8f9fa;
+  border-top: 1px solid #e0e0e0;
+}
+
+.optional-actions {
+  padding: 1rem 1.5rem;
+  background: white;
+  border-top: 1px solid #e0e0e0;
+}
+
 /* Submission Instructions Modal */
 .modal-card-body .content {
   margin: 0;
@@ -136,6 +265,23 @@ Order List
       <div class="orders-container">
         {% for order in orders %}
           <div class="order-card">
+            <!-- Note Banner (if exists) -->
+            {% if order.latest_user_note %}
+              <div class="order-note-banner {% if order.latest_user_note.is_rejection %}is-rejection{% else %}is-info{% endif %}">
+                <i class="fas {% if order.latest_user_note.is_rejection %}fa-exclamation-triangle{% else %}fa-info-circle{% endif %}"></i>
+                <span>
+                  <strong>{% if order.latest_user_note.is_rejection %}Rejection:{% else %}Note:{% endif %}</strong>
+                  {{ order.latest_user_note.content|truncatechars:100 }}
+                </span>
+                <span class="has-text-grey-light ml-auto">{{ order.latest_user_note.created_at|date:"M d, Y" }}</span>
+              </div>
+            {% elif order.status_notes %}
+              <div class="order-note-banner is-info">
+                <i class="fas fa-sticky-note"></i>
+                <span>{{ order.status_notes|truncatechars:100 }}</span>
+              </div>
+            {% endif %}
+            
             <!-- Order Header -->
             <div class="order-header">
               <div class="order-info">
@@ -143,25 +289,6 @@ Order List
                 <span class="tag {{ order.get_status_display_color }} is-medium">
                   {{ order.get_status_display }}
                 </span>
-                {% if order.latest_user_note %}
-                  <div class="notification is-warning is-light mt-2">
-                    <p class="is-size-7">
-                      <strong>
-                        {% if order.latest_user_note.is_rejection %}
-                          <i class="fas fa-exclamation-triangle"></i> Rejection Note:
-                        {% else %}
-                          <i class="fas fa-info-circle"></i> Note:
-                        {% endif %}
-                      </strong>
-                      {{ order.latest_user_note.content|truncatechars:150 }}
-                    </p>
-                    <p class="is-size-7 has-text-grey">
-                      {{ order.latest_user_note.created_at|date:"M d, Y" }}
-                    </p>
-                  </div>
-                {% elif order.status_notes %}
-                  <p class="order-notes">{{ order.status_notes|truncatechars:80 }}</p>
-                {% endif %}
               </div>
               <div class="order-actions">
                 <a href="{% url 'order_edit' project_id=project_id order_id=order.id %}" 
