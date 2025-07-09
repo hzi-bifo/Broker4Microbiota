@@ -120,6 +120,7 @@ All Projects - Admin View
             <th>Orders</th>
             <th>Samples</th>
             <th>File Status</th>
+            <th>XML Submissions</th>
             <th>ENA Status</th>
             <th>Workflow</th>
             <th>Actions</th>
@@ -165,6 +166,29 @@ All Projects - Admin View
               {% endif %}
             </td>
             <td>
+              {% if item.submission_count > 0 %}
+                <div class="has-text-centered">
+                  {% if item.has_successful_submission %}
+                    <span class="tag is-success">
+                      <span class="icon">
+                        <i class="fas fa-check-circle"></i>
+                      </span>
+                      <span>{{ item.submission_count }} Generated</span>
+                    </span>
+                  {% else %}
+                    <span class="tag is-warning">
+                      <span class="icon">
+                        <i class="fas fa-file-code"></i>
+                      </span>
+                      <span>{{ item.submission_count }} Generated</span>
+                    </span>
+                  {% endif %}
+                </div>
+              {% else %}
+                <span class="has-text-grey">No XML</span>
+              {% endif %}
+            </td>
+            <td>
               {% if item.project.submitted %}
                 <span class="tag is-success">
                   <span class="icon">
@@ -186,11 +210,22 @@ All Projects - Admin View
             </td>
             <td>
               <div class="buttons are-small">
+                <form method="post" action="{% url 'admin_generate_project_xml' item.project.id %}" style="display: inline;">
+                  {% csrf_token %}
+                  <button type="submit" class="button {% if item.submission_count > 0 %}is-success is-light{% else %}is-info{% endif %}" 
+                          title="{% if item.submission_count > 0 %}Generate another ENA submission XML{% else %}Generate ENA submission XML{% endif %}"
+                          onclick="return confirm('Generate {% if item.submission_count > 0 %}another {% endif %}ENA XML for project: {{ item.project.title }}?')">
+                    <span class="icon">
+                      <i class="fas fa-file-code"></i>
+                    </span>
+                    <span>{% if item.submission_count > 0 %}XML ({{ item.submission_count }}){% else %}Generate XML{% endif %}</span>
+                  </button>
+                </form>
                 <button class="button is-light" disabled title="Register project at ENA">
                   <span class="icon">
                     <i class="fas fa-cloud-upload-alt"></i>
                   </span>
-                  <span>ENA</span>
+                  <span>Register</span>
                 </button>
                 <button class="button is-light" disabled title="Run MAG pipeline">
                   <span class="icon">
@@ -212,7 +247,7 @@ All Projects - Admin View
           </tr>
           {% empty %}
           <tr>
-            <td colspan="8" class="has-text-centered has-text-grey">
+            <td colspan="9" class="has-text-centered has-text-grey">
               No projects found matching your criteria.
             </td>
           </tr>

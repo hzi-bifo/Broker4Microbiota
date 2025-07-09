@@ -17,8 +17,10 @@ import os
 import shutil
 import hashlib
 from django.conf import settings
+from django.template.loader import render_to_string
+from pathlib import Path
 
-from .models import Order, Project, StatusNote, Sample, SAMPLE_TYPE_NORMAL, Sampleset, Read
+from .models import Order, Project, StatusNote, Sample, SAMPLE_TYPE_NORMAL, Sampleset, Read, ProjectSubmission
 from django.contrib.auth.models import User
 from .forms import StatusUpdateForm, OrderNoteForm, OrderRejectionForm, UserEditForm, UserCreateForm, TechnicalDetailsForm
 
@@ -620,6 +622,11 @@ def admin_project_list(request):
         # Get latest order status for the project
         latest_order = project.order_set.order_by('-status_updated_at').first()
         
+        # Get XML submission info
+        project_submissions = ProjectSubmission.objects.filter(projects=project)
+        submission_count = project_submissions.count()
+        has_successful_submission = project_submissions.filter(accession_status='SUCCESSFUL').exists()
+        
         project_stats.append({
             'project': project,
             'order_count': project.order_count,
@@ -627,7 +634,9 @@ def admin_project_list(request):
             'samples_with_files': samples_with_files,
             'file_completion': file_completion,
             'latest_order_status': latest_order.get_status_display() if latest_order else 'No orders',
-            'has_all_files': samples_with_files == samples.count() and samples.count() > 0
+            'has_all_files': samples_with_files == samples.count() and samples.count() > 0,
+            'submission_count': submission_count,
+            'has_successful_submission': has_successful_submission
         })
     
     # Pagination
@@ -706,6 +715,9 @@ def admin_project_detail(request, project_id):
         if count > 0:
             order_status_counts[status_label] = count
     
+    # Get ProjectSubmissions for this project
+    project_submissions = ProjectSubmission.objects.filter(projects=project).order_by('-id')
+    
     context = {
         'project': project,
         'orders': orders,
@@ -716,6 +728,7 @@ def admin_project_detail(request, project_id):
         'order_status_counts': order_status_counts,
         'sample_file_details': sample_file_details[:10],  # Show first 10 samples
         'has_more_samples': len(sample_file_details) > 10,
+        'project_submissions': project_submissions,
     }
     
     return render(request, 'admin_project_detail.html', context)
@@ -835,3 +848,166 @@ def admin_simulate_reads(request, order_id):
         messages.info(request, 'All samples already have associated reads')
     
     return redirect('admin_order_detail', order_id=order.id)
+
+
+@staff_member_required
+@require_http_methods(["POST"])
+def admin_generate_project_xml(request, project_id):
+    """
+    Generate ENA XML for a project and create ProjectSubmission
+    """
+    project = get_object_or_404(Project, id=project_id)
+    
+    try:
+        # Create ProjectSubmission object
+        project_submission = ProjectSubmission.objects.create()
+        project_submission.projects.add(project)
+        
+        # Generate project XML using template
+        context = {
+            'projects': [project]
+        }
+        project_xml_content = render_to_string('admin/app/sample/project_xml_template.xml', context)
+        project_submission.project_object_xml = project_xml_content
+        
+        # Load submission template
+        submission_template_path = os.path.join(settings.BASE_DIR, 'app', 'templates', 'admin', 'app', 'sample', 'submission_template.xml')
+        if os.path.exists(submission_template_path):
+            with open(submission_template_path, 'r') as file:
+                submission_xml_content = file.read()
+            project_submission.submission_object_xml = submission_xml_content
+        else:
+            # Use a default submission template if file doesn't exist
+            submission_xml_content = '''<?xml version="1.0" encoding="UTF-8"?>
+<SUBMISSION>
+   <ACTIONS>
+      <ACTION>
+         <ADD/>
+      </ACTION>
+   </ACTIONS>
+</SUBMISSION>'''
+            project_submission.submission_object_xml = submission_xml_content
+        
+        project_submission.save()
+        
+        messages.success(request, f'Successfully created ProjectSubmission {project_submission.id} for project "{project.title}"')
+        
+        # Redirect based on where the request came from
+        if 'HTTP_REFERER' in request.META and 'project-detail' in request.META['HTTP_REFERER']:
+            return redirect('admin_project_detail', project_id=project.id)
+        else:
+            return redirect('admin_project_list')
+            
+    except Exception as e:
+        messages.error(request, f'Error generating XML: {str(e)}')
+        if 'HTTP_REFERER' in request.META:
+            return redirect(request.META['HTTP_REFERER'])
+        else:
+            return redirect('admin_project_list')
+
+
+@staff_member_required
+def admin_submission_list(request):
+    """
+    List all project submissions with filtering and search
+    """
+    # Get filter parameters
+    search_query = request.GET.get('search', '')
+    status_filter = request.GET.get('status', '')
+    date_from = request.GET.get('date_from', '')
+    
+    # Base queryset
+    submissions = ProjectSubmission.objects.all().prefetch_related('projects', 'projects__user').order_by('-id')
+    
+    # Apply filters
+    if search_query:
+        submissions = submissions.filter(
+            Q(projects__title__icontains=search_query) |
+            Q(projects__user__username__icontains=search_query) |
+            Q(projects__user__email__icontains=search_query) |
+            Q(projects__study_accession_id__icontains=search_query)
+        ).distinct()
+    
+    if status_filter:
+        if status_filter == 'pending':
+            submissions = submissions.filter(
+                project_object_xml__isnull=False,
+                receipt_xml__isnull=True,
+                accession_status__isnull=True
+            )
+        elif status_filter == 'submitted':
+            submissions = submissions.filter(
+                receipt_xml__isnull=False,
+                accession_status__isnull=True
+            )
+        elif status_filter == 'successful':
+            submissions = submissions.filter(accession_status='SUCCESSFUL')
+        elif status_filter == 'failed':
+            submissions = submissions.filter(
+                receipt_xml__isnull=False
+            ).exclude(accession_status='SUCCESSFUL')
+    
+    # Note: created_at field doesn't exist on ProjectSubmission model
+    # if date_from:
+    #     submissions = submissions.filter(created_at__gte=date_from)
+    
+    # Calculate statistics
+    total_submissions = ProjectSubmission.objects.count()
+    pending_count = ProjectSubmission.objects.filter(
+        project_object_xml__isnull=False,
+        receipt_xml__isnull=True,
+        accession_status__isnull=True
+    ).count()
+    submitted_count = ProjectSubmission.objects.filter(
+        receipt_xml__isnull=False,
+        accession_status__isnull=True
+    ).count()
+    successful_count = ProjectSubmission.objects.filter(
+        accession_status='SUCCESSFUL'
+    ).count()
+    
+    # Pagination
+    paginator = Paginator(submissions, 20)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    
+    context = {
+        'page_obj': page_obj,
+        'search_query': search_query,
+        'status_filter': status_filter,
+        'date_from': date_from,
+        'total_submissions': total_submissions,
+        'pending_count': pending_count,
+        'submitted_count': submitted_count,
+        'successful_count': successful_count,
+    }
+    
+    return render(request, 'admin_submission_list.html', context)
+
+
+@staff_member_required
+@require_http_methods(["POST"])
+def admin_delete_submission(request, submission_id):
+    """
+    Delete a ProjectSubmission
+    """
+    submission = get_object_or_404(ProjectSubmission, id=submission_id)
+    
+    # Get project info for redirect
+    project = submission.projects.first()
+    
+    # Delete the submission
+    submission.delete()
+    
+    messages.success(request, f'Successfully deleted ProjectSubmission #{submission_id}')
+    
+    # Redirect based on where the request came from
+    if 'HTTP_REFERER' in request.META:
+        referer = request.META['HTTP_REFERER']
+        if 'project-detail' in referer and project:
+            return redirect('admin_project_detail', project_id=project.id)
+        elif 'submissions' in referer:
+            return redirect('admin_submission_list')
+    
+    # Default redirect
+    return redirect('admin_submission_list')
