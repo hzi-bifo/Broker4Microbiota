@@ -246,7 +246,7 @@ html, body {
             {% if samples_data %}Update Samples{% else %}Add Samples{% endif %}
           </h1>
           <span class="subtitle">
-            Step 3: Add Sample Data | Order #{{ order.id }} - Configure Metadata: {{ order.get_selected_checklist|default:"No checklist selected" }}
+            Order #{{ order.id }} - {{ order.get_selected_checklist|default:"No checklist selected" }}
             <a href="{% url 'metadata_view' project_id=project_id order_id=order.id %}" 
                class="button is-small is-info is-outlined ml-2"
                style="vertical-align: middle;">
