@@ -9,13 +9,14 @@ from django.utils import timezone
 from datetime import timedelta
 from django.core.paginator import Paginator
 from django.http import JsonResponse, HttpResponse
+from django.apps import apps
 from django.views.decorators.http import require_http_methods
 from collections import OrderedDict
 import csv
 
-from .models import Order, Project, StatusNote, Sample, SAMPLE_TYPE_NORMAL
+from .models import Order, Project, StatusNote, Sample, SAMPLE_TYPE_NORMAL, Sampleset
 from django.contrib.auth.models import User
-from .forms import StatusUpdateForm, OrderNoteForm, OrderRejectionForm, UserEditForm, UserCreateForm
+from .forms import StatusUpdateForm, OrderNoteForm, OrderRejectionForm, UserEditForm, UserCreateForm, TechnicalDetailsForm
 
 
 @staff_member_required
@@ -164,6 +165,19 @@ def admin_order_detail(request, order_id):
     # Get all samples for this order
     samples = Sample.objects.filter(order=order, sample_type=SAMPLE_TYPE_NORMAL)
     
+    # Get MIxS checklist information
+    sampleset = order.sampleset_set.filter(sample_type=SAMPLE_TYPE_NORMAL).first()
+    selected_checklists = []
+    if sampleset and sampleset.checklists:
+        for checklist_name in sampleset.checklists:
+            if checklist_name in Sampleset.checklist_structure:
+                checklist_info = {
+                    'name': checklist_name.replace('_', ' ').title(),
+                    'code': Sampleset.checklist_structure[checklist_name]['checklist_code'],
+                    'raw_name': checklist_name
+                }
+                selected_checklists.append(checklist_info)
+    
     # Get status history and notes
     status_history = order.get_status_history()
     all_notes = order.get_notes(include_internal=True)
@@ -172,16 +186,20 @@ def admin_order_detail(request, order_id):
     status_form = StatusUpdateForm(instance=order)
     note_form = OrderNoteForm()
     rejection_form = OrderRejectionForm()
+    technical_form = TechnicalDetailsForm(instance=order)
     
     context = {
         'order': order,
         'project': order.project,
         'samples': samples,
+        'sampleset': sampleset,
+        'selected_checklists': selected_checklists,
         'status_history': status_history,
         'all_notes': all_notes,
         'status_form': status_form,
         'note_form': note_form,
         'rejection_form': rejection_form,
+        'technical_form': technical_form,
         'can_advance': order.can_advance_status(),
         'next_status': order.get_next_status(),
     }
@@ -442,3 +460,74 @@ def admin_user_create(request):
     }
     
     return render(request, 'admin_user_create.html', context)
+
+
+@staff_member_required
+@require_http_methods(["POST"])
+def admin_update_technical_details(request, order_id):
+    """
+    Update technical details of an order
+    """
+    order = get_object_or_404(Order, id=order_id)
+    form = TechnicalDetailsForm(request.POST, instance=order)
+    
+    if form.is_valid():
+        form.save()
+        messages.success(request, 'Technical details updated successfully')
+    else:
+        messages.error(request, 'Error updating technical details')
+    
+    return redirect('admin_order_detail', order_id=order.id)
+
+
+@staff_member_required
+def admin_get_sample_fields(request, sample_id):
+    """
+    Get all MIxS fields for a sample as JSON
+    """
+    sample = get_object_or_404(Sample, id=sample_id)
+    
+    # Get the sampleset to find which checklists are selected
+    sampleset = sample.order.sampleset_set.filter(sample_type=sample.sample_type).first()
+    
+    fields_data = {
+        'sample_id': sample.sample_id,
+        'sample_title': sample.sample_title,
+        'core_fields': {},
+        'checklist_fields': {}
+    }
+    
+    # Get core sample fields
+    core_field_names = ['sample_id', 'tax_id', 'scientific_name', 'sample_alias', 
+                        'sample_title', 'sample_description', 'collection_date', 'organism']
+    for field_name in core_field_names:
+        if hasattr(sample, field_name):
+            value = getattr(sample, field_name)
+            if value:
+                fields_data['core_fields'][field_name.replace('_', ' ').title()] = value
+    
+    # Get checklist-specific fields
+    if sampleset and sampleset.checklists:
+        for checklist_name in sampleset.checklists:
+            if checklist_name in Sampleset.checklist_structure:
+                checklist_class_name = Sampleset.checklist_structure[checklist_name]['checklist_class_name']
+                try:
+                    ChecklistModel = apps.get_model('app', checklist_class_name)
+                    checklist_instance = ChecklistModel.objects.filter(
+                        sample=sample,
+                        sampleset=sampleset
+                    ).first()
+                    
+                    if checklist_instance:
+                        fields_data['checklist_fields'][checklist_name] = {}
+                        # Get all fields from the checklist model
+                        for field in checklist_instance._meta.fields:
+                            if field.name not in ['id', 'sample', 'sampleset', 'sample_type']:
+                                value = getattr(checklist_instance, field.name)
+                                if value:
+                                    field_label = field.verbose_name if hasattr(field, 'verbose_name') else field.name.replace('_', ' ').title()
+                                    fields_data['checklist_fields'][checklist_name][field_label] = str(value)
+                except:
+                    pass
+    
+    return JsonResponse(fields_data)

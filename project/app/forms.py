@@ -189,6 +189,27 @@ class OrderNoteForm(forms.ModelForm):
         self.fields['content'].label = "Note Content"
 
 
+class TechnicalDetailsForm(forms.ModelForm):
+    """Form for editing technical details of an order"""
+    class Meta:
+        model = Order
+        fields = ['experiment_title', 'platform', 'library', 'method', 'organism']
+        widgets = {
+            'experiment_title': forms.TextInput(attrs={'class': 'input'}),
+            'platform': forms.TextInput(attrs={'class': 'input'}),
+            'library': forms.TextInput(attrs={'class': 'input'}),
+            'method': forms.TextInput(attrs={'class': 'input'}),
+            'organism': forms.TextInput(attrs={'class': 'input'}),
+        }
+        labels = {
+            'experiment_title': 'Experiment Title',
+            'platform': 'Platform',
+            'library': 'Library',
+            'method': 'Method',
+            'organism': 'Organism',
+        }
+
+
 class OrderRejectionForm(forms.Form):
     """Form for rejecting an order with feedback"""
     rejection_reason = forms.CharField(

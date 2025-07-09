@@ -98,36 +98,124 @@ Order #{{ order.id }} - Admin View
           
           <div class="column is-6">
             <div class="box">
-              <h4 class="title is-6 mb-3">
-                <i class="fas fa-flask"></i> Technical Details
-              </h4>
-              <table class="table is-fullwidth">
-                <tbody>
-                  <tr>
-                    <th width="40%">Experiment Title</th>
-                    <td>{{ order.experiment_title|default:"-" }}</td>
-                  </tr>
-                  <tr>
-                    <th>Platform</th>
-                    <td>{{ order.platform|default:"-" }}</td>
-                  </tr>
-                  <tr>
-                    <th>Library</th>
-                    <td>{{ order.library|default:"-" }}</td>
-                  </tr>
-                  <tr>
-                    <th>Method</th>
-                    <td>{{ order.method|default:"-" }}</td>
-                  </tr>
-                  <tr>
-                    <th>Organism</th>
-                    <td>{{ order.organism|default:"-" }}</td>
-                  </tr>
-                </tbody>
-              </table>
+              <div class="level">
+                <div class="level-left">
+                  <h4 class="title is-6 mb-3">
+                    <i class="fas fa-flask"></i> Technical Details
+                  </h4>
+                </div>
+                <div class="level-right">
+                  <button type="button" class="button is-small is-info" onclick="toggleTechnicalEdit()">
+                    <span class="icon">
+                      <i class="fas fa-edit"></i>
+                    </span>
+                    <span>Edit</span>
+                  </button>
+                </div>
+              </div>
+              
+              <!-- Display Mode -->
+              <div id="technical-display">
+                <table class="table is-fullwidth">
+                  <tbody>
+                    <tr>
+                      <th width="40%">Experiment Title</th>
+                      <td>{{ order.experiment_title|default:"-" }}</td>
+                    </tr>
+                    <tr>
+                      <th>Platform</th>
+                      <td>{{ order.platform|default:"-" }}</td>
+                    </tr>
+                    <tr>
+                      <th>Library</th>
+                      <td>{{ order.library|default:"-" }}</td>
+                    </tr>
+                    <tr>
+                      <th>Method</th>
+                      <td>{{ order.method|default:"-" }}</td>
+                    </tr>
+                    <tr>
+                      <th>Organism</th>
+                      <td>{{ order.organism|default:"-" }}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              
+              <!-- Edit Mode -->
+              <div id="technical-edit" style="display: none;">
+                <form method="post" action="{% url 'admin_update_technical_details' order.id %}">
+                  {% csrf_token %}
+                  <div class="field">
+                    <label class="label is-small">{{ technical_form.experiment_title.label }}</label>
+                    <div class="control">
+                      {{ technical_form.experiment_title }}
+                    </div>
+                  </div>
+                  <div class="field">
+                    <label class="label is-small">{{ technical_form.platform.label }}</label>
+                    <div class="control">
+                      {{ technical_form.platform }}
+                    </div>
+                  </div>
+                  <div class="field">
+                    <label class="label is-small">{{ technical_form.library.label }}</label>
+                    <div class="control">
+                      {{ technical_form.library }}
+                    </div>
+                  </div>
+                  <div class="field">
+                    <label class="label is-small">{{ technical_form.method.label }}</label>
+                    <div class="control">
+                      {{ technical_form.method }}
+                    </div>
+                  </div>
+                  <div class="field">
+                    <label class="label is-small">{{ technical_form.organism.label }}</label>
+                    <div class="control">
+                      {{ technical_form.organism }}
+                    </div>
+                  </div>
+                  <div class="field is-grouped">
+                    <div class="control">
+                      <button type="submit" class="button is-success is-small">
+                        <span class="icon">
+                          <i class="fas fa-save"></i>
+                        </span>
+                        <span>Save</span>
+                      </button>
+                    </div>
+                    <div class="control">
+                      <button type="button" class="button is-light is-small" onclick="toggleTechnicalEdit()">
+                        Cancel
+                      </button>
+                    </div>
+                  </div>
+                </form>
+              </div>
             </div>
           </div>
         </div>
+
+        <!-- MIxS Checklist Information -->
+        {% if selected_checklists %}
+        <div class="box mb-4">
+          <h4 class="title is-6 mb-3">
+            <i class="fas fa-list-check"></i> Selected MIxS Checklists
+          </h4>
+          <div class="tags">
+            {% for checklist in selected_checklists %}
+            <span class="tag is-medium is-primary">
+              <span class="icon">
+                <i class="fas fa-clipboard-check"></i>
+              </span>
+              <span>{{ checklist.name }}</span>
+              <span class="has-text-weight-light ml-1">({{ checklist.code }})</span>
+            </span>
+            {% endfor %}
+          </div>
+        </div>
+        {% endif %}
 
         <!-- Samples Section -->
         <div class="box">
@@ -159,11 +247,28 @@ Order #{{ order.id }} - Admin View
                   <td>{{ sample.collection_date|default:"-" }}</td>
                   <td>{{ sample.organism|default:"-" }}</td>
                   <td>
-                    <button class="button is-small is-info" onclick="showSampleDetails({{ sample.id }})">
-                      <span class="icon">
-                        <i class="fas fa-info-circle"></i>
-                      </span>
-                    </button>
+                    <div class="buttons">
+                      <button class="button is-small is-info" onclick="showSampleDetails({{ sample.id }})" title="View Details">
+                        <span class="icon">
+                          <i class="fas fa-info-circle"></i>
+                        </span>
+                      </button>
+                      <button class="button is-small is-primary" onclick="toggleSampleFields({{ sample.id }})" title="View MIxS Fields">
+                        <span class="icon">
+                          <i class="fas fa-list"></i>
+                        </span>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+                <tr id="sample-fields-{{ sample.id }}" class="sample-fields-row" style="display: none;">
+                  <td colspan="6">
+                    <div class="sample-fields-content p-4">
+                      <div class="is-loading-spinner" style="display: none;">
+                        <span class="icon"><i class="fas fa-spinner fa-pulse"></i></span> Loading...
+                      </div>
+                      <div class="fields-display"></div>
+                    </div>
                   </td>
                 </tr>
                 {% endfor %}
@@ -817,6 +922,33 @@ select.input:focus {
   font-weight: 500;
 }
 
+/* Sample fields row */
+.sample-fields-row {
+  background-color: #f8f9fa;
+}
+
+.sample-fields-content {
+  background-color: white;
+  border-radius: 6px;
+  box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.sample-fields-content .table {
+  font-size: 0.875rem;
+}
+
+.sample-fields-content .table th {
+  font-weight: 500;
+  color: #6c757d;
+  background: transparent;
+  border-bottom: 1px solid #e9ecef;
+  padding: 0.5rem;
+}
+
+.sample-fields-content .table td {
+  padding: 0.5rem;
+}
+
 /* Responsive */
 @media (max-width: 768px) {
   .tabs ul {
@@ -963,6 +1095,81 @@ function showSampleDetails(sampleId) {
 <script>
 function closeSampleModal() {
   document.getElementById('sampleModal').classList.remove('is-active');
+}
+
+// Toggle technical details edit mode
+function toggleTechnicalEdit() {
+  const displayMode = document.getElementById('technical-display');
+  const editMode = document.getElementById('technical-edit');
+  
+  if (displayMode.style.display === 'none') {
+    displayMode.style.display = 'block';
+    editMode.style.display = 'none';
+  } else {
+    displayMode.style.display = 'none';
+    editMode.style.display = 'block';
+  }
+}
+
+// Toggle sample fields display
+function toggleSampleFields(sampleId) {
+  const row = document.getElementById(`sample-fields-${sampleId}`);
+  const spinner = row.querySelector('.is-loading-spinner');
+  const fieldsDisplay = row.querySelector('.fields-display');
+  
+  if (row.style.display === 'none') {
+    row.style.display = 'table-row';
+    
+    // If fields haven't been loaded yet
+    if (!fieldsDisplay.innerHTML) {
+      spinner.style.display = 'block';
+      
+      // Fetch sample fields
+      fetch(`{% url 'admin_get_sample_fields' 0 %}`.replace('0', sampleId))
+        .then(response => response.json())
+        .then(data => {
+          spinner.style.display = 'none';
+          
+          let html = '<div class="columns">';
+          
+          // Core fields column
+          html += '<div class="column is-6">';
+          html += '<h5 class="subtitle is-6 has-text-weight-semibold mb-3"><i class="fas fa-database"></i> Core Sample Fields</h5>';
+          html += '<table class="table is-narrow is-fullwidth">';
+          for (const [field, value] of Object.entries(data.core_fields)) {
+            html += `<tr><th width="40%">${field}:</th><td>${value}</td></tr>`;
+          }
+          html += '</table></div>';
+          
+          // Checklist fields column
+          html += '<div class="column is-6">';
+          html += '<h5 class="subtitle is-6 has-text-weight-semibold mb-3"><i class="fas fa-clipboard-check"></i> MIxS Checklist Fields</h5>';
+          
+          if (Object.keys(data.checklist_fields).length > 0) {
+            for (const [checklist, fields] of Object.entries(data.checklist_fields)) {
+              html += `<h6 class="has-text-weight-semibold mb-2">${checklist.replace(/_/g, ' ')}</h6>`;
+              html += '<table class="table is-narrow is-fullwidth mb-4">';
+              for (const [field, value] of Object.entries(fields)) {
+                html += `<tr><th width="40%">${field}:</th><td>${value}</td></tr>`;
+              }
+              html += '</table>';
+            }
+          } else {
+            html += '<p class="has-text-grey">No MIxS checklist fields filled out yet.</p>';
+          }
+          
+          html += '</div></div>';
+          
+          fieldsDisplay.innerHTML = html;
+        })
+        .catch(error => {
+          spinner.style.display = 'none';
+          fieldsDisplay.innerHTML = '<p class="has-text-danger">Error loading fields</p>';
+        });
+    }
+  } else {
+    row.style.display = 'none';
+  }
 }
 </script>
 {% endblock content %}
