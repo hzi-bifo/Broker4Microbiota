@@ -64,7 +64,11 @@
       <div class="container">
         <div class="navbar-brand">
           <a class="navbar-item" href="{% if user.is_authenticated %}{% url 'project_list' %}{% else %}{% url 'login' %}{% endif %}">
-            <img src="{{ site_settings.logo_url }}" alt="{{ site_settings.organization_short_name }} Logo">
+            {% if site_settings.logo_url %}
+              <img src="{{ site_settings.logo_url }}" alt="{{ site_settings.organization_short_name }} Logo" style="max-height: 45px;">
+            {% else %}
+              <img src="{% static 'images/logo.png' %}" alt="{{ site_settings.organization_short_name }} Logo" style="max-height: 45px;">
+            {% endif %}
           </a>
           <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navbarMain">
             <span aria-hidden="true"></span>

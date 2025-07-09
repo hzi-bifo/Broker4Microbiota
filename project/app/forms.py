@@ -1,4 +1,5 @@
 from django import forms
+from django.contrib.auth.models import User
 from .models import Order, Sample, Sampleset, Project, StatusNote
 from django.conf import settings
 import os
@@ -203,3 +204,61 @@ class OrderRejectionForm(forms.Form):
         label="Set Status To",
         help_text="Status to set the order to after rejection"
     )
+
+
+class UserEditForm(forms.ModelForm):
+    """Form for editing user details in admin dashboard"""
+    class Meta:
+        model = User
+        fields = ['username', 'first_name', 'last_name', 'email', 'is_active', 'is_staff', 'is_superuser']
+        widgets = {
+            'username': forms.TextInput(attrs={'class': 'input'}),
+            'first_name': forms.TextInput(attrs={'class': 'input'}),
+            'last_name': forms.TextInput(attrs={'class': 'input'}),
+            'email': forms.EmailInput(attrs={'class': 'input'}),
+        }
+        help_texts = {
+            'username': 'Required. Use a clear format like firstname.lastname',
+            'email': 'Email address for notifications and contact',
+            'is_active': 'Uncheck to disable login access',
+            'is_staff': 'Required for admin dashboard access',
+            'is_superuser': 'Grants full Django admin access',
+        }
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Add checkbox class to boolean fields
+        self.fields['is_active'].widget.attrs['class'] = 'checkbox'
+        self.fields['is_staff'].widget.attrs['class'] = 'checkbox'
+        self.fields['is_superuser'].widget.attrs['class'] = 'checkbox'
+
+
+class UserCreateForm(UserEditForm):
+    """Form for creating new users with password fields"""
+    password1 = forms.CharField(
+        label='Password',
+        widget=forms.PasswordInput(attrs={'class': 'input'}),
+        help_text='Enter a strong password'
+    )
+    password2 = forms.CharField(
+        label='Confirm Password',
+        widget=forms.PasswordInput(attrs={'class': 'input'}),
+        help_text='Enter the same password again'
+    )
+    
+    class Meta(UserEditForm.Meta):
+        fields = ['username', 'first_name', 'last_name', 'email', 'password1', 'password2', 'is_active', 'is_staff', 'is_superuser']
+    
+    def clean_password2(self):
+        password1 = self.cleaned_data.get('password1')
+        password2 = self.cleaned_data.get('password2')
+        if password1 and password2 and password1 != password2:
+            raise forms.ValidationError("Passwords don't match")
+        return password2
+    
+    def save(self, commit=True):
+        user = super().save(commit=False)
+        user.set_password(self.cleaned_data['password1'])
+        if commit:
+            user.save()
+        return user

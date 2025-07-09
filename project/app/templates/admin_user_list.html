@@ -1,0 +1,203 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Manage Users - Admin
+{% endblock title %}
+
+{% block content %}
+<section class="section">
+  <div class="container is-fluid">
+    <div class="level">
+      <div class="level-left">
+        <h1 class="title is-3">
+          <i class="fas fa-users has-text-info"></i>
+          User Management
+        </h1>
+      </div>
+      <div class="level-right">
+        <a href="{% url 'admin_user_create' %}" class="button is-success">
+          <span class="icon">
+            <i class="fas fa-plus"></i>
+          </span>
+          <span>Create New User</span>
+        </a>
+        <a href="{% url 'admin_dashboard' %}" class="button is-light">
+          <span class="icon">
+            <i class="fas fa-arrow-left"></i>
+          </span>
+          <span>Back to Dashboard</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- Filters -->
+    <div class="box mb-5">
+      <form method="get" action="{% url 'admin_user_list' %}">
+        <div class="columns">
+          <div class="column is-3">
+            <div class="field">
+              <label class="label is-small">User Type</label>
+              <div class="control">
+                <select name="type" class="input">
+                  <option value="">All Users</option>
+                  <option value="staff" {% if current_filters.type == 'staff' %}selected{% endif %}>Staff Only</option>
+                  <option value="superuser" {% if current_filters.type == 'superuser' %}selected{% endif %}>Superusers Only</option>
+                  <option value="regular" {% if current_filters.type == 'regular' %}selected{% endif %}>Regular Users Only</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          
+          <div class="column is-4">
+            <div class="field">
+              <label class="label is-small">Search</label>
+              <div class="control">
+                <input class="input" type="text" name="search" 
+                       placeholder="Username, name, or email..." 
+                       value="{{ current_filters.search }}">
+              </div>
+            </div>
+          </div>
+          
+          <div class="column is-2">
+            <div class="field">
+              <label class="label is-small">&nbsp;</label>
+              <div class="control">
+                <button type="submit" class="button is-primary is-fullwidth">
+                  <span class="icon">
+                    <i class="fas fa-search"></i>
+                  </span>
+                  <span>Filter</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <!-- Users Table -->
+    <div class="table-container">
+      <table class="table is-fullwidth is-striped is-hoverable">
+        <thead>
+          <tr>
+            <th>Username</th>
+            <th>Full Name</th>
+            <th>Email</th>
+            <th>Status</th>
+            <th>Permissions</th>
+            <th>Last Login</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for user in page_obj %}
+          <tr>
+            <td>
+              <strong>{{ user.username }}</strong>
+            </td>
+            <td>
+              {% if user.first_name or user.last_name %}
+                {{ user.first_name }} {{ user.last_name }}
+              {% else %}
+                <span class="has-text-grey">-</span>
+              {% endif %}
+            </td>
+            <td>
+              {% if user.email %}
+                <a href="mailto:{{ user.email }}">{{ user.email }}</a>
+              {% else %}
+                <span class="has-text-grey">-</span>
+              {% endif %}
+            </td>
+            <td>
+              {% if user.is_active %}
+                <span class="tag is-success">Active</span>
+              {% else %}
+                <span class="tag is-danger">Inactive</span>
+              {% endif %}
+            </td>
+            <td>
+              {% if user.is_superuser %}
+                <span class="tag is-dark">Superuser</span>
+              {% elif user.is_staff %}
+                <span class="tag is-info">Staff</span>
+              {% else %}
+                <span class="tag is-light">Regular User</span>
+              {% endif %}
+            </td>
+            <td>
+              {% if user.last_login %}
+                {{ user.last_login|date:"M d, Y H:i" }}
+              {% else %}
+                <span class="has-text-grey">Never</span>
+              {% endif %}
+            </td>
+            <td>
+              <div class="buttons">
+                <a href="{% url 'admin_user_edit' user.id %}" 
+                   class="button is-primary is-small">
+                  <span class="icon">
+                    <i class="fas fa-edit"></i>
+                  </span>
+                  <span>Edit</span>
+                </a>
+              </div>
+            </td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="7" class="has-text-centered has-text-grey">
+              No users found matching your criteria.
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Pagination -->
+    {% if page_obj.has_other_pages %}
+    <nav class="pagination is-centered mt-5" role="navigation" aria-label="pagination">
+      {% if page_obj.has_previous %}
+      <a href="?page={{ page_obj.previous_page_number }}&{{ request.GET.urlencode }}" 
+         class="pagination-previous">Previous</a>
+      {% else %}
+      <a class="pagination-previous" disabled>Previous</a>
+      {% endif %}
+
+      {% if page_obj.has_next %}
+      <a href="?page={{ page_obj.next_page_number }}&{{ request.GET.urlencode }}" 
+         class="pagination-next">Next</a>
+      {% else %}
+      <a class="pagination-next" disabled>Next</a>
+      {% endif %}
+
+      <ul class="pagination-list">
+        {% for num in page_obj.paginator.page_range %}
+          {% if page_obj.number == num %}
+            <li><a class="pagination-link is-current" aria-current="page">{{ num }}</a></li>
+          {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+            <li><a href="?page={{ num }}&{{ request.GET.urlencode }}" class="pagination-link">{{ num }}</a></li>
+          {% endif %}
+        {% endfor %}
+      </ul>
+    </nav>
+    {% endif %}
+  </div>
+</section>
+
+<style>
+/* Clean select styling */
+select.input {
+  padding-right: 2.5em;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath fill='%23363636' d='M7 7l3 3 3-3m-3 6l3-3-3-3'/%3E%3C/svg%3E");
+  background-position: right 0.5em center;
+  background-repeat: no-repeat;
+  background-size: 1.5em;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+}
+</style>
+{% endblock content %}
