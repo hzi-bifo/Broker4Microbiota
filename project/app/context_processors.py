@@ -42,7 +42,7 @@ def site_settings(request):
             # Add default logo fallback
             if not cached_settings['logo_url']:
                 # Use the existing static logo as fallback
-                cached_settings['logo_url'] = django_settings.STATIC_URL + 'images/logo.png'
+                cached_settings['logo_url'] = os.path.join(django_settings.STATIC_URL, 'images/logo.png')
             
             # Cache for 5 minutes
             cache.set('site_settings', cached_settings, 300)
@@ -66,7 +66,7 @@ def site_settings(request):
                 'order_form_title': 'Create Sequencing Order',
                 'order_form_description': 'Provide detailed information for your sequencing order including contact details, sample information, and sequencing preferences.',
                 'submission_instructions': '<h4>Next Steps After Submission:</h4><ol><li><strong>Ship Your Samples</strong> - Send your samples to our facility using the provided shipping address</li><li><strong>Sample Processing</strong> - We will begin processing once samples are received</li><li><strong>Quality Control</strong> - All samples undergo rigorous QC before sequencing</li><li><strong>Data Delivery</strong> - Sequencing data will be delivered via secure download</li></ol><p><strong>Shipping Address:</strong><br>Sequencing Facility<br>Helmholtz Centre for Infection Research<br>Inhoffenstraße 7<br>38124 Braunschweig, Germany</p><p><strong>Important:</strong> Please include a copy of your order confirmation with your shipment.</p>',
-                'logo_url': django_settings.STATIC_URL + 'images/logo.png',
+                'logo_url': os.path.join(django_settings.STATIC_URL, 'images/logo.png'),
                 'favicon_url': None,
             }
     
