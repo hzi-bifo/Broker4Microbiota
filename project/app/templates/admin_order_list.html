@@ -157,9 +157,10 @@ All Orders - Admin
                 <strong>#{{ order.id }}</strong>
               </td>
               <td>
-                <a href="{% url 'project_edit' order.project.id %}" target="_blank">
-                  {{ order.project.title|truncatechars:25 }}
-                </a>
+                <strong>{{ order.project.title|truncatechars:30 }}</strong>
+                {% if order.project.alias %}
+                <br><small class="has-text-grey">{{ order.project.alias }}</small>
+                {% endif %}
               </td>
               <td>{{ order.project.user.username }}</td>
               <td>

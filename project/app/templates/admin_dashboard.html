@@ -32,29 +32,28 @@ Admin Dashboard - Sequencing Center Management
       </div>
     </div>
 
-    <!-- Compact Statistics -->
-    <div class="stats-row mb-4">
-      <div class="stat-item">
-        <span class="stat-value">{{ stats.total_orders }}</span>
-        <span class="stat-label">Total Orders</span>
-      </div>
-      <div class="stat-item">
-        <span class="stat-value">{{ stats.orders_last_30_days }}</span>
-        <span class="stat-label">Last 30 Days</span>
-      </div>
-      <div class="stat-item has-warning">
-        <span class="stat-value">{{ stats.orders_needing_action }}</span>
-        <span class="stat-label">Awaiting Review</span>
-      </div>
-      <div class="stat-item">
-        <span class="stat-value">{{ stats.active_projects }}</span>
-        <span class="stat-label">Active Projects</span>
-      </div>
-      <div class="stat-item">
-        <span class="stat-value">{{ stats.total_users }}</span>
-        <span class="stat-label">Active Users</span>
+    {% if stats.orders_needing_action > 0 %}
+    <!-- Action Required Alert -->
+    <div class="notification is-warning is-light mb-4">
+      <div class="level is-mobile">
+        <div class="level-left">
+          <div class="level-item">
+            <span class="icon">
+              <i class="fas fa-exclamation-triangle"></i>
+            </span>
+          </div>
+          <div class="level-item">
+            <strong>{{ stats.orders_needing_action }} order{{ stats.orders_needing_action|pluralize }} awaiting review</strong>
+          </div>
+        </div>
+        <div class="level-right">
+          <a href="{% url 'admin_order_list' %}?status=ready_for_sequencing" class="button is-small is-warning">
+            Review Now
+          </a>
+        </div>
       </div>
     </div>
+    {% endif %}
 
     <!-- Compact Status Pipeline -->
     <div class="status-pipeline-compact mb-4">
@@ -122,13 +121,18 @@ Admin Dashboard - Sequencing Center Management
 
     <!-- Recent Activity -->
     <div class="section-card">
-      <h2 class="section-title">Recent Activity</h2>
+      <div class="section-header">
+        <h2 class="section-title">Recent Activity</h2>
+        <p class="has-text-grey is-size-7">
+          Showing all actions including status changes, notes, and rejections
+        </p>
+      </div>
       
       {% if recent_activity %}
       <div class="timeline">
         {% for activity in recent_activity %}
         <div class="timeline-item">
-          <div class="timeline-marker is-primary"></div>
+          <div class="timeline-marker {% if activity.is_rejection %}is-danger{% elif activity.note_type == 'internal' %}is-warning{% elif activity.note_type == 'status_change' %}is-primary{% else %}is-info{% endif %}"></div>
           <div class="timeline-content">
             <div class="is-size-7 has-text-grey mb-1">
               {{ activity.created_at|date:"M d, Y H:i" }}
@@ -138,11 +142,48 @@ Admin Dashboard - Sequencing Center Management
               <strong>Order #{{ activity.order.id }}</strong> - 
               {{ activity.order.project.title|truncatechars:30 }}
             </div>
+            
+            {% if activity.note_type == 'status_change' %}
             <div class="mt-1">
               <span class="tag is-light is-small">{{ activity.old_status|title }}</span>
               →
               <span class="tag is-{{ activity.order.get_status_display_color }} is-small">{{ activity.new_status|title }}</span>
             </div>
+            {% elif activity.is_rejection %}
+            <div class="mt-1">
+              <span class="tag is-danger is-small">Rejected</span>
+              <span class="tag is-light is-small">→ {{ activity.new_status|title }}</span>
+            </div>
+            {% if activity.content %}
+            <div class="mt-1 has-text-danger-dark">
+              <small><i class="fas fa-exclamation-circle"></i> {{ activity.content|truncatechars:100 }}</small>
+            </div>
+            {% endif %}
+            {% elif activity.note_type == 'internal' %}
+            <div class="mt-1">
+              <span class="tag is-warning is-light is-small">
+                <span class="icon is-small"><i class="fas fa-lock"></i></span>
+                <span>Internal Note</span>
+              </span>
+            </div>
+            {% if activity.content %}
+            <div class="mt-1">
+              <small>{{ activity.content|truncatechars:100 }}</small>
+            </div>
+            {% endif %}
+            {% elif activity.note_type == 'user_visible' %}
+            <div class="mt-1">
+              <span class="tag is-info is-light is-small">
+                <span class="icon is-small"><i class="fas fa-comment"></i></span>
+                <span>Note</span>
+              </span>
+            </div>
+            {% if activity.content %}
+            <div class="mt-1">
+              <small>{{ activity.content|truncatechars:100 }}</small>
+            </div>
+            {% endif %}
+            {% endif %}
           </div>
         </div>
         {% endfor %}
@@ -150,6 +191,37 @@ Admin Dashboard - Sequencing Center Management
       {% else %}
       <p class="has-text-grey">No recent activity.</p>
       {% endif %}
+    </div>
+    
+    <!-- Footer with system info -->
+    <div class="dashboard-footer mt-6">
+      <div class="level">
+        <div class="level-left">
+          <div class="level-item has-text-grey">
+            <small>
+              <i class="fas fa-users mr-1"></i>
+              {{ stats.total_users }} active user{{ stats.total_users|pluralize }}
+            </small>
+          </div>
+          <div class="level-item has-text-grey">
+            <small>
+              <i class="fas fa-project-diagram mr-1"></i>
+              {{ stats.active_projects }} active project{{ stats.active_projects|pluralize }}
+            </small>
+          </div>
+          <div class="level-item has-text-grey">
+            <small>
+              <i class="fas fa-clipboard-list mr-1"></i>
+              {{ stats.total_orders }} total order{{ stats.total_orders|pluralize }}
+            </small>
+          </div>
+        </div>
+        <div class="level-right">
+          <div class="level-item has-text-grey">
+            <small>Last updated: {% now "M d, Y H:i" %}</small>
+          </div>
+        </div>
+      </div>
     </div>
 
   </div>
@@ -172,48 +244,30 @@ body {
   padding-top: 1rem !important;
 }
 
-/* Compact Statistics Row */
-.stats-row {
-  display: flex;
-  gap: 1rem;
-  background: white;
-  border: 1px solid #e9ecef;
-  border-radius: 6px;
-  padding: 1rem;
-  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+/* Action Required Alert */
+.notification.is-warning.is-light {
+  background-color: #fffbeb;
+  color: #947600;
+  border-left: 4px solid #ffdd57;
 }
 
-.stat-item {
-  flex: 1;
-  text-align: center;
-  padding: 0.5rem;
-  border-right: 1px solid #e9ecef;
+.notification .level {
+  align-items: center;
 }
 
-.stat-item:last-child {
-  border-right: none;
+/* Dashboard Footer */
+.dashboard-footer {
+  padding-top: 2rem;
+  border-top: 1px solid #e9ecef;
+  margin-top: 3rem;
 }
 
-.stat-item.has-warning .stat-value {
-  color: #ff9f00;
-  font-weight: 600;
+.dashboard-footer .level-item {
+  margin-right: 2rem;
 }
 
-.stat-value {
-  display: block;
-  font-size: 1.75rem;
-  font-weight: 500;
-  color: #2c3e50;
-  line-height: 1;
-}
-
-.stat-label {
-  display: block;
-  font-size: 0.75rem;
-  color: #6c757d;
-  margin-top: 0.25rem;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+.dashboard-footer small {
+  font-size: 0.875rem;
 }
 
 /* Compact Status Pipeline */
@@ -319,6 +373,11 @@ body {
   justify-content: space-between;
   align-items: center;
   margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.section-header p {
+  margin: 0;
 }
 
 .section-title {
@@ -358,6 +417,18 @@ body {
 
 .timeline-marker.is-primary {
   background-color: #3273dc;
+}
+
+.timeline-marker.is-danger {
+  background-color: #ff3860;
+}
+
+.timeline-marker.is-warning {
+  background-color: #ffdd57;
+}
+
+.timeline-marker.is-info {
+  background-color: #3298dc;
 }
 
 .timeline-content {
@@ -433,24 +504,20 @@ body {
     text-align: left;
   }
   
-  .stats-row {
-    flex-wrap: wrap;
+  .dashboard-footer .level {
+    display: block;
   }
   
-  .stat-item {
-    flex: 0 0 48%;
+  .dashboard-footer .level-left,
+  .dashboard-footer .level-right {
+    display: block;
+    text-align: center;
     margin-bottom: 0.5rem;
-    border-right: none;
-    border-bottom: 1px solid #e9ecef;
   }
   
-  .stat-item:nth-child(odd) {
-    border-right: 1px solid #e9ecef;
-  }
-  
-  .stat-item:last-child,
-  .stat-item:nth-last-child(2) {
-    border-bottom: none;
+  .dashboard-footer .level-item {
+    display: inline-block;
+    margin: 0 1rem;
   }
   
   .status-pipeline-compact {

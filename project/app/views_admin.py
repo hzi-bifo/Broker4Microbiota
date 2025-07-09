@@ -82,10 +82,10 @@ def admin_dashboard(request):
         status='ready_for_sequencing'
     ).select_related('project', 'project__user').order_by('-status_updated_at')[:10]
     
-    # Get recent activity (last 20 status changes)
-    recent_activity = StatusNote.objects.filter(
-        note_type='status_change'
-    ).select_related('order', 'order__project', 'user').order_by('-created_at')[:20]
+    # Get recent activity (all types of notes/changes)
+    recent_activity = StatusNote.objects.all().select_related(
+        'order', 'order__project', 'user'
+    ).order_by('-created_at')[:20]
     
     context = {
         'stats': stats,
