@@ -13,6 +13,7 @@ from django.apps import apps
 from django.views.decorators.http import require_http_methods
 from collections import OrderedDict
 import csv
+import importlib
 import os
 import shutil
 import hashlib
@@ -175,13 +176,35 @@ def admin_order_detail(request, order_id):
     # Get MIxS checklist information
     sampleset = order.sampleset_set.filter(sample_type=SAMPLE_TYPE_NORMAL).first()
     selected_checklists = []
+    selected_fields_count = 0
+    total_fields_count = 0
+    
     if sampleset and sampleset.checklists:
         for checklist_name in sampleset.checklists:
             if checklist_name in Sampleset.checklist_structure:
+                # Get the checklist model to count total fields
+                checklist_class_name = Sampleset.checklist_structure[checklist_name]['checklist_class_name']
+                checklist_class = getattr(importlib.import_module("app.models"), checklist_class_name)
+                all_fields = [f.name for f in checklist_class._meta.get_fields() 
+                             if f.name not in ['id', 'sampleset', 'sample', 'sample_type']]
+                total_fields_count += len(all_fields)
+                
+                # Count selected fields for this checklist
+                if sampleset.selected_fields:
+                    selected_for_checklist = sum(1 for field in all_fields 
+                                               if sampleset.selected_fields.get(field, False))
+                else:
+                    # If no field selection, assume all fields are selected
+                    selected_for_checklist = len(all_fields)
+                
+                selected_fields_count += selected_for_checklist
+                
                 checklist_info = {
                     'name': checklist_name.replace('_', ' ').title(),
                     'code': Sampleset.checklist_structure[checklist_name]['checklist_code'],
-                    'raw_name': checklist_name
+                    'raw_name': checklist_name,
+                    'field_count': len(all_fields),
+                    'selected_field_count': selected_for_checklist
                 }
                 selected_checklists.append(checklist_info)
     
@@ -214,6 +237,8 @@ def admin_order_detail(request, order_id):
         'samples': samples,
         'sampleset': sampleset,
         'selected_checklists': selected_checklists,
+        'selected_fields_count': selected_fields_count,
+        'total_fields_count': total_fields_count,
         'status_history': status_history,
         'all_notes': all_notes,
         'status_form': status_form,
@@ -1011,3 +1036,144 @@ def admin_delete_submission(request, submission_id):
     
     # Default redirect
     return redirect('admin_submission_list')
+
+
+@staff_member_required
+@require_http_methods(["POST"])
+def admin_register_project_ena(request, submission_id):
+    """
+    Register a ProjectSubmission with ENA
+    Based on the register_projects admin action
+    """
+    import requests
+    import xml.etree.ElementTree as ET
+    from pathlib import Path
+    
+    submission = get_object_or_404(ProjectSubmission, id=submission_id)
+    
+    # Check if already submitted
+    if submission.receipt_xml:
+        messages.warning(request, 'This submission has already been registered with ENA.')
+        return redirect(request.META.get('HTTP_REFERER', 'admin_project_list'))
+    
+    # Check for required environment variables
+    if not all([settings.ENA_USERNAME, settings.ENA_PASSWORD]):
+        messages.error(request, 'ENA credentials are not configured. Please set ENA_USERNAME and ENA_PASSWORD in your environment.')
+        return redirect(request.META.get('HTTP_REFERER', 'admin_project_list'))
+    
+    try:
+        # Create LOCAL_DIR if it doesn't exist
+        local_dir = getattr(settings, 'LOCAL_DIR', os.path.join(settings.MEDIA_ROOT, 'ena_submissions'))
+        Path(local_dir).mkdir(parents=True, exist_ok=True)
+        
+        # Save XML content to files
+        project_xml_filename = os.path.join(local_dir, f"project_{submission.id}.xml")
+        submission_xml_filename = os.path.join(local_dir, f"submission_{submission.id}.xml")
+        
+        with open(project_xml_filename, 'w') as project_file:
+            project_file.write(submission.project_object_xml)
+        with open(submission_xml_filename, 'w') as submission_file:
+            submission_file.write(submission.submission_object_xml)
+        
+        # Prepare files for submission
+        with open(submission_xml_filename, 'rb') as sub_file, open(project_xml_filename, 'rb') as proj_file:
+            files = {
+                'SUBMISSION': (os.path.basename(submission_xml_filename), sub_file),
+                'PROJECT': (os.path.basename(project_xml_filename), proj_file),
+            }
+            
+            # Prepare authentication
+            auth = (settings.ENA_USERNAME, settings.ENA_PASSWORD)
+            
+            # Make the request to ENA test server
+            response = requests.post(
+                "https://wwwdev.ebi.ac.uk/ena/submit/drop-box/submit/",
+                files=files,
+                auth=auth
+            )
+        
+        # Clean up temporary files
+        try:
+            os.remove(project_xml_filename)
+            os.remove(submission_xml_filename)
+        except:
+            pass
+        
+        if response.status_code == 200:
+            # Parse the XML response
+            root = ET.fromstring(response.content)
+            receipt_xml = ET.tostring(root, encoding='unicode')
+            submission.receipt_xml = receipt_xml
+            
+            if root.tag == 'RECEIPT':
+                success = root.attrib.get('success', 'false')
+                if success == 'true':
+                    # Process successful submission
+                    for child in root:
+                        if child.tag == 'PROJECT':
+                            alias = child.attrib.get('alias')
+                            accession_number = child.attrib.get('accession')
+                            
+                            # Update all projects in this submission
+                            for project in submission.projects.all():
+                                if project.alias == alias:
+                                    project.study_accession_id = accession_number
+                                    project.submitted = True
+                                    
+                                    # Check for alternative accession
+                                    for grandchild in child:
+                                        if grandchild.tag == 'EXT_ID':
+                                            alt_accession = grandchild.attrib.get('accession')
+                                            if alt_accession:
+                                                project.alternative_accession_id = alt_accession
+                                    
+                                    project.save()
+                    
+                    submission.accession_status = 'SUCCESSFUL'
+                    submission.save()
+                    
+                    # Get the first accession number for the success message
+                    first_accession = None
+                    for project in submission.projects.all():
+                        if project.study_accession_id:
+                            first_accession = project.study_accession_id
+                            break
+                    
+                    if first_accession:
+                        messages.success(request, f'Successfully registered project with ENA! Accession: {first_accession}')
+                    else:
+                        messages.success(request, 'Successfully registered project with ENA!')
+                else:
+                    # Handle submission errors
+                    error_msg = 'ENA submission failed. '
+                    for child in root:
+                        if child.tag == 'MESSAGES':
+                            for msg in child:
+                                if msg.tag == 'ERROR':
+                                    error_msg += msg.text + ' '
+                    
+                    submission.accession_status = 'FAILED'
+                    submission.save()
+                    
+                    messages.error(request, error_msg)
+            else:
+                messages.error(request, f'Unexpected response from ENA: {response.content[:200]}')
+        else:
+            messages.error(request, f'ENA submission failed with status code: {response.status_code}')
+            
+    except requests.exceptions.RequestException as e:
+        messages.error(request, f'Network error connecting to ENA: {str(e)}')
+    except Exception as e:
+        messages.error(request, f'Error registering with ENA: {str(e)}')
+    
+    # Redirect based on where the request came from
+    if 'HTTP_REFERER' in request.META:
+        referer = request.META['HTTP_REFERER']
+        if 'project-detail' in referer:
+            project = submission.projects.first()
+            if project:
+                return redirect('admin_project_detail', project_id=project.id)
+        elif 'submissions' in referer:
+            return redirect('admin_submission_list')
+    
+    return redirect('admin_project_list')

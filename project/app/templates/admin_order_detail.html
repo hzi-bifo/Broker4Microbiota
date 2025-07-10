@@ -203,17 +203,28 @@ Order #{{ order.id }} - Admin View
           <h4 class="title is-6 mb-3">
             <i class="fas fa-list-check"></i> Selected MIxS Checklists
           </h4>
-          <div class="tags">
+          <div class="tags are-medium">
             {% for checklist in selected_checklists %}
-            <span class="tag is-medium is-primary">
+            <span class="tag is-primary">
               <span class="icon">
                 <i class="fas fa-clipboard-check"></i>
               </span>
               <span>{{ checklist.name }}</span>
               <span class="has-text-weight-light ml-1">({{ checklist.code }})</span>
+              {% if checklist.selected_field_count %}
+              <span class="ml-2 has-background-primary-dark px-2 py-1 is-rounded">
+                {{ checklist.selected_field_count }}/{{ checklist.field_count }} fields
+              </span>
+              {% endif %}
             </span>
             {% endfor %}
           </div>
+          {% if selected_fields_count and total_fields_count %}
+          <p class="mt-3 has-text-grey">
+            <i class="fas fa-info-circle"></i>
+            <strong>{{ selected_fields_count }}</strong> of <strong>{{ total_fields_count }}</strong> total available fields selected for data collection
+          </p>
+          {% endif %}
         </div>
         {% endif %}
 

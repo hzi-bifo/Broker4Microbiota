@@ -148,8 +148,9 @@ Order List
 .progress-steps {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
   position: relative;
+  min-height: 120px;
 }
 
 .progress-step {
@@ -158,6 +159,8 @@ Order List
   align-items: center;
   position: relative;
   z-index: 1;
+  flex: 1;
+  text-align: center;
 }
 
 .step-icon {
@@ -192,6 +195,8 @@ Order List
   color: #666;
   text-align: center;
   margin-top: 0.25rem;
+  max-width: 150px;
+  line-height: 1.3;
 }
 
 .current-action {
@@ -337,7 +342,14 @@ Order List
                       Configure Metadata
                     {% endif %}
                   </div>
-                  {% if order.show_metadata and order.get_selected_checklist %}
+                  {% if order.show_metadata and order.metadata_info %}
+                    <div class="step-info">
+                      {{ order.metadata_info.checklist_name }}
+                      {% if order.metadata_info.selected is not None %}
+                        <br><small>({{ order.metadata_info.selected }} of {{ order.metadata_info.total }} fields selected)</small>
+                      {% endif %}
+                    </div>
+                  {% elif order.show_metadata and order.get_selected_checklist %}
                     <div class="step-info">{{ order.get_selected_checklist }}</div>
                   {% endif %}
                 </div>

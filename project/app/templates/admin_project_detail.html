@@ -326,12 +326,16 @@
                 </div>
                 {% if not submission.receipt_xml %}
                 <div class="control">
-                  <button class="button is-small is-primary" disabled>
-                    <span class="icon">
-                      <i class="fas fa-cloud-upload-alt"></i>
-                    </span>
-                    <span>Register at ENA</span>
-                  </button>
+                  <form method="post" action="{% url 'admin_register_project_ena' submission.id %}" style="display: inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="button is-small is-primary"
+                            onclick="if(confirm('Register this project with ENA? This will submit to the ENA test server.')){this.classList.add('is-loading');return true;}return false;">
+                      <span class="icon">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                      </span>
+                      <span>Register at ENA</span>
+                    </button>
+                  </form>
                 </div>
                 {% endif %}
                 <div class="control">

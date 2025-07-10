@@ -101,3 +101,33 @@ submg instance reference submg definintion, is path on disk where the acutal yam
 when you click on a submg run definitoin and chose action run submg, it creates the ymal file fscript and kicked off, 
 
 yaml file -> submg -> generates 
+
+# Hide GSC MIMAGS Checklist (2025-07-10)
+
+## Objective
+Hide the GSC MIMAGS checklist from the metadata view and display a message indicating that it has been hidden.
+
+## Analysis
+From examining the code, I found:
+1. GSC MIMAGS is defined in the jqtree.json file with name "GSC MIMAGS"
+2. In the metadata.html template, checklist names are converted to keys by replacing spaces with underscores
+3. GSC MIMAGS would become "GSC_MIMAGS" as a key
+4. The checklist is currently not in the checklistInfo object, so it shows with default metadata
+5. The renderChecklistCards() function creates cards for all checklists in checklistData
+
+## Todo List
+- [ ] Add logic in renderChecklistCards() to skip GSC MIMAGS when creating cards
+- [ ] Add a notice section to show which checklists are hidden
+- [ ] Ensure the checklist key conversion handles "GSC MIMAGS" correctly
+- [ ] Test that the checklist is properly hidden and the message displays
+
+## Implementation Approach
+1. In the renderChecklistCards() function, add a condition to check if the checklist name is "GSC MIMAGS" 
+2. If it is, skip creating the card for it and add it to a list of hidden checklists
+3. After rendering all cards, if there are hidden checklists, display a notice about them
+4. Make the implementation simple and minimal to avoid complex changes
+
+## Notes
+- The checklist name in jqtree.json is "GSC MIMAGS" (with a space)
+- When converted to a key, it becomes "GSC_MIMAGS" (with underscore)
+- Need to check for the original name "GSC MIMAGS" before the conversion 

@@ -49,6 +49,11 @@ Configure Metadata Checklists
             <!-- Cards will be populated by JavaScript -->
           </div>
           
+          <!-- Container for field selection and other notifications -->
+          <div id="field-selection-container">
+            <!-- Field selection notice will be added here -->
+          </div>
+          
           <!-- Hidden form fields -->
           <input type="hidden" id="checklists" name="checklists" value="{{ sample_set.checklists|default:'[]' }}">
           <input type="hidden" id="include" name="include" value="{{ sample_set.include|default:'[]' }}">
@@ -94,6 +99,67 @@ Configure Metadata Checklists
     </footer>
   </div>
 </div>
+
+<style>
+.checklist-card {
+    margin-bottom: 1rem;
+}
+
+.checklist-card .card {
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.checklist-card .card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.checklist-card.selected .card,
+.checklist-card .card.is-selected {
+    border: 2px solid #3273dc;
+    background-color: #f0f7ff;
+}
+
+.checklist-card.selected .card .icon,
+.checklist-card .card.is-selected .icon {
+    color: #3273dc !important;
+}
+
+.preview-btn {
+    position: relative;
+    z-index: 10;
+}
+
+.field-selection-notice {
+    margin-top: 1rem;
+}
+
+.selected-indicator {
+    position: absolute;
+    top: 0;
+    right: 0;
+    background-color: #3273dc;
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 0 4px 0 4px;
+    font-weight: 600;
+    font-size: 0.875rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.checklist-card .card {
+    position: relative;
+    overflow: visible;
+}
+
+/* Fix field selection notice positioning */
+#field-selection-container {
+    margin-top: 1.5rem;
+}
+</style>
 
 <script>
 // Checklist data - will be populated from the JSON file
@@ -269,8 +335,12 @@ function renderChecklistCards() {
         card.setAttribute('data-checklist', checklistKey);
         card.setAttribute('data-keywords', info.keywords.join(' '));
         
+        // Check if this checklist was previously selected
+        const isSelected = {% if sample_set.checklists %}"{{ sample_set.checklists.0 }}" === checklistKey{% else %}false{% endif %};
+        
         card.innerHTML = `
-            <div class="card">
+            <div class="card ${isSelected ? 'is-selected' : ''}" onclick="selectChecklist('${checklistKey}')">
+                ${isSelected ? '<div class="selected-indicator"><i class="fas fa-check-circle"></i> Selected</div>' : ''}
                 <div class="card-content">
                     <div class="media">
                         <div class="media-left">
@@ -293,11 +363,10 @@ function renderChecklistCards() {
                         </div>
                         
                         <div class="card-actions mt-3">
-                            <label class="radio">
-                                <input type="radio" name="selected-checklist" value="${checklistKey}">
-                                <span class="radio-label">Select this checklist</span>
+                            <label class="radio" style="display: none;">
+                                <input type="radio" name="selected-checklist" value="${checklistKey}" ${isSelected ? 'checked' : ''}>
                             </label>
-                            <button type="button" class="button is-small is-outlined preview-btn" data-checklist="${checklistKey}">
+                            <button type="button" class="button is-small is-outlined preview-btn" data-checklist="${checklistKey}" onclick="event.stopPropagation();">
                                 <span class="icon is-small">
                                     <i class="fas fa-eye"></i>
                                 </span>
@@ -309,20 +378,37 @@ function renderChecklistCards() {
             </div>
         `;
         
+        if (isSelected) {
+            card.classList.add('selected');
+        }
+        
         grid.appendChild(card);
     });
+    
+    // Add notices to the field selection container
+    const noticeContainer = document.getElementById('field-selection-container');
+    noticeContainer.innerHTML = ''; // Clear existing notices
     
     // Add notice about hidden checklists if any
     if (hiddenChecklists.length > 0) {
         const notice = document.createElement('div');
-        notice.className = 'notification is-info is-light mt-4';
+        notice.className = 'notification is-info is-light';
         notice.innerHTML = `
             <i class="fas fa-info-circle"></i> 
             ${hiddenChecklists.length} checklist${hiddenChecklists.length > 1 ? 's' : ''} hidden from view 
             (${hiddenChecklists.join(', ')}) - reserved for assembly datasets
         `;
-        grid.appendChild(notice);
+        noticeContainer.appendChild(notice);
     }
+    
+    // Add field selection info if available
+    {% if field_selection_info and sample_set.checklists %}
+    // If we have existing checklist selection, show field info for the first (and only) checklist
+    const selectedChecklistKey = "{{ sample_set.checklists.0 }}";
+    if (selectedChecklistKey) {
+        updateFieldSelectionNotice(selectedChecklistKey);
+    }
+    {% endif %}
     
     // Add event listeners
     setupEventListeners();
@@ -394,11 +480,29 @@ function selectChecklist(checklistKey) {
     // Update visual selection
     document.querySelectorAll('.checklist-card').forEach(card => {
         card.classList.remove('selected');
+        const cardElement = card.querySelector('.card');
+        if (cardElement) {
+            cardElement.classList.remove('is-selected');
+            // Remove existing selected indicator
+            const existingIndicator = cardElement.querySelector('.selected-indicator');
+            if (existingIndicator) {
+                existingIndicator.remove();
+            }
+        }
     });
     
     const selectedCard = document.querySelector(`[data-checklist="${checklistKey}"]`);
     if (selectedCard) {
         selectedCard.classList.add('selected');
+        const cardElement = selectedCard.querySelector('.card');
+        if (cardElement) {
+            cardElement.classList.add('is-selected');
+            // Add selected indicator
+            const indicator = document.createElement('div');
+            indicator.className = 'selected-indicator';
+            indicator.innerHTML = '<i class="fas fa-check-circle"></i> Selected';
+            cardElement.insertBefore(indicator, cardElement.firstChild);
+        }
         selectedCard.querySelector('input[type="radio"]').checked = true;
     }
     
@@ -407,6 +511,9 @@ function selectChecklist(checklistKey) {
     document.getElementById('include').value = `["${checklistKey}"]`;
     document.getElementById('exclude').value = `["${checklistKey}"]`;
     document.getElementById('custom').value = `["${checklistKey}"]`;
+    
+    // Update field selection notice if it exists
+    updateFieldSelectionNotice(checklistKey);
     
     // Enable proceed button
     document.getElementById('proceed-btn').disabled = false;
@@ -504,6 +611,85 @@ function toggleFields(sectionId) {
         icon.classList.add('fa-chevron-down');
         const hiddenCount = extraFields.querySelectorAll('.preview-field').length;
         text.textContent = `Show ${hiddenCount} more fields`;
+    }
+}
+
+function updateFieldSelectionNotice(checklistKey) {
+    // Remove existing field selection notice
+    const existingNotice = document.querySelector('.field-selection-notice');
+    if (existingNotice) {
+        existingNotice.remove();
+    }
+    
+    // Get checklist info
+    const checklist = checklistData.find(c => c.name.replace(/\s+/g, '_') === checklistKey);
+    const info = checklistInfo[checklistKey];
+    
+    if (checklist && info) {
+        // Count total fields
+        const fieldCount = checklist.children ? 
+            checklist.children.reduce((total, section) => 
+                total + (section.children ? section.children.length : 0), 0) : 0;
+        
+        // Check if we have saved field selection info
+        {% if field_selection_info %}
+        const fieldSelectionInfo = {{ field_selection_info|safe|default:'{}' }};
+        const savedInfo = fieldSelectionInfo[checklistKey];
+        {% else %}
+        const savedInfo = null;
+        {% endif %}
+        
+        const noticeContainer = document.getElementById('field-selection-container');
+        const fieldNotice = document.createElement('div');
+        fieldNotice.className = 'notification is-warning is-light field-selection-notice';
+        
+        if (savedInfo) {
+            // Show saved selection info
+            fieldNotice.innerHTML = `
+                <div class="level">
+                    <div class="level-left">
+                        <div class="level-item">
+                            <i class="fas fa-list-check mr-2"></i>
+                            Using&nbsp;<strong>${savedInfo.selected}</strong>&nbsp;of&nbsp;<strong>${savedInfo.total}</strong>&nbsp;fields from ${info.title}
+                        </div>
+                    </div>
+                    <div class="level-right">
+                        <div class="level-item">
+                            <a href="{% url 'field_selection_view' project_id order_id %}" class="button is-small is-warning">
+                                <span class="icon is-small">
+                                    <i class="fas fa-edit"></i>
+                                </span>
+                                <span>Change</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            `;
+        } else {
+            // Show default message for new selection
+            fieldNotice.innerHTML = `
+                <div class="level">
+                    <div class="level-left">
+                        <div class="level-item">
+                            <i class="fas fa-list-check mr-2"></i>
+                            Using all&nbsp;<strong>${fieldCount}</strong>&nbsp;fields from ${info.title} by default
+                        </div>
+                    </div>
+                    <div class="level-right">
+                        <div class="level-item">
+                            <a href="{% url 'field_selection_view' project_id order_id %}" class="button is-small is-warning">
+                                <span class="icon is-small">
+                                    <i class="fas fa-sliders-h"></i>
+                                </span>
+                                <span>Customize Fields</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+        
+        noticeContainer.appendChild(fieldNotice);
     }
 }
 </script>

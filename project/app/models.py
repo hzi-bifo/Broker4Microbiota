@@ -212,9 +212,13 @@ class SelfDescribingModel(models.Model):
         return (index, output)    
     
     # Populate instance fields from a response
-    def setFieldsFromResponse(self, response):
+    def setFieldsFromResponse(self, response, inclusions=None):
 
         for k, v in self.fields.items():
+            # Skip fields not in inclusions if inclusions list is provided
+            if inclusions and k not in inclusions:
+                continue
+                
             try:
                 value = response[k]
             except:
@@ -598,6 +602,11 @@ class Sampleset(models.Model):
     exclude = models.JSONField()
     custom = models.JSONField()
     sample_type = models.IntegerField(default=SAMPLE_TYPE_NORMAL)
+    
+    # Field selection - stores which fields from the checklist are selected
+    selected_fields = models.JSONField(default=dict, blank=True)
+    # Field overrides - stores custom configurations like making optional fields required
+    field_overrides = models.JSONField(default=dict, blank=True)
 
     checklist_structure = {
         'GSC_MIxS_wastewater_sludge': {"checklist_code": "ERC000023", 'checklist_class_name': 'GSC_MIxS_wastewater_sludge', 'unitchecklist_class_name': 'GSC_MIxS_wastewater_sludge_unit'},
@@ -815,9 +824,13 @@ class Sample(SelfDescribingModel):
         return yaml
 
     # Populate instance fields from a response
-    def setFieldsFromResponse(self, response):
+    def setFieldsFromResponse(self, response, inclusions=None):
 
         for k, v in self.fields.items():
+            # Skip fields not in inclusions if inclusions list is provided
+            if inclusions and k not in inclusions:
+                continue
+                
             try:
                 value = response[v]
             except:
