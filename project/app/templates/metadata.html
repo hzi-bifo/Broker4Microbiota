@@ -311,8 +311,8 @@ function renderChecklistCards() {
     checklistData.forEach(checklist => {
         const checklistKey = checklist.name.replace(/\s+/g, '_');
         
-        // Hide GSC_MIMAGS as it's for assemblies, not suited for this stage
-        if (checklistKey === 'GSC_MIMAGS') {
+        // Hide GSC_MIMAGS and ENA_binned_metagenome as they're for assemblies, not suited for this stage
+        if (checklistKey === 'GSC_MIMAGS' || checklistKey === 'ENA_binned_metagenome') {
             hiddenChecklists.push(checklist.name);
             return; // Skip this checklist
         }
