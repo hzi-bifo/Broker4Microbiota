@@ -239,8 +239,18 @@ function renderChecklistCards() {
     const grid = document.getElementById('checklist-grid');
     grid.innerHTML = '';
     
+    // Track hidden checklists
+    const hiddenChecklists = [];
+    
     checklistData.forEach(checklist => {
         const checklistKey = checklist.name.replace(/\s+/g, '_');
+        
+        // Hide GSC_MIMAGS as it's for assemblies, not suited for this stage
+        if (checklistKey === 'GSC_MIMAGS') {
+            hiddenChecklists.push(checklist.name);
+            return; // Skip this checklist
+        }
+        
         const info = checklistInfo[checklistKey] || {
             title: checklist.name,
             description: 'Standard MIxS checklist for sequencing metadata.',
@@ -301,6 +311,18 @@ function renderChecklistCards() {
         
         grid.appendChild(card);
     });
+    
+    // Add notice about hidden checklists if any
+    if (hiddenChecklists.length > 0) {
+        const notice = document.createElement('div');
+        notice.className = 'notification is-info is-light mt-4';
+        notice.innerHTML = `
+            <i class="fas fa-info-circle"></i> 
+            ${hiddenChecklists.length} checklist${hiddenChecklists.length > 1 ? 's' : ''} hidden from view 
+            (${hiddenChecklists.join(', ')}) - reserved for assembly datasets
+        `;
+        grid.appendChild(notice);
+    }
     
     // Add event listeners
     setupEventListeners();
@@ -402,15 +424,18 @@ function showPreview(checklistKey) {
     if (checklist && checklist.children) {
         content += '<div class="preview-sections">';
         
-        checklist.children.forEach(section => {
+        checklist.children.forEach((section, sectionIndex) => {
             if (section.children && section.children.length > 0) {
+                const sectionId = `section-${checklistKey}-${sectionIndex}`;
+                const hasMoreFields = section.children.length > 5;
+                
                 content += `
                     <div class="preview-section">
                         <h5 class="subtitle is-6">${section.name}</h5>
-                        <div class="preview-fields">
+                        <div class="preview-fields" id="${sectionId}">
                 `;
                 
-                // Show first 5 fields as examples
+                // Show first 5 fields initially
                 const fieldsToShow = section.children.slice(0, 5);
                 fieldsToShow.forEach(field => {
                     content += `
@@ -421,8 +446,29 @@ function showPreview(checklistKey) {
                     `;
                 });
                 
-                if (section.children.length > 5) {
-                    content += `<p class="has-text-grey">... and ${section.children.length - 5} more fields</p>`;
+                // Add hidden fields if there are more than 5
+                if (hasMoreFields) {
+                    content += `<div id="${sectionId}-extra" style="display: none;">`;
+                    const extraFields = section.children.slice(5);
+                    extraFields.forEach(field => {
+                        content += `
+                            <div class="preview-field">
+                                <strong>${field.name}</strong>
+                                ${field.description ? `<p class="help">${field.description}</p>` : ''}
+                            </div>
+                        `;
+                    });
+                    content += '</div>';
+                    
+                    // Add expand/collapse button
+                    content += `
+                        <button class="button is-small is-text" onclick="toggleFields('${sectionId}')">
+                            <span class="icon is-small">
+                                <i class="fas fa-chevron-down" id="${sectionId}-icon"></i>
+                            </span>
+                            <span id="${sectionId}-text">Show ${section.children.length - 5} more fields</span>
+                        </button>
+                    `;
                 }
                 
                 content += '</div></div>';
@@ -438,6 +484,27 @@ function showPreview(checklistKey) {
 
 function closeModal() {
     document.getElementById('preview-modal').classList.remove('is-active');
+}
+
+function toggleFields(sectionId) {
+    const extraFields = document.getElementById(`${sectionId}-extra`);
+    const icon = document.getElementById(`${sectionId}-icon`);
+    const text = document.getElementById(`${sectionId}-text`);
+    
+    if (extraFields.style.display === 'none') {
+        // Expand
+        extraFields.style.display = 'block';
+        icon.classList.remove('fa-chevron-down');
+        icon.classList.add('fa-chevron-up');
+        text.textContent = 'Show fewer fields';
+    } else {
+        // Collapse
+        extraFields.style.display = 'none';
+        icon.classList.remove('fa-chevron-up');
+        icon.classList.add('fa-chevron-down');
+        const hiddenCount = extraFields.querySelectorAll('.preview-field').length;
+        text.textContent = `Show ${hiddenCount} more fields`;
+    }
 }
 </script>
 {% endblock content %}
