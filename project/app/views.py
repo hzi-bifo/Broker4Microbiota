@@ -177,32 +177,42 @@ class OrderListView(ListView):
                     else:
                         readable_name = readable_name.title()
                     
-                    # Count fields if selected_fields exists
-                    if sample_set.selected_fields:
-                        checklist_item = Sampleset.checklist_structure[checklist_name]
-                        checklist_class_name = checklist_item['checklist_class_name']
-                        checklist_class = getattr(importlib.import_module("app.models"), checklist_class_name)
-                        
-                        # Count total fields
-                        all_fields = [f.name for f in checklist_class._meta.get_fields() 
+                    # Count fields
+                    checklist_item = Sampleset.checklist_structure[checklist_name]
+                    checklist_class_name = checklist_item['checklist_class_name']
+                    checklist_class = getattr(importlib.import_module("app.models"), checklist_class_name)
+                    
+                    # Get all fields
+                    all_fields = checklist_class._meta.get_fields()
+                    relevant_fields = [f for f in all_fields 
                                      if f.name not in ['id', 'sampleset', 'sample', 'sample_type']]
-                        total_fields = len(all_fields)
-                        
-                        # Count selected fields
-                        selected_fields = sum(1 for field in all_fields 
-                                            if sample_set.selected_fields.get(field, False))
+                    total_fields = len(relevant_fields)
+                    
+                    # Count mandatory fields
+                    mandatory_fields = sum(1 for f in relevant_fields 
+                                         if hasattr(f, 'blank') and not f.blank)
+                    
+                    if sample_set.selected_fields:
+                        # Count selected optional fields
+                        selected_optional = sum(1 for f in relevant_fields 
+                                              if hasattr(f, 'blank') and f.blank and 
+                                              sample_set.selected_fields.get(f.name, False))
                         
                         order.metadata_info = {
                             'checklist_name': readable_name,
-                            'selected': selected_fields,
-                            'total': total_fields
+                            'mandatory': mandatory_fields,
+                            'selected_optional': selected_optional,
+                            'total': total_fields,
+                            'has_selection': True
                         }
                     else:
-                        # No field selection made yet
+                        # No field selection made yet - all fields are selected by default
                         order.metadata_info = {
                             'checklist_name': readable_name,
-                            'selected': None,
-                            'total': None
+                            'mandatory': mandatory_fields,
+                            'selected_optional': total_fields - mandatory_fields,  # All optional fields
+                            'total': total_fields,
+                            'has_selection': False
                         }
                 else:
                     order.metadata_info = None
@@ -333,27 +343,34 @@ def metadata_view(request, project_id, order_id):
             
         # Get field selection info if it exists
         field_selection_info = {}
-        if sample_set and sample_set.checklists and sample_set.selected_fields:
+        if sample_set and sample_set.checklists:
             for checklist_name in sample_set.checklists:
                 if checklist_name in Sampleset.checklist_structure:
                     checklist_item = Sampleset.checklist_structure[checklist_name]
                     checklist_class_name = checklist_item['checklist_class_name']
                     checklist_class = getattr(importlib.import_module("app.models"), checklist_class_name)
                     
-                    # Count total fields
-                    all_fields = [f.name for f in checklist_class._meta.get_fields() 
-                                 if f.name not in ['id', 'sampleset', 'sample', 'sample_type']]
-                    total_fields = len(all_fields)
+                    # Get all fields
+                    all_fields = checklist_class._meta.get_fields()
+                    relevant_fields = [f for f in all_fields 
+                                     if f.name not in ['id', 'sampleset', 'sample', 'sample_type']]
+                    total_fields = len(relevant_fields)
                     
-                    # Count selected fields
-                    selected_fields = sum(1 for field in all_fields 
-                                        if sample_set.selected_fields.get(field, False))
+                    # Count mandatory fields
+                    mandatory_fields = sum(1 for f in relevant_fields 
+                                         if hasattr(f, 'blank') and not f.blank)
                     
-                    # Only add to field_selection_info if some fields were actually selected
-                    if selected_fields > 0:
+                    if sample_set.selected_fields:
+                        # Count selected optional fields
+                        selected_optional = sum(1 for f in relevant_fields 
+                                              if hasattr(f, 'blank') and f.blank and 
+                                              sample_set.selected_fields.get(f.name, False))
+                        
                         field_selection_info[checklist_name] = {
                             'total': total_fields,
-                            'selected': selected_fields,
+                            'mandatory': mandatory_fields,
+                            'selected_optional': selected_optional,
+                            'total_selected': mandatory_fields + selected_optional,
                             'name': checklist_name.replace('_', ' ').title()
                         }
         

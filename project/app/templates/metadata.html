@@ -650,7 +650,7 @@ function updateFieldSelectionNotice(checklistKey) {
                     <div class="level-left">
                         <div class="level-item">
                             <i class="fas fa-list-check mr-2"></i>
-                            Using&nbsp;<strong>${savedInfo.selected}</strong>&nbsp;of&nbsp;<strong>${savedInfo.total}</strong>&nbsp;fields from ${info.title}
+                            Using&nbsp;<strong>${savedInfo.mandatory + savedInfo.selected_optional}</strong>&nbsp;of&nbsp;<strong>${savedInfo.total}</strong>&nbsp;fields from ${info.title}
                         </div>
                     </div>
                     <div class="level-right">

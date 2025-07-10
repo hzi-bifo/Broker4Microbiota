@@ -345,9 +345,7 @@ Order List
                   {% if order.show_metadata and order.metadata_info %}
                     <div class="step-info">
                       {{ order.metadata_info.checklist_name }}
-                      {% if order.metadata_info.selected is not None %}
-                        <br><small>({{ order.metadata_info.selected }} of {{ order.metadata_info.total }} fields selected)</small>
-                      {% endif %}
+                      <br><small>({{ order.metadata_info.mandatory|add:order.metadata_info.selected_optional }} of {{ order.metadata_info.total }} fields)</small>
                     </div>
                   {% elif order.show_metadata and order.get_selected_checklist %}
                     <div class="step-info">{{ order.get_selected_checklist }}</div>

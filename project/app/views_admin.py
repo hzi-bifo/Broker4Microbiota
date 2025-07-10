@@ -176,7 +176,8 @@ def admin_order_detail(request, order_id):
     # Get MIxS checklist information
     sampleset = order.sampleset_set.filter(sample_type=SAMPLE_TYPE_NORMAL).first()
     selected_checklists = []
-    selected_fields_count = 0
+    mandatory_fields_count = 0
+    selected_optional_count = 0
     total_fields_count = 0
     
     if sampleset and sampleset.checklists:
@@ -185,26 +186,34 @@ def admin_order_detail(request, order_id):
                 # Get the checklist model to count total fields
                 checklist_class_name = Sampleset.checklist_structure[checklist_name]['checklist_class_name']
                 checklist_class = getattr(importlib.import_module("app.models"), checklist_class_name)
-                all_fields = [f.name for f in checklist_class._meta.get_fields() 
-                             if f.name not in ['id', 'sampleset', 'sample', 'sample_type']]
-                total_fields_count += len(all_fields)
+                all_fields = checklist_class._meta.get_fields()
+                relevant_fields = [f for f in all_fields 
+                                 if f.name not in ['id', 'sampleset', 'sample', 'sample_type']]
+                total_fields_count += len(relevant_fields)
                 
-                # Count selected fields for this checklist
+                # Count mandatory fields
+                mandatory_count = sum(1 for f in relevant_fields 
+                                    if hasattr(f, 'blank') and not f.blank)
+                mandatory_fields_count += mandatory_count
+                
+                # Count selected optional fields for this checklist
                 if sampleset.selected_fields:
-                    selected_for_checklist = sum(1 for field in all_fields 
-                                               if sampleset.selected_fields.get(field, False))
+                    selected_optional = sum(1 for f in relevant_fields 
+                                          if hasattr(f, 'blank') and f.blank and
+                                          sampleset.selected_fields.get(f.name, False))
                 else:
-                    # If no field selection, assume all fields are selected
-                    selected_for_checklist = len(all_fields)
+                    # If no field selection, assume all optional fields are selected
+                    selected_optional = len(relevant_fields) - mandatory_count
                 
-                selected_fields_count += selected_for_checklist
+                selected_optional_count += selected_optional
                 
                 checklist_info = {
                     'name': checklist_name.replace('_', ' ').title(),
                     'code': Sampleset.checklist_structure[checklist_name]['checklist_code'],
                     'raw_name': checklist_name,
-                    'field_count': len(all_fields),
-                    'selected_field_count': selected_for_checklist
+                    'field_count': len(relevant_fields),
+                    'mandatory_count': mandatory_count,
+                    'selected_optional': selected_optional
                 }
                 selected_checklists.append(checklist_info)
     
@@ -237,7 +246,8 @@ def admin_order_detail(request, order_id):
         'samples': samples,
         'sampleset': sampleset,
         'selected_checklists': selected_checklists,
-        'selected_fields_count': selected_fields_count,
+        'mandatory_fields_count': mandatory_fields_count,
+        'selected_optional_count': selected_optional_count,
         'total_fields_count': total_fields_count,
         'status_history': status_history,
         'all_notes': all_notes,
