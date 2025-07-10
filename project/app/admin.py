@@ -80,13 +80,50 @@ class SiteSettingsAdmin(admin.ModelAdmin):
             'fields': ('submission_instructions',),
             'description': 'Instructions shown after order submission'
         }),
+        ('ENA (European Nucleotide Archive) Settings', {
+            'fields': ('ena_username', 'ena_password_display', 'ena_password', 'ena_test_mode', 'ena_center_name'),
+            'description': 'Configure ENA credentials and settings for project/sample submissions',
+            'classes': ('wide',)
+        }),
         ('System Information', {
             'fields': ('created_at', 'updated_at'),
             'classes': ('collapse',),
         }),
     )
     
-    readonly_fields = ('created_at', 'updated_at')
+    readonly_fields = ('created_at', 'updated_at', 'ena_password_display')
+    
+    def ena_password_display(self, obj):
+        """Display masked password or empty message"""
+        if obj.ena_password:
+            return "••••••••"  # Password is set (masked)
+        return "Not set"
+    ena_password_display.short_description = "Current ENA Password"
+    
+    def get_form(self, request, obj=None, **kwargs):
+        """Custom form handling for password field"""
+        form = super().get_form(request, obj, **kwargs)
+        
+        # Replace the ena_password field with a custom password input
+        if 'ena_password' in form.base_fields:
+            from django import forms
+            form.base_fields['ena_password'] = forms.CharField(
+                label='New ENA Password',
+                required=False,
+                widget=forms.PasswordInput(attrs={'autocomplete': 'new-password'}),
+                help_text='Enter a new password to change it. Leave blank to keep current password.'
+            )
+        
+        return form
+    
+    def save_model(self, request, obj, form, change):
+        """Handle password encryption when saving"""
+        if 'ena_password' in form.cleaned_data:
+            new_password = form.cleaned_data.get('ena_password')
+            if new_password:  # Only update if a new password was provided
+                obj.set_ena_password(new_password)
+        
+        super().save_model(request, obj, form, change)
     
     def has_add_permission(self, request):
         """
@@ -558,10 +595,18 @@ class SampleSubmissionAdmin(admin.ModelAdmin):
                 }
 
                 # Prepare authentication
-                auth = (settings.ENA_USERNAME, settings.ENA_PASSWORD)
+                from .utils import get_ena_credentials
+                ena_username, ena_password, ena_test_mode, ena_center_name = get_ena_credentials()
+                
+                if not ena_username or not ena_password:
+                    self.message_user(request, 'ENA credentials not configured. Please set them in Site Settings.', level=messages.ERROR)
+                    return
+                
+                auth = (ena_username, ena_password)
                 # Make the request
+                submission_url = "https://wwwdev.ebi.ac.uk/ena/submit/drop-box/submit/" if ena_test_mode else "https://www.ebi.ac.uk/ena/submit/drop-box/submit/"
                 response = requests.post(
-                    "https://wwwdev.ebi.ac.uk/ena/submit/drop-box/submit/",
+                    submission_url,
                     files=files,
                     auth=auth
                 )
@@ -634,21 +679,27 @@ class ReadSubmissionAdmin(admin.ModelAdmin):
                 with open(read_manifest_filename, 'w') as read_manifest_file:
                     read_manifest_file.write(read_object_txt)
 
+                from .utils import get_ena_credentials
+                ena_username, ena_password, ena_test_mode, ena_center_name = get_ena_credentials()
+                
+                if not ena_username or not ena_password:
+                    self.message_user(request, 'ENA credentials not configured. Please set them in Site Settings.', level=messages.ERROR)
+                    continue
+                
                 executable = f"java -jar {settings.JAR_LOCATION}"
                 context = f"-context reads"
-                username = f"-username {settings.ENA_USERNAME}"
-                password = f"-password \"{settings.ENA_PASSWORD}\""
-                # centre = f"-centerName {settings.ENA_CENTRE}"
-                centre = f""
+                username = f"-username {ena_username}"
+                password = f"-password \"{ena_password}\""
+                centre = f"-centerName {ena_center_name}" if ena_center_name else ""
                 manifest = f"-manifest {read_manifest_filename}"
+                test_flag = "-test" if ena_test_mode else ""
                 outputDir = f"-outputDir {settings.LOCAL_DIR}"
                 inputDir = f"-inputDir {settings.LOCAL_DIR}"
                 # mode = f"-validate"
                 mode = f"-submit"
-                environment = f"-test"
 
                 try:
-                    webin_command = f"{executable} {context} {username} {password} {centre} {manifest} {outputDir} {inputDir} {mode} {environment}"
+                    webin_command = f"{executable} {context} {username} {password} {centre} {manifest} {outputDir} {inputDir} {mode} {test_flag}".strip()
                     print(webin_command)
                     process = subprocess.Popen(webin_command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
                     stdout, stderr = process.communicate()
@@ -721,10 +772,18 @@ class ProjectSubmissionAdmin(admin.ModelAdmin):
                 }
 
                 # Prepare authentication
-                auth = (settings.ENA_USERNAME, settings.ENA_PASSWORD)
+                from .utils import get_ena_credentials
+                ena_username, ena_password, ena_test_mode, ena_center_name = get_ena_credentials()
+                
+                if not ena_username or not ena_password:
+                    self.message_user(request, 'ENA credentials not configured. Please set them in Site Settings.', level=messages.ERROR)
+                    return
+                
+                auth = (ena_username, ena_password)
                 # Make the request
+                submission_url = "https://wwwdev.ebi.ac.uk/ena/submit/drop-box/submit/" if ena_test_mode else "https://www.ebi.ac.uk/ena/submit/drop-box/submit/"
                 response = requests.post(
-                    "https://wwwdev.ebi.ac.uk/ena/submit/drop-box/submit/",
+                    submission_url,
                     files=files,
                     auth=auth
                 )

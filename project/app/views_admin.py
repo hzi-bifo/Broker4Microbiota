@@ -1066,9 +1066,12 @@ def admin_register_project_ena(request, submission_id):
         messages.warning(request, 'This submission has already been registered with ENA.')
         return redirect(request.META.get('HTTP_REFERER', 'admin_project_list'))
     
-    # Check for required environment variables
-    if not all([settings.ENA_USERNAME, settings.ENA_PASSWORD]):
-        messages.error(request, 'ENA credentials are not configured. Please set ENA_USERNAME and ENA_PASSWORD in your environment.')
+    # Check for required credentials
+    from .utils import get_ena_credentials
+    ena_username, ena_password, ena_test_mode, ena_center_name = get_ena_credentials()
+    
+    if not all([ena_username, ena_password]):
+        messages.error(request, 'ENA credentials are not configured. Please set them in Site Settings.')
         return redirect(request.META.get('HTTP_REFERER', 'admin_project_list'))
     
     try:
@@ -1093,11 +1096,12 @@ def admin_register_project_ena(request, submission_id):
             }
             
             # Prepare authentication
-            auth = (settings.ENA_USERNAME, settings.ENA_PASSWORD)
+            auth = (ena_username, ena_password)
             
-            # Make the request to ENA test server
+            # Make the request to ENA server
+            submission_url = "https://wwwdev.ebi.ac.uk/ena/submit/drop-box/submit/" if ena_test_mode else "https://www.ebi.ac.uk/ena/submit/drop-box/submit/"
             response = requests.post(
-                "https://wwwdev.ebi.ac.uk/ena/submit/drop-box/submit/",
+                submission_url,
                 files=files,
                 auth=auth
             )

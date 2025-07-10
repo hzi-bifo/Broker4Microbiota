@@ -150,6 +150,10 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 ENA_USERNAME = os.environ.get('ENA_USERNAME')
 ENA_PASSWORD = os.environ.get('ENA_PASSWORD')
 
+# Field encryption key for sensitive data
+# In production, generate a key using: from cryptography.fernet import Fernet; print(Fernet.generate_key())
+FIELD_ENCRYPTION_KEY = os.environ.get('FIELD_ENCRYPTION_KEY', 'zRqxJRkMDpqV9Y5kFdRZvgQNESvHUoQMpGWJqmiDDtY=')
+
 LOCAL_DIR = f"{BASE_DIR}/media/test"
 JAR_LOCATION = f"{BASE_DIR}/webin-cli-8.1.0.jar"
 
