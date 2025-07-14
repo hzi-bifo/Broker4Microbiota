@@ -494,13 +494,71 @@ def samples_view(request, project_id, order_id, sample_type):
         if not (sample_type in [SAMPLE_TYPE_NORMAL, SAMPLE_TYPE_ASSEMBLY, SAMPLE_TYPE_BIN, SAMPLE_TYPE_MAG]):
             raise Http404()
 
+        # Get the sample set early so we can determine inclusions/exclusions
+        sample_set = order.sampleset_set.filter(sample_type=sample_type).first()
+        
+        # Determine inclusions and exclusions based on field selection or legacy logic
+        if sample_set and sample_set.selected_fields:
+            # Build inclusions list: ALL required fields + selected optional fields
+            inclusions = []
+            
+            # First, get essential fields from Sample model
+            sample_model = Sample
+            # Always include these essential Sample fields
+            essential_sample_fields = ['sample_id', 'tax_id', 'scientific_name', 'sample_alias', 
+                                     'sample_title', 'sample_description', 'status']
+            for field_name in essential_sample_fields:
+                if field_name not in inclusions:
+                    inclusions.append(field_name)
+            
+            # Then check for any other selected fields from Sample model
+            for field in sample_model._meta.get_fields():
+                if field.name not in ['id', 'order', 'sampleset', 'sample_type'] + essential_sample_fields:
+                    # Include if explicitly selected
+                    if sample_set.selected_fields.get(field.name, False):
+                        inclusions.append(field.name)
+            
+            # Then, get required and selected fields from checklist models
+            for checklist_name in sample_set.checklists:
+                if checklist_name in Sampleset.checklist_structure:
+                    checklist_item = Sampleset.checklist_structure[checklist_name]
+                    checklist_class_name = checklist_item['checklist_class_name']
+                    checklist_class = getattr(importlib.import_module("app.models"), checklist_class_name)
+                    
+                    for field in checklist_class._meta.get_fields():
+                        if field.name not in ['id', 'sampleset', 'sample', 'sample_type']:
+                            # Include all non-blank (required) fields
+                            if hasattr(field, 'blank') and not field.blank:
+                                if field.name not in inclusions:
+                                    inclusions.append(field.name)
+                            # Also include if explicitly selected
+                            elif sample_set.selected_fields.get(field.name, False):
+                                if field.name not in inclusions:
+                                    inclusions.append(field.name)
+            
+            exclusions = []
+        else:
+            # Fall back to old exclusion-based approach for backward compatibility
+            inclusions = []
+            exclusions = []
+            
+            if sample_type == SAMPLE_TYPE_NORMAL:
+                exclusions = "assembly,bin"
+            elif sample_type == SAMPLE_TYPE_ASSEMBLY:
+                exclusions = "bin_identifier"
+            elif sample_type == SAMPLE_TYPE_BIN:
+                exclusions = "assembly"
+            elif sample_type == SAMPLE_TYPE_MAG:
+                exclusions = "assembly,bin"
+
         if request.method == 'POST':
             sample_data = json.loads(request.POST.get('sample_data'))
 
             print(f"Received sample_data: {sample_data}")
 
-            # should only be one
-            sample_set = order.sampleset_set.filter(sample_type=sample_type).first()
+            # sample_set should already be fetched above, but verify it exists
+            if not sample_set:
+                return JsonResponse({'success': False, 'error': 'Sample set not found'}, status=400)
 
             checklists = sample_set.checklists
         
@@ -564,64 +622,7 @@ def samples_view(request, project_id, order_id, sample_type):
 
         print(f"Retrieved samples: {list(samples)}")
 
-        # should only be one
-        sample_set = order.sampleset_set.filter(sample_type=sample_type).first()
-
-        checklists = sample_set.checklists
-
-        # Check if we have selected fields, otherwise use old exclusion logic
-        if sample_set.selected_fields:
-            # Build inclusions list: ALL required fields + selected optional fields
-            inclusions = []
-            
-            # First, get essential fields from Sample model
-            sample_model = Sample
-            # Always include these essential Sample fields
-            essential_sample_fields = ['sample_id', 'tax_id', 'scientific_name', 'sample_alias', 
-                                     'sample_title', 'sample_description', 'status']
-            for field_name in essential_sample_fields:
-                if field_name not in inclusions:
-                    inclusions.append(field_name)
-            
-            # Then check for any other selected fields from Sample model
-            for field in sample_model._meta.get_fields():
-                if field.name not in ['id', 'order', 'sampleset', 'sample_type'] + essential_sample_fields:
-                    # Include if explicitly selected
-                    if sample_set.selected_fields.get(field.name, False):
-                        inclusions.append(field.name)
-            
-            # Then, get required and selected fields from checklist models
-            for checklist_name in sample_set.checklists:
-                if checklist_name in Sampleset.checklist_structure:
-                    checklist_item = Sampleset.checklist_structure[checklist_name]
-                    checklist_class_name = checklist_item['checklist_class_name']
-                    checklist_class = getattr(importlib.import_module("app.models"), checklist_class_name)
-                    
-                    for field in checklist_class._meta.get_fields():
-                        if field.name not in ['id', 'sampleset', 'sample', 'sample_type']:
-                            # Include all non-blank (required) fields
-                            if hasattr(field, 'blank') and not field.blank:
-                                if field.name not in inclusions:
-                                    inclusions.append(field.name)
-                            # Also include if explicitly selected
-                            elif sample_set.selected_fields.get(field.name, False):
-                                if field.name not in inclusions:
-                                    inclusions.append(field.name)
-            
-            exclusions = []
-        else:
-            # Fall back to old exclusion-based approach for backward compatibility
-            inclusions = []
-            exclusions = []
-            
-            if sample_type == SAMPLE_TYPE_NORMAL:
-                exclusions = "assembly,bin"
-            elif sample_type == SAMPLE_TYPE_ASSEMBLY:
-                exclusions = "bin_identifier"
-            elif sample_type == SAMPLE_TYPE_BIN:
-                exclusions = "assembly"
-            elif sample_type == SAMPLE_TYPE_MAG:
-                exclusions = "assembly,bin"
+        checklists = sample_set.checklists if sample_set else []
         
         extra_choices = []
         if sample_type == SAMPLE_TYPE_ASSEMBLY:
