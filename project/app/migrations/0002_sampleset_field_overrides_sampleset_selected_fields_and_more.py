@@ -6,8 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('app', '0011_sampleset_field_overrides_sampleset_selected_fields'),
-    ]
+        ('app', '0001_initial'),]
 
     operations = [
         migrations.AddField(
