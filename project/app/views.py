@@ -280,10 +280,12 @@ def metadata_view(request, project_id, order_id):
         
         if request.method == 'POST':
 
-            # Check for any samples for order, and abort if any found
+            # Check for any samples for order
             samples = order.sample_set.filter()
-            if samples:
-                return render(request, 'metadata.html', {'sample_set': sample_set, 'project_id': project_id, 'error_message': 'Cannot change metadata while samples exist'})
+            has_samples = samples.exists()
+            
+            # Store the previous checklist for comparison
+            previous_checklists = sample_set.checklists if sample_set else []
 
             if order_id:
                 form = SamplesetForm(request.POST, instance=sample_set)
@@ -294,21 +296,44 @@ def metadata_view(request, project_id, order_id):
                 sample_set = form.save(commit=False)
                 sample_set.user = request.user
                 sample_set.save()
-
-                # temporary
-                # for checklist in sample_set.checklists:
-                #     checklist_name = checklist
-                #     checklist_item = Sampleset.checklist_structure[checklist_name]
-                #     checklist_code = checklist_item['checklist_code']  
-                #     unitchecklist_class_name = checklist_item['unitchecklist_class_name']
-                #     unitchecklist_item_class =  getattr(importlib.import_module("app.models"), unitchecklist_class_name)
-                #     unitchecklist_item_instance = unitchecklist_item_class(order = order)
-                #     # temporary
-                #     if unitchecklist_class_name == 'GSC_MIxS_wastewater_sludge_unit':
-                #         unitchecklist_item_instance.GSC_MIxS_wastewater_sludge_sample_volume_or_weight_for_DNA_extraction = 'ng'                    
-                #         unitchecklist_item_instance.save()
-
-                # order.save()
+                
+                # Check if checklist has changed and samples exist
+                new_checklists = sample_set.checklists
+                checklist_changed = set(previous_checklists) != set(new_checklists) if new_checklists else False
+                
+                if checklist_changed and has_samples:
+                    # Clear all MIxS-specific data from existing samples
+                    for sample_type in [SAMPLE_TYPE_NORMAL, SAMPLE_TYPE_ASSEMBLY, SAMPLE_TYPE_BIN, SAMPLE_TYPE_MAG]:
+                        # Get all sample sets for this order
+                        sample_sets = order.sampleset_set.filter(sample_type=sample_type)
+                        
+                        for ss in sample_sets:
+                            # Delete all existing checklist instances for all previous checklists
+                            for checklist_name in previous_checklists:
+                                if checklist_name in Sampleset.checklist_structure:
+                                    checklist_info = Sampleset.checklist_structure[checklist_name]
+                                    checklist_class_name = checklist_info['checklist_class_name']
+                                    unitchecklist_class_name = checklist_info['unitchecklist_class_name']
+                                    
+                                    # Delete checklist instances
+                                    try:
+                                        checklist_class = getattr(importlib.import_module("app.models"), checklist_class_name)
+                                        checklist_class.objects.filter(sampleset=ss).delete()
+                                    except:
+                                        pass
+                                    
+                                    # Delete unit checklist instances
+                                    try:
+                                        unitchecklist_class = getattr(importlib.import_module("app.models"), unitchecklist_class_name)
+                                        unitchecklist_class.objects.filter(sampleset=ss).delete()
+                                    except:
+                                        pass
+                    
+                    # Mark order as having incomplete sample data
+                    order.checklist_changed = True
+                    order.save()
+                    
+                    messages.warning(request, 'MIxS checklist changed. All checklist-specific sample data has been cleared. Please update your samples with the new checklist fields.')
 
                 assembly_sample_set = order.sampleset_set.filter(sample_type=SAMPLE_TYPE_ASSEMBLY).first()
                 if not assembly_sample_set:
@@ -383,7 +408,7 @@ def metadata_view(request, project_id, order_id):
     else:
         return redirect('login')
 
-def field_selection_view(request, project_id, order_id):
+def field_selection_view(request, project_id, order_id, checklist=None):
     """View for selecting which fields from the checklist to include in the sample data collection."""
     
     if request.user.is_authenticated:
@@ -398,7 +423,16 @@ def field_selection_view(request, project_id, order_id):
         
         # Get the sampleset for this order
         sample_set = order.sampleset_set.filter(sample_type=SAMPLE_TYPE_NORMAL).first()
-        if not sample_set or not sample_set.checklists:
+        
+        # Determine which checklist to use
+        if checklist:
+            # Use the passed checklist parameter
+            checklists_to_use = [checklist]
+        elif sample_set and sample_set.checklists:
+            # Use the saved checklist
+            checklists_to_use = sample_set.checklists
+        else:
+            # No checklist available, redirect back
             return redirect('metadata_view', project_id=project_id, order_id=order_id)
         
         if request.method == 'POST':
@@ -411,6 +445,14 @@ def field_selection_view(request, project_id, order_id):
                     field_name = key[6:]  # Remove 'field_' prefix
                     selected_fields[field_name] = value == 'on'
             
+            # If we're using a different checklist than saved, create/update sample_set
+            if not sample_set:
+                sample_set = Sampleset(order=order, sample_type=SAMPLE_TYPE_NORMAL)
+            
+            # Update checklist if provided via URL parameter
+            if checklist and (not sample_set.checklists or checklist not in sample_set.checklists):
+                sample_set.checklists = [checklist]
+            
             # Save the selections
             sample_set.selected_fields = selected_fields
             sample_set.save()
@@ -419,7 +461,7 @@ def field_selection_view(request, project_id, order_id):
         
         # Prepare field data for the template
         field_data = []
-        for checklist_name in sample_set.checklists:
+        for checklist_name in checklists_to_use:
             if checklist_name in Sampleset.checklist_structure:
                 checklist_item = Sampleset.checklist_structure[checklist_name]
                 checklist_class_name = checklist_item['checklist_class_name']
@@ -446,7 +488,10 @@ def field_selection_view(request, project_id, order_id):
                         if is_required:
                             # Required fields are always selected
                             is_selected = True
-                        elif sample_set.selected_fields:
+                        elif checklist and (not sample_set or checklist not in (sample_set.checklists or [])):
+                            # If showing a different checklist than saved, default to all selected
+                            is_selected = True
+                        elif sample_set and sample_set.selected_fields:
                             # If we have saved selections, use them (default to False for unspecified)
                             is_selected = sample_set.selected_fields.get(field.name, False)
                         else:
@@ -470,7 +515,9 @@ def field_selection_view(request, project_id, order_id):
             'sample_set': sample_set,
             'field_data': field_data,
             'project_id': project_id,
-            'order_id': order_id
+            'order_id': order_id,
+            'checklist_from_url': checklist,  # The checklist passed via URL
+            'current_checklist': checklists_to_use[0] if checklists_to_use else None  # The checklist being displayed
         }
         
         return render(request, 'field_selection.html', context)
@@ -552,71 +599,87 @@ def samples_view(request, project_id, order_id, sample_type):
                 exclusions = "assembly,bin"
 
         if request.method == 'POST':
-            sample_data = json.loads(request.POST.get('sample_data'))
-
-            print(f"Received sample_data: {sample_data}")
-
-            # sample_set should already be fetched above, but verify it exists
-            if not sample_set:
-                return JsonResponse({'success': False, 'error': 'Sample set not found'}, status=400)
-
-            checklists = sample_set.checklists
-        
-            # Delete all existing checklists for the order
-            for checklist in checklists:
-                checklist_name = checklist
-                checklist_code = Sampleset.checklist_structure[checklist_name]['checklist_code']  
-                checklist_class_name = Sampleset.checklist_structure[checklist_name]['checklist_class_name']
-                checklist_item_class =  getattr(importlib.import_module("app.models"), checklist_class_name)
-                
-                try:
-                    checklist_item_class.objects.filter(sampleset=sample_set, sample_type=sample_type).delete()
-                except:
-                    pass
-
-                unitchecklist_class_name = Sampleset.checklist_structure[checklist_name]['unitchecklist_class_name']
-                unitchecklist_item_class =  getattr(importlib.import_module("app.models"), unitchecklist_class_name)
-                
-                try:
-                    unitchecklist_item_class.objects.filter(sampleset=sample_set, sample_type=sample_type).delete()
-                except:
-                    pass
-
-
-            # Delete all existing samples for the order
             try:
-                Sample.objects.filter(order=order, sample_type=sample_type).delete()
-            except: 
-                pass
+                sample_data = json.loads(request.POST.get('sample_data'))
+
+                print(f"Received sample_data: {sample_data}")
+
+                # sample_set should already be fetched above, but verify it exists
+                if not sample_set:
+                    return JsonResponse({'success': False, 'error': 'Sample set not found'}, status=400)
+
+                checklists = sample_set.checklists
             
-            # Create new samples based on the received data
-            for sample_info in sample_data:
-
-                sample=Sample(order = order, sample_type=sample_type)
-                sample.setFieldsFromResponse(sample_info, inclusions)
-                sample.sampleset = sample_set
-                sample.save()
-
-                # create new checklists based on the received data
+                # Delete all existing checklists for the order
                 for checklist in checklists:
                     checklist_name = checklist
                     checklist_code = Sampleset.checklist_structure[checklist_name]['checklist_code']  
                     checklist_class_name = Sampleset.checklist_structure[checklist_name]['checklist_class_name']
                     checklist_item_class =  getattr(importlib.import_module("app.models"), checklist_class_name)
-                    checklist_item_instance = checklist_item_class(sampleset = sample_set, sample = sample, sample_type=sample_type)
-                    checklist_item_instance.setFieldsFromResponse(sample_info, inclusions)
-                    checklist_item_instance.save()
+                    
+                    try:
+                        checklist_item_class.objects.filter(sampleset=sample_set, sample_type=sample_type).delete()
+                    except:
+                        pass
+
                     unitchecklist_class_name = Sampleset.checklist_structure[checklist_name]['unitchecklist_class_name']
                     unitchecklist_item_class =  getattr(importlib.import_module("app.models"), unitchecklist_class_name)
-                    unitchecklist_item_instance = unitchecklist_item_class(sampleset = sample_set, sample = sample, sample_type=sample_type)
-                    # unitchecklist_item_instance.setFieldsFromResponse(sample_info)
-                    unitchecklist_item_instance.save()
+                    
+                    try:
+                        unitchecklist_item_class.objects.filter(sampleset=sample_set, sample_type=sample_type).delete()
+                    except:
+                        pass
 
-                print(f"Processing sample {sample.id}")
 
-                # print(sample.getAttributes(inclusions, exclusions))
+                # Delete all existing samples for the order
+                try:
+                    Sample.objects.filter(order=order, sample_type=sample_type).delete()
+                except: 
+                    pass
+                
+                # Create new samples based on the received data
+                for sample_info in sample_data:
 
-            return JsonResponse({'success': True})
+                    sample=Sample(order = order, sample_type=sample_type)
+                    sample.setFieldsFromResponse(sample_info, inclusions)
+                    sample.sampleset = sample_set
+                    sample.save()
+
+                    # create new checklists based on the received data
+                    for checklist in checklists:
+                        try:
+                            checklist_name = checklist
+                            checklist_code = Sampleset.checklist_structure[checklist_name]['checklist_code']  
+                            checklist_class_name = Sampleset.checklist_structure[checklist_name]['checklist_class_name']
+                            checklist_item_class =  getattr(importlib.import_module("app.models"), checklist_class_name)
+                            checklist_item_instance = checklist_item_class(sampleset = sample_set, sample = sample, sample_type=sample_type)
+                            checklist_item_instance.setFieldsFromResponse(sample_info, inclusions)
+                            checklist_item_instance.save()
+                            unitchecklist_class_name = Sampleset.checklist_structure[checklist_name]['unitchecklist_class_name']
+                            unitchecklist_item_class =  getattr(importlib.import_module("app.models"), unitchecklist_class_name)
+                            unitchecklist_item_instance = unitchecklist_item_class(sampleset = sample_set, sample = sample, sample_type=sample_type)
+                            # unitchecklist_item_instance.setFieldsFromResponse(sample_info)
+                            unitchecklist_item_instance.save()
+                        except Exception as checklist_error:
+                            print(f"Error creating checklist {checklist_name} for sample {sample.id}: {str(checklist_error)}")
+                            # Continue with other checklists even if one fails
+                            continue
+
+                    print(f"Processing sample {sample.id}")
+
+                    # print(sample.getAttributes(inclusions, exclusions))
+                
+                # Clear the checklist_changed flag since samples have been updated
+                if order.checklist_changed:
+                    order.checklist_changed = False
+                    order.save()
+
+                return JsonResponse({'success': True})
+            
+            except Exception as e:
+                print(f"Error in samples_view POST: {str(e)}")
+                logger.error(f"Error saving samples: {str(e)}", exc_info=True)
+                return JsonResponse({'success': False, 'error': str(e)}, status=500)
 
         samples = order.sample_set.filter(sample_type=sample_type).order_by('sample_id')
 

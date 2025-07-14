@@ -15,6 +15,7 @@ urlpatterns = [
     path('project/<int:project_id>/orders/<int:order_id>/delete/', views.delete_order, name='delete_order'),
     path('project/<int:project_id>/orders/<int:order_id>/metadata/', views.metadata_view, name='metadata_view'),
     path('project/<int:project_id>/orders/<int:order_id>/field-selection/', views.field_selection_view, name='field_selection_view'),
+    path('project/<int:project_id>/orders/<int:order_id>/field-selection/<str:checklist>/', views.field_selection_view, name='field_selection_view_with_checklist'),
     path('project/<int:project_id>/orders/<int:order_id>/samples/<int:sample_type>/', views.samples_view, name='samples_view'),
     path('test_submg/', views.test_submg, name='test_submg'),
     path('test_mag/', views.test_mag, name='test_mag'),
