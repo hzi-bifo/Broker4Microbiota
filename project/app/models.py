@@ -212,9 +212,13 @@ class SelfDescribingModel(models.Model):
         return (index, output)    
     
     # Populate instance fields from a response
-    def setFieldsFromResponse(self, response):
+    def setFieldsFromResponse(self, response, inclusions=None):
 
         for k, v in self.fields.items():
+            # Skip fields not in inclusions if inclusions list is provided
+            if inclusions and k not in inclusions:
+                continue
+                
             try:
                 value = response[k]
             except:
@@ -598,6 +602,11 @@ class Sampleset(models.Model):
     exclude = models.JSONField()
     custom = models.JSONField()
     sample_type = models.IntegerField(default=SAMPLE_TYPE_NORMAL)
+    
+    # Field selection - stores which fields from the checklist are selected
+    selected_fields = models.JSONField(default=dict, blank=True)
+    # Field overrides - stores custom configurations like making optional fields required
+    field_overrides = models.JSONField(default=dict, blank=True)
 
     checklist_structure = {
         'GSC_MIxS_wastewater_sludge': {"checklist_code": "ERC000023", 'checklist_class_name': 'GSC_MIxS_wastewater_sludge', 'unitchecklist_class_name': 'GSC_MIxS_wastewater_sludge_unit'},
@@ -815,9 +824,13 @@ class Sample(SelfDescribingModel):
         return yaml
 
     # Populate instance fields from a response
-    def setFieldsFromResponse(self, response):
+    def setFieldsFromResponse(self, response, inclusions=None):
 
         for k, v in self.fields.items():
+            # Skip fields not in inclusions if inclusions list is provided
+            if inclusions and k not in inclusions:
+                continue
+                
             try:
                 value = response[v]
             except:
@@ -1435,6 +1448,30 @@ class SiteSettings(models.Model):
         blank=True
     )
     
+    # ENA (European Nucleotide Archive) Settings
+    ena_username = models.CharField(
+        max_length=100,
+        blank=True,
+        default="",
+        help_text="ENA Webin account username (e.g., Webin-XXXXXX)"
+    )
+    ena_password = models.CharField(
+        max_length=200,
+        blank=True,
+        default="",
+        help_text="ENA account password (encrypted in database)"
+    )
+    ena_test_mode = models.BooleanField(
+        default=True,
+        help_text="Use ENA test server for submissions (recommended for testing)"
+    )
+    ena_center_name = models.CharField(
+        max_length=100,
+        blank=True,
+        default="",
+        help_text="Center name for ENA submissions (optional)"
+    )
+    
     # Metadata
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -1445,6 +1482,84 @@ class SiteSettings(models.Model):
     
     def __str__(self):
         return f"{self.organization_name} Settings"
+    
+    def clean(self):
+        """Validate ENA settings"""
+        from django.core.exceptions import ValidationError
+        
+        # If ENA username is provided, validate format
+        if self.ena_username:
+            if not self.ena_username.startswith('Webin-'):
+                raise ValidationError({
+                    'ena_username': 'ENA username must start with "Webin-" (e.g., Webin-12345)'
+                })
+        
+        # Warn if only username or password is set
+        if self.ena_username and not self.ena_password:
+            raise ValidationError({
+                'ena_password': 'ENA password is required when username is set'
+            })
+        if self.ena_password and not self.ena_username:
+            raise ValidationError({
+                'ena_username': 'ENA username is required when password is set'
+            })
+    
+    @property
+    def ena_configured(self):
+        """Check if ENA credentials are properly configured"""
+        return bool(self.ena_username and self.ena_password)
+    
+    def set_ena_password(self, raw_password):
+        """
+        Encrypt and set the ENA password.
+        Uses Fernet symmetric encryption for secure storage.
+        """
+        if not raw_password:
+            self.ena_password = ""
+            return
+            
+        from cryptography.fernet import Fernet
+        from django.conf import settings
+        
+        # Get or generate encryption key
+        key = getattr(settings, 'FIELD_ENCRYPTION_KEY', None)
+        if not key:
+            # Generate a key if not set (for development)
+            # In production, this should be set in settings
+            key = Fernet.generate_key()
+        
+        if isinstance(key, str):
+            key = key.encode()
+            
+        f = Fernet(key)
+        encrypted = f.encrypt(raw_password.encode())
+        self.ena_password = encrypted.decode()
+    
+    def get_ena_password(self):
+        """
+        Decrypt and return the ENA password.
+        Returns empty string if no password is set.
+        """
+        if not self.ena_password:
+            return ""
+            
+        try:
+            from cryptography.fernet import Fernet
+            from django.conf import settings
+            
+            key = getattr(settings, 'FIELD_ENCRYPTION_KEY', None)
+            if not key:
+                return ""
+                
+            if isinstance(key, str):
+                key = key.encode()
+                
+            f = Fernet(key)
+            decrypted = f.decrypt(self.ena_password.encode())
+            return decrypted.decode()
+        except Exception:
+            # If decryption fails, return empty string
+            return ""
     
     def save(self, *args, **kwargs):
         """

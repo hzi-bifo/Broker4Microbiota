@@ -268,7 +268,55 @@ All changes take effect immediately after saving.
 
 ### Configuration of MIxS Sample Checklists
 
-The application comes with 14 MIxS Sample Checklists that are downloaded from https://www.ebi.ac.uk/ena/browser/checklists. These are stored and can be changed and updated under `staticfiles/xml/EnviornmentID.xml`. These IDs should match `MIXS_METADATA_STANDARDS` defined in `mixs_metadata_standards.py`. After the .xml files are changed, run `python manage.py collectstatic` to update the static files. 
+The application comes with 14 MIxS Sample Checklists that are downloaded from https://www.ebi.ac.uk/ena/browser/checklists. These are stored and can be changed and updated under `staticfiles/xml/EnviornmentID.xml`. These IDs should match `MIXS_METADATA_STANDARDS` defined in `mixs_metadata_standards.py`. After the .xml files are changed, run `python manage.py collectstatic` to update the static files.
+
+## Development
+
+### Adding New XML Checklists
+
+When you need to add new MIxS checklists or update existing ones, follow these steps:
+
+1. **Add the XML file** to the checklist directory:
+   ```bash
+   # Place your new XML file in:
+   project/static/xml/your_new_checklist.xml
+   ```
+
+2. **Run the create_json_files.py script** to process the XML and generate necessary files:
+   ```bash
+   cd project/project
+   python create_json_files.py
+   ```
+   
+   This script will:
+   - Parse all XML files in `/project/static/xml/`
+   - Generate individual JSON files for each XML
+   - Create/update `jqtree.json` used by the metadata selection UI
+   - Generate Django model classes and append them to `app/models.py`
+   - Update the `Sampleset.checklist_structure` dictionary
+
+3. **Create and apply database migrations** for the new models:
+   ```bash
+   cd project
+   python manage.py makemigrations
+   python manage.py migrate
+   ```
+
+4. **Collect static files** to make the new checklist available:
+   ```bash
+   python manage.py collectstatic --noinput
+   ```
+
+5. **Restart the development server** to load the changes:
+   ```bash
+   python manage.py runserver
+   ```
+
+**Important Notes:**
+- The metadata view UI reads from the generated `jqtree.json` file, not directly from XML files
+- New XML files won't appear in the UI until you run the `create_json_files.py` script
+- Each checklist generates two Django models: a main model and a unit model
+- The script automatically handles naming conventions and field mappings 
 
 ## Excel Sync
 

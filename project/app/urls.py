@@ -14,6 +14,7 @@ urlpatterns = [
     path('project/<int:project_id>/orders/<int:order_id>/edit/', views.order_view, name='order_edit'),
     path('project/<int:project_id>/orders/<int:order_id>/delete/', views.delete_order, name='delete_order'),
     path('project/<int:project_id>/orders/<int:order_id>/metadata/', views.metadata_view, name='metadata_view'),
+    path('project/<int:project_id>/orders/<int:order_id>/field-selection/', views.field_selection_view, name='field_selection_view'),
     path('project/<int:project_id>/orders/<int:order_id>/samples/<int:sample_type>/', views.samples_view, name='samples_view'),
     path('test_submg/', views.test_submg, name='test_submg'),
     path('test_mag/', views.test_mag, name='test_mag'),
@@ -23,11 +24,20 @@ urlpatterns = [
     
     # Admin views
     path('admin-dashboard/', views_admin.admin_dashboard, name='admin_dashboard'),
+    path('admin-dashboard/projects/', views_admin.admin_project_list, name='admin_project_list'),
+    path('admin-dashboard/projects/<int:project_id>/', views_admin.admin_project_detail, name='admin_project_detail'),
+    path('admin-dashboard/projects/<int:project_id>/generate-xml/', views_admin.admin_generate_project_xml, name='admin_generate_project_xml'),
+    path('admin-dashboard/submissions/', views_admin.admin_submission_list, name='admin_submission_list'),
+    path('admin-dashboard/submissions/<int:submission_id>/delete/', views_admin.admin_delete_submission, name='admin_delete_submission'),
+    path('admin-dashboard/submissions/<int:submission_id>/register-ena/', views_admin.admin_register_project_ena, name='admin_register_project_ena'),
     path('admin-dashboard/orders/', views_admin.admin_order_list, name='admin_order_list'),
     path('admin-dashboard/orders/<int:order_id>/', views_admin.admin_order_detail, name='admin_order_detail'),
     path('admin-dashboard/orders/<int:order_id>/update-status/', views_admin.admin_update_order_status, name='admin_update_order_status'),
     path('admin-dashboard/orders/<int:order_id>/add-note/', views_admin.admin_add_order_note, name='admin_add_order_note'),
+    path('admin-dashboard/orders/<int:order_id>/update-technical/', views_admin.admin_update_technical_details, name='admin_update_technical_details'),
+    path('admin-dashboard/samples/<int:sample_id>/fields/', views_admin.admin_get_sample_fields, name='admin_get_sample_fields'),
     path('admin-dashboard/orders/<int:order_id>/reject/', views_admin.admin_reject_order, name='admin_reject_order'),
+    path('admin-dashboard/orders/<int:order_id>/simulate-reads/', views_admin.admin_simulate_reads, name='admin_simulate_reads'),
     path('admin-dashboard/orders/export/', views_admin.admin_export_orders, name='admin_export_orders'),
     path('admin-dashboard/orders/bulk-update/', views_admin.admin_bulk_update_status, name='admin_bulk_update_status'),
     

@@ -1,6 +1,7 @@
 from django import forms
 import json
 import logging
+import importlib
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django.contrib.auth import login, logout
@@ -18,7 +19,6 @@ from django_q.tasks import async_task, result
 from .hooks import process_submg_result_inner, process_mag_result_inner
 
 from json.decoder import JSONDecodeError
-import importlib
 from django.conf import settings
 from django.http import Http404
 
@@ -157,13 +157,67 @@ class OrderListView(ListView):
         context['project'] = project
         context['site_settings'] = SiteSettings.get_settings()
         
-        # Add user-visible notes for each order
+        # Add user-visible notes and field selection info for each order
         for order in context['orders']:
             # Get the latest user-visible note (especially rejections)
             latest_note = order.notes.filter(
                 note_type__in=['user_visible', 'rejection']
             ).order_by('-created_at').first()
             order.latest_user_note = latest_note
+            
+            # Get field selection info
+            sample_set = order.sampleset_set.filter(sample_type=SAMPLE_TYPE_NORMAL).first()
+            if sample_set and sample_set.checklists:
+                checklist_name = sample_set.checklists[0] if sample_set.checklists else None
+                if checklist_name and checklist_name in Sampleset.checklist_structure:
+                    # Get readable name - handle GSC MIxS specially
+                    readable_name = checklist_name.replace('_', ' ')
+                    if readable_name.startswith('GSC MIxS'):
+                        readable_name = 'GSC MIxS ' + readable_name[8:].strip().title()
+                    else:
+                        readable_name = readable_name.title()
+                    
+                    # Count fields
+                    checklist_item = Sampleset.checklist_structure[checklist_name]
+                    checklist_class_name = checklist_item['checklist_class_name']
+                    checklist_class = getattr(importlib.import_module("app.models"), checklist_class_name)
+                    
+                    # Get all fields
+                    all_fields = checklist_class._meta.get_fields()
+                    relevant_fields = [f for f in all_fields 
+                                     if f.name not in ['id', 'sampleset', 'sample', 'sample_type']]
+                    total_fields = len(relevant_fields)
+                    
+                    # Count mandatory fields
+                    mandatory_fields = sum(1 for f in relevant_fields 
+                                         if hasattr(f, 'blank') and not f.blank)
+                    
+                    if sample_set.selected_fields:
+                        # Count selected optional fields
+                        selected_optional = sum(1 for f in relevant_fields 
+                                              if hasattr(f, 'blank') and f.blank and 
+                                              sample_set.selected_fields.get(f.name, False))
+                        
+                        order.metadata_info = {
+                            'checklist_name': readable_name,
+                            'mandatory': mandatory_fields,
+                            'selected_optional': selected_optional,
+                            'total': total_fields,
+                            'has_selection': True
+                        }
+                    else:
+                        # No field selection made yet - all fields are selected by default
+                        order.metadata_info = {
+                            'checklist_name': readable_name,
+                            'mandatory': mandatory_fields,
+                            'selected_optional': total_fields - mandatory_fields,  # All optional fields
+                            'total': total_fields,
+                            'has_selection': False
+                        }
+                else:
+                    order.metadata_info = None
+            else:
+                order.metadata_info = None
         
         return context
 
@@ -281,18 +335,161 @@ def metadata_view(request, project_id, order_id):
                 mag_sample_set.custom = ""
                 mag_sample_set.save()
 
-                return redirect('order_list', project_id=project_id)
+                # Clear selected_fields when checklist changes to force user to reselect fields
+                sample_set.selected_fields = {}
+                sample_set.save()
+                
+                return redirect('field_selection_view', project_id=project_id, order_id=order_id)
             
-        return render(request, 'metadata.html', {'sample_set': sample_set, 'project_id': project_id})
+        # Get field selection info if it exists
+        field_selection_info = {}
+        if sample_set and sample_set.checklists:
+            for checklist_name in sample_set.checklists:
+                if checklist_name in Sampleset.checklist_structure:
+                    checklist_item = Sampleset.checklist_structure[checklist_name]
+                    checklist_class_name = checklist_item['checklist_class_name']
+                    checklist_class = getattr(importlib.import_module("app.models"), checklist_class_name)
+                    
+                    # Get all fields
+                    all_fields = checklist_class._meta.get_fields()
+                    relevant_fields = [f for f in all_fields 
+                                     if f.name not in ['id', 'sampleset', 'sample', 'sample_type']]
+                    total_fields = len(relevant_fields)
+                    
+                    # Count mandatory fields
+                    mandatory_fields = sum(1 for f in relevant_fields 
+                                         if hasattr(f, 'blank') and not f.blank)
+                    
+                    if sample_set.selected_fields:
+                        # Count selected optional fields
+                        selected_optional = sum(1 for f in relevant_fields 
+                                              if hasattr(f, 'blank') and f.blank and 
+                                              sample_set.selected_fields.get(f.name, False))
+                        
+                        field_selection_info[checklist_name] = {
+                            'total': total_fields,
+                            'mandatory': mandatory_fields,
+                            'selected_optional': selected_optional,
+                            'total_selected': mandatory_fields + selected_optional,
+                            'name': checklist_name.replace('_', ' ').title()
+                        }
+        
+        return render(request, 'metadata.html', {
+            'sample_set': sample_set, 
+            'project_id': project_id,
+            'order_id': order_id,
+            'field_selection_info': json.dumps(field_selection_info) if field_selection_info else '{}'
+        })
+    else:
+        return redirect('login')
+
+def field_selection_view(request, project_id, order_id):
+    """View for selecting which fields from the checklist to include in the sample data collection."""
+    
+    if request.user.is_authenticated:
+        # Import field descriptions
+        try:
+            from .field_descriptions import FIELD_DESCRIPTIONS
+        except ImportError:
+            FIELD_DESCRIPTIONS = {}
+            
+        project = get_object_or_404(Project, pk=project_id, user=request.user)
+        order = get_object_or_404(Order, pk=order_id, project=project)
+        
+        # Get the sampleset for this order
+        sample_set = order.sampleset_set.filter(sample_type=SAMPLE_TYPE_NORMAL).first()
+        if not sample_set or not sample_set.checklists:
+            return redirect('metadata_view', project_id=project_id, order_id=order_id)
+        
+        if request.method == 'POST':
+            # Process field selection
+            selected_fields = {}
+            
+            # Get all field selections from POST data
+            for key, value in request.POST.items():
+                if key.startswith('field_'):
+                    field_name = key[6:]  # Remove 'field_' prefix
+                    selected_fields[field_name] = value == 'on'
+            
+            # Save the selections
+            sample_set.selected_fields = selected_fields
+            sample_set.save()
+            
+            return redirect('order_list', project_id=project_id)
+        
+        # Prepare field data for the template
+        field_data = []
+        for checklist_name in sample_set.checklists:
+            if checklist_name in Sampleset.checklist_structure:
+                checklist_item = Sampleset.checklist_structure[checklist_name]
+                checklist_class_name = checklist_item['checklist_class_name']
+                
+                # Get the model class
+                checklist_class = getattr(importlib.import_module("app.models"), checklist_class_name)
+                
+                # Get all fields from the model
+                for field in checklist_class._meta.get_fields():
+                    if field.name not in ['id', 'sampleset', 'sample', 'name', 'sample_type']:
+                        # Use full description from XML if available, otherwise fall back to model help_text
+                        help_text = FIELD_DESCRIPTIONS.get(field.name, '')
+                        if not help_text and hasattr(field, 'help_text'):
+                            help_text = field.help_text or ''
+                            
+                        # Check if we should show the field code (only if name is different from verbose name)
+                        verbose_name_normalized = field.verbose_name.lower().replace(' ', '_').replace('-', '_')
+                        show_code = field.name != verbose_name_normalized
+                        
+                        # Determine if field is required
+                        is_required = not field.blank if hasattr(field, 'blank') else False
+                        
+                        # Determine if field is selected
+                        if is_required:
+                            # Required fields are always selected
+                            is_selected = True
+                        elif sample_set.selected_fields:
+                            # If we have saved selections, use them (default to False for unspecified)
+                            is_selected = sample_set.selected_fields.get(field.name, False)
+                        else:
+                            # If no selections saved yet, default to True (all fields selected)
+                            is_selected = True
+                        
+                        field_info = {
+                            'name': field.name,
+                            'verbose_name': field.verbose_name,
+                            'required': is_required,
+                            'help_text': help_text,
+                            'checklist': checklist_name,
+                            'show_code': show_code,
+                            'selected': is_selected
+                        }
+                        field_data.append(field_info)
+        
+        context = {
+            'project': project,
+            'order': order,
+            'sample_set': sample_set,
+            'field_data': field_data,
+            'project_id': project_id,
+            'order_id': order_id
+        }
+        
+        return render(request, 'field_selection.html', context)
     else:
         return redirect('login')
 
 def samples_view(request, project_id, order_id, sample_type):
 
     if request.user.is_authenticated:
-        project = get_object_or_404(Project, pk=project_id, user=request.user)
+        # Allow staff/admin users to access any project
+        if request.user.is_staff or request.user.is_superuser:
+            project = get_object_or_404(Project, pk=project_id)
+        else:
+            project = get_object_or_404(Project, pk=project_id, user=request.user)
 
         order = get_object_or_404(Order, pk=order_id, project=project)
+        
+        # Check if accessed from admin dashboard
+        from_admin = request.GET.get('from_admin', 'false').lower() == 'true'
 
         if not (sample_type in [SAMPLE_TYPE_NORMAL, SAMPLE_TYPE_ASSEMBLY, SAMPLE_TYPE_BIN, SAMPLE_TYPE_MAG]):
             raise Http404()
@@ -338,7 +535,7 @@ def samples_view(request, project_id, order_id, sample_type):
             for sample_info in sample_data:
 
                 sample=Sample(order = order, sample_type=sample_type)
-                sample.setFieldsFromResponse(sample_info)
+                sample.setFieldsFromResponse(sample_info, inclusions)
                 sample.sampleset = sample_set
                 sample.save()
 
@@ -349,7 +546,7 @@ def samples_view(request, project_id, order_id, sample_type):
                     checklist_class_name = Sampleset.checklist_structure[checklist_name]['checklist_class_name']
                     checklist_item_class =  getattr(importlib.import_module("app.models"), checklist_class_name)
                     checklist_item_instance = checklist_item_class(sampleset = sample_set, sample = sample, sample_type=sample_type)
-                    checklist_item_instance.setFieldsFromResponse(sample_info)
+                    checklist_item_instance.setFieldsFromResponse(sample_info, inclusions)
                     checklist_item_instance.save()
                     unitchecklist_class_name = Sampleset.checklist_structure[checklist_name]['unitchecklist_class_name']
                     unitchecklist_item_class =  getattr(importlib.import_module("app.models"), unitchecklist_class_name)
@@ -372,26 +569,69 @@ def samples_view(request, project_id, order_id, sample_type):
 
         checklists = sample_set.checklists
 
-        inclusions = []
-        exclusions = []
+        # Check if we have selected fields, otherwise use old exclusion logic
+        if sample_set.selected_fields:
+            # Build inclusions list: ALL required fields + selected optional fields
+            inclusions = []
+            
+            # First, get essential fields from Sample model
+            sample_model = Sample
+            # Always include these essential Sample fields
+            essential_sample_fields = ['sample_id', 'tax_id', 'scientific_name', 'sample_alias', 
+                                     'sample_title', 'sample_description', 'status']
+            for field_name in essential_sample_fields:
+                if field_name not in inclusions:
+                    inclusions.append(field_name)
+            
+            # Then check for any other selected fields from Sample model
+            for field in sample_model._meta.get_fields():
+                if field.name not in ['id', 'order', 'sampleset', 'sample_type'] + essential_sample_fields:
+                    # Include if explicitly selected
+                    if sample_set.selected_fields.get(field.name, False):
+                        inclusions.append(field.name)
+            
+            # Then, get required and selected fields from checklist models
+            for checklist_name in sample_set.checklists:
+                if checklist_name in Sampleset.checklist_structure:
+                    checklist_item = Sampleset.checklist_structure[checklist_name]
+                    checklist_class_name = checklist_item['checklist_class_name']
+                    checklist_class = getattr(importlib.import_module("app.models"), checklist_class_name)
+                    
+                    for field in checklist_class._meta.get_fields():
+                        if field.name not in ['id', 'sampleset', 'sample', 'sample_type']:
+                            # Include all non-blank (required) fields
+                            if hasattr(field, 'blank') and not field.blank:
+                                if field.name not in inclusions:
+                                    inclusions.append(field.name)
+                            # Also include if explicitly selected
+                            elif sample_set.selected_fields.get(field.name, False):
+                                if field.name not in inclusions:
+                                    inclusions.append(field.name)
+            
+            exclusions = []
+        else:
+            # Fall back to old exclusion-based approach for backward compatibility
+            inclusions = []
+            exclusions = []
+            
+            if sample_type == SAMPLE_TYPE_NORMAL:
+                exclusions = "assembly,bin"
+            elif sample_type == SAMPLE_TYPE_ASSEMBLY:
+                exclusions = "bin_identifier"
+            elif sample_type == SAMPLE_TYPE_BIN:
+                exclusions = "assembly"
+            elif sample_type == SAMPLE_TYPE_MAG:
+                exclusions = "assembly,bin"
+        
         extra_choices = []
-
-        if sample_type == SAMPLE_TYPE_NORMAL:
-            exclusions = "assembly,bin"
-            extra_choices = []
-        elif sample_type == SAMPLE_TYPE_ASSEMBLY:
-            exclusions = "bin_identifier"
+        if sample_type == SAMPLE_TYPE_ASSEMBLY:
             assemblies = Assembly.objects.filter(order=order)
             for assembly in assemblies:
                 extra_choices.append(f"{assembly.id}")
         elif sample_type == SAMPLE_TYPE_BIN:
-            exclusions = "assembly"
             bins = Bin.objects.filter(order=order)
             for bin in bins:
                 extra_choices.append(f"{bin.id}")
-        elif sample_type == SAMPLE_TYPE_MAG:
-            exclusions = "assembly,bin"
-            extra_choices = []
 
         validators = ""
 
@@ -450,6 +690,12 @@ def samples_view(request, project_id, order_id, sample_type):
                     'validator_pattern': None
                 }
                 
+                # Apply field overrides if they exist
+                if sample_set.field_overrides and field_name in sample_set.field_overrides:
+                    overrides = sample_set.field_overrides[field_name]
+                    if 'required' in overrides:
+                        field_info['required'] = overrides['required']
+                
                 # Check for choices
                 if hasattr(field_obj, 'choices') and field_obj.choices:
                     field_info['choices'] = [{'value': c[0], 'label': c[1]} for c in field_obj.choices]
@@ -505,6 +751,12 @@ def samples_view(request, project_id, order_id, sample_type):
                         'validator_pattern': None,
                         'checklist': checklist_name
                     }
+                    
+                    # Apply field overrides if they exist
+                    if sample_set.field_overrides and field_name in sample_set.field_overrides:
+                        overrides = sample_set.field_overrides[field_name]
+                        if 'required' in overrides:
+                            field_info['required'] = overrides['required']
                     
                     # Check for choices - look for field_name_choice attribute
                     choice_attr_name = f"{field_name}_choice"
@@ -578,6 +830,7 @@ def samples_view(request, project_id, order_id, sample_type):
                 'headers_size': headers_size,
                 'sample_type': sample_type,
                 'field_metadata': json.dumps(field_metadata),
+                'from_admin': from_admin,
             })
     else:
         return redirect('login')

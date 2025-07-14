@@ -247,6 +247,14 @@ html, body {
           </h1>
           <span class="subtitle">
             Order #{{ order.id }} - {{ order.get_selected_checklist|default:"No checklist selected" }}
+            <a href="{% url 'metadata_view' project_id=project_id order_id=order.id %}" 
+               class="button is-small is-info is-outlined ml-2"
+               style="vertical-align: middle;">
+              <span class="icon">
+                <i class="fas fa-edit"></i>
+              </span>
+              <span>Edit</span>
+            </a>
           </span>
         </div>
         
@@ -379,7 +387,7 @@ html, body {
       <span class="icon">
         <i class="fas fa-arrow-left"></i>
       </span>
-      <span>Back to Orders</span>
+      <span>{% if from_admin %}Back to Admin Dashboard{% else %}Back to Orders{% endif %}</span>
     </button>
     <div>
       <button id="save" class="button is-success" onclick="validateSampleData()" disabled>
@@ -1136,12 +1144,19 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   window.redirectToOrders = function() {
+    var targetUrl;
+    {% if from_admin %}
+      targetUrl = "{% url 'admin_order_detail' order.id %}";
+    {% else %}
+      targetUrl = "{% url 'order_list' project_id=project_id %}";
+    {% endif %}
+    
     if (unsaved) {
       if (confirm('You have unsaved changes. Are you sure you want to leave this page?')) {
-        window.location.href = "{% url 'order_list' project_id=project_id %}";
+        window.location.href = targetUrl;
       }
     } else {
-      window.location.href = "{% url 'order_list' project_id=project_id %}";
+      window.location.href = targetUrl;
     }
   }
 

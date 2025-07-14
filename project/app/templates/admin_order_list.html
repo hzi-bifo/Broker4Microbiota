@@ -15,12 +15,20 @@ All Orders - Admin
         </h1>
       </div>
       <div class="level-right">
-        <a href="{% url 'admin_dashboard' %}" class="button is-light">
-          <span class="icon">
-            <i class="fas fa-arrow-left"></i>
-          </span>
-          <span>Back to Dashboard</span>
-        </a>
+        <div class="buttons">
+          <a href="{% url 'admin_project_list' %}" class="button is-success">
+            <span class="icon">
+              <i class="fas fa-project-diagram"></i>
+            </span>
+            <span>Projects View</span>
+          </a>
+          <a href="{% url 'admin_dashboard' %}" class="button is-light">
+            <span class="icon">
+              <i class="fas fa-arrow-left"></i>
+            </span>
+            <span>Back to Dashboard</span>
+          </a>
+        </div>
       </div>
     </div>
 

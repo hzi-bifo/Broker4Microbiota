@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Debug: ProjectSubmission {{ submission.id }}
+{% endblock title %}
+
+{% block content %}
+<section class="section">
+  <div class="container">
+    <h1 class="title">Debug: ProjectSubmission #{{ submission.id }}</h1>
+    
+    <div class="box">
+      <h2 class="subtitle">Basic Info</h2>
+      <table class="table">
+        <tr>
+          <th>ID:</th>
+          <td>{{ submission.id }}</td>
+        </tr>
+        <tr>
+          <th>Projects:</th>
+          <td>
+            {% for project in submission.projects.all %}
+              {{ project.title }} (ID: {{ project.id }})<br>
+            {% endfor %}
+          </td>
+        </tr>
+        <tr>
+          <th>Accession Status:</th>
+          <td>{{ submission.accession_status|default:"None" }}</td>
+        </tr>
+      </table>
+    </div>
+    
+    <div class="box">
+      <h2 class="subtitle">Project Object XML</h2>
+      {% if submission.project_object_xml %}
+        <p class="has-text-success">✓ XML exists ({{ submission.project_object_xml|length }} characters)</p>
+        <pre style="background: #f5f5f5; padding: 1rem; overflow: auto; max-height: 400px;">{{ submission.project_object_xml }}</pre>
+      {% else %}
+        <p class="has-text-danger">✗ No XML content</p>
+      {% endif %}
+    </div>
+    
+    <div class="box">
+      <h2 class="subtitle">Submission Object XML</h2>
+      {% if submission.submission_object_xml %}
+        <p class="has-text-success">✓ XML exists ({{ submission.submission_object_xml|length }} characters)</p>
+        <pre style="background: #f5f5f5; padding: 1rem; overflow: auto; max-height: 400px;">{{ submission.submission_object_xml }}</pre>
+      {% else %}
+        <p class="has-text-danger">✗ No XML content</p>
+      {% endif %}
+    </div>
+    
+    <div class="box">
+      <h2 class="subtitle">Receipt XML</h2>
+      {% if submission.receipt_xml %}
+        <p class="has-text-success">✓ XML exists ({{ submission.receipt_xml|length }} characters)</p>
+        <pre style="background: #f5f5f5; padding: 1rem; overflow: auto; max-height: 400px;">{{ submission.receipt_xml }}</pre>
+      {% else %}
+        <p class="has-text-warning">○ No receipt (not submitted yet)</p>
+      {% endif %}
+    </div>
+    
+    <a href="{% url 'admin_submission_list' %}" class="button is-link">Back to Submissions</a>
+  </div>
+</section>
+{% endblock content %}

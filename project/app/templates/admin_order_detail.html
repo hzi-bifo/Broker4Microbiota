@@ -98,54 +98,195 @@ Order #{{ order.id }} - Admin View
           
           <div class="column is-6">
             <div class="box">
-              <h4 class="title is-6 mb-3">
-                <i class="fas fa-flask"></i> Technical Details
-              </h4>
-              <table class="table is-fullwidth">
-                <tbody>
-                  <tr>
-                    <th width="40%">Experiment Title</th>
-                    <td>{{ order.experiment_title|default:"-" }}</td>
-                  </tr>
-                  <tr>
-                    <th>Platform</th>
-                    <td>{{ order.platform|default:"-" }}</td>
-                  </tr>
-                  <tr>
-                    <th>Library</th>
-                    <td>{{ order.library|default:"-" }}</td>
-                  </tr>
-                  <tr>
-                    <th>Method</th>
-                    <td>{{ order.method|default:"-" }}</td>
-                  </tr>
-                  <tr>
-                    <th>Organism</th>
-                    <td>{{ order.organism|default:"-" }}</td>
-                  </tr>
-                </tbody>
-              </table>
+              <div class="level">
+                <div class="level-left">
+                  <h4 class="title is-6 mb-3">
+                    <i class="fas fa-flask"></i> Technical Details
+                  </h4>
+                </div>
+                <div class="level-right">
+                  <button type="button" class="button is-small is-info" onclick="toggleTechnicalEdit()">
+                    <span class="icon">
+                      <i class="fas fa-edit"></i>
+                    </span>
+                    <span>Edit</span>
+                  </button>
+                </div>
+              </div>
+              
+              <!-- Display Mode -->
+              <div id="technical-display">
+                <table class="table is-fullwidth">
+                  <tbody>
+                    <tr>
+                      <th width="40%">Experiment Title</th>
+                      <td>{{ order.experiment_title|default:"-" }}</td>
+                    </tr>
+                    <tr>
+                      <th>Platform</th>
+                      <td>{{ order.platform|default:"-" }}</td>
+                    </tr>
+                    <tr>
+                      <th>Library</th>
+                      <td>{{ order.library|default:"-" }}</td>
+                    </tr>
+                    <tr>
+                      <th>Method</th>
+                      <td>{{ order.method|default:"-" }}</td>
+                    </tr>
+                    <tr>
+                      <th>Organism</th>
+                      <td>{{ order.organism|default:"-" }}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              
+              <!-- Edit Mode -->
+              <div id="technical-edit" style="display: none;">
+                <form method="post" action="{% url 'admin_update_technical_details' order.id %}">
+                  {% csrf_token %}
+                  <div class="field">
+                    <label class="label is-small">{{ technical_form.experiment_title.label }}</label>
+                    <div class="control">
+                      {{ technical_form.experiment_title }}
+                    </div>
+                  </div>
+                  <div class="field">
+                    <label class="label is-small">{{ technical_form.platform.label }}</label>
+                    <div class="control">
+                      {{ technical_form.platform }}
+                    </div>
+                  </div>
+                  <div class="field">
+                    <label class="label is-small">{{ technical_form.library.label }}</label>
+                    <div class="control">
+                      {{ technical_form.library }}
+                    </div>
+                  </div>
+                  <div class="field">
+                    <label class="label is-small">{{ technical_form.method.label }}</label>
+                    <div class="control">
+                      {{ technical_form.method }}
+                    </div>
+                  </div>
+                  <div class="field">
+                    <label class="label is-small">{{ technical_form.organism.label }}</label>
+                    <div class="control">
+                      {{ technical_form.organism }}
+                    </div>
+                  </div>
+                  <div class="field is-grouped">
+                    <div class="control">
+                      <button type="submit" class="button is-success is-small">
+                        <span class="icon">
+                          <i class="fas fa-save"></i>
+                        </span>
+                        <span>Save</span>
+                      </button>
+                    </div>
+                    <div class="control">
+                      <button type="button" class="button is-light is-small" onclick="toggleTechnicalEdit()">
+                        Cancel
+                      </button>
+                    </div>
+                  </div>
+                </form>
+              </div>
             </div>
           </div>
         </div>
 
+        <!-- MIxS Checklist Information -->
+        {% if selected_checklists %}
+        <div class="box mb-4">
+          <h4 class="title is-6 mb-3">
+            <i class="fas fa-list-check"></i> Selected MIxS Checklists
+          </h4>
+          <div class="tags are-medium">
+            {% for checklist in selected_checklists %}
+            <span class="tag is-primary">
+              <span class="icon">
+                <i class="fas fa-clipboard-check"></i>
+              </span>
+              <span>{{ checklist.name }}</span>
+              <span class="has-text-weight-light ml-1">({{ checklist.code }})</span>
+              {% if checklist.selected_field_count %}
+              <span class="ml-2 has-background-primary-dark px-2 py-1 is-rounded">
+                {{ checklist.selected_field_count }}/{{ checklist.field_count }} fields
+              </span>
+              {% endif %}
+            </span>
+            {% endfor %}
+          </div>
+          {% if total_fields_count %}
+          <p class="mt-3 has-text-grey">
+            <i class="fas fa-info-circle"></i>
+            <strong>{{ mandatory_fields_count|add:selected_optional_count }}</strong> of <strong>{{ total_fields_count }}</strong> total available fields selected for data collection
+          </p>
+          {% endif %}
+        </div>
+        {% endif %}
+
         <!-- Samples Section -->
         <div class="box">
-          <h4 class="title is-6 mb-3">
-            <i class="fas fa-vials"></i> Samples ({{ samples.count }})
-          </h4>
+          <div class="level">
+            <div class="level-left">
+              <h4 class="title is-6 mb-3">
+                <i class="fas fa-vials"></i> Samples ({{ samples.count }})
+                {% if samples.count > 0 %}
+                <span class="tag is-light ml-2">
+                  <span class="icon">
+                    <i class="fas fa-dna"></i>
+                  </span>
+                  <span>{{ samples_with_reads }}/{{ samples.count }} with reads ({{ read_completion_percentage }}%)</span>
+                </span>
+                {% endif %}
+              </h4>
+            </div>
+            <div class="level-right">
+              {% if samples_without_reads > 0 %}
+              <form method="post" action="{% url 'admin_simulate_reads' order.id %}" style="display: inline;">
+                {% csrf_token %}
+                <button type="submit" class="button is-warning is-small" 
+                        onclick="return confirm('This will create simulated FASTQ files for {{ samples_without_reads }} sample{{ samples_without_reads|pluralize }}. Continue?')">
+                  <span class="icon">
+                    <i class="fas fa-magic"></i>
+                  </span>
+                  <span>Simulate Reads</span>
+                </button>
+              </form>
+              {% endif %}
+            </div>
+          </div>
+          
+          {% if samples_without_reads > 0 %}
+          <div class="notification is-warning is-light">
+            <p>
+              <span class="icon">
+                <i class="fas fa-exclamation-triangle"></i>
+              </span>
+              <strong>{{ samples_without_reads }} sample{{ samples_without_reads|pluralize }} missing read files.</strong>
+              Use the "Simulate Reads" button to create test FASTQ files for development/testing.
+            </p>
+            <progress class="progress is-warning is-small mt-2" value="{{ read_completion_percentage }}" max="100">
+              {{ read_completion_percentage }}%
+            </progress>
+          </div>
+          {% endif %}
           
           {% if samples %}
           <div class="table-container">
             <table class="table is-fullwidth is-striped">
               <thead>
                 <tr>
-                  <th width="15%">Sample ID</th>
-                  <th width="25%">Title</th>
-                  <th width="20%">Scientific Name</th>
-                  <th width="15%">Collection Date</th>
-                  <th width="15%">Organism</th>
-                  <th width="10%">Actions</th>
+                  <th width="12%">Sample ID</th>
+                  <th width="20%">Title</th>
+                  <th width="18%">Scientific Name</th>
+                  <th width="12%">Collection Date</th>
+                  <th width="12%">Organism</th>
+                  <th width="12%">Read Files</th>
+                  <th width="14%">Actions</th>
                 </tr>
               </thead>
               <tbody>
@@ -159,11 +300,45 @@ Order #{{ order.id }} - Admin View
                   <td>{{ sample.collection_date|default:"-" }}</td>
                   <td>{{ sample.organism|default:"-" }}</td>
                   <td>
-                    <button class="button is-small is-info" onclick="showSampleDetails({{ sample.id }})">
-                      <span class="icon">
-                        <i class="fas fa-info-circle"></i>
+                    {% if sample.read_set.exists %}
+                      <span class="tag is-success">
+                        <span class="icon">
+                          <i class="fas fa-check"></i>
+                        </span>
+                        <span>{{ sample.read_set.count }} file{{ sample.read_set.count|pluralize:" pair,pairs" }}</span>
                       </span>
-                    </button>
+                    {% else %}
+                      <span class="tag is-light">
+                        <span class="icon">
+                          <i class="fas fa-times"></i>
+                        </span>
+                        <span>No reads</span>
+                      </span>
+                    {% endif %}
+                  </td>
+                  <td>
+                    <div class="buttons">
+                      <button class="button is-small is-info" onclick="showSampleDetails({{ sample.id }})" title="View Details">
+                        <span class="icon">
+                          <i class="fas fa-info-circle"></i>
+                        </span>
+                      </button>
+                      <button class="button is-small is-primary" onclick="toggleSampleFields({{ sample.id }})" title="View MIxS Fields">
+                        <span class="icon">
+                          <i class="fas fa-list"></i>
+                        </span>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+                <tr id="sample-fields-{{ sample.id }}" class="sample-fields-row" style="display: none;">
+                  <td colspan="6">
+                    <div class="sample-fields-content p-4">
+                      <div class="is-loading-spinner" style="display: none;">
+                        <span class="icon"><i class="fas fa-spinner fa-pulse"></i></span> Loading...
+                      </div>
+                      <div class="fields-display"></div>
+                    </div>
                   </td>
                 </tr>
                 {% endfor %}
@@ -171,7 +346,7 @@ Order #{{ order.id }} - Admin View
             </table>
           </div>
           <div class="has-text-centered mt-3">
-            <a href="{% url 'samples_view' project.id order.id 1 %}" 
+            <a href="{% url 'samples_view' order.project.id order.id 1 %}?from_admin=true" 
                class="button is-primary" target="_blank">
               <span class="icon"><i class="fas fa-table"></i></span>
               <span>View/Edit All Samples in Spreadsheet</span>
@@ -817,6 +992,33 @@ select.input:focus {
   font-weight: 500;
 }
 
+/* Sample fields row */
+.sample-fields-row {
+  background-color: #f8f9fa;
+}
+
+.sample-fields-content {
+  background-color: white;
+  border-radius: 6px;
+  box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.sample-fields-content .table {
+  font-size: 0.875rem;
+}
+
+.sample-fields-content .table th {
+  font-weight: 500;
+  color: #6c757d;
+  background: transparent;
+  border-bottom: 1px solid #e9ecef;
+  padding: 0.5rem;
+}
+
+.sample-fields-content .table td {
+  padding: 0.5rem;
+}
+
 /* Responsive */
 @media (max-width: 768px) {
   .tabs ul {
@@ -939,7 +1141,7 @@ function quickAdvance() {
 function showSampleDetails(sampleId) {
   // For now, just navigate to the samples view
   // In a future enhancement, this could show a modal with sample details
-  window.open(`{% url 'samples_view' order.project.id order.id 1 %}`, '_blank');
+  window.open(`{% url 'samples_view' order.project.id order.id 1 %}?from_admin=true`, '_blank');
 }
 </script>
 
@@ -963,6 +1165,104 @@ function showSampleDetails(sampleId) {
 <script>
 function closeSampleModal() {
   document.getElementById('sampleModal').classList.remove('is-active');
+}
+
+// Toggle technical details edit mode
+function toggleTechnicalEdit() {
+  const displayMode = document.getElementById('technical-display');
+  const editMode = document.getElementById('technical-edit');
+  
+  if (displayMode.style.display === 'none') {
+    displayMode.style.display = 'block';
+    editMode.style.display = 'none';
+  } else {
+    displayMode.style.display = 'none';
+    editMode.style.display = 'block';
+  }
+}
+
+// Toggle sample fields display
+function toggleSampleFields(sampleId) {
+  const row = document.getElementById(`sample-fields-${sampleId}`);
+  const spinner = row.querySelector('.is-loading-spinner');
+  const fieldsDisplay = row.querySelector('.fields-display');
+  
+  if (row.style.display === 'none') {
+    row.style.display = 'table-row';
+    
+    // If fields haven't been loaded yet
+    if (!fieldsDisplay.innerHTML) {
+      spinner.style.display = 'block';
+      
+      // Fetch sample fields
+      fetch(`{% url 'admin_get_sample_fields' 0 %}`.replace('0', sampleId))
+        .then(response => response.json())
+        .then(data => {
+          spinner.style.display = 'none';
+          
+          let html = '<div class="columns">';
+          
+          // Core fields column
+          html += '<div class="column is-6">';
+          html += '<h5 class="subtitle is-6 has-text-weight-semibold mb-3"><i class="fas fa-database"></i> Core Sample Fields</h5>';
+          html += '<table class="table is-narrow is-fullwidth">';
+          for (const [field, value] of Object.entries(data.core_fields)) {
+            html += `<tr><th width="40%">${field}:</th><td>${value}</td></tr>`;
+          }
+          html += '</table></div>';
+          
+          // Checklist fields column
+          html += '<div class="column is-6">';
+          html += '<h5 class="subtitle is-6 has-text-weight-semibold mb-3"><i class="fas fa-clipboard-check"></i> MIxS Checklist Fields</h5>';
+          
+          if (Object.keys(data.checklist_fields).length > 0) {
+            for (const [checklist, fields] of Object.entries(data.checklist_fields)) {
+              html += `<h6 class="has-text-weight-semibold mb-2">${checklist.replace(/_/g, ' ')}</h6>`;
+              html += '<table class="table is-narrow is-fullwidth mb-4">';
+              for (const [field, value] of Object.entries(fields)) {
+                html += `<tr><th width="40%">${field}:</th><td>${value}</td></tr>`;
+              }
+              html += '</table>';
+            }
+          } else {
+            html += '<p class="has-text-grey">No MIxS checklist fields filled out yet.</p>';
+          }
+          
+          html += '</div></div>';
+          
+          // Read files section if available
+          if (data.read_files && data.read_files.length > 0) {
+            html += '<div class="mt-4">';
+            html += '<h5 class="subtitle is-6 has-text-weight-semibold mb-3"><i class="fas fa-dna"></i> Sequencing Read Files</h5>';
+            html += '<table class="table is-narrow is-fullwidth">';
+            html += '<thead><tr><th>File Type</th><th>Path</th><th>MD5 Checksum</th></tr></thead>';
+            html += '<tbody>';
+            data.read_files.forEach((read, index) => {
+              html += '<tr>';
+              html += '<td><strong>Forward (R1)</strong></td>';
+              html += `<td class="is-family-monospace is-size-7">${read.file_1}</td>`;
+              html += `<td class="is-family-monospace">${read.checksum_1}</td>`;
+              html += '</tr>';
+              html += '<tr>';
+              html += '<td><strong>Reverse (R2)</strong></td>';
+              html += `<td class="is-family-monospace is-size-7">${read.file_2}</td>`;
+              html += `<td class="is-family-monospace">${read.checksum_2}</td>`;
+              html += '</tr>';
+            });
+            html += '</tbody></table>';
+            html += '</div>';
+          }
+          
+          fieldsDisplay.innerHTML = html;
+        })
+        .catch(error => {
+          spinner.style.display = 'none';
+          fieldsDisplay.innerHTML = '<p class="has-text-danger">Error loading fields</p>';
+        });
+    }
+  } else {
+    row.style.display = 'none';
+  }
 }
 </script>
 {% endblock content %}

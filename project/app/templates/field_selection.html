@@ -1,0 +1,384 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+Select Metadata Fields
+{% endblock title %}
+
+{% block content %}
+<section class="section">
+  <div class="container">
+    <!-- Header -->
+    <div class="form-card">
+      <div class="form-card-header">
+        <h2>Customize Metadata Fields</h2>
+        <p class="mb-3">Choose which fields from the selected checklist(s) you want to include in your sample data collection. This helps streamline data entry by showing only the fields relevant to your project.</p>
+        <div class="notification is-info is-light">
+          <p><strong>Tips for field selection:</strong></p>
+          <ul class="ml-5">
+            <li>Mandatory fields (marked in red) are required by the checklist standard and cannot be deselected</li>
+            <li>Optional fields can be toggled on/off based on your data collection needs</li>
+            <li>Click on any field description to expand and see more details about what data should be entered</li>
+            <li>You can always come back later to modify your field selection if needed</li>
+          </ul>
+        </div>
+      </div>
+      
+      <div class="form-card-body">
+        <form method="post" id="field-selection-form">
+          {% csrf_token %}
+          
+          <!-- Field Statistics -->
+          <div class="notification is-info is-light mb-5">
+            <div class="columns">
+              <div class="column">
+                <p class="has-text-weight-semibold">Total Fields: <span id="total-count">{{ field_data|length }}</span></p>
+              </div>
+              <div class="column">
+                <p class="has-text-weight-semibold">Selected: <span id="selected-count">0</span></p>
+              </div>
+              <div class="column">
+                <p class="has-text-weight-semibold">Mandatory: <span id="mandatory-count">0</span></p>
+              </div>
+              <div class="column">
+                <p class="has-text-weight-semibold">Optional: <span id="optional-count">0</span></p>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Quick Actions -->
+          <div class="field is-grouped mb-5">
+            <p class="control">
+              <button type="button" class="button is-small" onclick="selectAll()">
+                <span class="icon is-small">
+                  <i class="fas fa-check-square"></i>
+                </span>
+                <span>Select All</span>
+              </button>
+            </p>
+            <p class="control">
+              <button type="button" class="button is-small" onclick="deselectOptional()">
+                <span class="icon is-small">
+                  <i class="fas fa-square"></i>
+                </span>
+                <span>Deselect Optional</span>
+              </button>
+            </p>
+          </div>
+          
+          <!-- Search Fields -->
+          <div class="field mb-5">
+            <label class="label">Search Fields</label>
+            <div class="control has-icons-left">
+              <input class="input" type="text" id="field-search" placeholder="Type to search fields...">
+              <span class="icon is-left">
+                <i class="fas fa-search"></i>
+              </span>
+            </div>
+          </div>
+          
+          <!-- Fields List -->
+          <div class="field-selection-list">
+            {% for field in field_data %}
+            <div class="field-item {% if field.required %}is-required{% endif %}" 
+                 data-field-name="{{ field.name }}" 
+                 data-required="{{ field.required|yesno:'true,false' }}"
+                 onclick="toggleField('{{ field.name }}', {{ field.required|yesno:'true,false' }})">
+              <div class="field-item-content">
+                <div class="field-header">
+                  <input type="checkbox" 
+                         name="field_{{ field.name }}" 
+                         id="field_{{ field.name }}"
+                         class="field-checkbox"
+                         {% if field.required %}checked disabled{% elif field.selected %}checked{% endif %}
+                         onclick="event.stopPropagation()">
+                  <div class="field-title">
+                    <p class="field-verbose-name">{{ field.verbose_name|title }}</p>
+                    {% if field.show_code %}
+                      <code class="field-code">{{ field.name }}</code>
+                    {% endif %}
+                  </div>
+                  {% if field.required %}
+                    <span class="tag is-danger is-small">Required</span>
+                  {% else %}
+                    <span class="tag is-info is-small">Optional</span>
+                  {% endif %}
+                </div>
+                <div class="field-description">
+                  {% if field.help_text %}
+                    {% if field.help_text|wordcount > 15 %}
+                      <div class="field-help-container" onclick="event.stopPropagation(); toggleHelp('{{ field.name }}')">
+                        <p class="field-help-text" id="help_{{ field.name }}">
+                          {{ field.help_text|truncatewords:15 }}
+                          <span class="has-text-link">
+                            <i class="fas fa-chevron-down fa-xs"></i> <span class="show-more">show more</span>
+                          </span>
+                        </p>
+                        <p class="field-help-text-full" id="help_full_{{ field.name }}" style="display: none;">
+                          {{ field.help_text }}
+                          <span class="has-text-link">
+                            <i class="fas fa-chevron-up fa-xs"></i> <span class="show-less">show less</span>
+                          </span>
+                        </p>
+                      </div>
+                    {% else %}
+                      <p class="field-help-text">{{ field.help_text }}</p>
+                    {% endif %}
+                  {% else %}
+                    <p class="field-help-text">
+                      <em class="has-text-grey">No description available for this field. This field captures {{ field.verbose_name|lower }} information for your sample.</em>
+                    </p>
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+          
+          <!-- Form Actions -->
+          <div class="form-actions">
+            <a href="{% url 'metadata_view' project_id order_id %}" class="button is-light">
+              <span class="icon">
+                <i class="fas fa-arrow-left"></i>
+              </span>
+              <span>Back</span>
+            </a>
+            <button type="submit" class="button is-primary">
+              <span class="icon">
+                <i class="fas fa-check"></i>
+              </span>
+              <span>Save and Continue</span>
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+.field-selection-list {
+  margin-bottom: 2rem;
+}
+
+.field-item {
+  background: white;
+  border: 2px solid #e5e5e5;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 0.75rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.field-item:hover {
+  border-color: #3273dc;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.field-item.selected {
+  background-color: #f0f7ff;
+  border-color: #3273dc;
+}
+
+.field-item.is-required {
+  background-color: #fff5f5;
+  border-color: #ffdddd;
+  cursor: default;
+}
+
+.field-item.is-required:hover {
+  border-color: #ffdddd;
+  box-shadow: none;
+}
+
+.field-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.5rem;
+}
+
+.field-checkbox {
+  flex-shrink: 0;
+}
+
+.field-title {
+  flex-grow: 1;
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+}
+
+.field-code {
+  font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+  font-size: 0.85rem;
+  background-color: #f5f5f5;
+  padding: 0.125rem 0.375rem;
+  border-radius: 4px;
+  color: #666;
+}
+
+.field-description {
+  margin-left: 1.5rem;
+}
+
+.field-verbose-name {
+  font-weight: 600;
+  margin: 0;
+  color: #363636;
+  font-size: 1rem;
+}
+
+.field-help-text {
+  color: #6b6b6b;
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+.field-help-text-full {
+  color: #6b6b6b;
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+.field-help-container {
+  cursor: pointer;
+  padding: 0.25rem;
+  margin: -0.25rem;
+  border-radius: 4px;
+  transition: background-color 0.2s ease;
+}
+
+.field-help-container:hover {
+  background-color: #f8f8f8;
+}
+
+.field-item.hidden {
+  display: none;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 2rem;
+  padding-top: 2rem;
+  border-top: 1px solid #e5e5e5;
+}
+
+.show-more, .show-less {
+  font-size: 0.875rem;
+  text-decoration: underline;
+}
+</style>
+
+<script>
+// Toggle field selection
+function toggleField(fieldName, isRequired) {
+  if (isRequired) return; // Can't toggle required fields
+  
+  const checkbox = document.getElementById(`field_${fieldName}`);
+  checkbox.checked = !checkbox.checked;
+  updateCounts();
+  updateFieldStyles();
+}
+
+// Toggle help text
+function toggleHelp(fieldName) {
+  const shortHelp = document.getElementById(`help_${fieldName}`);
+  const fullHelp = document.getElementById(`help_full_${fieldName}`);
+  
+  if (fullHelp.style.display === 'none') {
+    fullHelp.style.display = 'block';
+    shortHelp.style.display = 'none';
+  } else {
+    fullHelp.style.display = 'none';
+    shortHelp.style.display = 'block';
+  }
+}
+
+// Update field counts
+function updateCounts() {
+  const total = document.querySelectorAll('.field-item').length;
+  const selected = document.querySelectorAll('.field-checkbox:checked').length;
+  const mandatory = document.querySelectorAll('.field-item[data-required="true"]').length;
+  const optional = total - mandatory;
+  
+  document.getElementById('total-count').textContent = total;
+  document.getElementById('selected-count').textContent = selected;
+  document.getElementById('mandatory-count').textContent = mandatory;
+  document.getElementById('optional-count').textContent = optional;
+}
+
+// Update field visual styles based on selection
+function updateFieldStyles() {
+  document.querySelectorAll('.field-item').forEach(item => {
+    const checkbox = item.querySelector('.field-checkbox');
+    if (checkbox && checkbox.checked && !item.classList.contains('is-required')) {
+      item.classList.add('selected');
+    } else if (!item.classList.contains('is-required')) {
+      item.classList.remove('selected');
+    }
+  });
+}
+
+// Select all fields
+function selectAll() {
+  document.querySelectorAll('.field-checkbox:not(:disabled)').forEach(checkbox => {
+    checkbox.checked = true;
+  });
+  updateCounts();
+  updateFieldStyles();
+}
+
+// Deselect optional fields
+function deselectOptional() {
+  document.querySelectorAll('.field-item[data-required="false"] .field-checkbox').forEach(checkbox => {
+    checkbox.checked = false;
+  });
+  updateCounts();
+  updateFieldStyles();
+}
+
+// Search functionality
+document.addEventListener('DOMContentLoaded', function() {
+  updateCounts();
+  updateFieldStyles();
+  
+  // Add change listeners to checkboxes
+  document.querySelectorAll('.field-checkbox').forEach(checkbox => {
+    checkbox.addEventListener('change', function() {
+      updateCounts();
+      updateFieldStyles();
+    });
+  });
+  
+  // Search functionality
+  const searchInput = document.getElementById('field-search');
+  searchInput.addEventListener('input', function(e) {
+    const searchTerm = e.target.value.toLowerCase();
+    
+    document.querySelectorAll('.field-item').forEach(item => {
+      const fieldName = item.dataset.fieldName.toLowerCase();
+      const verboseName = item.querySelector('.field-verbose-name').textContent.toLowerCase();
+      const helpText = item.querySelector('.field-help-text')?.textContent.toLowerCase() || '';
+      
+      if (fieldName.includes(searchTerm) || verboseName.includes(searchTerm) || helpText.includes(searchTerm)) {
+        item.classList.remove('hidden');
+      } else {
+        item.classList.add('hidden');
+      }
+    });
+  });
+  
+  // Prevent form submission when clicking on field items
+  document.querySelectorAll('.field-item').forEach(item => {
+    item.addEventListener('click', function(e) {
+      if (e.target.type !== 'checkbox' && !e.target.classList.contains('has-text-link')) {
+        e.preventDefault();
+      }
+    });
+  });
+});
+</script>
+{% endblock content %}
