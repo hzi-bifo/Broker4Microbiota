@@ -284,8 +284,9 @@ def metadata_view(request, project_id, order_id):
             samples = order.sample_set.filter()
             has_samples = samples.exists()
             
-            # Store the previous checklist for comparison
-            previous_checklists = sample_set.checklists if sample_set else []
+            # Store the previous checklist for comparison BEFORE form processing
+            # sample_set.pk check ensures we're dealing with an existing record
+            previous_checklists = sample_set.checklists.copy() if (sample_set and sample_set.pk and sample_set.checklists) else []
 
             if order_id:
                 form = SamplesetForm(request.POST, instance=sample_set)
@@ -298,8 +299,18 @@ def metadata_view(request, project_id, order_id):
                 sample_set.save()
                 
                 # Check if checklist has changed and samples exist
-                new_checklists = sample_set.checklists
-                checklist_changed = set(previous_checklists) != set(new_checklists) if new_checklists else False
+                new_checklists = sample_set.checklists or []
+                
+                # Convert both to sets for comparison, handling None and empty lists
+                prev_set = set(previous_checklists) if previous_checklists else set()
+                new_set = set(new_checklists) if new_checklists else set()
+                
+                # Only consider it a "change" if there was a previous checklist AND it's different
+                # Initial checklist selection (from empty to something) should not trigger the warning
+                checklist_changed = bool(prev_set) and (prev_set != new_set)
+                
+                # Debug logging
+                logger.info(f"Order {order_id}: Previous checklists: {previous_checklists} (set: {prev_set}), New checklists: {new_checklists} (set: {new_set}), Changed: {checklist_changed}, Has samples: {has_samples}")
                 
                 if checklist_changed and has_samples:
                     # Clear all MIxS-specific data from existing samples
@@ -308,8 +319,10 @@ def metadata_view(request, project_id, order_id):
                         sample_sets = order.sampleset_set.filter(sample_type=sample_type)
                         
                         for ss in sample_sets:
-                            # Delete all existing checklist instances for all previous checklists
-                            for checklist_name in previous_checklists:
+                            # Delete all existing checklist instances for both previous and new checklists
+                            # This ensures clean slate even if switching back to a previously used checklist
+                            all_checklists = set(previous_checklists or []) | set(new_checklists)
+                            for checklist_name in all_checklists:
                                 if checklist_name in Sampleset.checklist_structure:
                                     checklist_info = Sampleset.checklist_structure[checklist_name]
                                     checklist_class_name = checklist_info['checklist_class_name']
@@ -334,6 +347,10 @@ def metadata_view(request, project_id, order_id):
                     order.save()
                     
                     messages.warning(request, 'MIxS checklist changed. All checklist-specific sample data has been cleared. Please update your samples with the new checklist fields.')
+                elif not checklist_changed and order.checklist_changed:
+                    # If checklist hasn't changed but the flag was previously set, don't clear it
+                    # This ensures the warning persists until samples are actually updated
+                    logger.info(f"Order {order_id}: Checklist not changed, keeping checklist_changed flag as True")
 
                 assembly_sample_set = order.sampleset_set.filter(sample_type=SAMPLE_TYPE_ASSEMBLY).first()
                 if not assembly_sample_set:
@@ -447,7 +464,14 @@ def field_selection_view(request, project_id, order_id, checklist=None):
             
             # If we're using a different checklist than saved, create/update sample_set
             if not sample_set:
-                sample_set = Sampleset(order=order, sample_type=SAMPLE_TYPE_NORMAL)
+                sample_set = Sampleset(
+                    order=order, 
+                    sample_type=SAMPLE_TYPE_NORMAL,
+                    checklists=[checklist] if checklist else [],
+                    include=[],  # Required field
+                    exclude=[],  # Required field
+                    custom=[]    # Required field
+                )
             
             # Update checklist if provided via URL parameter
             if checklist and (not sample_set.checklists or checklist not in sample_set.checklists):
