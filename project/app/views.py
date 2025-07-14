@@ -604,8 +604,8 @@ def samples_view(request, project_id, order_id, sample_type):
 def test_submg(request):
     if request.user.is_authenticated and request.user.is_staff:
         # Test endpoint - staff users only
-        id = request.GET.get('id', '48')  # Default to 48 for backwards compatibility
-        returncode = int(request.GET.get('returncode', '0'))
+        id = 31  # Default to 48 for backwards compatibility
+        returncode = 0
         
         try:
             result = process_submg_result_inner(returncode, id)
@@ -621,8 +621,8 @@ def test_submg(request):
 def test_mag(request):
     if request.user.is_authenticated and request.user.is_staff:
         # Test endpoint - staff users only
-        id = request.GET.get('id', '61')  # Default to 61 for backwards compatibility
-        returncode = int(request.GET.get('returncode', '0'))
+        id = 71  # Default to 61 for backwards compatibility
+        returncode = 0
         
         try:
             result = process_mag_result_inner(returncode, id)

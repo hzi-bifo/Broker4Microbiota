@@ -14,6 +14,9 @@ ENV/
 *.log
 *.pot
 *.pyc
+*.old
+*.bak
+*.jar
 local_settings.py
 db.sqlite3
 db.sqlite3-journal

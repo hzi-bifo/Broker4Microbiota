@@ -148,6 +148,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 ENA_USERNAME = os.environ.get('ENA_USERNAME')
+ENA_USER = os.environ.get('ENA_USER')
 ENA_PASSWORD = os.environ.get('ENA_PASSWORD')
 
 LOCAL_DIR = f"{BASE_DIR}/media/test"
@@ -155,7 +156,7 @@ JAR_LOCATION = f"{BASE_DIR}/webin-cli-8.1.0.jar"
 
 MAG_NEXTFLOW_COMMAND_STEM = '/net/broker/test/miniconda3/envs/broker/bin/nextflow run hzi-bifo/mag'
 MAG_PROFILE = 'singularity'
-MAG_ADDITIONAL_OPTIONS = '--skip_prokka --skip_concoct --skip_mhm2 --binqc_tool checkm' # --skip_binqc
+MAG_ADDITIONAL_OPTIONS = '--skip_prokka --skip_concoct --skip_mhm2 --binqc_tool checkm --skip_spades --skip_spadeshybrid --skip_quast --skip_prodigal --skip_metabat2 --skip_concoct ' # --skip_binqc
 MAG_NEXTFLOW_EXECUTOR = 'slurm'
 MAG_NEXTFLOW_CLUSTER_OPTIONS = '--qos=broker'
 MAG_NEXTFLOW_CLUSTER_CORES = 4

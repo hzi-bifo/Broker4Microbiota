@@ -289,9 +289,11 @@ class ProjectAdmin(admin.ModelAdmin):
             for sample in samples:
                 yaml.extend(sample.getSubMGYAML(SAMPLE_TYPE_NORMAL))
 
-            yaml.extend(Read.getSubMGYAMLHeader())
+            if reads:
+                yaml.extend(Read.getSubMGYAMLHeader())
             for read in reads:
                 yaml.extend(read.getSubMGYAML())
+
             if assemblys:
                 yaml.extend(Assembly.getSubMGYAMLHeader())
             for assembly in assemblys:
@@ -300,7 +302,8 @@ class ProjectAdmin(admin.ModelAdmin):
             #    raise Exception(f"Multiple assembly samples found for assembly")
             for assembly_sample in assembly_samples:
                yaml.extend(assembly_sample.getSubMGYAML(SAMPLE_TYPE_ASSEMBLY))
-            yaml.extend(Assembly.getSubMGYAMLFooter())
+            if assemblys:   
+               yaml.extend(Assembly.getSubMGYAMLFooter())
 
             if bins:
                 yaml.extend(Bin.getSubMGYAMLHeader())
@@ -308,16 +311,19 @@ class ProjectAdmin(admin.ModelAdmin):
                 yaml.extend(bin.getSubMGYAML())
                 break
             tax_ids = {}
+            tax_ids_content = ""
             for bin_sample in bin_samples:
                 bin = bin_sample.bin
                 tax_ids[bin.file.split('/')[-1].replace(".fa.gz", "")] = [bin_sample.scientific_name, bin_sample.tax_id]
             for bin in bins:
-                yaml.extend(bin.getSubMGYAMLTaxIDYAML(tax_ids))
+                yaml.extend(bin.getSubMGYAMLTaxIDYAML())
+                tax_ids_content = Bin.getSubMGYAMLTaxIDContent(tax_ids)
                 break 
             for bin_sample in bin_samples:
                yaml.extend(bin_sample.getSubMGYAML(SAMPLE_TYPE_BIN))
                break
-            yaml.extend(Bin.getSubMGYAMLFooter())
+            if bins:
+               yaml.extend(Bin.getSubMGYAMLFooter())
 
             if mag_samples:
                 yaml.extend(Mag.getSubMGYAMLHeader())
@@ -340,6 +346,8 @@ class ProjectAdmin(admin.ModelAdmin):
 
             subMG_run = SubMGRun.objects.create(order=order)
             output = '\n'.join(yaml)
+            if bins:
+                subMG_run.tax_ids = tax_ids_content
             subMG_run.yaml = output
  
             output_file_path = "/tmp/output.txt"
@@ -827,6 +835,9 @@ class SubMGRunAdmin(admin.ModelAdmin):
 
             with open(os.path.join(run_folder, 'submg.yaml'), 'w') as file:
                 print(submg_run.yaml, file=file)
+
+            with open(os.path.join(run_folder, 'tax_ids.txt'), 'w') as file:
+                print(submg_run.tax_ids, file=file)
 
             # Create a mag run instance
             # completed_process = subprocess.run(f"sleep 30; echo hello", shell=True, capture_output=True)

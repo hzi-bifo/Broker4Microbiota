@@ -13,8 +13,9 @@ logger = logging.getLogger(__name__)
 def process_mag_result(task):
     try:
         returncode = task.result.returncode
-        id = task.id
-        process_mag_result_inner(returncode, id)
+        uuid = task.id
+        mag_run_instance = MagRunInstance.objects.get(uuid=uuid)
+        process_mag_result_inner(returncode, mag_run_instance.id)
     except Exception as e:
         logger.error(f"Error processing MAG result for task {task.id}: {str(e)}")
         raise
@@ -110,12 +111,13 @@ def process_mag_result_inner(returncode, id):
 def process_submg_result(task):
 
     returncode = task.result.returncode
-    id = task.id
-    process_submg_result_inner(returncode, id)
+    uuid = task.id
+    submgrun_instance = SubMGRunInstance.objects.get(uuid=uuid)
+    process_submg_result_inner(returncode, submgrun_instance.id)
 
 
 
-def process_submg_result_inner(returncode, id):
+def process_submg_result_inner(returncode, uuid):
 
     # Get the SubMGRunInstance and SubMGRun objects
     submg_run_instance = SubMGRunInstance.objects.get(id=id)
@@ -148,7 +150,7 @@ def process_submg_result_inner(returncode, id):
                 sample_accession_id = line.split()[1]
                 sample_external_accession_id = line.split()[2]
                 try:
-                    sample=Sample.objects.get(order = order, sample_alias=sample_title)
+                    sample=Sample.objects.get(order = order, sample_type=SAMPLE_TYPE_NORMAL, sample_alias=sample_title)
                     sample.sample_accession_number = sample_accession_id
                     sample.sample_biosample_number = sample_external_accession_id
                     sample.save()
@@ -290,7 +292,7 @@ def process_submg_result_inner(returncode, id):
                     if "EXT_ID" in line:
                         assembly_sample_external_accession_id = line.split('accession="')[1].split('"')[0]      
 
-            assembly_sample=Sample.objects.get(order = order, sample_alias=assembly_sample_title)
+            assembly_sample=Sample.objects.get(order = order, sample_type=SAMPLE_TYPE_ASSEMBLY, sample_alias=assembly_sample_title)
             assembly_sample.sample_accession_number = sample_accession_id
             assembly_sample.sample_biosample_number = sample_external_accession_id
             assembly_sample.save()

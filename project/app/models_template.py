@@ -1143,17 +1143,12 @@ class Bin(models.Model):
         
         return yaml
 
-    def getSubMGYAMLTaxIDYAML(self, tax_ids):
+    def getSubMGYAMLTaxIDYAML(self):
 
         indent = f"  "
 
         # tax_id_path = Path(self.file.split('/', 1)[0] + "/tax_ids.txt")
-        tax_id_path = Path("/tmp/tax_ids.txt")
-
-        with open(tax_id_path, 'w') as tax_id_file:
-            print(f"Bin_id\tScientific_name\tTax_id", file=tax_id_file)
-            for tax_id in tax_ids:
-                print(f"{tax_id}\t{tax_ids[tax_id][0]}\t{tax_ids[tax_id][1]}", file=tax_id_file)
+        tax_id_path = Path("tax_ids.txt")
 
         yaml = []
 
@@ -1161,6 +1156,16 @@ class Bin(models.Model):
         # yaml.append(f"{indent}NCBI_TAXONOMY_FILES:")
 
         return yaml
+
+    def getSubMGYAMLTaxIDContent(self, tax_ids):
+
+        content = ""
+
+        content += f"Bin_id\tScientific_name\tTax_id"
+        for tax_id in tax_ids:
+            content += f"{tax_id}\t{tax_ids[tax_id][0]}\t{tax_ids[tax_id][1]}"
+
+        return content
 
     def getSubMGYAMLFooter():
 
@@ -1254,6 +1259,7 @@ class SubMGRun(models.Model):
     status = models.CharField(max_length=100, null=True, blank=True)
 
     yaml = models.CharField(max_length=100, null=True, blank=True)
+    tax_ids = models.CharField(max_length=100, null=True, blank=True)
 
     # Accession stuff
     # Mark things as submitted files

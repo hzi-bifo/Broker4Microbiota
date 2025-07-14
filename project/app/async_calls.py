@@ -31,6 +31,9 @@ def run_mag(mag_run, run_folder):
             sample = read.sample
             print(f"bwa index ${{assembly_file}}", file=file)            
             print(f"bwa mem ${{assembly_file}} {read.file_1} {read.file_2} | samtools sort -o {sample.sample_id}.sorted.bam", file=file)
+        print(f"cd {run_folder}/GenomeBinning/MaxBin2/Maxbin2_bins", file=file)
+        for bins in mag_run.bins.all():
+            print(f"gunzip {bins.file}", file=file)
         
     os.chmod(os.path.join(run_folder, 'script.sh'), 0o744)
 
@@ -63,6 +66,9 @@ def run_submg(submg_run, run_folder):
         print(f"#SBATCH --mem='{settings.MAG_NEXTFLOW_CLUSTER_MEMORY}'", file=file)
         print(f"#SBATCH -t {settings.MAG_NEXTFLOW_CLUSTER_TIME_LIMIT}:0:0", file=file)
         print(f"#SBATCH {settings.MAG_NEXTFLOW_CLUSTER_OPTIONS}", file=file)
+        print(f"export ENA_USERNAME={settings.ENA_USERNAME}", file=file)
+        print(f"export ENA_USER={settings.ENA_USER}", file=file)
+        print(f"export ENA_PASSWORD={settings.ENA_PASSWORD}", file=file)
         print(f"source {settings.CONDA_PATH}/bin/activate submg", file=file)
         print(f"{settings.CONDA_PATH}/envs/submg/bin/submg submit --config {submg_yaml} --staging_dir {staging_dir} --logging_dir {logging_dir} --submit_samples --submit_reads --submit_assembly --submit_bins --skip_checks", file=file)
 
