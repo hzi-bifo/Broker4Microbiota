@@ -46,4 +46,7 @@ urlpatterns = [
     path('admin-dashboard/users/', views_admin.admin_user_list, name='admin_user_list'),
     path('admin-dashboard/users/<int:user_id>/edit/', views_admin.admin_user_edit, name='admin_user_edit'),
     path('admin-dashboard/users/create/', views_admin.admin_user_create, name='admin_user_create'),
+    
+    # Settings management
+    path('admin-dashboard/settings/', views_admin.admin_settings, name='admin_settings'),
 ]

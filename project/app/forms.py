@@ -283,3 +283,114 @@ class UserCreateForm(UserEditForm):
         if commit:
             user.save()
         return user
+
+
+class AdminSettingsForm(forms.Form):
+    """Form for managing site-wide settings including ENA configuration"""
+    
+    # Basic Site Information
+    site_name = forms.CharField(
+        max_length=100,
+        required=False,
+        widget=forms.TextInput(attrs={'class': 'input'}),
+        help_text='Display name for the site (e.g., "Broker4Microbiota")'
+    )
+    
+    organization_name = forms.CharField(
+        max_length=200,
+        required=False,
+        widget=forms.TextInput(attrs={'class': 'input'}),
+        help_text='Full organization name'
+    )
+    
+    organization_short_name = forms.CharField(
+        max_length=50,
+        required=False,
+        widget=forms.TextInput(attrs={'class': 'input'}),
+        help_text='Short name or abbreviation'
+    )
+    
+    tagline = forms.CharField(
+        max_length=200,
+        required=False,
+        widget=forms.TextInput(attrs={'class': 'input'}),
+        help_text='Optional tagline for the site'
+    )
+    
+    # ENA Configuration
+    ena_username = forms.CharField(
+        max_length=100,
+        required=False,
+        widget=forms.TextInput(attrs={'class': 'input', 'placeholder': 'Webin-XXXXXX'}),
+        help_text='ENA Webin account username (e.g., Webin-12345)'
+    )
+    
+    ena_password = forms.CharField(
+        max_length=200,
+        required=False,
+        widget=forms.PasswordInput(attrs={'class': 'input', 'placeholder': '••••••••'}),
+        help_text='ENA account password (leave blank to keep current password)'
+    )
+    
+    ena_test_mode = forms.BooleanField(
+        required=False,
+        widget=forms.CheckboxInput(attrs={'class': 'checkbox'}),
+        help_text='Enable test mode for ENA submissions (recommended for testing)'
+    )
+    
+    ena_center_name = forms.CharField(
+        max_length=100,
+        required=False,
+        widget=forms.TextInput(attrs={'class': 'input'}),
+        help_text='Optional center name for ENA submissions'
+    )
+    
+    # Contact Information
+    contact_email = forms.EmailField(
+        required=False,
+        widget=forms.EmailInput(attrs={'class': 'input'}),
+        help_text='Primary contact email for the sequencing facility'
+    )
+    
+    website_url = forms.URLField(
+        required=False,
+        widget=forms.URLInput(attrs={'class': 'input'}),
+        help_text='Organization website URL'
+    )
+    
+    # Branding
+    primary_color = forms.CharField(
+        max_length=7,
+        required=False,
+        widget=forms.TextInput(attrs={'class': 'input', 'type': 'color'}),
+        help_text='Primary brand color (hex format)'
+    )
+    
+    secondary_color = forms.CharField(
+        max_length=7,
+        required=False,
+        widget=forms.TextInput(attrs={'class': 'input', 'type': 'color'}),
+        help_text='Secondary brand color (hex format)'
+    )
+    
+    def clean_ena_username(self):
+        """Validate ENA username format"""
+        username = self.cleaned_data.get('ena_username')
+        if username and not username.startswith('Webin-'):
+            raise forms.ValidationError('ENA username must start with "Webin-" (e.g., Webin-12345)')
+        return username
+    
+    def clean(self):
+        """Validate related fields"""
+        cleaned_data = super().clean()
+        ena_username = cleaned_data.get('ena_username')
+        ena_password = cleaned_data.get('ena_password')
+        
+        # If username is provided but password is empty, that's OK (keeping existing password)
+        # But if password is provided, username must also be provided
+        if ena_password and not ena_username:
+            raise forms.ValidationError({
+                'ena_username': 'ENA username is required when setting a password'
+            })
+        
+        return cleaned_data

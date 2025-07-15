@@ -23,6 +23,7 @@ This project is developed with Django. To set up and run the project locally, fo
 - Git
 - Nextflow (for bioinformatics pipelines)
 - Conda (optional, for bioinformatics tools like bwa and samtools)
+- cryptography Python package (installed automatically with requirements.txt)
 
 ### Quick Setup (Recommended)
 
@@ -132,9 +133,15 @@ The application uses environment variables for sensitive configuration. After ru
 
 ```bash
 # ENA (European Nucleotide Archive) credentials
+# Note: ENA credentials can now be managed through the Admin Settings interface
+# These environment variables are only used as fallback if not configured in the database
 ENA_USERNAME=Webin-XXXXXX      # Your ENA Webin account username
 ENA_USER=                       # Alternative ENA username field (if needed)
 ENA_PASSWORD=your_password_here # Your ENA account password
+
+# Field encryption key for sensitive data (REQUIRED)
+# Generate a new key using: python -c "from cryptography.fernet import Fernet; print(Fernet.generate_key().decode())"
+FIELD_ENCRYPTION_KEY=           # Required for encrypting sensitive data like ENA passwords
 
 # Project paths
 ROOT_DIR=$HOME/git/django_ngs_metadata_collection  # Adjust to your project location
@@ -149,7 +156,22 @@ CONDA_PATH=                     # Path to conda installation (if using Slurm)
 1. **Register an ENA account** at https://ena-docs.readthedocs.io/en/latest/submit/general-guide/registration.html
 2. **Important**: After creating an ENA account, wait 24 hours before attempting submissions due to a [known synchronization issue](https://github.com/enasequence/read_docs/issues/161)
 3. Your username will be in the format `Webin-XXXXXX`
-4. Add your credentials to the `.env` file (never commit this file to version control)
+
+#### Configuring ENA Credentials
+
+**Method 1: Admin Settings Interface (Recommended)**
+1. Log in as a staff member
+2. Navigate to Admin Dashboard → Admin Settings
+3. In the "ENA Configuration" section:
+   - Enter your ENA username (must start with "Webin-")
+   - Enter your ENA password
+   - Optionally enable test mode for testing submissions
+   - Set your center name if applicable
+4. Click "Save Settings"
+
+**Method 2: Environment Variables (Legacy)**
+1. Add your credentials to the `.env` file (never commit this file to version control)
+2. These will only be used if not configured through the Admin Settings interface
 
 ### Dynamic Form Templates System
 
