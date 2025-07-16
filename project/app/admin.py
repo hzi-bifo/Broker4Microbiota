@@ -342,9 +342,8 @@ class ProjectAdmin(admin.ModelAdmin):
             if assemblys:   
                yaml.extend(Assembly.getSubMGYAMLFooter())
 
-            if bins:
-                yaml.extend(Bin.getSubMGYAMLHeader())
             for bin in bins:
+                yaml.extend(bin.getSubMGYAMLHeader())
                 yaml.extend(bin.getSubMGYAML())
                 break
             tax_ids = {}
@@ -354,13 +353,12 @@ class ProjectAdmin(admin.ModelAdmin):
                 tax_ids[bin.file.split('/')[-1].replace(".fa.gz", "")] = [bin_sample.scientific_name, bin_sample.tax_id]
             for bin in bins:
                 yaml.extend(bin.getSubMGYAMLTaxIDYAML())
-                tax_ids_content = Bin.getSubMGYAMLTaxIDContent(tax_ids)
+                tax_ids_content = bin.getSubMGYAMLTaxIDContent(tax_ids)
                 break 
             for bin_sample in bin_samples:
-               yaml.extend(bin_sample.getSubMGYAML(SAMPLE_TYPE_BIN))
-               break
-            if bins:
-               yaml.extend(Bin.getSubMGYAMLFooter())
+                yaml.extend(bin_sample.getSubMGYAML(SAMPLE_TYPE_BIN))
+                yaml.extend(Bin.getSubMGYAMLFooter())
+                break
 
             if mag_samples:
                 yaml.extend(Mag.getSubMGYAMLHeader())
