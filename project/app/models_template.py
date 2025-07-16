@@ -1161,7 +1161,7 @@ class Bin(models.Model):
         indent = f"  "
 
         # tax_id_path = Path(self.file.split('/', 1)[0] + "/tax_ids.txt")
-        tax_id_path = Path("/tmp/tax_ids.txt")
+        tax_id_path = Path("tax_ids.txt")
 
         yaml = []
 
@@ -1174,7 +1174,7 @@ class Bin(models.Model):
 
         content = ""
 
-        content += f"Bin_id\tScientific_name\tTax_id"
+        content += f"Bin_id\tScientific_name\tTax_id\n"
         for tax_id in tax_ids:
             content += f"{tax_id}\t{tax_ids[tax_id][0]}\t{tax_ids[tax_id][1]}"
 
