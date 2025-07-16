@@ -61,6 +61,16 @@ Order List
   border-color: #4caf50;
 }
 
+.checkbox-item.has-text-danger {
+  background: #fef8f8;
+  border-color: #f14668;
+}
+
+.checkbox-item input[type="checkbox"]:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
 .submit-button:disabled {
   cursor: not-allowed;
   opacity: 0.5;
@@ -271,7 +281,15 @@ Order List
         {% for order in orders %}
           <div class="order-card">
             <!-- Note Banner (if exists) -->
-            {% if order.latest_user_note %}
+            {% if order.checklist_changed %}
+              <div class="order-note-banner is-rejection">
+                <i class="fas fa-exclamation-triangle"></i>
+                <span>
+                  <strong>Incomplete Data:</strong>
+                  Sample data is incomplete due to checklist change. Please update sample data.
+                </span>
+              </div>
+            {% elif order.latest_user_note %}
               <div class="order-note-banner {% if order.latest_user_note.is_rejection %}is-rejection{% else %}is-info{% endif %}">
                 <i class="fas {% if order.latest_user_note.is_rejection %}fa-exclamation-triangle{% else %}fa-info-circle{% endif %}"></i>
                 <span>
@@ -478,7 +496,8 @@ Order List
                         <strong>MIxS Checklist</strong> - {{ order.get_selected_checklist|default:"Not selected" }}
                       </span>
                       <a href="{% url 'metadata_view' project_id=project_id order_id=order.id %}" 
-                         class="button is-small is-info is-outlined ml-2">
+                         class="button is-small is-info is-outlined ml-2"
+                         onclick="return confirmChecklistChange({{ order.id }}, {{ order.get_sample_count }})">
                         <span class="icon">
                           <i class="fas fa-edit"></i>
                         </span>
@@ -486,18 +505,24 @@ Order List
                       </a>
                     </label>
                     
-                    <label class="checkbox-item">
-                      <input type="checkbox" class="review-checkbox" data-order="{{ order.id }}" data-section="samples">
+                    <label class="checkbox-item {% if order.checklist_changed %}has-text-danger{% endif %}">
+                      <input type="checkbox" class="review-checkbox" data-order="{{ order.id }}" data-section="samples" 
+                             {% if order.checklist_changed %}disabled{% endif %}>
                       <span class="checkbox-label">
                         <i class="fas fa-dna"></i>
-                        <strong>Sample Data</strong> - {{ order.get_sample_count }} sample{{ order.get_sample_count|pluralize }}
+                        <strong>Sample Data</strong> - 
+                        {% if order.checklist_changed %}
+                          <span class="has-text-danger">Incomplete (checklist changed)</span>
+                        {% else %}
+                          {{ order.get_sample_count }} sample{{ order.get_sample_count|pluralize }}
+                        {% endif %}
                       </span>
                       <a href="{% url 'samples_view' project_id=project_id order_id=order.id sample_type=1%}" 
-                         class="button is-small is-info is-outlined ml-2">
+                         class="button is-small {% if order.checklist_changed %}is-warning{% else %}is-info{% endif %} is-outlined ml-2">
                         <span class="icon">
-                          <i class="fas fa-edit"></i>
+                          <i class="fas fa-{% if order.checklist_changed %}exclamation-triangle{% else %}edit{% endif %}"></i>
                         </span>
-                        <span>Edit</span>
+                        <span>{% if order.checklist_changed %}Update{% else %}Edit{% endif %}</span>
                       </a>
                     </label>
                   </div>
@@ -643,11 +668,30 @@ function deleteOrder(url, orderId) {
     }
 }
 
+function confirmChecklistChange(orderId, sampleCount) {
+    if (sampleCount > 0) {
+        return confirm(
+            'WARNING: Changing the MIxS checklist will clear all checklist-specific data from your ' + sampleCount + ' sample(s).\n\n' +
+            'Core sample information (IDs, names, descriptions) will be preserved, but all MIxS metadata fields will be removed.\n\n' +
+            'You will need to re-enter the checklist-specific data after changing the checklist.\n\n' +
+            'Are you sure you want to proceed?'
+        );
+    }
+    return true; // No samples, allow change without warning
+}
+
 // Handle review checkboxes
 document.addEventListener('DOMContentLoaded', function() {
     const checkboxes = document.querySelectorAll('.review-checkbox');
     
     checkboxes.forEach(checkbox => {
+        // Uncheck samples checkbox if order has checklist_changed flag
+        const orderId = checkbox.dataset.order;
+        const section = checkbox.dataset.section;
+        if (section === 'samples' && checklistChangedOrders.includes(parseInt(orderId))) {
+            checkbox.checked = false;
+        }
+        
         checkbox.addEventListener('change', function() {
             const orderId = this.dataset.order;
             const checkboxItem = this.closest('.checkbox-item');
@@ -670,6 +714,13 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 });
+
+// Array to track orders with checklist changes
+const checklistChangedOrders = [
+    {% for order in orders %}
+        {% if order.checklist_changed %}{{ order.id }},{% endif %}
+    {% endfor %}
+];
 
 function submitOrder(orderId, nextStatus) {
     // Show submission instructions modal

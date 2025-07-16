@@ -614,6 +614,12 @@ function toggleFields(sectionId) {
     }
 }
 
+function openFieldSelection(checklistKey) {
+    // Build the URL with the checklist parameter
+    const url = "{% url 'field_selection_view_with_checklist' project_id order_id 'PLACEHOLDER' %}".replace('PLACEHOLDER', checklistKey);
+    window.location.href = url;
+}
+
 function updateFieldSelectionNotice(checklistKey) {
     // Remove existing field selection notice
     const existingNotice = document.querySelector('.field-selection-notice');
@@ -655,7 +661,7 @@ function updateFieldSelectionNotice(checklistKey) {
                     </div>
                     <div class="level-right">
                         <div class="level-item">
-                            <a href="{% url 'field_selection_view' project_id order_id %}" class="button is-small is-warning">
+                            <a href="#" onclick="openFieldSelection('${checklistKey}'); return false;" class="button is-small is-warning">
                                 <span class="icon is-small">
                                     <i class="fas fa-edit"></i>
                                 </span>
@@ -677,7 +683,7 @@ function updateFieldSelectionNotice(checklistKey) {
                     </div>
                     <div class="level-right">
                         <div class="level-item">
-                            <a href="{% url 'field_selection_view' project_id order_id %}" class="button is-small is-warning">
+                            <a href="#" onclick="openFieldSelection('${checklistKey}'); return false;" class="button is-small is-warning">
                                 <span class="icon is-small">
                                     <i class="fas fa-sliders-h"></i>
                                 </span>

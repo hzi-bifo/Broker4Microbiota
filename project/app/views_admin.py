@@ -21,9 +21,9 @@ from django.conf import settings
 from django.template.loader import render_to_string
 from pathlib import Path
 
-from .models import Order, Project, StatusNote, Sample, SAMPLE_TYPE_NORMAL, Sampleset, Read, ProjectSubmission
+from .models import Order, Project, StatusNote, Sample, SAMPLE_TYPE_NORMAL, Sampleset, Read, ProjectSubmission, SiteSettings
 from django.contrib.auth.models import User
-from .forms import StatusUpdateForm, OrderNoteForm, OrderRejectionForm, UserEditForm, UserCreateForm, TechnicalDetailsForm
+from .forms import StatusUpdateForm, OrderNoteForm, OrderRejectionForm, UserEditForm, UserCreateForm, TechnicalDetailsForm, AdminSettingsForm
 
 
 @staff_member_required
@@ -1191,3 +1191,91 @@ def admin_register_project_ena(request, submission_id):
             return redirect('admin_submission_list')
     
     return redirect('admin_project_list')
+
+
+@staff_member_required
+def admin_settings(request):
+    """
+    Admin settings page for managing site-wide configuration including ENA credentials
+    """
+    # Get or create the singleton SiteSettings instance
+    site_settings = SiteSettings.get_settings()
+    
+    if request.method == 'POST':
+        form = AdminSettingsForm(request.POST)
+        if form.is_valid():
+            # Update site settings with form data
+            cleaned_data = form.cleaned_data
+            
+            # Basic site information
+            if cleaned_data.get('site_name'):
+                site_settings.site_name = cleaned_data['site_name']
+            if cleaned_data.get('organization_name'):
+                site_settings.organization_name = cleaned_data['organization_name']
+            if cleaned_data.get('organization_short_name'):
+                site_settings.organization_short_name = cleaned_data['organization_short_name']
+            if cleaned_data.get('tagline') is not None:
+                site_settings.tagline = cleaned_data['tagline']
+            
+            # ENA Configuration
+            if cleaned_data.get('ena_username') is not None:
+                site_settings.ena_username = cleaned_data['ena_username']
+            
+            # Handle password separately (only update if provided)
+            if cleaned_data.get('ena_password'):
+                site_settings.set_ena_password(cleaned_data['ena_password'])
+            
+            site_settings.ena_test_mode = cleaned_data.get('ena_test_mode', False)
+            
+            if cleaned_data.get('ena_center_name') is not None:
+                site_settings.ena_center_name = cleaned_data['ena_center_name']
+            
+            # Contact Information
+            if cleaned_data.get('contact_email') is not None:
+                site_settings.contact_email = cleaned_data['contact_email']
+            if cleaned_data.get('website_url') is not None:
+                site_settings.website_url = cleaned_data['website_url']
+            
+            # Branding
+            if cleaned_data.get('primary_color'):
+                site_settings.primary_color = cleaned_data['primary_color']
+            if cleaned_data.get('secondary_color'):
+                site_settings.secondary_color = cleaned_data['secondary_color']
+            
+            # Save the settings
+            site_settings.save()
+            
+            # Clear the cache to ensure new settings are loaded
+            from django.core.cache import cache
+            cache.delete('site_settings')
+            
+            messages.success(request, 'Settings have been updated successfully.')
+            return redirect('admin_settings')
+    else:
+        # Populate form with current settings
+        initial_data = {
+            'site_name': site_settings.site_name,
+            'organization_name': site_settings.organization_name,
+            'organization_short_name': site_settings.organization_short_name,
+            'tagline': site_settings.tagline,
+            'ena_username': site_settings.ena_username,
+            # Don't populate password field for security
+            'ena_test_mode': site_settings.ena_test_mode,
+            'ena_center_name': site_settings.ena_center_name,
+            'contact_email': site_settings.contact_email,
+            'website_url': site_settings.website_url,
+            'primary_color': site_settings.primary_color,
+            'secondary_color': site_settings.secondary_color,
+        }
+        form = AdminSettingsForm(initial=initial_data)
+    
+    # Check if ENA is configured
+    ena_configured = site_settings.ena_configured
+    
+    context = {
+        'form': form,
+        'site_settings': site_settings,
+        'ena_configured': ena_configured,
+    }
+    
+    return render(request, 'admin_settings.html', context)

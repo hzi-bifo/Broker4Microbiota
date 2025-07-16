@@ -1,0 +1,371 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Admin Settings
+{% endblock title %}
+
+{% block content %}
+<section class="section pt-3">
+  <div class="container is-fluid">
+    <div class="level mb-4">
+      <div class="level-left">
+        <h1 class="title is-4 mb-0">
+          <i class="fas fa-cog has-text-primary mr-2"></i>
+          Admin Settings
+        </h1>
+      </div>
+      <div class="level-right">
+        <a href="{% url 'admin_dashboard' %}" class="button is-small">
+          <span class="icon"><i class="fas fa-arrow-left"></i></span>
+          <span>Back to Dashboard</span>
+        </a>
+      </div>
+    </div>
+
+    {% if messages %}
+      {% for message in messages %}
+        <div class="notification is-{{ message.tags }} is-light">
+          <button class="delete"></button>
+          {{ message }}
+        </div>
+      {% endfor %}
+    {% endif %}
+
+    <form method="post" class="settings-form">
+      {% csrf_token %}
+      
+      <!-- Basic Site Information -->
+      <div class="box mb-5">
+        <h2 class="title is-5 mb-4">
+          <i class="fas fa-info-circle mr-2"></i>
+          Basic Site Information
+        </h2>
+        
+        <div class="columns is-multiline">
+          <div class="column is-half">
+            <div class="field">
+              <label class="label">{{ form.site_name.label }}</label>
+              <div class="control">
+                {{ form.site_name }}
+              </div>
+              {% if form.site_name.help_text %}
+                <p class="help">{{ form.site_name.help_text }}</p>
+              {% endif %}
+              {% if form.site_name.errors %}
+                <p class="help is-danger">{{ form.site_name.errors.0 }}</p>
+              {% endif %}
+            </div>
+          </div>
+          
+          <div class="column is-half">
+            <div class="field">
+              <label class="label">{{ form.organization_name.label }}</label>
+              <div class="control">
+                {{ form.organization_name }}
+              </div>
+              {% if form.organization_name.help_text %}
+                <p class="help">{{ form.organization_name.help_text }}</p>
+              {% endif %}
+            </div>
+          </div>
+          
+          <div class="column is-half">
+            <div class="field">
+              <label class="label">{{ form.organization_short_name.label }}</label>
+              <div class="control">
+                {{ form.organization_short_name }}
+              </div>
+              {% if form.organization_short_name.help_text %}
+                <p class="help">{{ form.organization_short_name.help_text }}</p>
+              {% endif %}
+            </div>
+          </div>
+          
+          <div class="column is-half">
+            <div class="field">
+              <label class="label">{{ form.tagline.label }}</label>
+              <div class="control">
+                {{ form.tagline }}
+              </div>
+              {% if form.tagline.help_text %}
+                <p class="help">{{ form.tagline.help_text }}</p>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ENA Configuration -->
+      <div class="box mb-5">
+        <h2 class="title is-5 mb-4">
+          <i class="fas fa-database mr-2"></i>
+          ENA (European Nucleotide Archive) Configuration
+        </h2>
+        
+        {% if ena_configured %}
+          <div class="notification is-success is-light mb-4">
+            <i class="fas fa-check-circle mr-2"></i>
+            ENA credentials are configured.
+          </div>
+        {% else %}
+          <div class="notification is-warning is-light mb-4">
+            <i class="fas fa-exclamation-triangle mr-2"></i>
+            ENA credentials are not configured. Please enter your Webin account details below.
+          </div>
+        {% endif %}
+        
+        <div class="columns is-multiline">
+          <div class="column is-half">
+            <div class="field">
+              <label class="label">{{ form.ena_username.label }}</label>
+              <div class="control has-icons-left">
+                {{ form.ena_username }}
+                <span class="icon is-small is-left">
+                  <i class="fas fa-user"></i>
+                </span>
+              </div>
+              {% if form.ena_username.help_text %}
+                <p class="help">{{ form.ena_username.help_text }}</p>
+              {% endif %}
+              {% if form.ena_username.errors %}
+                <p class="help is-danger">{{ form.ena_username.errors.0 }}</p>
+              {% endif %}
+            </div>
+          </div>
+          
+          <div class="column is-half">
+            <div class="field">
+              <label class="label">{{ form.ena_password.label }}</label>
+              <div class="control has-icons-left">
+                {{ form.ena_password }}
+                <span class="icon is-small is-left">
+                  <i class="fas fa-lock"></i>
+                </span>
+              </div>
+              {% if form.ena_password.help_text %}
+                <p class="help">{{ form.ena_password.help_text }}</p>
+              {% endif %}
+              {% if ena_configured %}
+                <p class="help is-info">Password is already set. Leave blank to keep current password.</p>
+              {% endif %}
+            </div>
+          </div>
+          
+          <div class="column is-half">
+            <div class="field">
+              <label class="label">{{ form.ena_center_name.label }}</label>
+              <div class="control">
+                {{ form.ena_center_name }}
+              </div>
+              {% if form.ena_center_name.help_text %}
+                <p class="help">{{ form.ena_center_name.help_text }}</p>
+              {% endif %}
+            </div>
+          </div>
+          
+          <div class="column is-half">
+            <div class="field">
+              <label class="checkbox">
+                {{ form.ena_test_mode }}
+                {{ form.ena_test_mode.label }}
+              </label>
+              {% if form.ena_test_mode.help_text %}
+                <p class="help">{{ form.ena_test_mode.help_text }}</p>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Contact Information -->
+      <div class="box mb-5">
+        <h2 class="title is-5 mb-4">
+          <i class="fas fa-address-card mr-2"></i>
+          Contact Information
+        </h2>
+        
+        <div class="columns is-multiline">
+          <div class="column is-half">
+            <div class="field">
+              <label class="label">{{ form.contact_email.label }}</label>
+              <div class="control has-icons-left">
+                {{ form.contact_email }}
+                <span class="icon is-small is-left">
+                  <i class="fas fa-envelope"></i>
+                </span>
+              </div>
+              {% if form.contact_email.help_text %}
+                <p class="help">{{ form.contact_email.help_text }}</p>
+              {% endif %}
+            </div>
+          </div>
+          
+          <div class="column is-half">
+            <div class="field">
+              <label class="label">{{ form.website_url.label }}</label>
+              <div class="control has-icons-left">
+                {{ form.website_url }}
+                <span class="icon is-small is-left">
+                  <i class="fas fa-globe"></i>
+                </span>
+              </div>
+              {% if form.website_url.help_text %}
+                <p class="help">{{ form.website_url.help_text }}</p>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Branding -->
+      <div class="box mb-5">
+        <h2 class="title is-5 mb-4">
+          <i class="fas fa-palette mr-2"></i>
+          Branding
+        </h2>
+        
+        <div class="columns">
+          <div class="column is-half">
+            <div class="field">
+              <label class="label">{{ form.primary_color.label }}</label>
+              <div class="control">
+                <div class="color-input-wrapper">
+                  {{ form.primary_color }}
+                  <div class="color-preview" style="background-color: {{ site_settings.primary_color }}"></div>
+                </div>
+              </div>
+              {% if form.primary_color.help_text %}
+                <p class="help">{{ form.primary_color.help_text }}</p>
+              {% endif %}
+            </div>
+          </div>
+          
+          <div class="column is-half">
+            <div class="field">
+              <label class="label">{{ form.secondary_color.label }}</label>
+              <div class="control">
+                <div class="color-input-wrapper">
+                  {{ form.secondary_color }}
+                  <div class="color-preview" style="background-color: {{ site_settings.secondary_color }}"></div>
+                </div>
+              </div>
+              {% if form.secondary_color.help_text %}
+                <p class="help">{{ form.secondary_color.help_text }}</p>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Form Actions -->
+      <div class="field is-grouped">
+        <div class="control">
+          <button type="submit" class="button is-primary">
+            <span class="icon">
+              <i class="fas fa-save"></i>
+            </span>
+            <span>Save Settings</span>
+          </button>
+        </div>
+        <div class="control">
+          <a href="{% url 'admin_dashboard' %}" class="button is-light">
+            Cancel
+          </a>
+        </div>
+      </div>
+    </form>
+  </div>
+</section>
+
+<style>
+/* Settings Form Styling */
+.settings-form {
+  max-width: 1200px;
+}
+
+.box {
+  background: white;
+  border: 1px solid #e9ecef;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+.box .title {
+  color: #2c3e50;
+  border-bottom: 1px solid #e9ecef;
+  padding-bottom: 0.75rem;
+  margin-bottom: 1.5rem !important;
+}
+
+/* Color Input Styling */
+.color-input-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.color-preview {
+  width: 40px;
+  height: 40px;
+  border-radius: 4px;
+  border: 1px solid #ddd;
+  flex-shrink: 0;
+}
+
+input[type="color"] {
+  height: 40px;
+  width: 100px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+/* Notification Close Button */
+.notification .delete {
+  background: rgba(10, 10, 10, 0.2);
+}
+
+/* Help Text Styling */
+.help.is-info {
+  color: #3298dc;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .level {
+    display: block !important;
+  }
+  
+  .level-left, .level-right {
+    display: block;
+    margin-bottom: 1rem;
+  }
+  
+  .level-right {
+    text-align: left;
+  }
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // Auto-dismiss notifications
+  const notifications = document.querySelectorAll('.notification .delete');
+  notifications.forEach(function(button) {
+    button.addEventListener('click', function() {
+      button.parentElement.remove();
+    });
+  });
+  
+  // Update color preview on change
+  const colorInputs = document.querySelectorAll('input[type="color"]');
+  colorInputs.forEach(function(input) {
+    input.addEventListener('change', function() {
+      const preview = input.parentElement.querySelector('.color-preview');
+      if (preview) {
+        preview.style.backgroundColor = input.value;
+      }
+    });
+  });
+});
+</script>
+{% endblock content %}

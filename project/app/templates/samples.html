@@ -1098,6 +1098,15 @@ document.addEventListener('DOMContentLoaded', function() {
       body: 'sample_data=' + JSON.stringify(sampleData)
     })
     .then(function (response) {
+      if (!response.ok) {
+        // Handle HTTP errors
+        return response.json().then(data => {
+          throw new Error(data.error || 'Server error occurred');
+        });
+      }
+      return response.json();
+    })
+    .then(function (data) {
       console.log('Sample data saved successfully');
       saveButton.innerHTML = originalText;
       saveButton.classList.remove('is-loading');
@@ -1127,15 +1136,23 @@ document.addEventListener('DOMContentLoaded', function() {
       saveButton.innerHTML = originalText;
       saveButton.classList.remove('is-loading');
       
-      // Show error notification
+      // Re-enable save buttons on error
+      document.getElementById('save').disabled = false;
+      document.querySelector('.button.is-primary[onclick="saveAndContinue()"]').disabled = false;
+      
+      // Show error notification with more details
+      var errorMessage = error.message || 'Error saving samples. Please try again.';
       var notification = document.createElement('div');
       notification.className = 'notification is-danger is-light';
-      notification.innerHTML = '<button class="delete"></button>Error saving samples. Please try again.';
+      notification.innerHTML = '<button class="delete"></button><strong>Error:</strong> ' + errorMessage;
       document.querySelector('.container').insertBefore(notification, document.querySelector('.order-context-header'));
       
       notification.querySelector('.delete').addEventListener('click', function() {
         notification.remove();
       });
+      
+      // Mark rows as unsaved again since save failed
+      unsaved = true;
     });
   }
 

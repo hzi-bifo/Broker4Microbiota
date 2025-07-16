@@ -15,6 +15,7 @@ urlpatterns = [
     path('project/<int:project_id>/orders/<int:order_id>/delete/', views.delete_order, name='delete_order'),
     path('project/<int:project_id>/orders/<int:order_id>/metadata/', views.metadata_view, name='metadata_view'),
     path('project/<int:project_id>/orders/<int:order_id>/field-selection/', views.field_selection_view, name='field_selection_view'),
+    path('project/<int:project_id>/orders/<int:order_id>/field-selection/<str:checklist>/', views.field_selection_view, name='field_selection_view_with_checklist'),
     path('project/<int:project_id>/orders/<int:order_id>/samples/<int:sample_type>/', views.samples_view, name='samples_view'),
     path('test_submg/', views.test_submg, name='test_submg'),
     path('test_mag/', views.test_mag, name='test_mag'),
@@ -45,4 +46,7 @@ urlpatterns = [
     path('admin-dashboard/users/', views_admin.admin_user_list, name='admin_user_list'),
     path('admin-dashboard/users/<int:user_id>/edit/', views_admin.admin_user_edit, name='admin_user_edit'),
     path('admin-dashboard/users/create/', views_admin.admin_user_create, name='admin_user_create'),
+    
+    # Settings management
+    path('admin-dashboard/settings/', views_admin.admin_settings, name='admin_settings'),
 ]

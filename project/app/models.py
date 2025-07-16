@@ -389,6 +389,7 @@ class Order(models.Model):
     sequencing_instrument = models.CharField(max_length=100, null=True, blank=True, default="Illumina HiSeq 1500")
 
     submitted = models.BooleanField(default=False)
+    checklist_changed = models.BooleanField(default=False)
     
     # Order status tracking
     STATUS_CHOICES = [
