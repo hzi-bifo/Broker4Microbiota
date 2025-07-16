@@ -211,7 +211,6 @@ class SelfDescribingModel(models.Model):
 
         return (index, output)    
     
-    # Populate instance fields from a response
     def setFieldsFromResponse(self, response, inclusions=None):
 
         for k, v in self.fields.items():
@@ -390,7 +389,7 @@ class Order(models.Model):
 
     submitted = models.BooleanField(default=False)
     checklist_changed = models.BooleanField(default=False)
-    
+
     # Order status tracking
     STATUS_CHOICES = [
         ('draft', 'Draft'),
@@ -608,7 +607,7 @@ class Sampleset(models.Model):
     selected_fields = models.JSONField(default=dict, blank=True)
     # Field overrides - stores custom configurations like making optional fields required
     field_overrides = models.JSONField(default=dict, blank=True)
-
+    
     checklist_structure = {
         'GSC_MIxS_wastewater_sludge': {"checklist_code": "ERC000023", 'checklist_class_name': 'GSC_MIxS_wastewater_sludge', 'unitchecklist_class_name': 'GSC_MIxS_wastewater_sludge_unit'},
 'GSC_MIxS_miscellaneous_natural_or_artificial_environment': {"checklist_code": "ERC000025", 'checklist_class_name': 'GSC_MIxS_miscellaneous_natural_or_artificial_environment', 'unitchecklist_class_name': 'GSC_MIxS_miscellaneous_natural_or_artificial_environment_unit'},
@@ -1174,17 +1173,12 @@ class Bin(models.Model):
         
         return yaml
 
-    def getSubMGYAMLTaxIDYAML(self, tax_ids):
+    def getSubMGYAMLTaxIDYAML(self):
 
         indent = f"  "
 
         # tax_id_path = Path(self.file.split('/', 1)[0] + "/tax_ids.txt")
         tax_id_path = Path("/tmp/tax_ids.txt")
-
-        with open(tax_id_path, 'w') as tax_id_file:
-            print(f"Bin_id\tScientific_name\tTax_id", file=tax_id_file)
-            for tax_id in tax_ids:
-                print(f"{tax_id}\t{tax_ids[tax_id][0]}\t{tax_ids[tax_id][1]}", file=tax_id_file)
 
         yaml = []
 
@@ -1192,6 +1186,16 @@ class Bin(models.Model):
         # yaml.append(f"{indent}NCBI_TAXONOMY_FILES:")
 
         return yaml
+
+    def getSubMGYAMLTaxIDContent(self, tax_ids):
+
+        content = ""
+
+        content += f"Bin_id\tScientific_name\tTax_id"
+        for tax_id in tax_ids:
+            content += f"{tax_id}\t{tax_ids[tax_id][0]}\t{tax_ids[tax_id][1]}"
+
+        return content
 
     def getSubMGYAMLFooter():
 
@@ -1285,6 +1289,7 @@ class SubMGRun(models.Model):
     status = models.CharField(max_length=100, null=True, blank=True)
 
     yaml = models.CharField(max_length=100, null=True, blank=True)
+    tax_ids = models.CharField(max_length=100, null=True, blank=True)
 
     # Accession stuff
     # Mark things as submitted files
@@ -1472,7 +1477,7 @@ class SiteSettings(models.Model):
         default="",
         help_text="Center name for ENA submissions (optional)"
     )
-    
+
     # Metadata
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -1483,7 +1488,7 @@ class SiteSettings(models.Model):
     
     def __str__(self):
         return f"{self.organization_name} Settings"
-    
+
     def clean(self):
         """Validate ENA settings"""
         from django.core.exceptions import ValidationError
@@ -1561,7 +1566,7 @@ class SiteSettings(models.Model):
         except Exception:
             # If decryption fails, return empty string
             return ""
-    
+
     def save(self, *args, **kwargs):
         """
         Save method that ensures only one instance exists.

@@ -35,6 +35,7 @@ staticfiles/
 *.swo
 *~
 .DS_Store
+.~lock*
 
 # Nextflow
 .nextflow/
