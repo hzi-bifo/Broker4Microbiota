@@ -252,7 +252,26 @@ class SelfDescribingModel(models.Model):
                 except:
                     pass
 
-            setattr(self, k, value)
+            if k == 'assembly':
+                if value != '':
+                    assembly_class = getattr(importlib.import_module("app.models"), 'Assembly')
+                    assembly_instance = assembly_class.objects.filter(id=value).first()
+                    if assembly_instance:
+                        self.assembly = assembly_instance
+                    else:
+                        self.assembly = None
+            elif k == 'bin':
+                if value != '':
+                    bin_class = getattr(importlib.import_module("app.models"), 'Bin')
+                    bin_instance = bin_class.objects.filter(id=value).first()
+                    if bin_instance:
+                        self.bin = bin_instance
+                    else:
+                        self.bin = None
+            else:
+                setattr(self, k, value)
+
+
 
     # Get the headers for the HoT (including choices)
     def getValidators(self, include=[], exclude=[] ):
