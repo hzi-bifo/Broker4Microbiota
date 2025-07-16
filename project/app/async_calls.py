@@ -26,7 +26,7 @@ def run_mag(mag_run, run_folder):
         print(f"#SBATCH {settings.MAG_NEXTFLOW_CLUSTER_OPTIONS}", file=file)
         print(f"source {settings.CONDA_PATH}/bin/activate broker", file=file)
         print(f"cd /tmp")        
-        print(f"{settings.CONDA_PATH}/envs/broker/bin/nextflow run hzi-bifo/mag -w /tmp --input {sample_sheet} -profile singularity -c {cluster_config} --outdir {run_folder} {settings.MAG_ADDITIONAL_OPTIONS}", file=file)
+        print(f"{settings.CONDA_PATH}/envs/broker/bin/nextflow run hzi-bifo/mag -r 3.4.0 -w /tmp --input {sample_sheet} -profile singularity -c {cluster_config} --outdir {run_folder} {settings.MAG_ADDITIONAL_OPTIONS}", file=file)
         print(f"assembly_file=$(find {run_folder} -name '*.contigs.fa.gz')", file=file)
         print(f"cd {run_folder}", file=file)
         for read in mag_run.reads.all():
