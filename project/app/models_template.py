@@ -1156,7 +1156,7 @@ class Bin(models.Model):
         
         return yaml
 
-    def getSubMGYAMLTaxIDYAML(self):
+    def getSubMGYAMLTaxIDYAML():
 
         indent = f"  "
 
@@ -1170,7 +1170,7 @@ class Bin(models.Model):
 
         return yaml
 
-    def getSubMGYAMLTaxIDContent(self, tax_ids):
+    def getSubMGYAMLTaxIDContent(tax_ids):
 
         content = ""
 
