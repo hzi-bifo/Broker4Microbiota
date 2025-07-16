@@ -893,7 +893,7 @@ class SubMGRunAdmin(admin.ModelAdmin):
             os.makedirs(run_folder)
 
             with open(os.path.join(run_folder, 'submg.yaml'), 'w') as file:
-                print(submg_run.yaml, file=file)
+                print(submg_run.yaml.replace('tax_ids.txt', f'{run_folder}/tax_ids.txt'), file=file)
 
             with open(os.path.join(run_folder, 'tax_ids.txt'), 'w') as file:
                 print(submg_run.tax_ids, file=file)
