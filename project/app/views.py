@@ -945,7 +945,7 @@ def samples_view(request, project_id, order_id, sample_type):
 def test_submg(request):
     if request.user.is_authenticated and request.user.is_staff:
         # Test endpoint - staff users only
-        id = 31  # Default to 48 for backwards compatibility
+        id = 5  # Default to 48 for backwards compatibility
         returncode = 0
         
         try:

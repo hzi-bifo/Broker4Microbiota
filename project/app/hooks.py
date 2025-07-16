@@ -117,7 +117,7 @@ def process_submg_result(task):
 
 
 
-def process_submg_result_inner(returncode, uuid):
+def process_submg_result_inner(returncode, id):
 
     # Get the SubMGRunInstance and SubMGRun objects
     submg_run_instance = SubMGRunInstance.objects.get(id=id)
