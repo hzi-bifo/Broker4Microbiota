@@ -6,6 +6,7 @@ import math
 from django.conf import settings
 import os
 import subprocess
+import glob
 
 
 def run_mag(mag_run, run_folder):
@@ -32,8 +33,11 @@ def run_mag(mag_run, run_folder):
             print(f"bwa index ${{assembly_file}}", file=file)            
             print(f"bwa mem ${{assembly_file}} {read.file_1} {read.file_2} | samtools sort -o {sample.sample_id}.sorted.bam", file=file)
         print(f"cd {run_folder}/GenomeBinning/MaxBin2/Maxbin2_bins", file=file)
-        for bins in mag_run.bins.all():
-            print(f"gunzip {bins.file}", file=file)
+
+        bin_file_path = f"{run_folder}/GenomeBinning/MaxBin2/Maxbin2_bins/*.gz"
+        bin_files = glob.glob(bin_file_path)
+        for bin_file in bin_files:
+            print(f"gunzip {bin_file}", file=file)
         
     os.chmod(os.path.join(run_folder, 'script.sh'), 0o744)
 
