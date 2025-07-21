@@ -159,12 +159,17 @@
             <span>Register Project at ENA</span>
           </button>
           
-          <button class="button is-info" disabled title="Coming soon">
-            <span class="icon">
-              <i class="fas fa-dna"></i>
-            </span>
-            <span>Run MAG Pipeline</span>
-          </button>
+          <form method="post" action="{% url 'admin_create_mag_run' project.id %}" style="display: inline;">
+            {% csrf_token %}
+            <button type="submit" class="button is-info" 
+                    title="Create MAG pipeline run"
+                    onclick="return confirm('Create MAG run for this project?')">
+              <span class="icon">
+                <i class="fas fa-dna"></i>
+              </span>
+              <span>Run MAG Pipeline</span>
+            </button>
+          </form>
           
           <button class="button is-warning" disabled title="Coming soon">
             <span class="icon">
@@ -512,6 +517,129 @@
       <div class="notification is-light">
         <p class="has-text-grey">No SubMG runs have been generated for this project yet.</p>
         <p class="has-text-grey mt-2">Click the "Generate SubMG Run" button to create a new pipeline configuration.</p>
+      </div>
+      {% endif %}
+    </div>
+
+    <!-- MAG Runs Section -->
+    <div class="box mb-5">
+      <h4 class="title is-5 mb-4">
+        <i class="fas fa-dna"></i> MAG Pipeline Runs
+        {% if mag_runs %}
+        <span class="tag is-info ml-2">{{ mag_runs|length }}</span>
+        {% endif %}
+      </h4>
+      
+      <div class="level mb-4">
+        <div class="level-left">
+          <p class="has-text-grey">Execute nf-core/mag pipeline for metagenomic assembly analysis.</p>
+        </div>
+        <div class="level-right">
+          <form method="post" action="{% url 'admin_create_mag_run' project.id %}">
+            {% csrf_token %}
+            <button type="submit" class="button is-info"
+                    title="Create MAG pipeline run"
+                    onclick="return confirm('Create MAG run for this project?')">
+              <span class="icon">
+                <i class="fas fa-dna"></i>
+              </span>
+              <span>Create MAG Run</span>
+            </button>
+          </form>
+        </div>
+      </div>
+      
+      {% if mag_runs %}
+      <div class="table-container">
+        <table class="table is-fullwidth is-striped">
+          <thead>
+            <tr>
+              <th>Run ID</th>
+              <th>Status</th>
+              <th>Reads</th>
+              <th>Samplesheet</th>
+              <th>Cluster Config</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for run in mag_runs %}
+            <tr>
+              <td>#{{ run.id }}</td>
+              <td>
+                {% if run.status %}
+                  <span class="tag is-{{ run.status|lower }}">{{ run.status }}</span>
+                {% else %}
+                  <span class="tag is-light">Pending</span>
+                {% endif %}
+              </td>
+              <td>
+                {% if run.reads.count > 0 %}
+                  <span class="tag is-light">{{ run.reads.count }} read{{ run.reads.count|pluralize }}</span>
+                {% else %}
+                  <span class="has-text-grey">No reads</span>
+                {% endif %}
+              </td>
+              <td>
+                {% if run.samplesheet_content %}
+                  <button class="button is-small is-light" 
+                          onclick="showSamplesheetModal({{ run.id }}, '{{ run.samplesheet_content|escapejs }}')"
+                          title="View samplesheet">
+                    <span class="icon">
+                      <i class="fas fa-file-csv"></i>
+                    </span>
+                    <span>View</span>
+                  </button>
+                {% else %}
+                  <span class="has-text-grey">-</span>
+                {% endif %}
+              </td>
+              <td>
+                {% if run.cluster_config %}
+                  <button class="button is-small is-light" 
+                          onclick="showClusterConfigModal({{ run.id }}, '{{ run.cluster_config|escapejs }}')"
+                          title="View cluster config">
+                    <span class="icon">
+                      <i class="fas fa-server"></i>
+                    </span>
+                    <span>View</span>
+                  </button>
+                {% else %}
+                  <span class="has-text-grey">-</span>
+                {% endif %}
+              </td>
+              <td>
+                <div class="buttons are-small">
+                  <a href="/admin/app/magrun/{{ run.id }}/change/" 
+                     class="button is-small is-dark" 
+                     target="_blank"
+                     title="View in Django Admin">
+                    <span class="icon">
+                      <i class="fas fa-external-link-alt"></i>
+                    </span>
+                    <span>Details</span>
+                  </a>
+                  {% if run.reads.count > 0 and not run.status %}
+                  <button class="button is-small is-primary" 
+                          onclick="alert('MAG pipeline execution will be implemented in Django Admin')"
+                          title="Run pipeline">
+                    <span class="icon">
+                      <i class="fas fa-play"></i>
+                    </span>
+                    <span>Run</span>
+                  </button>
+                  {% endif %}
+                </div>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      {% else %}
+      <div class="notification is-light">
+        <p class="has-text-grey">No MAG runs have been created for this project yet.</p>
+        <p class="has-text-grey mt-2">Click the "Create MAG Run" button to set up a new pipeline run.</p>
       </div>
       {% endif %}
     </div>
@@ -1106,6 +1234,114 @@ function closeYAMLModal(runId) {
 function copyYAML(elementId) {
   const yamlText = document.getElementById(elementId).textContent;
   navigator.clipboard.writeText(yamlText).then(() => {
+    const button = event.target.closest('button');
+    const originalHTML = button.innerHTML;
+    button.innerHTML = '<span class="icon"><i class="fas fa-check"></i></span><span>Copied!</span>';
+    button.classList.add('is-success');
+    
+    setTimeout(() => {
+      button.innerHTML = originalHTML;
+      button.classList.remove('is-success');
+    }, 2000);
+  }).catch(err => {
+    console.error('Failed to copy:', err);
+  });
+}
+
+function showSamplesheetModal(runId, samplesheetContent) {
+  const modalHTML = `
+    <div class="modal is-active" id="samplesheet-modal-${runId}">
+      <div class="modal-background" onclick="closeSamplesheetModal(${runId})"></div>
+      <div class="modal-card" style="width: 90%; max-width: 1000px;">
+        <header class="modal-card-head">
+          <p class="modal-card-title">MAG Run #${runId} - Samplesheet</p>
+          <button class="delete" aria-label="close" onclick="closeSamplesheetModal(${runId})"></button>
+        </header>
+        <section class="modal-card-body">
+          <div class="buttons mb-3">
+            <button class="button is-small is-info" onclick="copySamplesheet('samplesheet-content-${runId}')">
+              <span class="icon">
+                <i class="fas fa-copy"></i>
+              </span>
+              <span>Copy Samplesheet</span>
+            </button>
+          </div>
+          <pre id="samplesheet-content-${runId}" style="background-color: #f5f5f5; padding: 1rem; border-radius: 4px; overflow-x: auto;"><code>${samplesheetContent}</code></pre>
+        </section>
+        <footer class="modal-card-foot">
+          <button class="button" onclick="closeSamplesheetModal(${runId})">Close</button>
+        </footer>
+      </div>
+    </div>
+  `;
+  
+  document.body.insertAdjacentHTML('beforeend', modalHTML);
+}
+
+function closeSamplesheetModal(runId) {
+  const modal = document.getElementById(`samplesheet-modal-${runId}`);
+  if (modal) {
+    modal.remove();
+  }
+}
+
+function copySamplesheet(elementId) {
+  const content = document.getElementById(elementId).textContent;
+  navigator.clipboard.writeText(content).then(() => {
+    const button = event.target.closest('button');
+    const originalHTML = button.innerHTML;
+    button.innerHTML = '<span class="icon"><i class="fas fa-check"></i></span><span>Copied!</span>';
+    button.classList.add('is-success');
+    
+    setTimeout(() => {
+      button.innerHTML = originalHTML;
+      button.classList.remove('is-success');
+    }, 2000);
+  }).catch(err => {
+    console.error('Failed to copy:', err);
+  });
+}
+
+function showClusterConfigModal(runId, clusterConfig) {
+  const modalHTML = `
+    <div class="modal is-active" id="cluster-config-modal-${runId}">
+      <div class="modal-background" onclick="closeClusterConfigModal(${runId})"></div>
+      <div class="modal-card" style="width: 90%; max-width: 1000px;">
+        <header class="modal-card-head">
+          <p class="modal-card-title">MAG Run #${runId} - Cluster Configuration</p>
+          <button class="delete" aria-label="close" onclick="closeClusterConfigModal(${runId})"></button>
+        </header>
+        <section class="modal-card-body">
+          <div class="buttons mb-3">
+            <button class="button is-small is-info" onclick="copyClusterConfig('cluster-config-content-${runId}')">
+              <span class="icon">
+                <i class="fas fa-copy"></i>
+              </span>
+              <span>Copy Config</span>
+            </button>
+          </div>
+          <pre id="cluster-config-content-${runId}" style="background-color: #f5f5f5; padding: 1rem; border-radius: 4px; overflow-x: auto;"><code>${clusterConfig}</code></pre>
+        </section>
+        <footer class="modal-card-foot">
+          <button class="button" onclick="closeClusterConfigModal(${runId})">Close</button>
+        </footer>
+      </div>
+    </div>
+  `;
+  
+  document.body.insertAdjacentHTML('beforeend', modalHTML);
+}
+
+function closeClusterConfigModal(runId) {
+  const modal = document.getElementById(`cluster-config-modal-${runId}`);
+  if (modal) {
+    modal.remove();
+  }
+}
+
+function copyClusterConfig(elementId) {
+  const content = document.getElementById(elementId).textContent;
+  navigator.clipboard.writeText(content).then(() => {
     const button = event.target.closest('button');
     const originalHTML = button.innerHTML;
     button.innerHTML = '<span class="icon"><i class="fas fa-check"></i></span><span>Copied!</span>';

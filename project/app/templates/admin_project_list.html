@@ -245,12 +245,17 @@ All Projects - Admin View
                   </span>
                   <span>Register</span>
                 </button>
-                <button class="button is-light" disabled title="Run MAG pipeline">
-                  <span class="icon">
-                    <i class="fas fa-dna"></i>
-                  </span>
-                  <span>MAG</span>
-                </button>
+                <form method="post" action="{% url 'admin_create_mag_run' item.project.id %}" style="display: inline;">
+                  {% csrf_token %}
+                  <button type="submit" class="button is-info" 
+                          title="Create MAG pipeline run"
+                          onclick="return confirm('Create MAG run for project: {{ item.project.title }}?')">
+                    <span class="icon">
+                      <i class="fas fa-dna"></i>
+                    </span>
+                    <span>MAG</span>
+                  </button>
+                </form>
                 <form method="post" action="{% url 'admin_generate_submg_run' item.project.id %}" style="display: inline;">
                   {% csrf_token %}
                   <button type="submit" class="button is-warning" 

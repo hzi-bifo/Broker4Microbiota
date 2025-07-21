@@ -20,8 +20,9 @@ import hashlib
 from django.conf import settings
 from django.template.loader import render_to_string
 from pathlib import Path
+import random
 
-from .models import Order, Project, StatusNote, Sample, SAMPLE_TYPE_NORMAL, SAMPLE_TYPE_ASSEMBLY, SAMPLE_TYPE_BIN, SAMPLE_TYPE_MAG, Sampleset, Read, ProjectSubmission, SiteSettings, SubMGRun, Assembly, Bin, Mag, Alignment
+from .models import Order, Project, StatusNote, Sample, SAMPLE_TYPE_NORMAL, SAMPLE_TYPE_ASSEMBLY, SAMPLE_TYPE_BIN, SAMPLE_TYPE_MAG, Sampleset, Read, ProjectSubmission, SiteSettings, SubMGRun, Assembly, Bin, Mag, Alignment, MagRun, MagRunInstance
 from django.contrib.auth.models import User
 from .forms import StatusUpdateForm, OrderNoteForm, OrderRejectionForm, UserEditForm, UserCreateForm, TechnicalDetailsForm, AdminSettingsForm
 
@@ -761,6 +762,15 @@ def admin_project_detail(request, project_id):
     if submg_runs.exists():
         workflow_status['submg_pipeline_run'] = True
     
+    # Get MAG runs for this project (through reads)
+    mag_runs = MagRun.objects.filter(
+        reads__sample__order__project=project
+    ).distinct().order_by('-id')
+    
+    # Update workflow status to reflect MAG runs
+    if mag_runs.exists():
+        workflow_status['mag_pipeline_run'] = True
+    
     context = {
         'project': project,
         'orders': orders,
@@ -773,6 +783,7 @@ def admin_project_detail(request, project_id):
         'has_more_samples': len(sample_file_details) > 10,
         'project_submissions': project_submissions,
         'submg_runs': submg_runs,
+        'mag_runs': mag_runs,
     }
     
     return render(request, 'admin_project_detail.html', context)
@@ -1629,6 +1640,50 @@ def admin_generate_submg_run(request, project_id):
         subMG_run.bins.set(bins)
         
     messages.success(request, f"SubMG run generated successfully for project '{project.title}'.")
+    
+    # Redirect back to project detail page
+    return redirect('admin_project_detail', project_id=project_id)
+
+
+@staff_member_required
+@require_http_methods(["POST"])
+def admin_create_mag_run(request, project_id):
+    """
+    Create MAG run for a project based on all its reads
+    Based on the Django admin action create_mag_run
+    """
+    project = get_object_or_404(Project, id=project_id)
+    
+    # Get all reads from all orders and samples in this project
+    reads = Read.objects.filter(
+        sample__order__project=project
+    ).distinct()
+    
+    if not reads.exists():
+        messages.warning(request, f"No reads found for project '{project.title}'. Cannot create MAG run.")
+        return redirect('admin_project_detail', project_id=project_id)
+    
+    # Create MAG run
+    mag_run = MagRun.objects.create()
+    mag_run.reads.set(reads)
+    
+    # Generate samplesheet content
+    context = {
+        'reads': reads,
+    }
+    samplesheet_content = render_to_string('admin/app/sample/mag_samplesheet.csv', context)
+    mag_run.samplesheet_content = samplesheet_content
+    
+    # Generate cluster config
+    context = {
+        'settings': settings,
+    }
+    cluster_config = render_to_string('admin/app/sample/mag_cluster_config.cfg', context)
+    mag_run.cluster_config = cluster_config
+    
+    mag_run.save()
+    
+    messages.success(request, f"MAG run created successfully for project '{project.title}' with {reads.count()} reads.")
     
     # Redirect back to project detail page
     return redirect('admin_project_detail', project_id=project_id)
