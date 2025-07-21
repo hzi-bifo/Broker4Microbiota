@@ -95,6 +95,24 @@ Admin Settings
         </div>
       </div>
 
+      <!-- Sequencing Data Configuration -->
+      <div class="box mb-5">
+        <h2 class="title is-5 mb-4">
+          <i class="fas fa-folder-open mr-2"></i>
+          Sequencing Data Configuration
+        </h2>
+        
+        <div class="field">
+          <label class="label">{{ form.sequencing_data_path.label }}</label>
+          <div class="control">
+            {{ form.sequencing_data_path }}
+          </div>
+          {% if form.sequencing_data_path.help_text %}
+            <p class="help">{{ form.sequencing_data_path.help_text }}</p>
+          {% endif %}
+        </div>
+      </div>
+
       <!-- ENA Configuration -->
       <div class="box mb-5">
         <h2 class="title is-5 mb-4">

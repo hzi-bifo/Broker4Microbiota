@@ -317,6 +317,14 @@ class AdminSettingsForm(forms.Form):
         help_text='Optional tagline for the site'
     )
     
+    # Sequencing Data Configuration
+    sequencing_data_path = forms.CharField(
+        max_length=500,
+        required=False,
+        widget=forms.TextInput(attrs={'class': 'input', 'placeholder': '/path/to/sequencing/data'}),
+        help_text='Directory path where sequencing files are stored (e.g., /data/sequencing). Leave empty to use default media/simulated_reads/'
+    )
+    
     # ENA Configuration
     ena_username = forms.CharField(
         max_length=100,

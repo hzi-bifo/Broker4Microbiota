@@ -951,7 +951,9 @@ document.addEventListener('DOMContentLoaded', function() {
             } else if (colName === 'scientific_name') {
               value = scientificNames[i % scientificNames.length];
             } else if (colName === 'sample_alias') {
-              value = 'sample_alias_' + (i + 1);
+              // Generate unique sample alias like SAMPLE_1753087065861
+              var timestamp = new Date().getTime();
+              value = 'SAMPLE_' + timestamp + '_' + (i + 1);
             } else if (colName === 'sample_title') {
               value = sampleTitles[i % sampleTitles.length];
             } else if (colName === 'sample_description') {

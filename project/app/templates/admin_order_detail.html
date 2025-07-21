@@ -245,6 +245,16 @@ Order #{{ order.id }} - Admin View
               </h4>
             </div>
             <div class="level-right">
+              <form method="post" action="{% url 'admin_check_read_files' order.id %}" style="display: inline; margin-right: 0.5rem;">
+                {% csrf_token %}
+                <button type="submit" class="button is-info is-small" 
+                        onclick="return confirm('This will search for FASTQ files in the configured sequencing data directory and verify/update file links. Continue?')">
+                  <span class="icon">
+                    <i class="fas fa-search"></i>
+                  </span>
+                  <span>Check for Read Files</span>
+                </button>
+              </form>
               {% if samples_without_reads > 0 %}
               <form method="post" action="{% url 'admin_simulate_reads' order.id %}" style="display: inline;">
                 {% csrf_token %}
@@ -300,21 +310,23 @@ Order #{{ order.id }} - Admin View
                   <td>{{ sample.collection_date|default:"-" }}</td>
                   <td>{{ sample.organism|default:"-" }}</td>
                   <td>
-                    {% if sample.read_set.exists %}
-                      <span class="tag is-success">
-                        <span class="icon">
-                          <i class="fas fa-check"></i>
+                    {% with read=sample.read_set.first %}
+                      {% if read and read.file_1 or read.file_2 %}
+                        <span class="tag is-success">
+                          <span class="icon">
+                            <i class="fas fa-check"></i>
+                          </span>
+                          <span>1 file pair</span>
                         </span>
-                        <span>{{ sample.read_set.count }} file{{ sample.read_set.count|pluralize:" pair,pairs" }}</span>
-                      </span>
-                    {% else %}
-                      <span class="tag is-light">
-                        <span class="icon">
-                          <i class="fas fa-times"></i>
+                      {% else %}
+                        <span class="tag is-light">
+                          <span class="icon">
+                            <i class="fas fa-times"></i>
+                          </span>
+                          <span>No reads</span>
                         </span>
-                        <span>No reads</span>
-                      </span>
-                    {% endif %}
+                      {% endif %}
+                    {% endwith %}
                   </td>
                   <td>
                     <div class="buttons">
@@ -1232,24 +1244,49 @@ function toggleSampleFields(sampleId) {
           
           // Read files section if available
           if (data.read_files && data.read_files.length > 0) {
+            // Check if any read has actual file paths
+            const hasValidFiles = data.read_files.some(read => read.file_1 || read.file_2);
+            
             html += '<div class="mt-4">';
             html += '<h5 class="subtitle is-6 has-text-weight-semibold mb-3"><i class="fas fa-dna"></i> Sequencing Read Files</h5>';
-            html += '<table class="table is-narrow is-fullwidth">';
-            html += '<thead><tr><th>File Type</th><th>Path</th><th>MD5 Checksum</th></tr></thead>';
-            html += '<tbody>';
-            data.read_files.forEach((read, index) => {
-              html += '<tr>';
-              html += '<td><strong>Forward (R1)</strong></td>';
-              html += `<td class="is-family-monospace is-size-7">${read.file_1}</td>`;
-              html += `<td class="is-family-monospace">${read.checksum_1}</td>`;
-              html += '</tr>';
-              html += '<tr>';
-              html += '<td><strong>Reverse (R2)</strong></td>';
-              html += `<td class="is-family-monospace is-size-7">${read.file_2}</td>`;
-              html += `<td class="is-family-monospace">${read.checksum_2}</td>`;
-              html += '</tr>';
-            });
-            html += '</tbody></table>';
+            
+            if (hasValidFiles) {
+              html += '<table class="table is-narrow is-fullwidth">';
+              html += '<thead><tr><th>File Type</th><th>Path</th><th>MD5 Checksum</th></tr></thead>';
+              html += '<tbody>';
+              data.read_files.forEach((read, index) => {
+                if (read.file_1) {
+                  html += '<tr>';
+                  html += '<td><strong>Forward (R1)</strong></td>';
+                  html += `<td class="is-family-monospace is-size-7">${read.file_1}</td>`;
+                  html += `<td class="is-family-monospace">${read.checksum_1 || 'N/A'}</td>`;
+                  html += '</tr>';
+                } else {
+                  html += '<tr>';
+                  html += '<td><strong>Forward (R1)</strong></td>';
+                  html += '<td class="has-text-grey">Not specified</td>';
+                  html += '<td class="has-text-grey">N/A</td>';
+                  html += '</tr>';
+                }
+                
+                if (read.file_2) {
+                  html += '<tr>';
+                  html += '<td><strong>Reverse (R2)</strong></td>';
+                  html += `<td class="is-family-monospace is-size-7">${read.file_2}</td>`;
+                  html += `<td class="is-family-monospace">${read.checksum_2 || 'N/A'}</td>`;
+                  html += '</tr>';
+                } else {
+                  html += '<tr>';
+                  html += '<td><strong>Reverse (R2)</strong></td>';
+                  html += '<td class="has-text-grey">Not specified</td>';
+                  html += '<td class="has-text-grey">N/A</td>';
+                  html += '</tr>';
+                }
+              });
+              html += '</tbody></table>';
+            } else {
+              html += '<p class="has-text-grey">No file paths specified. Files may have been removed from the filesystem.</p>';
+            }
             html += '</div>';
           }
           

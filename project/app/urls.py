@@ -39,6 +39,7 @@ urlpatterns = [
     path('admin-dashboard/samples/<int:sample_id>/fields/', views_admin.admin_get_sample_fields, name='admin_get_sample_fields'),
     path('admin-dashboard/orders/<int:order_id>/reject/', views_admin.admin_reject_order, name='admin_reject_order'),
     path('admin-dashboard/orders/<int:order_id>/simulate-reads/', views_admin.admin_simulate_reads, name='admin_simulate_reads'),
+    path('admin-dashboard/orders/<int:order_id>/check-read-files/', views_admin.admin_check_read_files, name='admin_check_read_files'),
     path('admin-dashboard/orders/export/', views_admin.admin_export_orders, name='admin_export_orders'),
     path('admin-dashboard/orders/bulk-update/', views_admin.admin_bulk_update_status, name='admin_bulk_update_status'),
     

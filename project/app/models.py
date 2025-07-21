@@ -1496,6 +1496,14 @@ class SiteSettings(models.Model):
         default="",
         help_text="Center name for ENA submissions (optional)"
     )
+    
+    # Sequencing Data Settings
+    sequencing_data_path = models.CharField(
+        max_length=500,
+        blank=True,
+        default="",
+        help_text="Directory path where sequencing files are stored (e.g., /data/sequencing or /mnt/sequencing_data)"
+    )
 
     # Metadata
     created_at = models.DateTimeField(auto_now_add=True)

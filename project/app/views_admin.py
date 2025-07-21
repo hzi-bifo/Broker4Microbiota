@@ -221,11 +221,12 @@ def admin_order_detail(request, order_id):
     status_history = order.get_status_history()
     all_notes = order.get_notes(include_internal=True)
     
-    # Calculate read statistics
+    # Calculate read statistics - only count reads with actual file paths
     samples_with_reads = 0
     samples_without_reads = 0
     for sample in samples:
-        if sample.read_set.exists():
+        read = sample.read_set.first()
+        if read and (read.file_1 or read.file_2):
             samples_with_reads += 1
         else:
             samples_without_reads += 1
@@ -799,11 +800,16 @@ def admin_simulate_reads(request, order_id):
     os.makedirs(local_dir, exist_ok=True)
     
     template_number = 1
-    created_reads = 0
+    created_files = 0
+    files_created = []
     
     for sample in samples:
-        # Skip if sample already has reads
-        if Read.objects.filter(sample=sample).exists():
+        # Use sample_id (like SAMPLE_1753087065861) for file names
+        sample_identifier = sample.sample_id if hasattr(sample, 'sample_id') and sample.sample_id else sample.sample_alias
+        
+        # Skip if sample has no identifier
+        if not sample_identifier:
+            messages.warning(request, f'Sample ID {sample.id} has no sample_id or alias - skipping')
             continue
             
         # Use template files or create dummy files
@@ -830,10 +836,13 @@ def admin_simulate_reads(request, order_id):
                 with gzip.open(template_2, 'wb') as f:
                     f.write(b'@DUMMY\nTGCA\n+\nIIII\n')
         
-        # Create simulated read files
-        sample_alias = sample.sample_alias or f"sample_{sample.id}"
-        paired_read_1 = os.path.join(local_dir, f"{sample_alias}_1.fastq.gz")
-        paired_read_2 = os.path.join(local_dir, f"{sample_alias}_2.fastq.gz")
+        # Create simulated read files using sample_id
+        paired_read_1 = os.path.join(local_dir, f"{sample_identifier}_1.fastq.gz")
+        paired_read_2 = os.path.join(local_dir, f"{sample_identifier}_2.fastq.gz")
+        
+        # Skip if files already exist
+        if os.path.exists(paired_read_1) and os.path.exists(paired_read_2):
+            continue
         
         # Copy or create files
         try:
@@ -844,43 +853,218 @@ def admin_simulate_reads(request, order_id):
                 # Create dummy files directly
                 import gzip
                 with gzip.open(paired_read_1, 'wb') as f:
-                    f.write(f'@{sample_alias}_read1\nACGTACGTACGT\n+\nIIIIIIIIIIII\n'.encode())
+                    f.write(f'@{sample_identifier}_read1\nACGTACGTACGT\n+\nIIIIIIIIIIII\n'.encode())
                 with gzip.open(paired_read_2, 'wb') as f:
-                    f.write(f'@{sample_alias}_read2\nTGCATGCATGCA\n+\nIIIIIIIIIIII\n'.encode())
+                    f.write(f'@{sample_identifier}_read2\nTGCATGCATGCA\n+\nIIIIIIIIIIII\n'.encode())
             
-            # Calculate checksums
-            paired_read_1_hash = calculate_md5(paired_read_1)
-            paired_read_2_hash = calculate_md5(paired_read_2)
-            
-            # Create Read object
+            # Track created files
             if os.path.isfile(paired_read_1) and os.path.isfile(paired_read_2):
-                read = Read.objects.create(
-                    sample=sample, 
-                    file_1=paired_read_1, 
-                    file_2=paired_read_2, 
-                    read_file_checksum_1=paired_read_1_hash, 
-                    read_file_checksum_2=paired_read_2_hash
-                )
-                created_reads += 1
+                created_files += 2
+                files_created.append(f"{sample_identifier}_1.fastq.gz")
+                files_created.append(f"{sample_identifier}_2.fastq.gz")
                 
         except Exception as e:
-            messages.error(request, f'Error creating reads for sample {sample_alias}: {str(e)}')
+            messages.error(request, f'Error creating files for sample {sample_identifier}: {str(e)}')
             continue
         
         template_number += 1
     
-    if created_reads > 0:
-        messages.success(request, f'Successfully simulated reads for {created_reads} samples')
+    # Report results
+    if created_files > 0:
+        # List first few files created
+        sample_count = created_files // 2  # Two files per sample
+        if len(files_created) <= 6:
+            file_list = ', '.join(files_created)
+            messages.success(request, f'Created {created_files} FASTQ files: {file_list}')
+        else:
+            file_list = ', '.join(files_created[:6])
+            messages.success(request, f'Created {created_files} FASTQ files for {sample_count} samples: {file_list}...')
         
-        # Add a note about the simulation
+        # Add a detailed note
         StatusNote.objects.create(
             order=order,
             user=request.user,
             note_type='internal',
-            content=f'Simulated FASTQ reads for {created_reads} samples'
+            content=f'Simulated {created_files} FASTQ files in {local_dir}. Files are ready to be linked using "Check for Read Files".'
         )
+        
+        messages.info(request, 'Files created in filesystem. Click "Check for Read Files" to link them to samples.')
     else:
-        messages.info(request, 'All samples already have associated reads')
+        messages.info(request, f'All FASTQ files already exist in {local_dir}. No new files created.')
+    
+    return redirect('admin_order_detail', order_id=order.id)
+
+
+@staff_member_required
+@require_http_methods(["POST"])
+def admin_check_read_files(request, order_id):
+    """
+    Check for existing FASTQ files in the configured sequencing data path
+    and link them to samples if found.
+    """
+    from .models import SiteSettings, StatusNote, Read
+    from .utils import discover_sequencing_files, calculate_md5
+    
+    order = get_object_or_404(Order, id=order_id)
+    
+    # Get the sequencing data path from settings
+    site_settings = SiteSettings.get_settings()
+    data_path = site_settings.sequencing_data_path
+    
+    if not data_path:
+        # Use the simulated reads path as default
+        data_path = getattr(settings, 'LOCAL_DIR', os.path.join(settings.MEDIA_ROOT, 'simulated_reads'))
+        messages.info(request, f'Sequencing data path not configured. Using default path: {data_path}')
+    
+    # Discover files
+    results = discover_sequencing_files(order, data_path)
+    
+    # Check for general errors
+    if 'error' in results:
+        messages.error(request, results['error'])
+        return redirect('admin_order_detail', order_id=order.id)
+    
+    # Process the results
+    created_reads = 0
+    updated_reads = 0
+    cleared_reads = 0
+    errors = []
+    samples_checked = 0
+    
+    for sample_id, result in results.items():
+        samples_checked += 1
+        sample = result['sample']
+        
+        # Check if sample already has a Read object
+        existing_read = Read.objects.filter(sample=sample).first()
+        
+        # Report any errors for this sample
+        if result['errors'] and not existing_read:
+            sample_identifier = sample.sample_id if hasattr(sample, 'sample_id') and sample.sample_id else sample.sample_alias
+            for error in result['errors']:
+                errors.append(f"{sample_identifier}: {error}")
+            continue
+        
+        # Handle cases based on what we found
+        if result['file_1'] or result['file_2']:
+            # Files were found
+            try:
+                # Calculate checksums
+                checksum_1 = calculate_md5(result['file_1']) if result['file_1'] else None
+                checksum_2 = calculate_md5(result['file_2']) if result['file_2'] else None
+                
+                if existing_read:
+                    # Update existing Read object
+                    existing_read.file_1 = result['file_1'] or ''
+                    existing_read.file_2 = result['file_2'] or ''
+                    existing_read.read_file_checksum_1 = checksum_1 or ''
+                    existing_read.read_file_checksum_2 = checksum_2 or ''
+                    existing_read.save()
+                    updated_reads += 1
+                else:
+                    # Create new Read object
+                    read = Read.objects.create(
+                        sample=sample,
+                        file_1=result['file_1'] or '',
+                        file_2=result['file_2'] or '',
+                        read_file_checksum_1=checksum_1 or '',
+                        read_file_checksum_2=checksum_2 or ''
+                    )
+                    created_reads += 1
+                
+            except Exception as e:
+                errors.append(f"{sample.sample_alias}: Error processing Read object - {str(e)}")
+        else:
+            # No files found
+            if existing_read:
+                # Check if the existing files still exist
+                files_exist = False
+                if existing_read.file_1 and os.path.exists(existing_read.file_1):
+                    files_exist = True
+                elif existing_read.file_2 and os.path.exists(existing_read.file_2):
+                    files_exist = True
+                
+                if not files_exist:
+                    # Clear the file paths since files don't exist
+                    existing_read.file_1 = ''
+                    existing_read.file_2 = ''
+                    existing_read.read_file_checksum_1 = ''
+                    existing_read.read_file_checksum_2 = ''
+                    existing_read.save()
+                    cleared_reads += 1
+                    sample_identifier = sample.sample_id if hasattr(sample, 'sample_id') and sample.sample_id else sample.sample_alias
+                    errors.append(f"{sample_identifier}: Previously linked files no longer exist - cleared file paths")
+    
+    # Report results
+    if created_reads > 0 or updated_reads > 0 or cleared_reads > 0:
+        # Build summary message
+        actions = []
+        if created_reads > 0:
+            actions.append(f'linked {created_reads} new')
+        if updated_reads > 0:
+            actions.append(f'updated {updated_reads} existing')
+        if cleared_reads > 0:
+            actions.append(f'cleared {cleared_reads} missing')
+        
+        summary = f"Successfully {', '.join(actions)} read file(s)"
+        messages.success(request, summary)
+        
+        # Add a status note
+        note_content = f'Checked for FASTQ files in {data_path}: '
+        note_parts = []
+        if created_reads > 0:
+            note_parts.append(f'{created_reads} new files linked')
+        if updated_reads > 0:
+            note_parts.append(f'{updated_reads} existing files updated')
+        if cleared_reads > 0:
+            note_parts.append(f'{cleared_reads} missing files cleared')
+        
+        StatusNote.objects.create(
+            order=order,
+            user=request.user,
+            note_type='internal',
+            content=note_content + ', '.join(note_parts)
+        )
+        
+        # Check if all samples now have reads with valid files
+        from .models import Sample, SAMPLE_TYPE_NORMAL
+        total_samples = Sample.objects.filter(order=order, sample_type=SAMPLE_TYPE_NORMAL).count()
+        
+        # Count samples that have reads with actual file paths
+        samples_with_valid_reads = 0
+        for s in Sample.objects.filter(order=order, sample_type=SAMPLE_TYPE_NORMAL):
+            read = Read.objects.filter(sample=s).first()
+            if read and (read.file_1 or read.file_2):
+                samples_with_valid_reads += 1
+        
+        if total_samples > 0 and samples_with_valid_reads == total_samples:
+            # All samples have reads - automatically advance status
+            if order.status == 'sequencing_in_progress' and order.can_advance_status():
+                next_status = order.get_next_status()
+                if next_status == 'sequencing_completed':
+                    order.status = next_status
+                    order.save()
+                    
+                    StatusNote.objects.create(
+                        order=order,
+                        user=request.user,
+                        note_type='status_change',
+                        content=f'Status automatically advanced to Sequencing Completed - all samples have read files'
+                    )
+                    
+                    messages.info(request, 'Order status automatically advanced to Sequencing Completed')
+    else:
+        if samples_checked == 0:
+            messages.info(request, 'All samples already have associated read files')
+        else:
+            messages.warning(request, f'No new read files found in {data_path}')
+    
+    # Report any errors
+    if errors:
+        for error in errors[:5]:  # Show first 5 errors
+            messages.error(request, error)
+        if len(errors) > 5:
+            messages.error(request, f'... and {len(errors) - 5} more errors')
     
     return redirect('admin_order_detail', order_id=order.id)
 
@@ -1217,6 +1401,10 @@ def admin_settings(request):
             if cleaned_data.get('tagline') is not None:
                 site_settings.tagline = cleaned_data['tagline']
             
+            # Sequencing Data Configuration
+            if cleaned_data.get('sequencing_data_path') is not None:
+                site_settings.sequencing_data_path = cleaned_data['sequencing_data_path']
+            
             # ENA Configuration
             if cleaned_data.get('ena_username') is not None:
                 site_settings.ena_username = cleaned_data['ena_username']
@@ -1258,6 +1446,7 @@ def admin_settings(request):
             'organization_name': site_settings.organization_name,
             'organization_short_name': site_settings.organization_short_name,
             'tagline': site_settings.tagline,
+            'sequencing_data_path': site_settings.sequencing_data_path,
             'ena_username': site_settings.ena_username,
             # Don't populate password field for security
             'ena_test_mode': site_settings.ena_test_mode,
