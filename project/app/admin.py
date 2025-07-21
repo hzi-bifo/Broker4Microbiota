@@ -197,7 +197,7 @@ class ReadAdmin(admin.ModelAdmin):
             'reads': selected_reads,
         }
         samplesheet_content = render_to_string('admin/app/sample/mag_samplesheet.csv', context)
-        mag_run.samplesheet_content = samplesheet_content
+        mag_run.samplesheet_content = samplesheet_content.rstrip()
 
         context = {
             'settings': settings,
