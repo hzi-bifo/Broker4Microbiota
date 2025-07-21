@@ -59,7 +59,7 @@ def produce_checklist_structure(data):
 
 
 # Produce models file
-def produceModels(data, model_data, field_names):
+def produceModels(data, model_data, global_field_names):
 
     checklist = data['CHECKLIST_SET']['CHECKLIST']['DESCRIPTOR']
     # Replace those characters which are not allowed in a model name (by ?)
@@ -74,10 +74,10 @@ def produceModels(data, model_data, field_names):
     unitchecklist_fields_output = ""
     validator_output = ""
     choice_output = ""
-    unit_output = ""
+    unit_output = "" 
     
     # Track field names within this checklist to avoid duplicates
-    local_field_names = {} 
+    local_field_names = {}
 
     checklist_header = checklist_header + f"class {model_name}(SelfDescribingModel):\n"
     checklist_output = checklist_output + f"\tsampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE, default=1)\n"
@@ -177,16 +177,15 @@ def produceModels(data, model_data, field_names):
                 print(f"Multiplicity not multiple: {field_name}")
 
             # Check for duplicates globally (for informational purposes only)
-            if field_name in field_names:
-                print(f"INFO: Field name {field_name} in {model_name} also exists in checklist {field_names[field_name]}")
+            if field_name in global_field_names:
+                print(f"Field name {field_name} in {model_name} also exists in checklist {global_field_names[field_name]}")
             
             # Check for duplicates within this checklist
             if field_name in local_field_names:
                 print(f"WARNING: Duplicate field name {field_name} within {model_name} checklist - skipping duplicate")
             else:
-                # Add to tracking
-                if field_name not in field_names:
-                    field_names[field_name] = model_name
+                # Add to both global and local tracking
+                global_field_names[field_name] = model_name
                 local_field_names[field_name] = True
 
                 # Always add the field to this checklist, regardless of global duplicates
@@ -229,7 +228,7 @@ models_dir = f"{settings.BASE_DIR}/app"
 jqtree_path = os.path.join(json_dir, 'jqtree.json')
 
 models_template_path = os.path.join(models_dir, 'models_template.py')
-models_path = os.path.join(models_dir, 'models.py')
+models_path = os.path.join(models_dir, 'models_generated.py')  # Changed to avoid overwriting
 
 # Create the JSON directory if it doesn't exist
 os.makedirs(json_dir, exist_ok=True)
@@ -238,15 +237,19 @@ jqtree_data = []
 
 model_data = ""
 
-field_names = {}
+# Track field names globally for informational purposes only
+global_field_names = {}
 
 node_id = 0
 
 checklist_structure = ""
 
+print("\n=== Processing XML Files ===\n")
+
 # Iterate over each XML file in the XML directory
-for filename in os.listdir(xml_dir):
+for filename in sorted(os.listdir(xml_dir)):
     if filename.endswith('.xml'):
+        print(f"Processing: {filename}")
         xml_path = os.path.join(xml_dir, filename)
         json_path = os.path.join(json_dir, filename.replace('.xml', '.json'))
 
@@ -262,7 +265,7 @@ for filename in os.listdir(xml_dir):
 
         produceJqTree(data, jqtree_data)
 
-        model_data = model_data + produceModels(data, model_data, field_names)
+        model_data = model_data + produceModels(data, model_data, global_field_names)
 
         checklist_structure = checklist_structure + produce_checklist_structure(data)
 
@@ -278,7 +281,7 @@ with open(models_path, 'w') as models_file:
         models_file.write(re.sub(r'%CHECKLIST_STRUCTURE%', checklist_structure, line))
     print(model_data, file = models_file)
 
-
-
-
-
+print(f"\n=== Generation Complete ===")
+print(f"Models generated in: {models_path}")
+print(f"JSON files saved in: {json_dir}")
+print(f"jqTree data saved to: {jqtree_path}")

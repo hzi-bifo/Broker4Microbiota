@@ -21,7 +21,7 @@ from django.conf import settings
 from django.template.loader import render_to_string
 from pathlib import Path
 
-from .models import Order, Project, StatusNote, Sample, SAMPLE_TYPE_NORMAL, Sampleset, Read, ProjectSubmission, SiteSettings
+from .models import Order, Project, StatusNote, Sample, SAMPLE_TYPE_NORMAL, SAMPLE_TYPE_ASSEMBLY, SAMPLE_TYPE_BIN, SAMPLE_TYPE_MAG, Sampleset, Read, ProjectSubmission, SiteSettings, SubMGRun, Assembly, Bin, Mag, Alignment
 from django.contrib.auth.models import User
 from .forms import StatusUpdateForm, OrderNoteForm, OrderRejectionForm, UserEditForm, UserCreateForm, TechnicalDetailsForm, AdminSettingsForm
 
@@ -754,6 +754,13 @@ def admin_project_detail(request, project_id):
     # Get ProjectSubmissions for this project
     project_submissions = ProjectSubmission.objects.filter(projects=project).order_by('-id')
     
+    # Get SubMG runs for all orders in this project
+    submg_runs = SubMGRun.objects.filter(order__project=project).select_related('order').order_by('-id')
+    
+    # Update workflow status to reflect SubMG runs
+    if submg_runs.exists():
+        workflow_status['submg_pipeline_run'] = True
+    
     context = {
         'project': project,
         'orders': orders,
@@ -765,6 +772,7 @@ def admin_project_detail(request, project_id):
         'sample_file_details': sample_file_details[:10],  # Show first 10 samples
         'has_more_samples': len(sample_file_details) > 10,
         'project_submissions': project_submissions,
+        'submg_runs': submg_runs,
     }
     
     return render(request, 'admin_project_detail.html', context)
@@ -1468,3 +1476,159 @@ def admin_settings(request):
     }
     
     return render(request, 'admin_settings.html', context)
+
+
+@staff_member_required
+@require_http_methods(["POST"])
+def admin_generate_submg_run(request, project_id):
+    """
+    Generate SubMG run for a project and all its orders
+    Based on the Django admin action generate_submg_run_including_children
+    """
+    project = get_object_or_404(Project, id=project_id)
+    
+    # Create dependency object, which is a dictionary of object lists
+    projects = []
+    orders = []
+    samples = []
+    assembly_samples = []
+    bin_samples = []
+    mag_samples = []
+    reads = []
+    assemblys = []
+    bins = []
+    alignments = []
+    
+    # Collect the project and all its dependencies
+    if not project.submitted and project not in projects:
+        projects.append(project)
+        for order in project.order_set.all():
+            if order not in orders:
+                orders.append(order)
+                for sample in order.sample_set.all():
+                    if sample.sample_type == SAMPLE_TYPE_NORMAL and sample not in samples:
+                        samples.append(sample)
+                        for read in sample.read_set.all():
+                            if read not in reads:
+                                reads.append(read)
+                    elif sample.sample_type == SAMPLE_TYPE_ASSEMBLY and sample not in assembly_samples:
+                        assembly_samples.append(sample)
+                    elif sample.sample_type == SAMPLE_TYPE_BIN and sample not in bin_samples:
+                        bin_samples.append(sample)
+                    elif sample.sample_type == SAMPLE_TYPE_MAG and sample not in mag_samples:
+                        mag_samples.append(sample)
+                        
+                for assembly in order.assembly_set.all():
+                    if assembly not in assemblys:
+                        assemblys.append(assembly)
+                        for read in assembly.read.all():
+                            if read not in reads:
+                                reads.append(read)
+                                
+                for bin in order.bin_set.all():
+                    if bin not in bins:
+                        bins.append(bin)
+                        
+                for alignment in order.alignment_set.all():
+                    if alignment not in alignments:
+                        alignments.append(alignment)
+    
+    # Generate YAML content
+    yaml = []
+    for project in projects:
+        yaml.extend(project.getSubMGYAML())
+        
+    for order in orders:
+        yaml.extend(order.getSubMGYAML())
+        
+        # Create SubMG run for this order
+        if samples:
+            yaml.extend(Sample.getSubMGYAMLHeader())
+        for sample in samples:
+            yaml.extend(sample.getSubMGYAML(SAMPLE_TYPE_NORMAL))
+            
+        if reads:
+            yaml.extend(Read.getSubMGYAMLHeader())
+        for read in reads:
+            yaml.extend(read.getSubMGYAML())
+            
+        if assemblys:
+            yaml.extend(Assembly.getSubMGYAMLHeader())
+        for assembly in assemblys:
+            yaml.extend(assembly.getSubMGYAML())
+        for assembly_sample in assembly_samples:
+            yaml.extend(assembly_sample.getSubMGYAML(SAMPLE_TYPE_ASSEMBLY))
+        if assemblys:
+            yaml.extend(Assembly.getSubMGYAMLFooter())
+            
+        if bins:
+            yaml.extend(Bin.getSubMGYAMLHeader())
+        for bin in bins:
+            yaml.extend(bin.getSubMGYAML())
+            break
+            
+        tax_ids = {}
+        tax_ids_content = ""
+        for bin_sample in bin_samples:
+            bin = bin_sample.bin
+            tax_ids[bin.file.split('/')[-1].replace(".fa.gz", "")] = [bin_sample.scientific_name, bin_sample.tax_id]
+            
+        for bin in bins:
+            yaml.extend(bin.getSubMGYAMLTaxIDYAML())
+            tax_ids_content = bin.getSubMGYAMLTaxIDContent(tax_ids)
+            break
+            
+        for bin_sample in bin_samples:
+            yaml.extend(bin_sample.getSubMGYAML(SAMPLE_TYPE_BIN))
+            break
+            
+        if bins:
+            yaml.extend(Bin.getSubMGYAMLFooter())
+            
+        if mag_samples:
+            yaml.extend(Mag.getSubMGYAMLHeader())
+            
+        mag_data = {}
+        for mag_sample in mag_samples:
+            bin = mag_sample.bin
+            mag_data[bin.bin_number] = mag_sample.mag_data
+            
+        for mag_sample in mag_samples:
+            yaml.extend(Mag.getSubMGYAMLMagDataYAML(mag_sample.mag_data))
+            break
+            
+        for mag_sample in mag_samples:
+            yaml.extend(mag_sample.getSubMGYAML(SAMPLE_TYPE_MAG))
+            break
+            
+        if alignments:
+            yaml.extend(Alignment.getSubMGYAMLHeader())
+        for alignment in alignments:
+            yaml.extend(alignment.getSubMGYAML())
+            break
+            
+        # Create SubMGRun object
+        subMG_run = SubMGRun.objects.create(order=order)
+        output = '\n'.join(yaml)
+        if bins:
+            subMG_run.tax_ids = tax_ids_content
+        subMG_run.yaml = output
+        
+        # Save to temporary file
+        output_file_path = "/tmp/output.txt"
+        with open(output_file_path, 'w') as output_file:
+            print(output, file=output_file)
+            
+        subMG_run.save()
+        
+        # Add many-to-many relationships
+        subMG_run.projects.set(projects)
+        subMG_run.samples.set(samples)
+        subMG_run.reads.set(reads)
+        subMG_run.assemblys.set(assemblys)
+        subMG_run.bins.set(bins)
+        
+    messages.success(request, f"SubMG run generated successfully for project '{project.title}'.")
+    
+    # Redirect back to project detail page
+    return redirect('admin_project_detail', project_id=project_id)

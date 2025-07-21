@@ -28,6 +28,7 @@ urlpatterns = [
     path('admin-dashboard/projects/', views_admin.admin_project_list, name='admin_project_list'),
     path('admin-dashboard/projects/<int:project_id>/', views_admin.admin_project_detail, name='admin_project_detail'),
     path('admin-dashboard/projects/<int:project_id>/generate-xml/', views_admin.admin_generate_project_xml, name='admin_generate_project_xml'),
+    path('admin-dashboard/projects/<int:project_id>/generate-submg/', views_admin.admin_generate_submg_run, name='admin_generate_submg_run'),
     path('admin-dashboard/submissions/', views_admin.admin_submission_list, name='admin_submission_list'),
     path('admin-dashboard/submissions/<int:submission_id>/delete/', views_admin.admin_delete_submission, name='admin_delete_submission'),
     path('admin-dashboard/submissions/<int:submission_id>/register-ena/', views_admin.admin_register_project_ena, name='admin_register_project_ena'),

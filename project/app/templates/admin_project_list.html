@@ -251,6 +251,17 @@ All Projects - Admin View
                   </span>
                   <span>MAG</span>
                 </button>
+                <form method="post" action="{% url 'admin_generate_submg_run' item.project.id %}" style="display: inline;">
+                  {% csrf_token %}
+                  <button type="submit" class="button is-warning" 
+                          title="Generate SubMG run configuration"
+                          onclick="return confirm('Generate SubMG run for project: {{ item.project.title }}?')">
+                    <span class="icon">
+                      <i class="fas fa-cogs"></i>
+                    </span>
+                    <span>SubMG</span>
+                  </button>
+                </form>
               </div>
             </td>
             <td>

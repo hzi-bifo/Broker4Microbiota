@@ -366,6 +366,156 @@
       {% endif %}
     </div>
 
+    <!-- SubMG Runs Section -->
+    <div class="box mb-5">
+      <h4 class="title is-5 mb-4">
+        <i class="fas fa-cogs"></i> SubMG Pipeline Runs
+        {% if submg_runs %}
+        <span class="tag is-warning ml-2">{{ submg_runs|length }}</span>
+        {% endif %}
+      </h4>
+      
+      <div class="level mb-4">
+        <div class="level-left">
+          <p class="has-text-grey">Generate and manage SubMG pipeline configurations for this project.</p>
+        </div>
+        <div class="level-right">
+          <form method="post" action="{% url 'admin_generate_submg_run' project.id %}">
+            {% csrf_token %}
+            <button type="submit" class="button is-warning"
+                    title="Generate SubMG run configuration"
+                    onclick="return confirm('Generate SubMG run for this project?')">
+              <span class="icon">
+                <i class="fas fa-cogs"></i>
+              </span>
+              <span>Generate SubMG Run</span>
+            </button>
+          </form>
+        </div>
+      </div>
+      
+      {% if submg_runs %}
+      <div class="table-container">
+        <table class="table is-fullwidth is-striped">
+          <thead>
+            <tr>
+              <th>Run ID</th>
+              <th>Order</th>
+              <th>Status</th>
+              <th>Type</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for run in submg_runs %}
+            <tr>
+              <td>#{{ run.id }}</td>
+              <td>
+                <a href="{% url 'admin_order_detail' run.order.id %}" class="has-text-link">
+                  Order #{{ run.order.id }}
+                </a>
+              </td>
+              <td>
+                {% if run.status %}
+                  <span class="tag is-{{ run.status|lower }}">{{ run.status }}</span>
+                {% else %}
+                  <span class="tag is-light">Pending</span>
+                {% endif %}
+              </td>
+              <td>
+                {% if run.type %}
+                  <span class="tag is-info">{{ run.type }}</span>
+                {% else %}
+                  <span class="tag is-light">SubMG</span>
+                {% endif %}
+              </td>
+              <td>
+                <div class="buttons are-small">
+                  <a href="/admin/app/submgrun/{{ run.id }}/change/" 
+                     class="button is-small is-dark" 
+                     target="_blank"
+                     title="View in Django Admin">
+                    <span class="icon">
+                      <i class="fas fa-external-link-alt"></i>
+                    </span>
+                    <span>Details</span>
+                  </a>
+                  {% if run.yaml %}
+                  <button class="button is-small is-info" 
+                          onclick="showYAMLModal({{ run.id }}, '{{ run.yaml|escapejs }}')"
+                          title="View YAML configuration">
+                    <span class="icon">
+                      <i class="fas fa-code"></i>
+                    </span>
+                    <span>YAML</span>
+                  </button>
+                  {% endif %}
+                </div>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      
+      <!-- Related MAG Runs -->
+      {% if submg_runs.0.submgruninstance_set.exists %}
+      <div class="mt-4">
+        <h5 class="subtitle is-6">
+          <i class="fas fa-tasks"></i> SubMG Run Instances
+        </h5>
+        <div class="table-container">
+          <table class="table is-fullwidth is-narrow">
+            <thead>
+              <tr>
+                <th>Instance ID</th>
+                <th>Status</th>
+                <th>Run Folder</th>
+                <th>UUID</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for run in submg_runs %}
+                {% for instance in run.submgruninstance_set.all %}
+                <tr>
+                  <td>#{{ instance.id }}</td>
+                  <td>
+                    {% if instance.status %}
+                      <span class="tag is-small is-{{ instance.status|lower }}">{{ instance.status }}</span>
+                    {% else %}
+                      <span class="tag is-small is-light">Unknown</span>
+                    {% endif %}
+                  </td>
+                  <td>
+                    {% if instance.run_folder %}
+                      <code>{{ instance.run_folder }}</code>
+                    {% else %}
+                      <span class="has-text-grey">-</span>
+                    {% endif %}
+                  </td>
+                  <td>
+                    {% if instance.uuid %}
+                      <code>{{ instance.uuid }}</code>
+                    {% else %}
+                      <span class="has-text-grey">-</span>
+                    {% endif %}
+                  </td>
+                </tr>
+                {% endfor %}
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+      {% endif %}
+      {% else %}
+      <div class="notification is-light">
+        <p class="has-text-grey">No SubMG runs have been generated for this project yet.</p>
+        <p class="has-text-grey mt-2">Click the "Generate SubMG Run" button to create a new pipeline configuration.</p>
+      </div>
+      {% endif %}
+    </div>
+
     <div class="columns">
       <!-- Left Column - Statistics -->
       <div class="column is-4">
@@ -900,6 +1050,62 @@ function copyXML(elementId) {
   
   navigator.clipboard.writeText(text).then(() => {
     // Show temporary success message
+    const button = event.target.closest('button');
+    const originalHTML = button.innerHTML;
+    button.innerHTML = '<span class="icon"><i class="fas fa-check"></i></span><span>Copied!</span>';
+    button.classList.add('is-success');
+    
+    setTimeout(() => {
+      button.innerHTML = originalHTML;
+      button.classList.remove('is-success');
+    }, 2000);
+  }).catch(err => {
+    console.error('Failed to copy:', err);
+  });
+}
+
+function showYAMLModal(runId, yamlContent) {
+  // Create modal HTML
+  const modalHTML = `
+    <div class="modal is-active" id="yaml-modal-${runId}">
+      <div class="modal-background" onclick="closeYAMLModal(${runId})"></div>
+      <div class="modal-card" style="width: 90%; max-width: 1000px;">
+        <header class="modal-card-head">
+          <p class="modal-card-title">SubMG Run #${runId} - YAML Configuration</p>
+          <button class="delete" aria-label="close" onclick="closeYAMLModal(${runId})"></button>
+        </header>
+        <section class="modal-card-body">
+          <div class="buttons mb-3">
+            <button class="button is-small is-info" onclick="copyYAML('yaml-content-${runId}')">
+              <span class="icon">
+                <i class="fas fa-copy"></i>
+              </span>
+              <span>Copy YAML</span>
+            </button>
+          </div>
+          <pre id="yaml-content-${runId}" style="background-color: #f5f5f5; padding: 1rem; border-radius: 4px; overflow-x: auto;"><code>${yamlContent}</code></pre>
+        </section>
+        <footer class="modal-card-foot">
+          <button class="button" onclick="closeYAMLModal(${runId})">Close</button>
+        </footer>
+      </div>
+    </div>
+  `;
+  
+  // Add modal to body
+  document.body.insertAdjacentHTML('beforeend', modalHTML);
+}
+
+function closeYAMLModal(runId) {
+  const modal = document.getElementById(`yaml-modal-${runId}`);
+  if (modal) {
+    modal.remove();
+  }
+}
+
+function copyYAML(elementId) {
+  const yamlText = document.getElementById(elementId).textContent;
+  navigator.clipboard.writeText(yamlText).then(() => {
     const button = event.target.closest('button');
     const originalHTML = button.innerHTML;
     button.innerHTML = '<span class="icon"><i class="fas fa-check"></i></span><span>Copied!</span>';
