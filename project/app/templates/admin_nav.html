@@ -1,0 +1,108 @@
+<!-- Admin Navigation Component -->
+<nav class="admin-nav mb-5">
+  <div class="columns is-multiline is-centered">
+    <div class="column is-narrow">
+      <div class="field is-grouped">
+        <p class="control">
+          <a href="{% url 'admin_dashboard' %}" class="button {% if request.resolver_match.url_name == 'admin_dashboard' %}is-primary{% else %}is-light{% endif %}">
+            <span class="icon"><i class="fas fa-tachometer-alt"></i></span>
+            <span>Dashboard</span>
+          </a>
+        </p>
+        <p class="control">
+          <a href="{% url 'admin_project_list' %}" class="button {% if 'project' in request.resolver_match.url_name %}is-success{% else %}is-light{% endif %}">
+            <span class="icon"><i class="fas fa-project-diagram"></i></span>
+            <span>Projects</span>
+          </a>
+        </p>
+        <p class="control">
+          <a href="{% url 'admin_order_list' %}" class="button {% if 'order' in request.resolver_match.url_name and 'export' not in request.resolver_match.url_name %}is-primary{% else %}is-light{% endif %}">
+            <span class="icon"><i class="fas fa-list"></i></span>
+            <span>Orders</span>
+          </a>
+        </p>
+        <p class="control">
+          <a href="{% url 'admin_submission_list' %}" class="button {% if 'submission' in request.resolver_match.url_name %}is-warning{% else %}is-light{% endif %}">
+            <span class="icon"><i class="fas fa-file-code"></i></span>
+            <span>ENA Submissions</span>
+          </a>
+        </p>
+      </div>
+    </div>
+    <div class="column is-narrow">
+      <div class="field is-grouped">
+        <p class="control">
+          <a href="{% url 'admin_export_orders' %}" class="button {% if 'export' in request.resolver_match.url_name %}is-info{% else %}is-light{% endif %}">
+            <span class="icon"><i class="fas fa-download"></i></span>
+            <span>Export</span>
+          </a>
+        </p>
+        <p class="control">
+          <a href="{% url 'admin_user_list' %}" class="button {% if 'user' in request.resolver_match.url_name %}is-info{% else %}is-light{% endif %}">
+            <span class="icon"><i class="fas fa-users"></i></span>
+            <span>Users</span>
+          </a>
+        </p>
+      </div>
+    </div>
+    <div class="column is-narrow">
+      <div class="field is-grouped">
+        <p class="control">
+          <a href="{% url 'admin_settings' %}" class="button {% if request.resolver_match.url_name == 'admin_settings' %}is-dark{% else %}is-light{% endif %}">
+            <span class="icon"><i class="fas fa-cog"></i></span>
+            <span>Settings</span>
+          </a>
+        </p>
+        <p class="control">
+          <a href="/admin/" class="button is-dark is-outlined">
+            <span class="icon"><i class="fas fa-tools"></i></span>
+            <span>Django Admin</span>
+          </a>
+        </p>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- Admin Navigation CSS -->
+<style>
+/* Admin Navigation Styling */
+.admin-nav {
+  background: linear-gradient(135deg, #f5f7fa 0%, #e9ecef 100%);
+  border: 1px solid #dee2e6;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.admin-nav .button {
+  transition: all 0.3s ease;
+  font-weight: 500;
+  border-radius: 8px;
+  min-width: 120px;
+}
+
+.admin-nav .button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.admin-nav .button.is-light:hover {
+  background-color: #e9ecef;
+}
+
+.admin-nav .field.is-grouped {
+  margin-bottom: 0;
+}
+
+@media (max-width: 768px) {
+  .admin-nav .field.is-grouped {
+    justify-content: center;
+  }
+  
+  .admin-nav .button {
+    font-size: 0.875rem;
+    min-width: auto;
+  }
+}
+</style>

@@ -4,49 +4,61 @@
 Admin Dashboard - Sequencing Center Management
 {% endblock title %}
 
+{% block body_class %}admin-page{% endblock %}
+
+{% block extra_css %}
+<style>
+.page-header {
+  position: relative;
+  padding: 2rem 0;
+  margin-bottom: 2rem;
+}
+
+.page-header::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100px;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, #3273dc, transparent);
+}
+
+/* Status Pipeline Enhancement */
+.status-pipeline-compact {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  margin-bottom: 2rem;
+}
+
+.pipeline-item {
+  transition: all 0.3s ease;
+}
+
+.pipeline-item:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+</style>
+{% endblock %}
+
 {% block content %}
 <section class="section pt-3">
   <div class="container is-fluid">
-    <div class="level mb-4">
-      <div class="level-left">
-        <h1 class="title is-4 mb-0">
-          <i class="fas fa-tachometer-alt has-text-primary mr-2"></i>
-          Sequencing Order Management - Admin View
-        </h1>
-      </div>
-      <div class="level-right">
-        <div class="buttons">
-          <a href="{% url 'admin_project_list' %}" class="button is-small is-success">
-            <span class="icon"><i class="fas fa-project-diagram"></i></span>
-            <span>All Projects</span>
-          </a>
-          <a href="{% url 'admin_order_list' %}" class="button is-small is-primary">
-            <span class="icon"><i class="fas fa-list"></i></span>
-            <span>All Orders</span>
-          </a>
-          <a href="{% url 'admin_submission_list' %}" class="button is-small is-warning">
-            <span class="icon"><i class="fas fa-file-code"></i></span>
-            <span>ENA Submissions</span>
-          </a>
-          <a href="{% url 'admin_export_orders' %}" class="button is-small is-light">
-            <span class="icon"><i class="fas fa-download"></i></span>
-            <span>Export</span>
-          </a>
-          <a href="{% url 'admin_user_list' %}" class="button is-small is-info">
-            <span class="icon"><i class="fas fa-users"></i></span>
-            <span>Manage Users</span>
-          </a>
-          <a href="{% url 'admin_settings' %}" class="button is-small is-dark">
-            <span class="icon"><i class="fas fa-cog"></i></span>
-            <span>Admin Settings</span>
-          </a>
-          <a href="/admin/" class="button is-small is-dark">
-            <span class="icon"><i class="fas fa-tools"></i></span>
-            <span>Django Admin</span>
-          </a>
-        </div>
-      </div>
+    <!-- Page Title -->
+    <div class="page-header has-text-centered">
+      <h1 class="title is-3">
+        <i class="fas fa-tachometer-alt has-text-primary mr-2"></i>
+        Sequencing Order Management
+      </h1>
+      <p class="subtitle is-5 has-text-grey">Admin Dashboard</p>
     </div>
+
+    <!-- Navigation Bar -->
+    {% include 'admin_nav.html' %}
 
     {% if stats.orders_needing_action > 0 %}
     <!-- Action Required Alert -->

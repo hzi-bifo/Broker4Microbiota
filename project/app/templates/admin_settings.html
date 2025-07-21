@@ -4,23 +4,43 @@
 Admin Settings
 {% endblock title %}
 
+{% block body_class %}admin-page{% endblock %}
+
+{% block extra_css %}
+<style>
+.page-header {
+  position: relative;
+  padding: 2rem 0;
+  margin-bottom: 2rem;
+}
+
+.page-header::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100px;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, #3273dc, transparent);
+}
+</style>
+{% endblock %}
+
 {% block content %}
 <section class="section pt-3">
   <div class="container is-fluid">
-    <div class="level mb-4">
-      <div class="level-left">
-        <h1 class="title is-4 mb-0">
-          <i class="fas fa-cog has-text-primary mr-2"></i>
-          Admin Settings
-        </h1>
-      </div>
-      <div class="level-right">
-        <a href="{% url 'admin_dashboard' %}" class="button is-small">
-          <span class="icon"><i class="fas fa-arrow-left"></i></span>
-          <span>Back to Dashboard</span>
-        </a>
-      </div>
+    <!-- Page Title -->
+    <div class="page-header has-text-centered">
+      <h1 class="title is-3">
+        <i class="fas fa-cog has-text-primary mr-2"></i>
+        Admin Settings
+      </h1>
+      <p class="subtitle is-5 has-text-grey">Configure site-wide settings and ENA credentials</p>
     </div>
+
+    <!-- Navigation Bar -->
+    {% include 'admin_nav.html' %}
 
     {% if messages %}
       {% for message in messages %}
@@ -298,7 +318,7 @@ Admin Settings
 <style>
 /* Settings Form Styling */
 .settings-form {
-  max-width: 1200px;
+  width: 100%;
 }
 
 .box {

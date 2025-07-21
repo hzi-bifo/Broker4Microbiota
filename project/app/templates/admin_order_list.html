@@ -4,33 +4,43 @@
 All Orders - Admin
 {% endblock title %}
 
+{% block body_class %}admin-page{% endblock %}
+
+{% block extra_css %}
+<style>
+.page-header {
+  position: relative;
+  padding: 2rem 0;
+  margin-bottom: 2rem;
+}
+
+.page-header::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100px;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, #3273dc, transparent);
+}
+</style>
+{% endblock %}
+
 {% block content %}
-<section class="section">
-  <div class="container is-fluid" style="max-width: 1920px;">
-    <div class="level">
-      <div class="level-left">
-        <h1 class="title is-3">
-          <i class="fas fa-clipboard-list has-text-primary"></i>
-          All Orders
-        </h1>
-      </div>
-      <div class="level-right">
-        <div class="buttons">
-          <a href="{% url 'admin_project_list' %}" class="button is-success">
-            <span class="icon">
-              <i class="fas fa-project-diagram"></i>
-            </span>
-            <span>Projects View</span>
-          </a>
-          <a href="{% url 'admin_dashboard' %}" class="button is-light">
-            <span class="icon">
-              <i class="fas fa-arrow-left"></i>
-            </span>
-            <span>Back to Dashboard</span>
-          </a>
-        </div>
-      </div>
+<section class="section pt-3">
+  <div class="container is-fluid">
+    <!-- Page Title -->
+    <div class="page-header has-text-centered">
+      <h1 class="title is-3">
+        <i class="fas fa-clipboard-list has-text-primary mr-2"></i>
+        All Orders
+      </h1>
+      <p class="subtitle is-5 has-text-grey">Manage and track all sequencing orders</p>
     </div>
+
+    <!-- Navigation Bar -->
+    {% include 'admin_nav.html' %}
 
     <!-- Filters -->
     <div class="box mb-5">

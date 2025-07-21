@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="{% static 'css/modern.css' %}">
     <link rel="stylesheet" href="{% static 'css/auth.css' %}">
     <link rel="stylesheet" href="{% static 'css/forms.css' %}">
+    <link rel="stylesheet" href="{% static 'css/admin.css' %}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     {% if site_settings.favicon_url %}
     <link rel="icon" type="image/x-icon" href="{{ site_settings.favicon_url }}">
@@ -59,7 +60,7 @@
   -->
     <title>{% block title %}{% endblock %} - {{ site_settings.site_name }}</title>
   </head>
-  <body>
+  <body class="{% block body_class %}{% endblock %}">
     <nav class="navbar" role="navigation" aria-label="main navigation">
       <div class="container">
         <div class="navbar-brand">
