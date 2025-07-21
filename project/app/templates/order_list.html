@@ -646,6 +646,12 @@ Order List
 </section>
 
 <script>
+// Store submission instructions for use in JavaScript
+// Create a temporary div to hold the HTML content safely
+const tempDiv = document.createElement('div');
+tempDiv.innerHTML = `{{ site_settings.submission_instructions|safe }}`;
+const submissionInstructions = tempDiv.innerHTML;
+
 // Get CSRF token from cookies
 function getCookie(name) {
     let cookieValue = null;
@@ -742,7 +748,7 @@ function showSubmissionModal(orderId, nextStatus) {
             </header>
             <section class="modal-card-body">
                 <div class="content">
-                    {{ site_settings.submission_instructions|safe }}
+                    ${submissionInstructions}
                 </div>
             </section>
             <footer class="modal-card-foot">
@@ -774,7 +780,7 @@ function showSubmissionInstructions() {
             </header>
             <section class="modal-card-body">
                 <div class="content">
-                    {{ site_settings.submission_instructions|safe }}
+                    ${submissionInstructions}
                 </div>
             </section>
             <footer class="modal-card-foot">
