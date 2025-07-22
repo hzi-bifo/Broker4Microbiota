@@ -45,34 +45,48 @@ ENA Project Submissions - Admin View
     <!-- Summary Cards -->
     <div class="columns mb-5">
       <div class="column is-3">
-        <div class="box has-text-centered">
-          <p class="heading">Total Submissions</p>
-          <p class="title">{{ total_submissions }}</p>
+        <div class="section-card has-text-centered">
+          <div class="section-body">
+            <p class="heading">Total Submissions</p>
+            <p class="title">{{ total_submissions }}</p>
+          </div>
         </div>
       </div>
       <div class="column is-3">
-        <div class="box has-text-centered">
-          <p class="heading">Pending</p>
-          <p class="title has-text-warning">{{ pending_count }}</p>
+        <div class="section-card has-text-centered">
+          <div class="section-body">
+            <p class="heading">Pending</p>
+            <p class="title has-text-warning">{{ pending_count }}</p>
+          </div>
         </div>
       </div>
       <div class="column is-3">
-        <div class="box has-text-centered">
-          <p class="heading">Submitted</p>
-          <p class="title has-text-info">{{ submitted_count }}</p>
+        <div class="section-card has-text-centered">
+          <div class="section-body">
+            <p class="heading">Submitted</p>
+            <p class="title has-text-info">{{ submitted_count }}</p>
+          </div>
         </div>
       </div>
       <div class="column is-3">
-        <div class="box has-text-centered">
-          <p class="heading">Successful</p>
-          <p class="title has-text-success">{{ successful_count }}</p>
+        <div class="section-card has-text-centered">
+          <div class="section-body">
+            <p class="heading">Successful</p>
+            <p class="title has-text-success">{{ successful_count }}</p>
+          </div>
         </div>
       </div>
     </div>
 
     <!-- Filters -->
-    <div class="box mb-5">
-      <form method="get" action="{% url 'admin_submission_list' %}">
+    <div class="section-card mb-5">
+      <div class="section-header">
+        <h4 class="section-title">
+          <i class="fas fa-filter"></i> Filters
+        </h4>
+      </div>
+      <div class="section-body">
+        <form method="get" action="{% url 'admin_submission_list' %}">
         <div class="columns">
           <div class="column is-4">
             <div class="field">
@@ -135,11 +149,19 @@ ENA Project Submissions - Admin View
           </div>
         </div>
       </form>
+      </div>
     </div>
 
     <!-- Submissions Table -->
-    <div class="table-container">
-      <table class="table is-fullwidth is-striped is-hoverable">
+    <div class="section-card">
+      <div class="section-header">
+        <h4 class="section-title">
+          <i class="fas fa-list"></i> Submissions
+        </h4>
+      </div>
+      <div class="section-body">
+        <div class="table-container">
+          <table class="table is-fullwidth is-striped is-hoverable">
         <thead>
           <tr>
             <th>ID</th>
@@ -393,6 +415,8 @@ ENA Project Submissions - Admin View
           {% endfor %}
         </tbody>
       </table>
+        </div>
+      </div>
     </div>
 
     <!-- Pagination -->

@@ -39,6 +39,26 @@ Admin Dashboard - Sequencing Center Management
   height: 6px;
 }
 
+/* Enhanced table styling */
+.table-container {
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.table thead th {
+  background-color: #f8f9fa;
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.5px;
+  color: #666;
+  border-bottom: 2px solid #e0e0e0;
+}
+
+.table tbody tr:hover {
+  background-color: #f8f9fa;
+}
+
 /* Status boxes hover effect */
 .box.status-card {
   transition: all 0.3s ease;
@@ -142,26 +162,30 @@ Admin Dashboard - Sequencing Center Management
 
         <!-- Recent Orders -->
         <div class="section-card mb-5">
-      <div class="section-header">
-        <h2 class="section-title">Recent Orders</h2>
-        <div>
-          <span id="filter-info" class="tag is-info is-light mr-2" style="display: none;"></span>
-          <button id="clear-filter" class="button is-small is-light mr-2" style="display: none;">
-            <span class="icon">
-              <i class="fas fa-times"></i>
-            </span>
-            <span>Clear Filter</span>
-          </button>
-          <a href="{% url 'admin_order_list' %}" 
-             class="button is-primary is-small">
-            View All Orders
-          </a>
-        </div>
-      </div>
-      
-      {% if recent_orders %}
-      <div class="table-container">
-        <table class="table is-fullwidth is-striped">
+          <div class="section-header">
+            <h2 class="section-title">
+              <i class="fas fa-clipboard-list"></i>
+              Recent Orders
+            </h2>
+            <div>
+              <span id="filter-info" class="tag is-info is-light mr-2" style="display: none;"></span>
+              <button id="clear-filter" class="button is-small is-light mr-2" style="display: none;">
+                <span class="icon">
+                  <i class="fas fa-times"></i>
+                </span>
+                <span>Clear Filter</span>
+              </button>
+              <a href="{% url 'admin_order_list' %}" 
+                 class="button is-primary is-small">
+                View All Orders
+              </a>
+            </div>
+          </div>
+          
+          <div class="section-body">
+            {% if recent_orders %}
+            <div class="table-container">
+              <table class="table is-fullwidth is-striped">
           <thead>
             <tr>
               <th>Order ID</th>
@@ -199,21 +223,26 @@ Admin Dashboard - Sequencing Center Management
             {% endfor %}
           </tbody>
         </table>
-      </div>
-      {% else %}
-      <p class="has-text-grey">No recent orders.</p>
-      {% endif %}
-    </div>
+            </div>
+            {% else %}
+            <p class="has-text-grey">No recent orders.</p>
+            {% endif %}
+          </div>
+        </div>
       </div>
 
       <!-- Right Sidebar - Recent Activity -->
       <div class="column is-3">
         <div class="section-card">
-          <div class="section-header mb-3">
-            <h2 class="section-title is-size-5">Recent Activity</h2>
+          <div class="section-header">
+            <h2 class="section-title">
+              <i class="fas fa-history"></i>
+              Recent Activity
+            </h2>
           </div>
           
-          {% if recent_activity %}
+          <div class="section-body">
+            {% if recent_activity %}
           <div class="timeline compact">
             {% for activity in recent_activity|slice:":3" %}
             <div class="timeline-item compact">
@@ -322,9 +351,10 @@ Admin Dashboard - Sequencing Center Management
               {% endfor %}
             </div>
           </div>
-          {% else %}
-          <p class="has-text-grey is-size-7">No recent activity.</p>
-          {% endif %}
+            {% else %}
+            <p class="has-text-grey is-size-7">No recent activity.</p>
+            {% endif %}
+          </div>
         </div>
       </div>
     </div>
@@ -406,20 +436,28 @@ body {
   font-size: 0.875rem;
 }
 
-/* Section Cards */
+/* Section Cards - Modern design inspired by user project cards */
 .section-card {
   background: white;
-  border: 1px solid #e9ecef;
-  border-radius: 8px;
-  padding: 1.5rem;
-  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07), 0 1px 3px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  transition: all 0.3s ease;
+  margin-bottom: 2rem;
+}
+
+.section-card:hover {
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1), 0 3px 6px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
 }
 
 .section-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 1.5rem;
+  padding: 1.5rem;
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  border-bottom: 1px solid #e0e0e0;
   flex-wrap: wrap;
 }
 
@@ -427,11 +465,22 @@ body {
   margin: 0;
 }
 
+.section-body {
+  padding: 1.5rem;
+}
+
 .section-title {
-  font-size: 1.125rem;
+  font-size: 1.5rem;
   font-weight: 600;
-  color: #2c3e50;
+  color: #363636;
   margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.section-title i {
+  color: var(--primary-color, #3273dc);
 }
 
 /* Timeline Styles - Simplified */
@@ -574,21 +623,35 @@ body {
 }
 
 .timeline-item.compact {
-  padding-bottom: 1rem;
-  padding-left: 1.25rem;
-  border-left: 1px solid #e0e0e0;
+  padding-bottom: 1.25rem;
+  padding-left: 1.5rem;
+  position: relative;
+}
+
+.timeline-item.compact:not(:last-child) {
+  border-left: 2px solid #e9ecef;
+  margin-left: 4px;
 }
 
 .timeline-item.compact:last-child {
   padding-bottom: 0;
-  border-left: none;
 }
 
 .timeline-item.compact .timeline-marker.is-small {
   width: 10px;
   height: 10px;
-  left: -5px;
+  position: absolute;
+  left: -1.5rem;
+  top: 2px;
+  background: white;
+  border: 2px solid;
+  border-radius: 50%;
 }
+
+.timeline-marker.is-small.is-danger { border-color: #ff3860; }
+.timeline-marker.is-small.is-warning { border-color: #ffdd57; }
+.timeline-marker.is-small.is-primary { border-color: #3273dc; }
+.timeline-marker.is-small.is-info { border-color: #3298dc; }
 
 .timeline-item.compact .timeline-content {
   margin-left: 0;

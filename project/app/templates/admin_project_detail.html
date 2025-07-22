@@ -61,10 +61,13 @@
     {% endif %}
 
     <!-- Workflow Progress -->
-    <div class="box mb-4">
-      <h4 class="title is-5 mb-4">
-        <i class="fas fa-tasks"></i> Project Workflow Progress
-      </h4>
+    <div class="section-card mb-4">
+      <div class="section-header">
+        <h4 class="section-title">
+          <i class="fas fa-tasks"></i> Project Workflow Progress
+        </h4>
+      </div>
+      <div class="section-body">
       
       <div class="workflow-container">
         <div class="workflow-step {% if workflow_status.project_created %}completed{% endif %}">
@@ -129,6 +132,7 @@
           <div class="step-label">Upload Assemblies</div>
         </div>
       </div>
+      </div>
     </div>
 
     <!-- Three Column Layout -->
@@ -136,11 +140,13 @@
       <!-- First Column - Sample File Status -->
       <div class="column is-4">
         {% if sample_file_details %}
-        <div class="box">
-          <h4 class="title is-5 mb-4">
-            <i class="fas fa-file"></i> Sample File Status
-          </h4>
-          <div class="content">
+        <div class="section-card">
+          <div class="section-header">
+            <h4 class="section-title">
+              <i class="fas fa-file"></i> Sample File Status
+            </h4>
+          </div>
+          <div class="section-body">
             <table class="table is-narrow is-fullwidth">
               <thead>
                 <tr>
@@ -168,7 +174,7 @@
               </tbody>
             </table>
             {% if has_more_samples %}
-            <p class="has-text-grey is-size-7">Showing first 10 samples...</p>
+            <p class="has-text-grey is-size-7 mt-2">Showing first 10 samples...</p>
             {% endif %}
           </div>
         </div>
@@ -177,20 +183,16 @@
       
       <!-- Second Column - Project Information -->
       <div class="column is-4">
-        <div class="box">
-          <div class="level is-mobile" style="cursor: pointer;" onclick="toggleSection('project-info')">
-            <div class="level-left">
-              <h4 class="title is-5 mb-0">
-                <i class="fas fa-info-circle"></i> Project Information
-              </h4>
-            </div>
-            <div class="level-right">
-              <span class="icon">
-                <i class="fas fa-chevron-down" id="project-info-chevron"></i>
-              </span>
-            </div>
+        <div class="section-card">
+          <div class="section-header" style="cursor: pointer;" onclick="toggleSection('project-info')">
+            <h4 class="section-title">
+              <i class="fas fa-info-circle"></i> Project Information
+            </h4>
+            <span class="icon">
+              <i class="fas fa-chevron-down" id="project-info-chevron"></i>
+            </span>
           </div>
-          <div class="content mt-4" id="project-info-content" style="display: none;">
+          <div class="section-body" id="project-info-content" style="display: none;">
             <table class="table is-fullwidth">
               <tbody>
                 <tr>
@@ -233,20 +235,16 @@
       
       <!-- Third Column - Orders -->
       <div class="column is-4">
-        <div class="box">
-          <div class="level is-mobile" style="cursor: pointer;" onclick="toggleSection('orders')">
-            <div class="level-left">
-              <h4 class="title is-5 mb-0">
-                <i class="fas fa-clipboard-list"></i> Orders ({{ orders.count }})
-              </h4>
-            </div>
-            <div class="level-right">
-              <span class="icon">
-                <i class="fas fa-chevron-down" id="orders-chevron"></i>
-              </span>
-            </div>
+        <div class="section-card">
+          <div class="section-header" style="cursor: pointer;" onclick="toggleSection('orders')">
+            <h4 class="section-title">
+              <i class="fas fa-clipboard-list"></i> Orders ({{ orders.count }})
+            </h4>
+            <span class="icon">
+              <i class="fas fa-chevron-down" id="orders-chevron"></i>
+            </span>
           </div>
-          <div class="content mt-4" id="orders-content" style="display: none;">
+          <div class="section-body" id="orders-content" style="display: none;">
             {% if orders %}
             <div class="orders-list">
               {% for order in orders %}
@@ -317,44 +315,18 @@
       </div>
     </div>
     
-    <!-- Statistics (Full Width, Collapsible) -->
-    <div class="box mb-4">
-      <div class="level is-mobile" style="cursor: pointer;" onclick="toggleSection('statistics')">
-        <div class="level-left">
-          <h4 class="title is-5 mb-0">
-            <i class="fas fa-chart-bar"></i> Statistics
-          </h4>
-        </div>
-        <div class="level-right">
-          <span class="icon">
-            <i class="fas fa-chevron-down" id="statistics-chevron"></i>
-          </span>
-        </div>
-      </div>
-      <div class="content mt-4" id="statistics-content" style="display: none;">
-        <p><strong>Total Orders:</strong> {{ orders.count }}</p>
-        <p><strong>Total Samples:</strong> {{ total_samples }}</p>
-        <p><strong>Samples with Files:</strong> {{ samples_with_files }}/{{ total_samples }} ({{ file_completion }}%)</p>
-        
-        {% if order_status_counts %}
-        <p class="mt-3"><strong>Order Status Breakdown:</strong></p>
-        <ul>
-          {% for status, count in order_status_counts.items %}
-          <li>{{ status }}: {{ count }}</li>
-          {% endfor %}
-        </ul>
-        {% endif %}
-      </div>
-    </div>
 
     <!-- Project Submissions Section -->
-    <div class="box mb-4">
-      <h4 class="title is-5 mb-4">
-        <i class="fas fa-file-code"></i> Register at ENA
-        {% if project_submissions %}
-        <span class="tag is-info ml-2">{{ project_submissions|length }}</span>
-        {% endif %}
-      </h4>
+    <div class="section-card mb-4">
+      <div class="section-header">
+        <h4 class="section-title">
+          <i class="fas fa-file-code"></i> Register at ENA
+          {% if project_submissions %}
+          <span class="tag is-info ml-2">{{ project_submissions|length }}</span>
+          {% endif %}
+        </h4>
+      </div>
+      <div class="section-body">
       
       <!-- Action Buttons for ENA -->
       <div class="buttons mb-4">
@@ -554,16 +526,20 @@
         <p class="has-text-grey mt-2">Click the "Generate ENA XML" button above to create a new submission.</p>
       </div>
       {% endif %}
+      </div>
     </div>
 
     <!-- MAG Runs Section -->
-    <div class="box mb-5">
-      <h4 class="title is-5 mb-4">
-        <i class="fas fa-dna"></i> MAG Pipeline Runs
-        {% if mag_runs %}
-        <span class="tag is-info ml-2">{{ mag_runs|length }}</span>
-        {% endif %}
-      </h4>
+    <div class="section-card mb-5">
+      <div class="section-header">
+        <h4 class="section-title">
+          <i class="fas fa-dna"></i> MAG Pipeline Runs
+          {% if mag_runs %}
+          <span class="tag is-info ml-2">{{ mag_runs|length }}</span>
+          {% endif %}
+        </h4>
+      </div>
+      <div class="section-body">
       
       <div class="level mb-4">
         <div class="level-left">
@@ -811,17 +787,21 @@
         <p class="has-text-grey mt-2">Click the "Create MAG Run" button to set up a new pipeline run.</p>
       </div>
       {% endif %}
+      </div>
     </div>
 
 
     <!-- SubMG Runs Section -->
-    <div class="box mb-5">
-      <h4 class="title is-5 mb-4">
-        <i class="fas fa-cogs"></i> Run SubMG
-        {% if submg_runs %}
-        <span class="tag is-warning ml-2">{{ submg_runs|length }}</span>
-        {% endif %}
-      </h4>
+    <div class="section-card mb-5">
+      <div class="section-header">
+        <h4 class="section-title">
+          <i class="fas fa-cogs"></i> Run SubMG
+          {% if submg_runs %}
+          <span class="tag is-warning ml-2">{{ submg_runs|length }}</span>
+          {% endif %}
+        </h4>
+      </div>
+      <div class="section-body">
       
       <div class="level mb-4">
         <div class="level-left">
@@ -981,6 +961,7 @@
         <p class="has-text-grey mt-2">Click the "Generate SubMG Run" button to create a new pipeline configuration.</p>
       </div>
       {% endif %}
+      </div>
     </div>
   </div>
 </section>
@@ -995,6 +976,53 @@ body {
 .box {
   box-shadow: 0 1px 3px rgba(0,0,0,0.1);
   border-radius: 8px;
+}
+
+/* Section Cards - Modern design inspired by user project cards */
+.section-card {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07), 0 1px 3px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  transition: all 0.3s ease;
+  margin-bottom: 2rem;
+}
+
+.section-card:hover {
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1), 0 3px 6px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem;
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  border-bottom: 1px solid #e0e0e0;
+  flex-wrap: wrap;
+}
+
+.section-header p {
+  margin: 0;
+}
+
+.section-body {
+  padding: 1.5rem;
+}
+
+.section-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #363636;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.section-title i {
+  color: var(--primary-color, #3273dc);
 }
 
 /* Workflow Visualization */

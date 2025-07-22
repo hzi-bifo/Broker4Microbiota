@@ -24,6 +24,16 @@ All Orders - Admin
   height: 3px;
   background: linear-gradient(90deg, transparent, #3273dc, transparent);
 }
+
+
+/* Filter box styling */
+.filter-box {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.06);
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+}
 </style>
 {% endblock %}
 
@@ -43,7 +53,7 @@ All Orders - Admin
     {% include 'admin_nav.html' %}
 
     <!-- Filters -->
-    <div class="box mb-5">
+    <div class="filter-box">
       <form method="get" action="{% url 'admin_order_list' %}">
         <div class="columns">
           <div class="column is-3">
@@ -147,8 +157,16 @@ All Orders - Admin
       </div>
 
       <!-- Orders Table -->
-      <div class="table-container">
-        <table class="table is-fullwidth is-striped is-hoverable">
+      <div class="section-card">
+        <div class="section-header">
+          <h2 class="section-title">
+            <i class="fas fa-list"></i>
+            Orders
+          </h2>
+        </div>
+        <div class="section-body">
+          <div class="table-container">
+            <table class="table is-fullwidth is-striped is-hoverable">
           <thead>
             <tr>
               <th>
@@ -230,6 +248,9 @@ All Orders - Admin
             {% endfor %}
           </tbody>
         </table>
+            </div>
+          </div>
+        </div>
       </div>
     </form>
 
@@ -349,9 +370,7 @@ body {
 
 /* Clean Table */
 .table {
-  background: white;
-  border-radius: 8px;
-  overflow: hidden;
+  background: transparent;
 }
 
 .table th {

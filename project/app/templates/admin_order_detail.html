@@ -71,11 +71,14 @@ Order #{{ order.id }} - Admin View
       <div class="tab-pane is-active" id="overview">
         <div class="columns">
           <div class="column is-6">
-            <div class="box">
-              <h4 class="title is-6 mb-3">
-                <i class="fas fa-clipboard"></i> Order Information
-              </h4>
-              <table class="table is-fullwidth">
+            <div class="section-card">
+              <div class="section-header">
+                <h4 class="section-title">
+                  <i class="fas fa-clipboard"></i> Order Information
+                </h4>
+              </div>
+              <div class="section-body">
+                <table class="table is-fullwidth">
                 <tbody>
                   <tr>
                     <th width="40%">Order Name</th>
@@ -95,26 +98,24 @@ Order #{{ order.id }} - Admin View
                   </tr>
                 </tbody>
               </table>
+              </div>
             </div>
           </div>
           
           <div class="column is-6">
-            <div class="box">
-              <div class="level">
-                <div class="level-left">
-                  <h4 class="title is-6 mb-3">
-                    <i class="fas fa-flask"></i> Technical Details
-                  </h4>
-                </div>
-                <div class="level-right">
-                  <button type="button" class="button is-small is-info" onclick="toggleTechnicalEdit()">
-                    <span class="icon">
-                      <i class="fas fa-edit"></i>
-                    </span>
-                    <span>Edit</span>
-                  </button>
-                </div>
+            <div class="section-card">
+              <div class="section-header">
+                <h4 class="section-title">
+                  <i class="fas fa-flask"></i> Technical Details
+                </h4>
+                <button type="button" class="button is-small is-info" onclick="toggleTechnicalEdit()">
+                  <span class="icon">
+                    <i class="fas fa-edit"></i>
+                  </span>
+                  <span>Edit</span>
+                </button>
               </div>
+              <div class="section-body">
               
               <!-- Display Mode -->
               <div id="technical-display">
@@ -195,16 +196,20 @@ Order #{{ order.id }} - Admin View
                   </div>
                 </form>
               </div>
+              </div>
             </div>
           </div>
         </div>
 
         <!-- MIxS Checklist Information -->
         {% if selected_checklists %}
-        <div class="box mb-4">
-          <h4 class="title is-6 mb-3">
-            <i class="fas fa-list-check"></i> Selected MIxS Checklists
-          </h4>
+        <div class="section-card mb-4">
+          <div class="section-header">
+            <h4 class="section-title">
+              <i class="fas fa-list-check"></i> Selected MIxS Checklists
+            </h4>
+          </div>
+          <div class="section-body">
           <div class="tags are-medium">
             {% for checklist in selected_checklists %}
             <span class="tag is-primary">
@@ -227,26 +232,25 @@ Order #{{ order.id }} - Admin View
             <strong>{{ mandatory_fields_count|add:selected_optional_count }}</strong> of <strong>{{ total_fields_count }}</strong> total available fields selected for data collection
           </p>
           {% endif %}
+          </div>
         </div>
         {% endif %}
 
         <!-- Samples Section -->
-        <div class="box">
-          <div class="level">
-            <div class="level-left">
-              <h4 class="title is-6 mb-3">
-                <i class="fas fa-vials"></i> Samples ({{ samples.count }})
-                {% if samples.count > 0 %}
-                <span class="tag is-light ml-2">
-                  <span class="icon">
-                    <i class="fas fa-dna"></i>
-                  </span>
-                  <span>{{ samples_with_reads }}/{{ samples.count }} with reads ({{ read_completion_percentage }}%)</span>
+        <div class="section-card">
+          <div class="section-header">
+            <h4 class="section-title">
+              <i class="fas fa-vials"></i> Samples ({{ samples.count }})
+              {% if samples.count > 0 %}
+              <span class="tag is-light ml-2">
+                <span class="icon">
+                  <i class="fas fa-dna"></i>
                 </span>
-                {% endif %}
-              </h4>
-            </div>
-            <div class="level-right">
+                <span>{{ samples_with_reads }}/{{ samples.count }} with reads ({{ read_completion_percentage }}%)</span>
+              </span>
+              {% endif %}
+            </h4>
+            <div>
               <form method="post" action="{% url 'admin_check_read_files' order.id %}" style="display: inline; margin-right: 0.5rem;">
                 {% csrf_token %}
                 <button type="submit" class="button is-info is-small" 
@@ -271,6 +275,7 @@ Order #{{ order.id }} - Admin View
               {% endif %}
             </div>
           </div>
+          <div class="section-body">
           
           {% if samples_without_reads > 0 %}
           <div class="notification is-warning is-light">
@@ -369,6 +374,7 @@ Order #{{ order.id }} - Admin View
           {% else %}
           <p class="has-text-grey">No samples have been added to this order yet.</p>
           {% endif %}
+          </div>
         </div>
       </div>
 
@@ -376,10 +382,13 @@ Order #{{ order.id }} - Admin View
       <div class="tab-pane" id="activity">
         <div class="columns">
           <div class="column is-8">
-            <div class="box">
-              <h4 class="title is-6">
-                <i class="fas fa-stream"></i> Activity Timeline
-              </h4>
+            <div class="section-card">
+              <div class="section-header">
+                <h4 class="section-title">
+                  <i class="fas fa-stream"></i> Activity Timeline
+                </h4>
+              </div>
+              <div class="section-body">
               
               <!-- Quick Add Note Form -->
               <div class="quick-note-panel mb-5">
@@ -460,14 +469,18 @@ Order #{{ order.id }} - Admin View
               {% else %}
               <p class="has-text-grey">No activity recorded yet.</p>
               {% endif %}
+              </div>
             </div>
           </div>
           
           <div class="column is-4">
-            <div class="box">
-              <h4 class="title is-6">
-                <i class="fas fa-filter"></i> Filter Activity
-              </h4>
+            <div class="section-card">
+              <div class="section-header">
+                <h4 class="section-title">
+                  <i class="fas fa-filter"></i> Filter Activity
+                </h4>
+              </div>
+              <div class="section-body">
               <div class="field">
                 <label class="checkbox">
                   <input type="checkbox" checked> Status Changes
@@ -487,6 +500,7 @@ Order #{{ order.id }} - Admin View
                 <label class="checkbox">
                   <input type="checkbox" checked> Rejections
                 </label>
+              </div>
               </div>
             </div>
           </div>
@@ -556,10 +570,13 @@ Order #{{ order.id }} - Admin View
               <span>Back to Actions</span>
             </button>
             
-            <div class="box">
-              <h4 class="title is-5">
-                <i class="fas fa-sync"></i> Update Order Status
-              </h4>
+            <div class="section-card">
+              <div class="section-header">
+                <h4 class="section-title">
+                  <i class="fas fa-sync"></i> Update Order Status
+                </h4>
+              </div>
+              <div class="section-body">
               
               <form method="post" action="{% url 'admin_update_order_status' order.id %}">
                 {% csrf_token %}
@@ -597,6 +614,7 @@ Order #{{ order.id }} - Admin View
                   </div>
                 </div>
               </form>
+              </div>
             </div>
           </div>
           
@@ -607,10 +625,13 @@ Order #{{ order.id }} - Admin View
               <span>Back to Actions</span>
             </button>
             
-            <div class="box">
-              <h4 class="title is-5">
-                <i class="fas fa-comment"></i> Add Note to Order
-              </h4>
+            <div class="section-card">
+              <div class="section-header">
+                <h4 class="section-title">
+                  <i class="fas fa-comment"></i> Add Note to Order
+                </h4>
+              </div>
+              <div class="section-body">
               
               <form method="post" action="{% url 'admin_add_order_note' order.id %}">
                 {% csrf_token %}
@@ -645,6 +666,7 @@ Order #{{ order.id }} - Admin View
                   </div>
                 </div>
               </form>
+              </div>
             </div>
           </div>
           
@@ -655,10 +677,13 @@ Order #{{ order.id }} - Admin View
               <span>Back to Actions</span>
             </button>
             
-            <div class="box has-background-danger-light">
-              <h4 class="title is-5 has-text-danger">
-                <i class="fas fa-times-circle"></i> Send Order Back for Review
-              </h4>
+            <div class="section-card has-background-danger-light">
+              <div class="section-header">
+                <h4 class="section-title has-text-danger">
+                  <i class="fas fa-times-circle"></i> Send Order Back for Review
+                </h4>
+              </div>
+              <div class="section-body">
               
               <div class="notification is-warning is-light">
                 <p><strong>Important:</strong> The user will be notified and asked to make corrections.</p>

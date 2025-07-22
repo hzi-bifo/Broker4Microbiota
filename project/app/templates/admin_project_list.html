@@ -24,6 +24,26 @@ All Projects - Admin View
   height: 3px;
   background: linear-gradient(90deg, transparent, #3273dc, transparent);
 }
+
+
+/* Filter box styling */
+.filter-box {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.06);
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+/* Progress bar enhancements */
+.progress::-webkit-progress-bar {
+  background-color: #e9ecef;
+  border-radius: 4px;
+}
+
+.progress.is-small {
+  height: 6px;
+}
 </style>
 {% endblock %}
 
@@ -44,7 +64,7 @@ All Projects - Admin View
 
 
     <!-- Filters -->
-    <div class="box mb-5">
+    <div class="filter-box">
       <form method="get" action="{% url 'admin_project_list' %}">
         <div class="columns">
           <div class="column is-4">
@@ -96,120 +116,130 @@ All Projects - Admin View
     </div>
 
     <!-- Projects Table -->
-    <div class="table-container">
-      <table class="table is-fullwidth is-striped is-hoverable">
-        <thead>
-          <tr>
-            <th>Project</th>
-            <th>User</th>
-            <th>Orders</th>
-            <th>Samples</th>
-            <th>File Status</th>
-            <th>Workflow Progress</th>
-            <th>ENA Status</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for item in page_obj %}
-          <tr>
-            <td>
-              <strong>{{ item.project.title|truncatechars:40 }}</strong>
-              {% if item.project.alias %}
-              <br><small class="has-text-grey">{{ item.project.alias }}</small>
-              {% endif %}
-            </td>
-            <td>
-              <strong>{{ item.project.user.username }}</strong>
-              <br><small class="has-text-grey">{{ item.project.user.email }}</small>
-            </td>
-            <td>
-              <span class="tag is-light">
-                {{ item.order_count }} order{{ item.order_count|pluralize }}
-              </span>
-            </td>
-            <td>
-              <span class="tag is-light">
-                {{ item.sample_count }} sample{{ item.sample_count|pluralize }}
-              </span>
-            </td>
-            <td>
-              {% if item.sample_count > 0 %}
-                <div class="has-text-centered">
-                  <progress class="progress {% if item.has_all_files %}is-success{% elif item.file_completion >= 50 %}is-warning{% else %}is-danger{% endif %} is-small mb-1" 
-                            value="{{ item.file_completion }}" max="100">{{ item.file_completion }}%</progress>
-                  <small>{{ item.samples_with_files }}/{{ item.sample_count }} ({{ item.file_completion }}%)</small>
-                  {% if not item.has_all_files and item.sample_count > 0 %}
-                  <br><span class="has-text-danger is-size-7">
-                    <i class="fas fa-exclamation-triangle"></i> Missing files
-                  </span>
+    <div class="section-card">
+      <div class="section-header">
+        <h2 class="section-title">
+          <i class="fas fa-folder-open"></i>
+          Projects ({{ total_projects }})
+        </h2>
+      </div>
+      <div class="section-body">
+        <div class="table-container">
+          <table class="table is-fullwidth is-striped is-hoverable">
+            <thead>
+              <tr>
+                <th>Project</th>
+                <th>User</th>
+                <th>Orders</th>
+                <th>Samples</th>
+                <th>File Status</th>
+                <th>Workflow Progress</th>
+                <th>ENA Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for item in page_obj %}
+              <tr>
+                <td>
+                  <strong>{{ item.project.title|truncatechars:40 }}</strong>
+                  {% if item.project.alias %}
+                  <br><small class="has-text-grey">{{ item.project.alias }}</small>
                   {% endif %}
-                </div>
-              {% else %}
-                <span class="has-text-grey">No samples</span>
-              {% endif %}
-            </td>
-            <td>
-              <div class="has-text-centered">
-                <div class="is-flex is-justify-content-center is-align-items-center">
-                  <span class="icon {% if item.workflow_status.project_created %}has-text-success{% else %}has-text-grey-lighter{% endif %}" title="Project Created">
-                    <i class="fas fa-project-diagram"></i>
+                </td>
+                <td>
+                  <strong>{{ item.project.user.username }}</strong>
+                  <br><small class="has-text-grey">{{ item.project.user.email }}</small>
+                </td>
+                <td>
+                  <span class="tag is-light">
+                    {{ item.order_count }} order{{ item.order_count|pluralize }}
                   </span>
-                  <span class="icon {% if item.workflow_status.ena_registered %}has-text-success{% else %}has-text-grey-lighter{% endif %}" title="ENA Registered">
-                    <i class="fas fa-cloud-upload-alt"></i>
+                </td>
+                <td>
+                  <span class="tag is-light">
+                    {{ item.sample_count }} sample{{ item.sample_count|pluralize }}
                   </span>
-                  <span class="icon {% if item.workflow_status.files_complete %}has-text-success{% else %}has-text-grey-lighter{% endif %}" title="Files Complete">
-                    <i class="fas fa-file-archive"></i>
-                  </span>
-                  <span class="icon {% if item.workflow_status.mag_pipeline_run %}has-text-success{% else %}has-text-grey-lighter{% endif %}" title="MAG Pipeline">
-                    <i class="fas fa-dna"></i>
-                  </span>
-                  <span class="icon {% if item.workflow_status.submg_pipeline_run %}has-text-success{% else %}has-text-grey-lighter{% endif %}" title="SubMG Pipeline">
-                    <i class="fas fa-microscope"></i>
-                  </span>
-                </div>
-                <small class="has-text-grey">{{ item.workflow_progress }}/5 steps</small>
-              </div>
-            </td>
-            <td>
-              {% if item.project.submitted %}
-                <span class="tag is-success">
-                  <span class="icon">
-                    <i class="fas fa-check-circle"></i>
-                  </span>
-                  <span>Registered</span>
-                </span>
-                {% if item.project.study_accession_id %}
-                <br><small class="has-text-grey">{{ item.project.study_accession_id }}</small>
-                {% endif %}
-              {% else %}
-                <span class="tag is-light">
-                  <span class="icon">
-                    <i class="fas fa-times-circle"></i>
-                  </span>
-                  <span>Not Registered</span>
-                </span>
-              {% endif %}
-            </td>
-            <td>
-              <a href="{% url 'admin_project_detail' item.project.id %}" 
-                 class="button is-primary is-small">
-                <span class="icon">
-                  <i class="fas fa-eye"></i>
-                </span>
-                <span>View</span>
-              </a>
-            </td>
-          </tr>
-          {% empty %}
-          <tr>
-            <td colspan="8" class="has-text-centered has-text-grey">
-              No projects found matching your criteria.
-            </td>
-          </tr>
-          {% endfor %}
-        </tbody>
-      </table>
+                </td>
+                <td>
+                  {% if item.sample_count > 0 %}
+                    <div class="has-text-centered">
+                      <progress class="progress {% if item.has_all_files %}is-success{% elif item.file_completion >= 50 %}is-warning{% else %}is-danger{% endif %} is-small mb-1" 
+                                value="{{ item.file_completion }}" max="100">{{ item.file_completion }}%</progress>
+                      <small>{{ item.samples_with_files }}/{{ item.sample_count }} ({{ item.file_completion }}%)</small>
+                      {% if not item.has_all_files and item.sample_count > 0 %}
+                      <br><span class="has-text-danger is-size-7">
+                        <i class="fas fa-exclamation-triangle"></i> Missing files
+                      </span>
+                      {% endif %}
+                    </div>
+                  {% else %}
+                    <span class="has-text-grey">No samples</span>
+                  {% endif %}
+                </td>
+                <td>
+                  <div class="has-text-centered">
+                    <div class="is-flex is-justify-content-center is-align-items-center">
+                      <span class="icon {% if item.workflow_status.project_created %}has-text-success{% else %}has-text-grey-lighter{% endif %}" title="Project Created">
+                        <i class="fas fa-project-diagram"></i>
+                      </span>
+                      <span class="icon {% if item.workflow_status.ena_registered %}has-text-success{% else %}has-text-grey-lighter{% endif %}" title="ENA Registered">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                      </span>
+                      <span class="icon {% if item.workflow_status.files_complete %}has-text-success{% else %}has-text-grey-lighter{% endif %}" title="Files Complete">
+                        <i class="fas fa-file-archive"></i>
+                      </span>
+                      <span class="icon {% if item.workflow_status.mag_pipeline_run %}has-text-success{% else %}has-text-grey-lighter{% endif %}" title="MAG Pipeline">
+                        <i class="fas fa-dna"></i>
+                      </span>
+                      <span class="icon {% if item.workflow_status.submg_pipeline_run %}has-text-success{% else %}has-text-grey-lighter{% endif %}" title="SubMG Pipeline">
+                        <i class="fas fa-microscope"></i>
+                      </span>
+                    </div>
+                    <small class="has-text-grey">{{ item.workflow_progress }}/5 steps</small>
+                  </div>
+                </td>
+                <td>
+                  {% if item.project.submitted %}
+                    <span class="tag is-success">
+                      <span class="icon">
+                        <i class="fas fa-check-circle"></i>
+                      </span>
+                      <span>Registered</span>
+                    </span>
+                    {% if item.project.study_accession_id %}
+                    <br><small class="has-text-grey">{{ item.project.study_accession_id }}</small>
+                    {% endif %}
+                  {% else %}
+                    <span class="tag is-light">
+                      <span class="icon">
+                        <i class="fas fa-times-circle"></i>
+                      </span>
+                      <span>Not Registered</span>
+                    </span>
+                  {% endif %}
+                </td>
+                <td>
+                  <a href="{% url 'admin_project_detail' item.project.id %}" 
+                     class="button is-primary is-small">
+                    <span class="icon">
+                      <i class="fas fa-eye"></i>
+                    </span>
+                    <span>View</span>
+                  </a>
+                </td>
+              </tr>
+              {% empty %}
+              <tr>
+                <td colspan="8" class="has-text-centered has-text-grey">
+                  No projects found matching your criteria.
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
 
     <!-- Pagination -->
@@ -271,9 +301,7 @@ body {
 
 /* Clean Table */
 .table {
-  background: white;
-  border-radius: 8px;
-  overflow: hidden;
+  background: transparent;
 }
 
 .table th {
