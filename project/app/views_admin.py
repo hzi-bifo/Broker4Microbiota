@@ -771,6 +771,15 @@ def admin_project_detail(request, project_id):
     if mag_runs.exists():
         workflow_status['mag_pipeline_run'] = True
     
+    # Get MAG pipeline outputs (Assemblies, Bins, Alignments)
+    assemblies = Assembly.objects.filter(order__project=project).select_related('order').order_by('-id')
+    bins = Bin.objects.filter(order__project=project).select_related('order').order_by('-id')
+    alignments = Alignment.objects.filter(order__project=project).select_related('order', 'assembly').order_by('-id')
+    
+    # Update workflow status to reflect assemblies
+    if assemblies.exists():
+        workflow_status['assemblies_uploaded'] = True
+    
     context = {
         'project': project,
         'orders': orders,
@@ -784,6 +793,9 @@ def admin_project_detail(request, project_id):
         'project_submissions': project_submissions,
         'submg_runs': submg_runs,
         'mag_runs': mag_runs,
+        'assemblies': assemblies,
+        'bins': bins,
+        'alignments': alignments,
     }
     
     return render(request, 'admin_project_detail.html', context)
@@ -1687,3 +1699,5 @@ def admin_create_mag_run(request, project_id):
     
     # Redirect back to project detail page
     return redirect('admin_project_detail', project_id=project_id)
+
+
