@@ -54,47 +54,72 @@ def admin_dashboard(request):
         'total_users': User.objects.filter(is_active=True, is_staff=False).count(),
     }
     
-    # Get orders by status in workflow order
+    # Get orders by status in simplified workflow
     orders_by_status = []
-    status_colors = {
-        'draft': 'is-light',
-        'ready_for_sequencing': 'is-info',
-        'sequencing_in_progress': 'is-warning',
-        'sequencing_completed': 'is-primary',
-        'data_processing': 'is-primary',
-        'data_delivered': 'is-success',
-        'completed': 'is-success is-light',
-    }
     
-    # Define the workflow order
-    workflow_order = [
-        ('draft', 'Draft'),
-        ('ready_for_sequencing', 'Ready for Sequencing'),
-        ('sequencing_in_progress', 'Sequencing in Progress'),
-        ('sequencing_completed', 'Sequencing Completed'),
-        ('data_processing', 'Data Processing'),
-        ('data_delivered', 'Data Delivered'),
-        ('completed', 'Completed'),
-    ]
+    # Count orders in each simplified status
+    draft_count = Order.objects.filter(status='draft').count()
+    submitted_count = Order.objects.filter(status='ready_for_sequencing').count()
+    sequencing_count = Order.objects.filter(status__in=['sequencing_in_progress', 'sequencing_completed', 'data_processing']).count()
+    
+    # Count sequenced orders (all samples have reads)
+    sequenced_count = 0
+    completed_orders = Order.objects.filter(status__in=['data_delivered', 'completed'])
+    for order in completed_orders:
+        samples = order.sample_set.filter(sample_type=SAMPLE_TYPE_NORMAL)
+        if samples.exists():
+            has_all_reads = True
+            for sample in samples:
+                if not Read.objects.filter(sample=sample).exists():
+                    has_all_reads = False
+                    break
+            if has_all_reads:
+                sequenced_count += 1
     
     total_orders = stats['total_orders'] or 1  # Avoid division by zero
     
-    for status_code, status_label in workflow_order:
-        count = Order.objects.filter(status=status_code).count()
-        orders_by_status.append({
-            'code': status_code,
-            'label': status_label,
-            'count': count,
-            'color': status_colors.get(status_code, 'is-light'),
-            'percentage': round((count / total_orders) * 100, 1)
-        })
+    # Simplified workflow with icons and colors
+    orders_by_status = [
+        {
+            'code': 'draft',
+            'label': 'Draft',
+            'count': draft_count,
+            'icon': 'fa-edit',
+            'color': '#6c757d',  # grey
+            'percentage': round((draft_count / total_orders) * 100, 1)
+        },
+        {
+            'code': 'ready_for_sequencing',
+            'label': 'Submitted',
+            'count': submitted_count,
+            'icon': 'fa-paper-plane',
+            'color': '#3498db',  # blue
+            'percentage': round((submitted_count / total_orders) * 100, 1)
+        },
+        {
+            'code': 'sequencing',
+            'label': 'Sequencing',
+            'count': sequencing_count,
+            'icon': 'fa-dna',
+            'color': '#f39c12',  # orange
+            'percentage': round((sequencing_count / total_orders) * 100, 1)
+        },
+        {
+            'code': 'sequenced',
+            'label': 'Sequenced',
+            'count': sequenced_count,
+            'icon': 'fa-check-circle',
+            'color': '#27ae60',  # green
+            'percentage': round((sequenced_count / total_orders) * 100, 1)
+        },
+    ]
     
     stats['orders_by_status'] = orders_by_status
     
-    # Get recent orders needing action
-    orders_needing_action = Order.objects.filter(
-        status='ready_for_sequencing'
-    ).select_related('project', 'project__user').order_by('-status_updated_at')[:10]
+    # Get recent orders (all statuses)
+    recent_orders = Order.objects.select_related(
+        'project', 'project__user'
+    ).order_by('-status_updated_at')[:10]
     
     # Get recent activity (all types of notes/changes)
     recent_activity = StatusNote.objects.all().select_related(
@@ -103,7 +128,7 @@ def admin_dashboard(request):
     
     context = {
         'stats': stats,
-        'orders_needing_action': orders_needing_action,
+        'recent_orders': recent_orders,
         'recent_activity': recent_activity,
     }
     
@@ -126,7 +151,27 @@ def admin_order_list(request):
     
     # Apply filters
     if status_filter:
-        orders = orders.filter(status=status_filter)
+        if status_filter == 'sequencing':
+            # Handle combined sequencing status
+            orders = orders.filter(status__in=['sequencing_in_progress', 'sequencing_completed', 'data_processing'])
+        elif status_filter == 'sequenced':
+            # Handle sequenced orders (all samples have reads)
+            orders = orders.filter(status__in=['data_delivered', 'completed'])
+            # Further filter to only include orders where all samples have reads
+            filtered_orders = []
+            for order in orders:
+                samples = order.sample_set.filter(sample_type=SAMPLE_TYPE_NORMAL)
+                if samples.exists():
+                    has_all_reads = True
+                    for sample in samples:
+                        if not Read.objects.filter(sample=sample).exists():
+                            has_all_reads = False
+                            break
+                    if has_all_reads:
+                        filtered_orders.append(order.id)
+            orders = orders.filter(id__in=filtered_orders)
+        else:
+            orders = orders.filter(status=status_filter)
     
     if user_search:
         orders = orders.filter(
@@ -678,7 +723,7 @@ def admin_project_list(request):
         
         workflow_status = {
             'project_created': True,
-            'ena_registered': project.submitted,
+            'ena_registered': has_successful_submission,
             'files_complete': samples_with_files == samples.count() and samples.count() > 0,
             'mag_pipeline_run': has_mag_runs,
             'submg_pipeline_run': has_submg_runs,
@@ -766,10 +811,16 @@ def admin_project_detail(request, project_id):
     # Check for existing pipeline runs (for future use)
     # pipeline_runs = Pipelines.objects.filter(samples__order__project=project).distinct()
     
+    # Check for successful ENA registration
+    has_successful_ena_submission = ProjectSubmission.objects.filter(
+        projects=project,
+        accession_status='SUCCESSFUL'
+    ).exists()
+    
     # Workflow status (all disabled for now)
     workflow_status = {
         'project_created': True,
-        'ena_registered': project.submitted,
+        'ena_registered': has_successful_ena_submission,
         'files_complete': samples_with_files == total_samples and total_samples > 0,
         'mag_pipeline_run': False,  # Will be implemented later
         'submg_pipeline_run': False,  # Will be implemented later

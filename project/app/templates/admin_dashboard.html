@@ -25,23 +25,51 @@ Admin Dashboard - Sequencing Center Management
   background: linear-gradient(90deg, transparent, #3273dc, transparent);
 }
 
-/* Status Pipeline Enhancement */
-.status-pipeline-compact {
-  background: white;
-  padding: 1.5rem;
-  border-radius: 12px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-  margin-bottom: 2rem;
+/* Progress bar color customization */
+.progress::-webkit-progress-bar {
+  background-color: #e9ecef;
+  border-radius: 4px;
 }
 
-.pipeline-item {
+.progress::-moz-progress-bar {
+  border-radius: 4px;
+}
+
+.progress.is-small {
+  height: 6px;
+}
+
+/* Status boxes hover effect */
+.box.status-card {
   transition: all 0.3s ease;
+  border-left-width: 5px !important;
+  border-left-style: solid !important;
+  opacity: 1;
+  transform: scale(1);
 }
 
-.pipeline-item:hover {
-  transform: scale(1.05);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+.box.status-card:hover {
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
 }
+
+.box.status-card.inactive {
+  opacity: 0.7;
+  transform: scale(0.98);
+}
+
+/* Individual progress bar colors */
+.progress-draft::-webkit-progress-value { background-color: #6c757d; }
+.progress-draft::-moz-progress-bar { background-color: #6c757d; }
+
+.progress-ready_for_sequencing::-webkit-progress-value { background-color: #3498db; }
+.progress-ready_for_sequencing::-moz-progress-bar { background-color: #3498db; }
+
+.progress-sequencing::-webkit-progress-value { background-color: #f39c12; }
+.progress-sequencing::-moz-progress-bar { background-color: #f39c12; }
+
+.progress-sequenced::-webkit-progress-value { background-color: #27ae60; }
+.progress-sequenced::-moz-progress-bar { background-color: #27ae60; }
 </style>
 {% endblock %}
 
@@ -60,54 +88,78 @@ Admin Dashboard - Sequencing Center Management
     <!-- Navigation Bar -->
     {% include 'admin_nav.html' %}
 
-    {% if stats.orders_needing_action > 0 %}
-    <!-- Action Required Alert -->
-    <div class="notification is-warning is-light mb-4">
-      <div class="level is-mobile">
-        <div class="level-left">
-          <div class="level-item">
-            <span class="icon">
-              <i class="fas fa-exclamation-triangle"></i>
-            </span>
-          </div>
-          <div class="level-item">
-            <strong>{{ stats.orders_needing_action }} order{{ stats.orders_needing_action|pluralize }} awaiting review</strong>
+    <div class="columns is-variable is-6">
+      <!-- Main Content Area -->
+      <div class="column is-9">
+        {% if stats.orders_needing_action > 0 %}
+        <!-- Action Required Alert -->
+        <div class="notification is-warning is-light mb-4">
+          <div class="level is-mobile">
+            <div class="level-left">
+              <div class="level-item">
+                <span class="icon">
+                  <i class="fas fa-exclamation-triangle"></i>
+                </span>
+              </div>
+              <div class="level-item">
+                <strong>{{ stats.orders_needing_action }} order{{ stats.orders_needing_action|pluralize }} awaiting review</strong>
+              </div>
+            </div>
+            <div class="level-right">
+              <a href="{% url 'admin_order_list' %}?status=ready_for_sequencing" class="button is-small is-warning">
+                Review Now
+              </a>
+            </div>
           </div>
         </div>
-        <div class="level-right">
-          <a href="{% url 'admin_order_list' %}?status=ready_for_sequencing" class="button is-small is-warning">
-            Review Now
+        {% endif %}
+
+        <!-- Order Status Overview Cards -->
+        <div class="columns is-mobile is-multiline mb-5">
+          {% for status in stats.orders_by_status %}
+          <div class="column is-6-mobile is-3-tablet">
+            <div class="box status-card has-background-white p-4" style="cursor: pointer; border-left-color: {{ status.color }}; height: 100%;" 
+                 onclick="filterOrders('{{ status.code }}')">
+              <div class="is-flex is-align-items-center mb-3">
+                <div class="mr-3">
+                  <span class="icon is-large has-text-white" style="display: flex; align-items: center; justify-content: center; width: 48px; height: 48px; background-color: {{ status.color }}; border-radius: 8px;">
+                    <i class="fas {{ status.icon }}"></i>
+                  </span>
+                </div>
+                <div class="is-flex-grow-1">
+                  <p class="is-size-2 has-text-weight-bold mb-0" style="color: {{ status.color }}; line-height: 1.2;">{{ status.count }}</p>
+                  <p class="is-size-6 has-text-weight-semibold">{{ status.label }}</p>
+                </div>
+              </div>
+              <div class="content mt-3">
+                <p class="is-size-7 has-text-grey-dark mb-1">{{ status.percentage }}% of all orders</p>
+                <progress class="progress is-small progress-{{ status.code }}" value="{{ status.percentage }}" max="100">{{ status.percentage }}%</progress>
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+
+        <!-- Recent Orders -->
+        <div class="section-card mb-5">
+      <div class="section-header">
+        <h2 class="section-title">Recent Orders</h2>
+        <div>
+          <span id="filter-info" class="tag is-info is-light mr-2" style="display: none;"></span>
+          <button id="clear-filter" class="button is-small is-light mr-2" style="display: none;">
+            <span class="icon">
+              <i class="fas fa-times"></i>
+            </span>
+            <span>Clear Filter</span>
+          </button>
+          <a href="{% url 'admin_order_list' %}" 
+             class="button is-primary is-small">
+            View All Orders
           </a>
         </div>
       </div>
-    </div>
-    {% endif %}
-
-    <!-- Compact Status Pipeline -->
-    <div class="status-pipeline-compact mb-4">
-      {% for status in stats.orders_by_status %}
-      <a href="{% url 'admin_order_list' %}?status={{ status.code }}" 
-         class="pipeline-item {{ status.color }}">
-        <div class="pipeline-header">
-          <span class="pipeline-count">{{ status.count }}</span>
-          <span class="pipeline-percent">{{ status.percentage }}%</span>
-        </div>
-        <div class="pipeline-label">{{ status.label }}</div>
-      </a>
-      {% endfor %}
-    </div>
-
-    <!-- Orders Needing Action -->
-    <div class="section-card mb-5">
-      <div class="section-header">
-        <h2 class="section-title">Orders Awaiting Review</h2>
-        <a href="{% url 'admin_order_list' %}?status=ready_for_sequencing" 
-           class="button is-primary is-small">
-          View All
-        </a>
-      </div>
       
-      {% if orders_needing_action %}
+      {% if recent_orders %}
       <div class="table-container">
         <table class="table is-fullwidth is-striped">
           <thead>
@@ -115,26 +167,32 @@ Admin Dashboard - Sequencing Center Management
               <th>Order ID</th>
               <th>Project</th>
               <th>User</th>
-              <th>Submitted</th>
+              <th>Status</th>
+              <th>Updated</th>
               <th>Samples</th>
               <th>Action</th>
             </tr>
           </thead>
-          <tbody>
-            {% for order in orders_needing_action %}
-            <tr>
+          <tbody id="orders-table-body">
+            {% for order in recent_orders %}
+            <tr data-status="{{ order.status }}">
               <td>#{{ order.id }}</td>
               <td>{{ order.project.title|truncatechars:30 }}</td>
               <td>{{ order.project.user.username }}</td>
+              <td>
+                <span class="tag {{ order.get_status_display_color }}">
+                  {{ order.get_status_display }}
+                </span>
+              </td>
               <td>{{ order.status_updated_at|date:"M d, Y" }}</td>
               <td>{{ order.get_sample_count }}</td>
               <td>
                 <a href="{% url 'admin_order_detail' order.id %}" 
-                   class="button is-primary">
+                   class="button is-primary is-small">
                   <span class="icon">
                     <i class="fas fa-eye"></i>
                   </span>
-                  <span>Review</span>
+                  <span>View</span>
                 </a>
               </td>
             </tr>
@@ -143,88 +201,132 @@ Admin Dashboard - Sequencing Center Management
         </table>
       </div>
       {% else %}
-      <p class="has-text-grey">No orders currently awaiting review.</p>
+      <p class="has-text-grey">No recent orders.</p>
       {% endif %}
     </div>
+      </div>
 
-    <!-- Recent Activity -->
-    <div class="section-card">
-      <div class="section-header">
-        <h2 class="section-title">Recent Activity</h2>
-        <p class="has-text-grey is-size-7">
-          Showing all actions including status changes, notes, and rejections
-        </p>
-      </div>
-      
-      {% if recent_activity %}
-      <div class="timeline">
-        {% for activity in recent_activity %}
-        <div class="timeline-item">
-          <div class="timeline-marker {% if activity.is_rejection %}is-danger{% elif activity.note_type == 'internal' %}is-warning{% elif activity.note_type == 'status_change' %}is-primary{% else %}is-info{% endif %}"></div>
-          <div class="timeline-content">
-            <div class="is-size-7 has-text-grey mb-1">
-              {{ activity.created_at|date:"M d, Y H:i" }}
-              {% if activity.user %} • 
-                {% if activity.user.first_name or activity.user.last_name %}
-                  {{ activity.user.first_name }} {{ activity.user.last_name }} ({{ activity.user.username }})
-                {% else %}
-                  {{ activity.user.username }}
-                {% endif %}
-              {% endif %}
-            </div>
-            <div>
-              <strong>Order #{{ activity.order.id }}</strong> - 
-              {{ activity.order.project.title|truncatechars:30 }}
-            </div>
-            
-            {% if activity.note_type == 'status_change' %}
-            <div class="mt-1">
-              <span class="tag is-light is-small">{{ activity.old_status|title }}</span>
-              →
-              <span class="tag is-{{ activity.order.get_status_display_color }} is-small">{{ activity.new_status|title }}</span>
-            </div>
-            {% elif activity.is_rejection %}
-            <div class="mt-1">
-              <span class="tag is-danger is-small">Rejected</span>
-              <span class="tag is-light is-small">→ {{ activity.new_status|title }}</span>
-            </div>
-            {% if activity.content %}
-            <div class="mt-1 has-text-danger-dark">
-              <small><i class="fas fa-exclamation-circle"></i> {{ activity.content|truncatechars:100 }}</small>
-            </div>
-            {% endif %}
-            {% elif activity.note_type == 'internal' %}
-            <div class="mt-1">
-              <span class="tag is-warning is-light is-small">
-                <span class="icon is-small"><i class="fas fa-lock"></i></span>
-                <span>Internal Note</span>
-              </span>
-            </div>
-            {% if activity.content %}
-            <div class="mt-1">
-              <small>{{ activity.content|truncatechars:100 }}</small>
-            </div>
-            {% endif %}
-            {% elif activity.note_type == 'user_visible' %}
-            <div class="mt-1">
-              <span class="tag is-info is-light is-small">
-                <span class="icon is-small"><i class="fas fa-comment"></i></span>
-                <span>Note</span>
-              </span>
-            </div>
-            {% if activity.content %}
-            <div class="mt-1">
-              <small>{{ activity.content|truncatechars:100 }}</small>
-            </div>
-            {% endif %}
-            {% endif %}
+      <!-- Right Sidebar - Recent Activity -->
+      <div class="column is-3">
+        <div class="section-card">
+          <div class="section-header mb-3">
+            <h2 class="section-title is-size-5">Recent Activity</h2>
           </div>
+          
+          {% if recent_activity %}
+          <div class="timeline compact">
+            {% for activity in recent_activity|slice:":3" %}
+            <div class="timeline-item compact">
+              <div class="timeline-marker is-small {% if activity.is_rejection %}is-danger{% elif activity.note_type == 'internal' %}is-warning{% elif activity.note_type == 'status_change' %}is-primary{% else %}is-info{% endif %}"></div>
+              <div class="timeline-content">
+                <div class="is-size-7 has-text-grey mb-1">
+                  {{ activity.created_at|date:"M d H:i" }}
+                  {% if activity.user %}
+                  • {{ activity.user.username }}
+                  {% endif %}
+                </div>
+                <div class="is-size-7">
+                  <strong>Order #{{ activity.order.id }}</strong> - {{ activity.order.project.title|truncatechars:20 }}
+                </div>
+                {% if activity.note_type == 'status_change' %}
+                  <div class="mt-1">
+                    <span class="tag is-light is-small">{{ activity.old_status|title }}</span>
+                    →
+                    <span class="tag is-{{ activity.order.get_status_display_color }} is-small">{{ activity.new_status|title }}</span>
+                  </div>
+                {% elif activity.is_rejection %}
+                  <div class="mt-1">
+                    <span class="tag is-danger is-small">Rejected</span>
+                    {% if activity.content %}
+                    <div class="is-size-7 mt-1">{{ activity.content|truncatechars:50 }}</div>
+                    {% endif %}
+                  </div>
+                {% elif activity.note_type == 'internal' %}
+                  <div class="mt-1">
+                    <span class="tag is-warning is-light is-small">Internal Note</span>
+                    {% if activity.content %}
+                    <div class="is-size-7 mt-1">{{ activity.content|truncatechars:50 }}</div>
+                    {% endif %}
+                  </div>
+                {% elif activity.note_type == 'user_visible' %}
+                  <div class="mt-1">
+                    <span class="tag is-info is-light is-small">User Note</span>
+                    {% if activity.content %}
+                    <div class="is-size-7 mt-1">{{ activity.content|truncatechars:50 }}</div>
+                    {% endif %}
+                  </div>
+                {% endif %}
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+          
+          {% if recent_activity.count > 3 %}
+          <div class="mt-3 has-text-centered">
+            <button class="button is-small is-light" onclick="showAllActivity()">
+              <span class="icon">
+                <i class="fas fa-chevron-down"></i>
+              </span>
+              <span>Show All ({{ recent_activity.count }})</span>
+            </button>
+          </div>
+          {% endif %}
+          
+          <!-- Hidden full activity list -->
+          <div id="full-activity" style="display: none;">
+            <hr class="my-3">
+            <div class="timeline compact">
+              {% for activity in recent_activity|slice:"3:" %}
+              <div class="timeline-item compact">
+                <div class="timeline-marker is-small {% if activity.is_rejection %}is-danger{% elif activity.note_type == 'internal' %}is-warning{% elif activity.note_type == 'status_change' %}is-primary{% else %}is-info{% endif %}"></div>
+                <div class="timeline-content">
+                  <div class="is-size-7 has-text-grey mb-1">
+                    {{ activity.created_at|date:"M d H:i" }}
+                    {% if activity.user %}
+                    • {{ activity.user.username }}
+                    {% endif %}
+                  </div>
+                  <div class="is-size-7">
+                    <strong>Order #{{ activity.order.id }}</strong> - {{ activity.order.project.title|truncatechars:20 }}
+                  </div>
+                  {% if activity.note_type == 'status_change' %}
+                    <div class="mt-1">
+                      <span class="tag is-light is-small">{{ activity.old_status|title }}</span>
+                      →
+                      <span class="tag is-{{ activity.order.get_status_display_color }} is-small">{{ activity.new_status|title }}</span>
+                    </div>
+                  {% elif activity.is_rejection %}
+                    <div class="mt-1">
+                      <span class="tag is-danger is-small">Rejected</span>
+                      {% if activity.content %}
+                      <div class="is-size-7 mt-1">{{ activity.content|truncatechars:50 }}</div>
+                      {% endif %}
+                    </div>
+                  {% elif activity.note_type == 'internal' %}
+                    <div class="mt-1">
+                      <span class="tag is-warning is-light is-small">Internal Note</span>
+                      {% if activity.content %}
+                      <div class="is-size-7 mt-1">{{ activity.content|truncatechars:50 }}</div>
+                      {% endif %}
+                    </div>
+                  {% elif activity.note_type == 'user_visible' %}
+                    <div class="mt-1">
+                      <span class="tag is-info is-light is-small">User Note</span>
+                      {% if activity.content %}
+                      <div class="is-size-7 mt-1">{{ activity.content|truncatechars:50 }}</div>
+                      {% endif %}
+                    </div>
+                  {% endif %}
+                </div>
+              </div>
+              {% endfor %}
+            </div>
+          </div>
+          {% else %}
+          <p class="has-text-grey is-size-7">No recent activity.</p>
+          {% endif %}
         </div>
-        {% endfor %}
       </div>
-      {% else %}
-      <p class="has-text-grey">No recent activity.</p>
-      {% endif %}
     </div>
     
     <!-- Footer with system info -->
@@ -302,95 +404,6 @@ body {
 
 .dashboard-footer small {
   font-size: 0.875rem;
-}
-
-/* Compact Status Pipeline */
-.status-pipeline-compact {
-  display: flex;
-  gap: 0.5rem;
-  overflow-x: auto;
-  padding: 0.5rem 0;
-}
-
-.pipeline-item {
-  flex: 1;
-  min-width: 120px;
-  background: white;
-  border: 1px solid #e9ecef;
-  border-radius: 6px;
-  padding: 0.75rem;
-  text-decoration: none;
-  color: inherit;
-  transition: all 0.2s ease;
-  position: relative;
-}
-
-.pipeline-item:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-}
-
-.pipeline-item::after {
-  content: '→';
-  position: absolute;
-  right: -1rem;
-  top: 50%;
-  transform: translateY(-50%);
-  color: #cbd5e0;
-  font-size: 0.875rem;
-}
-
-.pipeline-item:last-child::after {
-  display: none;
-}
-
-.pipeline-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 0.25rem;
-}
-
-.pipeline-count {
-  font-size: 1.25rem;
-  font-weight: 600;
-  color: #2c3e50;
-}
-
-.pipeline-percent {
-  font-size: 0.75rem;
-  color: #6c757d;
-}
-
-.pipeline-label {
-  font-size: 0.75rem;
-  color: #4a5568;
-  line-height: 1.2;
-}
-
-/* Pipeline Status Colors */
-.pipeline-item.is-light {
-  background-color: #f8f9fa;
-}
-
-.pipeline-item.is-info {
-  background-color: #e6f3ff;
-  border-color: #3298dc;
-}
-
-.pipeline-item.is-warning {
-  background-color: #fffbeb;
-  border-color: #ffdd57;
-}
-
-.pipeline-item.is-primary {
-  background-color: #e6f0ff;
-  border-color: #3273dc;
-}
-
-.pipeline-item.is-success {
-  background-color: #e6ffed;
-  border-color: #48c774;
 }
 
 /* Section Cards */
@@ -553,19 +566,115 @@ body {
     display: inline-block;
     margin: 0 1rem;
   }
-  
-  .status-pipeline-compact {
-    flex-wrap: wrap;
-  }
-  
-  .pipeline-item {
-    flex: 0 0 48%;
-    margin-bottom: 0.5rem;
-  }
-  
-  .pipeline-item::after {
-    display: none;
-  }
+}
+
+/* Compact Timeline for Sidebar */
+.timeline.compact {
+  padding-left: 1rem;
+}
+
+.timeline-item.compact {
+  padding-bottom: 1rem;
+  padding-left: 1.25rem;
+  border-left: 1px solid #e0e0e0;
+}
+
+.timeline-item.compact:last-child {
+  padding-bottom: 0;
+  border-left: none;
+}
+
+.timeline-item.compact .timeline-marker.is-small {
+  width: 10px;
+  height: 10px;
+  left: -5px;
+}
+
+.timeline-item.compact .timeline-content {
+  margin-left: 0;
+  margin-top: -0.125rem;
 }
 </style>
+
+<script>
+function showAllActivity() {
+  const fullActivity = document.getElementById('full-activity');
+  const button = event.target.closest('button');
+  
+  if (fullActivity.style.display === 'none') {
+    fullActivity.style.display = 'block';
+    button.innerHTML = '<span class="icon"><i class="fas fa-chevron-up"></i></span><span>Show Less</span>';
+  } else {
+    fullActivity.style.display = 'none';
+    button.innerHTML = '<span class="icon"><i class="fas fa-chevron-down"></i></span><span>Show All ({{ recent_activity.count }})</span>';
+  }
+}
+
+let currentFilter = 'all';
+
+function filterOrders(status) {
+  currentFilter = status;
+  const rows = document.querySelectorAll('#orders-table-body tr');
+  const filterInfo = document.getElementById('filter-info');
+  const clearButton = document.getElementById('clear-filter');
+  
+  // Update active card styling
+  document.querySelectorAll('.status-card').forEach(card => {
+    card.style.opacity = '0.7';
+    card.style.transform = 'scale(0.98)';
+  });
+  
+  if (status === 'all') {
+    // Show all rows
+    rows.forEach(row => row.style.display = '');
+    if (filterInfo) filterInfo.style.display = 'none';
+    document.querySelectorAll('.status-card').forEach(card => {
+      card.style.opacity = '1';
+      card.style.transform = 'scale(1)';
+    });
+  } else {
+    // Find and highlight the clicked card
+    const clickedCard = event.currentTarget;
+    clickedCard.style.opacity = '1';
+    clickedCard.style.transform = 'scale(1)';
+    
+    // Filter rows
+    let visibleCount = 0;
+    rows.forEach(row => {
+      const rowStatus = row.getAttribute('data-status');
+      if (rowStatus === status || (status === 'sequencing' && ['sequencing_in_progress', 'sequencing_completed', 'data_processing'].includes(rowStatus)) || (status === 'sequenced' && ['data_delivered', 'completed'].includes(rowStatus))) {
+        row.style.display = '';
+        visibleCount++;
+      } else {
+        row.style.display = 'none';
+      }
+    });
+    
+    // Update filter info
+    if (filterInfo) {
+      const statusLabels = {
+        'draft': 'Draft',
+        'ready_for_sequencing': 'Submitted',
+        'sequencing': 'Sequencing',
+        'sequenced': 'Sequenced'
+      };
+      filterInfo.innerHTML = `Showing ${visibleCount} ${statusLabels[status] || status} orders`;
+      filterInfo.style.display = 'inline-block';
+    }
+    
+    if (clearButton) clearButton.style.display = 'inline-block';
+  }
+}
+
+// Add click event to clear filter
+document.addEventListener('DOMContentLoaded', function() {
+  const clearButton = document.getElementById('clear-filter');
+  if (clearButton) {
+    clearButton.addEventListener('click', function() {
+      filterOrders('all');
+      this.style.display = 'none';
+    });
+  }
+});
+</script>
 {% endblock content %}
