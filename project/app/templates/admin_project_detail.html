@@ -461,19 +461,18 @@
                   </td>
                   <td>
                     <div class="buttons are-small">
-                      {% if run.status != 'running' %}
                       <form method="post" action="{% url 'admin_start_submg_run' run.id %}" style="display: inline;">
                         {% csrf_token %}
                         <button type="submit" class="button is-small is-warning" 
                                 title="Start SubMG upload"
-                                onclick="event.stopPropagation(); return confirm('Start SubMG upload for run #{{ run.id }}?')">
+                                onclick="event.stopPropagation(); return confirm('Start SubMG upload for run #{{ run.id }}?')"
+                                {% if run.status == 'running' %}disabled{% endif %}>
                           <span class="icon">
                             <i class="fas fa-upload"></i>
                           </span>
                           <span>Run SubMG</span>
                         </button>
                       </form>
-                      {% endif %}
                       <a href="/admin/app/submgrun/{{ run.id }}/change/" 
                          class="button is-small is-dark" 
                          target="_blank"
