@@ -567,12 +567,9 @@
                 </tr>
               </thead>
               <tbody>
-                <tr class="mag-run-row" onclick="toggleMagOutputs({{ run.id }})">
+                <tr class="mag-run-row">
                   <td>
                     <strong>#{{ run.id }}</strong>
-                    <span class="icon is-small ml-2">
-                      <i class="fas fa-chevron-down" id="mag-toggle-{{ run.id }}"></i>
-                    </span>
                   </td>
                   <td>
                     {% if run.status %}
@@ -618,10 +615,17 @@
                   </td>
                   <td>
                     <div class="buttons are-small">
+                      <button class="button is-small is-info" 
+                              onclick="toggleMagOutputs({{ run.id }})"
+                              title="Toggle pipeline outputs">
+                        <span class="icon">
+                          <i class="fas fa-layer-group"></i>
+                        </span>
+                        <span id="mag-toggle-text-{{ run.id }}">Show Outputs</span>
+                      </button>
                       <a href="/admin/app/magrun/{{ run.id }}/change/" 
                          class="button is-small is-dark" 
                          target="_blank"
-                         onclick="event.stopPropagation();"
                          title="View in Django Admin">
                         <span class="icon">
                           <i class="fas fa-external-link-alt"></i>
@@ -630,7 +634,7 @@
                       </a>
                       {% if run.reads.count > 0 and not run.status %}
                       <button class="button is-small is-primary" 
-                              onclick="event.stopPropagation(); alert('MAG pipeline execution will be implemented in Django Admin')"
+                              onclick="alert('MAG pipeline execution will be implemented in Django Admin')"
                               title="Run pipeline">
                         <span class="icon">
                           <i class="fas fa-play"></i>
@@ -652,204 +656,108 @@
             </h6>
             
             {% if assemblies or bins or alignments %}
-              <!-- Assemblies -->
-              {% if assemblies %}
-              <div class="mb-4">
-                <h6 class="subtitle is-6 mb-3">
-                  <i class="fas fa-puzzle-piece"></i> Assemblies 
-                  <span class="tag is-light is-small ml-2">{{ assemblies|length }}</span>
-                </h6>
-                <div class="table-container">
-                  <table class="table is-fullwidth is-narrow">
-                    <thead>
-                      <tr>
-                        <th>ID</th>
-                        <th>Software</th>
-                        <th>Status</th>
-                        <th>Actions</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {% for assembly in assemblies|slice:":5" %}
-                      <tr>
-                        <td>#{{ assembly.id }}</td>
-                        <td>{{ assembly.assembly_software|default:"-" }}</td>
-                        <td>
-                          {% if assembly.submitted %}
-                            <span class="tag is-success is-light is-small">Submitted</span>
-                          {% else %}
-                            <span class="tag is-light is-small">Pending</span>
-                          {% endif %}
-                        </td>
-                        <td>
-                          <div class="buttons are-small">
-                            {% if assembly.file %}
-                            <button class="button is-small is-info is-light" 
-                                    onclick="event.stopPropagation(); showFilePreview('assembly', {{ assembly.id }}, '{{ assembly.file|escapejs }}')"
-                                    title="Inspect file">
-                              <span class="icon">
-                                <i class="fas fa-search"></i>
-                              </span>
-                              <span>Inspect</span>
-                            </button>
-                            {% endif %}
-                            <a href="/admin/app/assembly/{{ assembly.id }}/change/" 
-                               class="button is-small is-dark is-light" 
-                               target="_blank"
-                               onclick="event.stopPropagation();"
-                               title="View in Django Admin">
-                              <span class="icon">
-                                <i class="fas fa-external-link-alt"></i>
-                              </span>
-                            </a>
-                          </div>
-                        </td>
-                      </tr>
-                      {% endfor %}
-                    </tbody>
-                  </table>
-                  {% if assemblies|length > 5 %}
-                  <p class="has-text-grey is-size-7 mt-2">Showing first 5 of {{ assemblies|length }} assemblies</p>
-                  {% endif %}
-                </div>
+              <div class="content">
+                <ul class="pipeline-outputs-list">
+                  <!-- Assemblies -->
+                  {% for assembly in assemblies %}
+                  <li class="mb-3">
+                    <span class="icon is-small has-text-info">
+                      <i class="fas fa-puzzle-piece"></i>
+                    </span>
+                    <strong>Assembly</strong>
+                    {% if assembly.assembly_software %}
+                      <span class="has-text-grey ml-2">({{ assembly.assembly_software }})</span>
+                    {% endif %}
+                    <div class="buttons are-small is-inline-flex ml-3">
+                      {% if assembly.file %}
+                      <a href="/media/{{ assembly.file }}" download class="button is-small is-success is-light">
+                        <span class="icon">
+                          <i class="fas fa-download"></i>
+                        </span>
+                        <span>Download</span>
+                      </a>
+                      <button class="button is-small is-info is-light" 
+                              onclick="showFilePreview('assembly', {{ assembly.id }}, '{{ assembly.file|escapejs }}')">
+                        <span class="icon">
+                          <i class="fas fa-search"></i>
+                        </span>
+                        <span>Inspect</span>
+                      </button>
+                      {% endif %}
+                    </div>
+                  </li>
+                  {% endfor %}
+                  
+                  <!-- Bins -->
+                  {% for bin in bins %}
+                  <li class="mb-3">
+                    <span class="icon is-small has-text-warning">
+                      <i class="fas fa-box"></i>
+                    </span>
+                    <strong>Bin</strong>
+                    {% if bin.binning_software %}
+                      <span class="has-text-grey ml-2">({{ bin.binning_software }})</span>
+                    {% endif %}
+                    <div class="buttons are-small is-inline-flex ml-3">
+                      {% if bin.file %}
+                      <a href="/media/{{ bin.file }}" download class="button is-small is-success is-light">
+                        <span class="icon">
+                          <i class="fas fa-download"></i>
+                        </span>
+                        <span>Download</span>
+                      </a>
+                      <button class="button is-small is-info is-light" 
+                              onclick="showFilePreview('bin', {{ bin.id }}, '{{ bin.file|escapejs }}')">
+                        <span class="icon">
+                          <i class="fas fa-search"></i>
+                        </span>
+                        <span>Inspect</span>
+                      </button>
+                      {% endif %}
+                      {% if bin.quality_file %}
+                      <button class="button is-small is-warning is-light" 
+                              onclick="showFilePreview('bin-quality', {{ bin.id }}, '{{ bin.quality_file|escapejs }}')">
+                        <span class="icon">
+                          <i class="fas fa-chart-line"></i>
+                        </span>
+                        <span>Quality</span>
+                      </button>
+                      {% endif %}
+                    </div>
+                  </li>
+                  {% endfor %}
+                  
+                  <!-- Alignments -->
+                  {% for alignment in alignments %}
+                  <li class="mb-3">
+                    <span class="icon is-small has-text-success">
+                      <i class="fas fa-align-left"></i>
+                    </span>
+                    <strong>Alignment</strong>
+                    {% if alignment.assembly %}
+                      <span class="has-text-grey ml-2">(for Assembly #{{ alignment.assembly.id }})</span>
+                    {% endif %}
+                    <div class="buttons are-small is-inline-flex ml-3">
+                      {% if alignment.file %}
+                      <a href="/media/{{ alignment.file }}" download class="button is-small is-success is-light">
+                        <span class="icon">
+                          <i class="fas fa-download"></i>
+                        </span>
+                        <span>Download</span>
+                      </a>
+                      <button class="button is-small is-info is-light" 
+                              onclick="showFilePreview('alignment', {{ alignment.id }}, '{{ alignment.file|escapejs }}')">
+                        <span class="icon">
+                          <i class="fas fa-search"></i>
+                        </span>
+                        <span>Inspect</span>
+                      </button>
+                      {% endif %}
+                    </div>
+                  </li>
+                  {% endfor %}
+                </ul>
               </div>
-              {% endif %}
-              
-              <!-- Bins -->
-              {% if bins %}
-              <div class="mb-4">
-                <h6 class="subtitle is-6 mb-3">
-                  <i class="fas fa-box"></i> Bins 
-                  <span class="tag is-light is-small ml-2">{{ bins|length }}</span>
-                </h6>
-                <div class="table-container">
-                  <table class="table is-fullwidth is-narrow">
-                    <thead>
-                      <tr>
-                        <th>ID</th>
-                        <th>Bin Number</th>
-                        <th>Software</th>
-                        <th>Actions</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {% for bin in bins|slice:":5" %}
-                      <tr>
-                        <td>#{{ bin.id }}</td>
-                        <td>{{ bin.bin_number|default:"-" }}</td>
-                        <td>{{ bin.binning_software|default:"-" }}</td>
-                        <td>
-                          <div class="buttons are-small">
-                            {% if bin.file %}
-                            <button class="button is-small is-info is-light" 
-                                    onclick="event.stopPropagation(); showFilePreview('bin', {{ bin.id }}, '{{ bin.file|escapejs }}')"
-                                    title="Inspect bin file">
-                              <span class="icon">
-                                <i class="fas fa-search"></i>
-                              </span>
-                              <span>Inspect</span>
-                            </button>
-                            {% endif %}
-                            {% if bin.quality_file %}
-                            <button class="button is-small is-warning is-light" 
-                                    onclick="event.stopPropagation(); showFilePreview('bin-quality', {{ bin.id }}, '{{ bin.quality_file|escapejs }}')"
-                                    title="Inspect quality file">
-                              <span class="icon">
-                                <i class="fas fa-chart-line"></i>
-                              </span>
-                              <span>Quality</span>
-                            </button>
-                            {% endif %}
-                            <a href="/admin/app/bin/{{ bin.id }}/change/" 
-                               class="button is-small is-dark is-light" 
-                               target="_blank"
-                               onclick="event.stopPropagation();"
-                               title="View in Django Admin">
-                              <span class="icon">
-                                <i class="fas fa-external-link-alt"></i>
-                              </span>
-                            </a>
-                          </div>
-                        </td>
-                      </tr>
-                      {% endfor %}
-                    </tbody>
-                  </table>
-                  {% if bins|length > 5 %}
-                  <p class="has-text-grey is-size-7 mt-2">Showing first 5 of {{ bins|length }} bins</p>
-                  {% endif %}
-                </div>
-              </div>
-              {% endif %}
-              
-              <!-- Alignments -->
-              {% if alignments %}
-              <div class="mb-4">
-                <h6 class="subtitle is-6 mb-3">
-                  <i class="fas fa-align-left"></i> Alignments 
-                  <span class="tag is-light is-small ml-2">{{ alignments|length }}</span>
-                </h6>
-                <div class="table-container">
-                  <table class="table is-fullwidth is-narrow">
-                    <thead>
-                      <tr>
-                        <th>ID</th>
-                        <th>Assembly</th>
-                        <th>Status</th>
-                        <th>Actions</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {% for alignment in alignments|slice:":5" %}
-                      <tr>
-                        <td>#{{ alignment.id }}</td>
-                        <td>
-                          {% if alignment.assembly %}
-                            Assembly #{{ alignment.assembly.id }}
-                          {% else %}
-                            <span class="has-text-grey">-</span>
-                          {% endif %}
-                        </td>
-                        <td>
-                          {% if alignment.submitted %}
-                            <span class="tag is-success is-light is-small">Submitted</span>
-                          {% else %}
-                            <span class="tag is-light is-small">Pending</span>
-                          {% endif %}
-                        </td>
-                        <td>
-                          <div class="buttons are-small">
-                            {% if alignment.file %}
-                            <button class="button is-small is-info is-light" 
-                                    onclick="event.stopPropagation(); showFilePreview('alignment', {{ alignment.id }}, '{{ alignment.file|escapejs }}')"
-                                    title="Inspect alignment file">
-                              <span class="icon">
-                                <i class="fas fa-search"></i>
-                              </span>
-                              <span>Inspect</span>
-                            </button>
-                            {% endif %}
-                            <a href="/admin/app/alignment/{{ alignment.id }}/change/" 
-                               class="button is-small is-dark is-light" 
-                               target="_blank"
-                               onclick="event.stopPropagation();"
-                               title="View in Django Admin">
-                              <span class="icon">
-                                <i class="fas fa-external-link-alt"></i>
-                              </span>
-                            </a>
-                          </div>
-                        </td>
-                      </tr>
-                      {% endfor %}
-                    </tbody>
-                  </table>
-                  {% if alignments|length > 5 %}
-                  <p class="has-text-grey is-size-7 mt-2">Showing first 5 of {{ alignments|length }} alignments</p>
-                  {% endif %}
-                </div>
-              </div>
-              {% endif %}
             {% else %}
               <p class="has-text-grey">No outputs generated yet for this MAG run.</p>
             {% endif %}
@@ -1304,7 +1212,6 @@ body {
 
 /* MAG Run Rows */
 .mag-run-row {
-  cursor: pointer;
   transition: background-color 0.2s ease;
 }
 
@@ -1314,6 +1221,32 @@ body {
 
 .mag-outputs {
   border-top: 2px solid #e9ecef;
+}
+
+/* Pipeline Outputs List */
+.pipeline-outputs-list {
+  list-style: none;
+  padding-left: 0;
+}
+
+.pipeline-outputs-list li {
+  display: flex;
+  align-items: center;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.pipeline-outputs-list li:last-child {
+  border-bottom: none;
+}
+
+.pipeline-outputs-list .buttons {
+  margin-bottom: 0 !important;
+}
+
+.pipeline-outputs-list .buttons.is-inline-flex {
+  display: inline-flex;
+  flex-wrap: wrap;
 }
 
 /* Responsive */
@@ -1642,16 +1575,14 @@ function closeFilePreviewModal(type, id) {
 
 function toggleMagOutputs(runId) {
   const outputs = document.getElementById(`mag-outputs-${runId}`);
-  const toggle = document.getElementById(`mag-toggle-${runId}`);
+  const toggleText = document.getElementById(`mag-toggle-text-${runId}`);
   
   if (outputs.style.display === 'none') {
     outputs.style.display = 'block';
-    toggle.classList.remove('fa-chevron-down');
-    toggle.classList.add('fa-chevron-up');
+    toggleText.textContent = 'Hide Outputs';
   } else {
     outputs.style.display = 'none';
-    toggle.classList.remove('fa-chevron-up');
-    toggle.classList.add('fa-chevron-down');
+    toggleText.textContent = 'Show Outputs';
   }
 }
 </script>
