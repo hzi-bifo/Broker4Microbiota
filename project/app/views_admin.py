@@ -17,7 +17,10 @@ import importlib
 import os
 import shutil
 import hashlib
+import logging
 from django.conf import settings
+
+logger = logging.getLogger(__name__)
 from django.template.loader import render_to_string
 from pathlib import Path
 import random
@@ -1699,5 +1702,59 @@ def admin_create_mag_run(request, project_id):
     
     # Redirect back to project detail page
     return redirect('admin_project_detail', project_id=project_id)
+
+
+@staff_member_required
+@require_http_methods(["POST"])
+def admin_start_mag_run(request, mag_run_id):
+    """
+    Start/execute a MAG pipeline run
+    Based on the Django admin action start_run in MagRunAdmin
+    """
+    import random
+    from . import async_calls
+    
+    mag_run = get_object_or_404(MagRun, id=mag_run_id)
+    
+    # Check if the MAG run already has reads
+    if not mag_run.reads.exists():
+        messages.error(request, "Cannot start MAG run: No reads associated with this run.")
+        return redirect('admin_project_detail', project_id=mag_run.reads.first().sample.order.project.id)
+    
+    # Check if it's already running
+    if mag_run.status == 'running':
+        messages.warning(request, "MAG run is already running.")
+        return redirect('admin_project_detail', project_id=mag_run.reads.first().sample.order.project.id)
+    
+    try:
+        # Create a new temporary folder for the run
+        run_id = random.randint(1000000, 9999999)
+        run_folder = f"/tmp/mag_{run_id}"
+        os.makedirs(run_folder, exist_ok=True)
+        
+        # Write samplesheet and cluster config to files
+        with open(os.path.join(run_folder, 'samplesheet.csv'), 'w') as file:
+            file.write(mag_run.samplesheet_content)
+        
+        with open(os.path.join(run_folder, 'cluster_config.cfg'), 'w') as file:
+            file.write(mag_run.cluster_config)
+        
+        # Start the async job
+        async_calls.run_mag(mag_run, run_folder)
+        
+        messages.success(request, f"MAG pipeline started successfully for run #{mag_run.id}")
+        
+    except Exception as e:
+        messages.error(request, f"Failed to start MAG pipeline: {str(e)}")
+        logger.error(f"Failed to start MAG run {mag_run_id}: {str(e)}")
+    
+    # Get project ID for redirect
+    first_read = mag_run.reads.first()
+    if first_read and first_read.sample and first_read.sample.order:
+        project_id = first_read.sample.order.project.id
+        return redirect('admin_project_detail', project_id=project_id)
+    
+    # Fallback to admin dashboard if we can't find project
+    return redirect('admin_dashboard')
 
 

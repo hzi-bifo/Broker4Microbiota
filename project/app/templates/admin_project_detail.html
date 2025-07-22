@@ -632,15 +632,18 @@
                         </span>
                         <span>Details</span>
                       </a>
-                      {% if run.reads.count > 0 and not run.status %}
-                      <button class="button is-small is-primary" 
-                              onclick="alert('MAG pipeline execution will be implemented in Django Admin')"
-                              title="Run pipeline">
-                        <span class="icon">
-                          <i class="fas fa-play"></i>
-                        </span>
-                        <span>Run</span>
-                      </button>
+                      {% if run.reads.count > 0 and run.status != 'running' %}
+                      <form method="post" action="{% url 'admin_start_mag_run' run.id %}" style="display: inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="button is-small is-primary" 
+                                title="Start MAG pipeline"
+                                onclick="return confirm('Start MAG pipeline run #{{ run.id }}?')">
+                          <span class="icon">
+                            <i class="fas fa-play"></i>
+                          </span>
+                          <span>Run</span>
+                        </button>
+                      </form>
                       {% endif %}
                     </div>
                   </td>
