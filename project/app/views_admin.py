@@ -667,6 +667,32 @@ def admin_project_list(request):
         submission_count = project_submissions.count()
         has_successful_submission = project_submissions.filter(accession_status='SUCCESSFUL').exists()
         
+        # Calculate workflow status
+        has_mag_runs = MagRun.objects.filter(
+            reads__sample__order__project=project
+        ).distinct().exists()
+        
+        has_submg_runs = SubMGRun.objects.filter(
+            order__project=project
+        ).exists()
+        
+        workflow_status = {
+            'project_created': True,
+            'ena_registered': project.submitted,
+            'files_complete': samples_with_files == samples.count() and samples.count() > 0,
+            'mag_pipeline_run': has_mag_runs,
+            'submg_pipeline_run': has_submg_runs,
+        }
+        
+        # Count completed workflow steps
+        workflow_progress = sum([
+            workflow_status['project_created'],
+            workflow_status['ena_registered'],
+            workflow_status['files_complete'],
+            workflow_status['mag_pipeline_run'],
+            workflow_status['submg_pipeline_run'],
+        ])
+        
         project_stats.append({
             'project': project,
             'order_count': project.order_count,
@@ -676,7 +702,9 @@ def admin_project_list(request):
             'latest_order_status': latest_order.get_status_display() if latest_order else 'No orders',
             'has_all_files': samples_with_files == samples.count() and samples.count() > 0,
             'submission_count': submission_count,
-            'has_successful_submission': has_successful_submission
+            'has_successful_submission': has_successful_submission,
+            'workflow_status': workflow_status,
+            'workflow_progress': workflow_progress,
         })
     
     # Pagination

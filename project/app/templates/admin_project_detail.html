@@ -34,13 +34,6 @@
               </span>
               {% endif %}
             </h1>
-            <p class="is-size-7">
-              <strong>User:</strong> {{ project.user.username }} ({{ project.user.email }}) • 
-              <strong>Alias:</strong> {{ project.alias|default:"-" }} •
-              {% if project.study_accession_id %}
-              <strong>ENA Accession:</strong> {{ project.study_accession_id }}
-              {% endif %}
-            </p>
           </div>
         </div>
       </div>
@@ -136,66 +129,258 @@
           <div class="step-label">Upload Assemblies</div>
         </div>
       </div>
-      
-      <!-- Action Buttons -->
-      <div class="workflow-actions mt-5">
-        <div class="buttons is-centered">
-          <form method="post" action="{% url 'admin_generate_project_xml' project.id %}" style="display: inline;">
-            {% csrf_token %}
-            <button type="submit" class="button {% if project_submissions %}is-success is-light{% else %}is-info{% endif %}"
-                    title="{% if project_submissions %}Generate another ENA submission XML{% else %}Generate ENA submission XML{% endif %}"
-                    onclick="return confirm('Generate {% if project_submissions %}another {% endif %}ENA XML for this project?')">
-              <span class="icon">
-                <i class="fas fa-file-code"></i>
-              </span>
-              <span>{% if project_submissions %}Generate Another ENA XML Object{% else %}Generate ENA XML{% endif %}</span>
-            </button>
-          </form>
-          
-          <button class="button is-primary" disabled title="Coming soon">
-            <span class="icon">
-              <i class="fas fa-cloud-upload-alt"></i>
-            </span>
-            <span>Register Project at ENA</span>
-          </button>
-          
-          <form method="post" action="{% url 'admin_create_mag_run' project.id %}" style="display: inline;">
-            {% csrf_token %}
-            <button type="submit" class="button is-info" 
-                    title="Create MAG pipeline run"
-                    onclick="return confirm('Create MAG run for this project?')">
-              <span class="icon">
-                <i class="fas fa-dna"></i>
-              </span>
-              <span>Run MAG Pipeline</span>
-            </button>
-          </form>
-          
-          <button class="button is-warning" disabled title="Coming soon">
-            <span class="icon">
-              <i class="fas fa-microscope"></i>
-            </span>
-            <span>Run SubMG Pipeline</span>
-          </button>
-          
-          <button class="button is-success" disabled title="Coming soon">
-            <span class="icon">
-              <i class="fas fa-upload"></i>
-            </span>
-            <span>Upload Assemblies</span>
-          </button>
+    </div>
+
+    <!-- Three Column Layout -->
+    <div class="columns">
+      <!-- First Column - Sample File Status -->
+      <div class="column is-4">
+        {% if sample_file_details %}
+        <div class="box">
+          <h4 class="title is-5 mb-4">
+            <i class="fas fa-file"></i> Sample File Status
+          </h4>
+          <div class="content">
+            <table class="table is-narrow is-fullwidth">
+              <thead>
+                <tr>
+                  <th>Sample ID</th>
+                  <th>Files</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for detail in sample_file_details %}
+                <tr>
+                  <td>{{ detail.sample.sample_id|default:detail.sample.sample_alias|truncatechars:20 }}</td>
+                  <td>
+                    {% if detail.has_files %}
+                      <span class="has-text-success">
+                        <i class="fas fa-check"></i> {{ detail.read_count }} file{{ detail.read_count|pluralize }}
+                      </span>
+                    {% else %}
+                      <span class="has-text-danger">
+                        <i class="fas fa-times"></i> Missing
+                      </span>
+                    {% endif %}
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+            {% if has_more_samples %}
+            <p class="has-text-grey is-size-7">Showing first 10 samples...</p>
+            {% endif %}
+          </div>
         </div>
+        {% endif %}
+      </div>
+      
+      <!-- Second Column - Project Information -->
+      <div class="column is-4">
+        <div class="box">
+          <div class="level is-mobile" style="cursor: pointer;" onclick="toggleSection('project-info')">
+            <div class="level-left">
+              <h4 class="title is-5 mb-0">
+                <i class="fas fa-info-circle"></i> Project Information
+              </h4>
+            </div>
+            <div class="level-right">
+              <span class="icon">
+                <i class="fas fa-chevron-down" id="project-info-chevron"></i>
+              </span>
+            </div>
+          </div>
+          <div class="content mt-4" id="project-info-content" style="display: none;">
+            <table class="table is-fullwidth">
+              <tbody>
+                <tr>
+                  <th>Title</th>
+                  <td>{{ project.title }}</td>
+                </tr>
+                <tr>
+                  <th>Alias</th>
+                  <td>{{ project.alias|default:"-" }}</td>
+                </tr>
+                <tr>
+                  <th>Description</th>
+                  <td>{{ project.description|default:"-"|linebreaks }}</td>
+                </tr>
+                <tr>
+                  <th>ENA Status</th>
+                  <td>
+                    {% if project.submitted %}
+                      <span class="has-text-success">
+                        <i class="fas fa-check-circle"></i> Registered
+                      </span>
+                    {% else %}
+                      <span class="has-text-grey">
+                        <i class="fas fa-times-circle"></i> Not Registered
+                      </span>
+                    {% endif %}
+                  </td>
+                </tr>
+                {% if project.study_accession_id %}
+                <tr>
+                  <th>Study Accession</th>
+                  <td><code>{{ project.study_accession_id }}</code></td>
+                </tr>
+                {% endif %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Third Column - Orders -->
+      <div class="column is-4">
+        <div class="box">
+          <div class="level is-mobile" style="cursor: pointer;" onclick="toggleSection('orders')">
+            <div class="level-left">
+              <h4 class="title is-5 mb-0">
+                <i class="fas fa-clipboard-list"></i> Orders ({{ orders.count }})
+              </h4>
+            </div>
+            <div class="level-right">
+              <span class="icon">
+                <i class="fas fa-chevron-down" id="orders-chevron"></i>
+              </span>
+            </div>
+          </div>
+          <div class="content mt-4" id="orders-content" style="display: none;">
+            {% if orders %}
+            <div class="orders-list">
+              {% for order in orders %}
+              <div class="order-card mb-3">
+                <div class="card">
+                  <header class="card-header">
+                    <p class="card-header-title">
+                      Order #{{ order.id }} - {{ order.name|default:"Unnamed" }}
+                      <span class="tag ml-2 {{ order.get_status_display_color }}">
+                        {{ order.get_status_display }}
+                      </span>
+                    </p>
+                    <button class="card-header-icon" aria-label="more options" onclick="toggleOrderDetails({{ order.id }})">
+                      <span class="icon">
+                        <i class="fas fa-angle-down" id="order-toggle-{{ order.id }}"></i>
+                      </span>
+                    </button>
+                  </header>
+                  <div class="card-content" id="order-details-{{ order.id }}" style="display: none;">
+                    <div class="content">
+                      <table class="table is-narrow is-fullwidth">
+                        <tbody>
+                          <tr>
+                            <th width="30%">Date</th>
+                            <td>{{ order.date|date:"M d, Y"|default:"-" }}</td>
+                          </tr>
+                          <tr>
+                            <th>Contact</th>
+                            <td>{{ order.email|default:"-" }}</td>
+                          </tr>
+                          <tr>
+                            <th>Platform</th>
+                            <td>{{ order.platform|default:"-" }}</td>
+                          </tr>
+                          <tr>
+                            <th>Samples</th>
+                            <td>{{ order.sample_set.count }} samples</td>
+                          </tr>
+                          <tr>
+                            <th>Status</th>
+                            <td>
+                              <span class="tag {{ order.get_status_display_color }}">
+                                {{ order.get_status_display }}
+                              </span>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                      <div class="mt-3">
+                        <a href="{% url 'admin_order_detail' order.id %}" class="button is-small is-info">
+                            <span class="icon">
+                              <i class="fas fa-eye"></i>
+                            </span>
+                            <span>View Details</span>
+                          </a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              {% endfor %}
+            </div>
+            {% else %}
+            <p class="has-text-grey">No orders have been created for this project yet.</p>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Statistics (Full Width, Collapsible) -->
+    <div class="box mb-4">
+      <div class="level is-mobile" style="cursor: pointer;" onclick="toggleSection('statistics')">
+        <div class="level-left">
+          <h4 class="title is-5 mb-0">
+            <i class="fas fa-chart-bar"></i> Statistics
+          </h4>
+        </div>
+        <div class="level-right">
+          <span class="icon">
+            <i class="fas fa-chevron-down" id="statistics-chevron"></i>
+          </span>
+        </div>
+      </div>
+      <div class="content mt-4" id="statistics-content" style="display: none;">
+        <p><strong>Total Orders:</strong> {{ orders.count }}</p>
+        <p><strong>Total Samples:</strong> {{ total_samples }}</p>
+        <p><strong>Samples with Files:</strong> {{ samples_with_files }}/{{ total_samples }} ({{ file_completion }}%)</p>
+        
+        {% if order_status_counts %}
+        <p class="mt-3"><strong>Order Status Breakdown:</strong></p>
+        <ul>
+          {% for status, count in order_status_counts.items %}
+          <li>{{ status }}: {{ count }}</li>
+          {% endfor %}
+        </ul>
+        {% endif %}
       </div>
     </div>
 
     <!-- Project Submissions Section -->
     <div class="box mb-4">
       <h4 class="title is-5 mb-4">
-        <i class="fas fa-file-code"></i> ENA Project Submissions
+        <i class="fas fa-file-code"></i> Register at ENA
         {% if project_submissions %}
         <span class="tag is-info ml-2">{{ project_submissions|length }}</span>
         {% endif %}
       </h4>
+      
+      <!-- Action Buttons for ENA -->
+      <div class="buttons mb-4">
+        <form method="post" action="{% url 'admin_generate_project_xml' project.id %}" style="display: inline;">
+          {% csrf_token %}
+          <button type="submit" class="button {% if project_submissions %}is-success is-light{% else %}is-info{% endif %}"
+                  title="{% if project_submissions %}Generate another ENA submission XML{% else %}Generate ENA submission XML{% endif %}"
+                  onclick="return confirm('Generate {% if project_submissions %}another {% endif %}ENA XML for this project?')">
+            <span class="icon">
+              <i class="fas fa-file-code"></i>
+            </span>
+            <span>{% if project_submissions %}Generate Another ENA XML{% else %}Generate ENA XML{% endif %}</span>
+          </button>
+        </form>
+        
+        <span class="mr-2"></span>
+        
+        <button class="button is-primary {% if not project_submissions %}is-light{% endif %}" 
+                {% if not project_submissions %}disabled{% endif %}
+                title="{% if not project_submissions %}Generate XML first{% else %}Register project at ENA{% endif %}">
+          <span class="icon">
+            <i class="fas fa-cloud-upload-alt"></i>
+          </span>
+          <span>Register Project at ENA</span>
+        </button>
+      </div>
       
       {% if project_submissions %}
       <div class="submission-list">
@@ -371,183 +556,6 @@
       {% endif %}
     </div>
 
-    <!-- SubMG Runs Section -->
-    <div class="box mb-5">
-      <h4 class="title is-5 mb-4">
-        <i class="fas fa-cogs"></i> SubMG Pipeline Runs
-        {% if submg_runs %}
-        <span class="tag is-warning ml-2">{{ submg_runs|length }}</span>
-        {% endif %}
-      </h4>
-      
-      <div class="level mb-4">
-        <div class="level-left">
-          <p class="has-text-grey">Generate and manage SubMG pipeline configurations for this project.</p>
-        </div>
-        <div class="level-right">
-          <form method="post" action="{% url 'admin_generate_submg_run' project.id %}">
-            {% csrf_token %}
-            <button type="submit" class="button is-warning"
-                    title="Generate SubMG run configuration"
-                    onclick="return confirm('Generate SubMG run for this project?')">
-              <span class="icon">
-                <i class="fas fa-cogs"></i>
-              </span>
-              <span>Generate SubMG Run</span>
-            </button>
-          </form>
-        </div>
-      </div>
-      
-      {% if submg_runs %}
-      <div class="submg-runs-container">
-        {% for run in submg_runs %}
-        <div class="submg-run-item mb-4">
-          <!-- SubMG Run Header -->
-          <div class="table-container">
-            <table class="table is-fullwidth is-hoverable mb-0">
-              <thead>
-                <tr>
-                  <th width="10%">Run ID</th>
-                  <th width="15%">Order</th>
-                  <th width="15%">Status</th>
-                  <th width="15%">Type</th>
-                  <th width="20%">YAML</th>
-                  <th width="25%">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr class="submg-run-row" onclick="toggleSubmgInstances({{ run.id }})">
-                  <td>
-                    <strong>#{{ run.id }}</strong>
-                    {% if run.submgruninstance_set.exists %}
-                    <span class="icon is-small ml-2">
-                      <i class="fas fa-chevron-down" id="submg-toggle-{{ run.id }}"></i>
-                    </span>
-                    {% endif %}
-                  </td>
-                  <td>
-                    <a href="{% url 'admin_order_detail' run.order.id %}" class="has-text-link" onclick="event.stopPropagation();">
-                      Order #{{ run.order.id }}
-                    </a>
-                  </td>
-                  <td>
-                    {% if run.status %}
-                      <span class="tag is-{{ run.status|lower }}">{{ run.status }}</span>
-                    {% else %}
-                      <span class="tag is-light">Pending</span>
-                    {% endif %}
-                  </td>
-                  <td>
-                    {% if run.type %}
-                      <span class="tag is-info">{{ run.type }}</span>
-                    {% else %}
-                      <span class="tag is-light">SubMG</span>
-                    {% endif %}
-                  </td>
-                  <td>
-                    {% if run.yaml %}
-                    <button class="button is-small is-light" 
-                            onclick="event.stopPropagation(); showYAMLModal({{ run.id }}, '{{ run.yaml|escapejs }}')"
-                            title="View YAML configuration">
-                      <span class="icon">
-                        <i class="fas fa-code"></i>
-                      </span>
-                      <span>View YAML</span>
-                    </button>
-                    {% else %}
-                    <span class="has-text-grey">-</span>
-                    {% endif %}
-                  </td>
-                  <td>
-                    <div class="buttons are-small">
-                      <form method="post" action="{% url 'admin_start_submg_run' run.id %}" style="display: inline;">
-                        {% csrf_token %}
-                        <button type="submit" class="button is-small is-warning" 
-                                title="Start SubMG upload"
-                                onclick="event.stopPropagation(); return confirm('Start SubMG upload for run #{{ run.id }}?')">
-                          <span class="icon">
-                            <i class="fas fa-upload"></i>
-                          </span>
-                          <span>Run SubMG</span>
-                        </button>
-                      </form>
-                      <a href="/admin/app/submgrun/{{ run.id }}/change/" 
-                         class="button is-small is-dark" 
-                         target="_blank"
-                         onclick="event.stopPropagation();"
-                         title="View in Django Admin">
-                        <span class="icon">
-                          <i class="fas fa-external-link-alt"></i>
-                        </span>
-                        <span>Details</span>
-                      </a>
-                    </div>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-          
-          <!-- SubMG Run Instances (hidden by default) -->
-          {% if run.submgruninstance_set.exists %}
-          <div class="submg-instances box has-background-light p-4" id="submg-instances-{{ run.id }}" style="display: none; margin-top: -1px; border-top-left-radius: 0; border-top-right-radius: 0;">
-            <h6 class="subtitle is-6 mb-3">
-              <i class="fas fa-tasks"></i> SubMG Run Instances
-            </h6>
-            <div class="table-container">
-              <table class="table is-fullwidth is-narrow">
-                <thead>
-                  <tr>
-                    <th>Instance ID</th>
-                    <th>Status</th>
-                    <th>Run Folder</th>
-                    <th>UUID</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {% for instance in run.submgruninstance_set.all %}
-                  <tr>
-                    <td>#{{ instance.id }}</td>
-                    <td>
-                      {% if instance.status %}
-                        <span class="tag is-small is-{{ instance.status|lower }}">{{ instance.status }}</span>
-                      {% else %}
-                        <span class="tag is-small is-light">Unknown</span>
-                      {% endif %}
-                    </td>
-                    <td>
-                      {% if instance.run_folder %}
-                        <code class="is-size-7">{{ instance.run_folder }}</code>
-                      {% else %}
-                        <span class="has-text-grey">-</span>
-                      {% endif %}
-                    </td>
-                    <td>
-                      {% if instance.uuid %}
-                        <code class="is-size-7">{{ instance.uuid }}</code>
-                      {% else %}
-                        <span class="has-text-grey">-</span>
-                      {% endif %}
-                    </td>
-                  </tr>
-                  {% endfor %}
-                </tbody>
-              </table>
-            </div>
-          </div>
-          {% endif %}
-        </div>
-        {% endfor %}
-      </div>
-      {% else %}
-      <div class="notification is-light">
-        <p class="has-text-grey">No SubMG runs have been generated for this project yet.</p>
-        <p class="has-text-grey mt-2">Click the "Generate SubMG Run" button to create a new pipeline configuration.</p>
-      </div>
-      {% endif %}
-    </div>
-
     <!-- MAG Runs Section -->
     <div class="box mb-5">
       <h4 class="title is-5 mb-4">
@@ -585,12 +593,11 @@
             <table class="table is-fullwidth is-hoverable mb-0">
               <thead>
                 <tr>
-                  <th width="10%">Run ID</th>
-                  <th width="15%">Status</th>
-                  <th width="15%">Reads</th>
-                  <th width="20%">Samplesheet</th>
-                  <th width="20%">Cluster Config</th>
-                  <th width="20%">Actions</th>
+                  <th width="10%">RUN ID</th>
+                  <th width="15%">STATUS</th>
+                  <th width="20%">SAMPLESHEET</th>
+                  <th width="20%">CLUSTER CONFIG</th>
+                  <th width="35%">ACTIONS</th>
                 </tr>
               </thead>
               <tbody>
@@ -603,13 +610,6 @@
                       <span class="tag is-{{ run.status|lower }}">{{ run.status }}</span>
                     {% else %}
                       <span class="tag is-light">Pending</span>
-                    {% endif %}
-                  </td>
-                  <td>
-                    {% if run.reads.count > 0 %}
-                      <span class="tag is-light">{{ run.reads.count }} read{{ run.reads.count|pluralize }}</span>
-                    {% else %}
-                      <span class="has-text-grey">No reads</span>
                     {% endif %}
                   </td>
                   <td>
@@ -813,184 +813,174 @@
       {% endif %}
     </div>
 
-    <div class="columns">
-      <!-- Left Column - Statistics -->
-      <div class="column is-4">
-        <!-- Project Info -->
-        <div class="box mb-4">
-          <h4 class="title is-6 mb-3">
-            <i class="fas fa-info-circle"></i> Project Information
-          </h4>
-          <table class="table is-fullwidth">
-            <tbody>
-              <tr>
-                <th>Title</th>
-                <td>{{ project.title }}</td>
-              </tr>
-              <tr>
-                <th>Alias</th>
-                <td>{{ project.alias|default:"-" }}</td>
-              </tr>
-              <tr>
-                <th>Description</th>
-                <td>{{ project.description|default:"-"|linebreaks }}</td>
-              </tr>
-              <tr>
-                <th>ENA Status</th>
-                <td>
-                  {% if project.submitted %}
-                    <span class="has-text-success">
-                      <i class="fas fa-check-circle"></i> Registered
-                    </span>
-                  {% else %}
-                    <span class="has-text-grey">
-                      <i class="fas fa-times-circle"></i> Not Registered
-                    </span>
-                  {% endif %}
-                </td>
-              </tr>
-              {% if project.study_accession_id %}
-              <tr>
-                <th>Study Accession</th>
-                <td><code>{{ project.study_accession_id }}</code></td>
-              </tr>
-              {% endif %}
-            </tbody>
-          </table>
-        </div>
 
-        <!-- Statistics -->
-        <div class="box mb-4">
-          <h4 class="title is-6 mb-3">
-            <i class="fas fa-chart-bar"></i> Statistics
-          </h4>
-          <div class="content">
-            <p><strong>Total Orders:</strong> {{ orders.count }}</p>
-            <p><strong>Total Samples:</strong> {{ total_samples }}</p>
-            <p><strong>Samples with Files:</strong> {{ samples_with_files }}/{{ total_samples }} ({{ file_completion }}%)</p>
-            
-            {% if order_status_counts %}
-            <p class="mt-3"><strong>Order Status Breakdown:</strong></p>
-            <ul>
-              {% for status, count in order_status_counts.items %}
-              <li>{{ status }}: {{ count }}</li>
-              {% endfor %}
-            </ul>
-            {% endif %}
-          </div>
+    <!-- SubMG Runs Section -->
+    <div class="box mb-5">
+      <h4 class="title is-5 mb-4">
+        <i class="fas fa-cogs"></i> Run SubMG
+        {% if submg_runs %}
+        <span class="tag is-warning ml-2">{{ submg_runs|length }}</span>
+        {% endif %}
+      </h4>
+      
+      <div class="level mb-4">
+        <div class="level-left">
+          <p class="has-text-grey">Generate and manage SubMG pipeline configurations for this project.</p>
         </div>
-
-        <!-- Sample File Status -->
-        {% if sample_file_details %}
-        <div class="box">
-          <h4 class="title is-6 mb-3">
-            <i class="fas fa-file"></i> Sample File Status
-          </h4>
-          <div class="content">
-            <table class="table is-narrow is-fullwidth">
+        <div class="level-right">
+          <form method="post" action="{% url 'admin_generate_submg_run' project.id %}">
+            {% csrf_token %}
+            <button type="submit" class="button is-warning"
+                    title="Generate SubMG run configuration"
+                    onclick="return confirm('Generate SubMG run for this project?')">
+              <span class="icon">
+                <i class="fas fa-cogs"></i>
+              </span>
+              <span>Generate SubMG Run</span>
+            </button>
+          </form>
+        </div>
+      </div>
+      
+      {% if submg_runs %}
+      <div class="submg-runs-container">
+        {% for run in submg_runs %}
+        <div class="submg-run-item mb-4">
+          <!-- SubMG Run Header -->
+          <div class="table-container">
+            <table class="table is-fullwidth is-hoverable mb-0">
               <thead>
                 <tr>
-                  <th>Sample ID</th>
-                  <th>Files</th>
+                  <th width="10%">RUN ID</th>
+                  <th width="15%">ORDER</th>
+                  <th width="15%">STATUS</th>
+                  <th width="25%">YAML</th>
+                  <th width="35%">ACTIONS</th>
                 </tr>
               </thead>
               <tbody>
-                {% for detail in sample_file_details %}
-                <tr>
-                  <td>{{ detail.sample.sample_id|default:detail.sample.sample_alias|truncatechars:20 }}</td>
+                <tr class="submg-run-row" onclick="toggleSubmgInstances({{ run.id }})">
                   <td>
-                    {% if detail.has_files %}
-                      <span class="has-text-success">
-                        <i class="fas fa-check"></i> {{ detail.read_count }} file{{ detail.read_count|pluralize }}
-                      </span>
-                    {% else %}
-                      <span class="has-text-danger">
-                        <i class="fas fa-times"></i> Missing
-                      </span>
+                    <strong>#{{ run.id }}</strong>
+                    {% if run.submgruninstance_set.exists %}
+                    <span class="icon is-small ml-2">
+                      <i class="fas fa-chevron-down" id="submg-toggle-{{ run.id }}"></i>
+                    </span>
                     {% endif %}
                   </td>
-                </tr>
-                {% endfor %}
-              </tbody>
-            </table>
-            {% if has_more_samples %}
-            <p class="has-text-grey is-size-7">Showing first 10 samples...</p>
-            {% endif %}
-          </div>
-        </div>
-        {% endif %}
-      </div>
-
-      <!-- Right Column - Orders -->
-      <div class="column is-8">
-        <div class="box">
-          <h4 class="title is-6 mb-3">
-            <i class="fas fa-clipboard-list"></i> Orders ({{ orders.count }})
-          </h4>
-          
-          {% if orders %}
-          <div class="orders-list">
-            {% for order in orders %}
-            <div class="order-card mb-3">
-              <div class="card">
-                <header class="card-header">
-                  <p class="card-header-title">
-                    Order #{{ order.id }} - {{ order.name|default:"Unnamed" }}
-                    <span class="tag ml-2 {{ order.get_status_display_color }}">
-                      {{ order.get_status_display }}
-                    </span>
-                  </p>
-                  <button class="card-header-icon" aria-label="more options" onclick="toggleOrderDetails({{ order.id }})">
-                    <span class="icon">
-                      <i class="fas fa-angle-down" id="order-toggle-{{ order.id }}"></i>
-                    </span>
-                  </button>
-                </header>
-                <div class="card-content" id="order-details-{{ order.id }}" style="display: none;">
-                  <div class="content">
-                    <table class="table is-narrow is-fullwidth">
-                      <tbody>
-                        <tr>
-                          <th width="30%">Date</th>
-                          <td>{{ order.date|date:"M d, Y"|default:"-" }}</td>
-                        </tr>
-                        <tr>
-                          <th>Contact</th>
-                          <td>{{ order.email|default:"-" }}</td>
-                        </tr>
-                        <tr>
-                          <th>Platform</th>
-                          <td>{{ order.platform|default:"-" }}</td>
-                        </tr>
-                        <tr>
-                          <th>Samples</th>
-                          <td>{{ order.sample_set.count }}</td>
-                        </tr>
-                        <tr>
-                          <th>Status Updated</th>
-                          <td>{{ order.status_updated_at|date:"M d, Y H:i" }}</td>
-                        </tr>
-                      </tbody>
-                    </table>
-                    <div class="buttons">
-                      <a href="{% url 'admin_order_detail' order.id %}" class="button is-small is-primary">
+                  <td>
+                    <a href="{% url 'admin_order_detail' run.order.id %}" class="has-text-link" onclick="event.stopPropagation();">
+                      Order #{{ run.order.id }}
+                    </a>
+                  </td>
+                  <td>
+                    {% if run.status %}
+                      <span class="tag is-{{ run.status|lower }}">{{ run.status }}</span>
+                    {% else %}
+                      <span class="tag is-light">Pending</span>
+                    {% endif %}
+                  </td>
+                  <td>
+                    {% if run.yaml %}
+                    <button class="button is-small is-light" 
+                            onclick="event.stopPropagation(); showYAMLModal({{ run.id }}, '{{ run.yaml|escapejs }}')"
+                            title="View YAML configuration">
+                      <span class="icon">
+                        <i class="fas fa-code"></i>
+                      </span>
+                      <span>View YAML</span>
+                    </button>
+                    {% else %}
+                    <span class="has-text-grey">-</span>
+                    {% endif %}
+                  </td>
+                  <td>
+                    <div class="buttons are-small">
+                      <form method="post" action="{% url 'admin_start_submg_run' run.id %}" style="display: inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="button is-small is-warning" 
+                                title="Start SubMG upload"
+                                onclick="event.stopPropagation(); return confirm('Start SubMG upload for run #{{ run.id }}?')">
+                          <span class="icon">
+                            <i class="fas fa-upload"></i>
+                          </span>
+                          <span>Run SubMG</span>
+                        </button>
+                      </form>
+                      <a href="/admin/app/submgrun/{{ run.id }}/change/" 
+                         class="button is-small is-dark" 
+                         target="_blank"
+                         onclick="event.stopPropagation();"
+                         title="View in Django Admin">
                         <span class="icon">
-                          <i class="fas fa-eye"></i>
+                          <i class="fas fa-external-link-alt"></i>
                         </span>
-                        <span>View Order Details</span>
+                        <span>Details</span>
                       </a>
                     </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            {% endfor %}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
           </div>
-          {% else %}
-          <p class="has-text-grey">No orders have been created for this project yet.</p>
+          
+          <!-- SubMG Run Instances (hidden by default) -->
+          {% if run.submgruninstance_set.exists %}
+          <div class="submg-instances box has-background-light p-4" id="submg-instances-{{ run.id }}" style="display: none; margin-top: -1px; border-top-left-radius: 0; border-top-right-radius: 0;">
+            <h6 class="subtitle is-6 mb-3">
+              <i class="fas fa-tasks"></i> SubMG Run Instances
+            </h6>
+            <div class="table-container">
+              <table class="table is-fullwidth is-narrow">
+                <thead>
+                  <tr>
+                    <th>Instance ID</th>
+                    <th>Status</th>
+                    <th>Run Folder</th>
+                    <th>UUID</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for instance in run.submgruninstance_set.all %}
+                  <tr>
+                    <td>#{{ instance.id }}</td>
+                    <td>
+                      {% if instance.status %}
+                        <span class="tag is-small is-{{ instance.status|lower }}">{{ instance.status }}</span>
+                      {% else %}
+                        <span class="tag is-small is-light">Unknown</span>
+                      {% endif %}
+                    </td>
+                    <td>
+                      {% if instance.run_folder %}
+                        <code class="is-size-7">{{ instance.run_folder }}</code>
+                      {% else %}
+                        <span class="has-text-grey">-</span>
+                      {% endif %}
+                    </td>
+                    <td>
+                      {% if instance.uuid %}
+                        <code class="is-size-7">{{ instance.uuid }}</code>
+                      {% else %}
+                        <span class="has-text-grey">-</span>
+                      {% endif %}
+                    </td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
           {% endif %}
         </div>
+        {% endfor %}
       </div>
+      {% else %}
+      <div class="notification is-light">
+        <p class="has-text-grey">No SubMG runs have been generated for this project yet.</p>
+        <p class="has-text-grey mt-2">Click the "Generate SubMG Run" button to create a new pipeline configuration.</p>
+      </div>
+      {% endif %}
     </div>
   </div>
 </section>
@@ -1099,15 +1089,37 @@ body {
 .table th {
   font-weight: 600;
   color: #6c757d;
-  padding: 0.5rem;
+  padding: 0.75rem;
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  background-color: #f8f9fa;
+  border-bottom: 2px solid #dee2e6;
 }
 
 .table td {
-  padding: 0.5rem;
+  padding: 0.75rem;
+  vertical-align: middle;
 }
 
 .table.is-narrow td, .table.is-narrow th {
   padding: 0.25rem 0.5rem;
+}
+
+/* Ensure table consistency */
+.mag-runs-container .table,
+.submg-runs-container .table {
+  margin-bottom: 0;
+}
+
+.mag-runs-container .table th,
+.submg-runs-container .table th {
+  white-space: nowrap;
+}
+
+.mag-runs-container .table td,
+.submg-runs-container .table td {
+  height: 60px;
 }
 
 /* Tags */
@@ -1345,6 +1357,13 @@ body {
 .output-actions .button.is-small {
   padding: 0.375rem 0.75rem;
   font-size: 0.875rem;
+}
+
+/* Consistent button sizing in tables */
+.mag-runs-container .buttons.are-small .button,
+.submg-runs-container .buttons.are-small .button {
+  min-width: 100px;
+  justify-content: center;
 }
 
 @media (max-width: 768px) {
@@ -1693,6 +1712,21 @@ function toggleMagOutputs(runId) {
   } else {
     outputs.style.display = 'none';
     toggleText.textContent = 'Show Outputs';
+  }
+}
+
+function toggleSection(sectionId) {
+  const content = document.getElementById(`${sectionId}-content`);
+  const chevron = document.getElementById(`${sectionId}-chevron`);
+  
+  if (content.style.display === 'none') {
+    content.style.display = 'block';
+    chevron.classList.remove('fa-chevron-down');
+    chevron.classList.add('fa-chevron-up');
+  } else {
+    content.style.display = 'none';
+    chevron.classList.remove('fa-chevron-up');
+    chevron.classList.add('fa-chevron-down');
   }
 }
 
