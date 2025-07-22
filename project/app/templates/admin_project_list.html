@@ -25,11 +25,82 @@ All Projects - Admin View
   <div class="container is-fluid">
     <!-- Page Header -->
     <div class="page-intro mb-5">
-      <h1 class="page-title">Research Project Repository</h1>
-      <p class="page-description">
-        Oversee all active research projects across your facility. Track project progress from initial submission through sequencing completion, 
-        monitor sample collection status, and ensure data quality standards are met for each research initiative.
-      </p>
+      <div style="display: flex; gap: 2rem; align-items: flex-start;">
+        <!-- Left side - Title and Description -->
+        <div style="flex: 1;">
+          <h1 class="page-title">Research Project Repository</h1>
+          <p class="page-description">
+            Oversee all active research projects across your facility. Track project progress from initial submission through sequencing completion, 
+            monitor sample collection status, and ensure data quality standards are met for each research initiative.
+          </p>
+        </div>
+        
+        <!-- Middle - File Status Info -->
+        <div style="flex: 0 0 auto; min-width: 200px; padding: 0 1.5rem; border-left: 1px solid #e9ecef; border-right: 1px solid #e9ecef;">
+          <h3 style="font-size: 0.875rem; font-weight: 600; color: #6c757d; margin-bottom: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px;">
+            File Status
+          </h3>
+          <div style="font-size: 0.8125rem; color: #495057; line-height: 1.6;">
+            <p style="margin-bottom: 0.5rem;">
+              Tracks FASTQ files containing sequencing reads for each sample.
+            </p>
+            <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.25rem;">
+              <div style="width: 60px; height: 6px; background-color: #48c774; border-radius: 3px;"></div>
+              <span style="font-size: 0.75rem;">Complete</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.25rem;">
+              <div style="width: 60px; height: 6px; background-color: #ffdd57; border-radius: 3px;"></div>
+              <span style="font-size: 0.75rem;">Partial</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 0.5rem;">
+              <div style="width: 60px; height: 6px; background-color: #dbdbdb; border-radius: 3px;"></div>
+              <span style="font-size: 0.75rem;">Missing</span>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Right side - Workflow Legend -->
+        <div style="flex: 0 0 auto; min-width: 300px; padding-left: 1.5rem;">
+          <h3 style="font-size: 0.875rem; font-weight: 600; color: #6c757d; margin-bottom: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px;">
+            Workflow Progress Icons
+          </h3>
+          <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+            <div style="display: flex; align-items: center; gap: 0.5rem;">
+              <span class="icon has-text-success" style="font-size: 1.125rem;">
+                <i class="fas fa-project-diagram"></i>
+              </span>
+              <span style="font-size: 0.8125rem; color: #495057;">Project Created</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 0.5rem;">
+              <span class="icon has-text-success" style="font-size: 1.125rem;">
+                <i class="fas fa-cloud-upload-alt"></i>
+              </span>
+              <span style="font-size: 0.8125rem; color: #495057;">ENA Registered</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 0.5rem;">
+              <span class="icon has-text-success" style="font-size: 1.125rem;">
+                <i class="fas fa-file-archive"></i>
+              </span>
+              <span style="font-size: 0.8125rem; color: #495057;">Files Complete</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 0.5rem;">
+              <span class="icon has-text-success" style="font-size: 1.125rem;">
+                <i class="fas fa-dna"></i>
+              </span>
+              <span style="font-size: 0.8125rem; color: #495057;">MAG Pipeline</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 0.5rem;">
+              <span class="icon has-text-success" style="font-size: 1.125rem;">
+                <i class="fas fa-microscope"></i>
+              </span>
+              <span style="font-size: 0.8125rem; color: #495057;">SubMG Pipeline</span>
+            </div>
+          </div>
+          <p style="font-size: 0.75rem; color: #6c757d; margin-top: 0.75rem; font-style: italic;">
+            Green = completed, gray = pending
+          </p>
+        </div>
+      </div>
     </div>
 
     <!-- Filters -->
@@ -108,9 +179,9 @@ All Projects - Admin View
                 <th>User</th>
                 <th>Orders</th>
                 <th>Samples</th>
-                <th>File Status</th>
-                <th>Workflow Progress</th>
-                <th>ENA Status</th>
+                <th class="has-text-centered">File Status</th>
+                <th class="has-text-centered">Workflow Progress</th>
+                <th class="has-text-centered">ENA Status</th>
                 <th>Actions</th>
               </tr>
             </thead>
@@ -150,7 +221,9 @@ All Projects - Admin View
                       {% endif %}
                     </div>
                   {% else %}
-                    <span class="has-text-grey">No samples</span>
+                    <div class="has-text-centered">
+                      <span class="has-text-grey">No samples</span>
+                    </div>
                   {% endif %}
                 </td>
                 <td>
@@ -175,7 +248,7 @@ All Projects - Admin View
                     <small class="has-text-grey">{{ item.workflow_progress }}/5 steps</small>
                   </div>
                 </td>
-                <td>
+                <td class="has-text-centered">
                   {% if item.project.submitted %}
                     <span class="tag is-success">
                       <span class="icon">
@@ -198,10 +271,7 @@ All Projects - Admin View
                 <td>
                   <a href="{% url 'admin_project_detail' item.project.id %}" 
                      class="button is-primary is-small">
-                    <span class="icon">
-                      <i class="fas fa-eye"></i>
-                    </span>
-                    <span>View</span>
+                    View
                   </a>
                 </td>
               </tr>
@@ -248,6 +318,47 @@ All Projects - Admin View
     {% endif %}
   </div>
 </section>
+
+<!-- Footer -->
+<footer class="footer has-background-light">
+  <div class="container is-fluid">
+    <div class="level">
+      <div class="level-left">
+        <div class="level-item">
+          <span class="icon-text">
+            <span class="icon has-text-info">
+              <i class="fas fa-folder-open"></i>
+            </span>
+            <span>{{ total_projects }} total project{{ total_projects|pluralize }}</span>
+          </span>
+        </div>
+        <div class="level-item">
+          <span class="icon-text">
+            <span class="icon has-text-success">
+              <i class="fas fa-check-circle"></i>
+            </span>
+            <span>{{ projects_with_files }} with complete files</span>
+          </span>
+        </div>
+        <div class="level-item">
+          <span class="icon-text">
+            <span class="icon has-text-primary">
+              <i class="fas fa-cloud"></i>
+            </span>
+            <span>{{ ena_registered }} ENA registered</span>
+          </span>
+        </div>
+      </div>
+      <div class="level-right">
+        <div class="level-item">
+          <span class="has-text-grey">
+            Last updated: {% now "M d, Y H:i" %}
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
 
 <style>
 /* Clean, Simple Design */

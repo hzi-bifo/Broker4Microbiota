@@ -41,21 +41,28 @@
 
     <!-- File Status Alert -->
     {% if total_samples > 0 and samples_with_files < total_samples %}
-    <div class="notification is-warning is-light mb-4">
-      <div class="level is-mobile">
-        <div class="level-left">
-          <div class="level-item">
-            <span class="icon">
-              <i class="fas fa-exclamation-triangle"></i>
-            </span>
+    <div id="file-status-banner" style="background: linear-gradient(135deg, #FFF4E6 0%, #FFE8CC 100%); border: 1px solid #FFD4A3; border-radius: 12px; padding: 1rem 1.5rem; margin-bottom: 1.5rem; box-shadow: 0 2px 4px rgba(0,0,0,0.05); position: relative;">
+      <div style="display: flex; align-items: center; justify-content: space-between; gap: 1rem;">
+        <div style="display: flex; align-items: center; gap: 1rem;">
+          <div style="background-color: #FF9800; color: white; width: 40px; height: 40px; border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+            <i class="fas fa-exclamation-triangle" style="font-size: 1.25rem;"></i>
           </div>
-          <div class="level-item">
-            <strong>Missing FASTQ files:</strong> Only {{ samples_with_files }} of {{ total_samples }} samples have associated sequencing files.
+          <div style="color: #5D4037;">
+            <div style="font-weight: 700; font-size: 1.125rem; margin-bottom: 0.125rem;">
+              Missing FASTQ files
+            </div>
+            <div style="font-size: 0.875rem; opacity: 0.8;">
+              Only {{ samples_with_files }} of {{ total_samples }} samples have associated sequencing files
+            </div>
           </div>
         </div>
-        <div class="level-right">
-          <progress class="progress is-warning" value="{{ file_completion }}" max="100">{{ file_completion }}%</progress>
-        </div>
+        <button onclick="dismissFileStatusBanner()" 
+                style="background: transparent; border: none; color: #8D6E63; cursor: pointer; padding: 0.5rem; border-radius: 4px; transition: all 0.2s ease;"
+                onmouseover="this.style.backgroundColor='rgba(0,0,0,0.05)'"
+                onmouseout="this.style.backgroundColor='transparent'"
+                title="Dismiss notification">
+          <i class="fas fa-times" style="font-size: 1.25rem;"></i>
+        </button>
       </div>
     </div>
     {% endif %}
@@ -1774,5 +1781,28 @@ function toggleSubmgInstances(runId) {
     }
   }
 }
+
+function dismissFileStatusBanner() {
+  const banner = document.getElementById('file-status-banner');
+  banner.style.transition = 'all 0.3s ease';
+  banner.style.opacity = '0';
+  banner.style.transform = 'translateY(-100%)';
+  setTimeout(() => {
+    banner.style.display = 'none';
+  }, 300);
+  
+  // Store dismissal in sessionStorage for this specific project
+  sessionStorage.setItem('project-file-status-dismissed-{{ project.id }}', 'true');
+}
+
+// Check if file status banner was previously dismissed
+document.addEventListener('DOMContentLoaded', function() {
+  if (sessionStorage.getItem('project-file-status-dismissed-{{ project.id }}') === 'true') {
+    const banner = document.getElementById('file-status-banner');
+    if (banner) {
+      banner.style.display = 'none';
+    }
+  }
+});
 </script>
 {% endblock content %}

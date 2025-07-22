@@ -6,9 +6,14 @@ Create New User - Admin
 
 {% block body_class %}admin-page{% endblock %}
 
+{% block extra_css %}
+<!-- Page-specific CSS moved to admin.css -->
+{% endblock %}
+
 {% block content %}
 <section class="section">
-  <div class="container" style="max-width: 800px;">
+  <div class="container is-fluid" style="max-width: 1920px;">
+    <!-- Header with Breadcrumb -->
     <nav class="breadcrumb mb-4" aria-label="breadcrumbs">
       <ul>
         <li><a href="{% url 'admin_dashboard' %}">Dashboard</a></li>
@@ -17,191 +22,215 @@ Create New User - Admin
       </ul>
     </nav>
 
-    <div class="box">
-      <h1 class="title is-4">
-        <i class="fas fa-user-plus has-text-success"></i>
-        Create New User
-      </h1>
-
-      <form method="post">
-        {% csrf_token %}
-        
-        <h3 class="title is-5">Account Information</h3>
-        
-        <div class="columns">
-          <div class="column is-6">
-            <div class="field">
-              <label class="label">{{ form.username.label }} <span class="has-text-danger">*</span></label>
-              <div class="control has-icons-left">
-                {{ form.username }}
-                <span class="icon is-small is-left">
-                  <i class="fas fa-user"></i>
-                </span>
-              </div>
-              {% if form.username.help_text %}
-              <p class="help">{{ form.username.help_text }}</p>
-              {% endif %}
-              {% if form.username.errors %}
-              <p class="help is-danger">{{ form.username.errors.0 }}</p>
-              {% endif %}
-            </div>
-          </div>
-          
-          <div class="column is-6">
-            <div class="field">
-              <label class="label">{{ form.email.label }}</label>
-              <div class="control has-icons-left">
-                {{ form.email }}
-                <span class="icon is-small is-left">
-                  <i class="fas fa-envelope"></i>
-                </span>
-              </div>
-              {% if form.email.help_text %}
-              <p class="help">{{ form.email.help_text }}</p>
-              {% endif %}
-              {% if form.email.errors %}
-              <p class="help is-danger">{{ form.email.errors.0 }}</p>
-              {% endif %}
-            </div>
-          </div>
-        </div>
-
-        <div class="columns">
-          <div class="column is-6">
-            <div class="field">
-              <label class="label">{{ form.first_name.label }}</label>
-              <div class="control">
-                {{ form.first_name }}
-              </div>
-              {% if form.first_name.errors %}
-              <p class="help is-danger">{{ form.first_name.errors.0 }}</p>
-              {% endif %}
-            </div>
-          </div>
-          
-          <div class="column is-6">
-            <div class="field">
-              <label class="label">{{ form.last_name.label }}</label>
-              <div class="control">
-                {{ form.last_name }}
-              </div>
-              {% if form.last_name.errors %}
-              <p class="help is-danger">{{ form.last_name.errors.0 }}</p>
-              {% endif %}
-            </div>
-          </div>
-        </div>
-
-        <hr>
-
-        <h3 class="title is-5">Password</h3>
-        
-        <div class="columns">
-          <div class="column is-6">
-            <div class="field">
-              <label class="label">{{ form.password1.label }} <span class="has-text-danger">*</span></label>
-              <div class="control has-icons-left">
-                {{ form.password1 }}
-                <span class="icon is-small is-left">
-                  <i class="fas fa-lock"></i>
-                </span>
-              </div>
-              {% if form.password1.help_text %}
-              <p class="help">{{ form.password1.help_text }}</p>
-              {% endif %}
-              {% if form.password1.errors %}
-              <p class="help is-danger">{{ form.password1.errors.0 }}</p>
-              {% endif %}
-            </div>
-          </div>
-          
-          <div class="column is-6">
-            <div class="field">
-              <label class="label">{{ form.password2.label }} <span class="has-text-danger">*</span></label>
-              <div class="control has-icons-left">
-                {{ form.password2 }}
-                <span class="icon is-small is-left">
-                  <i class="fas fa-lock"></i>
-                </span>
-              </div>
-              {% if form.password2.help_text %}
-              <p class="help">{{ form.password2.help_text }}</p>
-              {% endif %}
-              {% if form.password2.errors %}
-              <p class="help is-danger">{{ form.password2.errors.0 }}</p>
-              {% endif %}
-            </div>
-          </div>
-        </div>
-
-        <hr>
-
-        <h3 class="title is-5">Permissions</h3>
-        
-        <div class="columns">
-          <div class="column is-4">
-            <div class="field">
-              <label class="checkbox">
-                {{ form.is_active }}
-                <strong>{{ form.is_active.label }}</strong>
-              </label>
-              {% if form.is_active.help_text %}
-              <p class="help">{{ form.is_active.help_text }}</p>
-              {% endif %}
-            </div>
-          </div>
-          
-          <div class="column is-4">
-            <div class="field">
-              <label class="checkbox">
-                {{ form.is_staff }}
-                <strong>{{ form.is_staff.label }}</strong>
-              </label>
-              {% if form.is_staff.help_text %}
-              <p class="help">{{ form.is_staff.help_text }}</p>
-              {% endif %}
-            </div>
-          </div>
-          
-          <div class="column is-4">
-            <div class="field">
-              <label class="checkbox">
-                {{ form.is_superuser }}
-                <strong>{{ form.is_superuser.label }}</strong>
-              </label>
-              {% if form.is_superuser.help_text %}
-              <p class="help">{{ form.is_superuser.help_text }}</p>
-              {% endif %}
-            </div>
-          </div>
-        </div>
-
-        <div class="notification is-info is-light">
-          <p><strong>Important:</strong></p>
-          <ul>
-            <li>Check <strong>Staff status</strong> to allow access to the admin dashboard</li>
-            <li>Check <strong>Superuser status</strong> only if they need full Django admin access</li>
-            <li>Most sequencing facility staff only need Staff status</li>
-          </ul>
-        </div>
-
-        <div class="field is-grouped is-grouped-right">
-          <div class="control">
-            <a href="{% url 'admin_user_list' %}" class="button is-light">
-              Cancel
-            </a>
-          </div>
-          <div class="control">
-            <button type="submit" class="button is-success">
-              <span class="icon">
-                <i class="fas fa-plus"></i>
-              </span>
-              <span>Create User</span>
-            </button>
-          </div>
-        </div>
-      </form>
+    <!-- Page Header -->
+    <div class="page-intro mb-5">
+      <h1 class="page-title">Create New User Account</h1>
+      <p class="page-description">
+        Set up a new user account for facility staff or researchers. Configure their access level based on their role - 
+        whether they need full administrative privileges, staff access to manage orders, or standard user permissions for their own projects.
+      </p>
     </div>
+
+    <form method="post">
+      {% csrf_token %}
+      
+      <!-- Account Information -->
+      <div class="section-card mb-5">
+        <div class="section-header">
+          <h4 class="section-title">
+            <i class="fas fa-user"></i> Account Information
+          </h4>
+        </div>
+        <div class="section-body">
+          <div class="columns">
+            <div class="column is-6">
+              <div class="field">
+                <label class="label">{{ form.username.label }} <span class="has-text-danger">*</span></label>
+                <div class="control has-icons-left">
+                  {{ form.username }}
+                  <span class="icon is-small is-left">
+                    <i class="fas fa-user"></i>
+                  </span>
+                </div>
+                {% if form.username.help_text %}
+                <p class="help">{{ form.username.help_text }}</p>
+                {% endif %}
+                {% if form.username.errors %}
+                <p class="help is-danger">{{ form.username.errors.0 }}</p>
+                {% endif %}
+              </div>
+            </div>
+            
+            <div class="column is-6">
+              <div class="field">
+                <label class="label">{{ form.email.label }}</label>
+                <div class="control has-icons-left">
+                  {{ form.email }}
+                  <span class="icon is-small is-left">
+                    <i class="fas fa-envelope"></i>
+                  </span>
+                </div>
+                {% if form.email.help_text %}
+                <p class="help">{{ form.email.help_text }}</p>
+                {% endif %}
+                {% if form.email.errors %}
+                <p class="help is-danger">{{ form.email.errors.0 }}</p>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+
+          <div class="columns">
+            <div class="column is-6">
+              <div class="field">
+                <label class="label">{{ form.first_name.label }}</label>
+                <div class="control">
+                  {{ form.first_name }}
+                </div>
+                {% if form.first_name.errors %}
+                <p class="help is-danger">{{ form.first_name.errors.0 }}</p>
+                {% endif %}
+              </div>
+            </div>
+            
+            <div class="column is-6">
+              <div class="field">
+                <label class="label">{{ form.last_name.label }}</label>
+                <div class="control">
+                  {{ form.last_name }}
+                </div>
+                {% if form.last_name.errors %}
+                <p class="help is-danger">{{ form.last_name.errors.0 }}</p>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Password -->
+      <div class="section-card mb-5">
+        <div class="section-header">
+          <h4 class="section-title">
+            <i class="fas fa-lock"></i> Security
+          </h4>
+        </div>
+        <div class="section-body">
+          <div class="columns">
+            <div class="column is-6">
+              <div class="field">
+                <label class="label">{{ form.password1.label }} <span class="has-text-danger">*</span></label>
+                <div class="control has-icons-left">
+                  {{ form.password1 }}
+                  <span class="icon is-small is-left">
+                    <i class="fas fa-lock"></i>
+                  </span>
+                </div>
+                {% if form.password1.help_text %}
+                <p class="help">{{ form.password1.help_text }}</p>
+                {% endif %}
+                {% if form.password1.errors %}
+                <p class="help is-danger">{{ form.password1.errors.0 }}</p>
+                {% endif %}
+              </div>
+            </div>
+            
+            <div class="column is-6">
+              <div class="field">
+                <label class="label">{{ form.password2.label }} <span class="has-text-danger">*</span></label>
+                <div class="control has-icons-left">
+                  {{ form.password2 }}
+                  <span class="icon is-small is-left">
+                    <i class="fas fa-lock"></i>
+                  </span>
+                </div>
+                {% if form.password2.help_text %}
+                <p class="help">{{ form.password2.help_text }}</p>
+                {% endif %}
+                {% if form.password2.errors %}
+                <p class="help is-danger">{{ form.password2.errors.0 }}</p>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Permissions -->
+      <div class="section-card mb-5">
+        <div class="section-header">
+          <h4 class="section-title">
+            <i class="fas fa-shield-alt"></i> Access Permissions
+          </h4>
+        </div>
+        <div class="section-body">
+          <div class="columns">
+            <div class="column is-4">
+              <div class="field">
+                <label class="checkbox">
+                  {{ form.is_active }}
+                  <strong>{{ form.is_active.label }}</strong>
+                </label>
+                {% if form.is_active.help_text %}
+                <p class="help">{{ form.is_active.help_text }}</p>
+                {% endif %}
+              </div>
+            </div>
+            
+            <div class="column is-4">
+              <div class="field">
+                <label class="checkbox">
+                  {{ form.is_staff }}
+                  <strong>{{ form.is_staff.label }}</strong>
+                </label>
+                {% if form.is_staff.help_text %}
+                <p class="help">{{ form.is_staff.help_text }}</p>
+                {% endif %}
+              </div>
+            </div>
+            
+            <div class="column is-4">
+              <div class="field">
+                <label class="checkbox">
+                  {{ form.is_superuser }}
+                  <strong>{{ form.is_superuser.label }}</strong>
+                </label>
+                {% if form.is_superuser.help_text %}
+                <p class="help">{{ form.is_superuser.help_text }}</p>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+
+          <div class="notification is-info is-light">
+            <p><strong>Permission Guidelines:</strong></p>
+            <ul>
+              <li><strong>Active</strong> - User can log in to the system</li>
+              <li><strong>Staff status</strong> - Grants access to the admin dashboard for managing orders and projects</li>
+              <li><strong>Superuser status</strong> - Full system access including user management (use sparingly)</li>
+            </ul>
+            <p class="mt-2"><em>Most facility staff only need Active + Staff status for their daily work.</em></p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Form Actions -->
+      <div class="field is-grouped is-grouped-right">
+        <div class="control">
+          <a href="{% url 'admin_user_list' %}" class="button is-light">
+            Cancel
+          </a>
+        </div>
+        <div class="control">
+          <button type="submit" class="button is-success">
+            <span class="icon">
+              <i class="fas fa-plus"></i>
+            </span>
+            <span>Create User</span>
+          </button>
+        </div>
+      </div>
+    </form>
   </div>
 </section>
 

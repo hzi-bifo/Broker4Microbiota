@@ -16,11 +16,53 @@ All Orders - Admin
   <div class="container is-fluid">
     <!-- Page Header -->
     <div class="page-intro mb-5">
-      <h1 class="page-title">Sequencing Order Management Hub</h1>
-      <p class="page-description">
-        Efficiently manage the entire sequencing workflow from order submission to data delivery. Review pending orders, 
-        track samples through each processing stage, and coordinate with laboratory teams to ensure timely completion of all sequencing requests.
-      </p>
+      <div style="display: flex; gap: 2rem; align-items: flex-start;">
+        <!-- Left side - Title and Description -->
+        <div style="flex: 1;">
+          <h1 class="page-title">Sequencing Order Management Hub</h1>
+          <p class="page-description">
+            Efficiently manage the entire sequencing workflow from order submission to data delivery. Review pending orders, 
+            track samples through each processing stage, and coordinate with laboratory teams to ensure timely completion of all sequencing requests.
+          </p>
+        </div>
+        
+        <!-- Right side - Status Legend -->
+        <div style="flex: 0 0 auto; min-width: 380px; padding-left: 2rem; border-left: 1px solid #e9ecef;">
+          <h3 style="font-size: 0.875rem; font-weight: 600; color: #6c757d; margin-bottom: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px;">
+            Order Status Guide
+          </h3>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem 1.5rem;">
+            <div style="display: flex; align-items: center; gap: 0.5rem;">
+              <span class="tag">Draft</span>
+              <span style="font-size: 0.75rem; color: #495057;">Initial creation</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 0.5rem;">
+              <span class="tag">Ready for Sequencing</span>
+              <span style="font-size: 0.75rem; color: #495057;">Awaiting lab</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 0.5rem;">
+              <span class="tag">Sequencing in Progress</span>
+              <span style="font-size: 0.75rem; color: #495057;">In sequencer</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 0.5rem;">
+              <span class="tag">Sequencing Completed</span>
+              <span style="font-size: 0.75rem; color: #495057;">Raw data ready</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 0.5rem;">
+              <span class="tag">Data Processing</span>
+              <span style="font-size: 0.75rem; color: #495057;">Analysis running</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 0.5rem;">
+              <span class="tag">Data Delivered</span>
+              <span style="font-size: 0.75rem; color: #495057;">Sent to user</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 0.5rem;">
+              <span class="tag">Completed</span>
+              <span style="font-size: 0.75rem; color: #495057;">Archived</span>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
 
     <!-- Filters -->
@@ -156,10 +198,7 @@ All Orders - Admin
                 <div class="buttons">
                   <a href="{% url 'admin_order_detail' order.id %}" 
                      class="button is-primary is-small">
-                    <span class="icon">
-                      <i class="fas fa-eye"></i>
-                    </span>
-                    <span>View</span>
+                    View
                   </a>
                   {% if order.can_advance_status %}
                   <button type="button" 
@@ -167,9 +206,7 @@ All Orders - Admin
                           data-order-id="{{ order.id }}"
                           data-next-status="{{ order.get_next_status }}"
                           title="Advance to next status">
-                    <span class="icon">
-                      <i class="fas fa-arrow-right"></i>
-                    </span>
+                    Next
                   </button>
                   {% endif %}
                 </div>
@@ -490,4 +527,53 @@ select.input {
   }
 }
 </style>
+
+<!-- Footer -->
+<footer class="footer has-background-light">
+  <div class="container is-fluid">
+    <div class="level">
+      <div class="level-left">
+        <div class="level-item">
+          <span class="icon-text">
+            <span class="icon has-text-info">
+              <i class="fas fa-clipboard-list"></i>
+            </span>
+            <span>{{ total_orders }} total order{{ total_orders|pluralize }}</span>
+          </span>
+        </div>
+        <div class="level-item">
+          <span class="icon-text">
+            <span class="icon has-text-warning">
+              <i class="fas fa-clock"></i>
+            </span>
+            <span>{{ pending_orders }} pending</span>
+          </span>
+        </div>
+        <div class="level-item">
+          <span class="icon-text">
+            <span class="icon has-text-success">
+              <i class="fas fa-check-double"></i>
+            </span>
+            <span>{{ completed_orders }} completed</span>
+          </span>
+        </div>
+        <div class="level-item">
+          <span class="icon-text">
+            <span class="icon has-text-primary">
+              <i class="fas fa-vial"></i>
+            </span>
+            <span>{{ total_samples }} total sample{{ total_samples|pluralize }}</span>
+          </span>
+        </div>
+      </div>
+      <div class="level-right">
+        <div class="level-item">
+          <span class="has-text-grey">
+            Last updated: {% now "M d, Y H:i" %}
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
 {% endblock content %}

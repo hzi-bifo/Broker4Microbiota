@@ -15,25 +15,81 @@ Manage Users - Admin
   <div class="container is-fluid">
     <!-- Page Header -->
     <div class="page-intro mb-5">
-      <h1 class="page-title">User Access Administration</h1>
-      <p class="page-description">
-        Manage system access for researchers, laboratory staff, and administrators. Control user permissions, 
-        monitor account activity, and maintain security standards while ensuring appropriate access levels for all facility personnel.
-      </p>
+      <div style="display: flex; gap: 2rem; align-items: flex-start;">
+        <!-- Left side - Title and Description -->
+        <div style="flex: 1;">
+          <h1 class="page-title">User Access Administration</h1>
+          <p class="page-description">
+            Manage system access for researchers, laboratory staff, and administrators. Control user permissions, 
+            monitor account activity, and maintain security standards while ensuring appropriate access levels for all facility personnel.
+          </p>
+        </div>
+        
+        <!-- Right side - Permissions Legend -->
+        <div style="flex: 0 0 auto; display: flex; gap: 2rem; padding-left: 2rem; border-left: 1px solid #e9ecef;">
+          <!-- User Permission Levels (Left) -->
+          <div style="min-width: 250px;">
+            <h3 style="font-size: 0.875rem; font-weight: 600; color: #6c757d; margin-bottom: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px;">
+              User Permission Levels
+            </h3>
+            <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+              <div style="display: flex; align-items: center; gap: 0.5rem;">
+                <span class="tag is-dark">Superuser</span>
+                <span style="font-size: 0.75rem; color: #495057;">Full system access</span>
+              </div>
+              <div style="display: flex; align-items: center; gap: 0.5rem;">
+                <span class="tag is-info">Staff</span>
+                <span style="font-size: 0.75rem; color: #495057;">Admin panel access</span>
+              </div>
+              <div style="display: flex; align-items: center; gap: 0.5rem;">
+                <span class="tag is-light">Regular User</span>
+                <span style="font-size: 0.75rem; color: #495057;">No admin access</span>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Permission Hierarchy (Right) -->
+          <div style="min-width: 200px; padding-left: 1.5rem; border-left: 1px solid #e9ecef;">
+            <h3 style="font-size: 0.875rem; font-weight: 600; color: #6c757d; margin-bottom: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px;">
+              Permission Hierarchy
+            </h3>
+            <div style="font-size: 0.75rem; color: #6c757d; line-height: 1.6;">
+              <div style="margin-bottom: 0.25rem;"><strong>Superuser</strong><br>→ Manage all users & settings</div>
+              <div style="margin-bottom: 0.25rem;"><strong>Staff</strong><br>→ Manage orders & projects</div>
+              <div><strong>Regular</strong><br>→ Own projects only</div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
 
-    <!-- Action Buttons -->
-    <div class="level mb-4">
-      <div class="level-left">
-        <!-- Empty for alignment -->
+    <!-- Create New User Section -->
+    <div class="section-card mb-5" style="background: linear-gradient(135deg, #E8F5E9 0%, #F1F8E9 100%); border: 1px solid #A5D6A7;">
+      <div class="section-header" style="background: linear-gradient(135deg, #E8F5E9 0%, #C8E6C9 100%);">
+        <div>
+          <h4 class="section-title" style="color: #2E7D32;">
+            <i class="fas fa-user-plus"></i> User Creation
+          </h4>
+        </div>
       </div>
-      <div class="level-right">
-        <a href="{% url 'admin_user_create' %}" class="button is-success">
-          <span class="icon">
-            <i class="fas fa-plus"></i>
-          </span>
-          <span>Create New User</span>
-        </a>
+      <div class="section-body">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <div style="flex: 1; margin-right: 2rem;">
+            <h5 style="font-size: 1rem; font-weight: 600; color: #363636; margin-bottom: 0.5rem;">Add New System User</h5>
+            <p style="font-size: 0.875rem; color: #666; line-height: 1.5;">
+              Create accounts for researchers, laboratory staff, or administrators. Set appropriate permission levels based on their role 
+              in the sequencing facility. New users will receive email instructions to set their password and access the system.
+            </p>
+          </div>
+          <div>
+            <a href="{% url 'admin_user_create' %}" class="button is-success">
+              <span class="icon">
+                <i class="fas fa-plus"></i>
+              </span>
+              <span>Create New User</span>
+            </a>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -310,4 +366,53 @@ select.input {
   margin-bottom: 0.5rem;
 }
 </style>
+
+<!-- Footer -->
+<footer class="footer has-background-light">
+  <div class="container is-fluid">
+    <div class="level">
+      <div class="level-left">
+        <div class="level-item">
+          <span class="icon-text">
+            <span class="icon has-text-info">
+              <i class="fas fa-users"></i>
+            </span>
+            <span>{{ total_users }} total user{{ total_users|pluralize }}</span>
+          </span>
+        </div>
+        <div class="level-item">
+          <span class="icon-text">
+            <span class="icon has-text-success">
+              <i class="fas fa-user-check"></i>
+            </span>
+            <span>{{ active_users }} active</span>
+          </span>
+        </div>
+        <div class="level-item">
+          <span class="icon-text">
+            <span class="icon has-text-primary">
+              <i class="fas fa-user-shield"></i>
+            </span>
+            <span>{{ staff_users }} staff member{{ staff_users|pluralize }}</span>
+          </span>
+        </div>
+        <div class="level-item">
+          <span class="icon-text">
+            <span class="icon has-text-dark">
+              <i class="fas fa-user-cog"></i>
+            </span>
+            <span>{{ superusers }} superuser{{ superusers|pluralize }}</span>
+          </span>
+        </div>
+      </div>
+      <div class="level-right">
+        <div class="level-item">
+          <span class="has-text-grey">
+            Last updated: {% now "M d, Y H:i" %}
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
 {% endblock content %}
