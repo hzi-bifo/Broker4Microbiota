@@ -656,27 +656,29 @@
             </h6>
             
             {% if assemblies or bins or alignments %}
-              <div class="content">
-                <ul class="pipeline-outputs-list">
-                  <!-- Assemblies -->
-                  {% for assembly in assemblies %}
-                  <li class="mb-3">
-                    <span class="icon is-small has-text-info">
-                      <i class="fas fa-puzzle-piece"></i>
-                    </span>
-                    <strong>Assembly</strong>
-                    {% if assembly.assembly_software %}
-                      <span class="has-text-grey ml-2">({{ assembly.assembly_software }})</span>
-                    {% endif %}
-                    <div class="buttons are-small is-inline-flex ml-3">
+              <div class="pipeline-outputs-container">
+                <!-- Assemblies -->
+                {% for assembly in assemblies %}
+                <div class="output-item">
+                  <div class="output-header">
+                    <div class="output-title">
+                      <span class="icon has-text-info">
+                        <i class="fas fa-puzzle-piece"></i>
+                      </span>
+                      <span class="output-name">Assembly</span>
+                      {% if assembly.assembly_software %}
+                        <span class="output-meta">({{ assembly.assembly_software }})</span>
+                      {% endif %}
+                    </div>
+                    <div class="output-actions">
                       {% if assembly.file %}
-                      <a href="/media/{{ assembly.file }}" download class="button is-small is-success is-light">
+                      <a href="/media/{{ assembly.file }}" download class="button is-small is-success">
                         <span class="icon">
                           <i class="fas fa-download"></i>
                         </span>
                         <span>Download</span>
                       </a>
-                      <button class="button is-small is-info is-light" 
+                      <button class="button is-small is-info" 
                               onclick="showFilePreview('assembly', {{ assembly.id }}, '{{ assembly.file|escapejs }}')">
                         <span class="icon">
                           <i class="fas fa-search"></i>
@@ -685,28 +687,32 @@
                       </button>
                       {% endif %}
                     </div>
-                  </li>
-                  {% endfor %}
-                  
-                  <!-- Bins -->
-                  {% for bin in bins %}
-                  <li class="mb-3">
-                    <span class="icon is-small has-text-warning">
-                      <i class="fas fa-box"></i>
-                    </span>
-                    <strong>Bin</strong>
-                    {% if bin.binning_software %}
-                      <span class="has-text-grey ml-2">({{ bin.binning_software }})</span>
-                    {% endif %}
-                    <div class="buttons are-small is-inline-flex ml-3">
+                  </div>
+                </div>
+                {% endfor %}
+                
+                <!-- Bins -->
+                {% for bin in bins %}
+                <div class="output-item">
+                  <div class="output-header">
+                    <div class="output-title">
+                      <span class="icon has-text-warning">
+                        <i class="fas fa-box"></i>
+                      </span>
+                      <span class="output-name">Bin</span>
+                      {% if bin.binning_software %}
+                        <span class="output-meta">({{ bin.binning_software }})</span>
+                      {% endif %}
+                    </div>
+                    <div class="output-actions">
                       {% if bin.file %}
-                      <a href="/media/{{ bin.file }}" download class="button is-small is-success is-light">
+                      <a href="/media/{{ bin.file }}" download class="button is-small is-success">
                         <span class="icon">
                           <i class="fas fa-download"></i>
                         </span>
                         <span>Download</span>
                       </a>
-                      <button class="button is-small is-info is-light" 
+                      <button class="button is-small is-info" 
                               onclick="showFilePreview('bin', {{ bin.id }}, '{{ bin.file|escapejs }}')">
                         <span class="icon">
                           <i class="fas fa-search"></i>
@@ -715,7 +721,7 @@
                       </button>
                       {% endif %}
                       {% if bin.quality_file %}
-                      <button class="button is-small is-warning is-light" 
+                      <button class="button is-small is-warning" 
                               onclick="showFilePreview('bin-quality', {{ bin.id }}, '{{ bin.quality_file|escapejs }}')">
                         <span class="icon">
                           <i class="fas fa-chart-line"></i>
@@ -724,28 +730,32 @@
                       </button>
                       {% endif %}
                     </div>
-                  </li>
-                  {% endfor %}
-                  
-                  <!-- Alignments -->
-                  {% for alignment in alignments %}
-                  <li class="mb-3">
-                    <span class="icon is-small has-text-success">
-                      <i class="fas fa-align-left"></i>
-                    </span>
-                    <strong>Alignment</strong>
-                    {% if alignment.assembly %}
-                      <span class="has-text-grey ml-2">(for Assembly #{{ alignment.assembly.id }})</span>
-                    {% endif %}
-                    <div class="buttons are-small is-inline-flex ml-3">
+                  </div>
+                </div>
+                {% endfor %}
+                
+                <!-- Alignments -->
+                {% for alignment in alignments %}
+                <div class="output-item">
+                  <div class="output-header">
+                    <div class="output-title">
+                      <span class="icon has-text-success">
+                        <i class="fas fa-align-left"></i>
+                      </span>
+                      <span class="output-name">Alignment</span>
+                      {% if alignment.assembly %}
+                        <span class="output-meta">(for Assembly #{{ alignment.assembly.id }})</span>
+                      {% endif %}
+                    </div>
+                    <div class="output-actions">
                       {% if alignment.file %}
-                      <a href="/media/{{ alignment.file }}" download class="button is-small is-success is-light">
+                      <a href="/media/{{ alignment.file }}" download class="button is-small is-success">
                         <span class="icon">
                           <i class="fas fa-download"></i>
                         </span>
                         <span>Download</span>
                       </a>
-                      <button class="button is-small is-info is-light" 
+                      <button class="button is-small is-info" 
                               onclick="showFilePreview('alignment', {{ alignment.id }}, '{{ alignment.file|escapejs }}')">
                         <span class="icon">
                           <i class="fas fa-search"></i>
@@ -754,9 +764,9 @@
                       </button>
                       {% endif %}
                     </div>
-                  </li>
-                  {% endfor %}
-                </ul>
+                  </div>
+                </div>
+                {% endfor %}
               </div>
             {% else %}
               <p class="has-text-grey">No outputs generated yet for this MAG run.</p>
@@ -1223,30 +1233,86 @@ body {
   border-top: 2px solid #e9ecef;
 }
 
-/* Pipeline Outputs List */
-.pipeline-outputs-list {
-  list-style: none;
-  padding-left: 0;
+/* Pipeline Outputs Container */
+.pipeline-outputs-container {
+  padding: 0.5rem 0;
 }
 
-.pipeline-outputs-list li {
+.output-item {
+  background: white;
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 0.75rem;
+  transition: all 0.2s ease;
+}
+
+.output-item:hover {
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  transform: translateY(-1px);
+}
+
+.output-item:last-child {
+  margin-bottom: 0;
+}
+
+.output-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.output-title {
   display: flex;
   align-items: center;
-  padding: 0.5rem 0;
-  border-bottom: 1px solid #f0f0f0;
+  gap: 0.5rem;
 }
 
-.pipeline-outputs-list li:last-child {
-  border-bottom: none;
+.output-title .icon {
+  font-size: 1.25rem;
 }
 
-.pipeline-outputs-list .buttons {
-  margin-bottom: 0 !important;
+.output-name {
+  font-weight: 600;
+  font-size: 1rem;
+  color: #363636;
 }
 
-.pipeline-outputs-list .buttons.is-inline-flex {
-  display: inline-flex;
-  flex-wrap: wrap;
+.output-meta {
+  color: #6c757d;
+  font-size: 0.875rem;
+  font-weight: normal;
+}
+
+.output-actions {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.output-actions .button {
+  margin: 0 !important;
+  font-weight: 500;
+}
+
+/* Make buttons in outputs more compact */
+.output-actions .button.is-small {
+  padding: 0.375rem 0.75rem;
+  font-size: 0.875rem;
+}
+
+@media (max-width: 768px) {
+  .output-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .output-actions {
+    width: 100%;
+    justify-content: flex-start;
+  }
 }
 
 /* Responsive */
