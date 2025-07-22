@@ -1758,3 +1758,52 @@ def admin_start_mag_run(request, mag_run_id):
     return redirect('admin_dashboard')
 
 
+@staff_member_required
+@require_http_methods(["POST"])
+def admin_start_submg_run(request, submg_run_id):
+    """
+    Start/execute a SubMG pipeline run
+    Based on the Django admin action start_run in SubMGRunAdmin
+    """
+    import random
+    from . import async_calls
+    
+    submg_run = get_object_or_404(SubMGRun, id=submg_run_id)
+    
+    # Check if it's already running
+    if submg_run.status == 'running':
+        messages.warning(request, "SubMG run is already running.")
+        return redirect('admin_project_detail', project_id=submg_run.order.project.id)
+    
+    try:
+        # Create a new temporary folder for the run
+        run_id = random.randint(1000000, 9999999)
+        run_folder = os.path.join(settings.LOCAL_DIR, f"{run_id}")
+        os.makedirs(run_folder, exist_ok=True)
+        
+        # Write SubMG YAML file with updated tax_ids path
+        with open(os.path.join(run_folder, 'submg.yaml'), 'w') as file:
+            file.write(submg_run.yaml.replace('tax_ids.txt', f'{run_folder}/tax_ids.txt'))
+        
+        # Write tax_ids.txt file
+        with open(os.path.join(run_folder, 'tax_ids.txt'), 'w') as file:
+            file.write(submg_run.tax_ids)
+        
+        # Create SubMG run instance
+        submg_run_instance = submg_run.submgruninstance_set.create(
+            run_folder=run_folder
+        )
+        
+        # Start the async job
+        async_calls.run_submg(submg_run, run_folder)
+        
+        messages.success(request, f"SubMG pipeline started successfully for run #{submg_run.id}")
+        
+    except Exception as e:
+        messages.error(request, f"Failed to start SubMG pipeline: {str(e)}")
+        logger.error(f"Failed to start SubMG run {submg_run_id}: {str(e)}")
+    
+    # Redirect back to project detail page
+    return redirect('admin_project_detail', project_id=submg_run.order.project.id)
+
+

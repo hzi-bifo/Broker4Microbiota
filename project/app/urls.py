@@ -31,6 +31,7 @@ urlpatterns = [
     path('admin-dashboard/projects/<int:project_id>/generate-submg/', views_admin.admin_generate_submg_run, name='admin_generate_submg_run'),
     path('admin-dashboard/projects/<int:project_id>/create-mag-run/', views_admin.admin_create_mag_run, name='admin_create_mag_run'),
     path('admin-dashboard/mag-runs/<int:mag_run_id>/start/', views_admin.admin_start_mag_run, name='admin_start_mag_run'),
+    path('admin-dashboard/submg-runs/<int:submg_run_id>/start/', views_admin.admin_start_submg_run, name='admin_start_submg_run'),
     path('admin-dashboard/submissions/', views_admin.admin_submission_list, name='admin_submission_list'),
     path('admin-dashboard/submissions/<int:submission_id>/delete/', views_admin.admin_delete_submission, name='admin_delete_submission'),
     path('admin-dashboard/submissions/<int:submission_id>/register-ena/', views_admin.admin_register_project_ena, name='admin_register_project_ena'),

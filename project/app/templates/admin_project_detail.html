@@ -400,119 +400,148 @@
       </div>
       
       {% if submg_runs %}
-      <div class="table-container">
-        <table class="table is-fullwidth is-striped">
-          <thead>
-            <tr>
-              <th>Run ID</th>
-              <th>Order</th>
-              <th>Status</th>
-              <th>Type</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {% for run in submg_runs %}
-            <tr>
-              <td>#{{ run.id }}</td>
-              <td>
-                <a href="{% url 'admin_order_detail' run.order.id %}" class="has-text-link">
-                  Order #{{ run.order.id }}
-                </a>
-              </td>
-              <td>
-                {% if run.status %}
-                  <span class="tag is-{{ run.status|lower }}">{{ run.status }}</span>
-                {% else %}
-                  <span class="tag is-light">Pending</span>
-                {% endif %}
-              </td>
-              <td>
-                {% if run.type %}
-                  <span class="tag is-info">{{ run.type }}</span>
-                {% else %}
-                  <span class="tag is-light">SubMG</span>
-                {% endif %}
-              </td>
-              <td>
-                <div class="buttons are-small">
-                  <a href="/admin/app/submgrun/{{ run.id }}/change/" 
-                     class="button is-small is-dark" 
-                     target="_blank"
-                     title="View in Django Admin">
-                    <span class="icon">
-                      <i class="fas fa-external-link-alt"></i>
-                    </span>
-                    <span>Details</span>
-                  </a>
-                  {% if run.yaml %}
-                  <button class="button is-small is-info" 
-                          onclick="showYAMLModal({{ run.id }}, '{{ run.yaml|escapejs }}')"
-                          title="View YAML configuration">
-                    <span class="icon">
-                      <i class="fas fa-code"></i>
-                    </span>
-                    <span>YAML</span>
-                  </button>
-                  {% endif %}
-                </div>
-              </td>
-            </tr>
-            {% endfor %}
-          </tbody>
-        </table>
-      </div>
-      
-      <!-- Related MAG Runs -->
-      {% if submg_runs.0.submgruninstance_set.exists %}
-      <div class="mt-4">
-        <h5 class="subtitle is-6">
-          <i class="fas fa-tasks"></i> SubMG Run Instances
-        </h5>
-        <div class="table-container">
-          <table class="table is-fullwidth is-narrow">
-            <thead>
-              <tr>
-                <th>Instance ID</th>
-                <th>Status</th>
-                <th>Run Folder</th>
-                <th>UUID</th>
-              </tr>
-            </thead>
-            <tbody>
-              {% for run in submg_runs %}
-                {% for instance in run.submgruninstance_set.all %}
+      <div class="submg-runs-container">
+        {% for run in submg_runs %}
+        <div class="submg-run-item mb-4">
+          <!-- SubMG Run Header -->
+          <div class="table-container">
+            <table class="table is-fullwidth is-hoverable mb-0">
+              <thead>
                 <tr>
-                  <td>#{{ instance.id }}</td>
+                  <th width="10%">Run ID</th>
+                  <th width="15%">Order</th>
+                  <th width="15%">Status</th>
+                  <th width="15%">Type</th>
+                  <th width="20%">YAML</th>
+                  <th width="25%">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="submg-run-row" onclick="toggleSubmgInstances({{ run.id }})">
                   <td>
-                    {% if instance.status %}
-                      <span class="tag is-small is-{{ instance.status|lower }}">{{ instance.status }}</span>
-                    {% else %}
-                      <span class="tag is-small is-light">Unknown</span>
+                    <strong>#{{ run.id }}</strong>
+                    {% if run.submgruninstance_set.exists %}
+                    <span class="icon is-small ml-2">
+                      <i class="fas fa-chevron-down" id="submg-toggle-{{ run.id }}"></i>
+                    </span>
                     {% endif %}
                   </td>
                   <td>
-                    {% if instance.run_folder %}
-                      <code>{{ instance.run_folder }}</code>
+                    <a href="{% url 'admin_order_detail' run.order.id %}" class="has-text-link" onclick="event.stopPropagation();">
+                      Order #{{ run.order.id }}
+                    </a>
+                  </td>
+                  <td>
+                    {% if run.status %}
+                      <span class="tag is-{{ run.status|lower }}">{{ run.status }}</span>
                     {% else %}
-                      <span class="has-text-grey">-</span>
+                      <span class="tag is-light">Pending</span>
                     {% endif %}
                   </td>
                   <td>
-                    {% if instance.uuid %}
-                      <code>{{ instance.uuid }}</code>
+                    {% if run.type %}
+                      <span class="tag is-info">{{ run.type }}</span>
                     {% else %}
-                      <span class="has-text-grey">-</span>
+                      <span class="tag is-light">SubMG</span>
                     {% endif %}
+                  </td>
+                  <td>
+                    {% if run.yaml %}
+                    <button class="button is-small is-light" 
+                            onclick="event.stopPropagation(); showYAMLModal({{ run.id }}, '{{ run.yaml|escapejs }}')"
+                            title="View YAML configuration">
+                      <span class="icon">
+                        <i class="fas fa-code"></i>
+                      </span>
+                      <span>View YAML</span>
+                    </button>
+                    {% else %}
+                    <span class="has-text-grey">-</span>
+                    {% endif %}
+                  </td>
+                  <td>
+                    <div class="buttons are-small">
+                      {% if run.status != 'running' %}
+                      <form method="post" action="{% url 'admin_start_submg_run' run.id %}" style="display: inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="button is-small is-warning" 
+                                title="Start SubMG upload"
+                                onclick="event.stopPropagation(); return confirm('Start SubMG upload for run #{{ run.id }}?')">
+                          <span class="icon">
+                            <i class="fas fa-upload"></i>
+                          </span>
+                          <span>Run SubMG</span>
+                        </button>
+                      </form>
+                      {% endif %}
+                      <a href="/admin/app/submgrun/{{ run.id }}/change/" 
+                         class="button is-small is-dark" 
+                         target="_blank"
+                         onclick="event.stopPropagation();"
+                         title="View in Django Admin">
+                        <span class="icon">
+                          <i class="fas fa-external-link-alt"></i>
+                        </span>
+                        <span>Details</span>
+                      </a>
+                    </div>
                   </td>
                 </tr>
-                {% endfor %}
-              {% endfor %}
-            </tbody>
-          </table>
+              </tbody>
+            </table>
+          </div>
+          
+          <!-- SubMG Run Instances (hidden by default) -->
+          {% if run.submgruninstance_set.exists %}
+          <div class="submg-instances box has-background-light p-4" id="submg-instances-{{ run.id }}" style="display: none; margin-top: -1px; border-top-left-radius: 0; border-top-right-radius: 0;">
+            <h6 class="subtitle is-6 mb-3">
+              <i class="fas fa-tasks"></i> SubMG Run Instances
+            </h6>
+            <div class="table-container">
+              <table class="table is-fullwidth is-narrow">
+                <thead>
+                  <tr>
+                    <th>Instance ID</th>
+                    <th>Status</th>
+                    <th>Run Folder</th>
+                    <th>UUID</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for instance in run.submgruninstance_set.all %}
+                  <tr>
+                    <td>#{{ instance.id }}</td>
+                    <td>
+                      {% if instance.status %}
+                        <span class="tag is-small is-{{ instance.status|lower }}">{{ instance.status }}</span>
+                      {% else %}
+                        <span class="tag is-small is-light">Unknown</span>
+                      {% endif %}
+                    </td>
+                    <td>
+                      {% if instance.run_folder %}
+                        <code class="is-size-7">{{ instance.run_folder }}</code>
+                      {% else %}
+                        <span class="has-text-grey">-</span>
+                      {% endif %}
+                    </td>
+                    <td>
+                      {% if instance.uuid %}
+                        <code class="is-size-7">{{ instance.uuid }}</code>
+                      {% else %}
+                        <span class="has-text-grey">-</span>
+                      {% endif %}
+                    </td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+          {% endif %}
         </div>
+        {% endfor %}
       </div>
-      {% endif %}
       {% else %}
       <div class="notification is-light">
         <p class="has-text-grey">No SubMG runs have been generated for this project yet.</p>
@@ -1236,6 +1265,20 @@ body {
   border-top: 2px solid #e9ecef;
 }
 
+/* SubMG Run Rows */
+.submg-run-row {
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.submg-run-row:hover {
+  background-color: #f5f5f5;
+}
+
+.submg-instances {
+  border-top: 2px solid #e9ecef;
+}
+
 /* Pipeline Outputs Container */
 .pipeline-outputs-container {
   padding: 0.5rem 0;
@@ -1652,6 +1695,23 @@ function toggleMagOutputs(runId) {
   } else {
     outputs.style.display = 'none';
     toggleText.textContent = 'Show Outputs';
+  }
+}
+
+function toggleSubmgInstances(runId) {
+  const instances = document.getElementById(`submg-instances-${runId}`);
+  const toggle = document.getElementById(`submg-toggle-${runId}`);
+  
+  if (instances) {
+    if (instances.style.display === 'none') {
+      instances.style.display = 'block';
+      toggle.classList.remove('fa-chevron-down');
+      toggle.classList.add('fa-chevron-up');
+    } else {
+      instances.style.display = 'none';
+      toggle.classList.remove('fa-chevron-up');
+      toggle.classList.add('fa-chevron-down');
+    }
   }
 }
 </script>
