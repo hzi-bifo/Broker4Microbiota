@@ -8,53 +8,30 @@ All Orders - Admin
 
 {% block extra_css %}
 <style>
-.page-header {
-  position: relative;
-  padding: 2rem 0;
-  margin-bottom: 2rem;
-}
-
-.page-header::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 100px;
-  height: 3px;
-  background: linear-gradient(90deg, transparent, #3273dc, transparent);
-}
-
-
-/* Filter box styling */
-.filter-box {
-  background: white;
-  border-radius: 12px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.06);
-  padding: 1.5rem;
-  margin-bottom: 2rem;
-}
 </style>
 {% endblock %}
 
 {% block content %}
 <section class="section pt-3">
   <div class="container is-fluid">
-    <!-- Page Title -->
-    <div class="page-header has-text-centered">
-      <h1 class="title is-3">
-        <i class="fas fa-clipboard-list has-text-primary mr-2"></i>
-        All Orders
-      </h1>
-      <p class="subtitle is-5 has-text-grey">Manage and track all sequencing orders</p>
+    <!-- Page Header -->
+    <div class="page-intro mb-5">
+      <h1 class="page-title">Sequencing Order Management Hub</h1>
+      <p class="page-description">
+        Efficiently manage the entire sequencing workflow from order submission to data delivery. Review pending orders, 
+        track samples through each processing stage, and coordinate with laboratory teams to ensure timely completion of all sequencing requests.
+      </p>
     </div>
 
-    <!-- Navigation Bar -->
-    {% include 'admin_nav.html' %}
-
     <!-- Filters -->
-    <div class="filter-box">
-      <form method="get" action="{% url 'admin_order_list' %}">
+    <div class="section-card mb-5">
+      <div class="section-header">
+        <h4 class="section-title">
+          <i class="fas fa-filter"></i> Filters
+        </h4>
+      </div>
+      <div class="section-body">
+        <form method="get" action="{% url 'admin_order_list' %}">
         <div class="columns">
           <div class="column is-3">
             <div class="field">
@@ -118,61 +95,23 @@ All Orders - Admin
           </div>
         </div>
       </form>
+      </div>
     </div>
 
-    <!-- Bulk Actions -->
-    <form method="post" action="{% url 'admin_bulk_update_status' %}" id="bulkForm">
-      {% csrf_token %}
-      <div class="level mb-3">
-        <div class="level-left">
-          <div class="level-item">
-            <div class="field has-addons">
-              <div class="control">
-                <select name="new_status" id="bulkStatus" class="input">
-                  <option value="">Select Status...</option>
-                  {% for code, label in status_choices %}
-                  <option value="{{ code }}">{{ label }}</option>
-                  {% endfor %}
-                </select>
-              </div>
-              <div class="control">
-                <button type="submit" class="button is-info" disabled id="bulkUpdateBtn">
-                  Update Selected
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="level-right">
-          <div class="level-item">
-            <a href="{% url 'admin_export_orders' %}?{{ request.GET.urlencode }}" 
-               class="button is-success">
-              <span class="icon">
-                <i class="fas fa-file-csv"></i>
-              </span>
-              <span>Export to CSV</span>
-            </a>
-          </div>
-        </div>
+    <!-- Orders Table -->
+    <div class="section-card">
+      <div class="section-header">
+        <h2 class="section-title">
+          <i class="fas fa-list"></i>
+          Orders
+        </h2>
       </div>
-
-      <!-- Orders Table -->
-      <div class="section-card">
-        <div class="section-header">
-          <h2 class="section-title">
-            <i class="fas fa-list"></i>
-            Orders
-          </h2>
-        </div>
-        <div class="section-body">
-          <div class="table-container">
-            <table class="table is-fullwidth is-striped is-hoverable">
-          <thead>
-            <tr>
-              <th>
-                <input type="checkbox" id="selectAll">
-              </th>
-              <th>Order ID</th>
+      <div class="section-body">
+        <div class="table-container">
+          <table class="table is-fullwidth is-striped is-hoverable">
+            <thead>
+              <tr>
+                <th>Order ID</th>
               <th>Project</th>
               <th>User</th>
               <th>Email</th>
@@ -186,9 +125,6 @@ All Orders - Admin
           <tbody>
             {% for order in page_obj %}
             <tr>
-              <td>
-                <input type="checkbox" name="order_ids" value="{{ order.id }}" class="order-checkbox">
-              </td>
               <td>
                 <strong>#{{ order.id }}</strong>
               </td>
@@ -241,18 +177,28 @@ All Orders - Admin
             </tr>
             {% empty %}
             <tr>
-              <td colspan="10" class="has-text-centered has-text-grey">
+              <td colspan="9" class="has-text-centered has-text-grey">
                 No orders found matching your criteria.
               </td>
             </tr>
             {% endfor %}
           </tbody>
         </table>
-            </div>
           </div>
         </div>
       </div>
-    </form>
+    </div>
+
+    <!-- Export Action -->
+    <div class="has-text-centered mt-4 mb-4">
+      <a href="{% url 'admin_export_orders' %}" 
+         class="button is-success">
+        <span class="icon">
+          <i class="fas fa-file-csv"></i>
+        </span>
+        <span>Export All Orders to CSV</span>
+      </a>
+    </div>
 
     <!-- Pagination -->
     {% if page_obj.has_other_pages %}
@@ -287,29 +233,6 @@ All Orders - Admin
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-  // Select all checkbox
-  const selectAll = document.getElementById('selectAll');
-  const checkboxes = document.querySelectorAll('.order-checkbox');
-  const bulkUpdateBtn = document.getElementById('bulkUpdateBtn');
-  const bulkStatus = document.getElementById('bulkStatus');
-  
-  selectAll.addEventListener('change', function() {
-    checkboxes.forEach(cb => cb.checked = this.checked);
-    updateBulkButton();
-  });
-  
-  checkboxes.forEach(cb => {
-    cb.addEventListener('change', updateBulkButton);
-  });
-  
-  bulkStatus.addEventListener('change', updateBulkButton);
-  
-  function updateBulkButton() {
-    const hasSelection = Array.from(checkboxes).some(cb => cb.checked);
-    const hasStatus = bulkStatus.value !== '';
-    bulkUpdateBtn.disabled = !hasSelection || !hasStatus;
-  }
-  
   // Quick advance status
   document.querySelectorAll('.quick-advance').forEach(btn => {
     btn.addEventListener('click', function() {
@@ -534,12 +457,6 @@ select.input {
 .pagination-link.is-current {
   background-color: #3273dc;
   border-color: #3273dc;
-}
-
-/* Bulk Actions */
-#bulkUpdateBtn:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
 }
 
 /* Order count display */

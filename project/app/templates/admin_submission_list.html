@@ -7,75 +7,19 @@ ENA Project Submissions - Admin View
 {% block body_class %}admin-page{% endblock %}
 
 {% block extra_css %}
-<style>
-.page-header {
-  position: relative;
-  padding: 2rem 0;
-  margin-bottom: 2rem;
-}
-
-.page-header::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 100px;
-  height: 3px;
-  background: linear-gradient(90deg, transparent, #3273dc, transparent);
-}
-</style>
+<!-- Page-specific CSS moved to admin.css -->
 {% endblock %}
 
 {% block content %}
 <section class="section pt-3">
   <div class="container is-fluid">
-    <!-- Page Title -->
-    <div class="page-header has-text-centered">
-      <h1 class="title is-3">
-        <i class="fas fa-file-code has-text-primary mr-2"></i>
-        ENA Project Submissions
-      </h1>
-      <p class="subtitle is-5 has-text-grey">Manage and track ENA submissions</p>
-    </div>
-
-    <!-- Navigation Bar -->
-    {% include 'admin_nav.html' %}
-
-    <!-- Summary Cards -->
-    <div class="columns mb-5">
-      <div class="column is-3">
-        <div class="section-card has-text-centered">
-          <div class="section-body">
-            <p class="heading">Total Submissions</p>
-            <p class="title">{{ total_submissions }}</p>
-          </div>
-        </div>
-      </div>
-      <div class="column is-3">
-        <div class="section-card has-text-centered">
-          <div class="section-body">
-            <p class="heading">Pending</p>
-            <p class="title has-text-warning">{{ pending_count }}</p>
-          </div>
-        </div>
-      </div>
-      <div class="column is-3">
-        <div class="section-card has-text-centered">
-          <div class="section-body">
-            <p class="heading">Submitted</p>
-            <p class="title has-text-info">{{ submitted_count }}</p>
-          </div>
-        </div>
-      </div>
-      <div class="column is-3">
-        <div class="section-card has-text-centered">
-          <div class="section-body">
-            <p class="heading">Successful</p>
-            <p class="title has-text-success">{{ successful_count }}</p>
-          </div>
-        </div>
-      </div>
+    <!-- Page Header -->
+    <div class="page-intro mb-5">
+      <h1 class="page-title">ENA Submission Control Center</h1>
+      <p class="page-description">
+        Manage and monitor all submissions to the European Nucleotide Archive. Track submission status, review XML metadata, 
+        handle validation errors, and ensure compliance with ENA standards for successful data archiving and public release.
+      </p>
     </div>
 
     <!-- Filters -->

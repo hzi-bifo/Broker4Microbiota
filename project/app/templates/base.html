@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="{% static 'css/modern.css' %}">
     <link rel="stylesheet" href="{% static 'css/auth.css' %}">
     <link rel="stylesheet" href="{% static 'css/forms.css' %}">
-    <link rel="stylesheet" href="{% static 'css/admin.css' %}?v=2">
+    <link rel="stylesheet" href="{% static 'css/admin.css' %}?v=3">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     {% if site_settings.favicon_url %}
     <link rel="icon" type="image/x-icon" href="{{ site_settings.favicon_url }}">
@@ -45,6 +45,98 @@
         height: 300px; /* Fixed height for scrolling */
         overflow: auto; /* Enable scrolling */
         border: 1px solid #ccc; /* Optional: Add a border for clarity */
+      }
+      
+      /* Admin Navbar Styling */
+      .navbar {
+        box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+      }
+      
+      .navbar-menu {
+        display: flex;
+        flex-grow: 1;
+        align-items: stretch;
+      }
+      
+      .navbar-center {
+        display: flex;
+        flex-grow: 1;
+        justify-content: center;
+        align-items: center;
+        margin: 0 auto;
+      }
+      
+      .navbar-center .navbar-item {
+        display: flex;
+        align-items: center;
+        padding: 0.75rem 1.25rem;
+        color: #6c757d;
+        font-weight: 500;
+        font-size: 1.125rem;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+        margin: 0 0.125rem;
+        position: relative;
+        text-decoration: none;
+      }
+      
+      .navbar-center .navbar-item:hover:not(.is-active) {
+        background-color: #f5f5f5;
+        color: var(--primary-color);
+      }
+      
+      .navbar-center .navbar-item.is-active {
+        background-color: #f0f7ff;
+        color: var(--primary-color) !important;
+        font-weight: 700;
+        border: 2px solid var(--primary-color);
+        box-shadow: 0 2px 8px rgba(50, 115, 220, 0.15);
+      }
+      
+      .navbar-center .navbar-item.is-active:hover {
+        background-color: #e3f2ff;
+        color: var(--primary-color) !important;
+      }
+      
+      /* Make sure navbar-end doesn't push center items */
+      .navbar-end {
+        margin-left: 0;
+      }
+      
+      /* Sequencing Center View Indicator */
+      .admin-view-indicator {
+        display: inline-flex;
+        align-items: center;
+        margin-left: 1rem;
+        font-weight: normal;
+      }
+      
+      .admin-view-indicator .divider {
+        color: #dee2e6;
+        margin: 0 0.75rem;
+        font-weight: 300;
+      }
+      
+      .admin-view-indicator .view-label {
+        color: var(--primary-color);
+        font-weight: 500;
+        font-size: 0.95rem;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+        opacity: 0.9;
+      }
+      
+      /* Mobile responsiveness */
+      @media screen and (max-width: 1023px) {
+        .navbar-center {
+          display: none;
+        }
+      }
+      
+      @media screen and (min-width: 1024px) {
+        .navbar-burger {
+          display: none;
+        }
       }
     </style>
   <script src="{% static 'js/jquery-3.7.1.js' %}"></script>
@@ -82,39 +174,57 @@
           <div class="navbar-start">
             <h1 class="navbar-item">
               <span class="has-text-weight-semibold">{{ site_settings.site_name }}</span>
+              {% if user.is_authenticated and user.is_staff and request.resolver_match.url_name and 'admin' in request.resolver_match.url_name %}
+              <span class="admin-view-indicator">
+                <span class="divider">|</span>
+                <span class="view-label">Sequencing Center View</span>
+              </span>
+              {% endif %}
             </h1>
           </div>
+
+          <!-- Admin Navigation (centered) -->
+          {% if user.is_authenticated and user.is_staff and request.resolver_match.url_name and 'admin' in request.resolver_match.url_name %}
+          <div class="navbar-center">
+            <a href="{% url 'admin_dashboard' %}" class="navbar-item {% if request.resolver_match.url_name == 'admin_dashboard' %}is-active{% endif %}">
+              Dashboard
+            </a>
+            <a href="{% url 'admin_project_list' %}" class="navbar-item {% if 'project' in request.resolver_match.url_name and 'admin' in request.resolver_match.url_name %}is-active{% endif %}">
+              Projects
+            </a>
+            <a href="{% url 'admin_order_list' %}" class="navbar-item {% if 'order' in request.resolver_match.url_name and 'admin' in request.resolver_match.url_name and 'export' not in request.resolver_match.url_name %}is-active{% endif %}">
+              Orders
+            </a>
+            <a href="{% url 'admin_submission_list' %}" class="navbar-item {% if 'submission' in request.resolver_match.url_name and 'admin' in request.resolver_match.url_name %}is-active{% endif %}">
+              Submissions
+            </a>
+            <a href="{% url 'admin_user_list' %}" class="navbar-item {% if 'user' in request.resolver_match.url_name and 'admin' in request.resolver_match.url_name %}is-active{% endif %}">
+              Users
+            </a>
+            <a href="{% url 'admin_settings' %}" class="navbar-item {% if request.resolver_match.url_name == 'admin_settings' %}is-active{% endif %}">
+              Settings
+            </a>
+          </div>
+          {% endif %}
 
           <div class="navbar-end">
             {% if user.is_authenticated %}
               <div class="navbar-item has-dropdown is-hoverable">
                 <a class="navbar-link">
-                  <span class="icon">
-                    <i class="fas fa-user-circle"></i>
-                  </span>
-                  <span>{{ user.username }}</span>
+                  {{ user.username }}
                 </a>
                 <div class="navbar-dropdown is-right">
                   <a class="navbar-item" href="{% url 'project_list' %}">
-                    <span class="icon">
-                      <i class="fas fa-folder"></i>
-                    </span>
-                    <span>My Projects</span>
+                    My Projects
                   </a>
                   {% if user.is_staff %}
                   <a class="navbar-item" href="{% url 'admin_dashboard' %}">
-                    <span class="icon">
-                      <i class="fas fa-tachometer-alt"></i>
-                    </span>
-                    <span>Admin Dashboard</span>
+                    Admin
                   </a>
                   {% endif %}
                   <hr class="navbar-divider">
                   <a class="navbar-item" href="{% url 'logout' %}">
-                    <span class="icon">
-                      <i class="fas fa-sign-out-alt"></i>
-                    </span>
-                    <span>Logout</span>
+                    Logout
                   </a>
                 </div>
               </div>
@@ -141,6 +251,9 @@
       </div>
     </nav>
 
+    <!-- Admin Notification Banner -->
+    {% block admin_notification %}{% endblock %}
+
     <!-- Messages Section -->
     {% if messages %}
     <div class="container mt-4">
@@ -155,10 +268,8 @@
     </div>
     {% endif %}
 
-    <main class="section">
-      <div class="container">
-        {% block content %}{% endblock %}
-      </div>
+    <main>
+      {% block content %}{% endblock %}
     </main>
 
     <footer class="footer">

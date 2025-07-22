@@ -135,6 +135,32 @@
     margin-bottom: 3rem;
 }
 
+/* Page Introduction Header Styling */
+.page-intro {
+  background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+  border-radius: 12px;
+  padding: 2rem;
+  border: 1px solid #e9ecef;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+  margin-bottom: 2rem;
+}
+
+.page-title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #2c3e50;
+  margin-bottom: 0.75rem;
+  line-height: 1.2;
+}
+
+.page-description {
+  font-size: 1.125rem;
+  color: #6c757d;
+  line-height: 1.6;
+  max-width: 800px;
+  margin: 0;
+}
+
 /* Box spacing for admin pages */
 .admin-page .box {
     margin-bottom: 2rem;

@@ -8,23 +8,6 @@ Admin Dashboard - Sequencing Center Management
 
 {% block extra_css %}
 <style>
-.page-header {
-  position: relative;
-  padding: 2rem 0;
-  margin-bottom: 2rem;
-}
-
-.page-header::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 100px;
-  height: 3px;
-  background: linear-gradient(90deg, transparent, #3273dc, transparent);
-}
-
 /* Progress bar color customization */
 .progress::-webkit-progress-bar {
   background-color: #e9ecef;
@@ -93,46 +76,86 @@ Admin Dashboard - Sequencing Center Management
 </style>
 {% endblock %}
 
-{% block content %}
-<section class="section pt-3">
-  <div class="container is-fluid">
-    <!-- Page Title -->
-    <div class="page-header has-text-centered">
-      <h1 class="title is-3">
-        <i class="fas fa-tachometer-alt has-text-primary mr-2"></i>
-        Sequencing Order Management
-      </h1>
-      <p class="subtitle is-5 has-text-grey">Admin Dashboard</p>
+{% block admin_notification %}
+{% if stats.orders_needing_action > 0 %}
+<!-- Full-width Action Banner -->
+<div id="admin-notification-banner" style="background: linear-gradient(135deg, #FFF4E6 0%, #FFE8CC 100%); border-bottom: 2px solid #FFD4A3; width: 100%; box-shadow: 0 2px 4px rgba(0,0,0,0.05); position: relative;">
+  <div style="padding: 1rem 2rem; display: flex; align-items: center; justify-content: space-between; max-width: 100%; gap: 1rem;">
+    <div style="display: flex; align-items: center; gap: 1rem;">
+      <div style="background-color: #FF9800; color: white; width: 40px; height: 40px; border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+        <i class="fas fa-bell" style="font-size: 1.25rem;"></i>
+      </div>
+      <div style="color: #5D4037;">
+        <div style="font-weight: 700; font-size: 1.125rem; margin-bottom: 0.125rem;">
+          {{ stats.orders_needing_action }} order{{ stats.orders_needing_action|pluralize }} awaiting review
+        </div>
+        <div style="font-size: 0.875rem; opacity: 0.8;">
+          New submissions require your attention
+        </div>
+      </div>
     </div>
+    <div style="display: flex; align-items: center; gap: 1rem;">
+      <a href="{% url 'admin_order_list' %}?status=ready_for_sequencing" 
+         style="background-color: #FF9800; color: white; padding: 0.625rem 1.5rem; border-radius: 8px; font-weight: 600; text-decoration: none; display: inline-flex; align-items: center; gap: 0.5rem; transition: all 0.2s ease; white-space: nowrap;"
+         onmouseover="this.style.backgroundColor='#F57C00'" 
+         onmouseout="this.style.backgroundColor='#FF9800'">
+        Review Now
+        <i class="fas fa-arrow-right" style="font-size: 0.875rem;"></i>
+      </a>
+      <button onclick="dismissNotificationBanner()" 
+              style="background: transparent; border: none; color: #8D6E63; cursor: pointer; padding: 0.5rem; border-radius: 4px; transition: all 0.2s ease;"
+              onmouseover="this.style.backgroundColor='rgba(0,0,0,0.05)'"
+              onmouseout="this.style.backgroundColor='transparent'"
+              title="Dismiss notification">
+        <i class="fas fa-times" style="font-size: 1.25rem;"></i>
+      </button>
+    </div>
+  </div>
+</div>
 
-    <!-- Navigation Bar -->
-    {% include 'admin_nav.html' %}
+<script>
+function dismissNotificationBanner() {
+  const banner = document.getElementById('admin-notification-banner');
+  banner.style.transition = 'all 0.3s ease';
+  banner.style.opacity = '0';
+  banner.style.transform = 'translateY(-100%)';
+  setTimeout(() => {
+    banner.style.display = 'none';
+  }, 300);
+  
+  // Store dismissal in sessionStorage so it stays hidden during this session
+  sessionStorage.setItem('admin-notification-dismissed', 'true');
+}
 
-    <div class="columns is-variable is-6">
+// Check if banner was previously dismissed in this session
+document.addEventListener('DOMContentLoaded', function() {
+  if (sessionStorage.getItem('admin-notification-dismissed') === 'true') {
+    const banner = document.getElementById('admin-notification-banner');
+    if (banner) {
+      banner.style.display = 'none';
+    }
+  }
+});
+</script>
+{% endif %}
+{% endblock %}
+
+{% block content %}
+<div class="admin-content-wrapper">
+  <section class="section pt-3">
+    <div class="container is-fluid">
+      <!-- Page Header -->
+      <div class="page-intro mb-5">
+        <h1 class="page-title">Sequencing Center Command Central</h1>
+        <p class="page-description">
+          Monitor active sequencing orders, track sample processing status, and manage laboratory workflows. 
+          Get real-time insights into your facility's operations with comprehensive analytics and quick access to critical tasks.
+        </p>
+      </div>
+
+      <div class="columns is-variable is-6">
       <!-- Main Content Area -->
       <div class="column is-9">
-        {% if stats.orders_needing_action > 0 %}
-        <!-- Action Required Alert -->
-        <div class="notification is-warning is-light mb-4">
-          <div class="level is-mobile">
-            <div class="level-left">
-              <div class="level-item">
-                <span class="icon">
-                  <i class="fas fa-exclamation-triangle"></i>
-                </span>
-              </div>
-              <div class="level-item">
-                <strong>{{ stats.orders_needing_action }} order{{ stats.orders_needing_action|pluralize }} awaiting review</strong>
-              </div>
-            </div>
-            <div class="level-right">
-              <a href="{% url 'admin_order_list' %}?status=ready_for_sequencing" class="button is-small is-warning">
-                Review Now
-              </a>
-            </div>
-          </div>
-        </div>
-        {% endif %}
 
         <!-- Order Status Overview Cards -->
         <div class="columns is-mobile is-multiline mb-5">
@@ -410,6 +433,42 @@ body {
   padding-top: 1rem !important;
 }
 
+/* Ensure banner is above section */
+.section.admin-main {
+  margin-top: 0;
+}
+
+/* Admin content wrapper */
+.admin-content-wrapper {
+  min-height: 100vh;
+  background-color: #f8f9fa;
+}
+
+/* Page Header Styling */
+.page-intro {
+  background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+  border-radius: 12px;
+  padding: 2rem;
+  border: 1px solid #e9ecef;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+}
+
+.page-title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #2c3e50;
+  margin-bottom: 0.75rem;
+  line-height: 1.2;
+}
+
+.page-description {
+  font-size: 1.125rem;
+  color: #6c757d;
+  line-height: 1.6;
+  max-width: 800px;
+  margin: 0;
+}
+
 /* Action Required Alert */
 .notification.is-warning.is-light {
   background-color: #fffbeb;
@@ -493,12 +552,7 @@ body {
   display: flex;
   align-items: flex-start;
   padding: 0.75rem 0;
-  border-bottom: 1px solid #f1f3f5;
   font-size: 0.875rem;
-}
-
-.timeline-item:last-child {
-  border-bottom: none;
 }
 
 .timeline-marker {
@@ -619,18 +673,25 @@ body {
 
 /* Compact Timeline for Sidebar */
 .timeline.compact {
-  padding-left: 1rem;
+  position: relative;
+  padding-left: 2rem;
 }
 
 .timeline-item.compact {
-  padding-bottom: 1.25rem;
-  padding-left: 1.5rem;
   position: relative;
+  padding-bottom: 1.5rem;
+  min-height: 2rem;
 }
 
-.timeline-item.compact:not(:last-child) {
-  border-left: 2px solid #e9ecef;
-  margin-left: 4px;
+.timeline-item.compact:not(:last-child)::before {
+  content: '';
+  position: absolute;
+  left: 0.75rem;
+  top: 1.25rem;
+  bottom: 0;
+  width: 2px;
+  background-color: #e9ecef;
+  z-index: 0;
 }
 
 .timeline-item.compact:last-child {
@@ -638,24 +699,37 @@ body {
 }
 
 .timeline-item.compact .timeline-marker.is-small {
-  width: 10px;
-  height: 10px;
+  width: 12px;
+  height: 12px;
   position: absolute;
-  left: -1.5rem;
-  top: 2px;
+  left: 0.5rem;
+  top: 0.25rem;
   background: white;
   border: 2px solid;
   border-radius: 50%;
+  z-index: 1;
 }
 
-.timeline-marker.is-small.is-danger { border-color: #ff3860; }
-.timeline-marker.is-small.is-warning { border-color: #ffdd57; }
-.timeline-marker.is-small.is-primary { border-color: #3273dc; }
-.timeline-marker.is-small.is-info { border-color: #3298dc; }
+.timeline-marker.is-small.is-danger { 
+  border-color: #ff3860;
+  background-color: #ff3860;
+}
+.timeline-marker.is-small.is-warning { 
+  border-color: #ffdd57;
+  background-color: #ffdd57;
+}
+.timeline-marker.is-small.is-primary { 
+  border-color: #3273dc;
+  background-color: #3273dc;
+}
+.timeline-marker.is-small.is-info { 
+  border-color: #3298dc;
+  background-color: #3298dc;
+}
 
 .timeline-item.compact .timeline-content {
-  margin-left: 0;
-  margin-top: -0.125rem;
+  margin-left: 2rem;
+  margin-top: 0;
 }
 </style>
 
@@ -740,4 +814,5 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 });
 </script>
+</div>
 {% endblock content %}

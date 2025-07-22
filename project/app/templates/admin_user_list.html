@@ -7,40 +7,20 @@ Manage Users - Admin
 {% block body_class %}admin-page{% endblock %}
 
 {% block extra_css %}
-<style>
-.page-header {
-  position: relative;
-  padding: 2rem 0;
-  margin-bottom: 2rem;
-}
-
-.page-header::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 100px;
-  height: 3px;
-  background: linear-gradient(90deg, transparent, #3273dc, transparent);
-}
-</style>
+<!-- Page-specific CSS moved to admin.css -->
 {% endblock %}
 
 {% block content %}
 <section class="section pt-3">
   <div class="container is-fluid">
-    <!-- Page Title -->
-    <div class="page-header has-text-centered">
-      <h1 class="title is-3">
-        <i class="fas fa-users has-text-primary mr-2"></i>
-        User Management
-      </h1>
-      <p class="subtitle is-5 has-text-grey">Manage user accounts and permissions</p>
+    <!-- Page Header -->
+    <div class="page-intro mb-5">
+      <h1 class="page-title">User Access Administration</h1>
+      <p class="page-description">
+        Manage system access for researchers, laboratory staff, and administrators. Control user permissions, 
+        monitor account activity, and maintain security standards while ensuring appropriate access levels for all facility personnel.
+      </p>
     </div>
-
-    <!-- Navigation Bar -->
-    {% include 'admin_nav.html' %}
 
     <!-- Action Buttons -->
     <div class="level mb-4">
@@ -58,8 +38,14 @@ Manage Users - Admin
     </div>
 
     <!-- Filters -->
-    <div class="box mb-5">
-      <form method="get" action="{% url 'admin_user_list' %}">
+    <div class="section-card mb-5">
+      <div class="section-header">
+        <h4 class="section-title">
+          <i class="fas fa-filter"></i> Filters
+        </h4>
+      </div>
+      <div class="section-body">
+        <form method="get" action="{% url 'admin_user_list' %}">
         <div class="columns">
           <div class="column is-3">
             <div class="field">
@@ -101,11 +87,20 @@ Manage Users - Admin
           </div>
         </div>
       </form>
+      </div>
     </div>
 
     <!-- Users Table -->
-    <div class="table-container">
-      <table class="table is-fullwidth is-striped is-hoverable">
+    <div class="section-card">
+      <div class="section-header">
+        <h2 class="section-title">
+          <i class="fas fa-users"></i>
+          Users
+        </h2>
+      </div>
+      <div class="section-body">
+        <div class="table-container">
+          <table class="table is-fullwidth is-striped is-hoverable">
         <thead>
           <tr>
             <th>Username</th>
@@ -180,7 +175,9 @@ Manage Users - Admin
           </tr>
           {% endfor %}
         </tbody>
-      </table>
+          </table>
+        </div>
+      </div>
     </div>
 
     <!-- Pagination -->
@@ -216,8 +213,51 @@ Manage Users - Admin
 
 <style>
 /* Clean select styling */
+/* Section Cards - Modern design */
+.section-card {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07), 0 1px 3px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  transition: all 0.3s ease;
+  margin-bottom: 2rem;
+}
+
+.section-card:hover {
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1), 0 3px 6px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem;
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.section-body {
+  padding: 1.5rem;
+}
+
+.section-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #363636;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.section-title i {
+  color: var(--primary-color, #3273dc);
+}
+
+/* Clean select styling */
 select.input {
-  padding-right: 2.5em;
+  padding: 0.625rem 2.5rem 0.625rem 0.625rem;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath fill='%23363636' d='M7 7l3 3 3-3m-3 6l3-3-3-3'/%3E%3C/svg%3E");
   background-position: right 0.5em center;
   background-repeat: no-repeat;
@@ -225,6 +265,49 @@ select.input {
   appearance: none;
   -webkit-appearance: none;
   -moz-appearance: none;
+  height: auto;
+  line-height: 1.5;
+  font-size: 1rem;
+  color: #363636;
+  background-color: white;
+  border: 1px solid #dbdbdb;
+  border-radius: 6px;
+  min-height: 2.5rem;
+}
+
+/* Table styling */
+.table {
+  background: transparent;
+}
+
+.table th {
+  background-color: #f8f9fa;
+  border-bottom: 2px solid #dee2e6;
+  font-weight: 600;
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #6c757d;
+  padding: 1rem;
+}
+
+.table td {
+  vertical-align: middle;
+  padding: 1rem;
+}
+
+.table.is-hoverable tbody tr:hover {
+  background-color: #f8f9fa;
+}
+
+/* Label styling */
+.label.is-small {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #6c757d;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 0.5rem;
 }
 </style>
 {% endblock content %}
