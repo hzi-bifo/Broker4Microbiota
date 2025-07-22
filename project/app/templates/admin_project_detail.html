@@ -465,8 +465,7 @@
                         {% csrf_token %}
                         <button type="submit" class="button is-small is-warning" 
                                 title="Start SubMG upload"
-                                onclick="event.stopPropagation(); return confirm('Start SubMG upload for run #{{ run.id }}?')"
-                                {% if run.status == 'running' %}disabled{% endif %}>
+                                onclick="event.stopPropagation(); return confirm('Start SubMG upload for run #{{ run.id }}?')">
                           <span class="icon">
                             <i class="fas fa-upload"></i>
                           </span>

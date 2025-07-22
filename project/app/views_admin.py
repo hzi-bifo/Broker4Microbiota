@@ -1565,12 +1565,12 @@ def admin_generate_submg_run(request, project_id):
         yaml.extend(project.getSubMGYAML())
     
     # Get platform list from orders
-    platformList = ""
+    sequencingPlatforms = []
     for order in orders:
-        platformList = order.getSubMGPlatformList(platformList)
+        sequencingPlatforms = order.getSubMGSequencingPlatforms(sequencingPlatforms)
         
     for order in orders:
-        yaml.extend(order.getSubMGYAML(platformList))
+        yaml.extend(order.getSubMGYAML(sequencingPlatforms))
         
         # Create SubMG run for this order
         if samples:
