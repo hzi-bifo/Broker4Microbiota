@@ -550,330 +550,312 @@
       </div>
       
       {% if mag_runs %}
-      <div class="table-container">
-        <table class="table is-fullwidth is-striped">
-          <thead>
-            <tr>
-              <th>Run ID</th>
-              <th>Status</th>
-              <th>Reads</th>
-              <th>Samplesheet</th>
-              <th>Cluster Config</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {% for run in mag_runs %}
-            <tr>
-              <td>#{{ run.id }}</td>
-              <td>
-                {% if run.status %}
-                  <span class="tag is-{{ run.status|lower }}">{{ run.status }}</span>
-                {% else %}
-                  <span class="tag is-light">Pending</span>
-                {% endif %}
-              </td>
-              <td>
-                {% if run.reads.count > 0 %}
-                  <span class="tag is-light">{{ run.reads.count }} read{{ run.reads.count|pluralize }}</span>
-                {% else %}
-                  <span class="has-text-grey">No reads</span>
-                {% endif %}
-              </td>
-              <td>
-                {% if run.samplesheet_content %}
-                  <button class="button is-small is-light" 
-                          onclick="showSamplesheetModal({{ run.id }}, '{{ run.samplesheet_content|escapejs }}')"
-                          title="View samplesheet">
-                    <span class="icon">
-                      <i class="fas fa-file-csv"></i>
+      <div class="mag-runs-container">
+        {% for run in mag_runs %}
+        <div class="mag-run-item mb-4">
+          <!-- MAG Run Header -->
+          <div class="table-container">
+            <table class="table is-fullwidth is-hoverable mb-0">
+              <thead>
+                <tr>
+                  <th width="10%">Run ID</th>
+                  <th width="15%">Status</th>
+                  <th width="15%">Reads</th>
+                  <th width="20%">Samplesheet</th>
+                  <th width="20%">Cluster Config</th>
+                  <th width="20%">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="mag-run-row" onclick="toggleMagOutputs({{ run.id }})">
+                  <td>
+                    <strong>#{{ run.id }}</strong>
+                    <span class="icon is-small ml-2">
+                      <i class="fas fa-chevron-down" id="mag-toggle-{{ run.id }}"></i>
                     </span>
-                    <span>View</span>
-                  </button>
-                {% else %}
-                  <span class="has-text-grey">-</span>
-                {% endif %}
-              </td>
-              <td>
-                {% if run.cluster_config %}
-                  <button class="button is-small is-light" 
-                          onclick="showClusterConfigModal({{ run.id }}, '{{ run.cluster_config|escapejs }}')"
-                          title="View cluster config">
-                    <span class="icon">
-                      <i class="fas fa-server"></i>
-                    </span>
-                    <span>View</span>
-                  </button>
-                {% else %}
-                  <span class="has-text-grey">-</span>
-                {% endif %}
-              </td>
-              <td>
-                <div class="buttons are-small">
-                  <a href="/admin/app/magrun/{{ run.id }}/change/" 
-                     class="button is-small is-dark" 
-                     target="_blank"
-                     title="View in Django Admin">
-                    <span class="icon">
-                      <i class="fas fa-external-link-alt"></i>
-                    </span>
-                    <span>Details</span>
-                  </a>
-                  {% if run.reads.count > 0 and not run.status %}
-                  <button class="button is-small is-primary" 
-                          onclick="alert('MAG pipeline execution will be implemented in Django Admin')"
-                          title="Run pipeline">
-                    <span class="icon">
-                      <i class="fas fa-play"></i>
-                    </span>
-                    <span>Run</span>
-                  </button>
+                  </td>
+                  <td>
+                    {% if run.status %}
+                      <span class="tag is-{{ run.status|lower }}">{{ run.status }}</span>
+                    {% else %}
+                      <span class="tag is-light">Pending</span>
+                    {% endif %}
+                  </td>
+                  <td>
+                    {% if run.reads.count > 0 %}
+                      <span class="tag is-light">{{ run.reads.count }} read{{ run.reads.count|pluralize }}</span>
+                    {% else %}
+                      <span class="has-text-grey">No reads</span>
+                    {% endif %}
+                  </td>
+                  <td>
+                    {% if run.samplesheet_content %}
+                      <button class="button is-small is-light" 
+                              onclick="event.stopPropagation(); showSamplesheetModal({{ run.id }}, '{{ run.samplesheet_content|escapejs }}')"
+                              title="View samplesheet">
+                        <span class="icon">
+                          <i class="fas fa-file-csv"></i>
+                        </span>
+                        <span>View</span>
+                      </button>
+                    {% else %}
+                      <span class="has-text-grey">-</span>
+                    {% endif %}
+                  </td>
+                  <td>
+                    {% if run.cluster_config %}
+                      <button class="button is-small is-light" 
+                              onclick="event.stopPropagation(); showClusterConfigModal({{ run.id }}, '{{ run.cluster_config|escapejs }}')"
+                              title="View cluster config">
+                        <span class="icon">
+                          <i class="fas fa-server"></i>
+                        </span>
+                        <span>View</span>
+                      </button>
+                    {% else %}
+                      <span class="has-text-grey">-</span>
+                    {% endif %}
+                  </td>
+                  <td>
+                    <div class="buttons are-small">
+                      <a href="/admin/app/magrun/{{ run.id }}/change/" 
+                         class="button is-small is-dark" 
+                         target="_blank"
+                         onclick="event.stopPropagation();"
+                         title="View in Django Admin">
+                        <span class="icon">
+                          <i class="fas fa-external-link-alt"></i>
+                        </span>
+                        <span>Details</span>
+                      </a>
+                      {% if run.reads.count > 0 and not run.status %}
+                      <button class="button is-small is-primary" 
+                              onclick="event.stopPropagation(); alert('MAG pipeline execution will be implemented in Django Admin')"
+                              title="Run pipeline">
+                        <span class="icon">
+                          <i class="fas fa-play"></i>
+                        </span>
+                        <span>Run</span>
+                      </button>
+                      {% endif %}
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          
+          <!-- MAG Run Outputs (hidden by default) -->
+          <div class="mag-outputs box has-background-light p-4" id="mag-outputs-{{ run.id }}" style="display: none; margin-top: -1px; border-top-left-radius: 0; border-top-right-radius: 0;">
+            <h6 class="subtitle is-6 mb-3">
+              <i class="fas fa-layer-group"></i> Pipeline Outputs for Run #{{ run.id }}
+            </h6>
+            
+              <!-- Assemblies -->
+              {% if assemblies %}
+              <div class="mb-4">
+                <h6 class="subtitle is-6 mb-3">
+                  <i class="fas fa-puzzle-piece"></i> Assemblies 
+                  <span class="tag is-light is-small ml-2">{{ assemblies|length }}</span>
+                </h6>
+                <div class="table-container">
+                  <table class="table is-fullwidth is-narrow">
+                    <thead>
+                      <tr>
+                        <th>ID</th>
+                        <th>Software</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {% for assembly in assemblies|slice:":5" %}
+                      <tr>
+                        <td>#{{ assembly.id }}</td>
+                        <td>{{ assembly.assembly_software|default:"-" }}</td>
+                        <td>
+                          {% if assembly.submitted %}
+                            <span class="tag is-success is-light is-small">Submitted</span>
+                          {% else %}
+                            <span class="tag is-light is-small">Pending</span>
+                          {% endif %}
+                        </td>
+                        <td>
+                          <div class="buttons are-small">
+                            {% if assembly.file %}
+                            <button class="button is-small is-info is-light" 
+                                    onclick="event.stopPropagation(); showFilePreview('assembly', {{ assembly.id }}, '{{ assembly.file|escapejs }}')"
+                                    title="Inspect file">
+                              <span class="icon">
+                                <i class="fas fa-search"></i>
+                              </span>
+                              <span>Inspect</span>
+                            </button>
+                            {% endif %}
+                            <a href="/admin/app/assembly/{{ assembly.id }}/change/" 
+                               class="button is-small is-dark is-light" 
+                               target="_blank"
+                               onclick="event.stopPropagation();"
+                               title="View in Django Admin">
+                              <span class="icon">
+                                <i class="fas fa-external-link-alt"></i>
+                              </span>
+                            </a>
+                          </div>
+                        </td>
+                      </tr>
+                      {% endfor %}
+                    </tbody>
+                  </table>
+                  {% if assemblies|length > 5 %}
+                  <p class="has-text-grey is-size-7 mt-2">Showing first 5 of {{ assemblies|length }} assemblies</p>
                   {% endif %}
                 </div>
-              </td>
-            </tr>
-            {% endfor %}
-          </tbody>
-        </table>
-      </div>
-      
-      <!-- MAG Pipeline Outputs -->
-      {% if assemblies or bins or alignments %}
-      <hr class="my-4">
-      <h5 class="subtitle is-5 mb-4">
-        <i class="fas fa-layer-group"></i> Pipeline Outputs
-      </h5>
-      
-      <!-- Assemblies -->
-      {% if assemblies %}
-      <div class="mb-4">
-        <h6 class="subtitle is-6 mb-3">
-          <i class="fas fa-puzzle-piece"></i> Assemblies 
-          <span class="tag is-light is-small ml-2">{{ assemblies|length }}</span>
-        </h6>
-        <div class="table-container">
-          <table class="table is-fullwidth is-narrow">
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>Order</th>
-                <th>Software</th>
-                <th>Status</th>
-                <th>Accession</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {% for assembly in assemblies|slice:":5" %}
-              <tr>
-                <td>#{{ assembly.id }}</td>
-                <td>
-                  <a href="{% url 'admin_order_detail' assembly.order.id %}" class="has-text-link">
-                    Order #{{ assembly.order.id }}
-                  </a>
-                </td>
-                <td>{{ assembly.assembly_software|default:"-" }}</td>
-                <td>
-                  {% if assembly.submitted %}
-                    <span class="tag is-success is-light is-small">Submitted</span>
-                  {% else %}
-                    <span class="tag is-light is-small">Pending</span>
+              </div>
+              {% endif %}
+              
+              <!-- Bins -->
+              {% if bins %}
+              <div class="mb-4">
+                <h6 class="subtitle is-6 mb-3">
+                  <i class="fas fa-box"></i> Bins 
+                  <span class="tag is-light is-small ml-2">{{ bins|length }}</span>
+                </h6>
+                <div class="table-container">
+                  <table class="table is-fullwidth is-narrow">
+                    <thead>
+                      <tr>
+                        <th>ID</th>
+                        <th>Bin Number</th>
+                        <th>Software</th>
+                        <th>Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {% for bin in bins|slice:":5" %}
+                      <tr>
+                        <td>#{{ bin.id }}</td>
+                        <td>{{ bin.bin_number|default:"-" }}</td>
+                        <td>{{ bin.binning_software|default:"-" }}</td>
+                        <td>
+                          <div class="buttons are-small">
+                            {% if bin.file %}
+                            <button class="button is-small is-info is-light" 
+                                    onclick="event.stopPropagation(); showFilePreview('bin', {{ bin.id }}, '{{ bin.file|escapejs }}')"
+                                    title="Inspect bin file">
+                              <span class="icon">
+                                <i class="fas fa-search"></i>
+                              </span>
+                              <span>Inspect</span>
+                            </button>
+                            {% endif %}
+                            {% if bin.quality_file %}
+                            <button class="button is-small is-warning is-light" 
+                                    onclick="event.stopPropagation(); showFilePreview('bin-quality', {{ bin.id }}, '{{ bin.quality_file|escapejs }}')"
+                                    title="Inspect quality file">
+                              <span class="icon">
+                                <i class="fas fa-chart-line"></i>
+                              </span>
+                              <span>Quality</span>
+                            </button>
+                            {% endif %}
+                            <a href="/admin/app/bin/{{ bin.id }}/change/" 
+                               class="button is-small is-dark is-light" 
+                               target="_blank"
+                               onclick="event.stopPropagation();"
+                               title="View in Django Admin">
+                              <span class="icon">
+                                <i class="fas fa-external-link-alt"></i>
+                              </span>
+                            </a>
+                          </div>
+                        </td>
+                      </tr>
+                      {% endfor %}
+                    </tbody>
+                  </table>
+                  {% if bins|length > 5 %}
+                  <p class="has-text-grey is-size-7 mt-2">Showing first 5 of {{ bins|length }} bins</p>
                   {% endif %}
-                </td>
-                <td>
-                  {% if assembly.assembly_accession_number %}
-                    <code class="is-size-7">{{ assembly.assembly_accession_number }}</code>
-                  {% else %}
-                    <span class="has-text-grey">-</span>
+                </div>
+              </div>
+              {% endif %}
+              
+              <!-- Alignments -->
+              {% if alignments %}
+              <div class="mb-4">
+                <h6 class="subtitle is-6 mb-3">
+                  <i class="fas fa-align-left"></i> Alignments 
+                  <span class="tag is-light is-small ml-2">{{ alignments|length }}</span>
+                </h6>
+                <div class="table-container">
+                  <table class="table is-fullwidth is-narrow">
+                    <thead>
+                      <tr>
+                        <th>ID</th>
+                        <th>Assembly</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {% for alignment in alignments|slice:":5" %}
+                      <tr>
+                        <td>#{{ alignment.id }}</td>
+                        <td>
+                          {% if alignment.assembly %}
+                            Assembly #{{ alignment.assembly.id }}
+                          {% else %}
+                            <span class="has-text-grey">-</span>
+                          {% endif %}
+                        </td>
+                        <td>
+                          {% if alignment.submitted %}
+                            <span class="tag is-success is-light is-small">Submitted</span>
+                          {% else %}
+                            <span class="tag is-light is-small">Pending</span>
+                          {% endif %}
+                        </td>
+                        <td>
+                          <div class="buttons are-small">
+                            {% if alignment.file %}
+                            <button class="button is-small is-info is-light" 
+                                    onclick="event.stopPropagation(); showFilePreview('alignment', {{ alignment.id }}, '{{ alignment.file|escapejs }}')"
+                                    title="Inspect alignment file">
+                              <span class="icon">
+                                <i class="fas fa-search"></i>
+                              </span>
+                              <span>Inspect</span>
+                            </button>
+                            {% endif %}
+                            <a href="/admin/app/alignment/{{ alignment.id }}/change/" 
+                               class="button is-small is-dark is-light" 
+                               target="_blank"
+                               onclick="event.stopPropagation();"
+                               title="View in Django Admin">
+                              <span class="icon">
+                                <i class="fas fa-external-link-alt"></i>
+                              </span>
+                            </a>
+                          </div>
+                        </td>
+                      </tr>
+                      {% endfor %}
+                    </tbody>
+                  </table>
+                  {% if alignments|length > 5 %}
+                  <p class="has-text-grey is-size-7 mt-2">Showing first 5 of {{ alignments|length }} alignments</p>
                   {% endif %}
-                </td>
-                <td>
-                  <div class="buttons are-small">
-                    {% if assembly.file %}
-                    <button class="button is-small is-info is-light" 
-                            onclick="showFilePreview('assembly', {{ assembly.id }}, '{{ assembly.file|escapejs }}')"
-                            title="Inspect file">
-                      <span class="icon">
-                        <i class="fas fa-search"></i>
-                      </span>
-                      <span>Inspect</span>
-                    </button>
-                    {% endif %}
-                    <a href="/admin/app/assembly/{{ assembly.id }}/change/" 
-                       class="button is-small is-dark is-light" 
-                       target="_blank"
-                       title="View in Django Admin">
-                      <span class="icon">
-                        <i class="fas fa-external-link-alt"></i>
-                      </span>
-                    </a>
-                  </div>
-                </td>
-              </tr>
-              {% endfor %}
-            </tbody>
-          </table>
-          {% if assemblies|length > 5 %}
-          <p class="has-text-grey is-size-7 mt-2">Showing first 5 of {{ assemblies|length }} assemblies</p>
-          {% endif %}
+                </div>
+              </div>
+              {% endif %}
+            {% else %}
+              <p class="has-text-grey">No outputs generated yet for this MAG run.</p>
+            {% endif %}
+          </div>
         </div>
+        {% endfor %}
       </div>
-      {% endif %}
-      
-      <!-- Bins -->
-      {% if bins %}
-      <div class="mb-4">
-        <h6 class="subtitle is-6 mb-3">
-          <i class="fas fa-box"></i> Bins 
-          <span class="tag is-light is-small ml-2">{{ bins|length }}</span>
-        </h6>
-        <div class="table-container">
-          <table class="table is-fullwidth is-narrow">
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>Order</th>
-                <th>Bin Number</th>
-                <th>Software</th>
-                <th>Status</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {% for bin in bins|slice:":5" %}
-              <tr>
-                <td>#{{ bin.id }}</td>
-                <td>
-                  <a href="{% url 'admin_order_detail' bin.order.id %}" class="has-text-link">
-                    Order #{{ bin.order.id }}
-                  </a>
-                </td>
-                <td>{{ bin.bin_number|default:"-" }}</td>
-                <td>{{ bin.binning_software|default:"-" }}</td>
-                <td>
-                  {% if bin.submitted %}
-                    <span class="tag is-success is-light is-small">Submitted</span>
-                  {% else %}
-                    <span class="tag is-light is-small">Pending</span>
-                  {% endif %}
-                </td>
-                <td>
-                  <div class="buttons are-small">
-                    {% if bin.file %}
-                    <button class="button is-small is-info is-light" 
-                            onclick="showFilePreview('bin', {{ bin.id }}, '{{ bin.file|escapejs }}')"
-                            title="Inspect bin file">
-                      <span class="icon">
-                        <i class="fas fa-search"></i>
-                      </span>
-                      <span>Inspect</span>
-                    </button>
-                    {% endif %}
-                    {% if bin.quality_file %}
-                    <button class="button is-small is-warning is-light" 
-                            onclick="showFilePreview('bin-quality', {{ bin.id }}, '{{ bin.quality_file|escapejs }}')"
-                            title="Inspect quality file">
-                      <span class="icon">
-                        <i class="fas fa-chart-line"></i>
-                      </span>
-                      <span>Quality</span>
-                    </button>
-                    {% endif %}
-                    <a href="/admin/app/bin/{{ bin.id }}/change/" 
-                       class="button is-small is-dark is-light" 
-                       target="_blank"
-                       title="View in Django Admin">
-                      <span class="icon">
-                        <i class="fas fa-external-link-alt"></i>
-                      </span>
-                    </a>
-                  </div>
-                </td>
-              </tr>
-              {% endfor %}
-            </tbody>
-          </table>
-          {% if bins|length > 5 %}
-          <p class="has-text-grey is-size-7 mt-2">Showing first 5 of {{ bins|length }} bins</p>
-          {% endif %}
-        </div>
-      </div>
-      {% endif %}
-      
-      <!-- Alignments -->
-      {% if alignments %}
-      <div class="mb-4">
-        <h6 class="subtitle is-6 mb-3">
-          <i class="fas fa-align-left"></i> Alignments 
-          <span class="tag is-light is-small ml-2">{{ alignments|length }}</span>
-        </h6>
-        <div class="table-container">
-          <table class="table is-fullwidth is-narrow">
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>Order</th>
-                <th>Assembly</th>
-                <th>Status</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {% for alignment in alignments|slice:":5" %}
-              <tr>
-                <td>#{{ alignment.id }}</td>
-                <td>
-                  <a href="{% url 'admin_order_detail' alignment.order.id %}" class="has-text-link">
-                    Order #{{ alignment.order.id }}
-                  </a>
-                </td>
-                <td>
-                  {% if alignment.assembly %}
-                    Assembly #{{ alignment.assembly.id }}
-                  {% else %}
-                    <span class="has-text-grey">-</span>
-                  {% endif %}
-                </td>
-                <td>
-                  {% if alignment.submitted %}
-                    <span class="tag is-success is-light is-small">Submitted</span>
-                  {% else %}
-                    <span class="tag is-light is-small">Pending</span>
-                  {% endif %}
-                </td>
-                <td>
-                  <div class="buttons are-small">
-                    {% if alignment.file %}
-                    <button class="button is-small is-info is-light" 
-                            onclick="showFilePreview('alignment', {{ alignment.id }}, '{{ alignment.file|escapejs }}')"
-                            title="Inspect alignment file">
-                      <span class="icon">
-                        <i class="fas fa-search"></i>
-                      </span>
-                      <span>Inspect</span>
-                    </button>
-                    {% endif %}
-                    <a href="/admin/app/alignment/{{ alignment.id }}/change/" 
-                       class="button is-small is-dark is-light" 
-                       target="_blank"
-                       title="View in Django Admin">
-                      <span class="icon">
-                        <i class="fas fa-external-link-alt"></i>
-                      </span>
-                    </a>
-                  </div>
-                </td>
-              </tr>
-              {% endfor %}
-            </tbody>
-          </table>
-          {% if alignments|length > 5 %}
-          <p class="has-text-grey is-size-7 mt-2">Showing first 5 of {{ alignments|length }} alignments</p>
-          {% endif %}
-        </div>
-      </div>
-      {% endif %}
-      {% endif %}
       {% else %}
       <div class="notification is-light">
         <p class="has-text-grey">No MAG runs have been created for this project yet.</p>
@@ -1319,6 +1301,20 @@ body {
   align-items: center;
 }
 
+/* MAG Run Rows */
+.mag-run-row {
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.mag-run-row:hover {
+  background-color: #f5f5f5;
+}
+
+.mag-outputs {
+  border-top: 2px solid #e9ecef;
+}
+
 /* Responsive */
 @media (max-width: 1024px) {
   .workflow-container {
@@ -1640,6 +1636,21 @@ function closeFilePreviewModal(type, id) {
   const modal = document.getElementById(`file-preview-modal-${type}-${id}`);
   if (modal) {
     modal.remove();
+  }
+}
+
+function toggleMagOutputs(runId) {
+  const outputs = document.getElementById(`mag-outputs-${runId}`);
+  const toggle = document.getElementById(`mag-toggle-${runId}`);
+  
+  if (outputs.style.display === 'none') {
+    outputs.style.display = 'block';
+    toggle.classList.remove('fa-chevron-down');
+    toggle.classList.add('fa-chevron-up');
+  } else {
+    outputs.style.display = 'none';
+    toggle.classList.remove('fa-chevron-up');
+    toggle.classList.add('fa-chevron-down');
   }
 }
 </script>

@@ -2,6 +2,11 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Important notes
+
+If you make changes to the model, always update `project/project/models_template.py`. Then run `project/project/create_json_files.py` to generate `project/app/models.py` to sure the database is up to date, you need to run `project/manage.py` 2 times with `--makemigrations` and `--migrate` which will update the database. 
+
+
 ## Standard Workflow
 
 First, think through the problem, read the codebase for relevant files, and write a plan to [PROJECTPLAN.md](PROJECTPLAN.md).

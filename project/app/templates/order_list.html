@@ -647,10 +647,16 @@ Order List
 
 <script>
 // Store submission instructions for use in JavaScript
+// Debug: Log what we're getting from Django
+console.log('Raw submission instructions from Django:', `{{ site_settings.submission_instructions|safe }}`);
+
 // Create a temporary div to hold the HTML content safely
 const tempDiv = document.createElement('div');
 tempDiv.innerHTML = `{{ site_settings.submission_instructions|safe }}`;
 const submissionInstructions = tempDiv.innerHTML;
+
+// Debug: Log the final result
+console.log('Final submission instructions:', submissionInstructions);
 
 // Get CSRF token from cookies
 function getCookie(name) {
