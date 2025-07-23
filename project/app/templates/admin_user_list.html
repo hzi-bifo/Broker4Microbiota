@@ -7,59 +7,101 @@ Manage Users - Admin
 {% block body_class %}admin-page{% endblock %}
 
 {% block extra_css %}
-<style>
-.page-header {
-  position: relative;
-  padding: 2rem 0;
-  margin-bottom: 2rem;
-}
-
-.page-header::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 100px;
-  height: 3px;
-  background: linear-gradient(90deg, transparent, #3273dc, transparent);
-}
-</style>
+<!-- Page-specific CSS moved to admin.css -->
 {% endblock %}
 
 {% block content %}
 <section class="section pt-3">
   <div class="container is-fluid">
-    <!-- Page Title -->
-    <div class="page-header has-text-centered">
-      <h1 class="title is-3">
-        <i class="fas fa-users has-text-primary mr-2"></i>
-        User Management
-      </h1>
-      <p class="subtitle is-5 has-text-grey">Manage user accounts and permissions</p>
+    <!-- Page Header -->
+    <div class="page-intro mb-5">
+      <div style="display: flex; gap: 2rem; align-items: flex-start;">
+        <!-- Left side - Title and Description -->
+        <div style="flex: 1;">
+          <h1 class="page-title">User Access Administration</h1>
+          <p class="page-description">
+            Manage system access for researchers, laboratory staff, and administrators. Control user permissions, 
+            monitor account activity, and maintain security standards while ensuring appropriate access levels for all facility personnel.
+          </p>
+        </div>
+        
+        <!-- Right side - Permissions Legend -->
+        <div style="flex: 0 0 auto; display: flex; gap: 2rem; padding-left: 2rem; border-left: 1px solid #e9ecef;">
+          <!-- User Permission Levels (Left) -->
+          <div style="min-width: 250px;">
+            <h3 style="font-size: 0.875rem; font-weight: 600; color: #6c757d; margin-bottom: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px;">
+              User Permission Levels
+            </h3>
+            <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+              <div style="display: flex; align-items: center; gap: 0.5rem;">
+                <span class="tag is-dark">Superuser</span>
+                <span style="font-size: 0.75rem; color: #495057;">Full system access</span>
+              </div>
+              <div style="display: flex; align-items: center; gap: 0.5rem;">
+                <span class="tag is-info">Staff</span>
+                <span style="font-size: 0.75rem; color: #495057;">Admin panel access</span>
+              </div>
+              <div style="display: flex; align-items: center; gap: 0.5rem;">
+                <span class="tag is-light">Regular User</span>
+                <span style="font-size: 0.75rem; color: #495057;">No admin access</span>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Permission Hierarchy (Right) -->
+          <div style="min-width: 200px; padding-left: 1.5rem; border-left: 1px solid #e9ecef;">
+            <h3 style="font-size: 0.875rem; font-weight: 600; color: #6c757d; margin-bottom: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px;">
+              Permission Hierarchy
+            </h3>
+            <div style="font-size: 0.75rem; color: #6c757d; line-height: 1.6;">
+              <div style="margin-bottom: 0.25rem;"><strong>Superuser</strong><br>→ Manage all users & settings</div>
+              <div style="margin-bottom: 0.25rem;"><strong>Staff</strong><br>→ Manage orders & projects</div>
+              <div><strong>Regular</strong><br>→ Own projects only</div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
 
-    <!-- Navigation Bar -->
-    {% include 'admin_nav.html' %}
-
-    <!-- Action Buttons -->
-    <div class="level mb-4">
-      <div class="level-left">
-        <!-- Empty for alignment -->
+    <!-- Create New User Section -->
+    <div class="section-card mb-5" style="background: linear-gradient(135deg, #E8F5E9 0%, #F1F8E9 100%); border: 1px solid #A5D6A7;">
+      <div class="section-header" style="background: linear-gradient(135deg, #E8F5E9 0%, #C8E6C9 100%);">
+        <div>
+          <h4 class="section-title" style="color: #2E7D32;">
+            <i class="fas fa-user-plus"></i> User Creation
+          </h4>
+        </div>
       </div>
-      <div class="level-right">
-        <a href="{% url 'admin_user_create' %}" class="button is-success">
-          <span class="icon">
-            <i class="fas fa-plus"></i>
-          </span>
-          <span>Create New User</span>
-        </a>
+      <div class="section-body">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <div style="flex: 1; margin-right: 2rem;">
+            <h5 style="font-size: 1rem; font-weight: 600; color: #363636; margin-bottom: 0.5rem;">Add New System User</h5>
+            <p style="font-size: 0.875rem; color: #666; line-height: 1.5;">
+              Create accounts for researchers, laboratory staff, or administrators. Set appropriate permission levels based on their role 
+              in the sequencing facility. New users will receive email instructions to set their password and access the system.
+            </p>
+          </div>
+          <div>
+            <a href="{% url 'admin_user_create' %}" class="button is-success">
+              <span class="icon">
+                <i class="fas fa-plus"></i>
+              </span>
+              <span>Create New User</span>
+            </a>
+          </div>
+        </div>
       </div>
     </div>
 
     <!-- Filters -->
-    <div class="box mb-5">
-      <form method="get" action="{% url 'admin_user_list' %}">
+    <div class="section-card mb-5">
+      <div class="section-header">
+        <h4 class="section-title">
+          <i class="fas fa-filter"></i> Filters
+        </h4>
+      </div>
+      <div class="section-body">
+        <form method="get" action="{% url 'admin_user_list' %}">
         <div class="columns">
           <div class="column is-3">
             <div class="field">
@@ -101,11 +143,20 @@ Manage Users - Admin
           </div>
         </div>
       </form>
+      </div>
     </div>
 
     <!-- Users Table -->
-    <div class="table-container">
-      <table class="table is-fullwidth is-striped is-hoverable">
+    <div class="section-card">
+      <div class="section-header">
+        <h2 class="section-title">
+          <i class="fas fa-users"></i>
+          Users
+        </h2>
+      </div>
+      <div class="section-body">
+        <div class="table-container">
+          <table class="table is-fullwidth is-striped is-hoverable">
         <thead>
           <tr>
             <th>Username</th>
@@ -180,7 +231,9 @@ Manage Users - Admin
           </tr>
           {% endfor %}
         </tbody>
-      </table>
+          </table>
+        </div>
+      </div>
     </div>
 
     <!-- Pagination -->
@@ -216,8 +269,51 @@ Manage Users - Admin
 
 <style>
 /* Clean select styling */
+/* Section Cards - Modern design */
+.section-card {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07), 0 1px 3px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  transition: all 0.3s ease;
+  margin-bottom: 2rem;
+}
+
+.section-card:hover {
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1), 0 3px 6px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem;
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.section-body {
+  padding: 1.5rem;
+}
+
+.section-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #363636;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.section-title i {
+  color: var(--primary-color, #3273dc);
+}
+
+/* Clean select styling */
 select.input {
-  padding-right: 2.5em;
+  padding: 0.625rem 2.5rem 0.625rem 0.625rem;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath fill='%23363636' d='M7 7l3 3 3-3m-3 6l3-3-3-3'/%3E%3C/svg%3E");
   background-position: right 0.5em center;
   background-repeat: no-repeat;
@@ -225,6 +321,98 @@ select.input {
   appearance: none;
   -webkit-appearance: none;
   -moz-appearance: none;
+  height: auto;
+  line-height: 1.5;
+  font-size: 1rem;
+  color: #363636;
+  background-color: white;
+  border: 1px solid #dbdbdb;
+  border-radius: 6px;
+  min-height: 2.5rem;
+}
+
+/* Table styling */
+.table {
+  background: transparent;
+}
+
+.table th {
+  background-color: #f8f9fa;
+  border-bottom: 2px solid #dee2e6;
+  font-weight: 600;
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #6c757d;
+  padding: 1rem;
+}
+
+.table td {
+  vertical-align: middle;
+  padding: 1rem;
+}
+
+.table.is-hoverable tbody tr:hover {
+  background-color: #f8f9fa;
+}
+
+/* Label styling */
+.label.is-small {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #6c757d;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 0.5rem;
 }
 </style>
+
+<!-- Footer -->
+<footer class="footer has-background-light">
+  <div class="container is-fluid">
+    <div class="level">
+      <div class="level-left">
+        <div class="level-item">
+          <span class="icon-text">
+            <span class="icon has-text-info">
+              <i class="fas fa-users"></i>
+            </span>
+            <span>{{ total_users }} total user{{ total_users|pluralize }}</span>
+          </span>
+        </div>
+        <div class="level-item">
+          <span class="icon-text">
+            <span class="icon has-text-success">
+              <i class="fas fa-user-check"></i>
+            </span>
+            <span>{{ active_users }} active</span>
+          </span>
+        </div>
+        <div class="level-item">
+          <span class="icon-text">
+            <span class="icon has-text-primary">
+              <i class="fas fa-user-shield"></i>
+            </span>
+            <span>{{ staff_users }} staff member{{ staff_users|pluralize }}</span>
+          </span>
+        </div>
+        <div class="level-item">
+          <span class="icon-text">
+            <span class="icon has-text-dark">
+              <i class="fas fa-user-cog"></i>
+            </span>
+            <span>{{ superusers }} superuser{{ superusers|pluralize }}</span>
+          </span>
+        </div>
+      </div>
+      <div class="level-right">
+        <div class="level-item">
+          <span class="has-text-grey">
+            Last updated: {% now "M d, Y H:i" %}
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
 {% endblock content %}

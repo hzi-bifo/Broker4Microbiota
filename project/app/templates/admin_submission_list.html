@@ -7,72 +7,88 @@ ENA Project Submissions - Admin View
 {% block body_class %}admin-page{% endblock %}
 
 {% block extra_css %}
-<style>
-.page-header {
-  position: relative;
-  padding: 2rem 0;
-  margin-bottom: 2rem;
-}
-
-.page-header::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 100px;
-  height: 3px;
-  background: linear-gradient(90deg, transparent, #3273dc, transparent);
-}
-</style>
+<!-- Page-specific CSS moved to admin.css -->
 {% endblock %}
 
 {% block content %}
 <section class="section pt-3">
   <div class="container is-fluid">
-    <!-- Page Title -->
-    <div class="page-header has-text-centered">
-      <h1 class="title is-3">
-        <i class="fas fa-file-code has-text-primary mr-2"></i>
-        ENA Project Submissions
-      </h1>
-      <p class="subtitle is-5 has-text-grey">Manage and track ENA submissions</p>
-    </div>
-
-    <!-- Navigation Bar -->
-    {% include 'admin_nav.html' %}
-
-    <!-- Summary Cards -->
-    <div class="columns mb-5">
-      <div class="column is-3">
-        <div class="box has-text-centered">
-          <p class="heading">Total Submissions</p>
-          <p class="title">{{ total_submissions }}</p>
+    <!-- Page Header -->
+    <div class="page-intro mb-5">
+      <div style="display: flex; gap: 2rem; align-items: flex-start;">
+        <!-- Left side - Title and Description -->
+        <div style="flex: 1;">
+          <h1 class="page-title">ENA Submission Control Center</h1>
+          <p class="page-description">
+            Manage and monitor all submissions to the European Nucleotide Archive. Track submission status, review XML metadata, 
+            handle validation errors, and ensure compliance with ENA standards for successful data archiving and public release.
+          </p>
         </div>
-      </div>
-      <div class="column is-3">
-        <div class="box has-text-centered">
-          <p class="heading">Pending</p>
-          <p class="title has-text-warning">{{ pending_count }}</p>
-        </div>
-      </div>
-      <div class="column is-3">
-        <div class="box has-text-centered">
-          <p class="heading">Submitted</p>
-          <p class="title has-text-info">{{ submitted_count }}</p>
-        </div>
-      </div>
-      <div class="column is-3">
-        <div class="box has-text-centered">
-          <p class="heading">Successful</p>
-          <p class="title has-text-success">{{ successful_count }}</p>
+        
+        <!-- Right side - Legends -->
+        <div style="flex: 0 0 auto; display: flex; gap: 2rem; padding-left: 2rem; border-left: 1px solid #e9ecef;">
+          <!-- XML Files Legend (Left) -->
+          <div style="min-width: 240px;">
+            <h3 style="font-size: 0.875rem; font-weight: 600; color: #6c757d; margin-bottom: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px;">
+              XML Files & Terms
+            </h3>
+            <div style="display: flex; flex-direction: column; gap: 0.375rem; font-size: 0.8125rem;">
+              <div><strong style="color: #363636;">Accession:</strong> <span style="color: #495057;">Unique ENA identifier (e.g., PRJEB12345)</span></div>
+              <div><strong style="color: #363636;">Project XML:</strong> <span style="color: #495057;">Study metadata and description</span></div>
+              <div><strong style="color: #363636;">Submission XML:</strong> <span style="color: #495057;">Submission instructions and actions</span></div>
+              <div><strong style="color: #363636;">Receipt XML:</strong> <span style="color: #495057;">ENA's response with accession numbers</span></div>
+            </div>
+          </div>
+          
+          <!-- Status Legend (Right) -->
+          <div style="min-width: 280px; padding-left: 2rem; border-left: 1px solid #e9ecef;">
+            <h3 style="font-size: 0.875rem; font-weight: 600; color: #6c757d; margin-bottom: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px;">
+              Submission Status Guide
+            </h3>
+            <div style="display: flex; flex-direction: column; gap: 0.375rem;">
+              <div style="display: flex; align-items: center; gap: 0.5rem;">
+                <span class="tag is-warning">
+                  <span class="icon"><i class="fas fa-clock"></i></span>
+                  <span>Pending</span>
+                </span>
+                <span style="font-size: 0.75rem; color: #495057;">XML generated, not submitted</span>
+              </div>
+              <div style="display: flex; align-items: center; gap: 0.5rem;">
+                <span class="tag is-info">
+                  <span class="icon"><i class="fas fa-cloud-upload-alt"></i></span>
+                  <span>Submitted</span>
+                </span>
+                <span style="font-size: 0.75rem; color: #495057;">Sent to ENA, awaiting response</span>
+              </div>
+              <div style="display: flex; align-items: center; gap: 0.5rem;">
+                <span class="tag is-success">
+                  <span class="icon"><i class="fas fa-check-circle"></i></span>
+                  <span>Successful</span>
+                </span>
+                <span style="font-size: 0.75rem; color: #495057;">Accepted by ENA</span>
+              </div>
+              <div style="display: flex; align-items: center; gap: 0.5rem;">
+                <span class="tag is-light">
+                  <span class="icon"><i class="fas fa-question-circle"></i></span>
+                  <span>Draft</span>
+                </span>
+                <span style="font-size: 0.75rem; color: #495057;">Incomplete submission</span>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
 
     <!-- Filters -->
-    <div class="box mb-5">
-      <form method="get" action="{% url 'admin_submission_list' %}">
+    <div class="section-card mb-5">
+      <div class="section-header">
+        <h4 class="section-title">
+          <i class="fas fa-filter"></i> Filters
+        </h4>
+      </div>
+      <div class="section-body">
+        <form method="get" action="{% url 'admin_submission_list' %}">
         <div class="columns">
           <div class="column is-4">
             <div class="field">
@@ -135,11 +151,19 @@ ENA Project Submissions - Admin View
           </div>
         </div>
       </form>
+      </div>
     </div>
 
     <!-- Submissions Table -->
-    <div class="table-container">
-      <table class="table is-fullwidth is-striped is-hoverable">
+    <div class="section-card">
+      <div class="section-header">
+        <h4 class="section-title">
+          <i class="fas fa-list"></i> Submissions
+        </h4>
+      </div>
+      <div class="section-body">
+        <div class="table-container">
+          <table class="table is-fullwidth is-striped is-hoverable">
         <thead>
           <tr>
             <th>ID</th>
@@ -246,10 +270,7 @@ ENA Project Submissions - Admin View
             <td>
               <div class="buttons are-small">
                 <button class="button is-info" onclick="toggleSubmissionPreview({{ submission.id }})">
-                  <span class="icon">
-                    <i class="fas fa-eye"></i>
-                  </span>
-                  <span>Preview</span>
+                  View
                 </button>
                 <a href="/admin/app/projectsubmission/{{ submission.id }}/change/" 
                    class="button is-dark" target="_blank">
@@ -393,6 +414,8 @@ ENA Project Submissions - Admin View
           {% endfor %}
         </tbody>
       </table>
+        </div>
+      </div>
     </div>
 
     <!-- Pagination -->
@@ -621,4 +644,53 @@ function copyXML(elementId) {
   });
 }
 </script>
+
+<!-- Footer -->
+<footer class="footer has-background-light">
+  <div class="container is-fluid">
+    <div class="level">
+      <div class="level-left">
+        <div class="level-item">
+          <span class="icon-text">
+            <span class="icon has-text-info">
+              <i class="fas fa-file-upload"></i>
+            </span>
+            <span>{{ total_submissions }} total submission{{ total_submissions|pluralize }}</span>
+          </span>
+        </div>
+        <div class="level-item">
+          <span class="icon-text">
+            <span class="icon has-text-warning">
+              <i class="fas fa-clock"></i>
+            </span>
+            <span>{{ pending_submissions }} pending</span>
+          </span>
+        </div>
+        <div class="level-item">
+          <span class="icon-text">
+            <span class="icon has-text-info">
+              <i class="fas fa-cloud-upload-alt"></i>
+            </span>
+            <span>{{ submitted_submissions }} submitted</span>
+          </span>
+        </div>
+        <div class="level-item">
+          <span class="icon-text">
+            <span class="icon has-text-success">
+              <i class="fas fa-check-circle"></i>
+            </span>
+            <span>{{ successful_submissions }} successful</span>
+          </span>
+        </div>
+      </div>
+      <div class="level-right">
+        <div class="level-item">
+          <span class="has-text-grey">
+            Last updated: {% now "M d, Y H:i" %}
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
 {% endblock content %}

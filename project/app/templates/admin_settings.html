@@ -7,40 +7,20 @@ Admin Settings
 {% block body_class %}admin-page{% endblock %}
 
 {% block extra_css %}
-<style>
-.page-header {
-  position: relative;
-  padding: 2rem 0;
-  margin-bottom: 2rem;
-}
-
-.page-header::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 100px;
-  height: 3px;
-  background: linear-gradient(90deg, transparent, #3273dc, transparent);
-}
-</style>
+<!-- Page-specific CSS moved to admin.css -->
 {% endblock %}
 
 {% block content %}
 <section class="section pt-3">
   <div class="container is-fluid">
-    <!-- Page Title -->
-    <div class="page-header has-text-centered">
-      <h1 class="title is-3">
-        <i class="fas fa-cog has-text-primary mr-2"></i>
-        Admin Settings
-      </h1>
-      <p class="subtitle is-5 has-text-grey">Configure site-wide settings and ENA credentials</p>
+    <!-- Page Header -->
+    <div class="page-intro mb-5">
+      <h1 class="page-title">System Configuration Center</h1>
+      <p class="page-description">
+        Configure core system settings and integrations. Manage site branding, establish ENA connectivity, 
+        set data storage paths, and customize the platform to match your facility's specific requirements and workflows.
+      </p>
     </div>
-
-    <!-- Navigation Bar -->
-    {% include 'admin_nav.html' %}
 
     {% if messages %}
       {% for message in messages %}
@@ -55,11 +35,14 @@ Admin Settings
       {% csrf_token %}
       
       <!-- Basic Site Information -->
-      <div class="box mb-5">
-        <h2 class="title is-5 mb-4">
-          <i class="fas fa-info-circle mr-2"></i>
-          Basic Site Information
-        </h2>
+      <div class="section-card mb-5">
+        <div class="section-header">
+          <h2 class="section-title">
+            <i class="fas fa-info-circle"></i>
+            Basic Site Information
+          </h2>
+        </div>
+        <div class="section-body">
         
         <div class="columns is-multiline">
           <div class="column is-half">
@@ -113,14 +96,18 @@ Admin Settings
             </div>
           </div>
         </div>
+        </div>
       </div>
 
       <!-- Sequencing Data Configuration -->
-      <div class="box mb-5">
-        <h2 class="title is-5 mb-4">
-          <i class="fas fa-folder-open mr-2"></i>
-          Sequencing Data Configuration
-        </h2>
+      <div class="section-card mb-5">
+        <div class="section-header">
+          <h2 class="section-title">
+            <i class="fas fa-folder-open"></i>
+            Sequencing Data Configuration
+          </h2>
+        </div>
+        <div class="section-body">
         
         <div class="field">
           <label class="label">{{ form.sequencing_data_path.label }}</label>
@@ -131,14 +118,18 @@ Admin Settings
             <p class="help">{{ form.sequencing_data_path.help_text }}</p>
           {% endif %}
         </div>
+        </div>
       </div>
 
       <!-- ENA Configuration -->
-      <div class="box mb-5">
-        <h2 class="title is-5 mb-4">
-          <i class="fas fa-database mr-2"></i>
-          ENA (European Nucleotide Archive) Configuration
-        </h2>
+      <div class="section-card mb-5">
+        <div class="section-header">
+          <h2 class="section-title">
+            <i class="fas fa-database"></i>
+            ENA (European Nucleotide Archive) Configuration
+          </h2>
+        </div>
+        <div class="section-body">
         
         {% if ena_configured %}
           <div class="notification is-success is-light mb-4">
@@ -213,14 +204,18 @@ Admin Settings
             </div>
           </div>
         </div>
+        </div>
       </div>
 
       <!-- Contact Information -->
-      <div class="box mb-5">
-        <h2 class="title is-5 mb-4">
-          <i class="fas fa-address-card mr-2"></i>
-          Contact Information
-        </h2>
+      <div class="section-card mb-5">
+        <div class="section-header">
+          <h2 class="section-title">
+            <i class="fas fa-address-card"></i>
+            Contact Information
+          </h2>
+        </div>
+        <div class="section-body">
         
         <div class="columns is-multiline">
           <div class="column is-half">
@@ -253,14 +248,18 @@ Admin Settings
             </div>
           </div>
         </div>
+        </div>
       </div>
 
       <!-- Branding -->
-      <div class="box mb-5">
-        <h2 class="title is-5 mb-4">
-          <i class="fas fa-palette mr-2"></i>
-          Branding
-        </h2>
+      <div class="section-card mb-5">
+        <div class="section-header">
+          <h2 class="section-title">
+            <i class="fas fa-palette"></i>
+            Branding
+          </h2>
+        </div>
+        <div class="section-body">
         
         <div class="columns">
           <div class="column is-half">
@@ -293,6 +292,7 @@ Admin Settings
             </div>
           </div>
         </div>
+        </div>
       </div>
 
       <!-- Form Actions -->
@@ -321,17 +321,46 @@ Admin Settings
   width: 100%;
 }
 
-.box {
+/* Section Cards - Modern design */
+.section-card {
   background: white;
-  border: 1px solid #e9ecef;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07), 0 1px 3px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  transition: all 0.3s ease;
+  margin-bottom: 2rem;
 }
 
-.box .title {
-  color: #2c3e50;
-  border-bottom: 1px solid #e9ecef;
-  padding-bottom: 0.75rem;
-  margin-bottom: 1.5rem !important;
+.section-card:hover {
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1), 0 3px 6px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem;
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.section-body {
+  padding: 1.5rem;
+}
+
+.section-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #363636;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.section-title i {
+  color: var(--primary-color, #3273dc);
 }
 
 /* Color Input Styling */

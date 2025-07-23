@@ -8,23 +8,6 @@ Admin Dashboard - Sequencing Center Management
 
 {% block extra_css %}
 <style>
-.page-header {
-  position: relative;
-  padding: 2rem 0;
-  margin-bottom: 2rem;
-}
-
-.page-header::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 100px;
-  height: 3px;
-  background: linear-gradient(90deg, transparent, #3273dc, transparent);
-}
-
 /* Progress bar color customization */
 .progress::-webkit-progress-bar {
   background-color: #e9ecef;
@@ -37,6 +20,26 @@ Admin Dashboard - Sequencing Center Management
 
 .progress.is-small {
   height: 6px;
+}
+
+/* Enhanced table styling */
+.table-container {
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.table thead th {
+  background-color: #f8f9fa;
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.5px;
+  color: #666;
+  border-bottom: 2px solid #e0e0e0;
+}
+
+.table tbody tr:hover {
+  background-color: #f8f9fa;
 }
 
 /* Status boxes hover effect */
@@ -73,46 +76,128 @@ Admin Dashboard - Sequencing Center Management
 </style>
 {% endblock %}
 
-{% block content %}
-<section class="section pt-3">
-  <div class="container is-fluid">
-    <!-- Page Title -->
-    <div class="page-header has-text-centered">
-      <h1 class="title is-3">
-        <i class="fas fa-tachometer-alt has-text-primary mr-2"></i>
-        Sequencing Order Management
-      </h1>
-      <p class="subtitle is-5 has-text-grey">Admin Dashboard</p>
+{% block admin_notification %}
+{% if stats.orders_needing_action > 0 %}
+<!-- Full-width Action Banner -->
+<div id="admin-notification-banner" style="background: linear-gradient(135deg, #FFF4E6 0%, #FFE8CC 100%); border-bottom: 2px solid #FFD4A3; width: 100%; box-shadow: 0 2px 4px rgba(0,0,0,0.05); position: relative;">
+  <div style="padding: 1rem 2rem; display: flex; align-items: center; justify-content: space-between; max-width: 100%; gap: 1rem;">
+    <div style="display: flex; align-items: center; gap: 1rem;">
+      <div style="background-color: #FF9800; color: white; width: 40px; height: 40px; border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+        <i class="fas fa-bell" style="font-size: 1.25rem;"></i>
+      </div>
+      <div style="color: #5D4037;">
+        <div style="font-weight: 700; font-size: 1.125rem; margin-bottom: 0.125rem;">
+          {{ stats.orders_needing_action }} order{{ stats.orders_needing_action|pluralize }} awaiting review
+        </div>
+        <div style="font-size: 0.875rem; opacity: 0.8;">
+          New submissions require your attention
+        </div>
+      </div>
     </div>
+    <div style="display: flex; align-items: center; gap: 1rem;">
+      <a href="{% url 'admin_order_list' %}?status=ready_for_sequencing" 
+         style="background-color: #FF9800; color: white; padding: 0.625rem 1.5rem; border-radius: 8px; font-weight: 600; text-decoration: none; display: inline-flex; align-items: center; gap: 0.5rem; transition: all 0.2s ease; white-space: nowrap;"
+         onmouseover="this.style.backgroundColor='#F57C00'" 
+         onmouseout="this.style.backgroundColor='#FF9800'">
+        Review Now
+        <i class="fas fa-arrow-right" style="font-size: 0.875rem;"></i>
+      </a>
+      <button onclick="dismissNotificationBanner()" 
+              style="background: transparent; border: none; color: #8D6E63; cursor: pointer; padding: 0.5rem; border-radius: 4px; transition: all 0.2s ease;"
+              onmouseover="this.style.backgroundColor='rgba(0,0,0,0.05)'"
+              onmouseout="this.style.backgroundColor='transparent'"
+              title="Dismiss notification">
+        <i class="fas fa-times" style="font-size: 1.25rem;"></i>
+      </button>
+    </div>
+  </div>
+</div>
 
-    <!-- Navigation Bar -->
-    {% include 'admin_nav.html' %}
+<script>
+function dismissNotificationBanner() {
+  const banner = document.getElementById('admin-notification-banner');
+  banner.style.transition = 'all 0.3s ease';
+  banner.style.opacity = '0';
+  banner.style.transform = 'translateY(-100%)';
+  setTimeout(() => {
+    banner.style.display = 'none';
+  }, 300);
+  
+  // Store dismissal in sessionStorage so it stays hidden during this session
+  sessionStorage.setItem('admin-notification-dismissed', 'true');
+}
 
-    <div class="columns is-variable is-6">
-      <!-- Main Content Area -->
-      <div class="column is-9">
-        {% if stats.orders_needing_action > 0 %}
-        <!-- Action Required Alert -->
-        <div class="notification is-warning is-light mb-4">
-          <div class="level is-mobile">
-            <div class="level-left">
-              <div class="level-item">
-                <span class="icon">
-                  <i class="fas fa-exclamation-triangle"></i>
-                </span>
+// Check if banner was previously dismissed in this session
+document.addEventListener('DOMContentLoaded', function() {
+  if (sessionStorage.getItem('admin-notification-dismissed') === 'true') {
+    const banner = document.getElementById('admin-notification-banner');
+    if (banner) {
+      banner.style.display = 'none';
+    }
+  }
+});
+</script>
+{% endif %}
+{% endblock %}
+
+{% block content %}
+<div class="admin-content-wrapper">
+  <section class="section pt-3">
+    <div class="container is-fluid">
+      <!-- Page Header -->
+      <div class="page-intro mb-5">
+        <div style="display: flex; gap: 2rem; align-items: flex-start;">
+          <!-- Left side - Title and Description -->
+          <div style="flex: 1;">
+            <h1 class="page-title">Sequencing Center Command Central</h1>
+            <p class="page-description">
+              Monitor active sequencing orders, track sample processing status, and manage laboratory workflows. 
+              Get real-time insights into your facility's operations with comprehensive analytics and quick access to critical tasks.
+            </p>
+          </div>
+          
+          <!-- Right side - Status Legend -->
+          <div style="flex: 0 0 auto; min-width: 380px; padding-left: 2rem; border-left: 1px solid #e9ecef;">
+            <h3 style="font-size: 0.875rem; font-weight: 600; color: #6c757d; margin-bottom: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px;">
+              Order Status Guide
+            </h3>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem 1.5rem;">
+              <div style="display: flex; align-items: center; gap: 0.5rem;">
+                <span class="tag">Draft</span>
+                <span style="font-size: 0.75rem; color: #495057;">Initial creation</span>
               </div>
-              <div class="level-item">
-                <strong>{{ stats.orders_needing_action }} order{{ stats.orders_needing_action|pluralize }} awaiting review</strong>
+              <div style="display: flex; align-items: center; gap: 0.5rem;">
+                <span class="tag">Ready for Sequencing</span>
+                <span style="font-size: 0.75rem; color: #495057;">Awaiting lab</span>
               </div>
-            </div>
-            <div class="level-right">
-              <a href="{% url 'admin_order_list' %}?status=ready_for_sequencing" class="button is-small is-warning">
-                Review Now
-              </a>
+              <div style="display: flex; align-items: center; gap: 0.5rem;">
+                <span class="tag">Sequencing in Progress</span>
+                <span style="font-size: 0.75rem; color: #495057;">In sequencer</span>
+              </div>
+              <div style="display: flex; align-items: center; gap: 0.5rem;">
+                <span class="tag">Sequencing Completed</span>
+                <span style="font-size: 0.75rem; color: #495057;">Raw data ready</span>
+              </div>
+              <div style="display: flex; align-items: center; gap: 0.5rem;">
+                <span class="tag">Data Processing</span>
+                <span style="font-size: 0.75rem; color: #495057;">Analysis running</span>
+              </div>
+              <div style="display: flex; align-items: center; gap: 0.5rem;">
+                <span class="tag">Data Delivered</span>
+                <span style="font-size: 0.75rem; color: #495057;">Sent to user</span>
+              </div>
+              <div style="display: flex; align-items: center; gap: 0.5rem;">
+                <span class="tag">Completed</span>
+                <span style="font-size: 0.75rem; color: #495057;">Archived</span>
+              </div>
             </div>
           </div>
         </div>
-        {% endif %}
+      </div>
+
+      <div class="columns is-variable is-6">
+      <!-- Main Content Area -->
+      <div class="column is-9">
 
         <!-- Order Status Overview Cards -->
         <div class="columns is-mobile is-multiline mb-5">
@@ -142,26 +227,30 @@ Admin Dashboard - Sequencing Center Management
 
         <!-- Recent Orders -->
         <div class="section-card mb-5">
-      <div class="section-header">
-        <h2 class="section-title">Recent Orders</h2>
-        <div>
-          <span id="filter-info" class="tag is-info is-light mr-2" style="display: none;"></span>
-          <button id="clear-filter" class="button is-small is-light mr-2" style="display: none;">
-            <span class="icon">
-              <i class="fas fa-times"></i>
-            </span>
-            <span>Clear Filter</span>
-          </button>
-          <a href="{% url 'admin_order_list' %}" 
-             class="button is-primary is-small">
-            View All Orders
-          </a>
-        </div>
-      </div>
-      
-      {% if recent_orders %}
-      <div class="table-container">
-        <table class="table is-fullwidth is-striped">
+          <div class="section-header">
+            <h2 class="section-title">
+              <i class="fas fa-clipboard-list"></i>
+              Recent Orders
+            </h2>
+            <div>
+              <span id="filter-info" class="tag is-info is-light mr-2" style="display: none;"></span>
+              <button id="clear-filter" class="button is-small is-light mr-2" style="display: none;">
+                <span class="icon">
+                  <i class="fas fa-times"></i>
+                </span>
+                <span>Clear Filter</span>
+              </button>
+              <a href="{% url 'admin_order_list' %}" 
+                 class="button is-primary is-small">
+                View All Orders
+              </a>
+            </div>
+          </div>
+          
+          <div class="section-body">
+            {% if recent_orders %}
+            <div class="table-container">
+              <table class="table is-fullwidth is-striped">
           <thead>
             <tr>
               <th>Order ID</th>
@@ -180,7 +269,7 @@ Admin Dashboard - Sequencing Center Management
               <td>{{ order.project.title|truncatechars:30 }}</td>
               <td>{{ order.project.user.username }}</td>
               <td>
-                <span class="tag {{ order.get_status_display_color }}">
+                <span class="tag is-{{ order.get_status_display_color }}">
                   {{ order.get_status_display }}
                 </span>
               </td>
@@ -189,31 +278,33 @@ Admin Dashboard - Sequencing Center Management
               <td>
                 <a href="{% url 'admin_order_detail' order.id %}" 
                    class="button is-primary is-small">
-                  <span class="icon">
-                    <i class="fas fa-eye"></i>
-                  </span>
-                  <span>View</span>
+                  View
                 </a>
               </td>
             </tr>
             {% endfor %}
           </tbody>
         </table>
-      </div>
-      {% else %}
-      <p class="has-text-grey">No recent orders.</p>
-      {% endif %}
-    </div>
+            </div>
+            {% else %}
+            <p class="has-text-grey">No recent orders.</p>
+            {% endif %}
+          </div>
+        </div>
       </div>
 
       <!-- Right Sidebar - Recent Activity -->
       <div class="column is-3">
         <div class="section-card">
-          <div class="section-header mb-3">
-            <h2 class="section-title is-size-5">Recent Activity</h2>
+          <div class="section-header">
+            <h2 class="section-title">
+              <i class="fas fa-history"></i>
+              Recent Activity
+            </h2>
           </div>
           
-          {% if recent_activity %}
+          <div class="section-body">
+            {% if recent_activity %}
           <div class="timeline compact">
             {% for activity in recent_activity|slice:":3" %}
             <div class="timeline-item compact">
@@ -322,9 +413,10 @@ Admin Dashboard - Sequencing Center Management
               {% endfor %}
             </div>
           </div>
-          {% else %}
-          <p class="has-text-grey is-size-7">No recent activity.</p>
-          {% endif %}
+            {% else %}
+            <p class="has-text-grey is-size-7">No recent activity.</p>
+            {% endif %}
+          </div>
         </div>
       </div>
     </div>
@@ -380,6 +472,42 @@ body {
   padding-top: 1rem !important;
 }
 
+/* Ensure banner is above section */
+.section.admin-main {
+  margin-top: 0;
+}
+
+/* Admin content wrapper */
+.admin-content-wrapper {
+  min-height: 100vh;
+  background-color: #f8f9fa;
+}
+
+/* Page Header Styling */
+.page-intro {
+  background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+  border-radius: 12px;
+  padding: 2rem;
+  border: 1px solid #e9ecef;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+}
+
+.page-title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #2c3e50;
+  margin-bottom: 0.75rem;
+  line-height: 1.2;
+}
+
+.page-description {
+  font-size: 1.125rem;
+  color: #6c757d;
+  line-height: 1.6;
+  max-width: 800px;
+  margin: 0;
+}
+
 /* Action Required Alert */
 .notification.is-warning.is-light {
   background-color: #fffbeb;
@@ -406,20 +534,28 @@ body {
   font-size: 0.875rem;
 }
 
-/* Section Cards */
+/* Section Cards - Modern design inspired by user project cards */
 .section-card {
   background: white;
-  border: 1px solid #e9ecef;
-  border-radius: 8px;
-  padding: 1.5rem;
-  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07), 0 1px 3px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  transition: all 0.3s ease;
+  margin-bottom: 2rem;
+}
+
+.section-card:hover {
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1), 0 3px 6px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
 }
 
 .section-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 1.5rem;
+  padding: 1.5rem;
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  border-bottom: 1px solid #e0e0e0;
   flex-wrap: wrap;
 }
 
@@ -427,11 +563,22 @@ body {
   margin: 0;
 }
 
+.section-body {
+  padding: 1.5rem;
+}
+
 .section-title {
-  font-size: 1.125rem;
+  font-size: 1.5rem;
   font-weight: 600;
-  color: #2c3e50;
+  color: #363636;
   margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.section-title i {
+  color: var(--primary-color, #3273dc);
 }
 
 /* Timeline Styles - Simplified */
@@ -444,12 +591,7 @@ body {
   display: flex;
   align-items: flex-start;
   padding: 0.75rem 0;
-  border-bottom: 1px solid #f1f3f5;
   font-size: 0.875rem;
-}
-
-.timeline-item:last-child {
-  border-bottom: none;
 }
 
 .timeline-marker {
@@ -570,29 +712,63 @@ body {
 
 /* Compact Timeline for Sidebar */
 .timeline.compact {
-  padding-left: 1rem;
+  position: relative;
+  padding-left: 2rem;
 }
 
 .timeline-item.compact {
-  padding-bottom: 1rem;
-  padding-left: 1.25rem;
-  border-left: 1px solid #e0e0e0;
+  position: relative;
+  padding-bottom: 1.5rem;
+  min-height: 2rem;
+}
+
+.timeline-item.compact:not(:last-child)::before {
+  content: '';
+  position: absolute;
+  left: 0.75rem;
+  top: 1.25rem;
+  bottom: 0;
+  width: 2px;
+  background-color: #e9ecef;
+  z-index: 0;
 }
 
 .timeline-item.compact:last-child {
   padding-bottom: 0;
-  border-left: none;
 }
 
 .timeline-item.compact .timeline-marker.is-small {
-  width: 10px;
-  height: 10px;
-  left: -5px;
+  width: 12px;
+  height: 12px;
+  position: absolute;
+  left: 0.5rem;
+  top: 0.25rem;
+  background: white;
+  border: 2px solid;
+  border-radius: 50%;
+  z-index: 1;
+}
+
+.timeline-marker.is-small.is-danger { 
+  border-color: #ff3860;
+  background-color: #ff3860;
+}
+.timeline-marker.is-small.is-warning { 
+  border-color: #ffdd57;
+  background-color: #ffdd57;
+}
+.timeline-marker.is-small.is-primary { 
+  border-color: #3273dc;
+  background-color: #3273dc;
+}
+.timeline-marker.is-small.is-info { 
+  border-color: #3298dc;
+  background-color: #3298dc;
 }
 
 .timeline-item.compact .timeline-content {
-  margin-left: 0;
-  margin-top: -0.125rem;
+  margin-left: 2rem;
+  margin-top: 0;
 }
 </style>
 
@@ -677,4 +853,5 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 });
 </script>
+</div>
 {% endblock content %}
