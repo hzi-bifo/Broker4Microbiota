@@ -283,8 +283,8 @@ class SelfDescribingModel(models.Model):
                 if k in include:
                     try:
                         validator_body = getattr(self, f"{k}_validator")
-                        validator = (f"{k}_validator", f"{validator_body}")
-                        validators = validators + f"const {k}_validator = /{validator_body}/;\n"
+                        # Skip validators for now to avoid JavaScript errors
+                        # validators = validators + f"const {k}_validator = /{validator_body}/;\n"
                     except:
                         pass
         else:
@@ -292,8 +292,8 @@ class SelfDescribingModel(models.Model):
                 if k not in exclude:
                     try:
                         validator_body = getattr(self, f"{k}_validator")
-                        validator = (f"{k}_validator", f"{validator_body}")
-                        validators = validators + f"const {k}_validator = /{validator_body}/;\n"
+                        # Skip validators for now to avoid JavaScript errors
+                        # validators = validators + f"const {k}_validator = /{validator_body}/;\n"
                     except:
                         pass
 

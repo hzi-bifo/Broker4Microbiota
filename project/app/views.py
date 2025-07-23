@@ -897,6 +897,29 @@ def samples_view(request, project_id, order_id, sample_type):
                     output.update(fields)    
 
             samples_data.append(output)
+        
+        # If there are no samples yet, create an empty row for data entry
+        if not samples_data and sample_set and sample_set.checklists:
+            # Create an empty data structure with default values
+            empty_row = {}
+            
+            # Add empty fields from Sample model
+            sample_instance = Sample()
+            sample_fields = sample_instance.getFields(inclusions, exclusions)
+            for field_name in sample_fields:
+                empty_row[field_name] = ''
+            
+            # Add empty fields from each checklist
+            for checklist_name in sample_set.checklists:
+                if checklist_name in Sampleset.checklist_structure:
+                    checklist_class_name = Sampleset.checklist_structure[checklist_name]['checklist_class_name']
+                    checklist_class = getattr(importlib.import_module("app.models"), checklist_class_name)
+                    checklist_instance = checklist_class()
+                    checklist_fields = checklist_instance.getFields(inclusions, exclusions)
+                    for field_name in checklist_fields:
+                        empty_row[field_name] = ''
+            
+            samples_data.append(empty_row)
 
         status_choices = [choice[1] for choice in STATUS_CHOICES]
 
