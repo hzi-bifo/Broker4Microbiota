@@ -414,7 +414,7 @@ class ProjectAdmin(admin.ModelAdmin):
             tax_ids_content = ""
             for bin_sample in bin_samples:
                 bin = bin_sample.bin
-                tax_ids[bin.file.split('/')[-1].replace(".fa.gz", "")] = [bin_sample.scientific_name, bin_sample.tax_id]
+                tax_ids[bin.file.split('/')[-1].replace(".fa", "")] = [bin_sample.scientific_name, bin_sample.tax_id]
             for bin in bins:
                 yaml.extend(bin.getSubMGYAMLTaxIDYAML())
                 tax_ids_content = bin.getSubMGYAMLTaxIDContent(tax_ids)
