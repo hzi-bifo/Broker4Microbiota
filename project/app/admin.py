@@ -5,7 +5,8 @@ import subprocess
 import gzip
 import requests
 from django.contrib import admin, messages
-from django.shortcuts import render, redirect 
+from django.shortcuts import render, redirect
+from django.utils.safestring import mark_safe 
 from django.core.files.base import ContentFile
 from django.conf import settings
 from Bio import SeqIO
@@ -216,7 +217,32 @@ admin.site.register(Read, ReadAdmin)
 
 
 class ProjectAdmin(admin.ModelAdmin):
-    list_display = ('id', 'user', 'title', 'alias', 'description', 'study_accession_id', 'alternative_accession_id')
+    list_display = ('id', 'user', 'title', 'alias', 'description', 'study_accession_id', 'alternative_accession_id', 'submitted', 'ena_status')
+    list_filter = ('submitted', 'user')
+    search_fields = ('title', 'alias', 'description', 'study_accession_id', 'alternative_accession_id', 'user__username', 'user__email')
+    readonly_fields = ('id', 'ena_status')
+    
+    fieldsets = (
+        ('Basic Information', {
+            'fields': ('user', 'title', 'alias', 'description')
+        }),
+        ('ENA Information', {
+            'fields': ('submitted', 'study_accession_id', 'alternative_accession_id', 'ena_status'),
+            'description': 'European Nucleotide Archive (ENA) submission details'
+        }),
+    )
+
+    def ena_status(self, obj):
+        """Display ENA registration status"""
+        if obj.submitted:
+            status = '<span style="color: green;">✓ Registered</span>'
+            if obj.study_accession_id:
+                status += f'<br><small>Accession: {obj.study_accession_id}</small>'
+            return mark_safe(status)
+        else:
+            return mark_safe('<span style="color: gray;">Not Registered</span>')
+    
+    ena_status.short_description = 'ENA Status'
 
     actions = ['generate_xml_and_create_project_submission', 'generate_submg_run_including_children']
 
