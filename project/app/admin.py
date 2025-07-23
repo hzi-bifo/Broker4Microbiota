@@ -5,7 +5,8 @@ import subprocess
 import gzip
 import requests
 from django.contrib import admin, messages
-from django.shortcuts import render, redirect 
+from django.shortcuts import render, redirect
+from django.utils.safestring import mark_safe 
 from django.core.files.base import ContentFile
 from django.conf import settings
 from Bio import SeqIO
@@ -28,7 +29,29 @@ from .utils import calculate_md5, gzip_file
 logger = logging.getLogger(__name__)
 
 class OrderAdmin(admin.ModelAdmin):
-    list_display = ('id', 'name', 'date', 'quote_no', 'billing_address', 'ag_and_hzi', 'contact_phone', 'email', 'data_delivery', 'signature', 'experiment_title', 'dna', 'rna', 'method', 'buffer', 'organism', 'isolated_from', 'isolation_method')
+    list_display = ('id', 'project', 'name', 'status', 'date', 'platform', 'sequencing_instrument', 'library_strategy', 'experiment_title', 'organism', 'email', 'submitted')
+    list_filter = ('status', 'submitted', 'platform', 'library_strategy', 'date')
+    search_fields = ('name', 'experiment_title', 'email', 'organism', 'project__title')
+    readonly_fields = ('id', 'status_updated_at', 'submitted')
+    
+    fieldsets = (
+        ('Project Information', {
+            'fields': ('project', 'name', 'status', 'status_updated_at', 'submitted')
+        }),
+        ('Contact Information', {
+            'fields': ('billing_address', 'ag_and_hzi', 'contact_phone', 'email', 'date', 'quote_no', 'signature')
+        }),
+        ('Experiment Details', {
+            'fields': ('experiment_title', 'data_delivery', 'dna', 'rna', 'method', 'buffer', 'organism', 'isolated_from', 'isolation_method')
+        }),
+        ('Sequencing Configuration', {
+            'fields': ('platform', 'sequencing_instrument', 'library', 'library_name', 'library_source', 'library_selection', 'library_strategy', 'insert_size')
+        }),
+        ('System Information', {
+            'fields': ('checklist_changed', 'status_notes'),
+            'classes': ('collapse',)
+        }),
+    )
 
 admin.site.register(Order, OrderAdmin)
 
@@ -158,7 +181,22 @@ admin.site.register(SiteSettings, SiteSettingsAdmin)
 
 
 class ReadAdmin(admin.ModelAdmin):
-    list_display = ('id', 'sample', 'file_1', 'file_2')
+    list_display = ('id', 'sample', 'file_1', 'file_2', 'experiment_accession_number', 'run_accession_number', 'submitted')
+    list_filter = ('submitted', 'sample__order__project')
+    search_fields = ('sample__sample_id', 'experiment_accession_number', 'run_accession_number', 'file_1', 'file_2')
+    readonly_fields = ('id', 'read_file_checksum_1', 'read_file_checksum_2', 'experiment_accession_number', 'run_accession_number', 'submitted')
+    
+    fieldsets = (
+        ('Sample Association', {
+            'fields': ('sample',)
+        }),
+        ('File Information', {
+            'fields': ('file_1', 'file_2', 'uncompressed_file_1', 'uncompressed_file_2', 'read_file_checksum_1', 'read_file_checksum_2')
+        }),
+        ('ENA Information', {
+            'fields': ('submitted', 'experiment_accession_number', 'run_accession_number')
+        }),
+    )
 
     actions = ['generate_xml_and_create_read_submission', 'create_mag_run']
 
@@ -216,7 +254,32 @@ admin.site.register(Read, ReadAdmin)
 
 
 class ProjectAdmin(admin.ModelAdmin):
-    list_display = ('id', 'user', 'title', 'alias', 'description', 'study_accession_id', 'alternative_accession_id')
+    list_display = ('id', 'user', 'title', 'alias', 'description', 'study_accession_id', 'alternative_accession_id', 'submitted', 'ena_status')
+    list_filter = ('submitted', 'user')
+    search_fields = ('title', 'alias', 'description', 'study_accession_id', 'alternative_accession_id', 'user__username', 'user__email')
+    readonly_fields = ('id', 'ena_status')
+    
+    fieldsets = (
+        ('Basic Information', {
+            'fields': ('user', 'title', 'alias', 'description')
+        }),
+        ('ENA Information', {
+            'fields': ('submitted', 'study_accession_id', 'alternative_accession_id', 'ena_status'),
+            'description': 'European Nucleotide Archive (ENA) submission details'
+        }),
+    )
+
+    def ena_status(self, obj):
+        """Display ENA registration status"""
+        if obj.submitted:
+            status = '<span style="color: green;">✓ Registered</span>'
+            if obj.study_accession_id:
+                status += f'<br><small>Accession: {obj.study_accession_id}</small>'
+            return mark_safe(status)
+        else:
+            return mark_safe('<span style="color: gray;">Not Registered</span>')
+    
+    ena_status.short_description = 'ENA Status'
 
     actions = ['generate_xml_and_create_project_submission', 'generate_submg_run_including_children']
 
@@ -402,9 +465,26 @@ admin.site.register(Project, ProjectAdmin)
 
 
 class SampleAdmin(admin.ModelAdmin):
-    list_display = ('id', 'sample_type','assembly', 'bin')
+    list_display = ('id', 'sample_id', 'sample_alias', 'order', 'sample_type', 'scientific_name', 'tax_id', 'sample_accession_number', 'submitted', 'status')
+    list_filter = ('sample_type', 'submitted', 'status', 'order__project')
+    search_fields = ('sample_id', 'sample_alias', 'scientific_name', 'tax_id', 'sample_accession_number', 'sample_biosample_number', 'sample_title')
+    readonly_fields = ('id', 'sample_accession_number', 'sample_biosample_number', 'submitted')
     
-    list_filter = ('sample_type',)
+    fieldsets = (
+        ('Sample Identification', {
+            'fields': ('order', 'sample_type', 'sample_id', 'sample_alias', 'sample_title', 'sample_description', 'status')
+        }),
+        ('Taxonomy', {
+            'fields': ('scientific_name', 'tax_id')
+        }),
+        ('ENA Information', {
+            'fields': ('submitted', 'sample_accession_number', 'sample_biosample_number')
+        }),
+        ('Assembly/MAG Information', {
+            'fields': ('assembly', 'bin', 'mag_data'),
+            'classes': ('collapse',)
+        }),
+    )
 
     # temporary - this needs to be passed through properly
     # checklists = ['GSC_MIxS_wastewater_sludge']
@@ -577,13 +657,51 @@ admin.site.register(Sample, SampleAdmin)
 
 
 class SampleSubmissionAdmin(admin.ModelAdmin):
-    list_display = ('id', 'sample_count', 'accession_status', 'sampleSubmission_object_xml')
+    list_display = ('id', 'sample_count', 'accession_status', 'has_sample_xml', 'has_submission_xml', 'has_receipt')
+    list_filter = ('accession_status',)
+    readonly_fields = ('id', 'accession_status', 'receipt_xml', 'get_samples_display')
+    
+    fieldsets = (
+        ('Submission Information', {
+            'fields': ('id', 'accession_status', 'get_samples_display')
+        }),
+        ('XML Files', {
+            'fields': ('sample_object_xml', 'sampleSubmission_object_xml', 'receipt_xml'),
+            'classes': ('collapse', 'wide')
+        }),
+    )
     
     actions = ['register_samples']
 
     def sample_count(self, obj):
         return obj.samples.count()
     sample_count.short_description = 'Number of Samples'
+    
+    def has_sample_xml(self, obj):
+        return bool(obj.sample_object_xml)
+    has_sample_xml.boolean = True
+    has_sample_xml.short_description = 'Sample XML'
+    
+    def has_submission_xml(self, obj):
+        return bool(obj.sampleSubmission_object_xml)
+    has_submission_xml.boolean = True
+    has_submission_xml.short_description = 'Submission XML'
+    
+    def has_receipt(self, obj):
+        return bool(obj.receipt_xml)
+    has_receipt.boolean = True
+    has_receipt.short_description = 'Receipt'
+    
+    def get_samples_display(self, obj):
+        samples = obj.samples.all()[:10]
+        if samples:
+            sample_list = [f"Sample {s.sample_id} ({s.scientific_name})" for s in samples]
+            result = '\n'.join(sample_list)
+            if obj.samples.count() > 10:
+                result += f'\n... and {obj.samples.count() - 10} more'
+            return result
+        return 'No samples'
+    get_samples_display.short_description = 'Associated Samples'
 
     def register_samples(self, request, queryset):
         for sampleSubmission in queryset:
@@ -667,13 +785,47 @@ class SampleSubmissionAdmin(admin.ModelAdmin):
 admin.site.register(SampleSubmission, SampleSubmissionAdmin)
 
 class ReadSubmissionAdmin(admin.ModelAdmin):
-    list_display = ('id', 'sample_count', 'accession_status', 'read_object_txt_list')
+    list_display = ('id', 'name', 'sample_count', 'accession_status', 'has_read_manifest', 'has_receipt')
+    list_filter = ('accession_status',)
+    search_fields = ('name',)
+    readonly_fields = ('id', 'name', 'accession_status', 'receipt_xml', 'get_samples_display')
+    
+    fieldsets = (
+        ('Submission Information', {
+            'fields': ('id', 'name', 'accession_status', 'get_samples_display')
+        }),
+        ('Submission Data', {
+            'fields': ('read_object_txt_list', 'receipt_xml'),
+            'classes': ('collapse', 'wide')
+        }),
+    )
     
     actions = ['register_reads']
 
     def sample_count(self, obj):
         return obj.samples.count()
     sample_count.short_description = 'Number of Samples'
+    
+    def has_read_manifest(self, obj):
+        return bool(obj.read_object_txt_list and obj.read_object_txt_list != '[]')
+    has_read_manifest.boolean = True
+    has_read_manifest.short_description = 'Has Manifest'
+    
+    def has_receipt(self, obj):
+        return bool(obj.receipt_xml)
+    has_receipt.boolean = True
+    has_receipt.short_description = 'Receipt'
+    
+    def get_samples_display(self, obj):
+        samples = obj.samples.all()[:10]
+        if samples:
+            sample_list = [f"Sample {s.sample_id}" for s in samples]
+            result = '\n'.join(sample_list)
+            if obj.samples.count() > 10:
+                result += f'\n... and {obj.samples.count() - 10} more'
+            return result
+        return 'No samples'
+    get_samples_display.short_description = 'Associated Samples'
 
     def register_reads(self, request, queryset):
         for read_submission in queryset:
@@ -845,7 +997,49 @@ admin.site.register(ProjectSubmission, ProjectSubmissionAdmin)
 
 
 class MagRunAdmin(admin.ModelAdmin):
-    list_display = ('id', 'samplesheet_content', 'status')
+    list_display = ('id', 'status', 'get_reads_count', 'get_samplesheet_preview', 'get_cluster_config_preview')
+    list_filter = ('status',)
+    readonly_fields = ('id', 'status', 'get_reads_display', 'samplesheet_content', 'cluster_config')
+    
+    fieldsets = (
+        ('Run Information', {
+            'fields': ('id', 'status')
+        }),
+        ('Associated Reads', {
+            'fields': ('get_reads_display',)
+        }),
+        ('Configuration Files', {
+            'fields': ('samplesheet_content', 'cluster_config'),
+            'classes': ('wide',)
+        }),
+    )
+    
+    def get_reads_count(self, obj):
+        return obj.reads.count()
+    get_reads_count.short_description = 'Number of Reads'
+    
+    def get_samplesheet_preview(self, obj):
+        if obj.samplesheet_content:
+            return obj.samplesheet_content[:100] + '...' if len(obj.samplesheet_content) > 100 else obj.samplesheet_content
+        return '-'
+    get_samplesheet_preview.short_description = 'Samplesheet Preview'
+    
+    def get_cluster_config_preview(self, obj):
+        if obj.cluster_config:
+            return obj.cluster_config[:100] + '...' if len(obj.cluster_config) > 100 else obj.cluster_config
+        return '-'
+    get_cluster_config_preview.short_description = 'Config Preview'
+    
+    def get_reads_display(self, obj):
+        reads = obj.reads.all()[:10]  # Show first 10
+        if reads:
+            read_list = [f"Read {r.id} (Sample: {r.sample.sample_id})" for r in reads]
+            result = '\n'.join(read_list)
+            if obj.reads.count() > 10:
+                result += f'\n... and {obj.reads.count() - 10} more'
+            return result
+        return 'No reads associated'
+    get_reads_display.short_description = 'Associated Reads'
 
     actions = ['start_run']
 
@@ -878,7 +1072,47 @@ class MagRunAdmin(admin.ModelAdmin):
 admin.site.register(MagRun, MagRunAdmin)
 
 class SubMGRunAdmin(admin.ModelAdmin):
-    list_display = ('id', 'type', 'status')
+    list_display = ('id', 'order', 'type', 'status', 'get_projects_count', 'get_samples_count', 'get_reads_count')
+    list_filter = ('type', 'status')
+    search_fields = ('order__name', 'order__project__title')
+    readonly_fields = ('id', 'status', 'get_related_objects_display', 'yaml', 'tax_ids')
+    
+    fieldsets = (
+        ('Run Information', {
+            'fields': ('id', 'order', 'type', 'status')
+        }),
+        ('Related Objects', {
+            'fields': ('get_related_objects_display',),
+            'description': 'Objects included in this SubMG run'
+        }),
+        ('Configuration', {
+            'fields': ('yaml', 'tax_ids'),
+            'classes': ('collapse', 'wide')
+        }),
+    )
+    
+    def get_projects_count(self, obj):
+        return obj.projects.count()
+    get_projects_count.short_description = 'Projects'
+    
+    def get_samples_count(self, obj):
+        return obj.samples.count()
+    get_samples_count.short_description = 'Samples'
+    
+    def get_reads_count(self, obj):
+        return obj.reads.count()
+    get_reads_count.short_description = 'Reads'
+    
+    def get_related_objects_display(self, obj):
+        info = []
+        info.append(f"Projects: {obj.projects.count()}")
+        info.append(f"Samples: {obj.samples.count()}")
+        info.append(f"Reads: {obj.reads.count()}")
+        info.append(f"Assemblies: {obj.assemblys.count()}")
+        info.append(f"Bins: {obj.bins.count()}")
+        info.append(f"MAGs: {obj.mags.count()}")
+        return '\n'.join(info)
+    get_related_objects_display.short_description = 'Related Objects Summary'
 
     actions = ['start_run']
 

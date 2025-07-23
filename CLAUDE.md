@@ -6,6 +6,14 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 If you make changes to the model, always update `project/project/models_template.py`. Then run `project/project/create_json_files.py` to generate `project/app/models.py` to sure the database is up to date, you need to run `project/manage.py` 2 times with `--makemigrations` and `--migrate` which will update the database. 
 
+## Starting server
+
+```bash
+source venv/bin/activate
+cd project
+python manage.py runserver
+```
+ 
 
 ## Standard Workflow
 
