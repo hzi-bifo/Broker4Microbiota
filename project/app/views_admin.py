@@ -1771,7 +1771,7 @@ def admin_create_mag_run(request, project_id):
         'reads': reads,
     }
     samplesheet_content = render_to_string('admin/app/sample/mag_samplesheet.csv', context)
-    mag_run.samplesheet_content = samplesheet_content
+    mag_run.samplesheet_content = samplesheet_content.rstrip()
     
     # Generate cluster config
     context = {
@@ -1813,7 +1813,7 @@ def admin_start_mag_run(request, mag_run_id):
     try:
         # Create a new temporary folder for the run
         run_id = random.randint(1000000, 9999999)
-        run_folder = f"/tmp/mag_{run_id}"
+        run_folder = os.path.join(settings.LOCAL_DIR, f"{run_id}")
         os.makedirs(run_folder, exist_ok=True)
         
         # Write samplesheet and cluster config to files
