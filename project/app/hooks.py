@@ -66,12 +66,14 @@ def process_mag_result_inner(returncode, id):
                 mag_run.status = 'partial'
 
             bin_file_path = f"{run_folder}/GenomeBinning/MaxBin2/Maxbin2_bins/MEGAHIT-MaxBin2-{sample.sample_id}.[0-9][0-9][0-9].fa.gz"
+            bin_number = bin_file_path.split('.')[-2]
             try:
                 bin_files = glob.glob(bin_file_path)
                 for bin_file in bin_files:
                     try:
                         bin = Bin(file=bin_file, order=order)
                         bin.quality_file = f"{run_folder}/GenomeBinning/QC/checkm_summary.tsv"
+                        bin.bin_number = bin_number
                         bin.save()
                         bin.read.add(read)
                     except Exception as e:
@@ -146,16 +148,37 @@ def process_submg_result_inner(returncode, id):
             next(sample_file)  # Skip header line
             for line in sample_file:
                 sample_alias = line.split()[0]
-                sample_title = sample_alias[4:]
                 sample_accession_id = line.split()[1]
                 sample_external_accession_id = line.split()[2]
-                try:
-                    sample=Sample.objects.get(order = order, sample_type=SAMPLE_TYPE_NORMAL, sample_alias=sample_title)
-                    sample.sample_accession_number = sample_accession_id
-                    sample.sample_biosample_number = sample_external_accession_id
-                    sample.save()
-                except Sample.DoesNotExist:
-                    pass
+
+                # use the alias to look up the alias in staging/biological_samples/samplesheet.xml and get the title
+
+
+                biological_sample_samplesheet_path = f"{run_folder}/staging/biological_samples/samplesheet.xml"
+
+                with open(biological_sample_samplesheet_path) as biological_sample_samplesheet_content:
+                    biological_sample_samplesheet_data = biological_sample_samplesheet_content.read()
+                    biological_sample_samplesheet_xml = xmltodict.parse(biological_sample_samplesheet_data)
+                    biological_sample_samplesheet_json = json.loads(json.dumps(biological_sample_samplesheet_xml))
+                    for sampleset_attribute, sampleset_value in biological_sample_samplesheet_json.items():
+                        biological_sample_alias = None
+                        biological_sample_title = None
+                        for sample_attribute, sample_value in sampleset_value.items():
+                            for sample in sample_value:
+                                biological_sample_alias = sample['@alias']
+                                biological_sample_title = sample['TITLE']
+
+                                if biological_sample_alias == sample_alias:
+
+                                    try:
+                                        sample=Sample.objects.get(order = order, sample_type=SAMPLE_TYPE_NORMAL, sample_title=biological_sample_title)
+                                        sample.sample_accession_number = sample_accession_id
+                                        sample.sample_biosample_number = sample_external_accession_id
+                                        sample.save()
+                                    except Sample.DoesNotExist:
+                                        pass
+                                    break
+
 
         # Process reads
 
@@ -248,7 +271,7 @@ def process_submg_result_inner(returncode, id):
 
             # create assembly sample objects
             try:
-                sample = Sample.objects.get(order = order, sample_type=SAMPLE_TYPE_ASSEMBLY, sample_alias=assembly_sample_title)
+                sample = Sample.objects.get(order = order, sample_type=SAMPLE_TYPE_ASSEMBLY)
             except Sample.DoesNotExist:
                 sample=Sample(order = order, sample_type=SAMPLE_TYPE_ASSEMBLY, sample_alias=assembly_sample_title)
             sample.setFieldsFromSubMG(assembly_sample_title, assembly_sample_title_dict[assembly_sample_alias], assembly_sample_name_dict[assembly_sample_alias], assembly_sample_attributes_dict[assembly_sample_alias])
@@ -313,12 +336,9 @@ def process_submg_result_inner(returncode, id):
                     bin.save()
 
 
-
-
-
         # Process bin samples
 
-        # Get details of bin sample constructed by SubMG and convert XML to JSON
+        # Get details of assemly sample constructed by SubMG and convert XML to JSON
 
         bin_sample_samplesheet_path = f"{run_folder}/staging/bins/bin_samplesheet/bins_samplesheet.xml"
 
@@ -349,11 +369,17 @@ def process_submg_result_inner(returncode, id):
             bin_sample_name_dict[bin_sample_alias] = bin_sample_name
             bin_sample_attributes_dict[bin_sample_alias] = bin_sample_attributes
 
+            bin_sample_full_title = re.sub("_virtual_sample", "", re.sub(".*coasm_bin_MEGAHIT-MaxBin2-", "", bin_sample_title))  
+            bin_sample_title = bin_sample_full_title.split('.')[0]  # Remove the extension if present
+            bin_sample_number = bin_sample_full_title.split('.')[1]
+
+            bin = Bin.objects.get(order=order, bin_number=bin_sample_number)
+
             # create bin sample objects
             try:
-                sample = Sample.objects.get(order = order, sample_type=SAMPLE_TYPE_BIN, sample_alias=bin_sample_title)
+                sample = Sample.objects.get(order = order, sample_type=SAMPLE_TYPE_BIN, bin=bin)
             except Sample.DoesNotExist:
-                sample=Sample(order = order, sample_type=SAMPLE_TYPE_BIN, sample_alias=bin_sample_title)
+                sample=Sample(order = order, sample_type=SAMPLE_TYPE_BIN, sample_alias=bin_sample_title, bin=bin)
             sample.setFieldsFromSubMG(bin_sample_title, bin_sample_title_dict[bin_sample_alias], bin_sample_name_dict[bin_sample_alias], bin_sample_attributes_dict[bin_sample_alias])
             sample.sampleset = sample_set
             sample.save()
@@ -395,10 +421,13 @@ def process_submg_result_inner(returncode, id):
                     if "EXT_ID" in line:
                         bin_sample_external_accession_id = line.split('accession="')[1].split('"')[0]      
 
-            bin_sample=Sample.objects.get(order = order, sample_type=SAMPLE_TYPE_BIN, sample_alias=bin_sample_title)
+            bin_sample=Sample.objects.get(order = order, sample_type=SAMPLE_TYPE_BIN, sample_title=bin_sample_alias)
             bin_sample.sample_accession_number = sample_accession_id
             bin_sample.sample_biosample_number = sample_external_accession_id
             bin_sample.save()
+
+
+
 
         # MAG should be created for each bin sample
 
