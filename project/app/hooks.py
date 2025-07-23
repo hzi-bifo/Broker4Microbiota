@@ -65,12 +65,12 @@ def process_mag_result_inner(returncode, id):
                 mag_run_instance.status = 'partial'
                 mag_run.status = 'partial'
 
-            bin_file_path = f"{run_folder}/GenomeBinning/MaxBin2/Maxbin2_bins/MEGAHIT-MaxBin2-{sample.sample_id}.[0-9][0-9][0-9].fa.gz"
-            bin_number = bin_file_path.split('.')[-2]
+            bin_file_path = f"{run_folder}/GenomeBinning/MaxBin2/Maxbin2_bins/MEGAHIT-MaxBin2-{sample.sample_id}.[0-9][0-9][0-9].fa"
             try:
                 bin_files = glob.glob(bin_file_path)
                 for bin_file in bin_files:
                     try:
+                        bin_number = bin_file.split('.')[-2]
                         bin = Bin(file=bin_file, order=order)
                         bin.quality_file = f"{run_folder}/GenomeBinning/QC/checkm_summary.tsv"
                         bin.bin_number = bin_number
