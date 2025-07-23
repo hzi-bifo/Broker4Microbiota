@@ -73,15 +73,15 @@ All Projects - Admin View
             </div>
             <div style="display: flex; align-items: center; gap: 0.5rem;">
               <span class="icon has-text-success" style="font-size: 1.125rem;">
-                <i class="fas fa-cloud-upload-alt"></i>
-              </span>
-              <span style="font-size: 0.8125rem; color: #495057;">ENA Registered</span>
-            </div>
-            <div style="display: flex; align-items: center; gap: 0.5rem;">
-              <span class="icon has-text-success" style="font-size: 1.125rem;">
                 <i class="fas fa-file-archive"></i>
               </span>
               <span style="font-size: 0.8125rem; color: #495057;">Files Complete</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 0.5rem;">
+              <span class="icon has-text-success" style="font-size: 1.125rem;">
+                <i class="fas fa-cloud-upload-alt"></i>
+              </span>
+              <span style="font-size: 0.8125rem; color: #495057;">ENA Registered</span>
             </div>
             <div style="display: flex; align-items: center; gap: 0.5rem;">
               <span class="icon has-text-success" style="font-size: 1.125rem;">
@@ -232,11 +232,11 @@ All Projects - Admin View
                       <span class="icon {% if item.workflow_status.project_created %}has-text-success{% else %}has-text-grey-lighter{% endif %}" title="Project Created">
                         <i class="fas fa-project-diagram"></i>
                       </span>
-                      <span class="icon {% if item.workflow_status.ena_registered %}has-text-success{% else %}has-text-grey-lighter{% endif %}" title="ENA Registered">
-                        <i class="fas fa-cloud-upload-alt"></i>
-                      </span>
                       <span class="icon {% if item.workflow_status.files_complete %}has-text-success{% else %}has-text-grey-lighter{% endif %}" title="Files Complete">
                         <i class="fas fa-file-archive"></i>
+                      </span>
+                      <span class="icon {% if item.workflow_status.ena_registered %}has-text-success{% else %}has-text-grey-lighter{% endif %}" title="ENA Registered">
+                        <i class="fas fa-cloud-upload-alt"></i>
                       </span>
                       <span class="icon {% if item.workflow_status.mag_pipeline_run %}has-text-success{% else %}has-text-grey-lighter{% endif %}" title="MAG Pipeline">
                         <i class="fas fa-dna"></i>

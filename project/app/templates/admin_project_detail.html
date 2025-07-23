@@ -88,22 +88,22 @@
           <i class="fas fa-chevron-right"></i>
         </div>
         
-        <div class="workflow-step {% if workflow_status.ena_registered %}completed{% endif %}">
+        <div class="workflow-step {% if workflow_status.files_complete %}completed{% endif %}">
           <div class="step-icon">
-            <i class="fas fa-cloud-upload-alt"></i>
+            <i class="fas fa-file-archive"></i>
           </div>
-          <div class="step-label">Register at ENA</div>
+          <div class="step-label">Files Complete</div>
         </div>
         
         <div class="workflow-arrow">
           <i class="fas fa-chevron-right"></i>
         </div>
         
-        <div class="workflow-step {% if workflow_status.files_complete %}completed{% endif %}">
+        <div class="workflow-step {% if workflow_status.ena_registered %}completed{% endif %}">
           <div class="step-icon">
-            <i class="fas fa-file-archive"></i>
+            <i class="fas fa-cloud-upload-alt"></i>
           </div>
-          <div class="step-label">Files Complete</div>
+          <div class="step-label">Register at ENA</div>
         </div>
         
         <div class="workflow-arrow">
@@ -148,12 +148,15 @@
       <div class="column is-4">
         {% if sample_file_details %}
         <div class="section-card">
-          <div class="section-header">
+          <div class="section-header" style="cursor: pointer;" onclick="toggleSection('sample-files')">
             <h4 class="section-title">
               <i class="fas fa-file"></i> Sample File Status
             </h4>
+            <span class="icon">
+              <i class="fas fa-chevron-down" id="sample-files-chevron"></i>
+            </span>
           </div>
-          <div class="section-body">
+          <div class="section-body" id="sample-files-content" style="display: none;">
             <table class="table is-narrow is-fullwidth">
               <thead>
                 <tr>
@@ -339,7 +342,7 @@
       <div class="buttons mb-4">
         <form method="post" action="{% url 'admin_generate_project_xml' project.id %}" style="display: inline;">
           {% csrf_token %}
-          <button type="submit" class="button {% if project_submissions %}is-success is-light{% else %}is-info{% endif %}"
+          <button type="submit" class="button {% if project_submissions %}is-success{% else %}is-info{% endif %}"
                   title="{% if project_submissions %}Generate another ENA submission XML{% else %}Generate ENA submission XML{% endif %}"
                   onclick="return confirm('Generate {% if project_submissions %}another {% endif %}ENA XML for this project?')">
             <span class="icon">
@@ -348,17 +351,6 @@
             <span>{% if project_submissions %}Generate Another ENA XML{% else %}Generate ENA XML{% endif %}</span>
           </button>
         </form>
-        
-        <span class="mr-2"></span>
-        
-        <button class="button is-primary {% if not project_submissions %}is-light{% endif %}" 
-                {% if not project_submissions %}disabled{% endif %}
-                title="{% if not project_submissions %}Generate XML first{% else %}Register project at ENA{% endif %}">
-          <span class="icon">
-            <i class="fas fa-cloud-upload-alt"></i>
-          </span>
-          <span>Register Project at ENA</span>
-        </button>
       </div>
       
       {% if project_submissions %}

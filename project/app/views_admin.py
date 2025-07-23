@@ -665,8 +665,8 @@ def admin_project_list(request):
     
     # Base queryset with annotations for statistics
     projects = Project.objects.all().annotate(
-        order_count=Count('order'),
-        sample_count=Count('order__sample', filter=Q(order__sample__sample_type=SAMPLE_TYPE_NORMAL)),
+        order_count=Count('order', distinct=True),
+        sample_count=Count('order__sample', filter=Q(order__sample__sample_type=SAMPLE_TYPE_NORMAL), distinct=True),
     ).select_related('user')
     
     # Apply filters
