@@ -102,7 +102,7 @@ def produceModels(data, model_data, field_names):
         model_fieldgroup_name = fieldgroup_name
         for field in fieldgroup['FIELD']:
             field_name = re.sub("^16S", 'sixteen_s', re.sub("^16s", 'sixteen_s', field['NAME'].replace(' ', '_').replace('(', '').replace(')', '').replace('/', '_').replace('-', '_')))
-            original_field_name = field['NAME']  # Keep the original field name for display purposes
+            original_field_name = field['NAME'] # .replace(' ', '_').replace('(', '').replace(')', '').replace('/', '_').replace('-', '_')
 
             field_description = ''
             try:
@@ -203,14 +203,14 @@ def produceModels(data, model_data, field_names):
                     choice_output = choice_output + f"\t{field_choice_name} = {field_choices}\n"
                 checklist_output = checklist_output + f")\n"
 
-                checklist_fields_output = checklist_fields_output + f"\t\t'{field_name}': '{field_name}',\n"
+                checklist_fields_output = checklist_fields_output + f"\t\t'{field_name}': '{original_field_name}',\n"
 
                 if field_units_name:
                     unitchecklist_output = unitchecklist_output + f"\t{field_name } = models.CharField(max_length=120, choices={field_units_name}, blank=False)\n"
                     
                     unit_output = unit_output + f"\t{field_units_name} = {field_units}\n"
 
-                    unitchecklist_fields_output = unitchecklist_fields_output + f"\t\t'{field_name}': '{field_name}',\n"
+                    unitchecklist_fields_output = unitchecklist_fields_output + f"\t\t'{field_name}': '{original_field_name}',\n"
 
     checklist_fields_output = checklist_fields_output + f"\t}}\n"
     unitchecklist_fields_output = unitchecklist_fields_output + f"\t}}\n"
