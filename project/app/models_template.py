@@ -145,11 +145,12 @@ class SelfDescribingModel(models.Model):
                         # ['Afghanistan', 'Albania']
                         single_choice = extra_choices
                         headers = headers + f", type: 'autocomplete', source: {single_choice}, strict: true, allowInvalid: true"
-                    try:
-                        validator = getattr(self, f"validator: {k}_validator")
-                        headers = headers + f", validator: {k}_validator, allowInvalid: true"
-                    except:
-                        pass
+                    # Validators disabled due to JavaScript errors
+                    # try:
+                    #     validator = getattr(self, f"validator: {k}_validator")
+                    #     headers = headers + f", validator: {k}_validator, allowInvalid: true"
+                    # except:
+                    #     pass
                     headers = headers + f"}},\n"
         else:
             for k, v in self.fields.items():
@@ -283,8 +284,8 @@ class SelfDescribingModel(models.Model):
                 if k in include:
                     try:
                         validator_body = getattr(self, f"{k}_validator")
-                        validator = (f"{k}_validator", f"{validator_body}")
-                        validators = validators + f"const {k}_validator = /{validator_body}/;\n"
+                        # Skip validators for now to avoid JavaScript errors
+                        # validators = validators + f"const {k}_validator = /{validator_body}/;\n"
                     except:
                         pass
         else:
@@ -292,8 +293,8 @@ class SelfDescribingModel(models.Model):
                 if k not in exclude:
                     try:
                         validator_body = getattr(self, f"{k}_validator")
-                        validator = (f"{k}_validator", f"{validator_body}")
-                        validators = validators + f"const {k}_validator = /{validator_body}/;\n"
+                        # Skip validators for now to avoid JavaScript errors
+                        # validators = validators + f"const {k}_validator = /{validator_body}/;\n"
                     except:
                         pass
 
@@ -913,11 +914,12 @@ class Sample(SelfDescribingModel):
                         # ['Afghanistan', 'Albania']
                         single_choice = extra_choices
                         headers = headers + f", type: 'autocomplete', source: {single_choice}, strict: true, allowInvalid: true"
-                    try:
-                        validator = getattr(self, f"validator: {k}_validator")
-                        headers = headers + f", validator: {k}_validator, allowInvalid: true"
-                    except:
-                        pass
+                    # Validators disabled due to JavaScript errors
+                    # try:
+                    #     validator = getattr(self, f"validator: {k}_validator")
+                    #     headers = headers + f", validator: {k}_validator, allowInvalid: true"
+                    # except:
+                    #     pass
                     headers = headers + f"}},\n"
         else:
             for k, v in self.fields.items():

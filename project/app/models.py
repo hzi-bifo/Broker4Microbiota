@@ -145,11 +145,12 @@ class SelfDescribingModel(models.Model):
                         # ['Afghanistan', 'Albania']
                         single_choice = extra_choices
                         headers = headers + f", type: 'autocomplete', source: {single_choice}, strict: true, allowInvalid: true"
-                    try:
-                        validator = getattr(self, f"validator: {k}_validator")
-                        headers = headers + f", validator: {k}_validator, allowInvalid: true"
-                    except:
-                        pass
+                    # Validators disabled due to JavaScript errors
+                    # try:
+                    #     validator = getattr(self, f"validator: {k}_validator")
+                    #     headers = headers + f", validator: {k}_validator, allowInvalid: true"
+                    # except:
+                    #     pass
                     headers = headers + f"}},\n"
         else:
             for k, v in self.fields.items():
@@ -930,11 +931,12 @@ class Sample(SelfDescribingModel):
                         # ['Afghanistan', 'Albania']
                         single_choice = extra_choices
                         headers = headers + f", type: 'autocomplete', source: {single_choice}, strict: true, allowInvalid: true"
-                    try:
-                        validator = getattr(self, f"validator: {k}_validator")
-                        headers = headers + f", validator: {k}_validator, allowInvalid: true"
-                    except:
-                        pass
+                    # Validators disabled due to JavaScript errors
+                    # try:
+                    #     validator = getattr(self, f"validator: {k}_validator")
+                    #     headers = headers + f", validator: {k}_validator, allowInvalid: true"
+                    # except:
+                    #     pass
                     headers = headers + f"}},\n"
         else:
             for k, v in self.fields.items():
@@ -1846,7 +1848,7 @@ class GSC_MIxS_air(SelfDescribingModel):
 	sampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE, default=1)
 	sample = models.ForeignKey(Sample, on_delete=models.CASCADE, default=1)
 	sample_type = models.IntegerField(default=1)
-	project_name= models.CharField(max_length=120, blank=True,help_text="Name of th")
+	project_name= models.CharField(max_length=120, blank=False,help_text="Name of th")
 	experimental_factor= models.CharField(max_length=120, blank=True,help_text="Experiment")
 	ploidy= models.CharField(max_length=120, blank=True,help_text="The ploidy")
 	number_of_replicons= models.CharField(max_length=120, blank=True,help_text="Reports th", validators=[RegexValidator(number_of_replicons_validator)])
@@ -1875,15 +1877,15 @@ class GSC_MIxS_air(SelfDescribingModel):
 	relevant_standard_operating_procedures= models.CharField(max_length=120, blank=True,help_text="Standard o")
 	negative_control_type= models.CharField(max_length=120, blank=True,help_text="The substa")
 	positive_control_type= models.CharField(max_length=120, blank=True,help_text="The substa")
-	collection_date= models.CharField(max_length=120, blank=True,help_text="The date t", validators=[RegexValidator(collection_date_validator)])
-	altitude= models.CharField(max_length=120, blank=True,help_text="The altitu", validators=[RegexValidator(altitude_validator)])
-	geographic_location_country_and_or_sea= models.CharField(max_length=120, blank=True,help_text="The locati", choices=geographic_location_country_and_or_sea_choice)
-	geographic_location_latitude= models.CharField(max_length=120, blank=True,help_text="The geogra", validators=[RegexValidator(geographic_location_latitude_validator)])
-	geographic_location_longitude= models.CharField(max_length=120, blank=True,help_text="The geogra", validators=[RegexValidator(geographic_location_longitude_validator)])
+	collection_date= models.CharField(max_length=120, blank=False,help_text="The date t", validators=[RegexValidator(collection_date_validator)])
+	altitude= models.CharField(max_length=120, blank=False,help_text="The altitu", validators=[RegexValidator(altitude_validator)])
+	geographic_location_country_and_or_sea= models.CharField(max_length=120, blank=False,help_text="The locati", choices=geographic_location_country_and_or_sea_choice)
+	geographic_location_latitude= models.CharField(max_length=120, blank=False,help_text="The geogra", validators=[RegexValidator(geographic_location_latitude_validator)])
+	geographic_location_longitude= models.CharField(max_length=120, blank=False,help_text="The geogra", validators=[RegexValidator(geographic_location_longitude_validator)])
 	geographic_location_region_and_locality= models.CharField(max_length=120, blank=True,help_text="The geogra")
-	broad_scale_environmental_context= models.CharField(max_length=120, blank=True,help_text="Report the")
-	local_environmental_context= models.CharField(max_length=120, blank=True,help_text="Report the")
-	environmental_medium= models.CharField(max_length=120, blank=True,help_text="Report the")
+	broad_scale_environmental_context= models.CharField(max_length=120, blank=False,help_text="Report the")
+	local_environmental_context= models.CharField(max_length=120, blank=False,help_text="Report the")
+	environmental_medium= models.CharField(max_length=120, blank=False,help_text="Report the")
 	elevation= models.CharField(max_length=120, blank=True,help_text="The elevat", validators=[RegexValidator(elevation_validator)])
 	ventilation_rate= models.CharField(max_length=120, blank=True,help_text="ventilatio", validators=[RegexValidator(ventilation_rate_validator)])
 	ventilation_type= models.CharField(max_length=120, blank=True,help_text="The intent", choices=ventilation_type_choice)
@@ -1925,82 +1927,82 @@ class GSC_MIxS_air(SelfDescribingModel):
 	perturbation= models.CharField(max_length=120, blank=True,help_text="type of pe")
 
 	fields = {
-		'project_name': 'project name',
-		'experimental_factor': 'experimental factor',
+		'project_name': 'project_name',
+		'experimental_factor': 'experimental_factor',
 		'ploidy': 'ploidy',
-		'number_of_replicons': 'number of replicons',
-		'extrachromosomal_elements': 'extrachromosomal elements',
-		'estimated_size': 'estimated size',
-		'reference_for_biomaterial': 'reference for biomaterial',
-		'annotation_source': 'annotation source',
-		'sample_volume_or_weight_for_DNA_extraction': 'sample volume or weight for DNA extraction',
-		'nucleic_acid_extraction': 'nucleic acid extraction',
-		'nucleic_acid_amplification': 'nucleic acid amplification',
-		'library_size': 'library size',
-		'library_reads_sequenced': 'library reads sequenced',
-		'library_construction_method': 'library construction method',
-		'library_vector': 'library vector',
-		'library_screening_strategy': 'library screening strategy',
-		'target_gene': 'target gene',
-		'target_subfragment': 'target subfragment',
-		'pcr_primers': 'pcr primers',
-		'multiplex_identifiers': 'multiplex identifiers',
+		'number_of_replicons': 'number_of_replicons',
+		'extrachromosomal_elements': 'extrachromosomal_elements',
+		'estimated_size': 'estimated_size',
+		'reference_for_biomaterial': 'reference_for_biomaterial',
+		'annotation_source': 'annotation_source',
+		'sample_volume_or_weight_for_DNA_extraction': 'sample_volume_or_weight_for_DNA_extraction',
+		'nucleic_acid_extraction': 'nucleic_acid_extraction',
+		'nucleic_acid_amplification': 'nucleic_acid_amplification',
+		'library_size': 'library_size',
+		'library_reads_sequenced': 'library_reads_sequenced',
+		'library_construction_method': 'library_construction_method',
+		'library_vector': 'library_vector',
+		'library_screening_strategy': 'library_screening_strategy',
+		'target_gene': 'target_gene',
+		'target_subfragment': 'target_subfragment',
+		'pcr_primers': 'pcr_primers',
+		'multiplex_identifiers': 'multiplex_identifiers',
 		'adapters': 'adapters',
-		'pcr_conditions': 'pcr conditions',
-		'sequencing_method': 'sequencing method',
-		'sequence_quality_check': 'sequence quality check',
-		'chimera_check_software': 'chimera check software',
-		'relevant_electronic_resources': 'relevant electronic resources',
-		'relevant_standard_operating_procedures': 'relevant standard operating procedures',
-		'negative_control_type': 'negative control type',
-		'positive_control_type': 'positive control type',
-		'collection_date': 'collection date',
+		'pcr_conditions': 'pcr_conditions',
+		'sequencing_method': 'sequencing_method',
+		'sequence_quality_check': 'sequence_quality_check',
+		'chimera_check_software': 'chimera_check_software',
+		'relevant_electronic_resources': 'relevant_electronic_resources',
+		'relevant_standard_operating_procedures': 'relevant_standard_operating_procedures',
+		'negative_control_type': 'negative_control_type',
+		'positive_control_type': 'positive_control_type',
+		'collection_date': 'collection_date',
 		'altitude': 'altitude',
-		'geographic_location_country_and_or_sea': 'geographic location (country and/or sea)',
-		'geographic_location_latitude': 'geographic location (latitude)',
-		'geographic_location_longitude': 'geographic location (longitude)',
-		'geographic_location_region_and_locality': 'geographic location (region and locality)',
-		'broad_scale_environmental_context': 'broad-scale environmental context',
-		'local_environmental_context': 'local environmental context',
-		'environmental_medium': 'environmental medium',
+		'geographic_location_country_and_or_sea': 'geographic_location_country_and_or_sea',
+		'geographic_location_latitude': 'geographic_location_latitude',
+		'geographic_location_longitude': 'geographic_location_longitude',
+		'geographic_location_region_and_locality': 'geographic_location_region_and_locality',
+		'broad_scale_environmental_context': 'broad_scale_environmental_context',
+		'local_environmental_context': 'local_environmental_context',
+		'environmental_medium': 'environmental_medium',
 		'elevation': 'elevation',
-		'ventilation_rate': 'ventilation rate',
-		'ventilation_type': 'ventilation type',
-		'source_material_identifiers': 'source material identifiers',
-		'sample_material_processing': 'sample material processing',
-		'isolation_and_growth_condition': 'isolation and growth condition',
+		'ventilation_rate': 'ventilation_rate',
+		'ventilation_type': 'ventilation_type',
+		'source_material_identifiers': 'source_material_identifiers',
+		'sample_material_processing': 'sample_material_processing',
+		'isolation_and_growth_condition': 'isolation_and_growth_condition',
 		'propagation': 'propagation',
-		'amount_or_size_of_sample_collected': 'amount or size of sample collected',
-		'oxygenation_status_of_sample': 'oxygenation status of sample',
-		'organism_count': 'organism count',
-		'sample_storage_duration': 'sample storage duration',
-		'sample_storage_temperature': 'sample storage temperature',
-		'sample_storage_location': 'sample storage location',
-		'sample_collection_device': 'sample collection device',
-		'sample_collection_method': 'sample collection method',
-		'host_disease_status': 'host disease status',
-		'host_scientific_name': 'host scientific name',
-		'barometric_pressure': 'barometric pressure',
+		'amount_or_size_of_sample_collected': 'amount_or_size_of_sample_collected',
+		'oxygenation_status_of_sample': 'oxygenation_status_of_sample',
+		'organism_count': 'organism_count',
+		'sample_storage_duration': 'sample_storage_duration',
+		'sample_storage_temperature': 'sample_storage_temperature',
+		'sample_storage_location': 'sample_storage_location',
+		'sample_collection_device': 'sample_collection_device',
+		'sample_collection_method': 'sample_collection_method',
+		'host_disease_status': 'host_disease_status',
+		'host_scientific_name': 'host_scientific_name',
+		'barometric_pressure': 'barometric_pressure',
 		'humidity': 'humidity',
 		'pollutants': 'pollutants',
-		'solar_irradiance': 'solar irradiance',
-		'wind_direction': 'wind direction',
-		'wind_speed': 'wind speed',
+		'solar_irradiance': 'solar_irradiance',
+		'wind_direction': 'wind_direction',
+		'wind_speed': 'wind_speed',
 		'temperature': 'temperature',
-		'carbon_dioxide': 'carbon dioxide',
-		'carbon_monoxide': 'carbon monoxide',
+		'carbon_dioxide': 'carbon_dioxide',
+		'carbon_monoxide': 'carbon_monoxide',
 		'oxygen': 'oxygen',
-		'air_particulate_matter_concentration': 'air particulate matter concentration',
-		'volatile_organic_compounds': 'volatile organic compounds',
+		'air_particulate_matter_concentration': 'air_particulate_matter_concentration',
+		'volatile_organic_compounds': 'volatile_organic_compounds',
 		'methane': 'methane',
 		'salinity': 'salinity',
-		'subspecific_genetic_lineage': 'subspecific genetic lineage',
-		'trophic_level': 'trophic level',
-		'relationship_to_oxygen': 'relationship to oxygen',
-		'known_pathogenicity': 'known pathogenicity',
-		'encoded_traits': 'encoded traits',
-		'observed_biotic_relationship': 'observed biotic relationship',
-		'chemical_administration': 'chemical administration',
+		'subspecific_genetic_lineage': 'subspecific_genetic_lineage',
+		'trophic_level': 'trophic_level',
+		'relationship_to_oxygen': 'relationship_to_oxygen',
+		'known_pathogenicity': 'known_pathogenicity',
+		'encoded_traits': 'encoded_traits',
+		'observed_biotic_relationship': 'observed_biotic_relationship',
+		'chemical_administration': 'chemical_administration',
 		'perturbation': 'perturbation',
 	}
 
@@ -2032,26 +2034,26 @@ class GSC_MIxS_air_unit(SelfDescribingModel):
 	salinity_units = [('psu', 'psu')]
 
 	fields = {
-		'sample_volume_or_weight_for_DNA_extraction': 'sample volume or weight for DNA extraction',
+		'sample_volume_or_weight_for_DNA_extraction': 'sample_volume_or_weight_for_DNA_extraction',
 		'altitude': 'altitude',
-		'geographic_location_latitude': 'geographic location (latitude)',
-		'geographic_location_longitude': 'geographic location (longitude)',
+		'geographic_location_latitude': 'geographic_location_latitude',
+		'geographic_location_longitude': 'geographic_location_longitude',
 		'elevation': 'elevation',
-		'ventilation_rate': 'ventilation rate',
-		'amount_or_size_of_sample_collected': 'amount or size of sample collected',
-		'sample_storage_duration': 'sample storage duration',
-		'sample_storage_temperature': 'sample storage temperature',
-		'barometric_pressure': 'barometric pressure',
+		'ventilation_rate': 'ventilation_rate',
+		'amount_or_size_of_sample_collected': 'amount_or_size_of_sample_collected',
+		'sample_storage_duration': 'sample_storage_duration',
+		'sample_storage_temperature': 'sample_storage_temperature',
+		'barometric_pressure': 'barometric_pressure',
 		'humidity': 'humidity',
 		'pollutants': 'pollutants',
-		'solar_irradiance': 'solar irradiance',
-		'wind_speed': 'wind speed',
+		'solar_irradiance': 'solar_irradiance',
+		'wind_speed': 'wind_speed',
 		'temperature': 'temperature',
-		'carbon_dioxide': 'carbon dioxide',
-		'carbon_monoxide': 'carbon monoxide',
+		'carbon_dioxide': 'carbon_dioxide',
+		'carbon_monoxide': 'carbon_monoxide',
 		'oxygen': 'oxygen',
-		'air_particulate_matter_concentration': 'air particulate matter concentration',
-		'volatile_organic_compounds': 'volatile organic compounds',
+		'air_particulate_matter_concentration': 'air_particulate_matter_concentration',
+		'volatile_organic_compounds': 'volatile_organic_compounds',
 		'methane': 'methane',
 		'salinity': 'salinity',
 	}
@@ -2061,28 +2063,28 @@ class GSC_MIxS_air_unit(SelfDescribingModel):
 	sampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE, default=1)
 	sample = models.ForeignKey(Sample, on_delete=models.CASCADE, default=1)
 	sample_type = models.IntegerField(default=1)
-	sample_volume_or_weight_for_DNA_extraction = models.CharField(max_length=120, choices=sample_volume_or_weight_for_DNA_extraction_units, blank=True)
-	altitude = models.CharField(max_length=120, choices=altitude_units, blank=True)
-	geographic_location_latitude = models.CharField(max_length=120, choices=geographic_location_latitude_units, blank=True)
-	geographic_location_longitude = models.CharField(max_length=120, choices=geographic_location_longitude_units, blank=True)
-	elevation = models.CharField(max_length=120, choices=elevation_units, blank=True)
-	ventilation_rate = models.CharField(max_length=120, choices=ventilation_rate_units, blank=True)
-	amount_or_size_of_sample_collected = models.CharField(max_length=120, choices=amount_or_size_of_sample_collected_units, blank=True)
-	sample_storage_duration = models.CharField(max_length=120, choices=sample_storage_duration_units, blank=True)
-	sample_storage_temperature = models.CharField(max_length=120, choices=sample_storage_temperature_units, blank=True)
-	barometric_pressure = models.CharField(max_length=120, choices=barometric_pressure_units, blank=True)
-	humidity = models.CharField(max_length=120, choices=humidity_units, blank=True)
-	pollutants = models.CharField(max_length=120, choices=pollutants_units, blank=True)
-	solar_irradiance = models.CharField(max_length=120, choices=solar_irradiance_units, blank=True)
-	wind_speed = models.CharField(max_length=120, choices=wind_speed_units, blank=True)
-	temperature = models.CharField(max_length=120, choices=temperature_units, blank=True)
-	carbon_dioxide = models.CharField(max_length=120, choices=carbon_dioxide_units, blank=True)
-	carbon_monoxide = models.CharField(max_length=120, choices=carbon_monoxide_units, blank=True)
-	oxygen = models.CharField(max_length=120, choices=oxygen_units, blank=True)
-	air_particulate_matter_concentration = models.CharField(max_length=120, choices=air_particulate_matter_concentration_units, blank=True)
-	volatile_organic_compounds = models.CharField(max_length=120, choices=volatile_organic_compounds_units, blank=True)
-	methane = models.CharField(max_length=120, choices=methane_units, blank=True)
-	salinity = models.CharField(max_length=120, choices=salinity_units, blank=True)
+	sample_volume_or_weight_for_DNA_extraction = models.CharField(max_length=120, choices=sample_volume_or_weight_for_DNA_extraction_units, blank=False)
+	altitude = models.CharField(max_length=120, choices=altitude_units, blank=False)
+	geographic_location_latitude = models.CharField(max_length=120, choices=geographic_location_latitude_units, blank=False)
+	geographic_location_longitude = models.CharField(max_length=120, choices=geographic_location_longitude_units, blank=False)
+	elevation = models.CharField(max_length=120, choices=elevation_units, blank=False)
+	ventilation_rate = models.CharField(max_length=120, choices=ventilation_rate_units, blank=False)
+	amount_or_size_of_sample_collected = models.CharField(max_length=120, choices=amount_or_size_of_sample_collected_units, blank=False)
+	sample_storage_duration = models.CharField(max_length=120, choices=sample_storage_duration_units, blank=False)
+	sample_storage_temperature = models.CharField(max_length=120, choices=sample_storage_temperature_units, blank=False)
+	barometric_pressure = models.CharField(max_length=120, choices=barometric_pressure_units, blank=False)
+	humidity = models.CharField(max_length=120, choices=humidity_units, blank=False)
+	pollutants = models.CharField(max_length=120, choices=pollutants_units, blank=False)
+	solar_irradiance = models.CharField(max_length=120, choices=solar_irradiance_units, blank=False)
+	wind_speed = models.CharField(max_length=120, choices=wind_speed_units, blank=False)
+	temperature = models.CharField(max_length=120, choices=temperature_units, blank=False)
+	carbon_dioxide = models.CharField(max_length=120, choices=carbon_dioxide_units, blank=False)
+	carbon_monoxide = models.CharField(max_length=120, choices=carbon_monoxide_units, blank=False)
+	oxygen = models.CharField(max_length=120, choices=oxygen_units, blank=False)
+	air_particulate_matter_concentration = models.CharField(max_length=120, choices=air_particulate_matter_concentration_units, blank=False)
+	volatile_organic_compounds = models.CharField(max_length=120, choices=volatile_organic_compounds_units, blank=False)
+	methane = models.CharField(max_length=120, choices=methane_units, blank=False)
+	salinity = models.CharField(max_length=120, choices=salinity_units, blank=False)
 
 class GSC_MIMAGS(SelfDescribingModel):
 
@@ -2113,9 +2115,9 @@ class GSC_MIMAGS(SelfDescribingModel):
 	relationship_to_oxygen= models.CharField(max_length=120, blank=True,help_text="Is this or", choices=relationship_to_oxygen_choice)
 	sample_collection_device= models.CharField(max_length=120, blank=True,help_text="The device")
 	sample_collection_method= models.CharField(max_length=120, blank=True,help_text="The method")
-	metagenomic_source= models.CharField(max_length=120, blank=True,help_text="The metage")
-	sample_derived_from= models.CharField(max_length=120, blank=True,help_text="Reference ", validators=[RegexValidator(sample_derived_from_validator)])
-	project_name= models.CharField(max_length=120, blank=True,help_text="Name of th")
+	metagenomic_source= models.CharField(max_length=120, blank=False,help_text="The metage")
+	sample_derived_from= models.CharField(max_length=120, blank=False,help_text="Reference ", validators=[RegexValidator(sample_derived_from_validator)])
+	project_name= models.CharField(max_length=120, blank=False,help_text="Name of th")
 	multiplex_identifiers= models.CharField(max_length=120, blank=True,help_text="Molecular ")
 	relevant_electronic_resources= models.CharField(max_length=120, blank=True,help_text="A related ")
 	relevant_standard_operating_procedures= models.CharField(max_length=120, blank=True,help_text="Standard o")
@@ -2125,32 +2127,32 @@ class GSC_MIMAGS(SelfDescribingModel):
 	sixteen_s_recovered= models.CharField(max_length=120, blank=True,help_text="Can a 16S ", choices=sixteen_s_recovered_choice)
 	sixteen_s_recovery_software= models.CharField(max_length=120, blank=True,help_text="Tools used")
 	tRNA_extraction_software= models.CharField(max_length=120, blank=True,help_text="Tools used")
-	completeness_score= models.CharField(max_length=120, blank=True,help_text="Completene", validators=[RegexValidator(completeness_score_validator)])
-	completeness_software= models.CharField(max_length=120, blank=True,help_text="Tools used")
+	completeness_score= models.CharField(max_length=120, blank=False,help_text="Completene", validators=[RegexValidator(completeness_score_validator)])
+	completeness_software= models.CharField(max_length=120, blank=False,help_text="Tools used")
 	completeness_approach= models.CharField(max_length=120, blank=True,help_text="The approa")
-	contamination_score= models.CharField(max_length=120, blank=True,help_text="The contam", validators=[RegexValidator(contamination_score_validator)])
+	contamination_score= models.CharField(max_length=120, blank=False,help_text="The contam", validators=[RegexValidator(contamination_score_validator)])
 	contamination_screening_input= models.CharField(max_length=120, blank=True,help_text="The type o", choices=contamination_screening_input_choice)
 	contamination_screening_parameters= models.CharField(max_length=120, blank=True,help_text="Specific p")
 	decontamination_software= models.CharField(max_length=120, blank=True,help_text="Tool(s) us")
-	binning_software= models.CharField(max_length=120, blank=True,help_text="Tool(s) us")
+	binning_software= models.CharField(max_length=120, blank=False,help_text="Tool(s) us")
 	reassembly_post_binning= models.CharField(max_length=120, blank=True,help_text="Has an ass", choices=reassembly_post_binning_choice)
 	MAG_coverage_software= models.CharField(max_length=120, blank=True,help_text="Tool(s) us")
-	assembly_quality= models.CharField(max_length=120, blank=True,help_text="The assemb", choices=assembly_quality_choice)
-	binning_parameters= models.CharField(max_length=120, blank=True,help_text="The parame")
-	taxonomic_identity_marker= models.CharField(max_length=120, blank=True,help_text="The phylog")
-	isolation_source= models.CharField(max_length=120, blank=True,help_text="describes ")
-	collection_date= models.CharField(max_length=120, blank=True,help_text="The date t", validators=[RegexValidator(collection_date_validator)])
+	assembly_quality= models.CharField(max_length=120, blank=False,help_text="The assemb", choices=assembly_quality_choice)
+	binning_parameters= models.CharField(max_length=120, blank=False,help_text="The parame")
+	taxonomic_identity_marker= models.CharField(max_length=120, blank=False,help_text="The phylog")
+	isolation_source= models.CharField(max_length=120, blank=False,help_text="describes ")
+	collection_date= models.CharField(max_length=120, blank=False,help_text="The date t", validators=[RegexValidator(collection_date_validator)])
 	altitude= models.CharField(max_length=120, blank=True,help_text="The altitu", validators=[RegexValidator(altitude_validator)])
-	geographic_location_latitude= models.CharField(max_length=120, blank=True,help_text="The geogra", validators=[RegexValidator(geographic_location_latitude_validator)])
-	geographic_location_longitude= models.CharField(max_length=120, blank=True,help_text="The geogra", validators=[RegexValidator(geographic_location_longitude_validator)])
+	geographic_location_latitude= models.CharField(max_length=120, blank=False,help_text="The geogra", validators=[RegexValidator(geographic_location_latitude_validator)])
+	geographic_location_longitude= models.CharField(max_length=120, blank=False,help_text="The geogra", validators=[RegexValidator(geographic_location_longitude_validator)])
 	geographic_location_region_and_locality= models.CharField(max_length=120, blank=True,help_text="The geogra")
-	broad_scale_environmental_context= models.CharField(max_length=120, blank=True,help_text="Report the")
-	local_environmental_context= models.CharField(max_length=120, blank=True,help_text="Report the")
-	environmental_medium= models.CharField(max_length=120, blank=True,help_text="Report the")
+	broad_scale_environmental_context= models.CharField(max_length=120, blank=False,help_text="Report the")
+	local_environmental_context= models.CharField(max_length=120, blank=False,help_text="Report the")
+	environmental_medium= models.CharField(max_length=120, blank=False,help_text="Report the")
 	elevation= models.CharField(max_length=120, blank=True,help_text="The elevat", validators=[RegexValidator(elevation_validator)])
 	amount_or_size_of_sample_collected= models.CharField(max_length=120, blank=True,help_text="The total ", validators=[RegexValidator(amount_or_size_of_sample_collected_validator)])
 	size_fraction_selected= models.CharField(max_length=120, blank=True,help_text="Filtering ")
-	geographic_location_country_and_or_sea= models.CharField(max_length=120, blank=True,help_text="The geogra", choices=geographic_location_country_and_or_sea_choice)
+	geographic_location_country_and_or_sea= models.CharField(max_length=120, blank=False,help_text="The geogra", choices=geographic_location_country_and_or_sea_choice)
 	source_material_identifiers= models.CharField(max_length=120, blank=True,help_text="A unique i")
 	experimental_factor= models.CharField(max_length=120, blank=True,help_text="Experiment")
 	taxonomic_classification= models.CharField(max_length=120, blank=True,help_text="Method use")
@@ -2164,66 +2166,66 @@ class GSC_MIMAGS(SelfDescribingModel):
 	library_reads_sequenced= models.CharField(max_length=120, blank=True,help_text="Total numb", validators=[RegexValidator(library_reads_sequenced_validator)])
 	library_vector= models.CharField(max_length=120, blank=True,help_text="Cloning ve")
 	library_screening_strategy= models.CharField(max_length=120, blank=True,help_text="Specific e")
-	assembly_software= models.CharField(max_length=120, blank=True,help_text="Tool(s) us")
+	assembly_software= models.CharField(max_length=120, blank=False,help_text="Tool(s) us")
 	adapters= models.CharField(max_length=120, blank=True,help_text="Adapters p")
 	depth= models.CharField(max_length=120, blank=True,help_text="The vertic", validators=[RegexValidator(depth_validator)])
 
 	fields = {
-		'relationship_to_oxygen': 'relationship to oxygen',
-		'sample_collection_device': 'sample collection device',
-		'sample_collection_method': 'sample collection method',
-		'metagenomic_source': 'metagenomic source',
-		'sample_derived_from': 'sample derived from',
-		'project_name': 'project name',
-		'multiplex_identifiers': 'multiplex identifiers',
-		'relevant_electronic_resources': 'relevant electronic resources',
-		'relevant_standard_operating_procedures': 'relevant standard operating procedures',
-		'number_of_standard_tRNAs_extracted': 'number of standard tRNAs extracted',
-		'feature_prediction': 'feature prediction',
-		'similarity_search_method': 'similarity search method',
-		'sixteen_s_recovered': '16s recovered',
-		'sixteen_s_recovery_software': '16S recovery software',
-		'tRNA_extraction_software': 'tRNA extraction software',
-		'completeness_score': 'completeness score',
-		'completeness_software': 'completeness software',
-		'completeness_approach': 'completeness approach',
-		'contamination_score': 'contamination score',
-		'contamination_screening_input': 'contamination screening input',
-		'contamination_screening_parameters': 'contamination screening parameters',
-		'decontamination_software': 'decontamination software',
-		'binning_software': 'binning software',
-		'reassembly_post_binning': 'reassembly post binning',
-		'MAG_coverage_software': 'MAG coverage software',
-		'assembly_quality': 'assembly quality',
-		'binning_parameters': 'binning parameters',
-		'taxonomic_identity_marker': 'taxonomic identity marker',
+		'relationship_to_oxygen': 'relationship_to_oxygen',
+		'sample_collection_device': 'sample_collection_device',
+		'sample_collection_method': 'sample_collection_method',
+		'metagenomic_source': 'metagenomic_source',
+		'sample_derived_from': 'sample_derived_from',
+		'project_name': 'project_name',
+		'multiplex_identifiers': 'multiplex_identifiers',
+		'relevant_electronic_resources': 'relevant_electronic_resources',
+		'relevant_standard_operating_procedures': 'relevant_standard_operating_procedures',
+		'number_of_standard_tRNAs_extracted': 'number_of_standard_tRNAs_extracted',
+		'feature_prediction': 'feature_prediction',
+		'similarity_search_method': 'similarity_search_method',
+		'sixteen_s_recovered': 'sixteen_s_recovered',
+		'sixteen_s_recovery_software': 'sixteen_s_recovery_software',
+		'tRNA_extraction_software': 'tRNA_extraction_software',
+		'completeness_score': 'completeness_score',
+		'completeness_software': 'completeness_software',
+		'completeness_approach': 'completeness_approach',
+		'contamination_score': 'contamination_score',
+		'contamination_screening_input': 'contamination_screening_input',
+		'contamination_screening_parameters': 'contamination_screening_parameters',
+		'decontamination_software': 'decontamination_software',
+		'binning_software': 'binning_software',
+		'reassembly_post_binning': 'reassembly_post_binning',
+		'MAG_coverage_software': 'MAG_coverage_software',
+		'assembly_quality': 'assembly_quality',
+		'binning_parameters': 'binning_parameters',
+		'taxonomic_identity_marker': 'taxonomic_identity_marker',
 		'isolation_source': 'isolation_source',
-		'collection_date': 'collection date',
+		'collection_date': 'collection_date',
 		'altitude': 'altitude',
-		'geographic_location_latitude': 'geographic location (latitude)',
-		'geographic_location_longitude': 'geographic location (longitude)',
-		'geographic_location_region_and_locality': 'geographic location (region and locality)',
-		'broad_scale_environmental_context': 'broad-scale environmental context',
-		'local_environmental_context': 'local environmental context',
-		'environmental_medium': 'environmental medium',
+		'geographic_location_latitude': 'geographic_location_latitude',
+		'geographic_location_longitude': 'geographic_location_longitude',
+		'geographic_location_region_and_locality': 'geographic_location_region_and_locality',
+		'broad_scale_environmental_context': 'broad_scale_environmental_context',
+		'local_environmental_context': 'local_environmental_context',
+		'environmental_medium': 'environmental_medium',
 		'elevation': 'elevation',
-		'amount_or_size_of_sample_collected': 'amount or size of sample collected',
-		'size_fraction_selected': 'size fraction selected',
-		'geographic_location_country_and_or_sea': 'geographic location (country and/or sea)',
-		'source_material_identifiers': 'source material identifiers',
-		'experimental_factor': 'experimental factor',
-		'taxonomic_classification': 'taxonomic classification',
-		'annotation_source': 'annotation source',
-		'reference_for_biomaterial': 'reference for biomaterial',
-		'reference_databases': 'reference database(s)',
-		'sample_material_processing': 'sample material processing',
-		'nucleic_acid_extraction': 'nucleic acid extraction',
-		'nucleic_acid_amplification': 'nucleic acid amplification',
-		'library_size': 'library size',
-		'library_reads_sequenced': 'library reads sequenced',
-		'library_vector': 'library vector',
-		'library_screening_strategy': 'library screening strategy',
-		'assembly_software': 'assembly software',
+		'amount_or_size_of_sample_collected': 'amount_or_size_of_sample_collected',
+		'size_fraction_selected': 'size_fraction_selected',
+		'geographic_location_country_and_or_sea': 'geographic_location_country_and_or_sea',
+		'source_material_identifiers': 'source_material_identifiers',
+		'experimental_factor': 'experimental_factor',
+		'taxonomic_classification': 'taxonomic_classification',
+		'annotation_source': 'annotation_source',
+		'reference_for_biomaterial': 'reference_for_biomaterial',
+		'reference_databases': 'reference_databases',
+		'sample_material_processing': 'sample_material_processing',
+		'nucleic_acid_extraction': 'nucleic_acid_extraction',
+		'nucleic_acid_amplification': 'nucleic_acid_amplification',
+		'library_size': 'library_size',
+		'library_reads_sequenced': 'library_reads_sequenced',
+		'library_vector': 'library_vector',
+		'library_screening_strategy': 'library_screening_strategy',
+		'assembly_software': 'assembly_software',
 		'adapters': 'adapters',
 		'depth': 'depth',
 	}
@@ -2243,14 +2245,14 @@ class GSC_MIMAGS_unit(SelfDescribingModel):
 	depth_units = [('m', 'm'), ('mm', 'mm')]
 
 	fields = {
-		'completeness_score': 'completeness score',
-		'contamination_score': 'contamination score',
-		'reassembly_post_binning': 'reassembly post binning',
+		'completeness_score': 'completeness_score',
+		'contamination_score': 'contamination_score',
+		'reassembly_post_binning': 'reassembly_post_binning',
 		'altitude': 'altitude',
-		'geographic_location_latitude': 'geographic location (latitude)',
-		'geographic_location_longitude': 'geographic location (longitude)',
+		'geographic_location_latitude': 'geographic_location_latitude',
+		'geographic_location_longitude': 'geographic_location_longitude',
 		'elevation': 'elevation',
-		'amount_or_size_of_sample_collected': 'amount or size of sample collected',
+		'amount_or_size_of_sample_collected': 'amount_or_size_of_sample_collected',
 		'depth': 'depth',
 	}
 
@@ -2259,15 +2261,15 @@ class GSC_MIMAGS_unit(SelfDescribingModel):
 	sampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE, default=1)
 	sample = models.ForeignKey(Sample, on_delete=models.CASCADE, default=1)
 	sample_type = models.IntegerField(default=1)
-	completeness_score = models.CharField(max_length=120, choices=completeness_score_units, blank=True)
-	contamination_score = models.CharField(max_length=120, choices=contamination_score_units, blank=True)
-	reassembly_post_binning = models.CharField(max_length=120, choices=reassembly_post_binning_units, blank=True)
-	altitude = models.CharField(max_length=120, choices=altitude_units, blank=True)
-	geographic_location_latitude = models.CharField(max_length=120, choices=geographic_location_latitude_units, blank=True)
-	geographic_location_longitude = models.CharField(max_length=120, choices=geographic_location_longitude_units, blank=True)
-	elevation = models.CharField(max_length=120, choices=elevation_units, blank=True)
-	amount_or_size_of_sample_collected = models.CharField(max_length=120, choices=amount_or_size_of_sample_collected_units, blank=True)
-	depth = models.CharField(max_length=120, choices=depth_units, blank=True)
+	completeness_score = models.CharField(max_length=120, choices=completeness_score_units, blank=False)
+	contamination_score = models.CharField(max_length=120, choices=contamination_score_units, blank=False)
+	reassembly_post_binning = models.CharField(max_length=120, choices=reassembly_post_binning_units, blank=False)
+	altitude = models.CharField(max_length=120, choices=altitude_units, blank=False)
+	geographic_location_latitude = models.CharField(max_length=120, choices=geographic_location_latitude_units, blank=False)
+	geographic_location_longitude = models.CharField(max_length=120, choices=geographic_location_longitude_units, blank=False)
+	elevation = models.CharField(max_length=120, choices=elevation_units, blank=False)
+	amount_or_size_of_sample_collected = models.CharField(max_length=120, choices=amount_or_size_of_sample_collected_units, blank=False)
+	depth = models.CharField(max_length=120, choices=depth_units, blank=False)
 
 class GSC_MIxS_plant_associated(SelfDescribingModel):
 
@@ -2306,7 +2308,7 @@ class GSC_MIxS_plant_associated(SelfDescribingModel):
 	sampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE, default=1)
 	sample = models.ForeignKey(Sample, on_delete=models.CASCADE, default=1)
 	sample_type = models.IntegerField(default=1)
-	project_name= models.CharField(max_length=120, blank=True,help_text="Name of th")
+	project_name= models.CharField(max_length=120, blank=False,help_text="Name of th")
 	experimental_factor= models.CharField(max_length=120, blank=True,help_text="Experiment")
 	ploidy= models.CharField(max_length=120, blank=True,help_text="The ploidy")
 	number_of_replicons= models.CharField(max_length=120, blank=True,help_text="Reports th", validators=[RegexValidator(number_of_replicons_validator)])
@@ -2335,16 +2337,16 @@ class GSC_MIxS_plant_associated(SelfDescribingModel):
 	relevant_standard_operating_procedures= models.CharField(max_length=120, blank=True,help_text="Standard o")
 	negative_control_type= models.CharField(max_length=120, blank=True,help_text="The substa")
 	positive_control_type= models.CharField(max_length=120, blank=True,help_text="The substa")
-	collection_date= models.CharField(max_length=120, blank=True,help_text="The date t", validators=[RegexValidator(collection_date_validator)])
+	collection_date= models.CharField(max_length=120, blank=False,help_text="The date t", validators=[RegexValidator(collection_date_validator)])
 	altitude= models.CharField(max_length=120, blank=True,help_text="The altitu", validators=[RegexValidator(altitude_validator)])
-	geographic_location_country_and_or_sea= models.CharField(max_length=120, blank=True,help_text="The locati", choices=geographic_location_country_and_or_sea_choice)
-	geographic_location_latitude= models.CharField(max_length=120, blank=True,help_text="The geogra", validators=[RegexValidator(geographic_location_latitude_validator)])
-	geographic_location_longitude= models.CharField(max_length=120, blank=True,help_text="The geogra", validators=[RegexValidator(geographic_location_longitude_validator)])
+	geographic_location_country_and_or_sea= models.CharField(max_length=120, blank=False,help_text="The locati", choices=geographic_location_country_and_or_sea_choice)
+	geographic_location_latitude= models.CharField(max_length=120, blank=False,help_text="The geogra", validators=[RegexValidator(geographic_location_latitude_validator)])
+	geographic_location_longitude= models.CharField(max_length=120, blank=False,help_text="The geogra", validators=[RegexValidator(geographic_location_longitude_validator)])
 	geographic_location_region_and_locality= models.CharField(max_length=120, blank=True,help_text="The geogra")
 	depth= models.CharField(max_length=120, blank=True,help_text="The vertic", validators=[RegexValidator(depth_validator)])
-	broad_scale_environmental_context= models.CharField(max_length=120, blank=True,help_text="Report the")
-	local_environmental_context= models.CharField(max_length=120, blank=True,help_text="Report the")
-	environmental_medium= models.CharField(max_length=120, blank=True,help_text="Report the")
+	broad_scale_environmental_context= models.CharField(max_length=120, blank=False,help_text="Report the")
+	local_environmental_context= models.CharField(max_length=120, blank=False,help_text="Report the")
+	environmental_medium= models.CharField(max_length=120, blank=False,help_text="Report the")
 	elevation= models.CharField(max_length=120, blank=True,help_text="The elevat", validators=[RegexValidator(elevation_validator)])
 	source_material_identifiers= models.CharField(max_length=120, blank=True,help_text="A unique i")
 	sample_material_processing= models.CharField(max_length=120, blank=True,help_text="A brief de")
@@ -2410,107 +2412,107 @@ class GSC_MIxS_plant_associated(SelfDescribingModel):
 	perturbation= models.CharField(max_length=120, blank=True,help_text="type of pe")
 
 	fields = {
-		'project_name': 'project name',
-		'experimental_factor': 'experimental factor',
+		'project_name': 'project_name',
+		'experimental_factor': 'experimental_factor',
 		'ploidy': 'ploidy',
-		'number_of_replicons': 'number of replicons',
-		'extrachromosomal_elements': 'extrachromosomal elements',
-		'estimated_size': 'estimated size',
-		'reference_for_biomaterial': 'reference for biomaterial',
-		'annotation_source': 'annotation source',
-		'sample_volume_or_weight_for_DNA_extraction': 'sample volume or weight for DNA extraction',
-		'nucleic_acid_extraction': 'nucleic acid extraction',
-		'nucleic_acid_amplification': 'nucleic acid amplification',
-		'library_size': 'library size',
-		'library_reads_sequenced': 'library reads sequenced',
-		'library_construction_method': 'library construction method',
-		'library_vector': 'library vector',
-		'library_screening_strategy': 'library screening strategy',
-		'target_gene': 'target gene',
-		'target_subfragment': 'target subfragment',
-		'pcr_primers': 'pcr primers',
-		'multiplex_identifiers': 'multiplex identifiers',
+		'number_of_replicons': 'number_of_replicons',
+		'extrachromosomal_elements': 'extrachromosomal_elements',
+		'estimated_size': 'estimated_size',
+		'reference_for_biomaterial': 'reference_for_biomaterial',
+		'annotation_source': 'annotation_source',
+		'sample_volume_or_weight_for_DNA_extraction': 'sample_volume_or_weight_for_DNA_extraction',
+		'nucleic_acid_extraction': 'nucleic_acid_extraction',
+		'nucleic_acid_amplification': 'nucleic_acid_amplification',
+		'library_size': 'library_size',
+		'library_reads_sequenced': 'library_reads_sequenced',
+		'library_construction_method': 'library_construction_method',
+		'library_vector': 'library_vector',
+		'library_screening_strategy': 'library_screening_strategy',
+		'target_gene': 'target_gene',
+		'target_subfragment': 'target_subfragment',
+		'pcr_primers': 'pcr_primers',
+		'multiplex_identifiers': 'multiplex_identifiers',
 		'adapters': 'adapters',
-		'pcr_conditions': 'pcr conditions',
-		'sequencing_method': 'sequencing method',
-		'sequence_quality_check': 'sequence quality check',
-		'chimera_check_software': 'chimera check software',
-		'relevant_electronic_resources': 'relevant electronic resources',
-		'relevant_standard_operating_procedures': 'relevant standard operating procedures',
-		'negative_control_type': 'negative control type',
-		'positive_control_type': 'positive control type',
-		'collection_date': 'collection date',
+		'pcr_conditions': 'pcr_conditions',
+		'sequencing_method': 'sequencing_method',
+		'sequence_quality_check': 'sequence_quality_check',
+		'chimera_check_software': 'chimera_check_software',
+		'relevant_electronic_resources': 'relevant_electronic_resources',
+		'relevant_standard_operating_procedures': 'relevant_standard_operating_procedures',
+		'negative_control_type': 'negative_control_type',
+		'positive_control_type': 'positive_control_type',
+		'collection_date': 'collection_date',
 		'altitude': 'altitude',
-		'geographic_location_country_and_or_sea': 'geographic location (country and/or sea)',
-		'geographic_location_latitude': 'geographic location (latitude)',
-		'geographic_location_longitude': 'geographic location (longitude)',
-		'geographic_location_region_and_locality': 'geographic location (region and locality)',
+		'geographic_location_country_and_or_sea': 'geographic_location_country_and_or_sea',
+		'geographic_location_latitude': 'geographic_location_latitude',
+		'geographic_location_longitude': 'geographic_location_longitude',
+		'geographic_location_region_and_locality': 'geographic_location_region_and_locality',
 		'depth': 'depth',
-		'broad_scale_environmental_context': 'broad-scale environmental context',
-		'local_environmental_context': 'local environmental context',
-		'environmental_medium': 'environmental medium',
+		'broad_scale_environmental_context': 'broad_scale_environmental_context',
+		'local_environmental_context': 'local_environmental_context',
+		'environmental_medium': 'environmental_medium',
 		'elevation': 'elevation',
-		'source_material_identifiers': 'source material identifiers',
-		'sample_material_processing': 'sample material processing',
-		'isolation_and_growth_condition': 'isolation and growth condition',
+		'source_material_identifiers': 'source_material_identifiers',
+		'sample_material_processing': 'sample_material_processing',
+		'isolation_and_growth_condition': 'isolation_and_growth_condition',
 		'propagation': 'propagation',
-		'amount_or_size_of_sample_collected': 'amount or size of sample collected',
-		'host_dry_mass': 'host dry mass',
-		'oxygenation_status_of_sample': 'oxygenation status of sample',
-		'plant_product': 'plant product',
-		'organism_count': 'organism count',
-		'sample_storage_duration': 'sample storage duration',
-		'sample_storage_temperature': 'sample storage temperature',
-		'host_wet_mass': 'host wet mass',
-		'sample_storage_location': 'sample storage location',
-		'sample_collection_device': 'sample collection device',
-		'sample_collection_method': 'sample collection method',
-		'host_disease_status': 'host disease status',
-		'host_common_name': 'host common name',
-		'host_age': 'host age',
-		'host_taxid': 'host taxid',
-		'host_life_stage': 'host life stage',
-		'host_height': 'host height',
-		'host_length': 'host length',
-		'plant_body_site': 'plant body site',
-		'host_total_mass': 'host total mass',
-		'host_phenotype': 'host phenotype',
-		'host_subspecific_genetic_lineage': 'host subspecific genetic lineage',
-		'climate_environment': 'climate environment',
-		'gaseous_environment': 'gaseous environment',
-		'seasonal_environment': 'seasonal environment',
+		'amount_or_size_of_sample_collected': 'amount_or_size_of_sample_collected',
+		'host_dry_mass': 'host_dry_mass',
+		'oxygenation_status_of_sample': 'oxygenation_status_of_sample',
+		'plant_product': 'plant_product',
+		'organism_count': 'organism_count',
+		'sample_storage_duration': 'sample_storage_duration',
+		'sample_storage_temperature': 'sample_storage_temperature',
+		'host_wet_mass': 'host_wet_mass',
+		'sample_storage_location': 'sample_storage_location',
+		'sample_collection_device': 'sample_collection_device',
+		'sample_collection_method': 'sample_collection_method',
+		'host_disease_status': 'host_disease_status',
+		'host_common_name': 'host_common_name',
+		'host_age': 'host_age',
+		'host_taxid': 'host_taxid',
+		'host_life_stage': 'host_life_stage',
+		'host_height': 'host_height',
+		'host_length': 'host_length',
+		'plant_body_site': 'plant_body_site',
+		'host_total_mass': 'host_total_mass',
+		'host_phenotype': 'host_phenotype',
+		'host_subspecific_genetic_lineage': 'host_subspecific_genetic_lineage',
+		'climate_environment': 'climate_environment',
+		'gaseous_environment': 'gaseous_environment',
+		'seasonal_environment': 'seasonal_environment',
 		'temperature': 'temperature',
 		'salinity': 'salinity',
-		'host_genotype': 'host genotype',
-		'subspecific_genetic_lineage': 'subspecific genetic lineage',
-		'trophic_level': 'trophic level',
-		'relationship_to_oxygen': 'relationship to oxygen',
-		'known_pathogenicity': 'known pathogenicity',
-		'encoded_traits': 'encoded traits',
-		'observed_biotic_relationship': 'observed biotic relationship',
-		'air_temperature_regimen': 'air temperature regimen',
-		'antibiotic_regimen': 'antibiotic regimen',
-		'chemical_mutagen': 'chemical mutagen',
-		'fertilizer_regimen': 'fertilizer regimen',
-		'fungicide_regimen': 'fungicide regimen',
+		'host_genotype': 'host_genotype',
+		'subspecific_genetic_lineage': 'subspecific_genetic_lineage',
+		'trophic_level': 'trophic_level',
+		'relationship_to_oxygen': 'relationship_to_oxygen',
+		'known_pathogenicity': 'known_pathogenicity',
+		'encoded_traits': 'encoded_traits',
+		'observed_biotic_relationship': 'observed_biotic_relationship',
+		'air_temperature_regimen': 'air_temperature_regimen',
+		'antibiotic_regimen': 'antibiotic_regimen',
+		'chemical_mutagen': 'chemical_mutagen',
+		'fertilizer_regimen': 'fertilizer_regimen',
+		'fungicide_regimen': 'fungicide_regimen',
 		'gravity': 'gravity',
-		'growth_hormone_regimen': 'growth hormone regimen',
-		'growth_media': 'growth media',
-		'herbicide_regimen': 'herbicide regimen',
-		'humidity_regimen': 'humidity regimen',
-		'mineral_nutrient_regimen': 'mineral nutrient regimen',
-		'non_mineral_nutrient_regimen': 'non-mineral nutrient regimen',
-		'pesticide_regimen': 'pesticide regimen',
-		'pH_regimen': 'pH regimen',
-		'radiation_regimen': 'radiation regimen',
-		'rainfall_regimen': 'rainfall regimen',
-		'salt_regimen': 'salt regimen',
-		'standing_water_regimen': 'standing water regimen',
-		'tissue_culture_growth_media': 'tissue culture growth media',
-		'watering_regimen': 'watering regimen',
-		'water_temperature_regimen': 'water temperature regimen',
-		'mechanical_damage': 'mechanical damage',
-		'chemical_administration': 'chemical administration',
+		'growth_hormone_regimen': 'growth_hormone_regimen',
+		'growth_media': 'growth_media',
+		'herbicide_regimen': 'herbicide_regimen',
+		'humidity_regimen': 'humidity_regimen',
+		'mineral_nutrient_regimen': 'mineral_nutrient_regimen',
+		'non_mineral_nutrient_regimen': 'non_mineral_nutrient_regimen',
+		'pesticide_regimen': 'pesticide_regimen',
+		'pH_regimen': 'pH_regimen',
+		'radiation_regimen': 'radiation_regimen',
+		'rainfall_regimen': 'rainfall_regimen',
+		'salt_regimen': 'salt_regimen',
+		'standing_water_regimen': 'standing_water_regimen',
+		'tissue_culture_growth_media': 'tissue_culture_growth_media',
+		'watering_regimen': 'watering_regimen',
+		'water_temperature_regimen': 'water_temperature_regimen',
+		'mechanical_damage': 'mechanical_damage',
+		'chemical_administration': 'chemical_administration',
 		'perturbation': 'perturbation',
 	}
 
@@ -2537,21 +2539,21 @@ class GSC_MIxS_plant_associated_unit(SelfDescribingModel):
 	salinity_units = [('psu', 'psu')]
 
 	fields = {
-		'sample_volume_or_weight_for_DNA_extraction': 'sample volume or weight for DNA extraction',
+		'sample_volume_or_weight_for_DNA_extraction': 'sample_volume_or_weight_for_DNA_extraction',
 		'altitude': 'altitude',
-		'geographic_location_latitude': 'geographic location (latitude)',
-		'geographic_location_longitude': 'geographic location (longitude)',
+		'geographic_location_latitude': 'geographic_location_latitude',
+		'geographic_location_longitude': 'geographic_location_longitude',
 		'depth': 'depth',
 		'elevation': 'elevation',
-		'amount_or_size_of_sample_collected': 'amount or size of sample collected',
-		'host_dry_mass': 'host dry mass',
-		'sample_storage_duration': 'sample storage duration',
-		'sample_storage_temperature': 'sample storage temperature',
-		'host_wet_mass': 'host wet mass',
-		'host_age': 'host age',
-		'host_height': 'host height',
-		'host_length': 'host length',
-		'host_total_mass': 'host total mass',
+		'amount_or_size_of_sample_collected': 'amount_or_size_of_sample_collected',
+		'host_dry_mass': 'host_dry_mass',
+		'sample_storage_duration': 'sample_storage_duration',
+		'sample_storage_temperature': 'sample_storage_temperature',
+		'host_wet_mass': 'host_wet_mass',
+		'host_age': 'host_age',
+		'host_height': 'host_height',
+		'host_length': 'host_length',
+		'host_total_mass': 'host_total_mass',
 		'temperature': 'temperature',
 		'salinity': 'salinity',
 	}
@@ -2561,23 +2563,23 @@ class GSC_MIxS_plant_associated_unit(SelfDescribingModel):
 	sampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE, default=1)
 	sample = models.ForeignKey(Sample, on_delete=models.CASCADE, default=1)
 	sample_type = models.IntegerField(default=1)
-	sample_volume_or_weight_for_DNA_extraction = models.CharField(max_length=120, choices=sample_volume_or_weight_for_DNA_extraction_units, blank=True)
-	altitude = models.CharField(max_length=120, choices=altitude_units, blank=True)
-	geographic_location_latitude = models.CharField(max_length=120, choices=geographic_location_latitude_units, blank=True)
-	geographic_location_longitude = models.CharField(max_length=120, choices=geographic_location_longitude_units, blank=True)
-	depth = models.CharField(max_length=120, choices=depth_units, blank=True)
-	elevation = models.CharField(max_length=120, choices=elevation_units, blank=True)
-	amount_or_size_of_sample_collected = models.CharField(max_length=120, choices=amount_or_size_of_sample_collected_units, blank=True)
-	host_dry_mass = models.CharField(max_length=120, choices=host_dry_mass_units, blank=True)
-	sample_storage_duration = models.CharField(max_length=120, choices=sample_storage_duration_units, blank=True)
-	sample_storage_temperature = models.CharField(max_length=120, choices=sample_storage_temperature_units, blank=True)
-	host_wet_mass = models.CharField(max_length=120, choices=host_wet_mass_units, blank=True)
-	host_age = models.CharField(max_length=120, choices=host_age_units, blank=True)
-	host_height = models.CharField(max_length=120, choices=host_height_units, blank=True)
-	host_length = models.CharField(max_length=120, choices=host_length_units, blank=True)
-	host_total_mass = models.CharField(max_length=120, choices=host_total_mass_units, blank=True)
-	temperature = models.CharField(max_length=120, choices=temperature_units, blank=True)
-	salinity = models.CharField(max_length=120, choices=salinity_units, blank=True)
+	sample_volume_or_weight_for_DNA_extraction = models.CharField(max_length=120, choices=sample_volume_or_weight_for_DNA_extraction_units, blank=False)
+	altitude = models.CharField(max_length=120, choices=altitude_units, blank=False)
+	geographic_location_latitude = models.CharField(max_length=120, choices=geographic_location_latitude_units, blank=False)
+	geographic_location_longitude = models.CharField(max_length=120, choices=geographic_location_longitude_units, blank=False)
+	depth = models.CharField(max_length=120, choices=depth_units, blank=False)
+	elevation = models.CharField(max_length=120, choices=elevation_units, blank=False)
+	amount_or_size_of_sample_collected = models.CharField(max_length=120, choices=amount_or_size_of_sample_collected_units, blank=False)
+	host_dry_mass = models.CharField(max_length=120, choices=host_dry_mass_units, blank=False)
+	sample_storage_duration = models.CharField(max_length=120, choices=sample_storage_duration_units, blank=False)
+	sample_storage_temperature = models.CharField(max_length=120, choices=sample_storage_temperature_units, blank=False)
+	host_wet_mass = models.CharField(max_length=120, choices=host_wet_mass_units, blank=False)
+	host_age = models.CharField(max_length=120, choices=host_age_units, blank=False)
+	host_height = models.CharField(max_length=120, choices=host_height_units, blank=False)
+	host_length = models.CharField(max_length=120, choices=host_length_units, blank=False)
+	host_total_mass = models.CharField(max_length=120, choices=host_total_mass_units, blank=False)
+	temperature = models.CharField(max_length=120, choices=temperature_units, blank=False)
+	salinity = models.CharField(max_length=120, choices=salinity_units, blank=False)
 
 class GSC_MIxS_wastewater_sludge(SelfDescribingModel):
 
@@ -2626,7 +2628,7 @@ class GSC_MIxS_wastewater_sludge(SelfDescribingModel):
 	sampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE, default=1)
 	sample = models.ForeignKey(Sample, on_delete=models.CASCADE, default=1)
 	sample_type = models.IntegerField(default=1)
-	project_name= models.CharField(max_length=120, blank=True,help_text="Name of th")
+	project_name= models.CharField(max_length=120, blank=False,help_text="Name of th")
 	experimental_factor= models.CharField(max_length=120, blank=True,help_text="Experiment")
 	ploidy= models.CharField(max_length=120, blank=True,help_text="The ploidy")
 	number_of_replicons= models.CharField(max_length=120, blank=True,help_text="Reports th", validators=[RegexValidator(number_of_replicons_validator)])
@@ -2655,15 +2657,15 @@ class GSC_MIxS_wastewater_sludge(SelfDescribingModel):
 	relevant_standard_operating_procedures= models.CharField(max_length=120, blank=True,help_text="Standard o")
 	negative_control_type= models.CharField(max_length=120, blank=True,help_text="The substa")
 	positive_control_type= models.CharField(max_length=120, blank=True,help_text="The substa")
-	collection_date= models.CharField(max_length=120, blank=True,help_text="The date t", validators=[RegexValidator(collection_date_validator)])
-	geographic_location_country_and_or_sea= models.CharField(max_length=120, blank=True,help_text="The locati", choices=geographic_location_country_and_or_sea_choice)
-	geographic_location_latitude= models.CharField(max_length=120, blank=True,help_text="The geogra", validators=[RegexValidator(geographic_location_latitude_validator)])
-	geographic_location_longitude= models.CharField(max_length=120, blank=True,help_text="The geogra", validators=[RegexValidator(geographic_location_longitude_validator)])
+	collection_date= models.CharField(max_length=120, blank=False,help_text="The date t", validators=[RegexValidator(collection_date_validator)])
+	geographic_location_country_and_or_sea= models.CharField(max_length=120, blank=False,help_text="The locati", choices=geographic_location_country_and_or_sea_choice)
+	geographic_location_latitude= models.CharField(max_length=120, blank=False,help_text="The geogra", validators=[RegexValidator(geographic_location_latitude_validator)])
+	geographic_location_longitude= models.CharField(max_length=120, blank=False,help_text="The geogra", validators=[RegexValidator(geographic_location_longitude_validator)])
 	geographic_location_region_and_locality= models.CharField(max_length=120, blank=True,help_text="The geogra")
 	depth= models.CharField(max_length=120, blank=True,help_text="The vertic", validators=[RegexValidator(depth_validator)])
-	broad_scale_environmental_context= models.CharField(max_length=120, blank=True,help_text="Report the")
-	local_environmental_context= models.CharField(max_length=120, blank=True,help_text="Report the")
-	environmental_medium= models.CharField(max_length=120, blank=True,help_text="Report the")
+	broad_scale_environmental_context= models.CharField(max_length=120, blank=False,help_text="Report the")
+	local_environmental_context= models.CharField(max_length=120, blank=False,help_text="Report the")
+	environmental_medium= models.CharField(max_length=120, blank=False,help_text="Report the")
 	source_material_identifiers= models.CharField(max_length=120, blank=True,help_text="A unique i")
 	sample_material_processing= models.CharField(max_length=120, blank=True,help_text="A brief de")
 	isolation_and_growth_condition= models.CharField(max_length=120, blank=True,help_text="Publicatio")
@@ -2716,93 +2718,93 @@ class GSC_MIxS_wastewater_sludge(SelfDescribingModel):
 	perturbation= models.CharField(max_length=120, blank=True,help_text="type of pe")
 
 	fields = {
-		'project_name': 'project name',
-		'experimental_factor': 'experimental factor',
+		'project_name': 'project_name',
+		'experimental_factor': 'experimental_factor',
 		'ploidy': 'ploidy',
-		'number_of_replicons': 'number of replicons',
-		'extrachromosomal_elements': 'extrachromosomal elements',
-		'estimated_size': 'estimated size',
-		'reference_for_biomaterial': 'reference for biomaterial',
-		'annotation_source': 'annotation source',
-		'sample_volume_or_weight_for_DNA_extraction': 'sample volume or weight for DNA extraction',
-		'nucleic_acid_extraction': 'nucleic acid extraction',
-		'nucleic_acid_amplification': 'nucleic acid amplification',
-		'library_size': 'library size',
-		'library_reads_sequenced': 'library reads sequenced',
-		'library_construction_method': 'library construction method',
-		'library_vector': 'library vector',
-		'library_screening_strategy': 'library screening strategy',
-		'target_gene': 'target gene',
-		'target_subfragment': 'target subfragment',
-		'pcr_primers': 'pcr primers',
-		'multiplex_identifiers': 'multiplex identifiers',
+		'number_of_replicons': 'number_of_replicons',
+		'extrachromosomal_elements': 'extrachromosomal_elements',
+		'estimated_size': 'estimated_size',
+		'reference_for_biomaterial': 'reference_for_biomaterial',
+		'annotation_source': 'annotation_source',
+		'sample_volume_or_weight_for_DNA_extraction': 'sample_volume_or_weight_for_DNA_extraction',
+		'nucleic_acid_extraction': 'nucleic_acid_extraction',
+		'nucleic_acid_amplification': 'nucleic_acid_amplification',
+		'library_size': 'library_size',
+		'library_reads_sequenced': 'library_reads_sequenced',
+		'library_construction_method': 'library_construction_method',
+		'library_vector': 'library_vector',
+		'library_screening_strategy': 'library_screening_strategy',
+		'target_gene': 'target_gene',
+		'target_subfragment': 'target_subfragment',
+		'pcr_primers': 'pcr_primers',
+		'multiplex_identifiers': 'multiplex_identifiers',
 		'adapters': 'adapters',
-		'pcr_conditions': 'pcr conditions',
-		'sequencing_method': 'sequencing method',
-		'sequence_quality_check': 'sequence quality check',
-		'chimera_check_software': 'chimera check software',
-		'relevant_electronic_resources': 'relevant electronic resources',
-		'relevant_standard_operating_procedures': 'relevant standard operating procedures',
-		'negative_control_type': 'negative control type',
-		'positive_control_type': 'positive control type',
-		'collection_date': 'collection date',
-		'geographic_location_country_and_or_sea': 'geographic location (country and/or sea)',
-		'geographic_location_latitude': 'geographic location (latitude)',
-		'geographic_location_longitude': 'geographic location (longitude)',
-		'geographic_location_region_and_locality': 'geographic location (region and locality)',
+		'pcr_conditions': 'pcr_conditions',
+		'sequencing_method': 'sequencing_method',
+		'sequence_quality_check': 'sequence_quality_check',
+		'chimera_check_software': 'chimera_check_software',
+		'relevant_electronic_resources': 'relevant_electronic_resources',
+		'relevant_standard_operating_procedures': 'relevant_standard_operating_procedures',
+		'negative_control_type': 'negative_control_type',
+		'positive_control_type': 'positive_control_type',
+		'collection_date': 'collection_date',
+		'geographic_location_country_and_or_sea': 'geographic_location_country_and_or_sea',
+		'geographic_location_latitude': 'geographic_location_latitude',
+		'geographic_location_longitude': 'geographic_location_longitude',
+		'geographic_location_region_and_locality': 'geographic_location_region_and_locality',
 		'depth': 'depth',
-		'broad_scale_environmental_context': 'broad-scale environmental context',
-		'local_environmental_context': 'local environmental context',
-		'environmental_medium': 'environmental medium',
-		'source_material_identifiers': 'source material identifiers',
-		'sample_material_processing': 'sample material processing',
-		'isolation_and_growth_condition': 'isolation and growth condition',
+		'broad_scale_environmental_context': 'broad_scale_environmental_context',
+		'local_environmental_context': 'local_environmental_context',
+		'environmental_medium': 'environmental_medium',
+		'source_material_identifiers': 'source_material_identifiers',
+		'sample_material_processing': 'sample_material_processing',
+		'isolation_and_growth_condition': 'isolation_and_growth_condition',
 		'propagation': 'propagation',
-		'amount_or_size_of_sample_collected': 'amount or size of sample collected',
-		'oxygenation_status_of_sample': 'oxygenation status of sample',
-		'organism_count': 'organism count',
-		'sample_storage_duration': 'sample storage duration',
-		'sample_storage_temperature': 'sample storage temperature',
-		'sample_storage_location': 'sample storage location',
-		'sample_collection_device': 'sample collection device',
-		'sample_collection_method': 'sample collection method',
-		'biochemical_oxygen_demand': 'biochemical oxygen demand',
-		'chemical_oxygen_demand': 'chemical oxygen demand',
-		'pre_treatment': 'pre-treatment',
-		'primary_treatment': 'primary treatment',
-		'reactor_type': 'reactor type',
-		'secondary_treatment': 'secondary treatment',
-		'sludge_retention_time': 'sludge retention time',
-		'tertiary_treatment': 'tertiary treatment',
-		'host_disease_status': 'host disease status',
-		'host_scientific_name': 'host scientific name',
+		'amount_or_size_of_sample_collected': 'amount_or_size_of_sample_collected',
+		'oxygenation_status_of_sample': 'oxygenation_status_of_sample',
+		'organism_count': 'organism_count',
+		'sample_storage_duration': 'sample_storage_duration',
+		'sample_storage_temperature': 'sample_storage_temperature',
+		'sample_storage_location': 'sample_storage_location',
+		'sample_collection_device': 'sample_collection_device',
+		'sample_collection_method': 'sample_collection_method',
+		'biochemical_oxygen_demand': 'biochemical_oxygen_demand',
+		'chemical_oxygen_demand': 'chemical_oxygen_demand',
+		'pre_treatment': 'pre_treatment',
+		'primary_treatment': 'primary_treatment',
+		'reactor_type': 'reactor_type',
+		'secondary_treatment': 'secondary_treatment',
+		'sludge_retention_time': 'sludge_retention_time',
+		'tertiary_treatment': 'tertiary_treatment',
+		'host_disease_status': 'host_disease_status',
+		'host_scientific_name': 'host_scientific_name',
 		'alkalinity': 'alkalinity',
-		'industrial_effluent_percent': 'industrial effluent percent',
-		'sewage_type': 'sewage type',
-		'wastewater_type': 'wastewater type',
+		'industrial_effluent_percent': 'industrial_effluent_percent',
+		'sewage_type': 'sewage_type',
+		'wastewater_type': 'wastewater_type',
 		'temperature': 'temperature',
 		'pH': 'pH',
-		'efficiency_percent': 'efficiency percent',
+		'efficiency_percent': 'efficiency_percent',
 		'emulsions': 'emulsions',
-		'gaseous_substances': 'gaseous substances',
-		'inorganic_particles': 'inorganic particles',
-		'organic_particles': 'organic particles',
-		'soluble_inorganic_material': 'soluble inorganic material',
-		'soluble_organic_material': 'soluble organic material',
-		'suspended_solids': 'suspended solids',
-		'total_phosphate': 'total phosphate',
+		'gaseous_substances': 'gaseous_substances',
+		'inorganic_particles': 'inorganic_particles',
+		'organic_particles': 'organic_particles',
+		'soluble_inorganic_material': 'soluble_inorganic_material',
+		'soluble_organic_material': 'soluble_organic_material',
+		'suspended_solids': 'suspended_solids',
+		'total_phosphate': 'total_phosphate',
 		'nitrate': 'nitrate',
 		'phosphate': 'phosphate',
 		'salinity': 'salinity',
 		'sodium': 'sodium',
-		'total_nitrogen': 'total nitrogen',
-		'subspecific_genetic_lineage': 'subspecific genetic lineage',
-		'trophic_level': 'trophic level',
-		'relationship_to_oxygen': 'relationship to oxygen',
-		'known_pathogenicity': 'known pathogenicity',
-		'encoded_traits': 'encoded traits',
-		'observed_biotic_relationship': 'observed biotic relationship',
-		'chemical_administration': 'chemical administration',
+		'total_nitrogen': 'total_nitrogen',
+		'subspecific_genetic_lineage': 'subspecific_genetic_lineage',
+		'trophic_level': 'trophic_level',
+		'relationship_to_oxygen': 'relationship_to_oxygen',
+		'known_pathogenicity': 'known_pathogenicity',
+		'encoded_traits': 'encoded_traits',
+		'observed_biotic_relationship': 'observed_biotic_relationship',
+		'chemical_administration': 'chemical_administration',
 		'perturbation': 'perturbation',
 	}
 
@@ -2839,33 +2841,33 @@ class GSC_MIxS_wastewater_sludge_unit(SelfDescribingModel):
 	total_nitrogen_units = [('µg/L', 'µg/L'), ('µmol/L', 'µmol/L')]
 
 	fields = {
-		'sample_volume_or_weight_for_DNA_extraction': 'sample volume or weight for DNA extraction',
-		'geographic_location_latitude': 'geographic location (latitude)',
-		'geographic_location_longitude': 'geographic location (longitude)',
+		'sample_volume_or_weight_for_DNA_extraction': 'sample_volume_or_weight_for_DNA_extraction',
+		'geographic_location_latitude': 'geographic_location_latitude',
+		'geographic_location_longitude': 'geographic_location_longitude',
 		'depth': 'depth',
-		'amount_or_size_of_sample_collected': 'amount or size of sample collected',
-		'sample_storage_duration': 'sample storage duration',
-		'sample_storage_temperature': 'sample storage temperature',
-		'biochemical_oxygen_demand': 'biochemical oxygen demand',
-		'chemical_oxygen_demand': 'chemical oxygen demand',
-		'sludge_retention_time': 'sludge retention time',
+		'amount_or_size_of_sample_collected': 'amount_or_size_of_sample_collected',
+		'sample_storage_duration': 'sample_storage_duration',
+		'sample_storage_temperature': 'sample_storage_temperature',
+		'biochemical_oxygen_demand': 'biochemical_oxygen_demand',
+		'chemical_oxygen_demand': 'chemical_oxygen_demand',
+		'sludge_retention_time': 'sludge_retention_time',
 		'alkalinity': 'alkalinity',
-		'industrial_effluent_percent': 'industrial effluent percent',
+		'industrial_effluent_percent': 'industrial_effluent_percent',
 		'temperature': 'temperature',
-		'efficiency_percent': 'efficiency percent',
+		'efficiency_percent': 'efficiency_percent',
 		'emulsions': 'emulsions',
-		'gaseous_substances': 'gaseous substances',
-		'inorganic_particles': 'inorganic particles',
-		'organic_particles': 'organic particles',
-		'soluble_inorganic_material': 'soluble inorganic material',
-		'soluble_organic_material': 'soluble organic material',
-		'suspended_solids': 'suspended solids',
-		'total_phosphate': 'total phosphate',
+		'gaseous_substances': 'gaseous_substances',
+		'inorganic_particles': 'inorganic_particles',
+		'organic_particles': 'organic_particles',
+		'soluble_inorganic_material': 'soluble_inorganic_material',
+		'soluble_organic_material': 'soluble_organic_material',
+		'suspended_solids': 'suspended_solids',
+		'total_phosphate': 'total_phosphate',
 		'nitrate': 'nitrate',
 		'phosphate': 'phosphate',
 		'salinity': 'salinity',
 		'sodium': 'sodium',
-		'total_nitrogen': 'total nitrogen',
+		'total_nitrogen': 'total_nitrogen',
 	}
 
 	name = 'GSC_MIxS_wastewater_sludge'
@@ -2873,33 +2875,33 @@ class GSC_MIxS_wastewater_sludge_unit(SelfDescribingModel):
 	sampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE, default=1)
 	sample = models.ForeignKey(Sample, on_delete=models.CASCADE, default=1)
 	sample_type = models.IntegerField(default=1)
-	sample_volume_or_weight_for_DNA_extraction = models.CharField(max_length=120, choices=sample_volume_or_weight_for_DNA_extraction_units, blank=True)
-	geographic_location_latitude = models.CharField(max_length=120, choices=geographic_location_latitude_units, blank=True)
-	geographic_location_longitude = models.CharField(max_length=120, choices=geographic_location_longitude_units, blank=True)
-	depth = models.CharField(max_length=120, choices=depth_units, blank=True)
-	amount_or_size_of_sample_collected = models.CharField(max_length=120, choices=amount_or_size_of_sample_collected_units, blank=True)
-	sample_storage_duration = models.CharField(max_length=120, choices=sample_storage_duration_units, blank=True)
-	sample_storage_temperature = models.CharField(max_length=120, choices=sample_storage_temperature_units, blank=True)
-	biochemical_oxygen_demand = models.CharField(max_length=120, choices=biochemical_oxygen_demand_units, blank=True)
-	chemical_oxygen_demand = models.CharField(max_length=120, choices=chemical_oxygen_demand_units, blank=True)
-	sludge_retention_time = models.CharField(max_length=120, choices=sludge_retention_time_units, blank=True)
-	alkalinity = models.CharField(max_length=120, choices=alkalinity_units, blank=True)
-	industrial_effluent_percent = models.CharField(max_length=120, choices=industrial_effluent_percent_units, blank=True)
-	temperature = models.CharField(max_length=120, choices=temperature_units, blank=True)
-	efficiency_percent = models.CharField(max_length=120, choices=efficiency_percent_units, blank=True)
-	emulsions = models.CharField(max_length=120, choices=emulsions_units, blank=True)
-	gaseous_substances = models.CharField(max_length=120, choices=gaseous_substances_units, blank=True)
-	inorganic_particles = models.CharField(max_length=120, choices=inorganic_particles_units, blank=True)
-	organic_particles = models.CharField(max_length=120, choices=organic_particles_units, blank=True)
-	soluble_inorganic_material = models.CharField(max_length=120, choices=soluble_inorganic_material_units, blank=True)
-	soluble_organic_material = models.CharField(max_length=120, choices=soluble_organic_material_units, blank=True)
-	suspended_solids = models.CharField(max_length=120, choices=suspended_solids_units, blank=True)
-	total_phosphate = models.CharField(max_length=120, choices=total_phosphate_units, blank=True)
-	nitrate = models.CharField(max_length=120, choices=nitrate_units, blank=True)
-	phosphate = models.CharField(max_length=120, choices=phosphate_units, blank=True)
-	salinity = models.CharField(max_length=120, choices=salinity_units, blank=True)
-	sodium = models.CharField(max_length=120, choices=sodium_units, blank=True)
-	total_nitrogen = models.CharField(max_length=120, choices=total_nitrogen_units, blank=True)
+	sample_volume_or_weight_for_DNA_extraction = models.CharField(max_length=120, choices=sample_volume_or_weight_for_DNA_extraction_units, blank=False)
+	geographic_location_latitude = models.CharField(max_length=120, choices=geographic_location_latitude_units, blank=False)
+	geographic_location_longitude = models.CharField(max_length=120, choices=geographic_location_longitude_units, blank=False)
+	depth = models.CharField(max_length=120, choices=depth_units, blank=False)
+	amount_or_size_of_sample_collected = models.CharField(max_length=120, choices=amount_or_size_of_sample_collected_units, blank=False)
+	sample_storage_duration = models.CharField(max_length=120, choices=sample_storage_duration_units, blank=False)
+	sample_storage_temperature = models.CharField(max_length=120, choices=sample_storage_temperature_units, blank=False)
+	biochemical_oxygen_demand = models.CharField(max_length=120, choices=biochemical_oxygen_demand_units, blank=False)
+	chemical_oxygen_demand = models.CharField(max_length=120, choices=chemical_oxygen_demand_units, blank=False)
+	sludge_retention_time = models.CharField(max_length=120, choices=sludge_retention_time_units, blank=False)
+	alkalinity = models.CharField(max_length=120, choices=alkalinity_units, blank=False)
+	industrial_effluent_percent = models.CharField(max_length=120, choices=industrial_effluent_percent_units, blank=False)
+	temperature = models.CharField(max_length=120, choices=temperature_units, blank=False)
+	efficiency_percent = models.CharField(max_length=120, choices=efficiency_percent_units, blank=False)
+	emulsions = models.CharField(max_length=120, choices=emulsions_units, blank=False)
+	gaseous_substances = models.CharField(max_length=120, choices=gaseous_substances_units, blank=False)
+	inorganic_particles = models.CharField(max_length=120, choices=inorganic_particles_units, blank=False)
+	organic_particles = models.CharField(max_length=120, choices=organic_particles_units, blank=False)
+	soluble_inorganic_material = models.CharField(max_length=120, choices=soluble_inorganic_material_units, blank=False)
+	soluble_organic_material = models.CharField(max_length=120, choices=soluble_organic_material_units, blank=False)
+	suspended_solids = models.CharField(max_length=120, choices=suspended_solids_units, blank=False)
+	total_phosphate = models.CharField(max_length=120, choices=total_phosphate_units, blank=False)
+	nitrate = models.CharField(max_length=120, choices=nitrate_units, blank=False)
+	phosphate = models.CharField(max_length=120, choices=phosphate_units, blank=False)
+	salinity = models.CharField(max_length=120, choices=salinity_units, blank=False)
+	sodium = models.CharField(max_length=120, choices=sodium_units, blank=False)
+	total_nitrogen = models.CharField(max_length=120, choices=total_nitrogen_units, blank=False)
 
 class GSC_MIxS_miscellaneous_natural_or_artificial_environment(SelfDescribingModel):
 
@@ -2960,7 +2962,7 @@ class GSC_MIxS_miscellaneous_natural_or_artificial_environment(SelfDescribingMod
 	sampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE, default=1)
 	sample = models.ForeignKey(Sample, on_delete=models.CASCADE, default=1)
 	sample_type = models.IntegerField(default=1)
-	project_name= models.CharField(max_length=120, blank=True,help_text="Name of th")
+	project_name= models.CharField(max_length=120, blank=False,help_text="Name of th")
 	experimental_factor= models.CharField(max_length=120, blank=True,help_text="Experiment")
 	ploidy= models.CharField(max_length=120, blank=True,help_text="The ploidy")
 	number_of_replicons= models.CharField(max_length=120, blank=True,help_text="Reports th", validators=[RegexValidator(number_of_replicons_validator)])
@@ -2989,16 +2991,16 @@ class GSC_MIxS_miscellaneous_natural_or_artificial_environment(SelfDescribingMod
 	relevant_standard_operating_procedures= models.CharField(max_length=120, blank=True,help_text="Standard o")
 	negative_control_type= models.CharField(max_length=120, blank=True,help_text="The substa")
 	positive_control_type= models.CharField(max_length=120, blank=True,help_text="The substa")
-	collection_date= models.CharField(max_length=120, blank=True,help_text="The date t", validators=[RegexValidator(collection_date_validator)])
+	collection_date= models.CharField(max_length=120, blank=False,help_text="The date t", validators=[RegexValidator(collection_date_validator)])
 	altitude= models.CharField(max_length=120, blank=True,help_text="The altitu", validators=[RegexValidator(altitude_validator)])
-	geographic_location_country_and_or_sea= models.CharField(max_length=120, blank=True,help_text="The locati", choices=geographic_location_country_and_or_sea_choice)
-	geographic_location_latitude= models.CharField(max_length=120, blank=True,help_text="The geogra", validators=[RegexValidator(geographic_location_latitude_validator)])
-	geographic_location_longitude= models.CharField(max_length=120, blank=True,help_text="The geogra", validators=[RegexValidator(geographic_location_longitude_validator)])
+	geographic_location_country_and_or_sea= models.CharField(max_length=120, blank=False,help_text="The locati", choices=geographic_location_country_and_or_sea_choice)
+	geographic_location_latitude= models.CharField(max_length=120, blank=False,help_text="The geogra", validators=[RegexValidator(geographic_location_latitude_validator)])
+	geographic_location_longitude= models.CharField(max_length=120, blank=False,help_text="The geogra", validators=[RegexValidator(geographic_location_longitude_validator)])
 	geographic_location_region_and_locality= models.CharField(max_length=120, blank=True,help_text="The geogra")
 	depth= models.CharField(max_length=120, blank=True,help_text="The vertic", validators=[RegexValidator(depth_validator)])
-	broad_scale_environmental_context= models.CharField(max_length=120, blank=True,help_text="Report the")
-	local_environmental_context= models.CharField(max_length=120, blank=True,help_text="Report the")
-	environmental_medium= models.CharField(max_length=120, blank=True,help_text="Report the")
+	broad_scale_environmental_context= models.CharField(max_length=120, blank=False,help_text="Report the")
+	local_environmental_context= models.CharField(max_length=120, blank=False,help_text="Report the")
+	environmental_medium= models.CharField(max_length=120, blank=False,help_text="Report the")
 	elevation= models.CharField(max_length=120, blank=True,help_text="The elevat", validators=[RegexValidator(elevation_validator)])
 	source_material_identifiers= models.CharField(max_length=120, blank=True,help_text="A unique i")
 	sample_material_processing= models.CharField(max_length=120, blank=True,help_text="A brief de")
@@ -3056,64 +3058,64 @@ class GSC_MIxS_miscellaneous_natural_or_artificial_environment(SelfDescribingMod
 	perturbation= models.CharField(max_length=120, blank=True,help_text="type of pe")
 
 	fields = {
-		'project_name': 'project name',
-		'experimental_factor': 'experimental factor',
+		'project_name': 'project_name',
+		'experimental_factor': 'experimental_factor',
 		'ploidy': 'ploidy',
-		'number_of_replicons': 'number of replicons',
-		'extrachromosomal_elements': 'extrachromosomal elements',
-		'estimated_size': 'estimated size',
-		'reference_for_biomaterial': 'reference for biomaterial',
-		'annotation_source': 'annotation source',
-		'sample_volume_or_weight_for_DNA_extraction': 'sample volume or weight for DNA extraction',
-		'nucleic_acid_extraction': 'nucleic acid extraction',
-		'nucleic_acid_amplification': 'nucleic acid amplification',
-		'library_size': 'library size',
-		'library_reads_sequenced': 'library reads sequenced',
-		'library_construction_method': 'library construction method',
-		'library_vector': 'library vector',
-		'library_screening_strategy': 'library screening strategy',
-		'target_gene': 'target gene',
-		'target_subfragment': 'target subfragment',
-		'pcr_primers': 'pcr primers',
-		'multiplex_identifiers': 'multiplex identifiers',
+		'number_of_replicons': 'number_of_replicons',
+		'extrachromosomal_elements': 'extrachromosomal_elements',
+		'estimated_size': 'estimated_size',
+		'reference_for_biomaterial': 'reference_for_biomaterial',
+		'annotation_source': 'annotation_source',
+		'sample_volume_or_weight_for_DNA_extraction': 'sample_volume_or_weight_for_DNA_extraction',
+		'nucleic_acid_extraction': 'nucleic_acid_extraction',
+		'nucleic_acid_amplification': 'nucleic_acid_amplification',
+		'library_size': 'library_size',
+		'library_reads_sequenced': 'library_reads_sequenced',
+		'library_construction_method': 'library_construction_method',
+		'library_vector': 'library_vector',
+		'library_screening_strategy': 'library_screening_strategy',
+		'target_gene': 'target_gene',
+		'target_subfragment': 'target_subfragment',
+		'pcr_primers': 'pcr_primers',
+		'multiplex_identifiers': 'multiplex_identifiers',
 		'adapters': 'adapters',
-		'pcr_conditions': 'pcr conditions',
-		'sequencing_method': 'sequencing method',
-		'sequence_quality_check': 'sequence quality check',
-		'chimera_check_software': 'chimera check software',
-		'relevant_electronic_resources': 'relevant electronic resources',
-		'relevant_standard_operating_procedures': 'relevant standard operating procedures',
-		'negative_control_type': 'negative control type',
-		'positive_control_type': 'positive control type',
-		'collection_date': 'collection date',
+		'pcr_conditions': 'pcr_conditions',
+		'sequencing_method': 'sequencing_method',
+		'sequence_quality_check': 'sequence_quality_check',
+		'chimera_check_software': 'chimera_check_software',
+		'relevant_electronic_resources': 'relevant_electronic_resources',
+		'relevant_standard_operating_procedures': 'relevant_standard_operating_procedures',
+		'negative_control_type': 'negative_control_type',
+		'positive_control_type': 'positive_control_type',
+		'collection_date': 'collection_date',
 		'altitude': 'altitude',
-		'geographic_location_country_and_or_sea': 'geographic location (country and/or sea)',
-		'geographic_location_latitude': 'geographic location (latitude)',
-		'geographic_location_longitude': 'geographic location (longitude)',
-		'geographic_location_region_and_locality': 'geographic location (region and locality)',
+		'geographic_location_country_and_or_sea': 'geographic_location_country_and_or_sea',
+		'geographic_location_latitude': 'geographic_location_latitude',
+		'geographic_location_longitude': 'geographic_location_longitude',
+		'geographic_location_region_and_locality': 'geographic_location_region_and_locality',
 		'depth': 'depth',
-		'broad_scale_environmental_context': 'broad-scale environmental context',
-		'local_environmental_context': 'local environmental context',
-		'environmental_medium': 'environmental medium',
+		'broad_scale_environmental_context': 'broad_scale_environmental_context',
+		'local_environmental_context': 'local_environmental_context',
+		'environmental_medium': 'environmental_medium',
 		'elevation': 'elevation',
-		'source_material_identifiers': 'source material identifiers',
-		'sample_material_processing': 'sample material processing',
-		'isolation_and_growth_condition': 'isolation and growth condition',
+		'source_material_identifiers': 'source_material_identifiers',
+		'sample_material_processing': 'sample_material_processing',
+		'isolation_and_growth_condition': 'isolation_and_growth_condition',
 		'propagation': 'propagation',
-		'amount_or_size_of_sample_collected': 'amount or size of sample collected',
+		'amount_or_size_of_sample_collected': 'amount_or_size_of_sample_collected',
 		'biomass': 'biomass',
 		'density': 'density',
-		'oxygenation_status_of_sample': 'oxygenation status of sample',
-		'organism_count': 'organism count',
-		'sample_storage_duration': 'sample storage duration',
-		'sample_storage_temperature': 'sample storage temperature',
-		'sample_storage_location': 'sample storage location',
-		'sample_collection_device': 'sample collection device',
-		'sample_collection_method': 'sample collection method',
-		'host_disease_status': 'host disease status',
-		'host_scientific_name': 'host scientific name',
+		'oxygenation_status_of_sample': 'oxygenation_status_of_sample',
+		'organism_count': 'organism_count',
+		'sample_storage_duration': 'sample_storage_duration',
+		'sample_storage_temperature': 'sample_storage_temperature',
+		'sample_storage_location': 'sample_storage_location',
+		'sample_collection_device': 'sample_collection_device',
+		'sample_collection_method': 'sample_collection_method',
+		'host_disease_status': 'host_disease_status',
+		'host_scientific_name': 'host_scientific_name',
 		'alkalinity': 'alkalinity',
-		'water_current': 'water current',
+		'water_current': 'water_current',
 		'pressure': 'pressure',
 		'temperature': 'temperature',
 		'pH': 'pH',
@@ -3122,33 +3124,33 @@ class GSC_MIxS_miscellaneous_natural_or_artificial_environment(SelfDescribingMod
 		'calcium': 'calcium',
 		'chloride': 'chloride',
 		'chlorophyll': 'chlorophyll',
-		'diether_lipids': 'diether lipids',
-		'dissolved_carbon_dioxide': 'dissolved carbon dioxide',
-		'dissolved_hydrogen': 'dissolved hydrogen',
-		'dissolved_inorganic_carbon': 'dissolved inorganic carbon',
-		'dissolved_organic_nitrogen': 'dissolved organic nitrogen',
-		'dissolved_oxygen': 'dissolved oxygen',
+		'diether_lipids': 'diether_lipids',
+		'dissolved_carbon_dioxide': 'dissolved_carbon_dioxide',
+		'dissolved_hydrogen': 'dissolved_hydrogen',
+		'dissolved_inorganic_carbon': 'dissolved_inorganic_carbon',
+		'dissolved_organic_nitrogen': 'dissolved_organic_nitrogen',
+		'dissolved_oxygen': 'dissolved_oxygen',
 		'nitrate': 'nitrate',
 		'nitrite': 'nitrite',
 		'nitrogen': 'nitrogen',
-		'organic_carbon': 'organic carbon',
-		'organic_matter': 'organic matter',
-		'organic_nitrogen': 'organic nitrogen',
+		'organic_carbon': 'organic_carbon',
+		'organic_matter': 'organic_matter',
+		'organic_nitrogen': 'organic_nitrogen',
 		'phosphate': 'phosphate',
-		'phospholipid_fatty_acid': 'phospholipid fatty acid',
+		'phospholipid_fatty_acid': 'phospholipid_fatty_acid',
 		'potassium': 'potassium',
 		'salinity': 'salinity',
 		'silicate': 'silicate',
 		'sodium': 'sodium',
 		'sulfate': 'sulfate',
 		'sulfide': 'sulfide',
-		'subspecific_genetic_lineage': 'subspecific genetic lineage',
-		'trophic_level': 'trophic level',
-		'relationship_to_oxygen': 'relationship to oxygen',
-		'known_pathogenicity': 'known pathogenicity',
-		'encoded_traits': 'encoded traits',
-		'observed_biotic_relationship': 'observed biotic relationship',
-		'chemical_administration': 'chemical administration',
+		'subspecific_genetic_lineage': 'subspecific_genetic_lineage',
+		'trophic_level': 'trophic_level',
+		'relationship_to_oxygen': 'relationship_to_oxygen',
+		'known_pathogenicity': 'known_pathogenicity',
+		'encoded_traits': 'encoded_traits',
+		'observed_biotic_relationship': 'observed_biotic_relationship',
+		'chemical_administration': 'chemical_administration',
 		'perturbation': 'perturbation',
 	}
 
@@ -3198,19 +3200,19 @@ class GSC_MIxS_miscellaneous_natural_or_artificial_environment_unit(SelfDescribi
 	sulfide_units = [('mg/L', 'mg/L'), ('µmol/L', 'µmol/L')]
 
 	fields = {
-		'sample_volume_or_weight_for_DNA_extraction': 'sample volume or weight for DNA extraction',
+		'sample_volume_or_weight_for_DNA_extraction': 'sample_volume_or_weight_for_DNA_extraction',
 		'altitude': 'altitude',
-		'geographic_location_latitude': 'geographic location (latitude)',
-		'geographic_location_longitude': 'geographic location (longitude)',
+		'geographic_location_latitude': 'geographic_location_latitude',
+		'geographic_location_longitude': 'geographic_location_longitude',
 		'depth': 'depth',
 		'elevation': 'elevation',
-		'amount_or_size_of_sample_collected': 'amount or size of sample collected',
+		'amount_or_size_of_sample_collected': 'amount_or_size_of_sample_collected',
 		'biomass': 'biomass',
 		'density': 'density',
-		'sample_storage_duration': 'sample storage duration',
-		'sample_storage_temperature': 'sample storage temperature',
+		'sample_storage_duration': 'sample_storage_duration',
+		'sample_storage_temperature': 'sample_storage_temperature',
 		'alkalinity': 'alkalinity',
-		'water_current': 'water current',
+		'water_current': 'water_current',
 		'pressure': 'pressure',
 		'temperature': 'temperature',
 		'ammonium': 'ammonium',
@@ -3218,20 +3220,20 @@ class GSC_MIxS_miscellaneous_natural_or_artificial_environment_unit(SelfDescribi
 		'calcium': 'calcium',
 		'chloride': 'chloride',
 		'chlorophyll': 'chlorophyll',
-		'diether_lipids': 'diether lipids',
-		'dissolved_carbon_dioxide': 'dissolved carbon dioxide',
-		'dissolved_hydrogen': 'dissolved hydrogen',
-		'dissolved_inorganic_carbon': 'dissolved inorganic carbon',
-		'dissolved_organic_nitrogen': 'dissolved organic nitrogen',
-		'dissolved_oxygen': 'dissolved oxygen',
+		'diether_lipids': 'diether_lipids',
+		'dissolved_carbon_dioxide': 'dissolved_carbon_dioxide',
+		'dissolved_hydrogen': 'dissolved_hydrogen',
+		'dissolved_inorganic_carbon': 'dissolved_inorganic_carbon',
+		'dissolved_organic_nitrogen': 'dissolved_organic_nitrogen',
+		'dissolved_oxygen': 'dissolved_oxygen',
 		'nitrate': 'nitrate',
 		'nitrite': 'nitrite',
 		'nitrogen': 'nitrogen',
-		'organic_carbon': 'organic carbon',
-		'organic_matter': 'organic matter',
-		'organic_nitrogen': 'organic nitrogen',
+		'organic_carbon': 'organic_carbon',
+		'organic_matter': 'organic_matter',
+		'organic_nitrogen': 'organic_nitrogen',
 		'phosphate': 'phosphate',
-		'phospholipid_fatty_acid': 'phospholipid fatty acid',
+		'phospholipid_fatty_acid': 'phospholipid_fatty_acid',
 		'potassium': 'potassium',
 		'salinity': 'salinity',
 		'silicate': 'silicate',
@@ -3245,46 +3247,46 @@ class GSC_MIxS_miscellaneous_natural_or_artificial_environment_unit(SelfDescribi
 	sampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE, default=1)
 	sample = models.ForeignKey(Sample, on_delete=models.CASCADE, default=1)
 	sample_type = models.IntegerField(default=1)
-	sample_volume_or_weight_for_DNA_extraction = models.CharField(max_length=120, choices=sample_volume_or_weight_for_DNA_extraction_units, blank=True)
-	altitude = models.CharField(max_length=120, choices=altitude_units, blank=True)
-	geographic_location_latitude = models.CharField(max_length=120, choices=geographic_location_latitude_units, blank=True)
-	geographic_location_longitude = models.CharField(max_length=120, choices=geographic_location_longitude_units, blank=True)
-	depth = models.CharField(max_length=120, choices=depth_units, blank=True)
-	elevation = models.CharField(max_length=120, choices=elevation_units, blank=True)
-	amount_or_size_of_sample_collected = models.CharField(max_length=120, choices=amount_or_size_of_sample_collected_units, blank=True)
-	biomass = models.CharField(max_length=120, choices=biomass_units, blank=True)
-	density = models.CharField(max_length=120, choices=density_units, blank=True)
-	sample_storage_duration = models.CharField(max_length=120, choices=sample_storage_duration_units, blank=True)
-	sample_storage_temperature = models.CharField(max_length=120, choices=sample_storage_temperature_units, blank=True)
-	alkalinity = models.CharField(max_length=120, choices=alkalinity_units, blank=True)
-	water_current = models.CharField(max_length=120, choices=water_current_units, blank=True)
-	pressure = models.CharField(max_length=120, choices=pressure_units, blank=True)
-	temperature = models.CharField(max_length=120, choices=temperature_units, blank=True)
-	ammonium = models.CharField(max_length=120, choices=ammonium_units, blank=True)
-	bromide = models.CharField(max_length=120, choices=bromide_units, blank=True)
-	calcium = models.CharField(max_length=120, choices=calcium_units, blank=True)
-	chloride = models.CharField(max_length=120, choices=chloride_units, blank=True)
-	chlorophyll = models.CharField(max_length=120, choices=chlorophyll_units, blank=True)
-	diether_lipids = models.CharField(max_length=120, choices=diether_lipids_units, blank=True)
-	dissolved_carbon_dioxide = models.CharField(max_length=120, choices=dissolved_carbon_dioxide_units, blank=True)
-	dissolved_hydrogen = models.CharField(max_length=120, choices=dissolved_hydrogen_units, blank=True)
-	dissolved_inorganic_carbon = models.CharField(max_length=120, choices=dissolved_inorganic_carbon_units, blank=True)
-	dissolved_organic_nitrogen = models.CharField(max_length=120, choices=dissolved_organic_nitrogen_units, blank=True)
-	dissolved_oxygen = models.CharField(max_length=120, choices=dissolved_oxygen_units, blank=True)
-	nitrate = models.CharField(max_length=120, choices=nitrate_units, blank=True)
-	nitrite = models.CharField(max_length=120, choices=nitrite_units, blank=True)
-	nitrogen = models.CharField(max_length=120, choices=nitrogen_units, blank=True)
-	organic_carbon = models.CharField(max_length=120, choices=organic_carbon_units, blank=True)
-	organic_matter = models.CharField(max_length=120, choices=organic_matter_units, blank=True)
-	organic_nitrogen = models.CharField(max_length=120, choices=organic_nitrogen_units, blank=True)
-	phosphate = models.CharField(max_length=120, choices=phosphate_units, blank=True)
-	phospholipid_fatty_acid = models.CharField(max_length=120, choices=phospholipid_fatty_acid_units, blank=True)
-	potassium = models.CharField(max_length=120, choices=potassium_units, blank=True)
-	salinity = models.CharField(max_length=120, choices=salinity_units, blank=True)
-	silicate = models.CharField(max_length=120, choices=silicate_units, blank=True)
-	sodium = models.CharField(max_length=120, choices=sodium_units, blank=True)
-	sulfate = models.CharField(max_length=120, choices=sulfate_units, blank=True)
-	sulfide = models.CharField(max_length=120, choices=sulfide_units, blank=True)
+	sample_volume_or_weight_for_DNA_extraction = models.CharField(max_length=120, choices=sample_volume_or_weight_for_DNA_extraction_units, blank=False)
+	altitude = models.CharField(max_length=120, choices=altitude_units, blank=False)
+	geographic_location_latitude = models.CharField(max_length=120, choices=geographic_location_latitude_units, blank=False)
+	geographic_location_longitude = models.CharField(max_length=120, choices=geographic_location_longitude_units, blank=False)
+	depth = models.CharField(max_length=120, choices=depth_units, blank=False)
+	elevation = models.CharField(max_length=120, choices=elevation_units, blank=False)
+	amount_or_size_of_sample_collected = models.CharField(max_length=120, choices=amount_or_size_of_sample_collected_units, blank=False)
+	biomass = models.CharField(max_length=120, choices=biomass_units, blank=False)
+	density = models.CharField(max_length=120, choices=density_units, blank=False)
+	sample_storage_duration = models.CharField(max_length=120, choices=sample_storage_duration_units, blank=False)
+	sample_storage_temperature = models.CharField(max_length=120, choices=sample_storage_temperature_units, blank=False)
+	alkalinity = models.CharField(max_length=120, choices=alkalinity_units, blank=False)
+	water_current = models.CharField(max_length=120, choices=water_current_units, blank=False)
+	pressure = models.CharField(max_length=120, choices=pressure_units, blank=False)
+	temperature = models.CharField(max_length=120, choices=temperature_units, blank=False)
+	ammonium = models.CharField(max_length=120, choices=ammonium_units, blank=False)
+	bromide = models.CharField(max_length=120, choices=bromide_units, blank=False)
+	calcium = models.CharField(max_length=120, choices=calcium_units, blank=False)
+	chloride = models.CharField(max_length=120, choices=chloride_units, blank=False)
+	chlorophyll = models.CharField(max_length=120, choices=chlorophyll_units, blank=False)
+	diether_lipids = models.CharField(max_length=120, choices=diether_lipids_units, blank=False)
+	dissolved_carbon_dioxide = models.CharField(max_length=120, choices=dissolved_carbon_dioxide_units, blank=False)
+	dissolved_hydrogen = models.CharField(max_length=120, choices=dissolved_hydrogen_units, blank=False)
+	dissolved_inorganic_carbon = models.CharField(max_length=120, choices=dissolved_inorganic_carbon_units, blank=False)
+	dissolved_organic_nitrogen = models.CharField(max_length=120, choices=dissolved_organic_nitrogen_units, blank=False)
+	dissolved_oxygen = models.CharField(max_length=120, choices=dissolved_oxygen_units, blank=False)
+	nitrate = models.CharField(max_length=120, choices=nitrate_units, blank=False)
+	nitrite = models.CharField(max_length=120, choices=nitrite_units, blank=False)
+	nitrogen = models.CharField(max_length=120, choices=nitrogen_units, blank=False)
+	organic_carbon = models.CharField(max_length=120, choices=organic_carbon_units, blank=False)
+	organic_matter = models.CharField(max_length=120, choices=organic_matter_units, blank=False)
+	organic_nitrogen = models.CharField(max_length=120, choices=organic_nitrogen_units, blank=False)
+	phosphate = models.CharField(max_length=120, choices=phosphate_units, blank=False)
+	phospholipid_fatty_acid = models.CharField(max_length=120, choices=phospholipid_fatty_acid_units, blank=False)
+	potassium = models.CharField(max_length=120, choices=potassium_units, blank=False)
+	salinity = models.CharField(max_length=120, choices=salinity_units, blank=False)
+	silicate = models.CharField(max_length=120, choices=silicate_units, blank=False)
+	sodium = models.CharField(max_length=120, choices=sodium_units, blank=False)
+	sulfate = models.CharField(max_length=120, choices=sulfate_units, blank=False)
+	sulfide = models.CharField(max_length=120, choices=sulfide_units, blank=False)
 
 class GSC_MIxS_human_oral(SelfDescribingModel):
 
@@ -3324,7 +3326,7 @@ class GSC_MIxS_human_oral(SelfDescribingModel):
 	sampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE, default=1)
 	sample = models.ForeignKey(Sample, on_delete=models.CASCADE, default=1)
 	sample_type = models.IntegerField(default=1)
-	project_name= models.CharField(max_length=120, blank=True,help_text="Name of th")
+	project_name= models.CharField(max_length=120, blank=False,help_text="Name of th")
 	experimental_factor= models.CharField(max_length=120, blank=True,help_text="Experiment")
 	ploidy= models.CharField(max_length=120, blank=True,help_text="The ploidy")
 	number_of_replicons= models.CharField(max_length=120, blank=True,help_text="Reports th", validators=[RegexValidator(number_of_replicons_validator)])
@@ -3353,14 +3355,14 @@ class GSC_MIxS_human_oral(SelfDescribingModel):
 	relevant_standard_operating_procedures= models.CharField(max_length=120, blank=True,help_text="Standard o")
 	negative_control_type= models.CharField(max_length=120, blank=True,help_text="The substa")
 	positive_control_type= models.CharField(max_length=120, blank=True,help_text="The substa")
-	collection_date= models.CharField(max_length=120, blank=True,help_text="The date t", validators=[RegexValidator(collection_date_validator)])
-	geographic_location_country_and_or_sea= models.CharField(max_length=120, blank=True,help_text="The locati", choices=geographic_location_country_and_or_sea_choice)
-	geographic_location_latitude= models.CharField(max_length=120, blank=True,help_text="The geogra", validators=[RegexValidator(geographic_location_latitude_validator)])
-	geographic_location_longitude= models.CharField(max_length=120, blank=True,help_text="The geogra", validators=[RegexValidator(geographic_location_longitude_validator)])
+	collection_date= models.CharField(max_length=120, blank=False,help_text="The date t", validators=[RegexValidator(collection_date_validator)])
+	geographic_location_country_and_or_sea= models.CharField(max_length=120, blank=False,help_text="The locati", choices=geographic_location_country_and_or_sea_choice)
+	geographic_location_latitude= models.CharField(max_length=120, blank=False,help_text="The geogra", validators=[RegexValidator(geographic_location_latitude_validator)])
+	geographic_location_longitude= models.CharField(max_length=120, blank=False,help_text="The geogra", validators=[RegexValidator(geographic_location_longitude_validator)])
 	geographic_location_region_and_locality= models.CharField(max_length=120, blank=True,help_text="The geogra")
-	broad_scale_environmental_context= models.CharField(max_length=120, blank=True,help_text="Report the")
-	local_environmental_context= models.CharField(max_length=120, blank=True,help_text="Report the")
-	environmental_medium= models.CharField(max_length=120, blank=True,help_text="Report the")
+	broad_scale_environmental_context= models.CharField(max_length=120, blank=False,help_text="Report the")
+	local_environmental_context= models.CharField(max_length=120, blank=False,help_text="Report the")
+	environmental_medium= models.CharField(max_length=120, blank=False,help_text="Report the")
 	source_material_identifiers= models.CharField(max_length=120, blank=True,help_text="A unique i")
 	sample_material_processing= models.CharField(max_length=120, blank=True,help_text="A brief de")
 	isolation_and_growth_condition= models.CharField(max_length=120, blank=True,help_text="Publicatio")
@@ -3407,86 +3409,86 @@ class GSC_MIxS_human_oral(SelfDescribingModel):
 	perturbation= models.CharField(max_length=120, blank=True,help_text="type of pe")
 
 	fields = {
-		'project_name': 'project name',
-		'experimental_factor': 'experimental factor',
+		'project_name': 'project_name',
+		'experimental_factor': 'experimental_factor',
 		'ploidy': 'ploidy',
-		'number_of_replicons': 'number of replicons',
-		'extrachromosomal_elements': 'extrachromosomal elements',
-		'estimated_size': 'estimated size',
-		'reference_for_biomaterial': 'reference for biomaterial',
-		'annotation_source': 'annotation source',
-		'sample_volume_or_weight_for_DNA_extraction': 'sample volume or weight for DNA extraction',
-		'nucleic_acid_extraction': 'nucleic acid extraction',
-		'nucleic_acid_amplification': 'nucleic acid amplification',
-		'library_size': 'library size',
-		'library_reads_sequenced': 'library reads sequenced',
-		'library_construction_method': 'library construction method',
-		'library_vector': 'library vector',
-		'library_screening_strategy': 'library screening strategy',
-		'target_gene': 'target gene',
-		'target_subfragment': 'target subfragment',
-		'pcr_primers': 'pcr primers',
-		'multiplex_identifiers': 'multiplex identifiers',
+		'number_of_replicons': 'number_of_replicons',
+		'extrachromosomal_elements': 'extrachromosomal_elements',
+		'estimated_size': 'estimated_size',
+		'reference_for_biomaterial': 'reference_for_biomaterial',
+		'annotation_source': 'annotation_source',
+		'sample_volume_or_weight_for_DNA_extraction': 'sample_volume_or_weight_for_DNA_extraction',
+		'nucleic_acid_extraction': 'nucleic_acid_extraction',
+		'nucleic_acid_amplification': 'nucleic_acid_amplification',
+		'library_size': 'library_size',
+		'library_reads_sequenced': 'library_reads_sequenced',
+		'library_construction_method': 'library_construction_method',
+		'library_vector': 'library_vector',
+		'library_screening_strategy': 'library_screening_strategy',
+		'target_gene': 'target_gene',
+		'target_subfragment': 'target_subfragment',
+		'pcr_primers': 'pcr_primers',
+		'multiplex_identifiers': 'multiplex_identifiers',
 		'adapters': 'adapters',
-		'pcr_conditions': 'pcr conditions',
-		'sequencing_method': 'sequencing method',
-		'sequence_quality_check': 'sequence quality check',
-		'chimera_check_software': 'chimera check software',
-		'relevant_electronic_resources': 'relevant electronic resources',
-		'relevant_standard_operating_procedures': 'relevant standard operating procedures',
-		'negative_control_type': 'negative control type',
-		'positive_control_type': 'positive control type',
-		'collection_date': 'collection date',
-		'geographic_location_country_and_or_sea': 'geographic location (country and/or sea)',
-		'geographic_location_latitude': 'geographic location (latitude)',
-		'geographic_location_longitude': 'geographic location (longitude)',
-		'geographic_location_region_and_locality': 'geographic location (region and locality)',
-		'broad_scale_environmental_context': 'broad-scale environmental context',
-		'local_environmental_context': 'local environmental context',
-		'environmental_medium': 'environmental medium',
-		'source_material_identifiers': 'source material identifiers',
-		'sample_material_processing': 'sample material processing',
-		'isolation_and_growth_condition': 'isolation and growth condition',
+		'pcr_conditions': 'pcr_conditions',
+		'sequencing_method': 'sequencing_method',
+		'sequence_quality_check': 'sequence_quality_check',
+		'chimera_check_software': 'chimera_check_software',
+		'relevant_electronic_resources': 'relevant_electronic_resources',
+		'relevant_standard_operating_procedures': 'relevant_standard_operating_procedures',
+		'negative_control_type': 'negative_control_type',
+		'positive_control_type': 'positive_control_type',
+		'collection_date': 'collection_date',
+		'geographic_location_country_and_or_sea': 'geographic_location_country_and_or_sea',
+		'geographic_location_latitude': 'geographic_location_latitude',
+		'geographic_location_longitude': 'geographic_location_longitude',
+		'geographic_location_region_and_locality': 'geographic_location_region_and_locality',
+		'broad_scale_environmental_context': 'broad_scale_environmental_context',
+		'local_environmental_context': 'local_environmental_context',
+		'environmental_medium': 'environmental_medium',
+		'source_material_identifiers': 'source_material_identifiers',
+		'sample_material_processing': 'sample_material_processing',
+		'isolation_and_growth_condition': 'isolation_and_growth_condition',
 		'propagation': 'propagation',
-		'amount_or_size_of_sample_collected': 'amount or size of sample collected',
-		'host_body_product': 'host body product',
-		'medical_history_performed': 'medical history performed',
-		'oxygenation_status_of_sample': 'oxygenation status of sample',
-		'organism_count': 'organism count',
-		'sample_storage_duration': 'sample storage duration',
-		'sample_storage_temperature': 'sample storage temperature',
-		'sample_storage_location': 'sample storage location',
-		'sample_collection_device': 'sample collection device',
-		'sample_collection_method': 'sample collection method',
-		'nose_mouth_teeth_throat_disorder': 'nose/mouth/teeth/throat disorder',
-		'host_disease_status': 'host disease status',
-		'host_subject_id': 'host subject id',
-		'IHMC_medication_code': 'IHMC medication code',
-		'host_age': 'host age',
-		'host_body_site': 'host body site',
-		'host_height': 'host height',
-		'host_body_mass_index': 'host body-mass index',
+		'amount_or_size_of_sample_collected': 'amount_or_size_of_sample_collected',
+		'host_body_product': 'host_body_product',
+		'medical_history_performed': 'medical_history_performed',
+		'oxygenation_status_of_sample': 'oxygenation_status_of_sample',
+		'organism_count': 'organism_count',
+		'sample_storage_duration': 'sample_storage_duration',
+		'sample_storage_temperature': 'sample_storage_temperature',
+		'sample_storage_location': 'sample_storage_location',
+		'sample_collection_device': 'sample_collection_device',
+		'sample_collection_method': 'sample_collection_method',
+		'nose_mouth_teeth_throat_disorder': 'nose_mouth_teeth_throat_disorder',
+		'host_disease_status': 'host_disease_status',
+		'host_subject_id': 'host_subject_id',
+		'IHMC_medication_code': 'IHMC_medication_code',
+		'host_age': 'host_age',
+		'host_body_site': 'host_body_site',
+		'host_height': 'host_height',
+		'host_body_mass_index': 'host_body_mass_index',
 		'ethnicity': 'ethnicity',
-		'host_occupation': 'host occupation',
-		'host_total_mass': 'host total mass',
-		'host_phenotype': 'host phenotype',
-		'host_body_temperature': 'host body temperature',
-		'host_sex': 'host sex',
+		'host_occupation': 'host_occupation',
+		'host_total_mass': 'host_total_mass',
+		'host_phenotype': 'host_phenotype',
+		'host_body_temperature': 'host_body_temperature',
+		'host_sex': 'host_sex',
 		'temperature': 'temperature',
 		'salinity': 'salinity',
-		'time_since_last_toothbrushing': 'time since last toothbrushing',
-		'host_diet': 'host diet',
-		'host_last_meal': 'host last meal',
-		'host_family_relationship': 'host family relationship',
-		'host_genotype': 'host genotype',
-		'host_pulse': 'host pulse',
-		'subspecific_genetic_lineage': 'subspecific genetic lineage',
-		'trophic_level': 'trophic level',
-		'relationship_to_oxygen': 'relationship to oxygen',
-		'known_pathogenicity': 'known pathogenicity',
-		'encoded_traits': 'encoded traits',
-		'observed_biotic_relationship': 'observed biotic relationship',
-		'chemical_administration': 'chemical administration',
+		'time_since_last_toothbrushing': 'time_since_last_toothbrushing',
+		'host_diet': 'host_diet',
+		'host_last_meal': 'host_last_meal',
+		'host_family_relationship': 'host_family_relationship',
+		'host_genotype': 'host_genotype',
+		'host_pulse': 'host_pulse',
+		'subspecific_genetic_lineage': 'subspecific_genetic_lineage',
+		'trophic_level': 'trophic_level',
+		'relationship_to_oxygen': 'relationship_to_oxygen',
+		'known_pathogenicity': 'known_pathogenicity',
+		'encoded_traits': 'encoded_traits',
+		'observed_biotic_relationship': 'observed_biotic_relationship',
+		'chemical_administration': 'chemical_administration',
 		'perturbation': 'perturbation',
 	}
 
@@ -3511,21 +3513,21 @@ class GSC_MIxS_human_oral_unit(SelfDescribingModel):
 	host_pulse_units = [('bpm', 'bpm')]
 
 	fields = {
-		'sample_volume_or_weight_for_DNA_extraction': 'sample volume or weight for DNA extraction',
-		'geographic_location_latitude': 'geographic location (latitude)',
-		'geographic_location_longitude': 'geographic location (longitude)',
-		'amount_or_size_of_sample_collected': 'amount or size of sample collected',
-		'sample_storage_duration': 'sample storage duration',
-		'sample_storage_temperature': 'sample storage temperature',
-		'host_age': 'host age',
-		'host_height': 'host height',
-		'host_body_mass_index': 'host body-mass index',
-		'host_total_mass': 'host total mass',
-		'host_body_temperature': 'host body temperature',
+		'sample_volume_or_weight_for_DNA_extraction': 'sample_volume_or_weight_for_DNA_extraction',
+		'geographic_location_latitude': 'geographic_location_latitude',
+		'geographic_location_longitude': 'geographic_location_longitude',
+		'amount_or_size_of_sample_collected': 'amount_or_size_of_sample_collected',
+		'sample_storage_duration': 'sample_storage_duration',
+		'sample_storage_temperature': 'sample_storage_temperature',
+		'host_age': 'host_age',
+		'host_height': 'host_height',
+		'host_body_mass_index': 'host_body_mass_index',
+		'host_total_mass': 'host_total_mass',
+		'host_body_temperature': 'host_body_temperature',
 		'temperature': 'temperature',
 		'salinity': 'salinity',
-		'time_since_last_toothbrushing': 'time since last toothbrushing',
-		'host_pulse': 'host pulse',
+		'time_since_last_toothbrushing': 'time_since_last_toothbrushing',
+		'host_pulse': 'host_pulse',
 	}
 
 	name = 'GSC_MIxS_human_oral'
@@ -3533,21 +3535,21 @@ class GSC_MIxS_human_oral_unit(SelfDescribingModel):
 	sampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE, default=1)
 	sample = models.ForeignKey(Sample, on_delete=models.CASCADE, default=1)
 	sample_type = models.IntegerField(default=1)
-	sample_volume_or_weight_for_DNA_extraction = models.CharField(max_length=120, choices=sample_volume_or_weight_for_DNA_extraction_units, blank=True)
-	geographic_location_latitude = models.CharField(max_length=120, choices=geographic_location_latitude_units, blank=True)
-	geographic_location_longitude = models.CharField(max_length=120, choices=geographic_location_longitude_units, blank=True)
-	amount_or_size_of_sample_collected = models.CharField(max_length=120, choices=amount_or_size_of_sample_collected_units, blank=True)
-	sample_storage_duration = models.CharField(max_length=120, choices=sample_storage_duration_units, blank=True)
-	sample_storage_temperature = models.CharField(max_length=120, choices=sample_storage_temperature_units, blank=True)
-	host_age = models.CharField(max_length=120, choices=host_age_units, blank=True)
-	host_height = models.CharField(max_length=120, choices=host_height_units, blank=True)
-	host_body_mass_index = models.CharField(max_length=120, choices=host_body_mass_index_units, blank=True)
-	host_total_mass = models.CharField(max_length=120, choices=host_total_mass_units, blank=True)
-	host_body_temperature = models.CharField(max_length=120, choices=host_body_temperature_units, blank=True)
-	temperature = models.CharField(max_length=120, choices=temperature_units, blank=True)
-	salinity = models.CharField(max_length=120, choices=salinity_units, blank=True)
-	time_since_last_toothbrushing = models.CharField(max_length=120, choices=time_since_last_toothbrushing_units, blank=True)
-	host_pulse = models.CharField(max_length=120, choices=host_pulse_units, blank=True)
+	sample_volume_or_weight_for_DNA_extraction = models.CharField(max_length=120, choices=sample_volume_or_weight_for_DNA_extraction_units, blank=False)
+	geographic_location_latitude = models.CharField(max_length=120, choices=geographic_location_latitude_units, blank=False)
+	geographic_location_longitude = models.CharField(max_length=120, choices=geographic_location_longitude_units, blank=False)
+	amount_or_size_of_sample_collected = models.CharField(max_length=120, choices=amount_or_size_of_sample_collected_units, blank=False)
+	sample_storage_duration = models.CharField(max_length=120, choices=sample_storage_duration_units, blank=False)
+	sample_storage_temperature = models.CharField(max_length=120, choices=sample_storage_temperature_units, blank=False)
+	host_age = models.CharField(max_length=120, choices=host_age_units, blank=False)
+	host_height = models.CharField(max_length=120, choices=host_height_units, blank=False)
+	host_body_mass_index = models.CharField(max_length=120, choices=host_body_mass_index_units, blank=False)
+	host_total_mass = models.CharField(max_length=120, choices=host_total_mass_units, blank=False)
+	host_body_temperature = models.CharField(max_length=120, choices=host_body_temperature_units, blank=False)
+	temperature = models.CharField(max_length=120, choices=temperature_units, blank=False)
+	salinity = models.CharField(max_length=120, choices=salinity_units, blank=False)
+	time_since_last_toothbrushing = models.CharField(max_length=120, choices=time_since_last_toothbrushing_units, blank=False)
+	host_pulse = models.CharField(max_length=120, choices=host_pulse_units, blank=False)
 
 class GSC_MIxS_sediment(SelfDescribingModel):
 
@@ -3621,7 +3623,7 @@ class GSC_MIxS_sediment(SelfDescribingModel):
 	sampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE, default=1)
 	sample = models.ForeignKey(Sample, on_delete=models.CASCADE, default=1)
 	sample_type = models.IntegerField(default=1)
-	project_name= models.CharField(max_length=120, blank=True,help_text="Name of th")
+	project_name= models.CharField(max_length=120, blank=False,help_text="Name of th")
 	experimental_factor= models.CharField(max_length=120, blank=True,help_text="Experiment")
 	ploidy= models.CharField(max_length=120, blank=True,help_text="The ploidy")
 	number_of_replicons= models.CharField(max_length=120, blank=True,help_text="Reports th", validators=[RegexValidator(number_of_replicons_validator)])
@@ -3650,17 +3652,17 @@ class GSC_MIxS_sediment(SelfDescribingModel):
 	relevant_standard_operating_procedures= models.CharField(max_length=120, blank=True,help_text="Standard o")
 	negative_control_type= models.CharField(max_length=120, blank=True,help_text="The substa")
 	positive_control_type= models.CharField(max_length=120, blank=True,help_text="The substa")
-	collection_date= models.CharField(max_length=120, blank=True,help_text="The date t", validators=[RegexValidator(collection_date_validator)])
+	collection_date= models.CharField(max_length=120, blank=False,help_text="The date t", validators=[RegexValidator(collection_date_validator)])
 	altitude= models.CharField(max_length=120, blank=True,help_text="The altitu", validators=[RegexValidator(altitude_validator)])
-	geographic_location_country_and_or_sea= models.CharField(max_length=120, blank=True,help_text="The locati", choices=geographic_location_country_and_or_sea_choice)
-	geographic_location_latitude= models.CharField(max_length=120, blank=True,help_text="The geogra", validators=[RegexValidator(geographic_location_latitude_validator)])
-	geographic_location_longitude= models.CharField(max_length=120, blank=True,help_text="The geogra", validators=[RegexValidator(geographic_location_longitude_validator)])
+	geographic_location_country_and_or_sea= models.CharField(max_length=120, blank=False,help_text="The locati", choices=geographic_location_country_and_or_sea_choice)
+	geographic_location_latitude= models.CharField(max_length=120, blank=False,help_text="The geogra", validators=[RegexValidator(geographic_location_latitude_validator)])
+	geographic_location_longitude= models.CharField(max_length=120, blank=False,help_text="The geogra", validators=[RegexValidator(geographic_location_longitude_validator)])
 	geographic_location_region_and_locality= models.CharField(max_length=120, blank=True,help_text="The geogra")
-	depth= models.CharField(max_length=120, blank=True,help_text="The vertic", validators=[RegexValidator(depth_validator)])
-	broad_scale_environmental_context= models.CharField(max_length=120, blank=True,help_text="Report the")
-	local_environmental_context= models.CharField(max_length=120, blank=True,help_text="Report the")
-	environmental_medium= models.CharField(max_length=120, blank=True,help_text="Report the")
-	elevation= models.CharField(max_length=120, blank=True,help_text="The elevat", validators=[RegexValidator(elevation_validator)])
+	depth= models.CharField(max_length=120, blank=False,help_text="The vertic", validators=[RegexValidator(depth_validator)])
+	broad_scale_environmental_context= models.CharField(max_length=120, blank=False,help_text="Report the")
+	local_environmental_context= models.CharField(max_length=120, blank=False,help_text="Report the")
+	environmental_medium= models.CharField(max_length=120, blank=False,help_text="Report the")
+	elevation= models.CharField(max_length=120, blank=False,help_text="The elevat", validators=[RegexValidator(elevation_validator)])
 	source_material_identifiers= models.CharField(max_length=120, blank=True,help_text="A unique i")
 	sample_material_processing= models.CharField(max_length=120, blank=True,help_text="A brief de")
 	isolation_and_growth_condition= models.CharField(max_length=120, blank=True,help_text="Publicatio")
@@ -3730,112 +3732,112 @@ class GSC_MIxS_sediment(SelfDescribingModel):
 	perturbation= models.CharField(max_length=120, blank=True,help_text="type of pe")
 
 	fields = {
-		'project_name': 'project name',
-		'experimental_factor': 'experimental factor',
+		'project_name': 'project_name',
+		'experimental_factor': 'experimental_factor',
 		'ploidy': 'ploidy',
-		'number_of_replicons': 'number of replicons',
-		'extrachromosomal_elements': 'extrachromosomal elements',
-		'estimated_size': 'estimated size',
-		'reference_for_biomaterial': 'reference for biomaterial',
-		'annotation_source': 'annotation source',
-		'sample_volume_or_weight_for_DNA_extraction': 'sample volume or weight for DNA extraction',
-		'nucleic_acid_extraction': 'nucleic acid extraction',
-		'nucleic_acid_amplification': 'nucleic acid amplification',
-		'library_size': 'library size',
-		'library_reads_sequenced': 'library reads sequenced',
-		'library_construction_method': 'library construction method',
-		'library_vector': 'library vector',
-		'library_screening_strategy': 'library screening strategy',
-		'target_gene': 'target gene',
-		'target_subfragment': 'target subfragment',
-		'pcr_primers': 'pcr primers',
-		'multiplex_identifiers': 'multiplex identifiers',
+		'number_of_replicons': 'number_of_replicons',
+		'extrachromosomal_elements': 'extrachromosomal_elements',
+		'estimated_size': 'estimated_size',
+		'reference_for_biomaterial': 'reference_for_biomaterial',
+		'annotation_source': 'annotation_source',
+		'sample_volume_or_weight_for_DNA_extraction': 'sample_volume_or_weight_for_DNA_extraction',
+		'nucleic_acid_extraction': 'nucleic_acid_extraction',
+		'nucleic_acid_amplification': 'nucleic_acid_amplification',
+		'library_size': 'library_size',
+		'library_reads_sequenced': 'library_reads_sequenced',
+		'library_construction_method': 'library_construction_method',
+		'library_vector': 'library_vector',
+		'library_screening_strategy': 'library_screening_strategy',
+		'target_gene': 'target_gene',
+		'target_subfragment': 'target_subfragment',
+		'pcr_primers': 'pcr_primers',
+		'multiplex_identifiers': 'multiplex_identifiers',
 		'adapters': 'adapters',
-		'pcr_conditions': 'pcr conditions',
-		'sequencing_method': 'sequencing method',
-		'sequence_quality_check': 'sequence quality check',
-		'chimera_check_software': 'chimera check software',
-		'relevant_electronic_resources': 'relevant electronic resources',
-		'relevant_standard_operating_procedures': 'relevant standard operating procedures',
-		'negative_control_type': 'negative control type',
-		'positive_control_type': 'positive control type',
-		'collection_date': 'collection date',
+		'pcr_conditions': 'pcr_conditions',
+		'sequencing_method': 'sequencing_method',
+		'sequence_quality_check': 'sequence_quality_check',
+		'chimera_check_software': 'chimera_check_software',
+		'relevant_electronic_resources': 'relevant_electronic_resources',
+		'relevant_standard_operating_procedures': 'relevant_standard_operating_procedures',
+		'negative_control_type': 'negative_control_type',
+		'positive_control_type': 'positive_control_type',
+		'collection_date': 'collection_date',
 		'altitude': 'altitude',
-		'geographic_location_country_and_or_sea': 'geographic location (country and/or sea)',
-		'geographic_location_latitude': 'geographic location (latitude)',
-		'geographic_location_longitude': 'geographic location (longitude)',
-		'geographic_location_region_and_locality': 'geographic location (region and locality)',
+		'geographic_location_country_and_or_sea': 'geographic_location_country_and_or_sea',
+		'geographic_location_latitude': 'geographic_location_latitude',
+		'geographic_location_longitude': 'geographic_location_longitude',
+		'geographic_location_region_and_locality': 'geographic_location_region_and_locality',
 		'depth': 'depth',
-		'broad_scale_environmental_context': 'broad-scale environmental context',
-		'local_environmental_context': 'local environmental context',
-		'environmental_medium': 'environmental medium',
+		'broad_scale_environmental_context': 'broad_scale_environmental_context',
+		'local_environmental_context': 'local_environmental_context',
+		'environmental_medium': 'environmental_medium',
 		'elevation': 'elevation',
-		'source_material_identifiers': 'source material identifiers',
-		'sample_material_processing': 'sample material processing',
-		'isolation_and_growth_condition': 'isolation and growth condition',
+		'source_material_identifiers': 'source_material_identifiers',
+		'sample_material_processing': 'sample_material_processing',
+		'isolation_and_growth_condition': 'isolation_and_growth_condition',
 		'propagation': 'propagation',
-		'amount_or_size_of_sample_collected': 'amount or size of sample collected',
+		'amount_or_size_of_sample_collected': 'amount_or_size_of_sample_collected',
 		'biomass': 'biomass',
 		'density': 'density',
-		'oxygenation_status_of_sample': 'oxygenation status of sample',
-		'organism_count': 'organism count',
-		'sample_storage_duration': 'sample storage duration',
-		'sample_storage_temperature': 'sample storage temperature',
-		'sample_storage_location': 'sample storage location',
-		'sample_collection_device': 'sample collection device',
-		'sample_collection_method': 'sample collection method',
-		'host_disease_status': 'host disease status',
-		'host_scientific_name': 'host scientific name',
-		'alkyl_diethers': 'alkyl diethers',
-		'aminopeptidase_activity': 'aminopeptidase activity',
+		'oxygenation_status_of_sample': 'oxygenation_status_of_sample',
+		'organism_count': 'organism_count',
+		'sample_storage_duration': 'sample_storage_duration',
+		'sample_storage_temperature': 'sample_storage_temperature',
+		'sample_storage_location': 'sample_storage_location',
+		'sample_collection_device': 'sample_collection_device',
+		'sample_collection_method': 'sample_collection_method',
+		'host_disease_status': 'host_disease_status',
+		'host_scientific_name': 'host_scientific_name',
+		'alkyl_diethers': 'alkyl_diethers',
+		'aminopeptidase_activity': 'aminopeptidase_activity',
 		'ammonium': 'ammonium',
-		'bacterial_carbon_production': 'bacterial carbon production',
+		'bacterial_carbon_production': 'bacterial_carbon_production',
 		'bishomohopanol': 'bishomohopanol',
 		'bromide': 'bromide',
 		'calcium': 'calcium',
-		'carbon_nitrogen_ratio': 'carbon/nitrogen ratio',
+		'carbon_nitrogen_ratio': 'carbon_nitrogen_ratio',
 		'chloride': 'chloride',
 		'chlorophyll': 'chlorophyll',
-		'diether_lipids': 'diether lipids',
-		'dissolved_carbon_dioxide': 'dissolved carbon dioxide',
-		'dissolved_hydrogen': 'dissolved hydrogen',
-		'dissolved_inorganic_carbon': 'dissolved inorganic carbon',
-		'dissolved_organic_carbon': 'dissolved organic carbon',
-		'dissolved_organic_nitrogen': 'dissolved organic nitrogen',
+		'diether_lipids': 'diether_lipids',
+		'dissolved_carbon_dioxide': 'dissolved_carbon_dioxide',
+		'dissolved_hydrogen': 'dissolved_hydrogen',
+		'dissolved_inorganic_carbon': 'dissolved_inorganic_carbon',
+		'dissolved_organic_carbon': 'dissolved_organic_carbon',
+		'dissolved_organic_nitrogen': 'dissolved_organic_nitrogen',
 		'methane': 'methane',
-		'dissolved_oxygen': 'dissolved oxygen',
-		'glucosidase_activity': 'glucosidase activity',
+		'dissolved_oxygen': 'dissolved_oxygen',
+		'glucosidase_activity': 'glucosidase_activity',
 		'magnesium': 'magnesium',
-		'n_alkanes': 'n-alkanes',
+		'n_alkanes': 'n_alkanes',
 		'nitrate': 'nitrate',
 		'nitrite': 'nitrite',
 		'nitrogen': 'nitrogen',
-		'organic_carbon': 'organic carbon',
-		'organic_matter': 'organic matter',
-		'organic_nitrogen': 'organic nitrogen',
-		'particulate_organic_carbon': 'particulate organic carbon',
-		'petroleum_hydrocarbon': 'petroleum hydrocarbon',
+		'organic_carbon': 'organic_carbon',
+		'organic_matter': 'organic_matter',
+		'organic_nitrogen': 'organic_nitrogen',
+		'particulate_organic_carbon': 'particulate_organic_carbon',
+		'petroleum_hydrocarbon': 'petroleum_hydrocarbon',
 		'phaeopigments': 'phaeopigments',
 		'phosphate': 'phosphate',
-		'phospholipid_fatty_acid': 'phospholipid fatty acid',
+		'phospholipid_fatty_acid': 'phospholipid_fatty_acid',
 		'potassium': 'potassium',
-		'redox_potential': 'redox potential',
+		'redox_potential': 'redox_potential',
 		'salinity': 'salinity',
-		'total_carbon': 'total carbon',
+		'total_carbon': 'total_carbon',
 		'silicate': 'silicate',
 		'sodium': 'sodium',
-		'total_organic_carbon': 'total organic carbon',
-		'water_content': 'water content',
+		'total_organic_carbon': 'total_organic_carbon',
+		'water_content': 'water_content',
 		'sulfate': 'sulfate',
 		'sulfide': 'sulfide',
-		'total_nitrogen': 'total nitrogen',
-		'subspecific_genetic_lineage': 'subspecific genetic lineage',
-		'trophic_level': 'trophic level',
-		'relationship_to_oxygen': 'relationship to oxygen',
-		'known_pathogenicity': 'known pathogenicity',
-		'encoded_traits': 'encoded traits',
-		'observed_biotic_relationship': 'observed biotic relationship',
-		'chemical_administration': 'chemical administration',
+		'total_nitrogen': 'total_nitrogen',
+		'subspecific_genetic_lineage': 'subspecific_genetic_lineage',
+		'trophic_level': 'trophic_level',
+		'relationship_to_oxygen': 'relationship_to_oxygen',
+		'known_pathogenicity': 'known_pathogenicity',
+		'encoded_traits': 'encoded_traits',
+		'observed_biotic_relationship': 'observed_biotic_relationship',
+		'chemical_administration': 'chemical_administration',
 		'perturbation': 'perturbation',
 	}
 
@@ -3898,59 +3900,59 @@ class GSC_MIxS_sediment_unit(SelfDescribingModel):
 	total_nitrogen_units = [('µg/L', 'µg/L'), ('µmol/L', 'µmol/L')]
 
 	fields = {
-		'sample_volume_or_weight_for_DNA_extraction': 'sample volume or weight for DNA extraction',
+		'sample_volume_or_weight_for_DNA_extraction': 'sample_volume_or_weight_for_DNA_extraction',
 		'altitude': 'altitude',
-		'geographic_location_latitude': 'geographic location (latitude)',
-		'geographic_location_longitude': 'geographic location (longitude)',
+		'geographic_location_latitude': 'geographic_location_latitude',
+		'geographic_location_longitude': 'geographic_location_longitude',
 		'depth': 'depth',
 		'elevation': 'elevation',
-		'amount_or_size_of_sample_collected': 'amount or size of sample collected',
+		'amount_or_size_of_sample_collected': 'amount_or_size_of_sample_collected',
 		'biomass': 'biomass',
 		'density': 'density',
-		'sample_storage_duration': 'sample storage duration',
-		'sample_storage_temperature': 'sample storage temperature',
-		'alkyl_diethers': 'alkyl diethers',
-		'aminopeptidase_activity': 'aminopeptidase activity',
+		'sample_storage_duration': 'sample_storage_duration',
+		'sample_storage_temperature': 'sample_storage_temperature',
+		'alkyl_diethers': 'alkyl_diethers',
+		'aminopeptidase_activity': 'aminopeptidase_activity',
 		'ammonium': 'ammonium',
-		'bacterial_carbon_production': 'bacterial carbon production',
+		'bacterial_carbon_production': 'bacterial_carbon_production',
 		'bishomohopanol': 'bishomohopanol',
 		'bromide': 'bromide',
 		'calcium': 'calcium',
 		'chloride': 'chloride',
 		'chlorophyll': 'chlorophyll',
-		'diether_lipids': 'diether lipids',
-		'dissolved_carbon_dioxide': 'dissolved carbon dioxide',
-		'dissolved_hydrogen': 'dissolved hydrogen',
-		'dissolved_inorganic_carbon': 'dissolved inorganic carbon',
-		'dissolved_organic_carbon': 'dissolved organic carbon',
-		'dissolved_organic_nitrogen': 'dissolved organic nitrogen',
+		'diether_lipids': 'diether_lipids',
+		'dissolved_carbon_dioxide': 'dissolved_carbon_dioxide',
+		'dissolved_hydrogen': 'dissolved_hydrogen',
+		'dissolved_inorganic_carbon': 'dissolved_inorganic_carbon',
+		'dissolved_organic_carbon': 'dissolved_organic_carbon',
+		'dissolved_organic_nitrogen': 'dissolved_organic_nitrogen',
 		'methane': 'methane',
-		'dissolved_oxygen': 'dissolved oxygen',
-		'glucosidase_activity': 'glucosidase activity',
+		'dissolved_oxygen': 'dissolved_oxygen',
+		'glucosidase_activity': 'glucosidase_activity',
 		'magnesium': 'magnesium',
-		'n_alkanes': 'n-alkanes',
+		'n_alkanes': 'n_alkanes',
 		'nitrate': 'nitrate',
 		'nitrite': 'nitrite',
 		'nitrogen': 'nitrogen',
-		'organic_carbon': 'organic carbon',
-		'organic_matter': 'organic matter',
-		'organic_nitrogen': 'organic nitrogen',
-		'particulate_organic_carbon': 'particulate organic carbon',
-		'petroleum_hydrocarbon': 'petroleum hydrocarbon',
+		'organic_carbon': 'organic_carbon',
+		'organic_matter': 'organic_matter',
+		'organic_nitrogen': 'organic_nitrogen',
+		'particulate_organic_carbon': 'particulate_organic_carbon',
+		'petroleum_hydrocarbon': 'petroleum_hydrocarbon',
 		'phaeopigments': 'phaeopigments',
 		'phosphate': 'phosphate',
-		'phospholipid_fatty_acid': 'phospholipid fatty acid',
+		'phospholipid_fatty_acid': 'phospholipid_fatty_acid',
 		'potassium': 'potassium',
-		'redox_potential': 'redox potential',
+		'redox_potential': 'redox_potential',
 		'salinity': 'salinity',
-		'total_carbon': 'total carbon',
+		'total_carbon': 'total_carbon',
 		'silicate': 'silicate',
 		'sodium': 'sodium',
-		'total_organic_carbon': 'total organic carbon',
-		'water_content': 'water content',
+		'total_organic_carbon': 'total_organic_carbon',
+		'water_content': 'water_content',
 		'sulfate': 'sulfate',
 		'sulfide': 'sulfide',
-		'total_nitrogen': 'total nitrogen',
+		'total_nitrogen': 'total_nitrogen',
 	}
 
 	name = 'GSC_MIxS_sediment'
@@ -3958,59 +3960,59 @@ class GSC_MIxS_sediment_unit(SelfDescribingModel):
 	sampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE, default=1)
 	sample = models.ForeignKey(Sample, on_delete=models.CASCADE, default=1)
 	sample_type = models.IntegerField(default=1)
-	sample_volume_or_weight_for_DNA_extraction = models.CharField(max_length=120, choices=sample_volume_or_weight_for_DNA_extraction_units, blank=True)
-	altitude = models.CharField(max_length=120, choices=altitude_units, blank=True)
-	geographic_location_latitude = models.CharField(max_length=120, choices=geographic_location_latitude_units, blank=True)
-	geographic_location_longitude = models.CharField(max_length=120, choices=geographic_location_longitude_units, blank=True)
-	depth = models.CharField(max_length=120, choices=depth_units, blank=True)
-	elevation = models.CharField(max_length=120, choices=elevation_units, blank=True)
-	amount_or_size_of_sample_collected = models.CharField(max_length=120, choices=amount_or_size_of_sample_collected_units, blank=True)
-	biomass = models.CharField(max_length=120, choices=biomass_units, blank=True)
-	density = models.CharField(max_length=120, choices=density_units, blank=True)
-	sample_storage_duration = models.CharField(max_length=120, choices=sample_storage_duration_units, blank=True)
-	sample_storage_temperature = models.CharField(max_length=120, choices=sample_storage_temperature_units, blank=True)
-	alkyl_diethers = models.CharField(max_length=120, choices=alkyl_diethers_units, blank=True)
-	aminopeptidase_activity = models.CharField(max_length=120, choices=aminopeptidase_activity_units, blank=True)
-	ammonium = models.CharField(max_length=120, choices=ammonium_units, blank=True)
-	bacterial_carbon_production = models.CharField(max_length=120, choices=bacterial_carbon_production_units, blank=True)
-	bishomohopanol = models.CharField(max_length=120, choices=bishomohopanol_units, blank=True)
-	bromide = models.CharField(max_length=120, choices=bromide_units, blank=True)
-	calcium = models.CharField(max_length=120, choices=calcium_units, blank=True)
-	chloride = models.CharField(max_length=120, choices=chloride_units, blank=True)
-	chlorophyll = models.CharField(max_length=120, choices=chlorophyll_units, blank=True)
-	diether_lipids = models.CharField(max_length=120, choices=diether_lipids_units, blank=True)
-	dissolved_carbon_dioxide = models.CharField(max_length=120, choices=dissolved_carbon_dioxide_units, blank=True)
-	dissolved_hydrogen = models.CharField(max_length=120, choices=dissolved_hydrogen_units, blank=True)
-	dissolved_inorganic_carbon = models.CharField(max_length=120, choices=dissolved_inorganic_carbon_units, blank=True)
-	dissolved_organic_carbon = models.CharField(max_length=120, choices=dissolved_organic_carbon_units, blank=True)
-	dissolved_organic_nitrogen = models.CharField(max_length=120, choices=dissolved_organic_nitrogen_units, blank=True)
-	methane = models.CharField(max_length=120, choices=methane_units, blank=True)
-	dissolved_oxygen = models.CharField(max_length=120, choices=dissolved_oxygen_units, blank=True)
-	glucosidase_activity = models.CharField(max_length=120, choices=glucosidase_activity_units, blank=True)
-	magnesium = models.CharField(max_length=120, choices=magnesium_units, blank=True)
-	n_alkanes = models.CharField(max_length=120, choices=n_alkanes_units, blank=True)
-	nitrate = models.CharField(max_length=120, choices=nitrate_units, blank=True)
-	nitrite = models.CharField(max_length=120, choices=nitrite_units, blank=True)
-	nitrogen = models.CharField(max_length=120, choices=nitrogen_units, blank=True)
-	organic_carbon = models.CharField(max_length=120, choices=organic_carbon_units, blank=True)
-	organic_matter = models.CharField(max_length=120, choices=organic_matter_units, blank=True)
-	organic_nitrogen = models.CharField(max_length=120, choices=organic_nitrogen_units, blank=True)
-	particulate_organic_carbon = models.CharField(max_length=120, choices=particulate_organic_carbon_units, blank=True)
-	petroleum_hydrocarbon = models.CharField(max_length=120, choices=petroleum_hydrocarbon_units, blank=True)
-	phaeopigments = models.CharField(max_length=120, choices=phaeopigments_units, blank=True)
-	phosphate = models.CharField(max_length=120, choices=phosphate_units, blank=True)
-	phospholipid_fatty_acid = models.CharField(max_length=120, choices=phospholipid_fatty_acid_units, blank=True)
-	potassium = models.CharField(max_length=120, choices=potassium_units, blank=True)
-	redox_potential = models.CharField(max_length=120, choices=redox_potential_units, blank=True)
-	salinity = models.CharField(max_length=120, choices=salinity_units, blank=True)
-	total_carbon = models.CharField(max_length=120, choices=total_carbon_units, blank=True)
-	silicate = models.CharField(max_length=120, choices=silicate_units, blank=True)
-	sodium = models.CharField(max_length=120, choices=sodium_units, blank=True)
-	total_organic_carbon = models.CharField(max_length=120, choices=total_organic_carbon_units, blank=True)
-	water_content = models.CharField(max_length=120, choices=water_content_units, blank=True)
-	sulfate = models.CharField(max_length=120, choices=sulfate_units, blank=True)
-	sulfide = models.CharField(max_length=120, choices=sulfide_units, blank=True)
-	total_nitrogen = models.CharField(max_length=120, choices=total_nitrogen_units, blank=True)
+	sample_volume_or_weight_for_DNA_extraction = models.CharField(max_length=120, choices=sample_volume_or_weight_for_DNA_extraction_units, blank=False)
+	altitude = models.CharField(max_length=120, choices=altitude_units, blank=False)
+	geographic_location_latitude = models.CharField(max_length=120, choices=geographic_location_latitude_units, blank=False)
+	geographic_location_longitude = models.CharField(max_length=120, choices=geographic_location_longitude_units, blank=False)
+	depth = models.CharField(max_length=120, choices=depth_units, blank=False)
+	elevation = models.CharField(max_length=120, choices=elevation_units, blank=False)
+	amount_or_size_of_sample_collected = models.CharField(max_length=120, choices=amount_or_size_of_sample_collected_units, blank=False)
+	biomass = models.CharField(max_length=120, choices=biomass_units, blank=False)
+	density = models.CharField(max_length=120, choices=density_units, blank=False)
+	sample_storage_duration = models.CharField(max_length=120, choices=sample_storage_duration_units, blank=False)
+	sample_storage_temperature = models.CharField(max_length=120, choices=sample_storage_temperature_units, blank=False)
+	alkyl_diethers = models.CharField(max_length=120, choices=alkyl_diethers_units, blank=False)
+	aminopeptidase_activity = models.CharField(max_length=120, choices=aminopeptidase_activity_units, blank=False)
+	ammonium = models.CharField(max_length=120, choices=ammonium_units, blank=False)
+	bacterial_carbon_production = models.CharField(max_length=120, choices=bacterial_carbon_production_units, blank=False)
+	bishomohopanol = models.CharField(max_length=120, choices=bishomohopanol_units, blank=False)
+	bromide = models.CharField(max_length=120, choices=bromide_units, blank=False)
+	calcium = models.CharField(max_length=120, choices=calcium_units, blank=False)
+	chloride = models.CharField(max_length=120, choices=chloride_units, blank=False)
+	chlorophyll = models.CharField(max_length=120, choices=chlorophyll_units, blank=False)
+	diether_lipids = models.CharField(max_length=120, choices=diether_lipids_units, blank=False)
+	dissolved_carbon_dioxide = models.CharField(max_length=120, choices=dissolved_carbon_dioxide_units, blank=False)
+	dissolved_hydrogen = models.CharField(max_length=120, choices=dissolved_hydrogen_units, blank=False)
+	dissolved_inorganic_carbon = models.CharField(max_length=120, choices=dissolved_inorganic_carbon_units, blank=False)
+	dissolved_organic_carbon = models.CharField(max_length=120, choices=dissolved_organic_carbon_units, blank=False)
+	dissolved_organic_nitrogen = models.CharField(max_length=120, choices=dissolved_organic_nitrogen_units, blank=False)
+	methane = models.CharField(max_length=120, choices=methane_units, blank=False)
+	dissolved_oxygen = models.CharField(max_length=120, choices=dissolved_oxygen_units, blank=False)
+	glucosidase_activity = models.CharField(max_length=120, choices=glucosidase_activity_units, blank=False)
+	magnesium = models.CharField(max_length=120, choices=magnesium_units, blank=False)
+	n_alkanes = models.CharField(max_length=120, choices=n_alkanes_units, blank=False)
+	nitrate = models.CharField(max_length=120, choices=nitrate_units, blank=False)
+	nitrite = models.CharField(max_length=120, choices=nitrite_units, blank=False)
+	nitrogen = models.CharField(max_length=120, choices=nitrogen_units, blank=False)
+	organic_carbon = models.CharField(max_length=120, choices=organic_carbon_units, blank=False)
+	organic_matter = models.CharField(max_length=120, choices=organic_matter_units, blank=False)
+	organic_nitrogen = models.CharField(max_length=120, choices=organic_nitrogen_units, blank=False)
+	particulate_organic_carbon = models.CharField(max_length=120, choices=particulate_organic_carbon_units, blank=False)
+	petroleum_hydrocarbon = models.CharField(max_length=120, choices=petroleum_hydrocarbon_units, blank=False)
+	phaeopigments = models.CharField(max_length=120, choices=phaeopigments_units, blank=False)
+	phosphate = models.CharField(max_length=120, choices=phosphate_units, blank=False)
+	phospholipid_fatty_acid = models.CharField(max_length=120, choices=phospholipid_fatty_acid_units, blank=False)
+	potassium = models.CharField(max_length=120, choices=potassium_units, blank=False)
+	redox_potential = models.CharField(max_length=120, choices=redox_potential_units, blank=False)
+	salinity = models.CharField(max_length=120, choices=salinity_units, blank=False)
+	total_carbon = models.CharField(max_length=120, choices=total_carbon_units, blank=False)
+	silicate = models.CharField(max_length=120, choices=silicate_units, blank=False)
+	sodium = models.CharField(max_length=120, choices=sodium_units, blank=False)
+	total_organic_carbon = models.CharField(max_length=120, choices=total_organic_carbon_units, blank=False)
+	water_content = models.CharField(max_length=120, choices=water_content_units, blank=False)
+	sulfate = models.CharField(max_length=120, choices=sulfate_units, blank=False)
+	sulfide = models.CharField(max_length=120, choices=sulfide_units, blank=False)
+	total_nitrogen = models.CharField(max_length=120, choices=total_nitrogen_units, blank=False)
 
 class GSC_MIxS_human_skin(SelfDescribingModel):
 
@@ -4051,7 +4053,7 @@ class GSC_MIxS_human_skin(SelfDescribingModel):
 	sampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE, default=1)
 	sample = models.ForeignKey(Sample, on_delete=models.CASCADE, default=1)
 	sample_type = models.IntegerField(default=1)
-	project_name= models.CharField(max_length=120, blank=True,help_text="Name of th")
+	project_name= models.CharField(max_length=120, blank=False,help_text="Name of th")
 	experimental_factor= models.CharField(max_length=120, blank=True,help_text="Experiment")
 	ploidy= models.CharField(max_length=120, blank=True,help_text="The ploidy")
 	number_of_replicons= models.CharField(max_length=120, blank=True,help_text="Reports th", validators=[RegexValidator(number_of_replicons_validator)])
@@ -4080,14 +4082,14 @@ class GSC_MIxS_human_skin(SelfDescribingModel):
 	relevant_standard_operating_procedures= models.CharField(max_length=120, blank=True,help_text="Standard o")
 	negative_control_type= models.CharField(max_length=120, blank=True,help_text="The substa")
 	positive_control_type= models.CharField(max_length=120, blank=True,help_text="The substa")
-	collection_date= models.CharField(max_length=120, blank=True,help_text="The date t", validators=[RegexValidator(collection_date_validator)])
-	geographic_location_country_and_or_sea= models.CharField(max_length=120, blank=True,help_text="The locati", choices=geographic_location_country_and_or_sea_choice)
-	geographic_location_latitude= models.CharField(max_length=120, blank=True,help_text="The geogra", validators=[RegexValidator(geographic_location_latitude_validator)])
-	geographic_location_longitude= models.CharField(max_length=120, blank=True,help_text="The geogra", validators=[RegexValidator(geographic_location_longitude_validator)])
+	collection_date= models.CharField(max_length=120, blank=False,help_text="The date t", validators=[RegexValidator(collection_date_validator)])
+	geographic_location_country_and_or_sea= models.CharField(max_length=120, blank=False,help_text="The locati", choices=geographic_location_country_and_or_sea_choice)
+	geographic_location_latitude= models.CharField(max_length=120, blank=False,help_text="The geogra", validators=[RegexValidator(geographic_location_latitude_validator)])
+	geographic_location_longitude= models.CharField(max_length=120, blank=False,help_text="The geogra", validators=[RegexValidator(geographic_location_longitude_validator)])
 	geographic_location_region_and_locality= models.CharField(max_length=120, blank=True,help_text="The geogra")
-	broad_scale_environmental_context= models.CharField(max_length=120, blank=True,help_text="Report the")
-	local_environmental_context= models.CharField(max_length=120, blank=True,help_text="Report the")
-	environmental_medium= models.CharField(max_length=120, blank=True,help_text="Report the")
+	broad_scale_environmental_context= models.CharField(max_length=120, blank=False,help_text="Report the")
+	local_environmental_context= models.CharField(max_length=120, blank=False,help_text="Report the")
+	environmental_medium= models.CharField(max_length=120, blank=False,help_text="Report the")
 	source_material_identifiers= models.CharField(max_length=120, blank=True,help_text="A unique i")
 	sample_material_processing= models.CharField(max_length=120, blank=True,help_text="A brief de")
 	isolation_and_growth_condition= models.CharField(max_length=120, blank=True,help_text="Publicatio")
@@ -4135,87 +4137,87 @@ class GSC_MIxS_human_skin(SelfDescribingModel):
 	perturbation= models.CharField(max_length=120, blank=True,help_text="type of pe")
 
 	fields = {
-		'project_name': 'project name',
-		'experimental_factor': 'experimental factor',
+		'project_name': 'project_name',
+		'experimental_factor': 'experimental_factor',
 		'ploidy': 'ploidy',
-		'number_of_replicons': 'number of replicons',
-		'extrachromosomal_elements': 'extrachromosomal elements',
-		'estimated_size': 'estimated size',
-		'reference_for_biomaterial': 'reference for biomaterial',
-		'annotation_source': 'annotation source',
-		'sample_volume_or_weight_for_DNA_extraction': 'sample volume or weight for DNA extraction',
-		'nucleic_acid_extraction': 'nucleic acid extraction',
-		'nucleic_acid_amplification': 'nucleic acid amplification',
-		'library_size': 'library size',
-		'library_reads_sequenced': 'library reads sequenced',
-		'library_construction_method': 'library construction method',
-		'library_vector': 'library vector',
-		'library_screening_strategy': 'library screening strategy',
-		'target_gene': 'target gene',
-		'target_subfragment': 'target subfragment',
-		'pcr_primers': 'pcr primers',
-		'multiplex_identifiers': 'multiplex identifiers',
+		'number_of_replicons': 'number_of_replicons',
+		'extrachromosomal_elements': 'extrachromosomal_elements',
+		'estimated_size': 'estimated_size',
+		'reference_for_biomaterial': 'reference_for_biomaterial',
+		'annotation_source': 'annotation_source',
+		'sample_volume_or_weight_for_DNA_extraction': 'sample_volume_or_weight_for_DNA_extraction',
+		'nucleic_acid_extraction': 'nucleic_acid_extraction',
+		'nucleic_acid_amplification': 'nucleic_acid_amplification',
+		'library_size': 'library_size',
+		'library_reads_sequenced': 'library_reads_sequenced',
+		'library_construction_method': 'library_construction_method',
+		'library_vector': 'library_vector',
+		'library_screening_strategy': 'library_screening_strategy',
+		'target_gene': 'target_gene',
+		'target_subfragment': 'target_subfragment',
+		'pcr_primers': 'pcr_primers',
+		'multiplex_identifiers': 'multiplex_identifiers',
 		'adapters': 'adapters',
-		'pcr_conditions': 'pcr conditions',
-		'sequencing_method': 'sequencing method',
-		'sequence_quality_check': 'sequence quality check',
-		'chimera_check_software': 'chimera check software',
-		'relevant_electronic_resources': 'relevant electronic resources',
-		'relevant_standard_operating_procedures': 'relevant standard operating procedures',
-		'negative_control_type': 'negative control type',
-		'positive_control_type': 'positive control type',
-		'collection_date': 'collection date',
-		'geographic_location_country_and_or_sea': 'geographic location (country and/or sea)',
-		'geographic_location_latitude': 'geographic location (latitude)',
-		'geographic_location_longitude': 'geographic location (longitude)',
-		'geographic_location_region_and_locality': 'geographic location (region and locality)',
-		'broad_scale_environmental_context': 'broad-scale environmental context',
-		'local_environmental_context': 'local environmental context',
-		'environmental_medium': 'environmental medium',
-		'source_material_identifiers': 'source material identifiers',
-		'sample_material_processing': 'sample material processing',
-		'isolation_and_growth_condition': 'isolation and growth condition',
+		'pcr_conditions': 'pcr_conditions',
+		'sequencing_method': 'sequencing_method',
+		'sequence_quality_check': 'sequence_quality_check',
+		'chimera_check_software': 'chimera_check_software',
+		'relevant_electronic_resources': 'relevant_electronic_resources',
+		'relevant_standard_operating_procedures': 'relevant_standard_operating_procedures',
+		'negative_control_type': 'negative_control_type',
+		'positive_control_type': 'positive_control_type',
+		'collection_date': 'collection_date',
+		'geographic_location_country_and_or_sea': 'geographic_location_country_and_or_sea',
+		'geographic_location_latitude': 'geographic_location_latitude',
+		'geographic_location_longitude': 'geographic_location_longitude',
+		'geographic_location_region_and_locality': 'geographic_location_region_and_locality',
+		'broad_scale_environmental_context': 'broad_scale_environmental_context',
+		'local_environmental_context': 'local_environmental_context',
+		'environmental_medium': 'environmental_medium',
+		'source_material_identifiers': 'source_material_identifiers',
+		'sample_material_processing': 'sample_material_processing',
+		'isolation_and_growth_condition': 'isolation_and_growth_condition',
 		'propagation': 'propagation',
-		'amount_or_size_of_sample_collected': 'amount or size of sample collected',
-		'host_body_product': 'host body product',
-		'medical_history_performed': 'medical history performed',
-		'oxygenation_status_of_sample': 'oxygenation status of sample',
-		'organism_count': 'organism count',
-		'sample_storage_duration': 'sample storage duration',
-		'sample_storage_temperature': 'sample storage temperature',
-		'sample_storage_location': 'sample storage location',
-		'sample_collection_device': 'sample collection device',
-		'sample_collection_method': 'sample collection method',
-		'dermatology_disorder': 'dermatology disorder',
-		'host_disease_status': 'host disease status',
-		'host_subject_id': 'host subject id',
-		'IHMC_medication_code': 'IHMC medication code',
-		'host_age': 'host age',
-		'host_body_site': 'host body site',
-		'host_height': 'host height',
-		'host_body_mass_index': 'host body-mass index',
+		'amount_or_size_of_sample_collected': 'amount_or_size_of_sample_collected',
+		'host_body_product': 'host_body_product',
+		'medical_history_performed': 'medical_history_performed',
+		'oxygenation_status_of_sample': 'oxygenation_status_of_sample',
+		'organism_count': 'organism_count',
+		'sample_storage_duration': 'sample_storage_duration',
+		'sample_storage_temperature': 'sample_storage_temperature',
+		'sample_storage_location': 'sample_storage_location',
+		'sample_collection_device': 'sample_collection_device',
+		'sample_collection_method': 'sample_collection_method',
+		'dermatology_disorder': 'dermatology_disorder',
+		'host_disease_status': 'host_disease_status',
+		'host_subject_id': 'host_subject_id',
+		'IHMC_medication_code': 'IHMC_medication_code',
+		'host_age': 'host_age',
+		'host_body_site': 'host_body_site',
+		'host_height': 'host_height',
+		'host_body_mass_index': 'host_body_mass_index',
 		'ethnicity': 'ethnicity',
-		'host_occupation': 'host occupation',
-		'host_total_mass': 'host total mass',
-		'host_phenotype': 'host phenotype',
-		'host_body_temperature': 'host body temperature',
-		'host_sex': 'host sex',
+		'host_occupation': 'host_occupation',
+		'host_total_mass': 'host_total_mass',
+		'host_phenotype': 'host_phenotype',
+		'host_body_temperature': 'host_body_temperature',
+		'host_sex': 'host_sex',
 		'temperature': 'temperature',
 		'salinity': 'salinity',
-		'time_since_last_wash': 'time since last wash',
-		'dominant_hand': 'dominant hand',
-		'host_diet': 'host diet',
-		'host_last_meal': 'host last meal',
-		'host_family_relationship': 'host family relationship',
-		'host_genotype': 'host genotype',
-		'host_pulse': 'host pulse',
-		'subspecific_genetic_lineage': 'subspecific genetic lineage',
-		'trophic_level': 'trophic level',
-		'relationship_to_oxygen': 'relationship to oxygen',
-		'known_pathogenicity': 'known pathogenicity',
-		'encoded_traits': 'encoded traits',
-		'observed_biotic_relationship': 'observed biotic relationship',
-		'chemical_administration': 'chemical administration',
+		'time_since_last_wash': 'time_since_last_wash',
+		'dominant_hand': 'dominant_hand',
+		'host_diet': 'host_diet',
+		'host_last_meal': 'host_last_meal',
+		'host_family_relationship': 'host_family_relationship',
+		'host_genotype': 'host_genotype',
+		'host_pulse': 'host_pulse',
+		'subspecific_genetic_lineage': 'subspecific_genetic_lineage',
+		'trophic_level': 'trophic_level',
+		'relationship_to_oxygen': 'relationship_to_oxygen',
+		'known_pathogenicity': 'known_pathogenicity',
+		'encoded_traits': 'encoded_traits',
+		'observed_biotic_relationship': 'observed_biotic_relationship',
+		'chemical_administration': 'chemical_administration',
 		'perturbation': 'perturbation',
 	}
 
@@ -4240,21 +4242,21 @@ class GSC_MIxS_human_skin_unit(SelfDescribingModel):
 	host_pulse_units = [('bpm', 'bpm')]
 
 	fields = {
-		'sample_volume_or_weight_for_DNA_extraction': 'sample volume or weight for DNA extraction',
-		'geographic_location_latitude': 'geographic location (latitude)',
-		'geographic_location_longitude': 'geographic location (longitude)',
-		'amount_or_size_of_sample_collected': 'amount or size of sample collected',
-		'sample_storage_duration': 'sample storage duration',
-		'sample_storage_temperature': 'sample storage temperature',
-		'host_age': 'host age',
-		'host_height': 'host height',
-		'host_body_mass_index': 'host body-mass index',
-		'host_total_mass': 'host total mass',
-		'host_body_temperature': 'host body temperature',
+		'sample_volume_or_weight_for_DNA_extraction': 'sample_volume_or_weight_for_DNA_extraction',
+		'geographic_location_latitude': 'geographic_location_latitude',
+		'geographic_location_longitude': 'geographic_location_longitude',
+		'amount_or_size_of_sample_collected': 'amount_or_size_of_sample_collected',
+		'sample_storage_duration': 'sample_storage_duration',
+		'sample_storage_temperature': 'sample_storage_temperature',
+		'host_age': 'host_age',
+		'host_height': 'host_height',
+		'host_body_mass_index': 'host_body_mass_index',
+		'host_total_mass': 'host_total_mass',
+		'host_body_temperature': 'host_body_temperature',
 		'temperature': 'temperature',
 		'salinity': 'salinity',
-		'time_since_last_wash': 'time since last wash',
-		'host_pulse': 'host pulse',
+		'time_since_last_wash': 'time_since_last_wash',
+		'host_pulse': 'host_pulse',
 	}
 
 	name = 'GSC_MIxS_human_skin'
@@ -4262,21 +4264,21 @@ class GSC_MIxS_human_skin_unit(SelfDescribingModel):
 	sampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE, default=1)
 	sample = models.ForeignKey(Sample, on_delete=models.CASCADE, default=1)
 	sample_type = models.IntegerField(default=1)
-	sample_volume_or_weight_for_DNA_extraction = models.CharField(max_length=120, choices=sample_volume_or_weight_for_DNA_extraction_units, blank=True)
-	geographic_location_latitude = models.CharField(max_length=120, choices=geographic_location_latitude_units, blank=True)
-	geographic_location_longitude = models.CharField(max_length=120, choices=geographic_location_longitude_units, blank=True)
-	amount_or_size_of_sample_collected = models.CharField(max_length=120, choices=amount_or_size_of_sample_collected_units, blank=True)
-	sample_storage_duration = models.CharField(max_length=120, choices=sample_storage_duration_units, blank=True)
-	sample_storage_temperature = models.CharField(max_length=120, choices=sample_storage_temperature_units, blank=True)
-	host_age = models.CharField(max_length=120, choices=host_age_units, blank=True)
-	host_height = models.CharField(max_length=120, choices=host_height_units, blank=True)
-	host_body_mass_index = models.CharField(max_length=120, choices=host_body_mass_index_units, blank=True)
-	host_total_mass = models.CharField(max_length=120, choices=host_total_mass_units, blank=True)
-	host_body_temperature = models.CharField(max_length=120, choices=host_body_temperature_units, blank=True)
-	temperature = models.CharField(max_length=120, choices=temperature_units, blank=True)
-	salinity = models.CharField(max_length=120, choices=salinity_units, blank=True)
-	time_since_last_wash = models.CharField(max_length=120, choices=time_since_last_wash_units, blank=True)
-	host_pulse = models.CharField(max_length=120, choices=host_pulse_units, blank=True)
+	sample_volume_or_weight_for_DNA_extraction = models.CharField(max_length=120, choices=sample_volume_or_weight_for_DNA_extraction_units, blank=False)
+	geographic_location_latitude = models.CharField(max_length=120, choices=geographic_location_latitude_units, blank=False)
+	geographic_location_longitude = models.CharField(max_length=120, choices=geographic_location_longitude_units, blank=False)
+	amount_or_size_of_sample_collected = models.CharField(max_length=120, choices=amount_or_size_of_sample_collected_units, blank=False)
+	sample_storage_duration = models.CharField(max_length=120, choices=sample_storage_duration_units, blank=False)
+	sample_storage_temperature = models.CharField(max_length=120, choices=sample_storage_temperature_units, blank=False)
+	host_age = models.CharField(max_length=120, choices=host_age_units, blank=False)
+	host_height = models.CharField(max_length=120, choices=host_height_units, blank=False)
+	host_body_mass_index = models.CharField(max_length=120, choices=host_body_mass_index_units, blank=False)
+	host_total_mass = models.CharField(max_length=120, choices=host_total_mass_units, blank=False)
+	host_body_temperature = models.CharField(max_length=120, choices=host_body_temperature_units, blank=False)
+	temperature = models.CharField(max_length=120, choices=temperature_units, blank=False)
+	salinity = models.CharField(max_length=120, choices=salinity_units, blank=False)
+	time_since_last_wash = models.CharField(max_length=120, choices=time_since_last_wash_units, blank=False)
+	host_pulse = models.CharField(max_length=120, choices=host_pulse_units, blank=False)
 
 class GSC_MIxS_soil(SelfDescribingModel):
 
@@ -4323,7 +4325,7 @@ class GSC_MIxS_soil(SelfDescribingModel):
 	slope_gradient= models.CharField(max_length=120, blank=True,help_text="commonly c", validators=[RegexValidator(slope_gradient_validator)])
 	slope_aspect= models.CharField(max_length=120, blank=True,help_text="the direct")
 	profile_position= models.CharField(max_length=120, blank=True,help_text="cross-sect", choices=profile_position_choice)
-	project_name= models.CharField(max_length=120, blank=True,help_text="Name of th")
+	project_name= models.CharField(max_length=120, blank=False,help_text="Name of th")
 	experimental_factor= models.CharField(max_length=120, blank=True,help_text="Experiment")
 	ploidy= models.CharField(max_length=120, blank=True,help_text="The ploidy")
 	number_of_replicons= models.CharField(max_length=120, blank=True,help_text="Reports th", validators=[RegexValidator(number_of_replicons_validator)])
@@ -4353,17 +4355,17 @@ class GSC_MIxS_soil(SelfDescribingModel):
 	pooling_of_DNA_extracts_if_done= models.CharField(max_length=120, blank=True,help_text="were multi")
 	negative_control_type= models.CharField(max_length=120, blank=True,help_text="The substa")
 	positive_control_type= models.CharField(max_length=120, blank=True,help_text="The substa")
-	collection_date= models.CharField(max_length=120, blank=True,help_text="The date t", validators=[RegexValidator(collection_date_validator)])
+	collection_date= models.CharField(max_length=120, blank=False,help_text="The date t", validators=[RegexValidator(collection_date_validator)])
 	altitude= models.CharField(max_length=120, blank=True,help_text="The altitu", validators=[RegexValidator(altitude_validator)])
-	geographic_location_country_and_or_sea= models.CharField(max_length=120, blank=True,help_text="The locati", choices=geographic_location_country_and_or_sea_choice)
-	geographic_location_latitude= models.CharField(max_length=120, blank=True,help_text="The geogra", validators=[RegexValidator(geographic_location_latitude_validator)])
-	geographic_location_longitude= models.CharField(max_length=120, blank=True,help_text="The geogra", validators=[RegexValidator(geographic_location_longitude_validator)])
+	geographic_location_country_and_or_sea= models.CharField(max_length=120, blank=False,help_text="The locati", choices=geographic_location_country_and_or_sea_choice)
+	geographic_location_latitude= models.CharField(max_length=120, blank=False,help_text="The geogra", validators=[RegexValidator(geographic_location_latitude_validator)])
+	geographic_location_longitude= models.CharField(max_length=120, blank=False,help_text="The geogra", validators=[RegexValidator(geographic_location_longitude_validator)])
 	geographic_location_region_and_locality= models.CharField(max_length=120, blank=True,help_text="The geogra")
-	depth= models.CharField(max_length=120, blank=True,help_text="The vertic", validators=[RegexValidator(depth_validator)])
-	broad_scale_environmental_context= models.CharField(max_length=120, blank=True,help_text="Report the")
-	local_environmental_context= models.CharField(max_length=120, blank=True,help_text="Report the")
-	environmental_medium= models.CharField(max_length=120, blank=True,help_text="Report the")
-	elevation= models.CharField(max_length=120, blank=True,help_text="The elevat", validators=[RegexValidator(elevation_validator)])
+	depth= models.CharField(max_length=120, blank=False,help_text="The vertic", validators=[RegexValidator(depth_validator)])
+	broad_scale_environmental_context= models.CharField(max_length=120, blank=False,help_text="Report the")
+	local_environmental_context= models.CharField(max_length=120, blank=False,help_text="Report the")
+	environmental_medium= models.CharField(max_length=120, blank=False,help_text="Report the")
+	elevation= models.CharField(max_length=120, blank=False,help_text="The elevat", validators=[RegexValidator(elevation_validator)])
 	source_material_identifiers= models.CharField(max_length=120, blank=True,help_text="A unique i")
 	sample_material_processing= models.CharField(max_length=120, blank=True,help_text="A brief de")
 	isolation_and_growth_condition= models.CharField(max_length=120, blank=True,help_text="Publicatio")
@@ -4428,111 +4430,111 @@ class GSC_MIxS_soil(SelfDescribingModel):
 	perturbation= models.CharField(max_length=120, blank=True,help_text="type of pe")
 
 	fields = {
-		'slope_gradient': 'slope gradient',
-		'slope_aspect': 'slope aspect',
-		'profile_position': 'profile position',
-		'project_name': 'project name',
-		'experimental_factor': 'experimental factor',
+		'slope_gradient': 'slope_gradient',
+		'slope_aspect': 'slope_aspect',
+		'profile_position': 'profile_position',
+		'project_name': 'project_name',
+		'experimental_factor': 'experimental_factor',
 		'ploidy': 'ploidy',
-		'number_of_replicons': 'number of replicons',
-		'extrachromosomal_elements': 'extrachromosomal elements',
-		'estimated_size': 'estimated size',
-		'reference_for_biomaterial': 'reference for biomaterial',
-		'annotation_source': 'annotation source',
-		'sample_volume_or_weight_for_DNA_extraction': 'sample volume or weight for DNA extraction',
-		'nucleic_acid_extraction': 'nucleic acid extraction',
-		'nucleic_acid_amplification': 'nucleic acid amplification',
-		'library_size': 'library size',
-		'library_reads_sequenced': 'library reads sequenced',
-		'library_construction_method': 'library construction method',
-		'library_vector': 'library vector',
-		'library_screening_strategy': 'library screening strategy',
-		'target_gene': 'target gene',
-		'target_subfragment': 'target subfragment',
-		'pcr_primers': 'pcr primers',
-		'multiplex_identifiers': 'multiplex identifiers',
+		'number_of_replicons': 'number_of_replicons',
+		'extrachromosomal_elements': 'extrachromosomal_elements',
+		'estimated_size': 'estimated_size',
+		'reference_for_biomaterial': 'reference_for_biomaterial',
+		'annotation_source': 'annotation_source',
+		'sample_volume_or_weight_for_DNA_extraction': 'sample_volume_or_weight_for_DNA_extraction',
+		'nucleic_acid_extraction': 'nucleic_acid_extraction',
+		'nucleic_acid_amplification': 'nucleic_acid_amplification',
+		'library_size': 'library_size',
+		'library_reads_sequenced': 'library_reads_sequenced',
+		'library_construction_method': 'library_construction_method',
+		'library_vector': 'library_vector',
+		'library_screening_strategy': 'library_screening_strategy',
+		'target_gene': 'target_gene',
+		'target_subfragment': 'target_subfragment',
+		'pcr_primers': 'pcr_primers',
+		'multiplex_identifiers': 'multiplex_identifiers',
 		'adapters': 'adapters',
-		'pcr_conditions': 'pcr conditions',
-		'sequencing_method': 'sequencing method',
-		'sequence_quality_check': 'sequence quality check',
-		'chimera_check_software': 'chimera check software',
-		'relevant_electronic_resources': 'relevant electronic resources',
-		'relevant_standard_operating_procedures': 'relevant standard operating procedures',
-		'pooling_of_DNA_extracts_if_done': 'pooling of DNA extracts (if done)',
-		'negative_control_type': 'negative control type',
-		'positive_control_type': 'positive control type',
-		'collection_date': 'collection date',
+		'pcr_conditions': 'pcr_conditions',
+		'sequencing_method': 'sequencing_method',
+		'sequence_quality_check': 'sequence_quality_check',
+		'chimera_check_software': 'chimera_check_software',
+		'relevant_electronic_resources': 'relevant_electronic_resources',
+		'relevant_standard_operating_procedures': 'relevant_standard_operating_procedures',
+		'pooling_of_DNA_extracts_if_done': 'pooling_of_DNA_extracts_if_done',
+		'negative_control_type': 'negative_control_type',
+		'positive_control_type': 'positive_control_type',
+		'collection_date': 'collection_date',
 		'altitude': 'altitude',
-		'geographic_location_country_and_or_sea': 'geographic location (country and/or sea)',
-		'geographic_location_latitude': 'geographic location (latitude)',
-		'geographic_location_longitude': 'geographic location (longitude)',
-		'geographic_location_region_and_locality': 'geographic location (region and locality)',
+		'geographic_location_country_and_or_sea': 'geographic_location_country_and_or_sea',
+		'geographic_location_latitude': 'geographic_location_latitude',
+		'geographic_location_longitude': 'geographic_location_longitude',
+		'geographic_location_region_and_locality': 'geographic_location_region_and_locality',
 		'depth': 'depth',
-		'broad_scale_environmental_context': 'broad-scale environmental context',
-		'local_environmental_context': 'local environmental context',
-		'environmental_medium': 'environmental medium',
+		'broad_scale_environmental_context': 'broad_scale_environmental_context',
+		'local_environmental_context': 'local_environmental_context',
+		'environmental_medium': 'environmental_medium',
 		'elevation': 'elevation',
-		'source_material_identifiers': 'source material identifiers',
-		'sample_material_processing': 'sample material processing',
-		'isolation_and_growth_condition': 'isolation and growth condition',
+		'source_material_identifiers': 'source_material_identifiers',
+		'sample_material_processing': 'sample_material_processing',
+		'isolation_and_growth_condition': 'isolation_and_growth_condition',
 		'propagation': 'propagation',
-		'amount_or_size_of_sample_collected': 'amount or size of sample collected',
-		'composite_design_sieving_if_any': 'composite design/sieving (if any)',
-		'sample_weight_for_DNA_extraction': 'sample weight for DNA extraction',
-		'storage_conditions_fresh_frozen_other': 'storage conditions (fresh/frozen/other)',
-		'microbial_biomass': 'microbial biomass',
-		'microbial_biomass_method': 'microbial biomass method',
-		'sample_collection_device': 'sample collection device',
-		'sample_collection_method': 'sample collection method',
-		'salinity_method': 'salinity method',
-		'extreme_unusual_properties_heavy_metals': 'extreme_unusual_properties/heavy metals',
-		'extreme_unusual_properties_heavy_metals_method': 'extreme_unusual_properties/heavy metals method',
-		'extreme_unusual_properties_Al_saturation': 'extreme_unusual_properties/Al saturation',
-		'extreme_unusual_properties_Al_saturation_method': 'extreme_unusual_properties/Al saturation method',
-		'host_disease_status': 'host disease status',
-		'host_scientific_name': 'host scientific name',
-		'link_to_climate_information': 'link to climate information',
-		'link_to_classification_information': 'link to classification information',
-		'links_to_additional_analysis': 'links to additional analysis',
-		'current_land_use': 'current land use',
-		'current_vegetation': 'current vegetation',
-		'current_vegetation_method': 'current vegetation method',
-		'soil_horizon': 'soil horizon',
-		'soil_horizon_method': 'soil horizon method',
-		'mean_annual_and_seasonal_temperature': 'mean annual and seasonal temperature',
-		'mean_annual_and_seasonal_precipitation': 'mean annual and seasonal precipitation',
-		'soil_taxonomic_FAO_classification': 'soil_taxonomic/FAO classification',
-		'soil_taxonomic_local_classification': 'soil_taxonomic/local classification',
-		'soil_taxonomic_local_classification_method': 'soil_taxonomic/local classification method',
-		'soil_type': 'soil type',
-		'soil_type_method': 'soil type method',
-		'drainage_classification': 'drainage classification',
+		'amount_or_size_of_sample_collected': 'amount_or_size_of_sample_collected',
+		'composite_design_sieving_if_any': 'composite_design_sieving_if_any',
+		'sample_weight_for_DNA_extraction': 'sample_weight_for_DNA_extraction',
+		'storage_conditions_fresh_frozen_other': 'storage_conditions_fresh_frozen_other',
+		'microbial_biomass': 'microbial_biomass',
+		'microbial_biomass_method': 'microbial_biomass_method',
+		'sample_collection_device': 'sample_collection_device',
+		'sample_collection_method': 'sample_collection_method',
+		'salinity_method': 'salinity_method',
+		'extreme_unusual_properties_heavy_metals': 'extreme_unusual_properties_heavy_metals',
+		'extreme_unusual_properties_heavy_metals_method': 'extreme_unusual_properties_heavy_metals_method',
+		'extreme_unusual_properties_Al_saturation': 'extreme_unusual_properties_Al_saturation',
+		'extreme_unusual_properties_Al_saturation_method': 'extreme_unusual_properties_Al_saturation_method',
+		'host_disease_status': 'host_disease_status',
+		'host_scientific_name': 'host_scientific_name',
+		'link_to_climate_information': 'link_to_climate_information',
+		'link_to_classification_information': 'link_to_classification_information',
+		'links_to_additional_analysis': 'links_to_additional_analysis',
+		'current_land_use': 'current_land_use',
+		'current_vegetation': 'current_vegetation',
+		'current_vegetation_method': 'current_vegetation_method',
+		'soil_horizon': 'soil_horizon',
+		'soil_horizon_method': 'soil_horizon_method',
+		'mean_annual_and_seasonal_temperature': 'mean_annual_and_seasonal_temperature',
+		'mean_annual_and_seasonal_precipitation': 'mean_annual_and_seasonal_precipitation',
+		'soil_taxonomic_FAO_classification': 'soil_taxonomic_FAO_classification',
+		'soil_taxonomic_local_classification': 'soil_taxonomic_local_classification',
+		'soil_taxonomic_local_classification_method': 'soil_taxonomic_local_classification_method',
+		'soil_type': 'soil_type',
+		'soil_type_method': 'soil_type_method',
+		'drainage_classification': 'drainage_classification',
 		'temperature': 'temperature',
-		'soil_texture_measurement': 'soil texture measurement',
-		'soil_texture_method': 'soil texture method',
+		'soil_texture_measurement': 'soil_texture_measurement',
+		'soil_texture_method': 'soil_texture_method',
 		'pH': 'pH',
-		'pH_method': 'pH method',
-		'water_content_method': 'water content method',
-		'total_organic_C_method': 'total organic C method',
-		'total_nitrogen_method': 'total nitrogen method',
-		'organic_matter': 'organic matter',
-		'total_organic_carbon': 'total organic carbon',
-		'water_content': 'water content',
-		'total_nitrogen': 'total nitrogen',
-		'history_previous_land_use': 'history/previous land use',
-		'history_previous_land_use_method': 'history/previous land use method',
-		'history_crop_rotation': 'history/crop rotation',
-		'history_agrochemical_additions': 'history/agrochemical additions',
-		'history_tillage': 'history/tillage',
-		'history_fire': 'history/fire',
-		'history_flooding': 'history/flooding',
-		'history_extreme_events': 'history/extreme events',
-		'subspecific_genetic_lineage': 'subspecific genetic lineage',
-		'trophic_level': 'trophic level',
-		'relationship_to_oxygen': 'relationship to oxygen',
-		'known_pathogenicity': 'known pathogenicity',
-		'encoded_traits': 'encoded traits',
-		'observed_biotic_relationship': 'observed biotic relationship',
+		'pH_method': 'pH_method',
+		'water_content_method': 'water_content_method',
+		'total_organic_C_method': 'total_organic_C_method',
+		'total_nitrogen_method': 'total_nitrogen_method',
+		'organic_matter': 'organic_matter',
+		'total_organic_carbon': 'total_organic_carbon',
+		'water_content': 'water_content',
+		'total_nitrogen': 'total_nitrogen',
+		'history_previous_land_use': 'history_previous_land_use',
+		'history_previous_land_use_method': 'history_previous_land_use_method',
+		'history_crop_rotation': 'history_crop_rotation',
+		'history_agrochemical_additions': 'history_agrochemical_additions',
+		'history_tillage': 'history_tillage',
+		'history_fire': 'history_fire',
+		'history_flooding': 'history_flooding',
+		'history_extreme_events': 'history_extreme_events',
+		'subspecific_genetic_lineage': 'subspecific_genetic_lineage',
+		'trophic_level': 'trophic_level',
+		'relationship_to_oxygen': 'relationship_to_oxygen',
+		'known_pathogenicity': 'known_pathogenicity',
+		'encoded_traits': 'encoded_traits',
+		'observed_biotic_relationship': 'observed_biotic_relationship',
 		'perturbation': 'perturbation',
 	}
 
@@ -4561,25 +4563,25 @@ class GSC_MIxS_soil_unit(SelfDescribingModel):
 	total_nitrogen_units = [('µg/L', 'µg/L'), ('µmol/L', 'µmol/L')]
 
 	fields = {
-		'slope_gradient': 'slope gradient',
-		'sample_volume_or_weight_for_DNA_extraction': 'sample volume or weight for DNA extraction',
+		'slope_gradient': 'slope_gradient',
+		'sample_volume_or_weight_for_DNA_extraction': 'sample_volume_or_weight_for_DNA_extraction',
 		'altitude': 'altitude',
-		'geographic_location_latitude': 'geographic location (latitude)',
-		'geographic_location_longitude': 'geographic location (longitude)',
+		'geographic_location_latitude': 'geographic_location_latitude',
+		'geographic_location_longitude': 'geographic_location_longitude',
 		'depth': 'depth',
 		'elevation': 'elevation',
-		'amount_or_size_of_sample_collected': 'amount or size of sample collected',
-		'sample_weight_for_DNA_extraction': 'sample weight for DNA extraction',
-		'microbial_biomass': 'microbial biomass',
-		'extreme_unusual_properties_Al_saturation': 'extreme_unusual_properties/Al saturation',
-		'mean_annual_and_seasonal_temperature': 'mean annual and seasonal temperature',
-		'mean_annual_and_seasonal_precipitation': 'mean annual and seasonal precipitation',
+		'amount_or_size_of_sample_collected': 'amount_or_size_of_sample_collected',
+		'sample_weight_for_DNA_extraction': 'sample_weight_for_DNA_extraction',
+		'microbial_biomass': 'microbial_biomass',
+		'extreme_unusual_properties_Al_saturation': 'extreme_unusual_properties_Al_saturation',
+		'mean_annual_and_seasonal_temperature': 'mean_annual_and_seasonal_temperature',
+		'mean_annual_and_seasonal_precipitation': 'mean_annual_and_seasonal_precipitation',
 		'temperature': 'temperature',
-		'soil_texture_measurement': 'soil texture measurement',
-		'organic_matter': 'organic matter',
-		'total_organic_carbon': 'total organic carbon',
-		'water_content': 'water content',
-		'total_nitrogen': 'total nitrogen',
+		'soil_texture_measurement': 'soil_texture_measurement',
+		'organic_matter': 'organic_matter',
+		'total_organic_carbon': 'total_organic_carbon',
+		'water_content': 'water_content',
+		'total_nitrogen': 'total_nitrogen',
 	}
 
 	name = 'GSC_MIxS_soil'
@@ -4587,25 +4589,25 @@ class GSC_MIxS_soil_unit(SelfDescribingModel):
 	sampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE, default=1)
 	sample = models.ForeignKey(Sample, on_delete=models.CASCADE, default=1)
 	sample_type = models.IntegerField(default=1)
-	slope_gradient = models.CharField(max_length=120, choices=slope_gradient_units, blank=True)
-	sample_volume_or_weight_for_DNA_extraction = models.CharField(max_length=120, choices=sample_volume_or_weight_for_DNA_extraction_units, blank=True)
-	altitude = models.CharField(max_length=120, choices=altitude_units, blank=True)
-	geographic_location_latitude = models.CharField(max_length=120, choices=geographic_location_latitude_units, blank=True)
-	geographic_location_longitude = models.CharField(max_length=120, choices=geographic_location_longitude_units, blank=True)
-	depth = models.CharField(max_length=120, choices=depth_units, blank=True)
-	elevation = models.CharField(max_length=120, choices=elevation_units, blank=True)
-	amount_or_size_of_sample_collected = models.CharField(max_length=120, choices=amount_or_size_of_sample_collected_units, blank=True)
-	sample_weight_for_DNA_extraction = models.CharField(max_length=120, choices=sample_weight_for_DNA_extraction_units, blank=True)
-	microbial_biomass = models.CharField(max_length=120, choices=microbial_biomass_units, blank=True)
-	extreme_unusual_properties_Al_saturation = models.CharField(max_length=120, choices=extreme_unusual_properties_Al_saturation_units, blank=True)
-	mean_annual_and_seasonal_temperature = models.CharField(max_length=120, choices=mean_annual_and_seasonal_temperature_units, blank=True)
-	mean_annual_and_seasonal_precipitation = models.CharField(max_length=120, choices=mean_annual_and_seasonal_precipitation_units, blank=True)
-	temperature = models.CharField(max_length=120, choices=temperature_units, blank=True)
-	soil_texture_measurement = models.CharField(max_length=120, choices=soil_texture_measurement_units, blank=True)
-	organic_matter = models.CharField(max_length=120, choices=organic_matter_units, blank=True)
-	total_organic_carbon = models.CharField(max_length=120, choices=total_organic_carbon_units, blank=True)
-	water_content = models.CharField(max_length=120, choices=water_content_units, blank=True)
-	total_nitrogen = models.CharField(max_length=120, choices=total_nitrogen_units, blank=True)
+	slope_gradient = models.CharField(max_length=120, choices=slope_gradient_units, blank=False)
+	sample_volume_or_weight_for_DNA_extraction = models.CharField(max_length=120, choices=sample_volume_or_weight_for_DNA_extraction_units, blank=False)
+	altitude = models.CharField(max_length=120, choices=altitude_units, blank=False)
+	geographic_location_latitude = models.CharField(max_length=120, choices=geographic_location_latitude_units, blank=False)
+	geographic_location_longitude = models.CharField(max_length=120, choices=geographic_location_longitude_units, blank=False)
+	depth = models.CharField(max_length=120, choices=depth_units, blank=False)
+	elevation = models.CharField(max_length=120, choices=elevation_units, blank=False)
+	amount_or_size_of_sample_collected = models.CharField(max_length=120, choices=amount_or_size_of_sample_collected_units, blank=False)
+	sample_weight_for_DNA_extraction = models.CharField(max_length=120, choices=sample_weight_for_DNA_extraction_units, blank=False)
+	microbial_biomass = models.CharField(max_length=120, choices=microbial_biomass_units, blank=False)
+	extreme_unusual_properties_Al_saturation = models.CharField(max_length=120, choices=extreme_unusual_properties_Al_saturation_units, blank=False)
+	mean_annual_and_seasonal_temperature = models.CharField(max_length=120, choices=mean_annual_and_seasonal_temperature_units, blank=False)
+	mean_annual_and_seasonal_precipitation = models.CharField(max_length=120, choices=mean_annual_and_seasonal_precipitation_units, blank=False)
+	temperature = models.CharField(max_length=120, choices=temperature_units, blank=False)
+	soil_texture_measurement = models.CharField(max_length=120, choices=soil_texture_measurement_units, blank=False)
+	organic_matter = models.CharField(max_length=120, choices=organic_matter_units, blank=False)
+	total_organic_carbon = models.CharField(max_length=120, choices=total_organic_carbon_units, blank=False)
+	water_content = models.CharField(max_length=120, choices=water_content_units, blank=False)
+	total_nitrogen = models.CharField(max_length=120, choices=total_nitrogen_units, blank=False)
 
 class GSC_MIxS_host_associated(SelfDescribingModel):
 
@@ -4647,7 +4649,7 @@ class GSC_MIxS_host_associated(SelfDescribingModel):
 	sampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE, default=1)
 	sample = models.ForeignKey(Sample, on_delete=models.CASCADE, default=1)
 	sample_type = models.IntegerField(default=1)
-	project_name= models.CharField(max_length=120, blank=True,help_text="Name of th")
+	project_name= models.CharField(max_length=120, blank=False,help_text="Name of th")
 	experimental_factor= models.CharField(max_length=120, blank=True,help_text="Experiment")
 	ploidy= models.CharField(max_length=120, blank=True,help_text="The ploidy")
 	number_of_replicons= models.CharField(max_length=120, blank=True,help_text="Reports th", validators=[RegexValidator(number_of_replicons_validator)])
@@ -4676,16 +4678,16 @@ class GSC_MIxS_host_associated(SelfDescribingModel):
 	relevant_standard_operating_procedures= models.CharField(max_length=120, blank=True,help_text="Standard o")
 	negative_control_type= models.CharField(max_length=120, blank=True,help_text="The substa")
 	positive_control_type= models.CharField(max_length=120, blank=True,help_text="The substa")
-	collection_date= models.CharField(max_length=120, blank=True,help_text="The date t", validators=[RegexValidator(collection_date_validator)])
+	collection_date= models.CharField(max_length=120, blank=False,help_text="The date t", validators=[RegexValidator(collection_date_validator)])
 	altitude= models.CharField(max_length=120, blank=True,help_text="The altitu", validators=[RegexValidator(altitude_validator)])
-	geographic_location_country_and_or_sea= models.CharField(max_length=120, blank=True,help_text="The locati", choices=geographic_location_country_and_or_sea_choice)
-	geographic_location_latitude= models.CharField(max_length=120, blank=True,help_text="The geogra", validators=[RegexValidator(geographic_location_latitude_validator)])
-	geographic_location_longitude= models.CharField(max_length=120, blank=True,help_text="The geogra", validators=[RegexValidator(geographic_location_longitude_validator)])
+	geographic_location_country_and_or_sea= models.CharField(max_length=120, blank=False,help_text="The locati", choices=geographic_location_country_and_or_sea_choice)
+	geographic_location_latitude= models.CharField(max_length=120, blank=False,help_text="The geogra", validators=[RegexValidator(geographic_location_latitude_validator)])
+	geographic_location_longitude= models.CharField(max_length=120, blank=False,help_text="The geogra", validators=[RegexValidator(geographic_location_longitude_validator)])
 	geographic_location_region_and_locality= models.CharField(max_length=120, blank=True,help_text="The geogra")
 	depth= models.CharField(max_length=120, blank=True,help_text="The vertic", validators=[RegexValidator(depth_validator)])
-	broad_scale_environmental_context= models.CharField(max_length=120, blank=True,help_text="Report the")
-	local_environmental_context= models.CharField(max_length=120, blank=True,help_text="Report the")
-	environmental_medium= models.CharField(max_length=120, blank=True,help_text="Report the")
+	broad_scale_environmental_context= models.CharField(max_length=120, blank=False,help_text="Report the")
+	local_environmental_context= models.CharField(max_length=120, blank=False,help_text="Report the")
+	environmental_medium= models.CharField(max_length=120, blank=False,help_text="Report the")
 	elevation= models.CharField(max_length=120, blank=True,help_text="The elevat", validators=[RegexValidator(elevation_validator)])
 	source_material_identifiers= models.CharField(max_length=120, blank=True,help_text="A unique i")
 	sample_material_processing= models.CharField(max_length=120, blank=True,help_text="A brief de")
@@ -4738,94 +4740,94 @@ class GSC_MIxS_host_associated(SelfDescribingModel):
 	perturbation= models.CharField(max_length=120, blank=True,help_text="type of pe")
 
 	fields = {
-		'project_name': 'project name',
-		'experimental_factor': 'experimental factor',
+		'project_name': 'project_name',
+		'experimental_factor': 'experimental_factor',
 		'ploidy': 'ploidy',
-		'number_of_replicons': 'number of replicons',
-		'extrachromosomal_elements': 'extrachromosomal elements',
-		'estimated_size': 'estimated size',
-		'reference_for_biomaterial': 'reference for biomaterial',
-		'annotation_source': 'annotation source',
-		'sample_volume_or_weight_for_DNA_extraction': 'sample volume or weight for DNA extraction',
-		'nucleic_acid_extraction': 'nucleic acid extraction',
-		'nucleic_acid_amplification': 'nucleic acid amplification',
-		'library_size': 'library size',
-		'library_reads_sequenced': 'library reads sequenced',
-		'library_construction_method': 'library construction method',
-		'library_vector': 'library vector',
-		'library_screening_strategy': 'library screening strategy',
-		'target_gene': 'target gene',
-		'target_subfragment': 'target subfragment',
-		'pcr_primers': 'pcr primers',
-		'multiplex_identifiers': 'multiplex identifiers',
+		'number_of_replicons': 'number_of_replicons',
+		'extrachromosomal_elements': 'extrachromosomal_elements',
+		'estimated_size': 'estimated_size',
+		'reference_for_biomaterial': 'reference_for_biomaterial',
+		'annotation_source': 'annotation_source',
+		'sample_volume_or_weight_for_DNA_extraction': 'sample_volume_or_weight_for_DNA_extraction',
+		'nucleic_acid_extraction': 'nucleic_acid_extraction',
+		'nucleic_acid_amplification': 'nucleic_acid_amplification',
+		'library_size': 'library_size',
+		'library_reads_sequenced': 'library_reads_sequenced',
+		'library_construction_method': 'library_construction_method',
+		'library_vector': 'library_vector',
+		'library_screening_strategy': 'library_screening_strategy',
+		'target_gene': 'target_gene',
+		'target_subfragment': 'target_subfragment',
+		'pcr_primers': 'pcr_primers',
+		'multiplex_identifiers': 'multiplex_identifiers',
 		'adapters': 'adapters',
-		'pcr_conditions': 'pcr conditions',
-		'sequencing_method': 'sequencing method',
-		'sequence_quality_check': 'sequence quality check',
-		'chimera_check_software': 'chimera check software',
-		'relevant_electronic_resources': 'relevant electronic resources',
-		'relevant_standard_operating_procedures': 'relevant standard operating procedures',
-		'negative_control_type': 'negative control type',
-		'positive_control_type': 'positive control type',
-		'collection_date': 'collection date',
+		'pcr_conditions': 'pcr_conditions',
+		'sequencing_method': 'sequencing_method',
+		'sequence_quality_check': 'sequence_quality_check',
+		'chimera_check_software': 'chimera_check_software',
+		'relevant_electronic_resources': 'relevant_electronic_resources',
+		'relevant_standard_operating_procedures': 'relevant_standard_operating_procedures',
+		'negative_control_type': 'negative_control_type',
+		'positive_control_type': 'positive_control_type',
+		'collection_date': 'collection_date',
 		'altitude': 'altitude',
-		'geographic_location_country_and_or_sea': 'geographic location (country and/or sea)',
-		'geographic_location_latitude': 'geographic location (latitude)',
-		'geographic_location_longitude': 'geographic location (longitude)',
-		'geographic_location_region_and_locality': 'geographic location (region and locality)',
+		'geographic_location_country_and_or_sea': 'geographic_location_country_and_or_sea',
+		'geographic_location_latitude': 'geographic_location_latitude',
+		'geographic_location_longitude': 'geographic_location_longitude',
+		'geographic_location_region_and_locality': 'geographic_location_region_and_locality',
 		'depth': 'depth',
-		'broad_scale_environmental_context': 'broad-scale environmental context',
-		'local_environmental_context': 'local environmental context',
-		'environmental_medium': 'environmental medium',
+		'broad_scale_environmental_context': 'broad_scale_environmental_context',
+		'local_environmental_context': 'local_environmental_context',
+		'environmental_medium': 'environmental_medium',
 		'elevation': 'elevation',
-		'source_material_identifiers': 'source material identifiers',
-		'sample_material_processing': 'sample material processing',
-		'isolation_and_growth_condition': 'isolation and growth condition',
+		'source_material_identifiers': 'source_material_identifiers',
+		'sample_material_processing': 'sample_material_processing',
+		'isolation_and_growth_condition': 'isolation_and_growth_condition',
 		'propagation': 'propagation',
-		'amount_or_size_of_sample_collected': 'amount or size of sample collected',
-		'host_body_product': 'host body product',
-		'host_dry_mass': 'host dry mass',
-		'oxygenation_status_of_sample': 'oxygenation status of sample',
-		'organism_count': 'organism count',
-		'sample_storage_duration': 'sample storage duration',
-		'sample_storage_temperature': 'sample storage temperature',
-		'sample_storage_location': 'sample storage location',
-		'host_disease_status': 'host disease status',
-		'host_common_name': 'host common name',
-		'host_subject_id': 'host subject id',
-		'host_age': 'host age',
-		'host_taxid': 'host taxid',
-		'host_body_habitat': 'host body habitat',
-		'host_body_site': 'host body site',
-		'host_life_stage': 'host life stage',
-		'host_height': 'host height',
-		'host_length': 'host length',
-		'host_growth_conditions': 'host growth conditions',
-		'host_substrate': 'host substrate',
-		'host_total_mass': 'host total mass',
-		'host_phenotype': 'host phenotype',
-		'host_body_temperature': 'host body temperature',
-		'host_color': 'host color',
-		'host_shape': 'host shape',
-		'host_sex': 'host sex',
-		'host_scientific_name': 'host scientific name',
-		'host_subspecific_genetic_lineage': 'host subspecific genetic lineage',
+		'amount_or_size_of_sample_collected': 'amount_or_size_of_sample_collected',
+		'host_body_product': 'host_body_product',
+		'host_dry_mass': 'host_dry_mass',
+		'oxygenation_status_of_sample': 'oxygenation_status_of_sample',
+		'organism_count': 'organism_count',
+		'sample_storage_duration': 'sample_storage_duration',
+		'sample_storage_temperature': 'sample_storage_temperature',
+		'sample_storage_location': 'sample_storage_location',
+		'host_disease_status': 'host_disease_status',
+		'host_common_name': 'host_common_name',
+		'host_subject_id': 'host_subject_id',
+		'host_age': 'host_age',
+		'host_taxid': 'host_taxid',
+		'host_body_habitat': 'host_body_habitat',
+		'host_body_site': 'host_body_site',
+		'host_life_stage': 'host_life_stage',
+		'host_height': 'host_height',
+		'host_length': 'host_length',
+		'host_growth_conditions': 'host_growth_conditions',
+		'host_substrate': 'host_substrate',
+		'host_total_mass': 'host_total_mass',
+		'host_phenotype': 'host_phenotype',
+		'host_body_temperature': 'host_body_temperature',
+		'host_color': 'host_color',
+		'host_shape': 'host_shape',
+		'host_sex': 'host_sex',
+		'host_scientific_name': 'host_scientific_name',
+		'host_subspecific_genetic_lineage': 'host_subspecific_genetic_lineage',
 		'temperature': 'temperature',
 		'salinity': 'salinity',
-		'host_blood_pressure_diastolic': 'host blood pressure diastolic',
-		'host_blood_pressure_systolic': 'host blood pressure systolic',
-		'host_diet': 'host diet',
-		'host_last_meal': 'host last meal',
-		'host_family_relationship': 'host family relationship',
-		'host_genotype': 'host genotype',
+		'host_blood_pressure_diastolic': 'host_blood_pressure_diastolic',
+		'host_blood_pressure_systolic': 'host_blood_pressure_systolic',
+		'host_diet': 'host_diet',
+		'host_last_meal': 'host_last_meal',
+		'host_family_relationship': 'host_family_relationship',
+		'host_genotype': 'host_genotype',
 		'gravidity': 'gravidity',
-		'subspecific_genetic_lineage': 'subspecific genetic lineage',
-		'trophic_level': 'trophic level',
-		'relationship_to_oxygen': 'relationship to oxygen',
-		'known_pathogenicity': 'known pathogenicity',
-		'encoded_traits': 'encoded traits',
-		'observed_biotic_relationship': 'observed biotic relationship',
-		'chemical_administration': 'chemical administration',
+		'subspecific_genetic_lineage': 'subspecific_genetic_lineage',
+		'trophic_level': 'trophic_level',
+		'relationship_to_oxygen': 'relationship_to_oxygen',
+		'known_pathogenicity': 'known_pathogenicity',
+		'encoded_traits': 'encoded_traits',
+		'observed_biotic_relationship': 'observed_biotic_relationship',
+		'chemical_administration': 'chemical_administration',
 		'perturbation': 'perturbation',
 	}
 
@@ -4854,25 +4856,25 @@ class GSC_MIxS_host_associated_unit(SelfDescribingModel):
 	host_blood_pressure_systolic_units = [('mm Hg', 'mm Hg')]
 
 	fields = {
-		'sample_volume_or_weight_for_DNA_extraction': 'sample volume or weight for DNA extraction',
+		'sample_volume_or_weight_for_DNA_extraction': 'sample_volume_or_weight_for_DNA_extraction',
 		'altitude': 'altitude',
-		'geographic_location_latitude': 'geographic location (latitude)',
-		'geographic_location_longitude': 'geographic location (longitude)',
+		'geographic_location_latitude': 'geographic_location_latitude',
+		'geographic_location_longitude': 'geographic_location_longitude',
 		'depth': 'depth',
 		'elevation': 'elevation',
-		'amount_or_size_of_sample_collected': 'amount or size of sample collected',
-		'host_dry_mass': 'host dry mass',
-		'sample_storage_duration': 'sample storage duration',
-		'sample_storage_temperature': 'sample storage temperature',
-		'host_age': 'host age',
-		'host_height': 'host height',
-		'host_length': 'host length',
-		'host_total_mass': 'host total mass',
-		'host_body_temperature': 'host body temperature',
+		'amount_or_size_of_sample_collected': 'amount_or_size_of_sample_collected',
+		'host_dry_mass': 'host_dry_mass',
+		'sample_storage_duration': 'sample_storage_duration',
+		'sample_storage_temperature': 'sample_storage_temperature',
+		'host_age': 'host_age',
+		'host_height': 'host_height',
+		'host_length': 'host_length',
+		'host_total_mass': 'host_total_mass',
+		'host_body_temperature': 'host_body_temperature',
 		'temperature': 'temperature',
 		'salinity': 'salinity',
-		'host_blood_pressure_diastolic': 'host blood pressure diastolic',
-		'host_blood_pressure_systolic': 'host blood pressure systolic',
+		'host_blood_pressure_diastolic': 'host_blood_pressure_diastolic',
+		'host_blood_pressure_systolic': 'host_blood_pressure_systolic',
 	}
 
 	name = 'GSC_MIxS_host_associated'
@@ -4880,25 +4882,25 @@ class GSC_MIxS_host_associated_unit(SelfDescribingModel):
 	sampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE, default=1)
 	sample = models.ForeignKey(Sample, on_delete=models.CASCADE, default=1)
 	sample_type = models.IntegerField(default=1)
-	sample_volume_or_weight_for_DNA_extraction = models.CharField(max_length=120, choices=sample_volume_or_weight_for_DNA_extraction_units, blank=True)
-	altitude = models.CharField(max_length=120, choices=altitude_units, blank=True)
-	geographic_location_latitude = models.CharField(max_length=120, choices=geographic_location_latitude_units, blank=True)
-	geographic_location_longitude = models.CharField(max_length=120, choices=geographic_location_longitude_units, blank=True)
-	depth = models.CharField(max_length=120, choices=depth_units, blank=True)
-	elevation = models.CharField(max_length=120, choices=elevation_units, blank=True)
-	amount_or_size_of_sample_collected = models.CharField(max_length=120, choices=amount_or_size_of_sample_collected_units, blank=True)
-	host_dry_mass = models.CharField(max_length=120, choices=host_dry_mass_units, blank=True)
-	sample_storage_duration = models.CharField(max_length=120, choices=sample_storage_duration_units, blank=True)
-	sample_storage_temperature = models.CharField(max_length=120, choices=sample_storage_temperature_units, blank=True)
-	host_age = models.CharField(max_length=120, choices=host_age_units, blank=True)
-	host_height = models.CharField(max_length=120, choices=host_height_units, blank=True)
-	host_length = models.CharField(max_length=120, choices=host_length_units, blank=True)
-	host_total_mass = models.CharField(max_length=120, choices=host_total_mass_units, blank=True)
-	host_body_temperature = models.CharField(max_length=120, choices=host_body_temperature_units, blank=True)
-	temperature = models.CharField(max_length=120, choices=temperature_units, blank=True)
-	salinity = models.CharField(max_length=120, choices=salinity_units, blank=True)
-	host_blood_pressure_diastolic = models.CharField(max_length=120, choices=host_blood_pressure_diastolic_units, blank=True)
-	host_blood_pressure_systolic = models.CharField(max_length=120, choices=host_blood_pressure_systolic_units, blank=True)
+	sample_volume_or_weight_for_DNA_extraction = models.CharField(max_length=120, choices=sample_volume_or_weight_for_DNA_extraction_units, blank=False)
+	altitude = models.CharField(max_length=120, choices=altitude_units, blank=False)
+	geographic_location_latitude = models.CharField(max_length=120, choices=geographic_location_latitude_units, blank=False)
+	geographic_location_longitude = models.CharField(max_length=120, choices=geographic_location_longitude_units, blank=False)
+	depth = models.CharField(max_length=120, choices=depth_units, blank=False)
+	elevation = models.CharField(max_length=120, choices=elevation_units, blank=False)
+	amount_or_size_of_sample_collected = models.CharField(max_length=120, choices=amount_or_size_of_sample_collected_units, blank=False)
+	host_dry_mass = models.CharField(max_length=120, choices=host_dry_mass_units, blank=False)
+	sample_storage_duration = models.CharField(max_length=120, choices=sample_storage_duration_units, blank=False)
+	sample_storage_temperature = models.CharField(max_length=120, choices=sample_storage_temperature_units, blank=False)
+	host_age = models.CharField(max_length=120, choices=host_age_units, blank=False)
+	host_height = models.CharField(max_length=120, choices=host_height_units, blank=False)
+	host_length = models.CharField(max_length=120, choices=host_length_units, blank=False)
+	host_total_mass = models.CharField(max_length=120, choices=host_total_mass_units, blank=False)
+	host_body_temperature = models.CharField(max_length=120, choices=host_body_temperature_units, blank=False)
+	temperature = models.CharField(max_length=120, choices=temperature_units, blank=False)
+	salinity = models.CharField(max_length=120, choices=salinity_units, blank=False)
+	host_blood_pressure_diastolic = models.CharField(max_length=120, choices=host_blood_pressure_diastolic_units, blank=False)
+	host_blood_pressure_systolic = models.CharField(max_length=120, choices=host_blood_pressure_systolic_units, blank=False)
 
 class GSC_MIxS_human_associated(SelfDescribingModel):
 
@@ -4941,7 +4943,7 @@ class GSC_MIxS_human_associated(SelfDescribingModel):
 	sampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE, default=1)
 	sample = models.ForeignKey(Sample, on_delete=models.CASCADE, default=1)
 	sample_type = models.IntegerField(default=1)
-	project_name= models.CharField(max_length=120, blank=True,help_text="Name of th")
+	project_name= models.CharField(max_length=120, blank=False,help_text="Name of th")
 	experimental_factor= models.CharField(max_length=120, blank=True,help_text="Experiment")
 	ploidy= models.CharField(max_length=120, blank=True,help_text="The ploidy")
 	number_of_replicons= models.CharField(max_length=120, blank=True,help_text="Reports th", validators=[RegexValidator(number_of_replicons_validator)])
@@ -4971,14 +4973,14 @@ class GSC_MIxS_human_associated(SelfDescribingModel):
 	study_completion_status= models.CharField(max_length=120, blank=True,help_text="specificat", choices=study_completion_status_choice)
 	negative_control_type= models.CharField(max_length=120, blank=True,help_text="The substa")
 	positive_control_type= models.CharField(max_length=120, blank=True,help_text="The substa")
-	collection_date= models.CharField(max_length=120, blank=True,help_text="The date t", validators=[RegexValidator(collection_date_validator)])
-	geographic_location_country_and_or_sea= models.CharField(max_length=120, blank=True,help_text="The locati", choices=geographic_location_country_and_or_sea_choice)
-	geographic_location_latitude= models.CharField(max_length=120, blank=True,help_text="The geogra", validators=[RegexValidator(geographic_location_latitude_validator)])
-	geographic_location_longitude= models.CharField(max_length=120, blank=True,help_text="The geogra", validators=[RegexValidator(geographic_location_longitude_validator)])
+	collection_date= models.CharField(max_length=120, blank=False,help_text="The date t", validators=[RegexValidator(collection_date_validator)])
+	geographic_location_country_and_or_sea= models.CharField(max_length=120, blank=False,help_text="The locati", choices=geographic_location_country_and_or_sea_choice)
+	geographic_location_latitude= models.CharField(max_length=120, blank=False,help_text="The geogra", validators=[RegexValidator(geographic_location_latitude_validator)])
+	geographic_location_longitude= models.CharField(max_length=120, blank=False,help_text="The geogra", validators=[RegexValidator(geographic_location_longitude_validator)])
 	geographic_location_region_and_locality= models.CharField(max_length=120, blank=True,help_text="The geogra")
-	broad_scale_environmental_context= models.CharField(max_length=120, blank=True,help_text="Report the")
-	local_environmental_context= models.CharField(max_length=120, blank=True,help_text="Report the")
-	environmental_medium= models.CharField(max_length=120, blank=True,help_text="Report the")
+	broad_scale_environmental_context= models.CharField(max_length=120, blank=False,help_text="Report the")
+	local_environmental_context= models.CharField(max_length=120, blank=False,help_text="Report the")
+	environmental_medium= models.CharField(max_length=120, blank=False,help_text="Report the")
 	source_material_identifiers= models.CharField(max_length=120, blank=True,help_text="A unique i")
 	sample_material_processing= models.CharField(max_length=120, blank=True,help_text="A brief de")
 	isolation_and_growth_condition= models.CharField(max_length=120, blank=True,help_text="Publicatio")
@@ -5042,104 +5044,104 @@ class GSC_MIxS_human_associated(SelfDescribingModel):
 	perturbation= models.CharField(max_length=120, blank=True,help_text="type of pe")
 
 	fields = {
-		'project_name': 'project name',
-		'experimental_factor': 'experimental factor',
+		'project_name': 'project_name',
+		'experimental_factor': 'experimental_factor',
 		'ploidy': 'ploidy',
-		'number_of_replicons': 'number of replicons',
-		'extrachromosomal_elements': 'extrachromosomal elements',
-		'estimated_size': 'estimated size',
-		'reference_for_biomaterial': 'reference for biomaterial',
-		'annotation_source': 'annotation source',
-		'sample_volume_or_weight_for_DNA_extraction': 'sample volume or weight for DNA extraction',
-		'nucleic_acid_extraction': 'nucleic acid extraction',
-		'nucleic_acid_amplification': 'nucleic acid amplification',
-		'library_size': 'library size',
-		'library_reads_sequenced': 'library reads sequenced',
-		'library_construction_method': 'library construction method',
-		'library_vector': 'library vector',
-		'library_screening_strategy': 'library screening strategy',
-		'target_gene': 'target gene',
-		'target_subfragment': 'target subfragment',
-		'pcr_primers': 'pcr primers',
-		'multiplex_identifiers': 'multiplex identifiers',
+		'number_of_replicons': 'number_of_replicons',
+		'extrachromosomal_elements': 'extrachromosomal_elements',
+		'estimated_size': 'estimated_size',
+		'reference_for_biomaterial': 'reference_for_biomaterial',
+		'annotation_source': 'annotation_source',
+		'sample_volume_or_weight_for_DNA_extraction': 'sample_volume_or_weight_for_DNA_extraction',
+		'nucleic_acid_extraction': 'nucleic_acid_extraction',
+		'nucleic_acid_amplification': 'nucleic_acid_amplification',
+		'library_size': 'library_size',
+		'library_reads_sequenced': 'library_reads_sequenced',
+		'library_construction_method': 'library_construction_method',
+		'library_vector': 'library_vector',
+		'library_screening_strategy': 'library_screening_strategy',
+		'target_gene': 'target_gene',
+		'target_subfragment': 'target_subfragment',
+		'pcr_primers': 'pcr_primers',
+		'multiplex_identifiers': 'multiplex_identifiers',
 		'adapters': 'adapters',
-		'pcr_conditions': 'pcr conditions',
-		'sequencing_method': 'sequencing method',
-		'sequence_quality_check': 'sequence quality check',
-		'chimera_check_software': 'chimera check software',
-		'relevant_electronic_resources': 'relevant electronic resources',
-		'relevant_standard_operating_procedures': 'relevant standard operating procedures',
-		'study_completion_status': 'study completion status',
-		'negative_control_type': 'negative control type',
-		'positive_control_type': 'positive control type',
-		'collection_date': 'collection date',
-		'geographic_location_country_and_or_sea': 'geographic location (country and/or sea)',
-		'geographic_location_latitude': 'geographic location (latitude)',
-		'geographic_location_longitude': 'geographic location (longitude)',
-		'geographic_location_region_and_locality': 'geographic location (region and locality)',
-		'broad_scale_environmental_context': 'broad-scale environmental context',
-		'local_environmental_context': 'local environmental context',
-		'environmental_medium': 'environmental medium',
-		'source_material_identifiers': 'source material identifiers',
-		'sample_material_processing': 'sample material processing',
-		'isolation_and_growth_condition': 'isolation and growth condition',
+		'pcr_conditions': 'pcr_conditions',
+		'sequencing_method': 'sequencing_method',
+		'sequence_quality_check': 'sequence_quality_check',
+		'chimera_check_software': 'chimera_check_software',
+		'relevant_electronic_resources': 'relevant_electronic_resources',
+		'relevant_standard_operating_procedures': 'relevant_standard_operating_procedures',
+		'study_completion_status': 'study_completion_status',
+		'negative_control_type': 'negative_control_type',
+		'positive_control_type': 'positive_control_type',
+		'collection_date': 'collection_date',
+		'geographic_location_country_and_or_sea': 'geographic_location_country_and_or_sea',
+		'geographic_location_latitude': 'geographic_location_latitude',
+		'geographic_location_longitude': 'geographic_location_longitude',
+		'geographic_location_region_and_locality': 'geographic_location_region_and_locality',
+		'broad_scale_environmental_context': 'broad_scale_environmental_context',
+		'local_environmental_context': 'local_environmental_context',
+		'environmental_medium': 'environmental_medium',
+		'source_material_identifiers': 'source_material_identifiers',
+		'sample_material_processing': 'sample_material_processing',
+		'isolation_and_growth_condition': 'isolation_and_growth_condition',
 		'propagation': 'propagation',
-		'amount_or_size_of_sample_collected': 'amount or size of sample collected',
-		'host_body_product': 'host body product',
-		'medical_history_performed': 'medical history performed',
-		'urine_collection_method': 'urine/collection method',
-		'oxygenation_status_of_sample': 'oxygenation status of sample',
-		'organism_count': 'organism count',
-		'sample_storage_duration': 'sample storage duration',
-		'sample_storage_temperature': 'sample storage temperature',
-		'sample_storage_location': 'sample storage location',
-		'sample_collection_device': 'sample collection device',
-		'sample_collection_method': 'sample collection method',
-		'host_HIV_status': 'host HIV status',
-		'host_disease_status': 'host disease status',
-		'lung_pulmonary_disorder': 'lung/pulmonary disorder',
-		'lung_nose_throat_disorder': 'lung/nose-throat disorder',
-		'blood_blood_disorder': 'blood/blood disorder',
-		'urine_kidney_disorder': 'urine/kidney disorder',
-		'urine_urogenital_tract_disorder': 'urine/urogenital tract disorder',
-		'host_subject_id': 'host subject id',
-		'IHMC_medication_code': 'IHMC medication code',
-		'host_age': 'host age',
-		'host_body_site': 'host body site',
-		'drug_usage': 'drug usage',
-		'host_height': 'host height',
-		'host_body_mass_index': 'host body-mass index',
+		'amount_or_size_of_sample_collected': 'amount_or_size_of_sample_collected',
+		'host_body_product': 'host_body_product',
+		'medical_history_performed': 'medical_history_performed',
+		'urine_collection_method': 'urine_collection_method',
+		'oxygenation_status_of_sample': 'oxygenation_status_of_sample',
+		'organism_count': 'organism_count',
+		'sample_storage_duration': 'sample_storage_duration',
+		'sample_storage_temperature': 'sample_storage_temperature',
+		'sample_storage_location': 'sample_storage_location',
+		'sample_collection_device': 'sample_collection_device',
+		'sample_collection_method': 'sample_collection_method',
+		'host_HIV_status': 'host_HIV_status',
+		'host_disease_status': 'host_disease_status',
+		'lung_pulmonary_disorder': 'lung_pulmonary_disorder',
+		'lung_nose_throat_disorder': 'lung_nose_throat_disorder',
+		'blood_blood_disorder': 'blood_blood_disorder',
+		'urine_kidney_disorder': 'urine_kidney_disorder',
+		'urine_urogenital_tract_disorder': 'urine_urogenital_tract_disorder',
+		'host_subject_id': 'host_subject_id',
+		'IHMC_medication_code': 'IHMC_medication_code',
+		'host_age': 'host_age',
+		'host_body_site': 'host_body_site',
+		'drug_usage': 'drug_usage',
+		'host_height': 'host_height',
+		'host_body_mass_index': 'host_body_mass_index',
 		'ethnicity': 'ethnicity',
-		'host_occupation': 'host occupation',
-		'host_total_mass': 'host total mass',
-		'host_phenotype': 'host phenotype',
-		'host_body_temperature': 'host body temperature',
-		'host_sex': 'host sex',
-		'host_scientific_name': 'host scientific name',
-		'presence_of_pets_or_farm_animals': 'presence of pets or farm animals',
+		'host_occupation': 'host_occupation',
+		'host_total_mass': 'host_total_mass',
+		'host_phenotype': 'host_phenotype',
+		'host_body_temperature': 'host_body_temperature',
+		'host_sex': 'host_sex',
+		'host_scientific_name': 'host_scientific_name',
+		'presence_of_pets_or_farm_animals': 'presence_of_pets_or_farm_animals',
 		'temperature': 'temperature',
 		'salinity': 'salinity',
 		'smoker': 'smoker',
-		'major_diet_change_in_last_six_months': 'major diet change in last six months',
-		'weight_loss_in_last_three_months': 'weight loss in last three months',
-		'travel_outside_the_country_in_last_six_months': 'travel outside the country in last six months',
-		'host_diet': 'host diet',
-		'twin_sibling_presence': 'twin sibling presence',
-		'host_last_meal': 'host last meal',
-		'amniotic_fluid_gestation_state': 'amniotic fluid/gestation state',
-		'host_family_relationship': 'host family relationship',
-		'amniotic_fluid_maternal_health_status': 'amniotic fluid/maternal health status',
-		'host_genotype': 'host genotype',
-		'amniotic_fluid_foetal_health_status': 'amniotic fluid/foetal health status',
-		'host_pulse': 'host pulse',
-		'amniotic_fluid_color': 'amniotic fluid/color',
-		'subspecific_genetic_lineage': 'subspecific genetic lineage',
-		'trophic_level': 'trophic level',
-		'relationship_to_oxygen': 'relationship to oxygen',
-		'known_pathogenicity': 'known pathogenicity',
-		'encoded_traits': 'encoded traits',
-		'observed_biotic_relationship': 'observed biotic relationship',
-		'chemical_administration': 'chemical administration',
+		'major_diet_change_in_last_six_months': 'major_diet_change_in_last_six_months',
+		'weight_loss_in_last_three_months': 'weight_loss_in_last_three_months',
+		'travel_outside_the_country_in_last_six_months': 'travel_outside_the_country_in_last_six_months',
+		'host_diet': 'host_diet',
+		'twin_sibling_presence': 'twin_sibling_presence',
+		'host_last_meal': 'host_last_meal',
+		'amniotic_fluid_gestation_state': 'amniotic_fluid_gestation_state',
+		'host_family_relationship': 'host_family_relationship',
+		'amniotic_fluid_maternal_health_status': 'amniotic_fluid_maternal_health_status',
+		'host_genotype': 'host_genotype',
+		'amniotic_fluid_foetal_health_status': 'amniotic_fluid_foetal_health_status',
+		'host_pulse': 'host_pulse',
+		'amniotic_fluid_color': 'amniotic_fluid_color',
+		'subspecific_genetic_lineage': 'subspecific_genetic_lineage',
+		'trophic_level': 'trophic_level',
+		'relationship_to_oxygen': 'relationship_to_oxygen',
+		'known_pathogenicity': 'known_pathogenicity',
+		'encoded_traits': 'encoded_traits',
+		'observed_biotic_relationship': 'observed_biotic_relationship',
+		'chemical_administration': 'chemical_administration',
 		'perturbation': 'perturbation',
 	}
 
@@ -5164,21 +5166,21 @@ class GSC_MIxS_human_associated_unit(SelfDescribingModel):
 	host_pulse_units = [('bpm', 'bpm')]
 
 	fields = {
-		'sample_volume_or_weight_for_DNA_extraction': 'sample volume or weight for DNA extraction',
-		'geographic_location_latitude': 'geographic location (latitude)',
-		'geographic_location_longitude': 'geographic location (longitude)',
-		'amount_or_size_of_sample_collected': 'amount or size of sample collected',
-		'sample_storage_duration': 'sample storage duration',
-		'sample_storage_temperature': 'sample storage temperature',
-		'host_age': 'host age',
-		'host_height': 'host height',
-		'host_body_mass_index': 'host body-mass index',
-		'host_total_mass': 'host total mass',
-		'host_body_temperature': 'host body temperature',
+		'sample_volume_or_weight_for_DNA_extraction': 'sample_volume_or_weight_for_DNA_extraction',
+		'geographic_location_latitude': 'geographic_location_latitude',
+		'geographic_location_longitude': 'geographic_location_longitude',
+		'amount_or_size_of_sample_collected': 'amount_or_size_of_sample_collected',
+		'sample_storage_duration': 'sample_storage_duration',
+		'sample_storage_temperature': 'sample_storage_temperature',
+		'host_age': 'host_age',
+		'host_height': 'host_height',
+		'host_body_mass_index': 'host_body_mass_index',
+		'host_total_mass': 'host_total_mass',
+		'host_body_temperature': 'host_body_temperature',
 		'temperature': 'temperature',
 		'salinity': 'salinity',
-		'weight_loss_in_last_three_months': 'weight loss in last three months',
-		'host_pulse': 'host pulse',
+		'weight_loss_in_last_three_months': 'weight_loss_in_last_three_months',
+		'host_pulse': 'host_pulse',
 	}
 
 	name = 'GSC_MIxS_human_associated'
@@ -5186,21 +5188,21 @@ class GSC_MIxS_human_associated_unit(SelfDescribingModel):
 	sampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE, default=1)
 	sample = models.ForeignKey(Sample, on_delete=models.CASCADE, default=1)
 	sample_type = models.IntegerField(default=1)
-	sample_volume_or_weight_for_DNA_extraction = models.CharField(max_length=120, choices=sample_volume_or_weight_for_DNA_extraction_units, blank=True)
-	geographic_location_latitude = models.CharField(max_length=120, choices=geographic_location_latitude_units, blank=True)
-	geographic_location_longitude = models.CharField(max_length=120, choices=geographic_location_longitude_units, blank=True)
-	amount_or_size_of_sample_collected = models.CharField(max_length=120, choices=amount_or_size_of_sample_collected_units, blank=True)
-	sample_storage_duration = models.CharField(max_length=120, choices=sample_storage_duration_units, blank=True)
-	sample_storage_temperature = models.CharField(max_length=120, choices=sample_storage_temperature_units, blank=True)
-	host_age = models.CharField(max_length=120, choices=host_age_units, blank=True)
-	host_height = models.CharField(max_length=120, choices=host_height_units, blank=True)
-	host_body_mass_index = models.CharField(max_length=120, choices=host_body_mass_index_units, blank=True)
-	host_total_mass = models.CharField(max_length=120, choices=host_total_mass_units, blank=True)
-	host_body_temperature = models.CharField(max_length=120, choices=host_body_temperature_units, blank=True)
-	temperature = models.CharField(max_length=120, choices=temperature_units, blank=True)
-	salinity = models.CharField(max_length=120, choices=salinity_units, blank=True)
-	weight_loss_in_last_three_months = models.CharField(max_length=120, choices=weight_loss_in_last_three_months_units, blank=True)
-	host_pulse = models.CharField(max_length=120, choices=host_pulse_units, blank=True)
+	sample_volume_or_weight_for_DNA_extraction = models.CharField(max_length=120, choices=sample_volume_or_weight_for_DNA_extraction_units, blank=False)
+	geographic_location_latitude = models.CharField(max_length=120, choices=geographic_location_latitude_units, blank=False)
+	geographic_location_longitude = models.CharField(max_length=120, choices=geographic_location_longitude_units, blank=False)
+	amount_or_size_of_sample_collected = models.CharField(max_length=120, choices=amount_or_size_of_sample_collected_units, blank=False)
+	sample_storage_duration = models.CharField(max_length=120, choices=sample_storage_duration_units, blank=False)
+	sample_storage_temperature = models.CharField(max_length=120, choices=sample_storage_temperature_units, blank=False)
+	host_age = models.CharField(max_length=120, choices=host_age_units, blank=False)
+	host_height = models.CharField(max_length=120, choices=host_height_units, blank=False)
+	host_body_mass_index = models.CharField(max_length=120, choices=host_body_mass_index_units, blank=False)
+	host_total_mass = models.CharField(max_length=120, choices=host_total_mass_units, blank=False)
+	host_body_temperature = models.CharField(max_length=120, choices=host_body_temperature_units, blank=False)
+	temperature = models.CharField(max_length=120, choices=temperature_units, blank=False)
+	salinity = models.CharField(max_length=120, choices=salinity_units, blank=False)
+	weight_loss_in_last_three_months = models.CharField(max_length=120, choices=weight_loss_in_last_three_months_units, blank=False)
+	host_pulse = models.CharField(max_length=120, choices=host_pulse_units, blank=False)
 
 class GSC_MIxS_water(SelfDescribingModel):
 
@@ -5296,7 +5298,7 @@ class GSC_MIxS_water(SelfDescribingModel):
 	sampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE, default=1)
 	sample = models.ForeignKey(Sample, on_delete=models.CASCADE, default=1)
 	sample_type = models.IntegerField(default=1)
-	project_name= models.CharField(max_length=120, blank=True,help_text="Name of th")
+	project_name= models.CharField(max_length=120, blank=False,help_text="Name of th")
 	experimental_factor= models.CharField(max_length=120, blank=True,help_text="Experiment")
 	ploidy= models.CharField(max_length=120, blank=True,help_text="The ploidy")
 	number_of_replicons= models.CharField(max_length=120, blank=True,help_text="Reports th", validators=[RegexValidator(number_of_replicons_validator)])
@@ -5325,16 +5327,16 @@ class GSC_MIxS_water(SelfDescribingModel):
 	relevant_standard_operating_procedures= models.CharField(max_length=120, blank=True,help_text="Standard o")
 	negative_control_type= models.CharField(max_length=120, blank=True,help_text="The substa")
 	positive_control_type= models.CharField(max_length=120, blank=True,help_text="The substa")
-	collection_date= models.CharField(max_length=120, blank=True,help_text="The date t", validators=[RegexValidator(collection_date_validator)])
+	collection_date= models.CharField(max_length=120, blank=False,help_text="The date t", validators=[RegexValidator(collection_date_validator)])
 	altitude= models.CharField(max_length=120, blank=True,help_text="The altitu", validators=[RegexValidator(altitude_validator)])
-	geographic_location_country_and_or_sea= models.CharField(max_length=120, blank=True,help_text="The locati", choices=geographic_location_country_and_or_sea_choice)
-	geographic_location_latitude= models.CharField(max_length=120, blank=True,help_text="The geogra", validators=[RegexValidator(geographic_location_latitude_validator)])
-	geographic_location_longitude= models.CharField(max_length=120, blank=True,help_text="The geogra", validators=[RegexValidator(geographic_location_longitude_validator)])
+	geographic_location_country_and_or_sea= models.CharField(max_length=120, blank=False,help_text="The locati", choices=geographic_location_country_and_or_sea_choice)
+	geographic_location_latitude= models.CharField(max_length=120, blank=False,help_text="The geogra", validators=[RegexValidator(geographic_location_latitude_validator)])
+	geographic_location_longitude= models.CharField(max_length=120, blank=False,help_text="The geogra", validators=[RegexValidator(geographic_location_longitude_validator)])
 	geographic_location_region_and_locality= models.CharField(max_length=120, blank=True,help_text="The geogra")
-	depth= models.CharField(max_length=120, blank=True,help_text="The vertic", validators=[RegexValidator(depth_validator)])
-	broad_scale_environmental_context= models.CharField(max_length=120, blank=True,help_text="Report the")
-	local_environmental_context= models.CharField(max_length=120, blank=True,help_text="Report the")
-	environmental_medium= models.CharField(max_length=120, blank=True,help_text="Report the")
+	depth= models.CharField(max_length=120, blank=False,help_text="The vertic", validators=[RegexValidator(depth_validator)])
+	broad_scale_environmental_context= models.CharField(max_length=120, blank=False,help_text="Report the")
+	local_environmental_context= models.CharField(max_length=120, blank=False,help_text="Report the")
+	environmental_medium= models.CharField(max_length=120, blank=False,help_text="Report the")
 	elevation= models.CharField(max_length=120, blank=True,help_text="The elevat", validators=[RegexValidator(elevation_validator)])
 	source_material_identifiers= models.CharField(max_length=120, blank=True,help_text="A unique i")
 	sample_material_processing= models.CharField(max_length=120, blank=True,help_text="A brief de")
@@ -5428,135 +5430,135 @@ class GSC_MIxS_water(SelfDescribingModel):
 	perturbation= models.CharField(max_length=120, blank=True,help_text="type of pe")
 
 	fields = {
-		'project_name': 'project name',
-		'experimental_factor': 'experimental factor',
+		'project_name': 'project_name',
+		'experimental_factor': 'experimental_factor',
 		'ploidy': 'ploidy',
-		'number_of_replicons': 'number of replicons',
-		'extrachromosomal_elements': 'extrachromosomal elements',
-		'estimated_size': 'estimated size',
-		'reference_for_biomaterial': 'reference for biomaterial',
-		'annotation_source': 'annotation source',
-		'sample_volume_or_weight_for_DNA_extraction': 'sample volume or weight for DNA extraction',
-		'nucleic_acid_extraction': 'nucleic acid extraction',
-		'nucleic_acid_amplification': 'nucleic acid amplification',
-		'library_size': 'library size',
-		'library_reads_sequenced': 'library reads sequenced',
-		'library_construction_method': 'library construction method',
-		'library_vector': 'library vector',
-		'library_screening_strategy': 'library screening strategy',
-		'target_gene': 'target gene',
-		'target_subfragment': 'target subfragment',
-		'pcr_primers': 'pcr primers',
-		'multiplex_identifiers': 'multiplex identifiers',
+		'number_of_replicons': 'number_of_replicons',
+		'extrachromosomal_elements': 'extrachromosomal_elements',
+		'estimated_size': 'estimated_size',
+		'reference_for_biomaterial': 'reference_for_biomaterial',
+		'annotation_source': 'annotation_source',
+		'sample_volume_or_weight_for_DNA_extraction': 'sample_volume_or_weight_for_DNA_extraction',
+		'nucleic_acid_extraction': 'nucleic_acid_extraction',
+		'nucleic_acid_amplification': 'nucleic_acid_amplification',
+		'library_size': 'library_size',
+		'library_reads_sequenced': 'library_reads_sequenced',
+		'library_construction_method': 'library_construction_method',
+		'library_vector': 'library_vector',
+		'library_screening_strategy': 'library_screening_strategy',
+		'target_gene': 'target_gene',
+		'target_subfragment': 'target_subfragment',
+		'pcr_primers': 'pcr_primers',
+		'multiplex_identifiers': 'multiplex_identifiers',
 		'adapters': 'adapters',
-		'pcr_conditions': 'pcr conditions',
-		'sequencing_method': 'sequencing method',
-		'sequence_quality_check': 'sequence quality check',
-		'chimera_check_software': 'chimera check software',
-		'relevant_electronic_resources': 'relevant electronic resources',
-		'relevant_standard_operating_procedures': 'relevant standard operating procedures',
-		'negative_control_type': 'negative control type',
-		'positive_control_type': 'positive control type',
-		'collection_date': 'collection date',
+		'pcr_conditions': 'pcr_conditions',
+		'sequencing_method': 'sequencing_method',
+		'sequence_quality_check': 'sequence_quality_check',
+		'chimera_check_software': 'chimera_check_software',
+		'relevant_electronic_resources': 'relevant_electronic_resources',
+		'relevant_standard_operating_procedures': 'relevant_standard_operating_procedures',
+		'negative_control_type': 'negative_control_type',
+		'positive_control_type': 'positive_control_type',
+		'collection_date': 'collection_date',
 		'altitude': 'altitude',
-		'geographic_location_country_and_or_sea': 'geographic location (country and/or sea)',
-		'geographic_location_latitude': 'geographic location (latitude)',
-		'geographic_location_longitude': 'geographic location (longitude)',
-		'geographic_location_region_and_locality': 'geographic location (region and locality)',
+		'geographic_location_country_and_or_sea': 'geographic_location_country_and_or_sea',
+		'geographic_location_latitude': 'geographic_location_latitude',
+		'geographic_location_longitude': 'geographic_location_longitude',
+		'geographic_location_region_and_locality': 'geographic_location_region_and_locality',
 		'depth': 'depth',
-		'broad_scale_environmental_context': 'broad-scale environmental context',
-		'local_environmental_context': 'local environmental context',
-		'environmental_medium': 'environmental medium',
+		'broad_scale_environmental_context': 'broad_scale_environmental_context',
+		'local_environmental_context': 'local_environmental_context',
+		'environmental_medium': 'environmental_medium',
 		'elevation': 'elevation',
-		'source_material_identifiers': 'source material identifiers',
-		'sample_material_processing': 'sample material processing',
-		'isolation_and_growth_condition': 'isolation and growth condition',
+		'source_material_identifiers': 'source_material_identifiers',
+		'sample_material_processing': 'sample_material_processing',
+		'isolation_and_growth_condition': 'isolation_and_growth_condition',
 		'propagation': 'propagation',
-		'amount_or_size_of_sample_collected': 'amount or size of sample collected',
+		'amount_or_size_of_sample_collected': 'amount_or_size_of_sample_collected',
 		'biomass': 'biomass',
 		'density': 'density',
-		'oxygenation_status_of_sample': 'oxygenation status of sample',
-		'organism_count': 'organism count',
-		'sample_storage_duration': 'sample storage duration',
-		'sample_storage_temperature': 'sample storage temperature',
-		'sample_storage_location': 'sample storage location',
-		'sample_collection_device': 'sample collection device',
-		'sample_collection_method': 'sample collection method',
-		'host_disease_status': 'host disease status',
-		'host_scientific_name': 'host scientific name',
+		'oxygenation_status_of_sample': 'oxygenation_status_of_sample',
+		'organism_count': 'organism_count',
+		'sample_storage_duration': 'sample_storage_duration',
+		'sample_storage_temperature': 'sample_storage_temperature',
+		'sample_storage_location': 'sample_storage_location',
+		'sample_collection_device': 'sample_collection_device',
+		'sample_collection_method': 'sample_collection_method',
+		'host_disease_status': 'host_disease_status',
+		'host_scientific_name': 'host_scientific_name',
 		'alkalinity': 'alkalinity',
-		'atmospheric_data': 'atmospheric data',
+		'atmospheric_data': 'atmospheric_data',
 		'conductivity': 'conductivity',
-		'water_current': 'water current',
+		'water_current': 'water_current',
 		'fluorescence': 'fluorescence',
-		'light_intensity': 'light intensity',
-		'mean_friction_velocity': 'mean friction velocity',
-		'mean_peak_friction_velocity': 'mean peak friction velocity',
-		'downward_PAR': 'downward PAR',
-		'photon_flux': 'photon flux',
+		'light_intensity': 'light_intensity',
+		'mean_friction_velocity': 'mean_friction_velocity',
+		'mean_peak_friction_velocity': 'mean_peak_friction_velocity',
+		'downward_PAR': 'downward_PAR',
+		'photon_flux': 'photon_flux',
 		'pressure': 'pressure',
 		'temperature': 'temperature',
-		'tidal_stage': 'tidal stage',
+		'tidal_stage': 'tidal_stage',
 		'pH': 'pH',
-		'total_depth_of_water_column': 'total depth of water column',
-		'alkyl_diethers': 'alkyl diethers',
-		'aminopeptidase_activity': 'aminopeptidase activity',
+		'total_depth_of_water_column': 'total_depth_of_water_column',
+		'alkyl_diethers': 'alkyl_diethers',
+		'aminopeptidase_activity': 'aminopeptidase_activity',
 		'ammonium': 'ammonium',
-		'bacterial_carbon_production': 'bacterial carbon production',
-		'bacterial_production': 'bacterial production',
-		'bacterial_respiration': 'bacterial respiration',
+		'bacterial_carbon_production': 'bacterial_carbon_production',
+		'bacterial_production': 'bacterial_production',
+		'bacterial_respiration': 'bacterial_respiration',
 		'bishomohopanol': 'bishomohopanol',
 		'bromide': 'bromide',
 		'calcium': 'calcium',
-		'carbon_nitrogen_ratio': 'carbon/nitrogen ratio',
+		'carbon_nitrogen_ratio': 'carbon_nitrogen_ratio',
 		'chloride': 'chloride',
 		'chlorophyll': 'chlorophyll',
-		'diether_lipids': 'diether lipids',
-		'dissolved_carbon_dioxide': 'dissolved carbon dioxide',
-		'dissolved_hydrogen': 'dissolved hydrogen',
-		'dissolved_inorganic_carbon': 'dissolved inorganic carbon',
-		'dissolved_inorganic_nitrogen': 'dissolved inorganic nitrogen',
-		'dissolved_inorganic_phosphorus': 'dissolved inorganic phosphorus',
-		'dissolved_organic_carbon': 'dissolved organic carbon',
-		'dissolved_organic_nitrogen': 'dissolved organic nitrogen',
-		'dissolved_oxygen': 'dissolved oxygen',
-		'glucosidase_activity': 'glucosidase activity',
+		'diether_lipids': 'diether_lipids',
+		'dissolved_carbon_dioxide': 'dissolved_carbon_dioxide',
+		'dissolved_hydrogen': 'dissolved_hydrogen',
+		'dissolved_inorganic_carbon': 'dissolved_inorganic_carbon',
+		'dissolved_inorganic_nitrogen': 'dissolved_inorganic_nitrogen',
+		'dissolved_inorganic_phosphorus': 'dissolved_inorganic_phosphorus',
+		'dissolved_organic_carbon': 'dissolved_organic_carbon',
+		'dissolved_organic_nitrogen': 'dissolved_organic_nitrogen',
+		'dissolved_oxygen': 'dissolved_oxygen',
+		'glucosidase_activity': 'glucosidase_activity',
 		'magnesium': 'magnesium',
-		'n_alkanes': 'n-alkanes',
+		'n_alkanes': 'n_alkanes',
 		'nitrate': 'nitrate',
 		'nitrite': 'nitrite',
 		'nitrogen': 'nitrogen',
-		'organic_carbon': 'organic carbon',
-		'organic_matter': 'organic matter',
-		'organic_nitrogen': 'organic nitrogen',
-		'particulate_organic_carbon': 'particulate organic carbon',
-		'particulate_organic_nitrogen': 'particulate organic nitrogen',
-		'petroleum_hydrocarbon': 'petroleum hydrocarbon',
+		'organic_carbon': 'organic_carbon',
+		'organic_matter': 'organic_matter',
+		'organic_nitrogen': 'organic_nitrogen',
+		'particulate_organic_carbon': 'particulate_organic_carbon',
+		'particulate_organic_nitrogen': 'particulate_organic_nitrogen',
+		'petroleum_hydrocarbon': 'petroleum_hydrocarbon',
 		'phaeopigments': 'phaeopigments',
 		'phosphate': 'phosphate',
-		'phospholipid_fatty_acid': 'phospholipid fatty acid',
+		'phospholipid_fatty_acid': 'phospholipid_fatty_acid',
 		'potassium': 'potassium',
-		'primary_production': 'primary production',
-		'redox_potential': 'redox potential',
+		'primary_production': 'primary_production',
+		'redox_potential': 'redox_potential',
 		'salinity': 'salinity',
 		'silicate': 'silicate',
 		'sodium': 'sodium',
-		'soluble_reactive_phosphorus': 'soluble reactive phosphorus',
+		'soluble_reactive_phosphorus': 'soluble_reactive_phosphorus',
 		'sulfate': 'sulfate',
 		'sulfide': 'sulfide',
-		'suspended_particulate_matter': 'suspended particulate matter',
-		'total_dissolved_nitrogen': 'total dissolved nitrogen',
-		'total_inorganic_nitrogen': 'total inorganic nitrogen',
-		'total_nitrogen': 'total nitrogen',
-		'total_particulate_carbon': 'total particulate carbon',
-		'total_phosphorus': 'total phosphorus',
-		'subspecific_genetic_lineage': 'subspecific genetic lineage',
-		'trophic_level': 'trophic level',
-		'relationship_to_oxygen': 'relationship to oxygen',
-		'known_pathogenicity': 'known pathogenicity',
-		'encoded_traits': 'encoded traits',
-		'observed_biotic_relationship': 'observed biotic relationship',
-		'chemical_administration': 'chemical administration',
+		'suspended_particulate_matter': 'suspended_particulate_matter',
+		'total_dissolved_nitrogen': 'total_dissolved_nitrogen',
+		'total_inorganic_nitrogen': 'total_inorganic_nitrogen',
+		'total_nitrogen': 'total_nitrogen',
+		'total_particulate_carbon': 'total_particulate_carbon',
+		'total_phosphorus': 'total_phosphorus',
+		'subspecific_genetic_lineage': 'subspecific_genetic_lineage',
+		'trophic_level': 'trophic_level',
+		'relationship_to_oxygen': 'relationship_to_oxygen',
+		'known_pathogenicity': 'known_pathogenicity',
+		'encoded_traits': 'encoded_traits',
+		'observed_biotic_relationship': 'observed_biotic_relationship',
+		'chemical_administration': 'chemical_administration',
 		'perturbation': 'perturbation',
 	}
 
@@ -5639,79 +5641,79 @@ class GSC_MIxS_water_unit(SelfDescribingModel):
 	total_phosphorus_units = [('µmol/L', 'µmol/L')]
 
 	fields = {
-		'sample_volume_or_weight_for_DNA_extraction': 'sample volume or weight for DNA extraction',
+		'sample_volume_or_weight_for_DNA_extraction': 'sample_volume_or_weight_for_DNA_extraction',
 		'altitude': 'altitude',
-		'geographic_location_latitude': 'geographic location (latitude)',
-		'geographic_location_longitude': 'geographic location (longitude)',
+		'geographic_location_latitude': 'geographic_location_latitude',
+		'geographic_location_longitude': 'geographic_location_longitude',
 		'depth': 'depth',
 		'elevation': 'elevation',
-		'amount_or_size_of_sample_collected': 'amount or size of sample collected',
+		'amount_or_size_of_sample_collected': 'amount_or_size_of_sample_collected',
 		'biomass': 'biomass',
 		'density': 'density',
-		'sample_storage_duration': 'sample storage duration',
-		'sample_storage_temperature': 'sample storage temperature',
+		'sample_storage_duration': 'sample_storage_duration',
+		'sample_storage_temperature': 'sample_storage_temperature',
 		'alkalinity': 'alkalinity',
 		'conductivity': 'conductivity',
-		'water_current': 'water current',
+		'water_current': 'water_current',
 		'fluorescence': 'fluorescence',
-		'light_intensity': 'light intensity',
-		'mean_friction_velocity': 'mean friction velocity',
-		'mean_peak_friction_velocity': 'mean peak friction velocity',
-		'downward_PAR': 'downward PAR',
-		'photon_flux': 'photon flux',
+		'light_intensity': 'light_intensity',
+		'mean_friction_velocity': 'mean_friction_velocity',
+		'mean_peak_friction_velocity': 'mean_peak_friction_velocity',
+		'downward_PAR': 'downward_PAR',
+		'photon_flux': 'photon_flux',
 		'pressure': 'pressure',
 		'temperature': 'temperature',
-		'total_depth_of_water_column': 'total depth of water column',
-		'alkyl_diethers': 'alkyl diethers',
-		'aminopeptidase_activity': 'aminopeptidase activity',
+		'total_depth_of_water_column': 'total_depth_of_water_column',
+		'alkyl_diethers': 'alkyl_diethers',
+		'aminopeptidase_activity': 'aminopeptidase_activity',
 		'ammonium': 'ammonium',
-		'bacterial_carbon_production': 'bacterial carbon production',
-		'bacterial_production': 'bacterial production',
-		'bacterial_respiration': 'bacterial respiration',
+		'bacterial_carbon_production': 'bacterial_carbon_production',
+		'bacterial_production': 'bacterial_production',
+		'bacterial_respiration': 'bacterial_respiration',
 		'bishomohopanol': 'bishomohopanol',
 		'bromide': 'bromide',
 		'calcium': 'calcium',
 		'chloride': 'chloride',
 		'chlorophyll': 'chlorophyll',
-		'diether_lipids': 'diether lipids',
-		'dissolved_carbon_dioxide': 'dissolved carbon dioxide',
-		'dissolved_hydrogen': 'dissolved hydrogen',
-		'dissolved_inorganic_carbon': 'dissolved inorganic carbon',
-		'dissolved_inorganic_nitrogen': 'dissolved inorganic nitrogen',
-		'dissolved_inorganic_phosphorus': 'dissolved inorganic phosphorus',
-		'dissolved_organic_carbon': 'dissolved organic carbon',
-		'dissolved_organic_nitrogen': 'dissolved organic nitrogen',
-		'dissolved_oxygen': 'dissolved oxygen',
-		'glucosidase_activity': 'glucosidase activity',
+		'diether_lipids': 'diether_lipids',
+		'dissolved_carbon_dioxide': 'dissolved_carbon_dioxide',
+		'dissolved_hydrogen': 'dissolved_hydrogen',
+		'dissolved_inorganic_carbon': 'dissolved_inorganic_carbon',
+		'dissolved_inorganic_nitrogen': 'dissolved_inorganic_nitrogen',
+		'dissolved_inorganic_phosphorus': 'dissolved_inorganic_phosphorus',
+		'dissolved_organic_carbon': 'dissolved_organic_carbon',
+		'dissolved_organic_nitrogen': 'dissolved_organic_nitrogen',
+		'dissolved_oxygen': 'dissolved_oxygen',
+		'glucosidase_activity': 'glucosidase_activity',
 		'magnesium': 'magnesium',
-		'n_alkanes': 'n-alkanes',
+		'n_alkanes': 'n_alkanes',
 		'nitrate': 'nitrate',
 		'nitrite': 'nitrite',
 		'nitrogen': 'nitrogen',
-		'organic_carbon': 'organic carbon',
-		'organic_matter': 'organic matter',
-		'organic_nitrogen': 'organic nitrogen',
-		'particulate_organic_carbon': 'particulate organic carbon',
-		'particulate_organic_nitrogen': 'particulate organic nitrogen',
-		'petroleum_hydrocarbon': 'petroleum hydrocarbon',
+		'organic_carbon': 'organic_carbon',
+		'organic_matter': 'organic_matter',
+		'organic_nitrogen': 'organic_nitrogen',
+		'particulate_organic_carbon': 'particulate_organic_carbon',
+		'particulate_organic_nitrogen': 'particulate_organic_nitrogen',
+		'petroleum_hydrocarbon': 'petroleum_hydrocarbon',
 		'phaeopigments': 'phaeopigments',
 		'phosphate': 'phosphate',
-		'phospholipid_fatty_acid': 'phospholipid fatty acid',
+		'phospholipid_fatty_acid': 'phospholipid_fatty_acid',
 		'potassium': 'potassium',
-		'primary_production': 'primary production',
-		'redox_potential': 'redox potential',
+		'primary_production': 'primary_production',
+		'redox_potential': 'redox_potential',
 		'salinity': 'salinity',
 		'silicate': 'silicate',
 		'sodium': 'sodium',
-		'soluble_reactive_phosphorus': 'soluble reactive phosphorus',
+		'soluble_reactive_phosphorus': 'soluble_reactive_phosphorus',
 		'sulfate': 'sulfate',
 		'sulfide': 'sulfide',
-		'suspended_particulate_matter': 'suspended particulate matter',
-		'total_dissolved_nitrogen': 'total dissolved nitrogen',
-		'total_inorganic_nitrogen': 'total inorganic nitrogen',
-		'total_nitrogen': 'total nitrogen',
-		'total_particulate_carbon': 'total particulate carbon',
-		'total_phosphorus': 'total phosphorus',
+		'suspended_particulate_matter': 'suspended_particulate_matter',
+		'total_dissolved_nitrogen': 'total_dissolved_nitrogen',
+		'total_inorganic_nitrogen': 'total_inorganic_nitrogen',
+		'total_nitrogen': 'total_nitrogen',
+		'total_particulate_carbon': 'total_particulate_carbon',
+		'total_phosphorus': 'total_phosphorus',
 	}
 
 	name = 'GSC_MIxS_water'
@@ -5719,79 +5721,79 @@ class GSC_MIxS_water_unit(SelfDescribingModel):
 	sampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE, default=1)
 	sample = models.ForeignKey(Sample, on_delete=models.CASCADE, default=1)
 	sample_type = models.IntegerField(default=1)
-	sample_volume_or_weight_for_DNA_extraction = models.CharField(max_length=120, choices=sample_volume_or_weight_for_DNA_extraction_units, blank=True)
-	altitude = models.CharField(max_length=120, choices=altitude_units, blank=True)
-	geographic_location_latitude = models.CharField(max_length=120, choices=geographic_location_latitude_units, blank=True)
-	geographic_location_longitude = models.CharField(max_length=120, choices=geographic_location_longitude_units, blank=True)
-	depth = models.CharField(max_length=120, choices=depth_units, blank=True)
-	elevation = models.CharField(max_length=120, choices=elevation_units, blank=True)
-	amount_or_size_of_sample_collected = models.CharField(max_length=120, choices=amount_or_size_of_sample_collected_units, blank=True)
-	biomass = models.CharField(max_length=120, choices=biomass_units, blank=True)
-	density = models.CharField(max_length=120, choices=density_units, blank=True)
-	sample_storage_duration = models.CharField(max_length=120, choices=sample_storage_duration_units, blank=True)
-	sample_storage_temperature = models.CharField(max_length=120, choices=sample_storage_temperature_units, blank=True)
-	alkalinity = models.CharField(max_length=120, choices=alkalinity_units, blank=True)
-	conductivity = models.CharField(max_length=120, choices=conductivity_units, blank=True)
-	water_current = models.CharField(max_length=120, choices=water_current_units, blank=True)
-	fluorescence = models.CharField(max_length=120, choices=fluorescence_units, blank=True)
-	light_intensity = models.CharField(max_length=120, choices=light_intensity_units, blank=True)
-	mean_friction_velocity = models.CharField(max_length=120, choices=mean_friction_velocity_units, blank=True)
-	mean_peak_friction_velocity = models.CharField(max_length=120, choices=mean_peak_friction_velocity_units, blank=True)
-	downward_PAR = models.CharField(max_length=120, choices=downward_PAR_units, blank=True)
-	photon_flux = models.CharField(max_length=120, choices=photon_flux_units, blank=True)
-	pressure = models.CharField(max_length=120, choices=pressure_units, blank=True)
-	temperature = models.CharField(max_length=120, choices=temperature_units, blank=True)
-	total_depth_of_water_column = models.CharField(max_length=120, choices=total_depth_of_water_column_units, blank=True)
-	alkyl_diethers = models.CharField(max_length=120, choices=alkyl_diethers_units, blank=True)
-	aminopeptidase_activity = models.CharField(max_length=120, choices=aminopeptidase_activity_units, blank=True)
-	ammonium = models.CharField(max_length=120, choices=ammonium_units, blank=True)
-	bacterial_carbon_production = models.CharField(max_length=120, choices=bacterial_carbon_production_units, blank=True)
-	bacterial_production = models.CharField(max_length=120, choices=bacterial_production_units, blank=True)
-	bacterial_respiration = models.CharField(max_length=120, choices=bacterial_respiration_units, blank=True)
-	bishomohopanol = models.CharField(max_length=120, choices=bishomohopanol_units, blank=True)
-	bromide = models.CharField(max_length=120, choices=bromide_units, blank=True)
-	calcium = models.CharField(max_length=120, choices=calcium_units, blank=True)
-	chloride = models.CharField(max_length=120, choices=chloride_units, blank=True)
-	chlorophyll = models.CharField(max_length=120, choices=chlorophyll_units, blank=True)
-	diether_lipids = models.CharField(max_length=120, choices=diether_lipids_units, blank=True)
-	dissolved_carbon_dioxide = models.CharField(max_length=120, choices=dissolved_carbon_dioxide_units, blank=True)
-	dissolved_hydrogen = models.CharField(max_length=120, choices=dissolved_hydrogen_units, blank=True)
-	dissolved_inorganic_carbon = models.CharField(max_length=120, choices=dissolved_inorganic_carbon_units, blank=True)
-	dissolved_inorganic_nitrogen = models.CharField(max_length=120, choices=dissolved_inorganic_nitrogen_units, blank=True)
-	dissolved_inorganic_phosphorus = models.CharField(max_length=120, choices=dissolved_inorganic_phosphorus_units, blank=True)
-	dissolved_organic_carbon = models.CharField(max_length=120, choices=dissolved_organic_carbon_units, blank=True)
-	dissolved_organic_nitrogen = models.CharField(max_length=120, choices=dissolved_organic_nitrogen_units, blank=True)
-	dissolved_oxygen = models.CharField(max_length=120, choices=dissolved_oxygen_units, blank=True)
-	glucosidase_activity = models.CharField(max_length=120, choices=glucosidase_activity_units, blank=True)
-	magnesium = models.CharField(max_length=120, choices=magnesium_units, blank=True)
-	n_alkanes = models.CharField(max_length=120, choices=n_alkanes_units, blank=True)
-	nitrate = models.CharField(max_length=120, choices=nitrate_units, blank=True)
-	nitrite = models.CharField(max_length=120, choices=nitrite_units, blank=True)
-	nitrogen = models.CharField(max_length=120, choices=nitrogen_units, blank=True)
-	organic_carbon = models.CharField(max_length=120, choices=organic_carbon_units, blank=True)
-	organic_matter = models.CharField(max_length=120, choices=organic_matter_units, blank=True)
-	organic_nitrogen = models.CharField(max_length=120, choices=organic_nitrogen_units, blank=True)
-	particulate_organic_carbon = models.CharField(max_length=120, choices=particulate_organic_carbon_units, blank=True)
-	particulate_organic_nitrogen = models.CharField(max_length=120, choices=particulate_organic_nitrogen_units, blank=True)
-	petroleum_hydrocarbon = models.CharField(max_length=120, choices=petroleum_hydrocarbon_units, blank=True)
-	phaeopigments = models.CharField(max_length=120, choices=phaeopigments_units, blank=True)
-	phosphate = models.CharField(max_length=120, choices=phosphate_units, blank=True)
-	phospholipid_fatty_acid = models.CharField(max_length=120, choices=phospholipid_fatty_acid_units, blank=True)
-	potassium = models.CharField(max_length=120, choices=potassium_units, blank=True)
-	primary_production = models.CharField(max_length=120, choices=primary_production_units, blank=True)
-	redox_potential = models.CharField(max_length=120, choices=redox_potential_units, blank=True)
-	salinity = models.CharField(max_length=120, choices=salinity_units, blank=True)
-	silicate = models.CharField(max_length=120, choices=silicate_units, blank=True)
-	sodium = models.CharField(max_length=120, choices=sodium_units, blank=True)
-	soluble_reactive_phosphorus = models.CharField(max_length=120, choices=soluble_reactive_phosphorus_units, blank=True)
-	sulfate = models.CharField(max_length=120, choices=sulfate_units, blank=True)
-	sulfide = models.CharField(max_length=120, choices=sulfide_units, blank=True)
-	suspended_particulate_matter = models.CharField(max_length=120, choices=suspended_particulate_matter_units, blank=True)
-	total_dissolved_nitrogen = models.CharField(max_length=120, choices=total_dissolved_nitrogen_units, blank=True)
-	total_inorganic_nitrogen = models.CharField(max_length=120, choices=total_inorganic_nitrogen_units, blank=True)
-	total_nitrogen = models.CharField(max_length=120, choices=total_nitrogen_units, blank=True)
-	total_particulate_carbon = models.CharField(max_length=120, choices=total_particulate_carbon_units, blank=True)
-	total_phosphorus = models.CharField(max_length=120, choices=total_phosphorus_units, blank=True)
+	sample_volume_or_weight_for_DNA_extraction = models.CharField(max_length=120, choices=sample_volume_or_weight_for_DNA_extraction_units, blank=False)
+	altitude = models.CharField(max_length=120, choices=altitude_units, blank=False)
+	geographic_location_latitude = models.CharField(max_length=120, choices=geographic_location_latitude_units, blank=False)
+	geographic_location_longitude = models.CharField(max_length=120, choices=geographic_location_longitude_units, blank=False)
+	depth = models.CharField(max_length=120, choices=depth_units, blank=False)
+	elevation = models.CharField(max_length=120, choices=elevation_units, blank=False)
+	amount_or_size_of_sample_collected = models.CharField(max_length=120, choices=amount_or_size_of_sample_collected_units, blank=False)
+	biomass = models.CharField(max_length=120, choices=biomass_units, blank=False)
+	density = models.CharField(max_length=120, choices=density_units, blank=False)
+	sample_storage_duration = models.CharField(max_length=120, choices=sample_storage_duration_units, blank=False)
+	sample_storage_temperature = models.CharField(max_length=120, choices=sample_storage_temperature_units, blank=False)
+	alkalinity = models.CharField(max_length=120, choices=alkalinity_units, blank=False)
+	conductivity = models.CharField(max_length=120, choices=conductivity_units, blank=False)
+	water_current = models.CharField(max_length=120, choices=water_current_units, blank=False)
+	fluorescence = models.CharField(max_length=120, choices=fluorescence_units, blank=False)
+	light_intensity = models.CharField(max_length=120, choices=light_intensity_units, blank=False)
+	mean_friction_velocity = models.CharField(max_length=120, choices=mean_friction_velocity_units, blank=False)
+	mean_peak_friction_velocity = models.CharField(max_length=120, choices=mean_peak_friction_velocity_units, blank=False)
+	downward_PAR = models.CharField(max_length=120, choices=downward_PAR_units, blank=False)
+	photon_flux = models.CharField(max_length=120, choices=photon_flux_units, blank=False)
+	pressure = models.CharField(max_length=120, choices=pressure_units, blank=False)
+	temperature = models.CharField(max_length=120, choices=temperature_units, blank=False)
+	total_depth_of_water_column = models.CharField(max_length=120, choices=total_depth_of_water_column_units, blank=False)
+	alkyl_diethers = models.CharField(max_length=120, choices=alkyl_diethers_units, blank=False)
+	aminopeptidase_activity = models.CharField(max_length=120, choices=aminopeptidase_activity_units, blank=False)
+	ammonium = models.CharField(max_length=120, choices=ammonium_units, blank=False)
+	bacterial_carbon_production = models.CharField(max_length=120, choices=bacterial_carbon_production_units, blank=False)
+	bacterial_production = models.CharField(max_length=120, choices=bacterial_production_units, blank=False)
+	bacterial_respiration = models.CharField(max_length=120, choices=bacterial_respiration_units, blank=False)
+	bishomohopanol = models.CharField(max_length=120, choices=bishomohopanol_units, blank=False)
+	bromide = models.CharField(max_length=120, choices=bromide_units, blank=False)
+	calcium = models.CharField(max_length=120, choices=calcium_units, blank=False)
+	chloride = models.CharField(max_length=120, choices=chloride_units, blank=False)
+	chlorophyll = models.CharField(max_length=120, choices=chlorophyll_units, blank=False)
+	diether_lipids = models.CharField(max_length=120, choices=diether_lipids_units, blank=False)
+	dissolved_carbon_dioxide = models.CharField(max_length=120, choices=dissolved_carbon_dioxide_units, blank=False)
+	dissolved_hydrogen = models.CharField(max_length=120, choices=dissolved_hydrogen_units, blank=False)
+	dissolved_inorganic_carbon = models.CharField(max_length=120, choices=dissolved_inorganic_carbon_units, blank=False)
+	dissolved_inorganic_nitrogen = models.CharField(max_length=120, choices=dissolved_inorganic_nitrogen_units, blank=False)
+	dissolved_inorganic_phosphorus = models.CharField(max_length=120, choices=dissolved_inorganic_phosphorus_units, blank=False)
+	dissolved_organic_carbon = models.CharField(max_length=120, choices=dissolved_organic_carbon_units, blank=False)
+	dissolved_organic_nitrogen = models.CharField(max_length=120, choices=dissolved_organic_nitrogen_units, blank=False)
+	dissolved_oxygen = models.CharField(max_length=120, choices=dissolved_oxygen_units, blank=False)
+	glucosidase_activity = models.CharField(max_length=120, choices=glucosidase_activity_units, blank=False)
+	magnesium = models.CharField(max_length=120, choices=magnesium_units, blank=False)
+	n_alkanes = models.CharField(max_length=120, choices=n_alkanes_units, blank=False)
+	nitrate = models.CharField(max_length=120, choices=nitrate_units, blank=False)
+	nitrite = models.CharField(max_length=120, choices=nitrite_units, blank=False)
+	nitrogen = models.CharField(max_length=120, choices=nitrogen_units, blank=False)
+	organic_carbon = models.CharField(max_length=120, choices=organic_carbon_units, blank=False)
+	organic_matter = models.CharField(max_length=120, choices=organic_matter_units, blank=False)
+	organic_nitrogen = models.CharField(max_length=120, choices=organic_nitrogen_units, blank=False)
+	particulate_organic_carbon = models.CharField(max_length=120, choices=particulate_organic_carbon_units, blank=False)
+	particulate_organic_nitrogen = models.CharField(max_length=120, choices=particulate_organic_nitrogen_units, blank=False)
+	petroleum_hydrocarbon = models.CharField(max_length=120, choices=petroleum_hydrocarbon_units, blank=False)
+	phaeopigments = models.CharField(max_length=120, choices=phaeopigments_units, blank=False)
+	phosphate = models.CharField(max_length=120, choices=phosphate_units, blank=False)
+	phospholipid_fatty_acid = models.CharField(max_length=120, choices=phospholipid_fatty_acid_units, blank=False)
+	potassium = models.CharField(max_length=120, choices=potassium_units, blank=False)
+	primary_production = models.CharField(max_length=120, choices=primary_production_units, blank=False)
+	redox_potential = models.CharField(max_length=120, choices=redox_potential_units, blank=False)
+	salinity = models.CharField(max_length=120, choices=salinity_units, blank=False)
+	silicate = models.CharField(max_length=120, choices=silicate_units, blank=False)
+	sodium = models.CharField(max_length=120, choices=sodium_units, blank=False)
+	soluble_reactive_phosphorus = models.CharField(max_length=120, choices=soluble_reactive_phosphorus_units, blank=False)
+	sulfate = models.CharField(max_length=120, choices=sulfate_units, blank=False)
+	sulfide = models.CharField(max_length=120, choices=sulfide_units, blank=False)
+	suspended_particulate_matter = models.CharField(max_length=120, choices=suspended_particulate_matter_units, blank=False)
+	total_dissolved_nitrogen = models.CharField(max_length=120, choices=total_dissolved_nitrogen_units, blank=False)
+	total_inorganic_nitrogen = models.CharField(max_length=120, choices=total_inorganic_nitrogen_units, blank=False)
+	total_nitrogen = models.CharField(max_length=120, choices=total_nitrogen_units, blank=False)
+	total_particulate_carbon = models.CharField(max_length=120, choices=total_particulate_carbon_units, blank=False)
+	total_phosphorus = models.CharField(max_length=120, choices=total_phosphorus_units, blank=False)
 
 class ENA_binned_metagenome(SelfDescribingModel):
 
@@ -5822,9 +5824,9 @@ class ENA_binned_metagenome(SelfDescribingModel):
 	sample_type = models.IntegerField(default=1)
 	relationship_to_oxygen= models.CharField(max_length=120, blank=True,help_text="Is this or", choices=relationship_to_oxygen_choice)
 	sample_collection_method= models.CharField(max_length=120, blank=True,help_text="The method")
-	metagenomic_source= models.CharField(max_length=120, blank=True,help_text="The metage")
-	sample_derived_from= models.CharField(max_length=120, blank=True,help_text="Reference ", validators=[RegexValidator(sample_derived_from_validator)])
-	project_name= models.CharField(max_length=120, blank=True,help_text="Name of th")
+	metagenomic_source= models.CharField(max_length=120, blank=False,help_text="The metage")
+	sample_derived_from= models.CharField(max_length=120, blank=False,help_text="Reference ", validators=[RegexValidator(sample_derived_from_validator)])
+	project_name= models.CharField(max_length=120, blank=False,help_text="Name of th")
 	multiplex_identifiers= models.CharField(max_length=120, blank=True,help_text="Molecular ")
 	relevant_electronic_resources= models.CharField(max_length=120, blank=True,help_text="A related ")
 	relevant_standard_operating_procedures= models.CharField(max_length=120, blank=True,help_text="Standard o")
@@ -5832,32 +5834,32 @@ class ENA_binned_metagenome(SelfDescribingModel):
 	sixteen_s_recovered= models.CharField(max_length=120, blank=True,help_text="Can a 16S ", choices=sixteen_s_recovered_choice)
 	sixteen_s_recovery_software= models.CharField(max_length=120, blank=True,help_text="Tools used")
 	tRNA_extraction_software= models.CharField(max_length=120, blank=True,help_text="Tools used")
-	completeness_score= models.CharField(max_length=120, blank=True,help_text="Completene", validators=[RegexValidator(completeness_score_validator)])
-	completeness_software= models.CharField(max_length=120, blank=True,help_text="Tools used")
+	completeness_score= models.CharField(max_length=120, blank=False,help_text="Completene", validators=[RegexValidator(completeness_score_validator)])
+	completeness_software= models.CharField(max_length=120, blank=False,help_text="Tools used")
 	completeness_approach= models.CharField(max_length=120, blank=True,help_text="The approa")
-	contamination_score= models.CharField(max_length=120, blank=True,help_text="The contam", validators=[RegexValidator(contamination_score_validator)])
+	contamination_score= models.CharField(max_length=120, blank=False,help_text="The contam", validators=[RegexValidator(contamination_score_validator)])
 	contamination_screening_input= models.CharField(max_length=120, blank=True,help_text="The type o", choices=contamination_screening_input_choice)
 	contamination_screening_parameters= models.CharField(max_length=120, blank=True,help_text="Specific p")
 	decontamination_software= models.CharField(max_length=120, blank=True,help_text="Tool(s) us")
-	binning_software= models.CharField(max_length=120, blank=True,help_text="Tool(s) us")
+	binning_software= models.CharField(max_length=120, blank=False,help_text="Tool(s) us")
 	reassembly_post_binning= models.CharField(max_length=120, blank=True,help_text="Has an ass", choices=reassembly_post_binning_choice)
 	MAG_coverage_software= models.CharField(max_length=120, blank=True,help_text="Tool(s) us")
-	assembly_quality= models.CharField(max_length=120, blank=True,help_text="The assemb", choices=assembly_quality_choice)
+	assembly_quality= models.CharField(max_length=120, blank=False,help_text="The assemb", choices=assembly_quality_choice)
 	investigation_type= models.CharField(max_length=120, blank=True,help_text="Nucleic Ac", choices=investigation_type_choice)
-	binning_parameters= models.CharField(max_length=120, blank=True,help_text="The parame")
-	taxonomic_identity_marker= models.CharField(max_length=120, blank=True,help_text="The phylog")
-	isolation_source= models.CharField(max_length=120, blank=True,help_text="describes ")
-	collection_date= models.CharField(max_length=120, blank=True,help_text="The date t", validators=[RegexValidator(collection_date_validator)])
+	binning_parameters= models.CharField(max_length=120, blank=False,help_text="The parame")
+	taxonomic_identity_marker= models.CharField(max_length=120, blank=False,help_text="The phylog")
+	isolation_source= models.CharField(max_length=120, blank=False,help_text="describes ")
+	collection_date= models.CharField(max_length=120, blank=False,help_text="The date t", validators=[RegexValidator(collection_date_validator)])
 	altitude= models.CharField(max_length=120, blank=True,help_text="The altitu", validators=[RegexValidator(altitude_validator)])
-	geographic_location_latitude= models.CharField(max_length=120, blank=True,help_text="The geogra", validators=[RegexValidator(geographic_location_latitude_validator)])
-	geographic_location_longitude= models.CharField(max_length=120, blank=True,help_text="The geogra", validators=[RegexValidator(geographic_location_longitude_validator)])
-	broad_scale_environmental_context= models.CharField(max_length=120, blank=True,help_text="Report the")
-	local_environmental_context= models.CharField(max_length=120, blank=True,help_text="Report the")
-	environmental_medium= models.CharField(max_length=120, blank=True,help_text="Report the")
+	geographic_location_latitude= models.CharField(max_length=120, blank=False,help_text="The geogra", validators=[RegexValidator(geographic_location_latitude_validator)])
+	geographic_location_longitude= models.CharField(max_length=120, blank=False,help_text="The geogra", validators=[RegexValidator(geographic_location_longitude_validator)])
+	broad_scale_environmental_context= models.CharField(max_length=120, blank=False,help_text="Report the")
+	local_environmental_context= models.CharField(max_length=120, blank=False,help_text="Report the")
+	environmental_medium= models.CharField(max_length=120, blank=False,help_text="Report the")
 	elevation= models.CharField(max_length=120, blank=True,help_text="The elevat", validators=[RegexValidator(elevation_validator)])
 	amount_or_size_of_sample_collected= models.CharField(max_length=120, blank=True,help_text="The total ", validators=[RegexValidator(amount_or_size_of_sample_collected_validator)])
 	size_fraction_selected= models.CharField(max_length=120, blank=True,help_text="Filtering ")
-	geographic_location_country_and_or_sea= models.CharField(max_length=120, blank=True,help_text="The geogra", choices=geographic_location_country_and_or_sea_choice)
+	geographic_location_country_and_or_sea= models.CharField(max_length=120, blank=False,help_text="The geogra", choices=geographic_location_country_and_or_sea_choice)
 	source_material_identifiers= models.CharField(max_length=120, blank=True,help_text="A unique i")
 	experimental_factor= models.CharField(max_length=120, blank=True,help_text="Experiment")
 	taxonomic_classification= models.CharField(max_length=120, blank=True,help_text="Method use")
@@ -5869,61 +5871,61 @@ class ENA_binned_metagenome(SelfDescribingModel):
 	library_reads_sequenced= models.CharField(max_length=120, blank=True,help_text="Total numb", validators=[RegexValidator(library_reads_sequenced_validator)])
 	library_vector= models.CharField(max_length=120, blank=True,help_text="Cloning ve")
 	library_screening_strategy= models.CharField(max_length=120, blank=True,help_text="Specific e")
-	assembly_software= models.CharField(max_length=120, blank=True,help_text="Tool(s) us")
+	assembly_software= models.CharField(max_length=120, blank=False,help_text="Tool(s) us")
 	adapters= models.CharField(max_length=120, blank=True,help_text="Adapters p")
 	depth= models.CharField(max_length=120, blank=True,help_text="The vertic", validators=[RegexValidator(depth_validator)])
 
 	fields = {
-		'relationship_to_oxygen': 'relationship to oxygen',
-		'sample_collection_method': 'sample collection method',
-		'metagenomic_source': 'metagenomic source',
-		'sample_derived_from': 'sample derived from',
-		'project_name': 'project name',
-		'multiplex_identifiers': 'multiplex identifiers',
-		'relevant_electronic_resources': 'relevant electronic resources',
-		'relevant_standard_operating_procedures': 'relevant standard operating procedures',
-		'number_of_standard_tRNAs_extracted': 'number of standard tRNAs extracted',
-		'sixteen_s_recovered': '16s recovered',
-		'sixteen_s_recovery_software': '16S recovery software',
-		'tRNA_extraction_software': 'tRNA extraction software',
-		'completeness_score': 'completeness score',
-		'completeness_software': 'completeness software',
-		'completeness_approach': 'completeness approach',
-		'contamination_score': 'contamination score',
-		'contamination_screening_input': 'contamination screening input',
-		'contamination_screening_parameters': 'contamination screening parameters',
-		'decontamination_software': 'decontamination software',
-		'binning_software': 'binning software',
-		'reassembly_post_binning': 'reassembly post binning',
-		'MAG_coverage_software': 'MAG coverage software',
-		'assembly_quality': 'assembly quality',
-		'investigation_type': 'investigation type',
-		'binning_parameters': 'binning parameters',
-		'taxonomic_identity_marker': 'taxonomic identity marker',
+		'relationship_to_oxygen': 'relationship_to_oxygen',
+		'sample_collection_method': 'sample_collection_method',
+		'metagenomic_source': 'metagenomic_source',
+		'sample_derived_from': 'sample_derived_from',
+		'project_name': 'project_name',
+		'multiplex_identifiers': 'multiplex_identifiers',
+		'relevant_electronic_resources': 'relevant_electronic_resources',
+		'relevant_standard_operating_procedures': 'relevant_standard_operating_procedures',
+		'number_of_standard_tRNAs_extracted': 'number_of_standard_tRNAs_extracted',
+		'sixteen_s_recovered': 'sixteen_s_recovered',
+		'sixteen_s_recovery_software': 'sixteen_s_recovery_software',
+		'tRNA_extraction_software': 'tRNA_extraction_software',
+		'completeness_score': 'completeness_score',
+		'completeness_software': 'completeness_software',
+		'completeness_approach': 'completeness_approach',
+		'contamination_score': 'contamination_score',
+		'contamination_screening_input': 'contamination_screening_input',
+		'contamination_screening_parameters': 'contamination_screening_parameters',
+		'decontamination_software': 'decontamination_software',
+		'binning_software': 'binning_software',
+		'reassembly_post_binning': 'reassembly_post_binning',
+		'MAG_coverage_software': 'MAG_coverage_software',
+		'assembly_quality': 'assembly_quality',
+		'investigation_type': 'investigation_type',
+		'binning_parameters': 'binning_parameters',
+		'taxonomic_identity_marker': 'taxonomic_identity_marker',
 		'isolation_source': 'isolation_source',
-		'collection_date': 'collection date',
+		'collection_date': 'collection_date',
 		'altitude': 'altitude',
-		'geographic_location_latitude': 'geographic location (latitude)',
-		'geographic_location_longitude': 'geographic location (longitude)',
-		'broad_scale_environmental_context': 'broad-scale environmental context',
-		'local_environmental_context': 'local environmental context',
-		'environmental_medium': 'environmental medium',
+		'geographic_location_latitude': 'geographic_location_latitude',
+		'geographic_location_longitude': 'geographic_location_longitude',
+		'broad_scale_environmental_context': 'broad_scale_environmental_context',
+		'local_environmental_context': 'local_environmental_context',
+		'environmental_medium': 'environmental_medium',
 		'elevation': 'elevation',
-		'amount_or_size_of_sample_collected': 'amount or size of sample collected',
-		'size_fraction_selected': 'size fraction selected',
-		'geographic_location_country_and_or_sea': 'geographic location (country and/or sea)',
-		'source_material_identifiers': 'source material identifiers',
-		'experimental_factor': 'experimental factor',
-		'taxonomic_classification': 'taxonomic classification',
-		'reference_for_biomaterial': 'reference for biomaterial',
-		'sample_material_processing': 'sample material processing',
-		'nucleic_acid_extraction': 'nucleic acid extraction',
-		'nucleic_acid_amplification': 'nucleic acid amplification',
-		'library_size': 'library size',
-		'library_reads_sequenced': 'library reads sequenced',
-		'library_vector': 'library vector',
-		'library_screening_strategy': 'library screening strategy',
-		'assembly_software': 'assembly software',
+		'amount_or_size_of_sample_collected': 'amount_or_size_of_sample_collected',
+		'size_fraction_selected': 'size_fraction_selected',
+		'geographic_location_country_and_or_sea': 'geographic_location_country_and_or_sea',
+		'source_material_identifiers': 'source_material_identifiers',
+		'experimental_factor': 'experimental_factor',
+		'taxonomic_classification': 'taxonomic_classification',
+		'reference_for_biomaterial': 'reference_for_biomaterial',
+		'sample_material_processing': 'sample_material_processing',
+		'nucleic_acid_extraction': 'nucleic_acid_extraction',
+		'nucleic_acid_amplification': 'nucleic_acid_amplification',
+		'library_size': 'library_size',
+		'library_reads_sequenced': 'library_reads_sequenced',
+		'library_vector': 'library_vector',
+		'library_screening_strategy': 'library_screening_strategy',
+		'assembly_software': 'assembly_software',
 		'adapters': 'adapters',
 		'depth': 'depth',
 	}
@@ -5943,14 +5945,14 @@ class ENA_binned_metagenome_unit(SelfDescribingModel):
 	depth_units = [('m', 'm'), ('mm', 'mm')]
 
 	fields = {
-		'completeness_score': 'completeness score',
-		'contamination_score': 'contamination score',
-		'reassembly_post_binning': 'reassembly post binning',
+		'completeness_score': 'completeness_score',
+		'contamination_score': 'contamination_score',
+		'reassembly_post_binning': 'reassembly_post_binning',
 		'altitude': 'altitude',
-		'geographic_location_latitude': 'geographic location (latitude)',
-		'geographic_location_longitude': 'geographic location (longitude)',
+		'geographic_location_latitude': 'geographic_location_latitude',
+		'geographic_location_longitude': 'geographic_location_longitude',
 		'elevation': 'elevation',
-		'amount_or_size_of_sample_collected': 'amount or size of sample collected',
+		'amount_or_size_of_sample_collected': 'amount_or_size_of_sample_collected',
 		'depth': 'depth',
 	}
 
@@ -5959,15 +5961,15 @@ class ENA_binned_metagenome_unit(SelfDescribingModel):
 	sampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE, default=1)
 	sample = models.ForeignKey(Sample, on_delete=models.CASCADE, default=1)
 	sample_type = models.IntegerField(default=1)
-	completeness_score = models.CharField(max_length=120, choices=completeness_score_units, blank=True)
-	contamination_score = models.CharField(max_length=120, choices=contamination_score_units, blank=True)
-	reassembly_post_binning = models.CharField(max_length=120, choices=reassembly_post_binning_units, blank=True)
-	altitude = models.CharField(max_length=120, choices=altitude_units, blank=True)
-	geographic_location_latitude = models.CharField(max_length=120, choices=geographic_location_latitude_units, blank=True)
-	geographic_location_longitude = models.CharField(max_length=120, choices=geographic_location_longitude_units, blank=True)
-	elevation = models.CharField(max_length=120, choices=elevation_units, blank=True)
-	amount_or_size_of_sample_collected = models.CharField(max_length=120, choices=amount_or_size_of_sample_collected_units, blank=True)
-	depth = models.CharField(max_length=120, choices=depth_units, blank=True)
+	completeness_score = models.CharField(max_length=120, choices=completeness_score_units, blank=False)
+	contamination_score = models.CharField(max_length=120, choices=contamination_score_units, blank=False)
+	reassembly_post_binning = models.CharField(max_length=120, choices=reassembly_post_binning_units, blank=False)
+	altitude = models.CharField(max_length=120, choices=altitude_units, blank=False)
+	geographic_location_latitude = models.CharField(max_length=120, choices=geographic_location_latitude_units, blank=False)
+	geographic_location_longitude = models.CharField(max_length=120, choices=geographic_location_longitude_units, blank=False)
+	elevation = models.CharField(max_length=120, choices=elevation_units, blank=False)
+	amount_or_size_of_sample_collected = models.CharField(max_length=120, choices=amount_or_size_of_sample_collected_units, blank=False)
+	depth = models.CharField(max_length=120, choices=depth_units, blank=False)
 
 class GSC_MIxS_human_gut(SelfDescribingModel):
 
@@ -6006,7 +6008,7 @@ class GSC_MIxS_human_gut(SelfDescribingModel):
 	sampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE, default=1)
 	sample = models.ForeignKey(Sample, on_delete=models.CASCADE, default=1)
 	sample_type = models.IntegerField(default=1)
-	project_name= models.CharField(max_length=120, blank=True,help_text="Name of th")
+	project_name= models.CharField(max_length=120, blank=False,help_text="Name of th")
 	experimental_factor= models.CharField(max_length=120, blank=True,help_text="Experiment")
 	ploidy= models.CharField(max_length=120, blank=True,help_text="The ploidy")
 	number_of_replicons= models.CharField(max_length=120, blank=True,help_text="Reports th", validators=[RegexValidator(number_of_replicons_validator)])
@@ -6035,14 +6037,14 @@ class GSC_MIxS_human_gut(SelfDescribingModel):
 	relevant_standard_operating_procedures= models.CharField(max_length=120, blank=True,help_text="Standard o")
 	negative_control_type= models.CharField(max_length=120, blank=True,help_text="The substa")
 	positive_control_type= models.CharField(max_length=120, blank=True,help_text="The substa")
-	collection_date= models.CharField(max_length=120, blank=True,help_text="The date t", validators=[RegexValidator(collection_date_validator)])
-	geographic_location_country_and_or_sea= models.CharField(max_length=120, blank=True,help_text="The locati", choices=geographic_location_country_and_or_sea_choice)
-	geographic_location_latitude= models.CharField(max_length=120, blank=True,help_text="The geogra", validators=[RegexValidator(geographic_location_latitude_validator)])
-	geographic_location_longitude= models.CharField(max_length=120, blank=True,help_text="The geogra", validators=[RegexValidator(geographic_location_longitude_validator)])
+	collection_date= models.CharField(max_length=120, blank=False,help_text="The date t", validators=[RegexValidator(collection_date_validator)])
+	geographic_location_country_and_or_sea= models.CharField(max_length=120, blank=False,help_text="The locati", choices=geographic_location_country_and_or_sea_choice)
+	geographic_location_latitude= models.CharField(max_length=120, blank=False,help_text="The geogra", validators=[RegexValidator(geographic_location_latitude_validator)])
+	geographic_location_longitude= models.CharField(max_length=120, blank=False,help_text="The geogra", validators=[RegexValidator(geographic_location_longitude_validator)])
 	geographic_location_region_and_locality= models.CharField(max_length=120, blank=True,help_text="The geogra")
-	broad_scale_environmental_context= models.CharField(max_length=120, blank=True,help_text="Report the")
-	local_environmental_context= models.CharField(max_length=120, blank=True,help_text="Report the")
-	environmental_medium= models.CharField(max_length=120, blank=True,help_text="Report the")
+	broad_scale_environmental_context= models.CharField(max_length=120, blank=False,help_text="Report the")
+	local_environmental_context= models.CharField(max_length=120, blank=False,help_text="Report the")
+	environmental_medium= models.CharField(max_length=120, blank=False,help_text="Report the")
 	source_material_identifiers= models.CharField(max_length=120, blank=True,help_text="A unique i")
 	sample_material_processing= models.CharField(max_length=120, blank=True,help_text="A brief de")
 	isolation_and_growth_condition= models.CharField(max_length=120, blank=True,help_text="Publicatio")
@@ -6090,87 +6092,87 @@ class GSC_MIxS_human_gut(SelfDescribingModel):
 	perturbation= models.CharField(max_length=120, blank=True,help_text="type of pe")
 
 	fields = {
-		'project_name': 'project name',
-		'experimental_factor': 'experimental factor',
+		'project_name': 'project_name',
+		'experimental_factor': 'experimental_factor',
 		'ploidy': 'ploidy',
-		'number_of_replicons': 'number of replicons',
-		'extrachromosomal_elements': 'extrachromosomal elements',
-		'estimated_size': 'estimated size',
-		'reference_for_biomaterial': 'reference for biomaterial',
-		'annotation_source': 'annotation source',
-		'sample_volume_or_weight_for_DNA_extraction': 'sample volume or weight for DNA extraction',
-		'nucleic_acid_extraction': 'nucleic acid extraction',
-		'nucleic_acid_amplification': 'nucleic acid amplification',
-		'library_size': 'library size',
-		'library_reads_sequenced': 'library reads sequenced',
-		'library_construction_method': 'library construction method',
-		'library_vector': 'library vector',
-		'library_screening_strategy': 'library screening strategy',
-		'target_gene': 'target gene',
-		'target_subfragment': 'target subfragment',
-		'pcr_primers': 'pcr primers',
-		'multiplex_identifiers': 'multiplex identifiers',
+		'number_of_replicons': 'number_of_replicons',
+		'extrachromosomal_elements': 'extrachromosomal_elements',
+		'estimated_size': 'estimated_size',
+		'reference_for_biomaterial': 'reference_for_biomaterial',
+		'annotation_source': 'annotation_source',
+		'sample_volume_or_weight_for_DNA_extraction': 'sample_volume_or_weight_for_DNA_extraction',
+		'nucleic_acid_extraction': 'nucleic_acid_extraction',
+		'nucleic_acid_amplification': 'nucleic_acid_amplification',
+		'library_size': 'library_size',
+		'library_reads_sequenced': 'library_reads_sequenced',
+		'library_construction_method': 'library_construction_method',
+		'library_vector': 'library_vector',
+		'library_screening_strategy': 'library_screening_strategy',
+		'target_gene': 'target_gene',
+		'target_subfragment': 'target_subfragment',
+		'pcr_primers': 'pcr_primers',
+		'multiplex_identifiers': 'multiplex_identifiers',
 		'adapters': 'adapters',
-		'pcr_conditions': 'pcr conditions',
-		'sequencing_method': 'sequencing method',
-		'sequence_quality_check': 'sequence quality check',
-		'chimera_check_software': 'chimera check software',
-		'relevant_electronic_resources': 'relevant electronic resources',
-		'relevant_standard_operating_procedures': 'relevant standard operating procedures',
-		'negative_control_type': 'negative control type',
-		'positive_control_type': 'positive control type',
-		'collection_date': 'collection date',
-		'geographic_location_country_and_or_sea': 'geographic location (country and/or sea)',
-		'geographic_location_latitude': 'geographic location (latitude)',
-		'geographic_location_longitude': 'geographic location (longitude)',
-		'geographic_location_region_and_locality': 'geographic location (region and locality)',
-		'broad_scale_environmental_context': 'broad-scale environmental context',
-		'local_environmental_context': 'local environmental context',
-		'environmental_medium': 'environmental medium',
-		'source_material_identifiers': 'source material identifiers',
-		'sample_material_processing': 'sample material processing',
-		'isolation_and_growth_condition': 'isolation and growth condition',
+		'pcr_conditions': 'pcr_conditions',
+		'sequencing_method': 'sequencing_method',
+		'sequence_quality_check': 'sequence_quality_check',
+		'chimera_check_software': 'chimera_check_software',
+		'relevant_electronic_resources': 'relevant_electronic_resources',
+		'relevant_standard_operating_procedures': 'relevant_standard_operating_procedures',
+		'negative_control_type': 'negative_control_type',
+		'positive_control_type': 'positive_control_type',
+		'collection_date': 'collection_date',
+		'geographic_location_country_and_or_sea': 'geographic_location_country_and_or_sea',
+		'geographic_location_latitude': 'geographic_location_latitude',
+		'geographic_location_longitude': 'geographic_location_longitude',
+		'geographic_location_region_and_locality': 'geographic_location_region_and_locality',
+		'broad_scale_environmental_context': 'broad_scale_environmental_context',
+		'local_environmental_context': 'local_environmental_context',
+		'environmental_medium': 'environmental_medium',
+		'source_material_identifiers': 'source_material_identifiers',
+		'sample_material_processing': 'sample_material_processing',
+		'isolation_and_growth_condition': 'isolation_and_growth_condition',
 		'propagation': 'propagation',
-		'amount_or_size_of_sample_collected': 'amount or size of sample collected',
-		'host_body_product': 'host body product',
-		'medical_history_performed': 'medical history performed',
-		'oxygenation_status_of_sample': 'oxygenation status of sample',
-		'organism_count': 'organism count',
-		'sample_storage_duration': 'sample storage duration',
-		'sample_storage_temperature': 'sample storage temperature',
-		'sample_storage_location': 'sample storage location',
-		'sample_collection_device': 'sample collection device',
-		'sample_collection_method': 'sample collection method',
-		'gastrointestinal_tract_disorder': 'gastrointestinal tract disorder',
-		'liver_disorder': 'liver disorder',
-		'host_disease_status': 'host disease status',
-		'host_subject_id': 'host subject id',
-		'IHMC_medication_code': 'IHMC medication code',
-		'host_age': 'host age',
-		'host_body_site': 'host body site',
-		'host_height': 'host height',
-		'host_body_mass_index': 'host body-mass index',
+		'amount_or_size_of_sample_collected': 'amount_or_size_of_sample_collected',
+		'host_body_product': 'host_body_product',
+		'medical_history_performed': 'medical_history_performed',
+		'oxygenation_status_of_sample': 'oxygenation_status_of_sample',
+		'organism_count': 'organism_count',
+		'sample_storage_duration': 'sample_storage_duration',
+		'sample_storage_temperature': 'sample_storage_temperature',
+		'sample_storage_location': 'sample_storage_location',
+		'sample_collection_device': 'sample_collection_device',
+		'sample_collection_method': 'sample_collection_method',
+		'gastrointestinal_tract_disorder': 'gastrointestinal_tract_disorder',
+		'liver_disorder': 'liver_disorder',
+		'host_disease_status': 'host_disease_status',
+		'host_subject_id': 'host_subject_id',
+		'IHMC_medication_code': 'IHMC_medication_code',
+		'host_age': 'host_age',
+		'host_body_site': 'host_body_site',
+		'host_height': 'host_height',
+		'host_body_mass_index': 'host_body_mass_index',
 		'ethnicity': 'ethnicity',
-		'host_occupation': 'host occupation',
-		'host_total_mass': 'host total mass',
-		'host_phenotype': 'host phenotype',
-		'host_body_temperature': 'host body temperature',
-		'host_sex': 'host sex',
+		'host_occupation': 'host_occupation',
+		'host_total_mass': 'host_total_mass',
+		'host_phenotype': 'host_phenotype',
+		'host_body_temperature': 'host_body_temperature',
+		'host_sex': 'host_sex',
 		'temperature': 'temperature',
 		'salinity': 'salinity',
-		'special_diet': 'special diet',
-		'host_diet': 'host diet',
-		'host_last_meal': 'host last meal',
-		'host_family_relationship': 'host family relationship',
-		'host_genotype': 'host genotype',
-		'host_pulse': 'host pulse',
-		'subspecific_genetic_lineage': 'subspecific genetic lineage',
-		'trophic_level': 'trophic level',
-		'relationship_to_oxygen': 'relationship to oxygen',
-		'known_pathogenicity': 'known pathogenicity',
-		'encoded_traits': 'encoded traits',
-		'observed_biotic_relationship': 'observed biotic relationship',
-		'chemical_administration': 'chemical administration',
+		'special_diet': 'special_diet',
+		'host_diet': 'host_diet',
+		'host_last_meal': 'host_last_meal',
+		'host_family_relationship': 'host_family_relationship',
+		'host_genotype': 'host_genotype',
+		'host_pulse': 'host_pulse',
+		'subspecific_genetic_lineage': 'subspecific_genetic_lineage',
+		'trophic_level': 'trophic_level',
+		'relationship_to_oxygen': 'relationship_to_oxygen',
+		'known_pathogenicity': 'known_pathogenicity',
+		'encoded_traits': 'encoded_traits',
+		'observed_biotic_relationship': 'observed_biotic_relationship',
+		'chemical_administration': 'chemical_administration',
 		'perturbation': 'perturbation',
 	}
 
@@ -6194,20 +6196,20 @@ class GSC_MIxS_human_gut_unit(SelfDescribingModel):
 	host_pulse_units = [('bpm', 'bpm')]
 
 	fields = {
-		'sample_volume_or_weight_for_DNA_extraction': 'sample volume or weight for DNA extraction',
-		'geographic_location_latitude': 'geographic location (latitude)',
-		'geographic_location_longitude': 'geographic location (longitude)',
-		'amount_or_size_of_sample_collected': 'amount or size of sample collected',
-		'sample_storage_duration': 'sample storage duration',
-		'sample_storage_temperature': 'sample storage temperature',
-		'host_age': 'host age',
-		'host_height': 'host height',
-		'host_body_mass_index': 'host body-mass index',
-		'host_total_mass': 'host total mass',
-		'host_body_temperature': 'host body temperature',
+		'sample_volume_or_weight_for_DNA_extraction': 'sample_volume_or_weight_for_DNA_extraction',
+		'geographic_location_latitude': 'geographic_location_latitude',
+		'geographic_location_longitude': 'geographic_location_longitude',
+		'amount_or_size_of_sample_collected': 'amount_or_size_of_sample_collected',
+		'sample_storage_duration': 'sample_storage_duration',
+		'sample_storage_temperature': 'sample_storage_temperature',
+		'host_age': 'host_age',
+		'host_height': 'host_height',
+		'host_body_mass_index': 'host_body_mass_index',
+		'host_total_mass': 'host_total_mass',
+		'host_body_temperature': 'host_body_temperature',
 		'temperature': 'temperature',
 		'salinity': 'salinity',
-		'host_pulse': 'host pulse',
+		'host_pulse': 'host_pulse',
 	}
 
 	name = 'GSC_MIxS_human_gut'
@@ -6215,20 +6217,20 @@ class GSC_MIxS_human_gut_unit(SelfDescribingModel):
 	sampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE, default=1)
 	sample = models.ForeignKey(Sample, on_delete=models.CASCADE, default=1)
 	sample_type = models.IntegerField(default=1)
-	sample_volume_or_weight_for_DNA_extraction = models.CharField(max_length=120, choices=sample_volume_or_weight_for_DNA_extraction_units, blank=True)
-	geographic_location_latitude = models.CharField(max_length=120, choices=geographic_location_latitude_units, blank=True)
-	geographic_location_longitude = models.CharField(max_length=120, choices=geographic_location_longitude_units, blank=True)
-	amount_or_size_of_sample_collected = models.CharField(max_length=120, choices=amount_or_size_of_sample_collected_units, blank=True)
-	sample_storage_duration = models.CharField(max_length=120, choices=sample_storage_duration_units, blank=True)
-	sample_storage_temperature = models.CharField(max_length=120, choices=sample_storage_temperature_units, blank=True)
-	host_age = models.CharField(max_length=120, choices=host_age_units, blank=True)
-	host_height = models.CharField(max_length=120, choices=host_height_units, blank=True)
-	host_body_mass_index = models.CharField(max_length=120, choices=host_body_mass_index_units, blank=True)
-	host_total_mass = models.CharField(max_length=120, choices=host_total_mass_units, blank=True)
-	host_body_temperature = models.CharField(max_length=120, choices=host_body_temperature_units, blank=True)
-	temperature = models.CharField(max_length=120, choices=temperature_units, blank=True)
-	salinity = models.CharField(max_length=120, choices=salinity_units, blank=True)
-	host_pulse = models.CharField(max_length=120, choices=host_pulse_units, blank=True)
+	sample_volume_or_weight_for_DNA_extraction = models.CharField(max_length=120, choices=sample_volume_or_weight_for_DNA_extraction_units, blank=False)
+	geographic_location_latitude = models.CharField(max_length=120, choices=geographic_location_latitude_units, blank=False)
+	geographic_location_longitude = models.CharField(max_length=120, choices=geographic_location_longitude_units, blank=False)
+	amount_or_size_of_sample_collected = models.CharField(max_length=120, choices=amount_or_size_of_sample_collected_units, blank=False)
+	sample_storage_duration = models.CharField(max_length=120, choices=sample_storage_duration_units, blank=False)
+	sample_storage_temperature = models.CharField(max_length=120, choices=sample_storage_temperature_units, blank=False)
+	host_age = models.CharField(max_length=120, choices=host_age_units, blank=False)
+	host_height = models.CharField(max_length=120, choices=host_height_units, blank=False)
+	host_body_mass_index = models.CharField(max_length=120, choices=host_body_mass_index_units, blank=False)
+	host_total_mass = models.CharField(max_length=120, choices=host_total_mass_units, blank=False)
+	host_body_temperature = models.CharField(max_length=120, choices=host_body_temperature_units, blank=False)
+	temperature = models.CharField(max_length=120, choices=temperature_units, blank=False)
+	salinity = models.CharField(max_length=120, choices=salinity_units, blank=False)
+	host_pulse = models.CharField(max_length=120, choices=host_pulse_units, blank=False)
 
 class GSC_MIxS_microbial_mat_biolfilm(SelfDescribingModel):
 
@@ -6308,7 +6310,7 @@ class GSC_MIxS_microbial_mat_biolfilm(SelfDescribingModel):
 	sampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE, default=1)
 	sample = models.ForeignKey(Sample, on_delete=models.CASCADE, default=1)
 	sample_type = models.IntegerField(default=1)
-	project_name= models.CharField(max_length=120, blank=True,help_text="Name of th")
+	project_name= models.CharField(max_length=120, blank=False,help_text="Name of th")
 	experimental_factor= models.CharField(max_length=120, blank=True,help_text="Experiment")
 	ploidy= models.CharField(max_length=120, blank=True,help_text="The ploidy")
 	number_of_replicons= models.CharField(max_length=120, blank=True,help_text="Reports th", validators=[RegexValidator(number_of_replicons_validator)])
@@ -6337,17 +6339,17 @@ class GSC_MIxS_microbial_mat_biolfilm(SelfDescribingModel):
 	relevant_standard_operating_procedures= models.CharField(max_length=120, blank=True,help_text="Standard o")
 	negative_control_type= models.CharField(max_length=120, blank=True,help_text="The substa")
 	positive_control_type= models.CharField(max_length=120, blank=True,help_text="The substa")
-	collection_date= models.CharField(max_length=120, blank=True,help_text="The date t", validators=[RegexValidator(collection_date_validator)])
+	collection_date= models.CharField(max_length=120, blank=False,help_text="The date t", validators=[RegexValidator(collection_date_validator)])
 	altitude= models.CharField(max_length=120, blank=True,help_text="The altitu", validators=[RegexValidator(altitude_validator)])
-	geographic_location_country_and_or_sea= models.CharField(max_length=120, blank=True,help_text="The locati", choices=geographic_location_country_and_or_sea_choice)
-	geographic_location_latitude= models.CharField(max_length=120, blank=True,help_text="The geogra", validators=[RegexValidator(geographic_location_latitude_validator)])
-	geographic_location_longitude= models.CharField(max_length=120, blank=True,help_text="The geogra", validators=[RegexValidator(geographic_location_longitude_validator)])
+	geographic_location_country_and_or_sea= models.CharField(max_length=120, blank=False,help_text="The locati", choices=geographic_location_country_and_or_sea_choice)
+	geographic_location_latitude= models.CharField(max_length=120, blank=False,help_text="The geogra", validators=[RegexValidator(geographic_location_latitude_validator)])
+	geographic_location_longitude= models.CharField(max_length=120, blank=False,help_text="The geogra", validators=[RegexValidator(geographic_location_longitude_validator)])
 	geographic_location_region_and_locality= models.CharField(max_length=120, blank=True,help_text="The geogra")
-	depth= models.CharField(max_length=120, blank=True,help_text="The vertic", validators=[RegexValidator(depth_validator)])
-	broad_scale_environmental_context= models.CharField(max_length=120, blank=True,help_text="Report the")
-	local_environmental_context= models.CharField(max_length=120, blank=True,help_text="Report the")
-	environmental_medium= models.CharField(max_length=120, blank=True,help_text="Report the")
-	elevation= models.CharField(max_length=120, blank=True,help_text="The elevat", validators=[RegexValidator(elevation_validator)])
+	depth= models.CharField(max_length=120, blank=False,help_text="The vertic", validators=[RegexValidator(depth_validator)])
+	broad_scale_environmental_context= models.CharField(max_length=120, blank=False,help_text="Report the")
+	local_environmental_context= models.CharField(max_length=120, blank=False,help_text="Report the")
+	environmental_medium= models.CharField(max_length=120, blank=False,help_text="Report the")
+	elevation= models.CharField(max_length=120, blank=False,help_text="The elevat", validators=[RegexValidator(elevation_validator)])
 	source_material_identifiers= models.CharField(max_length=120, blank=True,help_text="A unique i")
 	sample_material_processing= models.CharField(max_length=120, blank=True,help_text="A brief de")
 	isolation_and_growth_condition= models.CharField(max_length=120, blank=True,help_text="Publicatio")
@@ -6423,118 +6425,118 @@ class GSC_MIxS_microbial_mat_biolfilm(SelfDescribingModel):
 	perturbation= models.CharField(max_length=120, blank=True,help_text="type of pe")
 
 	fields = {
-		'project_name': 'project name',
-		'experimental_factor': 'experimental factor',
+		'project_name': 'project_name',
+		'experimental_factor': 'experimental_factor',
 		'ploidy': 'ploidy',
-		'number_of_replicons': 'number of replicons',
-		'extrachromosomal_elements': 'extrachromosomal elements',
-		'estimated_size': 'estimated size',
-		'reference_for_biomaterial': 'reference for biomaterial',
-		'annotation_source': 'annotation source',
-		'sample_volume_or_weight_for_DNA_extraction': 'sample volume or weight for DNA extraction',
-		'nucleic_acid_extraction': 'nucleic acid extraction',
-		'nucleic_acid_amplification': 'nucleic acid amplification',
-		'library_size': 'library size',
-		'library_reads_sequenced': 'library reads sequenced',
-		'library_construction_method': 'library construction method',
-		'library_vector': 'library vector',
-		'library_screening_strategy': 'library screening strategy',
-		'target_gene': 'target gene',
-		'target_subfragment': 'target subfragment',
-		'pcr_primers': 'pcr primers',
-		'multiplex_identifiers': 'multiplex identifiers',
+		'number_of_replicons': 'number_of_replicons',
+		'extrachromosomal_elements': 'extrachromosomal_elements',
+		'estimated_size': 'estimated_size',
+		'reference_for_biomaterial': 'reference_for_biomaterial',
+		'annotation_source': 'annotation_source',
+		'sample_volume_or_weight_for_DNA_extraction': 'sample_volume_or_weight_for_DNA_extraction',
+		'nucleic_acid_extraction': 'nucleic_acid_extraction',
+		'nucleic_acid_amplification': 'nucleic_acid_amplification',
+		'library_size': 'library_size',
+		'library_reads_sequenced': 'library_reads_sequenced',
+		'library_construction_method': 'library_construction_method',
+		'library_vector': 'library_vector',
+		'library_screening_strategy': 'library_screening_strategy',
+		'target_gene': 'target_gene',
+		'target_subfragment': 'target_subfragment',
+		'pcr_primers': 'pcr_primers',
+		'multiplex_identifiers': 'multiplex_identifiers',
 		'adapters': 'adapters',
-		'pcr_conditions': 'pcr conditions',
-		'sequencing_method': 'sequencing method',
-		'sequence_quality_check': 'sequence quality check',
-		'chimera_check_software': 'chimera check software',
-		'relevant_electronic_resources': 'relevant electronic resources',
-		'relevant_standard_operating_procedures': 'relevant standard operating procedures',
-		'negative_control_type': 'negative control type',
-		'positive_control_type': 'positive control type',
-		'collection_date': 'collection date',
+		'pcr_conditions': 'pcr_conditions',
+		'sequencing_method': 'sequencing_method',
+		'sequence_quality_check': 'sequence_quality_check',
+		'chimera_check_software': 'chimera_check_software',
+		'relevant_electronic_resources': 'relevant_electronic_resources',
+		'relevant_standard_operating_procedures': 'relevant_standard_operating_procedures',
+		'negative_control_type': 'negative_control_type',
+		'positive_control_type': 'positive_control_type',
+		'collection_date': 'collection_date',
 		'altitude': 'altitude',
-		'geographic_location_country_and_or_sea': 'geographic location (country and/or sea)',
-		'geographic_location_latitude': 'geographic location (latitude)',
-		'geographic_location_longitude': 'geographic location (longitude)',
-		'geographic_location_region_and_locality': 'geographic location (region and locality)',
+		'geographic_location_country_and_or_sea': 'geographic_location_country_and_or_sea',
+		'geographic_location_latitude': 'geographic_location_latitude',
+		'geographic_location_longitude': 'geographic_location_longitude',
+		'geographic_location_region_and_locality': 'geographic_location_region_and_locality',
 		'depth': 'depth',
-		'broad_scale_environmental_context': 'broad-scale environmental context',
-		'local_environmental_context': 'local environmental context',
-		'environmental_medium': 'environmental medium',
+		'broad_scale_environmental_context': 'broad_scale_environmental_context',
+		'local_environmental_context': 'local_environmental_context',
+		'environmental_medium': 'environmental_medium',
 		'elevation': 'elevation',
-		'source_material_identifiers': 'source material identifiers',
-		'sample_material_processing': 'sample material processing',
-		'isolation_and_growth_condition': 'isolation and growth condition',
+		'source_material_identifiers': 'source_material_identifiers',
+		'sample_material_processing': 'sample_material_processing',
+		'isolation_and_growth_condition': 'isolation_and_growth_condition',
 		'propagation': 'propagation',
-		'amount_or_size_of_sample_collected': 'amount or size of sample collected',
+		'amount_or_size_of_sample_collected': 'amount_or_size_of_sample_collected',
 		'biomass': 'biomass',
-		'oxygenation_status_of_sample': 'oxygenation status of sample',
-		'organism_count': 'organism count',
-		'sample_storage_duration': 'sample storage duration',
-		'sample_storage_temperature': 'sample storage temperature',
-		'sample_storage_location': 'sample storage location',
-		'sample_collection_device': 'sample collection device',
-		'sample_collection_method': 'sample collection method',
-		'host_disease_status': 'host disease status',
-		'host_scientific_name': 'host scientific name',
+		'oxygenation_status_of_sample': 'oxygenation_status_of_sample',
+		'organism_count': 'organism_count',
+		'sample_storage_duration': 'sample_storage_duration',
+		'sample_storage_temperature': 'sample_storage_temperature',
+		'sample_storage_location': 'sample_storage_location',
+		'sample_collection_device': 'sample_collection_device',
+		'sample_collection_method': 'sample_collection_method',
+		'host_disease_status': 'host_disease_status',
+		'host_scientific_name': 'host_scientific_name',
 		'alkalinity': 'alkalinity',
-		'mean_friction_velocity': 'mean friction velocity',
-		'mean_peak_friction_velocity': 'mean peak friction velocity',
+		'mean_friction_velocity': 'mean_friction_velocity',
+		'mean_peak_friction_velocity': 'mean_peak_friction_velocity',
 		'pressure': 'pressure',
 		'temperature': 'temperature',
 		'turbidity': 'turbidity',
 		'pH': 'pH',
-		'alkyl_diethers': 'alkyl diethers',
-		'aminopeptidase_activity': 'aminopeptidase activity',
+		'alkyl_diethers': 'alkyl_diethers',
+		'aminopeptidase_activity': 'aminopeptidase_activity',
 		'ammonium': 'ammonium',
-		'bacterial_carbon_production': 'bacterial carbon production',
+		'bacterial_carbon_production': 'bacterial_carbon_production',
 		'bishomohopanol': 'bishomohopanol',
 		'bromide': 'bromide',
 		'calcium': 'calcium',
-		'carbon_nitrogen_ratio': 'carbon/nitrogen ratio',
+		'carbon_nitrogen_ratio': 'carbon_nitrogen_ratio',
 		'chloride': 'chloride',
 		'chlorophyll': 'chlorophyll',
-		'diether_lipids': 'diether lipids',
-		'dissolved_carbon_dioxide': 'dissolved carbon dioxide',
-		'dissolved_hydrogen': 'dissolved hydrogen',
-		'dissolved_inorganic_carbon': 'dissolved inorganic carbon',
-		'dissolved_organic_carbon': 'dissolved organic carbon',
-		'dissolved_organic_nitrogen': 'dissolved organic nitrogen',
+		'diether_lipids': 'diether_lipids',
+		'dissolved_carbon_dioxide': 'dissolved_carbon_dioxide',
+		'dissolved_hydrogen': 'dissolved_hydrogen',
+		'dissolved_inorganic_carbon': 'dissolved_inorganic_carbon',
+		'dissolved_organic_carbon': 'dissolved_organic_carbon',
+		'dissolved_organic_nitrogen': 'dissolved_organic_nitrogen',
 		'methane': 'methane',
-		'dissolved_oxygen': 'dissolved oxygen',
-		'glucosidase_activity': 'glucosidase activity',
+		'dissolved_oxygen': 'dissolved_oxygen',
+		'glucosidase_activity': 'glucosidase_activity',
 		'magnesium': 'magnesium',
-		'n_alkanes': 'n-alkanes',
+		'n_alkanes': 'n_alkanes',
 		'nitrate': 'nitrate',
 		'nitrite': 'nitrite',
 		'nitrogen': 'nitrogen',
-		'organic_carbon': 'organic carbon',
-		'organic_matter': 'organic matter',
-		'organic_nitrogen': 'organic nitrogen',
-		'particulate_organic_carbon': 'particulate organic carbon',
-		'petroleum_hydrocarbon': 'petroleum hydrocarbon',
+		'organic_carbon': 'organic_carbon',
+		'organic_matter': 'organic_matter',
+		'organic_nitrogen': 'organic_nitrogen',
+		'particulate_organic_carbon': 'particulate_organic_carbon',
+		'petroleum_hydrocarbon': 'petroleum_hydrocarbon',
 		'phaeopigments': 'phaeopigments',
 		'phosphate': 'phosphate',
-		'phospholipid_fatty_acid': 'phospholipid fatty acid',
+		'phospholipid_fatty_acid': 'phospholipid_fatty_acid',
 		'potassium': 'potassium',
-		'redox_potential': 'redox potential',
+		'redox_potential': 'redox_potential',
 		'salinity': 'salinity',
-		'total_carbon': 'total carbon',
+		'total_carbon': 'total_carbon',
 		'silicate': 'silicate',
 		'sodium': 'sodium',
-		'total_organic_carbon': 'total organic carbon',
-		'water_content': 'water content',
+		'total_organic_carbon': 'total_organic_carbon',
+		'water_content': 'water_content',
 		'sulfate': 'sulfate',
 		'sulfide': 'sulfide',
-		'total_nitrogen': 'total nitrogen',
-		'subspecific_genetic_lineage': 'subspecific genetic lineage',
-		'trophic_level': 'trophic level',
-		'relationship_to_oxygen': 'relationship to oxygen',
-		'known_pathogenicity': 'known pathogenicity',
-		'encoded_traits': 'encoded traits',
-		'observed_biotic_relationship': 'observed biotic relationship',
-		'chemical_administration': 'chemical administration',
+		'total_nitrogen': 'total_nitrogen',
+		'subspecific_genetic_lineage': 'subspecific_genetic_lineage',
+		'trophic_level': 'trophic_level',
+		'relationship_to_oxygen': 'relationship_to_oxygen',
+		'known_pathogenicity': 'known_pathogenicity',
+		'encoded_traits': 'encoded_traits',
+		'observed_biotic_relationship': 'observed_biotic_relationship',
+		'chemical_administration': 'chemical_administration',
 		'perturbation': 'perturbation',
 	}
 
@@ -6602,64 +6604,64 @@ class GSC_MIxS_microbial_mat_biolfilm_unit(SelfDescribingModel):
 	total_nitrogen_units = [('µg/L', 'µg/L'), ('µmol/L', 'µmol/L')]
 
 	fields = {
-		'sample_volume_or_weight_for_DNA_extraction': 'sample volume or weight for DNA extraction',
+		'sample_volume_or_weight_for_DNA_extraction': 'sample_volume_or_weight_for_DNA_extraction',
 		'altitude': 'altitude',
-		'geographic_location_latitude': 'geographic location (latitude)',
-		'geographic_location_longitude': 'geographic location (longitude)',
+		'geographic_location_latitude': 'geographic_location_latitude',
+		'geographic_location_longitude': 'geographic_location_longitude',
 		'depth': 'depth',
 		'elevation': 'elevation',
-		'amount_or_size_of_sample_collected': 'amount or size of sample collected',
+		'amount_or_size_of_sample_collected': 'amount_or_size_of_sample_collected',
 		'biomass': 'biomass',
-		'sample_storage_duration': 'sample storage duration',
-		'sample_storage_temperature': 'sample storage temperature',
+		'sample_storage_duration': 'sample_storage_duration',
+		'sample_storage_temperature': 'sample_storage_temperature',
 		'alkalinity': 'alkalinity',
-		'mean_friction_velocity': 'mean friction velocity',
-		'mean_peak_friction_velocity': 'mean peak friction velocity',
+		'mean_friction_velocity': 'mean_friction_velocity',
+		'mean_peak_friction_velocity': 'mean_peak_friction_velocity',
 		'pressure': 'pressure',
 		'temperature': 'temperature',
 		'turbidity': 'turbidity',
-		'alkyl_diethers': 'alkyl diethers',
-		'aminopeptidase_activity': 'aminopeptidase activity',
+		'alkyl_diethers': 'alkyl_diethers',
+		'aminopeptidase_activity': 'aminopeptidase_activity',
 		'ammonium': 'ammonium',
-		'bacterial_carbon_production': 'bacterial carbon production',
+		'bacterial_carbon_production': 'bacterial_carbon_production',
 		'bishomohopanol': 'bishomohopanol',
 		'bromide': 'bromide',
 		'calcium': 'calcium',
 		'chloride': 'chloride',
 		'chlorophyll': 'chlorophyll',
-		'diether_lipids': 'diether lipids',
-		'dissolved_carbon_dioxide': 'dissolved carbon dioxide',
-		'dissolved_hydrogen': 'dissolved hydrogen',
-		'dissolved_inorganic_carbon': 'dissolved inorganic carbon',
-		'dissolved_organic_carbon': 'dissolved organic carbon',
-		'dissolved_organic_nitrogen': 'dissolved organic nitrogen',
+		'diether_lipids': 'diether_lipids',
+		'dissolved_carbon_dioxide': 'dissolved_carbon_dioxide',
+		'dissolved_hydrogen': 'dissolved_hydrogen',
+		'dissolved_inorganic_carbon': 'dissolved_inorganic_carbon',
+		'dissolved_organic_carbon': 'dissolved_organic_carbon',
+		'dissolved_organic_nitrogen': 'dissolved_organic_nitrogen',
 		'methane': 'methane',
-		'dissolved_oxygen': 'dissolved oxygen',
-		'glucosidase_activity': 'glucosidase activity',
+		'dissolved_oxygen': 'dissolved_oxygen',
+		'glucosidase_activity': 'glucosidase_activity',
 		'magnesium': 'magnesium',
-		'n_alkanes': 'n-alkanes',
+		'n_alkanes': 'n_alkanes',
 		'nitrate': 'nitrate',
 		'nitrite': 'nitrite',
 		'nitrogen': 'nitrogen',
-		'organic_carbon': 'organic carbon',
-		'organic_matter': 'organic matter',
-		'organic_nitrogen': 'organic nitrogen',
-		'particulate_organic_carbon': 'particulate organic carbon',
-		'petroleum_hydrocarbon': 'petroleum hydrocarbon',
+		'organic_carbon': 'organic_carbon',
+		'organic_matter': 'organic_matter',
+		'organic_nitrogen': 'organic_nitrogen',
+		'particulate_organic_carbon': 'particulate_organic_carbon',
+		'petroleum_hydrocarbon': 'petroleum_hydrocarbon',
 		'phaeopigments': 'phaeopigments',
 		'phosphate': 'phosphate',
-		'phospholipid_fatty_acid': 'phospholipid fatty acid',
+		'phospholipid_fatty_acid': 'phospholipid_fatty_acid',
 		'potassium': 'potassium',
-		'redox_potential': 'redox potential',
+		'redox_potential': 'redox_potential',
 		'salinity': 'salinity',
-		'total_carbon': 'total carbon',
+		'total_carbon': 'total_carbon',
 		'silicate': 'silicate',
 		'sodium': 'sodium',
-		'total_organic_carbon': 'total organic carbon',
-		'water_content': 'water content',
+		'total_organic_carbon': 'total_organic_carbon',
+		'water_content': 'water_content',
 		'sulfate': 'sulfate',
 		'sulfide': 'sulfide',
-		'total_nitrogen': 'total nitrogen',
+		'total_nitrogen': 'total_nitrogen',
 	}
 
 	name = 'GSC_MIxS_microbial_mat_biolfilm'
@@ -6667,64 +6669,64 @@ class GSC_MIxS_microbial_mat_biolfilm_unit(SelfDescribingModel):
 	sampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE, default=1)
 	sample = models.ForeignKey(Sample, on_delete=models.CASCADE, default=1)
 	sample_type = models.IntegerField(default=1)
-	sample_volume_or_weight_for_DNA_extraction = models.CharField(max_length=120, choices=sample_volume_or_weight_for_DNA_extraction_units, blank=True)
-	altitude = models.CharField(max_length=120, choices=altitude_units, blank=True)
-	geographic_location_latitude = models.CharField(max_length=120, choices=geographic_location_latitude_units, blank=True)
-	geographic_location_longitude = models.CharField(max_length=120, choices=geographic_location_longitude_units, blank=True)
-	depth = models.CharField(max_length=120, choices=depth_units, blank=True)
-	elevation = models.CharField(max_length=120, choices=elevation_units, blank=True)
-	amount_or_size_of_sample_collected = models.CharField(max_length=120, choices=amount_or_size_of_sample_collected_units, blank=True)
-	biomass = models.CharField(max_length=120, choices=biomass_units, blank=True)
-	sample_storage_duration = models.CharField(max_length=120, choices=sample_storage_duration_units, blank=True)
-	sample_storage_temperature = models.CharField(max_length=120, choices=sample_storage_temperature_units, blank=True)
-	alkalinity = models.CharField(max_length=120, choices=alkalinity_units, blank=True)
-	mean_friction_velocity = models.CharField(max_length=120, choices=mean_friction_velocity_units, blank=True)
-	mean_peak_friction_velocity = models.CharField(max_length=120, choices=mean_peak_friction_velocity_units, blank=True)
-	pressure = models.CharField(max_length=120, choices=pressure_units, blank=True)
-	temperature = models.CharField(max_length=120, choices=temperature_units, blank=True)
-	turbidity = models.CharField(max_length=120, choices=turbidity_units, blank=True)
-	alkyl_diethers = models.CharField(max_length=120, choices=alkyl_diethers_units, blank=True)
-	aminopeptidase_activity = models.CharField(max_length=120, choices=aminopeptidase_activity_units, blank=True)
-	ammonium = models.CharField(max_length=120, choices=ammonium_units, blank=True)
-	bacterial_carbon_production = models.CharField(max_length=120, choices=bacterial_carbon_production_units, blank=True)
-	bishomohopanol = models.CharField(max_length=120, choices=bishomohopanol_units, blank=True)
-	bromide = models.CharField(max_length=120, choices=bromide_units, blank=True)
-	calcium = models.CharField(max_length=120, choices=calcium_units, blank=True)
-	chloride = models.CharField(max_length=120, choices=chloride_units, blank=True)
-	chlorophyll = models.CharField(max_length=120, choices=chlorophyll_units, blank=True)
-	diether_lipids = models.CharField(max_length=120, choices=diether_lipids_units, blank=True)
-	dissolved_carbon_dioxide = models.CharField(max_length=120, choices=dissolved_carbon_dioxide_units, blank=True)
-	dissolved_hydrogen = models.CharField(max_length=120, choices=dissolved_hydrogen_units, blank=True)
-	dissolved_inorganic_carbon = models.CharField(max_length=120, choices=dissolved_inorganic_carbon_units, blank=True)
-	dissolved_organic_carbon = models.CharField(max_length=120, choices=dissolved_organic_carbon_units, blank=True)
-	dissolved_organic_nitrogen = models.CharField(max_length=120, choices=dissolved_organic_nitrogen_units, blank=True)
-	methane = models.CharField(max_length=120, choices=methane_units, blank=True)
-	dissolved_oxygen = models.CharField(max_length=120, choices=dissolved_oxygen_units, blank=True)
-	glucosidase_activity = models.CharField(max_length=120, choices=glucosidase_activity_units, blank=True)
-	magnesium = models.CharField(max_length=120, choices=magnesium_units, blank=True)
-	n_alkanes = models.CharField(max_length=120, choices=n_alkanes_units, blank=True)
-	nitrate = models.CharField(max_length=120, choices=nitrate_units, blank=True)
-	nitrite = models.CharField(max_length=120, choices=nitrite_units, blank=True)
-	nitrogen = models.CharField(max_length=120, choices=nitrogen_units, blank=True)
-	organic_carbon = models.CharField(max_length=120, choices=organic_carbon_units, blank=True)
-	organic_matter = models.CharField(max_length=120, choices=organic_matter_units, blank=True)
-	organic_nitrogen = models.CharField(max_length=120, choices=organic_nitrogen_units, blank=True)
-	particulate_organic_carbon = models.CharField(max_length=120, choices=particulate_organic_carbon_units, blank=True)
-	petroleum_hydrocarbon = models.CharField(max_length=120, choices=petroleum_hydrocarbon_units, blank=True)
-	phaeopigments = models.CharField(max_length=120, choices=phaeopigments_units, blank=True)
-	phosphate = models.CharField(max_length=120, choices=phosphate_units, blank=True)
-	phospholipid_fatty_acid = models.CharField(max_length=120, choices=phospholipid_fatty_acid_units, blank=True)
-	potassium = models.CharField(max_length=120, choices=potassium_units, blank=True)
-	redox_potential = models.CharField(max_length=120, choices=redox_potential_units, blank=True)
-	salinity = models.CharField(max_length=120, choices=salinity_units, blank=True)
-	total_carbon = models.CharField(max_length=120, choices=total_carbon_units, blank=True)
-	silicate = models.CharField(max_length=120, choices=silicate_units, blank=True)
-	sodium = models.CharField(max_length=120, choices=sodium_units, blank=True)
-	total_organic_carbon = models.CharField(max_length=120, choices=total_organic_carbon_units, blank=True)
-	water_content = models.CharField(max_length=120, choices=water_content_units, blank=True)
-	sulfate = models.CharField(max_length=120, choices=sulfate_units, blank=True)
-	sulfide = models.CharField(max_length=120, choices=sulfide_units, blank=True)
-	total_nitrogen = models.CharField(max_length=120, choices=total_nitrogen_units, blank=True)
+	sample_volume_or_weight_for_DNA_extraction = models.CharField(max_length=120, choices=sample_volume_or_weight_for_DNA_extraction_units, blank=False)
+	altitude = models.CharField(max_length=120, choices=altitude_units, blank=False)
+	geographic_location_latitude = models.CharField(max_length=120, choices=geographic_location_latitude_units, blank=False)
+	geographic_location_longitude = models.CharField(max_length=120, choices=geographic_location_longitude_units, blank=False)
+	depth = models.CharField(max_length=120, choices=depth_units, blank=False)
+	elevation = models.CharField(max_length=120, choices=elevation_units, blank=False)
+	amount_or_size_of_sample_collected = models.CharField(max_length=120, choices=amount_or_size_of_sample_collected_units, blank=False)
+	biomass = models.CharField(max_length=120, choices=biomass_units, blank=False)
+	sample_storage_duration = models.CharField(max_length=120, choices=sample_storage_duration_units, blank=False)
+	sample_storage_temperature = models.CharField(max_length=120, choices=sample_storage_temperature_units, blank=False)
+	alkalinity = models.CharField(max_length=120, choices=alkalinity_units, blank=False)
+	mean_friction_velocity = models.CharField(max_length=120, choices=mean_friction_velocity_units, blank=False)
+	mean_peak_friction_velocity = models.CharField(max_length=120, choices=mean_peak_friction_velocity_units, blank=False)
+	pressure = models.CharField(max_length=120, choices=pressure_units, blank=False)
+	temperature = models.CharField(max_length=120, choices=temperature_units, blank=False)
+	turbidity = models.CharField(max_length=120, choices=turbidity_units, blank=False)
+	alkyl_diethers = models.CharField(max_length=120, choices=alkyl_diethers_units, blank=False)
+	aminopeptidase_activity = models.CharField(max_length=120, choices=aminopeptidase_activity_units, blank=False)
+	ammonium = models.CharField(max_length=120, choices=ammonium_units, blank=False)
+	bacterial_carbon_production = models.CharField(max_length=120, choices=bacterial_carbon_production_units, blank=False)
+	bishomohopanol = models.CharField(max_length=120, choices=bishomohopanol_units, blank=False)
+	bromide = models.CharField(max_length=120, choices=bromide_units, blank=False)
+	calcium = models.CharField(max_length=120, choices=calcium_units, blank=False)
+	chloride = models.CharField(max_length=120, choices=chloride_units, blank=False)
+	chlorophyll = models.CharField(max_length=120, choices=chlorophyll_units, blank=False)
+	diether_lipids = models.CharField(max_length=120, choices=diether_lipids_units, blank=False)
+	dissolved_carbon_dioxide = models.CharField(max_length=120, choices=dissolved_carbon_dioxide_units, blank=False)
+	dissolved_hydrogen = models.CharField(max_length=120, choices=dissolved_hydrogen_units, blank=False)
+	dissolved_inorganic_carbon = models.CharField(max_length=120, choices=dissolved_inorganic_carbon_units, blank=False)
+	dissolved_organic_carbon = models.CharField(max_length=120, choices=dissolved_organic_carbon_units, blank=False)
+	dissolved_organic_nitrogen = models.CharField(max_length=120, choices=dissolved_organic_nitrogen_units, blank=False)
+	methane = models.CharField(max_length=120, choices=methane_units, blank=False)
+	dissolved_oxygen = models.CharField(max_length=120, choices=dissolved_oxygen_units, blank=False)
+	glucosidase_activity = models.CharField(max_length=120, choices=glucosidase_activity_units, blank=False)
+	magnesium = models.CharField(max_length=120, choices=magnesium_units, blank=False)
+	n_alkanes = models.CharField(max_length=120, choices=n_alkanes_units, blank=False)
+	nitrate = models.CharField(max_length=120, choices=nitrate_units, blank=False)
+	nitrite = models.CharField(max_length=120, choices=nitrite_units, blank=False)
+	nitrogen = models.CharField(max_length=120, choices=nitrogen_units, blank=False)
+	organic_carbon = models.CharField(max_length=120, choices=organic_carbon_units, blank=False)
+	organic_matter = models.CharField(max_length=120, choices=organic_matter_units, blank=False)
+	organic_nitrogen = models.CharField(max_length=120, choices=organic_nitrogen_units, blank=False)
+	particulate_organic_carbon = models.CharField(max_length=120, choices=particulate_organic_carbon_units, blank=False)
+	petroleum_hydrocarbon = models.CharField(max_length=120, choices=petroleum_hydrocarbon_units, blank=False)
+	phaeopigments = models.CharField(max_length=120, choices=phaeopigments_units, blank=False)
+	phosphate = models.CharField(max_length=120, choices=phosphate_units, blank=False)
+	phospholipid_fatty_acid = models.CharField(max_length=120, choices=phospholipid_fatty_acid_units, blank=False)
+	potassium = models.CharField(max_length=120, choices=potassium_units, blank=False)
+	redox_potential = models.CharField(max_length=120, choices=redox_potential_units, blank=False)
+	salinity = models.CharField(max_length=120, choices=salinity_units, blank=False)
+	total_carbon = models.CharField(max_length=120, choices=total_carbon_units, blank=False)
+	silicate = models.CharField(max_length=120, choices=silicate_units, blank=False)
+	sodium = models.CharField(max_length=120, choices=sodium_units, blank=False)
+	total_organic_carbon = models.CharField(max_length=120, choices=total_organic_carbon_units, blank=False)
+	water_content = models.CharField(max_length=120, choices=water_content_units, blank=False)
+	sulfate = models.CharField(max_length=120, choices=sulfate_units, blank=False)
+	sulfide = models.CharField(max_length=120, choices=sulfide_units, blank=False)
+	total_nitrogen = models.CharField(max_length=120, choices=total_nitrogen_units, blank=False)
 
 class GSC_MIxS_human_vaginal(SelfDescribingModel):
 
@@ -6764,7 +6766,7 @@ class GSC_MIxS_human_vaginal(SelfDescribingModel):
 	sampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE, default=1)
 	sample = models.ForeignKey(Sample, on_delete=models.CASCADE, default=1)
 	sample_type = models.IntegerField(default=1)
-	project_name= models.CharField(max_length=120, blank=True,help_text="Name of th")
+	project_name= models.CharField(max_length=120, blank=False,help_text="Name of th")
 	experimental_factor= models.CharField(max_length=120, blank=True,help_text="Experiment")
 	ploidy= models.CharField(max_length=120, blank=True,help_text="The ploidy")
 	number_of_replicons= models.CharField(max_length=120, blank=True,help_text="Reports th", validators=[RegexValidator(number_of_replicons_validator)])
@@ -6793,14 +6795,14 @@ class GSC_MIxS_human_vaginal(SelfDescribingModel):
 	relevant_standard_operating_procedures= models.CharField(max_length=120, blank=True,help_text="Standard o")
 	negative_control_type= models.CharField(max_length=120, blank=True,help_text="The substa")
 	positive_control_type= models.CharField(max_length=120, blank=True,help_text="The substa")
-	collection_date= models.CharField(max_length=120, blank=True,help_text="The date t", validators=[RegexValidator(collection_date_validator)])
-	geographic_location_country_and_or_sea= models.CharField(max_length=120, blank=True,help_text="The locati", choices=geographic_location_country_and_or_sea_choice)
-	geographic_location_latitude= models.CharField(max_length=120, blank=True,help_text="The geogra", validators=[RegexValidator(geographic_location_latitude_validator)])
-	geographic_location_longitude= models.CharField(max_length=120, blank=True,help_text="The geogra", validators=[RegexValidator(geographic_location_longitude_validator)])
+	collection_date= models.CharField(max_length=120, blank=False,help_text="The date t", validators=[RegexValidator(collection_date_validator)])
+	geographic_location_country_and_or_sea= models.CharField(max_length=120, blank=False,help_text="The locati", choices=geographic_location_country_and_or_sea_choice)
+	geographic_location_latitude= models.CharField(max_length=120, blank=False,help_text="The geogra", validators=[RegexValidator(geographic_location_latitude_validator)])
+	geographic_location_longitude= models.CharField(max_length=120, blank=False,help_text="The geogra", validators=[RegexValidator(geographic_location_longitude_validator)])
 	geographic_location_region_and_locality= models.CharField(max_length=120, blank=True,help_text="The geogra")
-	broad_scale_environmental_context= models.CharField(max_length=120, blank=True,help_text="Report the")
-	local_environmental_context= models.CharField(max_length=120, blank=True,help_text="Report the")
-	environmental_medium= models.CharField(max_length=120, blank=True,help_text="Report the")
+	broad_scale_environmental_context= models.CharField(max_length=120, blank=False,help_text="Report the")
+	local_environmental_context= models.CharField(max_length=120, blank=False,help_text="Report the")
+	environmental_medium= models.CharField(max_length=120, blank=False,help_text="Report the")
 	source_material_identifiers= models.CharField(max_length=120, blank=True,help_text="A unique i")
 	sample_material_processing= models.CharField(max_length=120, blank=True,help_text="A brief de")
 	isolation_and_growth_condition= models.CharField(max_length=120, blank=True,help_text="Publicatio")
@@ -6855,94 +6857,94 @@ class GSC_MIxS_human_vaginal(SelfDescribingModel):
 	perturbation= models.CharField(max_length=120, blank=True,help_text="type of pe")
 
 	fields = {
-		'project_name': 'project name',
-		'experimental_factor': 'experimental factor',
+		'project_name': 'project_name',
+		'experimental_factor': 'experimental_factor',
 		'ploidy': 'ploidy',
-		'number_of_replicons': 'number of replicons',
-		'extrachromosomal_elements': 'extrachromosomal elements',
-		'estimated_size': 'estimated size',
-		'reference_for_biomaterial': 'reference for biomaterial',
-		'annotation_source': 'annotation source',
-		'sample_volume_or_weight_for_DNA_extraction': 'sample volume or weight for DNA extraction',
-		'nucleic_acid_extraction': 'nucleic acid extraction',
-		'nucleic_acid_amplification': 'nucleic acid amplification',
-		'library_size': 'library size',
-		'library_reads_sequenced': 'library reads sequenced',
-		'library_construction_method': 'library construction method',
-		'library_vector': 'library vector',
-		'library_screening_strategy': 'library screening strategy',
-		'target_gene': 'target gene',
-		'target_subfragment': 'target subfragment',
-		'pcr_primers': 'pcr primers',
-		'multiplex_identifiers': 'multiplex identifiers',
+		'number_of_replicons': 'number_of_replicons',
+		'extrachromosomal_elements': 'extrachromosomal_elements',
+		'estimated_size': 'estimated_size',
+		'reference_for_biomaterial': 'reference_for_biomaterial',
+		'annotation_source': 'annotation_source',
+		'sample_volume_or_weight_for_DNA_extraction': 'sample_volume_or_weight_for_DNA_extraction',
+		'nucleic_acid_extraction': 'nucleic_acid_extraction',
+		'nucleic_acid_amplification': 'nucleic_acid_amplification',
+		'library_size': 'library_size',
+		'library_reads_sequenced': 'library_reads_sequenced',
+		'library_construction_method': 'library_construction_method',
+		'library_vector': 'library_vector',
+		'library_screening_strategy': 'library_screening_strategy',
+		'target_gene': 'target_gene',
+		'target_subfragment': 'target_subfragment',
+		'pcr_primers': 'pcr_primers',
+		'multiplex_identifiers': 'multiplex_identifiers',
 		'adapters': 'adapters',
-		'pcr_conditions': 'pcr conditions',
-		'sequencing_method': 'sequencing method',
-		'sequence_quality_check': 'sequence quality check',
-		'chimera_check_software': 'chimera check software',
-		'relevant_electronic_resources': 'relevant electronic resources',
-		'relevant_standard_operating_procedures': 'relevant standard operating procedures',
-		'negative_control_type': 'negative control type',
-		'positive_control_type': 'positive control type',
-		'collection_date': 'collection date',
-		'geographic_location_country_and_or_sea': 'geographic location (country and/or sea)',
-		'geographic_location_latitude': 'geographic location (latitude)',
-		'geographic_location_longitude': 'geographic location (longitude)',
-		'geographic_location_region_and_locality': 'geographic location (region and locality)',
-		'broad_scale_environmental_context': 'broad-scale environmental context',
-		'local_environmental_context': 'local environmental context',
-		'environmental_medium': 'environmental medium',
-		'source_material_identifiers': 'source material identifiers',
-		'sample_material_processing': 'sample material processing',
-		'isolation_and_growth_condition': 'isolation and growth condition',
+		'pcr_conditions': 'pcr_conditions',
+		'sequencing_method': 'sequencing_method',
+		'sequence_quality_check': 'sequence_quality_check',
+		'chimera_check_software': 'chimera_check_software',
+		'relevant_electronic_resources': 'relevant_electronic_resources',
+		'relevant_standard_operating_procedures': 'relevant_standard_operating_procedures',
+		'negative_control_type': 'negative_control_type',
+		'positive_control_type': 'positive_control_type',
+		'collection_date': 'collection_date',
+		'geographic_location_country_and_or_sea': 'geographic_location_country_and_or_sea',
+		'geographic_location_latitude': 'geographic_location_latitude',
+		'geographic_location_longitude': 'geographic_location_longitude',
+		'geographic_location_region_and_locality': 'geographic_location_region_and_locality',
+		'broad_scale_environmental_context': 'broad_scale_environmental_context',
+		'local_environmental_context': 'local_environmental_context',
+		'environmental_medium': 'environmental_medium',
+		'source_material_identifiers': 'source_material_identifiers',
+		'sample_material_processing': 'sample_material_processing',
+		'isolation_and_growth_condition': 'isolation_and_growth_condition',
 		'propagation': 'propagation',
-		'amount_or_size_of_sample_collected': 'amount or size of sample collected',
-		'host_body_product': 'host body product',
-		'medical_history_performed': 'medical history performed',
-		'oxygenation_status_of_sample': 'oxygenation status of sample',
-		'organism_count': 'organism count',
-		'sample_storage_duration': 'sample storage duration',
-		'sample_storage_temperature': 'sample storage temperature',
-		'sample_storage_location': 'sample storage location',
-		'sample_collection_device': 'sample collection device',
-		'sample_collection_method': 'sample collection method',
-		'gynecological_disorder': 'gynecological disorder',
-		'urogenital_disorder': 'urogenital disorder',
-		'host_disease_status': 'host disease status',
-		'host_subject_id': 'host subject id',
-		'IHMC_medication_code': 'IHMC medication code',
-		'host_age': 'host age',
-		'host_body_site': 'host body site',
-		'host_height': 'host height',
-		'host_body_mass_index': 'host body-mass index',
+		'amount_or_size_of_sample_collected': 'amount_or_size_of_sample_collected',
+		'host_body_product': 'host_body_product',
+		'medical_history_performed': 'medical_history_performed',
+		'oxygenation_status_of_sample': 'oxygenation_status_of_sample',
+		'organism_count': 'organism_count',
+		'sample_storage_duration': 'sample_storage_duration',
+		'sample_storage_temperature': 'sample_storage_temperature',
+		'sample_storage_location': 'sample_storage_location',
+		'sample_collection_device': 'sample_collection_device',
+		'sample_collection_method': 'sample_collection_method',
+		'gynecological_disorder': 'gynecological_disorder',
+		'urogenital_disorder': 'urogenital_disorder',
+		'host_disease_status': 'host_disease_status',
+		'host_subject_id': 'host_subject_id',
+		'IHMC_medication_code': 'IHMC_medication_code',
+		'host_age': 'host_age',
+		'host_body_site': 'host_body_site',
+		'host_height': 'host_height',
+		'host_body_mass_index': 'host_body_mass_index',
 		'ethnicity': 'ethnicity',
-		'host_occupation': 'host occupation',
-		'host_total_mass': 'host total mass',
-		'host_phenotype': 'host phenotype',
-		'host_body_temperature': 'host body temperature',
-		'host_sex': 'host sex',
+		'host_occupation': 'host_occupation',
+		'host_total_mass': 'host_total_mass',
+		'host_phenotype': 'host_phenotype',
+		'host_body_temperature': 'host_body_temperature',
+		'host_sex': 'host_sex',
 		'temperature': 'temperature',
 		'salinity': 'salinity',
 		'menarche': 'menarche',
-		'sexual_activity': 'sexual activity',
+		'sexual_activity': 'sexual_activity',
 		'pregnancy': 'pregnancy',
 		'douche': 'douche',
-		'birth_control': 'birth control',
+		'birth_control': 'birth_control',
 		'menopause': 'menopause',
 		'HRT': 'HRT',
 		'hysterectomy': 'hysterectomy',
-		'host_diet': 'host diet',
-		'host_last_meal': 'host last meal',
-		'host_family_relationship': 'host family relationship',
-		'host_genotype': 'host genotype',
-		'host_pulse': 'host pulse',
-		'subspecific_genetic_lineage': 'subspecific genetic lineage',
-		'trophic_level': 'trophic level',
-		'relationship_to_oxygen': 'relationship to oxygen',
-		'known_pathogenicity': 'known pathogenicity',
-		'encoded_traits': 'encoded traits',
-		'observed_biotic_relationship': 'observed biotic relationship',
-		'chemical_administration': 'chemical administration',
+		'host_diet': 'host_diet',
+		'host_last_meal': 'host_last_meal',
+		'host_family_relationship': 'host_family_relationship',
+		'host_genotype': 'host_genotype',
+		'host_pulse': 'host_pulse',
+		'subspecific_genetic_lineage': 'subspecific_genetic_lineage',
+		'trophic_level': 'trophic_level',
+		'relationship_to_oxygen': 'relationship_to_oxygen',
+		'known_pathogenicity': 'known_pathogenicity',
+		'encoded_traits': 'encoded_traits',
+		'observed_biotic_relationship': 'observed_biotic_relationship',
+		'chemical_administration': 'chemical_administration',
 		'perturbation': 'perturbation',
 	}
 
@@ -6966,20 +6968,20 @@ class GSC_MIxS_human_vaginal_unit(SelfDescribingModel):
 	host_pulse_units = [('bpm', 'bpm')]
 
 	fields = {
-		'sample_volume_or_weight_for_DNA_extraction': 'sample volume or weight for DNA extraction',
-		'geographic_location_latitude': 'geographic location (latitude)',
-		'geographic_location_longitude': 'geographic location (longitude)',
-		'amount_or_size_of_sample_collected': 'amount or size of sample collected',
-		'sample_storage_duration': 'sample storage duration',
-		'sample_storage_temperature': 'sample storage temperature',
-		'host_age': 'host age',
-		'host_height': 'host height',
-		'host_body_mass_index': 'host body-mass index',
-		'host_total_mass': 'host total mass',
-		'host_body_temperature': 'host body temperature',
+		'sample_volume_or_weight_for_DNA_extraction': 'sample_volume_or_weight_for_DNA_extraction',
+		'geographic_location_latitude': 'geographic_location_latitude',
+		'geographic_location_longitude': 'geographic_location_longitude',
+		'amount_or_size_of_sample_collected': 'amount_or_size_of_sample_collected',
+		'sample_storage_duration': 'sample_storage_duration',
+		'sample_storage_temperature': 'sample_storage_temperature',
+		'host_age': 'host_age',
+		'host_height': 'host_height',
+		'host_body_mass_index': 'host_body_mass_index',
+		'host_total_mass': 'host_total_mass',
+		'host_body_temperature': 'host_body_temperature',
 		'temperature': 'temperature',
 		'salinity': 'salinity',
-		'host_pulse': 'host pulse',
+		'host_pulse': 'host_pulse',
 	}
 
 	name = 'GSC_MIxS_human_vaginal'
@@ -6987,20 +6989,20 @@ class GSC_MIxS_human_vaginal_unit(SelfDescribingModel):
 	sampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE, default=1)
 	sample = models.ForeignKey(Sample, on_delete=models.CASCADE, default=1)
 	sample_type = models.IntegerField(default=1)
-	sample_volume_or_weight_for_DNA_extraction = models.CharField(max_length=120, choices=sample_volume_or_weight_for_DNA_extraction_units, blank=True)
-	geographic_location_latitude = models.CharField(max_length=120, choices=geographic_location_latitude_units, blank=True)
-	geographic_location_longitude = models.CharField(max_length=120, choices=geographic_location_longitude_units, blank=True)
-	amount_or_size_of_sample_collected = models.CharField(max_length=120, choices=amount_or_size_of_sample_collected_units, blank=True)
-	sample_storage_duration = models.CharField(max_length=120, choices=sample_storage_duration_units, blank=True)
-	sample_storage_temperature = models.CharField(max_length=120, choices=sample_storage_temperature_units, blank=True)
-	host_age = models.CharField(max_length=120, choices=host_age_units, blank=True)
-	host_height = models.CharField(max_length=120, choices=host_height_units, blank=True)
-	host_body_mass_index = models.CharField(max_length=120, choices=host_body_mass_index_units, blank=True)
-	host_total_mass = models.CharField(max_length=120, choices=host_total_mass_units, blank=True)
-	host_body_temperature = models.CharField(max_length=120, choices=host_body_temperature_units, blank=True)
-	temperature = models.CharField(max_length=120, choices=temperature_units, blank=True)
-	salinity = models.CharField(max_length=120, choices=salinity_units, blank=True)
-	host_pulse = models.CharField(max_length=120, choices=host_pulse_units, blank=True)
+	sample_volume_or_weight_for_DNA_extraction = models.CharField(max_length=120, choices=sample_volume_or_weight_for_DNA_extraction_units, blank=False)
+	geographic_location_latitude = models.CharField(max_length=120, choices=geographic_location_latitude_units, blank=False)
+	geographic_location_longitude = models.CharField(max_length=120, choices=geographic_location_longitude_units, blank=False)
+	amount_or_size_of_sample_collected = models.CharField(max_length=120, choices=amount_or_size_of_sample_collected_units, blank=False)
+	sample_storage_duration = models.CharField(max_length=120, choices=sample_storage_duration_units, blank=False)
+	sample_storage_temperature = models.CharField(max_length=120, choices=sample_storage_temperature_units, blank=False)
+	host_age = models.CharField(max_length=120, choices=host_age_units, blank=False)
+	host_height = models.CharField(max_length=120, choices=host_height_units, blank=False)
+	host_body_mass_index = models.CharField(max_length=120, choices=host_body_mass_index_units, blank=False)
+	host_total_mass = models.CharField(max_length=120, choices=host_total_mass_units, blank=False)
+	host_body_temperature = models.CharField(max_length=120, choices=host_body_temperature_units, blank=False)
+	temperature = models.CharField(max_length=120, choices=temperature_units, blank=False)
+	salinity = models.CharField(max_length=120, choices=salinity_units, blank=False)
+	host_pulse = models.CharField(max_length=120, choices=host_pulse_units, blank=False)
 
 class ENA_default_sample_checklist(SelfDescribingModel):
 
@@ -7020,8 +7022,8 @@ class ENA_default_sample_checklist(SelfDescribingModel):
 	isolation_source= models.CharField(max_length=120, blank=True,help_text="describes ")
 	lat_lon= models.CharField(max_length=120, blank=True,help_text="geographic")
 	collected_by= models.CharField(max_length=120, blank=True,help_text="name of pe")
-	collection_date= models.CharField(max_length=120, blank=True,help_text="The date t", validators=[RegexValidator(collection_date_validator)])
-	geographic_location_country_and_or_sea= models.CharField(max_length=120, blank=True,help_text="The locati", choices=geographic_location_country_and_or_sea_choice)
+	collection_date= models.CharField(max_length=120, blank=False,help_text="The date t", validators=[RegexValidator(collection_date_validator)])
+	geographic_location_country_and_or_sea= models.CharField(max_length=120, blank=False,help_text="The locati", choices=geographic_location_country_and_or_sea_choice)
 	geographic_location_region_and_locality= models.CharField(max_length=120, blank=True,help_text="The geogra")
 	identified_by= models.CharField(max_length=120, blank=True,help_text="name of th")
 	environmental_sample= models.CharField(max_length=120, blank=True,help_text="identifies", choices=environmental_sample_choice)
@@ -7052,15 +7054,15 @@ class ENA_default_sample_checklist(SelfDescribingModel):
 		'isolation_source': 'isolation_source',
 		'lat_lon': 'lat_lon',
 		'collected_by': 'collected_by',
-		'collection_date': 'collection date',
-		'geographic_location_country_and_or_sea': 'geographic location (country and/or sea)',
-		'geographic_location_region_and_locality': 'geographic location (region and locality)',
+		'collection_date': 'collection_date',
+		'geographic_location_country_and_or_sea': 'geographic_location_country_and_or_sea',
+		'geographic_location_region_and_locality': 'geographic_location_region_and_locality',
 		'identified_by': 'identified_by',
 		'environmental_sample': 'environmental_sample',
 		'mating_type': 'mating_type',
 		'sex': 'sex',
 		'lab_host': 'lab_host',
-		'host_scientific_name': 'host scientific name',
+		'host_scientific_name': 'host_scientific_name',
 		'bio_material': 'bio_material',
 		'culture_collection': 'culture_collection',
 		'specimen_voucher': 'specimen_voucher',
