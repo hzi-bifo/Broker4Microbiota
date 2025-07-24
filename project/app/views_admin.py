@@ -1689,7 +1689,7 @@ def admin_generate_submg_run(request, project_id):
                 yaml.extend(b.getSubMGYAML())
             # Tax ID mapping
             bin_tax_map = {
-                b.file.split('/')[-1].replace(".fa.gz", ""): [s.scientific_name, s.tax_id]
+                b.file.split('/')[-1].replace(".fa", ""): [s.scientific_name, s.tax_id]
                 for s in bin_samples if (b := s.bin)
             }
             for b in bins:
