@@ -629,23 +629,23 @@ class Sampleset(models.Model):
     field_overrides = models.JSONField(default=dict, blank=True)
     
     checklist_structure = {
-        'GSC_MIxS_air': {"checklist_code": "ERC000012", 'checklist_class_name': 'GSC_MIxS_air', 'unitchecklist_class_name': 'GSC_MIxS_air_unit'},
-'GSC_MIMAGS': {"checklist_code": "ERC000047", 'checklist_class_name': 'GSC_MIMAGS', 'unitchecklist_class_name': 'GSC_MIMAGS_unit'},
-'GSC_MIxS_plant_associated': {"checklist_code": "ERC000020", 'checklist_class_name': 'GSC_MIxS_plant_associated', 'unitchecklist_class_name': 'GSC_MIxS_plant_associated_unit'},
-'GSC_MIxS_wastewater_sludge': {"checklist_code": "ERC000023", 'checklist_class_name': 'GSC_MIxS_wastewater_sludge', 'unitchecklist_class_name': 'GSC_MIxS_wastewater_sludge_unit'},
+        'GSC_MIxS_wastewater_sludge': {"checklist_code": "ERC000023", 'checklist_class_name': 'GSC_MIxS_wastewater_sludge', 'unitchecklist_class_name': 'GSC_MIxS_wastewater_sludge_unit'},
 'GSC_MIxS_miscellaneous_natural_or_artificial_environment': {"checklist_code": "ERC000025", 'checklist_class_name': 'GSC_MIxS_miscellaneous_natural_or_artificial_environment', 'unitchecklist_class_name': 'GSC_MIxS_miscellaneous_natural_or_artificial_environment_unit'},
-'GSC_MIxS_human_oral': {"checklist_code": "ERC000016", 'checklist_class_name': 'GSC_MIxS_human_oral', 'unitchecklist_class_name': 'GSC_MIxS_human_oral_unit'},
-'GSC_MIxS_sediment': {"checklist_code": "ERC000021", 'checklist_class_name': 'GSC_MIxS_sediment', 'unitchecklist_class_name': 'GSC_MIxS_sediment_unit'},
 'GSC_MIxS_human_skin': {"checklist_code": "ERC000017", 'checklist_class_name': 'GSC_MIxS_human_skin', 'unitchecklist_class_name': 'GSC_MIxS_human_skin_unit'},
-'GSC_MIxS_soil': {"checklist_code": "ERC000022", 'checklist_class_name': 'GSC_MIxS_soil', 'unitchecklist_class_name': 'GSC_MIxS_soil_unit'},
-'GSC_MIxS_host_associated': {"checklist_code": "ERC000013", 'checklist_class_name': 'GSC_MIxS_host_associated', 'unitchecklist_class_name': 'GSC_MIxS_host_associated_unit'},
-'GSC_MIxS_human_associated': {"checklist_code": "ERC000014", 'checklist_class_name': 'GSC_MIxS_human_associated', 'unitchecklist_class_name': 'GSC_MIxS_human_associated_unit'},
-'GSC_MIxS_water': {"checklist_code": "ERC000024", 'checklist_class_name': 'GSC_MIxS_water', 'unitchecklist_class_name': 'GSC_MIxS_water_unit'},
-'ENA_binned_metagenome': {"checklist_code": "ERC000050", 'checklist_class_name': 'ENA_binned_metagenome', 'unitchecklist_class_name': 'ENA_binned_metagenome_unit'},
-'GSC_MIxS_human_gut': {"checklist_code": "ERC000015", 'checklist_class_name': 'GSC_MIxS_human_gut', 'unitchecklist_class_name': 'GSC_MIxS_human_gut_unit'},
-'GSC_MIxS_microbial_mat_biolfilm': {"checklist_code": "ERC000019", 'checklist_class_name': 'GSC_MIxS_microbial_mat_biolfilm', 'unitchecklist_class_name': 'GSC_MIxS_microbial_mat_biolfilm_unit'},
-'GSC_MIxS_human_vaginal': {"checklist_code": "ERC000018", 'checklist_class_name': 'GSC_MIxS_human_vaginal', 'unitchecklist_class_name': 'GSC_MIxS_human_vaginal_unit'},
 'ENA_default_sample_checklist': {"checklist_code": "ERC000011", 'checklist_class_name': 'ENA_default_sample_checklist', 'unitchecklist_class_name': 'ENA_default_sample_checklist_unit'},
+'GSC_MIxS_plant_associated': {"checklist_code": "ERC000020", 'checklist_class_name': 'GSC_MIxS_plant_associated', 'unitchecklist_class_name': 'GSC_MIxS_plant_associated_unit'},
+'GSC_MIxS_water': {"checklist_code": "ERC000024", 'checklist_class_name': 'GSC_MIxS_water', 'unitchecklist_class_name': 'GSC_MIxS_water_unit'},
+'GSC_MIxS_soil': {"checklist_code": "ERC000022", 'checklist_class_name': 'GSC_MIxS_soil', 'unitchecklist_class_name': 'GSC_MIxS_soil_unit'},
+'GSC_MIxS_human_gut': {"checklist_code": "ERC000015", 'checklist_class_name': 'GSC_MIxS_human_gut', 'unitchecklist_class_name': 'GSC_MIxS_human_gut_unit'},
+'GSC_MIxS_host_associated': {"checklist_code": "ERC000013", 'checklist_class_name': 'GSC_MIxS_host_associated', 'unitchecklist_class_name': 'GSC_MIxS_host_associated_unit'},
+'GSC_MIxS_human_vaginal': {"checklist_code": "ERC000018", 'checklist_class_name': 'GSC_MIxS_human_vaginal', 'unitchecklist_class_name': 'GSC_MIxS_human_vaginal_unit'},
+'GSC_MIxS_human_oral': {"checklist_code": "ERC000016", 'checklist_class_name': 'GSC_MIxS_human_oral', 'unitchecklist_class_name': 'GSC_MIxS_human_oral_unit'},
+'ENA_binned_metagenome': {"checklist_code": "ERC000050", 'checklist_class_name': 'ENA_binned_metagenome', 'unitchecklist_class_name': 'ENA_binned_metagenome_unit'},
+'GSC_MIxS_sediment': {"checklist_code": "ERC000021", 'checklist_class_name': 'GSC_MIxS_sediment', 'unitchecklist_class_name': 'GSC_MIxS_sediment_unit'},
+'GSC_MIxS_human_associated': {"checklist_code": "ERC000014", 'checklist_class_name': 'GSC_MIxS_human_associated', 'unitchecklist_class_name': 'GSC_MIxS_human_associated_unit'},
+'GSC_MIxS_air': {"checklist_code": "ERC000012", 'checklist_class_name': 'GSC_MIxS_air', 'unitchecklist_class_name': 'GSC_MIxS_air_unit'},
+'GSC_MIxS_microbial_mat_biolfilm': {"checklist_code": "ERC000019", 'checklist_class_name': 'GSC_MIxS_microbial_mat_biolfilm', 'unitchecklist_class_name': 'GSC_MIxS_microbial_mat_biolfilm_unit'},
+'GSC_MIMAGS': {"checklist_code": "ERC000047", 'checklist_class_name': 'GSC_MIMAGS', 'unitchecklist_class_name': 'GSC_MIMAGS_unit'},
 
     }
 
@@ -1808,779 +1808,6 @@ class StatusNote(models.Model):
         """Check if this note should be visible to the order owner"""
         return self.note_type in ['user_visible', 'status_change', 'rejection']
 
-class GSC_MIxS_air(SelfDescribingModel):
-
-	sequence_quality_check_choice = [('manual', 'manual'), ('none', 'none'), ('software', 'software')]
-	geographic_location_country_and_or_sea_choice = [('Afghanistan', 'Afghanistan'), ('Albania', 'Albania'), ('Algeria', 'Algeria'), ('American Samoa', 'American Samoa'), ('Andorra', 'Andorra'), ('Angola', 'Angola'), ('Anguilla', 'Anguilla'), ('Antarctica', 'Antarctica'), ('Antigua and Barbuda', 'Antigua and Barbuda'), ('Arctic Ocean', 'Arctic Ocean'), ('Argentina', 'Argentina'), ('Armenia', 'Armenia'), ('Aruba', 'Aruba'), ('Ashmore and Cartier Islands', 'Ashmore and Cartier Islands'), ('Atlantic Ocean', 'Atlantic Ocean'), ('Australia', 'Australia'), ('Austria', 'Austria'), ('Azerbaijan', 'Azerbaijan'), ('Bahamas', 'Bahamas'), ('Bahrain', 'Bahrain'), ('Baker Island', 'Baker Island'), ('Baltic Sea', 'Baltic Sea'), ('Bangladesh', 'Bangladesh'), ('Barbados', 'Barbados'), ('Bassas da India', 'Bassas da India'), ('Belarus', 'Belarus'), ('Belgium', 'Belgium'), ('Belize', 'Belize'), ('Benin', 'Benin'), ('Bermuda', 'Bermuda'), ('Bhutan', 'Bhutan'), ('Bolivia', 'Bolivia'), ('Borneo', 'Borneo'), ('Bosnia and Herzegovina', 'Bosnia and Herzegovina'), ('Botswana', 'Botswana'), ('Bouvet Island', 'Bouvet Island'), ('Brazil', 'Brazil'), ('British Virgin Islands', 'British Virgin Islands'), ('Brunei', 'Brunei'), ('Bulgaria', 'Bulgaria'), ('Burkina Faso', 'Burkina Faso'), ('Burundi', 'Burundi'), ('Cambodia', 'Cambodia'), ('Cameroon', 'Cameroon'), ('Canada', 'Canada'), ('Cape Verde', 'Cape Verde'), ('Cayman Islands', 'Cayman Islands'), ('Central African Republic', 'Central African Republic'), ('Chad', 'Chad'), ('Chile', 'Chile'), ('China', 'China'), ('Christmas Island', 'Christmas Island'), ('Clipperton Island', 'Clipperton Island'), ('Cocos Islands', 'Cocos Islands'), ('Colombia', 'Colombia'), ('Comoros', 'Comoros'), ('Cook Islands', 'Cook Islands'), ('Coral Sea Islands', 'Coral Sea Islands'), ('Costa Rica', 'Costa Rica'), ("Cote d'Ivoire", "Cote d'Ivoire"), ('Croatia', 'Croatia'), ('Cuba', 'Cuba'), ('Curacao', 'Curacao'), ('Cyprus', 'Cyprus'), ('Czech Republic', 'Czech Republic'), ('Democratic Republic of the Congo', 'Democratic Republic of the Congo'), ('Denmark', 'Denmark'), ('Djibouti', 'Djibouti'), ('Dominica', 'Dominica'), ('Dominican Republic', 'Dominican Republic'), ('East Timor', 'East Timor'), ('Ecuador', 'Ecuador'), ('Egypt', 'Egypt'), ('El Salvador', 'El Salvador'), ('Equatorial Guinea', 'Equatorial Guinea'), ('Eritrea', 'Eritrea'), ('Estonia', 'Estonia'), ('Ethiopia', 'Ethiopia'), ('Europa Island', 'Europa Island'), ('Falkland Islands (Islas Malvinas)', 'Falkland Islands (Islas Malvinas)'), ('Faroe Islands', 'Faroe Islands'), ('Fiji', 'Fiji'), ('Finland', 'Finland'), ('France', 'France'), ('French Guiana', 'French Guiana'), ('French Polynesia', 'French Polynesia'), ('French Southern and Antarctic Lands', 'French Southern and Antarctic Lands'), ('Gabon', 'Gabon'), ('Gambia', 'Gambia'), ('Gaza Strip', 'Gaza Strip'), ('Georgia', 'Georgia'), ('Germany', 'Germany'), ('Ghana', 'Ghana'), ('Gibraltar', 'Gibraltar'), ('Glorioso Islands', 'Glorioso Islands'), ('Greece', 'Greece'), ('Greenland', 'Greenland'), ('Grenada', 'Grenada'), ('Guadeloupe', 'Guadeloupe'), ('Guam', 'Guam'), ('Guatemala', 'Guatemala'), ('Guernsey', 'Guernsey'), ('Guinea', 'Guinea'), ('Guinea-Bissau', 'Guinea-Bissau'), ('Guyana', 'Guyana'), ('Haiti', 'Haiti'), ('Heard Island and McDonald Islands', 'Heard Island and McDonald Islands'), ('Honduras', 'Honduras'), ('Hong Kong', 'Hong Kong'), ('Howland Island', 'Howland Island'), ('Hungary', 'Hungary'), ('Iceland', 'Iceland'), ('India', 'India'), ('Indian Ocean', 'Indian Ocean'), ('Indonesia', 'Indonesia'), ('Iran', 'Iran'), ('Iraq', 'Iraq'), ('Ireland', 'Ireland'), ('Isle of Man', 'Isle of Man'), ('Israel', 'Israel'), ('Italy', 'Italy'), ('Jamaica', 'Jamaica'), ('Jan Mayen', 'Jan Mayen'), ('Japan', 'Japan'), ('Jarvis Island', 'Jarvis Island'), ('Jersey', 'Jersey'), ('Johnston Atoll', 'Johnston Atoll'), ('Jordan', 'Jordan'), ('Juan de Nova Island', 'Juan de Nova Island'), ('Kazakhstan', 'Kazakhstan'), ('Kenya', 'Kenya'), ('Kerguelen Archipelago', 'Kerguelen Archipelago'), ('Kingman Reef', 'Kingman Reef'), ('Kiribati', 'Kiribati'), ('Kosovo', 'Kosovo'), ('Kuwait', 'Kuwait'), ('Kyrgyzstan', 'Kyrgyzstan'), ('Laos', 'Laos'), ('Latvia', 'Latvia'), ('Lebanon', 'Lebanon'), ('Lesotho', 'Lesotho'), ('Liberia', 'Liberia'), ('Libya', 'Libya'), ('Liechtenstein', 'Liechtenstein'), ('Lithuania', 'Lithuania'), ('Luxembourg', 'Luxembourg'), ('Macau', 'Macau'), ('Macedonia', 'Macedonia'), ('Madagascar', 'Madagascar'), ('Malawi', 'Malawi'), ('Malaysia', 'Malaysia'), ('Maldives', 'Maldives'), ('Mali', 'Mali'), ('Malta', 'Malta'), ('Marshall Islands', 'Marshall Islands'), ('Martinique', 'Martinique'), ('Mauritania', 'Mauritania'), ('Mauritius', 'Mauritius'), ('Mayotte', 'Mayotte'), ('Mediterranean Sea', 'Mediterranean Sea'), ('Mexico', 'Mexico'), ('Micronesia', 'Micronesia'), ('Midway Islands', 'Midway Islands'), ('Moldova', 'Moldova'), ('Monaco', 'Monaco'), ('Mongolia', 'Mongolia'), ('Montenegro', 'Montenegro'), ('Montserrat', 'Montserrat'), ('Morocco', 'Morocco'), ('Mozambique', 'Mozambique'), ('Myanmar', 'Myanmar'), ('Namibia', 'Namibia'), ('Nauru', 'Nauru'), ('Navassa Island', 'Navassa Island'), ('Nepal', 'Nepal'), ('Netherlands', 'Netherlands'), ('New Caledonia', 'New Caledonia'), ('New Zealand', 'New Zealand'), ('Nicaragua', 'Nicaragua'), ('Niger', 'Niger'), ('Nigeria', 'Nigeria'), ('Niue', 'Niue'), ('Norfolk Island', 'Norfolk Island'), ('North Korea', 'North Korea'), ('North Sea', 'North Sea'), ('Northern Mariana Islands', 'Northern Mariana Islands'), ('Norway', 'Norway'), ('Oman', 'Oman'), ('Pacific Ocean', 'Pacific Ocean'), ('Pakistan', 'Pakistan'), ('Palau', 'Palau'), ('Palmyra Atoll', 'Palmyra Atoll'), ('Panama', 'Panama'), ('Papua New Guinea', 'Papua New Guinea'), ('Paracel Islands', 'Paracel Islands'), ('Paraguay', 'Paraguay'), ('Peru', 'Peru'), ('Philippines', 'Philippines'), ('Pitcairn Islands', 'Pitcairn Islands'), ('Poland', 'Poland'), ('Portugal', 'Portugal'), ('Puerto Rico', 'Puerto Rico'), ('Qatar', 'Qatar'), ('Republic of the Congo', 'Republic of the Congo'), ('Reunion', 'Reunion'), ('Romania', 'Romania'), ('Ross Sea', 'Ross Sea'), ('Russia', 'Russia'), ('Rwanda', 'Rwanda'), ('Saint Helena', 'Saint Helena'), ('Saint Kitts and Nevis', 'Saint Kitts and Nevis'), ('Saint Lucia', 'Saint Lucia'), ('Saint Pierre and Miquelon', 'Saint Pierre and Miquelon'), ('Saint Vincent and the Grenadines', 'Saint Vincent and the Grenadines'), ('Samoa', 'Samoa'), ('San Marino', 'San Marino'), ('Sao Tome and Principe', 'Sao Tome and Principe'), ('Saudi Arabia', 'Saudi Arabia'), ('Senegal', 'Senegal'), ('Serbia', 'Serbia'), ('Seychelles', 'Seychelles'), ('Sierra Leone', 'Sierra Leone'), ('Singapore', 'Singapore'), ('Sint Maarten', 'Sint Maarten'), ('Slovakia', 'Slovakia'), ('Slovenia', 'Slovenia'), ('Solomon Islands', 'Solomon Islands'), ('Somalia', 'Somalia'), ('South Africa', 'South Africa'), ('South Georgia and the South Sandwich Islands', 'South Georgia and the South Sandwich Islands'), ('South Korea', 'South Korea'), ('Southern Ocean', 'Southern Ocean'), ('Spain', 'Spain'), ('Spratly Islands', 'Spratly Islands'), ('Sri Lanka', 'Sri Lanka'), ('Sudan', 'Sudan'), ('Suriname', 'Suriname'), ('Svalbard', 'Svalbard'), ('Swaziland', 'Swaziland'), ('Sweden', 'Sweden'), ('Switzerland', 'Switzerland'), ('Syria', 'Syria'), ('Taiwan', 'Taiwan'), ('Tajikistan', 'Tajikistan'), ('Tanzania', 'Tanzania'), ('Tasman Sea', 'Tasman Sea'), ('Thailand', 'Thailand'), ('Togo', 'Togo'), ('Tokelau', 'Tokelau'), ('Tonga', 'Tonga'), ('Trinidad and Tobago', 'Trinidad and Tobago'), ('Tromelin Island', 'Tromelin Island'), ('Tunisia', 'Tunisia'), ('Turkey', 'Turkey'), ('Turkmenistan', 'Turkmenistan'), ('Turks and Caicos Islands', 'Turks and Caicos Islands'), ('Tuvalu', 'Tuvalu'), ('USA', 'USA'), ('Uganda', 'Uganda'), ('Ukraine', 'Ukraine'), ('United Arab Emirates', 'United Arab Emirates'), ('United Kingdom', 'United Kingdom'), ('Uruguay', 'Uruguay'), ('Uzbekistan', 'Uzbekistan'), ('Vanuatu', 'Vanuatu'), ('Venezuela', 'Venezuela'), ('Viet Nam', 'Viet Nam'), ('Virgin Islands', 'Virgin Islands'), ('Wake Island', 'Wake Island'), ('Wallis and Futuna', 'Wallis and Futuna'), ('West Bank', 'West Bank'), ('Western Sahara', 'Western Sahara'), ('Yemen', 'Yemen'), ('Zambia', 'Zambia'), ('Zimbabwe', 'Zimbabwe'), ('missing: control sample', 'missing: control sample'), ('missing: data agreement established pre-2023', 'missing: data agreement established pre-2023'), ('missing: endangered species', 'missing: endangered species'), ('missing: human-identifiable', 'missing: human-identifiable'), ('missing: lab stock', 'missing: lab stock'), ('missing: sample group', 'missing: sample group'), ('missing: synthetic construct', 'missing: synthetic construct'), ('missing: third party data', 'missing: third party data'), ('not applicable', 'not applicable'), ('not collected', 'not collected'), ('not provided', 'not provided'), ('restricted access', 'restricted access')]
-	ventilation_type_choice = [('forced ventilation', 'forced ventilation'), ('mechanical ventilation', 'mechanical ventilation'), ('natural ventilation', 'natural ventilation')]
-	oxygenation_status_of_sample_choice = [('aerobic', 'aerobic'), ('anaerobic', 'anaerobic')]
-	trophic_level_choice = [('autotroph', 'autotroph'), ('carboxydotroph', 'carboxydotroph'), ('chemoautotroph', 'chemoautotroph'), ('chemoheterotroph', 'chemoheterotroph'), ('chemolithoautotroph', 'chemolithoautotroph'), ('chemolithotroph', 'chemolithotroph'), ('chemoorganoheterotroph', 'chemoorganoheterotroph'), ('chemoorganotroph', 'chemoorganotroph'), ('chemosynthetic', 'chemosynthetic'), ('chemotroph', 'chemotroph'), ('copiotroph', 'copiotroph'), ('diazotroph', 'diazotroph'), ('facultative autotroph', 'facultative autotroph'), ('heterotroph', 'heterotroph'), ('lithoautotroph', 'lithoautotroph'), ('lithoheterotroph', 'lithoheterotroph'), ('lithotroph', 'lithotroph'), ('methanotroph', 'methanotroph'), ('methylotroph', 'methylotroph'), ('mixotroph', 'mixotroph'), ('obligate chemoautolithotroph', 'obligate chemoautolithotroph'), ('oligotroph', 'oligotroph'), ('organoheterotroph', 'organoheterotroph'), ('organotroph', 'organotroph'), ('photoautotroph', 'photoautotroph'), ('photoheterotroph', 'photoheterotroph'), ('photolithoautotroph', 'photolithoautotroph'), ('photolithotroph', 'photolithotroph'), ('photosynthetic', 'photosynthetic'), ('phototroph', 'phototroph')]
-	relationship_to_oxygen_choice = [('aerobe', 'aerobe'), ('anaerobe', 'anaerobe'), ('facultative', 'facultative'), ('microaerophilic', 'microaerophilic'), ('microanaerobe', 'microanaerobe'), ('obligate aerobe', 'obligate aerobe'), ('obligate anaerobe', 'obligate anaerobe')]
-	observed_biotic_relationship_choice = [('commensal', 'commensal'), ('free living', 'free living'), ('mutualism', 'mutualism'), ('parasite', 'parasite'), ('symbiont', 'symbiont')]
-
-	number_of_replicons_validator = "[+-]?[0-9]+"
-	extrachromosomal_elements_validator = "[+-]?[0-9]+"
-	estimated_size_validator = "[+-]?[0-9]+"
-	sample_volume_or_weight_for_DNA_extraction_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	library_size_validator = "[+-]?[0-9]+"
-	library_reads_sequenced_validator = "[+-]?[0-9]+"
-	collection_date_validator = "(^[12][0-9]{3}(-(0[1-9]|1[0-2])(-(0[1-9]|[12][0-9]|3[01])(T[0-9]{2}:[0-9]{2}(:[0-9]{2})?Z?([+-][0-9]{1,2})?)?)?)?(/[0-9]{4}(-[0-9]{2}(-[0-9]{2}(T[0-9]{2}:[0-9]{2}(:[0-9]{2})?Z?([+-][0-9]{1,2})?)?)?)?)?$)|(^not collected$)|(^not provided$)|(^restricted access$)|(^missing: control sample$)|(^missing: sample group$)|(^missing: synthetic construct$)|(^missing: lab stock$)|(^missing: third party data$)|(^missing: data agreement established pre-2023$)|(^missing: endangered species$)|(^missing: human-identifiable$)"
-	altitude_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	geographic_location_latitude_validator = "(^[+-]?[0-9]+.?[0-9]{0,8}$)|(^not collected$)|(^not provided$)|(^restricted access$)|(^missing: control sample$)|(^missing: sample group$)|(^missing: synthetic construct$)|(^missing: lab stock$)|(^missing: third party data$)|(^missing: data agreement established pre-2023$)|(^missing: endangered species$)|(^missing: human-identifiable$)"
-	geographic_location_longitude_validator = "(^[+-]?[0-9]+.?[0-9]{0,8}$)|(^not collected$)|(^not provided$)|(^restricted access$)|(^missing: control sample$)|(^missing: sample group$)|(^missing: synthetic construct$)|(^missing: lab stock$)|(^missing: third party data$)|(^missing: data agreement established pre-2023$)|(^missing: endangered species$)|(^missing: human-identifiable$)"
-	elevation_validator = "[+-]?(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	ventilation_rate_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	amount_or_size_of_sample_collected_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	sample_storage_duration_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	sample_storage_temperature_validator = "[+-]?(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	barometric_pressure_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	humidity_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	solar_irradiance_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	wind_speed_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	temperature_validator = "[+-]?(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	carbon_dioxide_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	carbon_monoxide_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	oxygen_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	air_particulate_matter_concentration_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	methane_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	salinity_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-
-	sampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE, default=1)
-	sample = models.ForeignKey(Sample, on_delete=models.CASCADE, default=1)
-	sample_type = models.IntegerField(default=1)
-	project_name= models.CharField(max_length=120, blank=False,help_text="Name of th")
-	experimental_factor= models.CharField(max_length=120, blank=True,help_text="Experiment")
-	ploidy= models.CharField(max_length=120, blank=True,help_text="The ploidy")
-	number_of_replicons= models.CharField(max_length=120, blank=True,help_text="Reports th", validators=[RegexValidator(number_of_replicons_validator)])
-	extrachromosomal_elements= models.CharField(max_length=120, blank=True,help_text="Do plasmid", validators=[RegexValidator(extrachromosomal_elements_validator)])
-	estimated_size= models.CharField(max_length=120, blank=True,help_text="The estima", validators=[RegexValidator(estimated_size_validator)])
-	reference_for_biomaterial= models.CharField(max_length=120, blank=True,help_text="Primary pu")
-	annotation_source= models.CharField(max_length=120, blank=True,help_text="For cases ")
-	sample_volume_or_weight_for_DNA_extraction= models.CharField(max_length=120, blank=True,help_text="Volume (ml", validators=[RegexValidator(sample_volume_or_weight_for_DNA_extraction_validator)])
-	nucleic_acid_extraction= models.CharField(max_length=120, blank=True,help_text="A link to ")
-	nucleic_acid_amplification= models.CharField(max_length=120, blank=True,help_text="A link to ")
-	library_size= models.CharField(max_length=120, blank=True,help_text="Total numb", validators=[RegexValidator(library_size_validator)])
-	library_reads_sequenced= models.CharField(max_length=120, blank=True,help_text="Total numb", validators=[RegexValidator(library_reads_sequenced_validator)])
-	library_construction_method= models.CharField(max_length=120, blank=True,help_text="Library co")
-	library_vector= models.CharField(max_length=120, blank=True,help_text="Cloning ve")
-	library_screening_strategy= models.CharField(max_length=120, blank=True,help_text="Specific e")
-	target_gene= models.CharField(max_length=120, blank=True,help_text="Targeted g")
-	target_subfragment= models.CharField(max_length=120, blank=True,help_text="Name of su")
-	pcr_primers= models.CharField(max_length=120, blank=True,help_text="PCR primer")
-	multiplex_identifiers= models.CharField(max_length=120, blank=True,help_text="Molecular ")
-	adapters= models.CharField(max_length=120, blank=True,help_text="Adapters p")
-	pcr_conditions= models.CharField(max_length=120, blank=True,help_text="Descriptio")
-	sequencing_method= models.CharField(max_length=120, blank=True,help_text="Sequencing")
-	sequence_quality_check= models.CharField(max_length=120, blank=True,help_text="Indicate i", choices=sequence_quality_check_choice)
-	chimera_check_software= models.CharField(max_length=120, blank=True,help_text="Tool(s) us")
-	relevant_electronic_resources= models.CharField(max_length=120, blank=True,help_text="A related ")
-	relevant_standard_operating_procedures= models.CharField(max_length=120, blank=True,help_text="Standard o")
-	negative_control_type= models.CharField(max_length=120, blank=True,help_text="The substa")
-	positive_control_type= models.CharField(max_length=120, blank=True,help_text="The substa")
-	collection_date= models.CharField(max_length=120, blank=False,help_text="The date t", validators=[RegexValidator(collection_date_validator)])
-	altitude= models.CharField(max_length=120, blank=False,help_text="The altitu", validators=[RegexValidator(altitude_validator)])
-	geographic_location_country_and_or_sea= models.CharField(max_length=120, blank=False,help_text="The locati", choices=geographic_location_country_and_or_sea_choice)
-	geographic_location_latitude= models.CharField(max_length=120, blank=False,help_text="The geogra", validators=[RegexValidator(geographic_location_latitude_validator)])
-	geographic_location_longitude= models.CharField(max_length=120, blank=False,help_text="The geogra", validators=[RegexValidator(geographic_location_longitude_validator)])
-	geographic_location_region_and_locality= models.CharField(max_length=120, blank=True,help_text="The geogra")
-	broad_scale_environmental_context= models.CharField(max_length=120, blank=False,help_text="Report the")
-	local_environmental_context= models.CharField(max_length=120, blank=False,help_text="Report the")
-	environmental_medium= models.CharField(max_length=120, blank=False,help_text="Report the")
-	elevation= models.CharField(max_length=120, blank=True,help_text="The elevat", validators=[RegexValidator(elevation_validator)])
-	ventilation_rate= models.CharField(max_length=120, blank=True,help_text="ventilatio", validators=[RegexValidator(ventilation_rate_validator)])
-	ventilation_type= models.CharField(max_length=120, blank=True,help_text="The intent", choices=ventilation_type_choice)
-	source_material_identifiers= models.CharField(max_length=120, blank=True,help_text="A unique i")
-	sample_material_processing= models.CharField(max_length=120, blank=True,help_text="A brief de")
-	isolation_and_growth_condition= models.CharField(max_length=120, blank=True,help_text="Publicatio")
-	propagation= models.CharField(max_length=120, blank=True,help_text="The type o")
-	amount_or_size_of_sample_collected= models.CharField(max_length=120, blank=True,help_text="The total ", validators=[RegexValidator(amount_or_size_of_sample_collected_validator)])
-	oxygenation_status_of_sample= models.CharField(max_length=120, blank=True,help_text="oxygenatio", choices=oxygenation_status_of_sample_choice)
-	organism_count= models.CharField(max_length=120, blank=True,help_text="Total cell")
-	sample_storage_duration= models.CharField(max_length=120, blank=True,help_text="duration f", validators=[RegexValidator(sample_storage_duration_validator)])
-	sample_storage_temperature= models.CharField(max_length=120, blank=True,help_text="temperatur", validators=[RegexValidator(sample_storage_temperature_validator)])
-	sample_storage_location= models.CharField(max_length=120, blank=True,help_text="location a")
-	sample_collection_device= models.CharField(max_length=120, blank=True,help_text="The device")
-	sample_collection_method= models.CharField(max_length=120, blank=True,help_text="The method")
-	host_disease_status= models.CharField(max_length=120, blank=True,help_text="list of di")
-	host_scientific_name= models.CharField(max_length=120, blank=True,help_text="Scientific")
-	barometric_pressure= models.CharField(max_length=120, blank=True,help_text="force per ", validators=[RegexValidator(barometric_pressure_validator)])
-	humidity= models.CharField(max_length=120, blank=True,help_text="amount of ", validators=[RegexValidator(humidity_validator)])
-	pollutants= models.CharField(max_length=120, blank=True,help_text="pollutant ")
-	solar_irradiance= models.CharField(max_length=120, blank=True,help_text="the amount", validators=[RegexValidator(solar_irradiance_validator)])
-	wind_direction= models.CharField(max_length=120, blank=True,help_text="wind direc")
-	wind_speed= models.CharField(max_length=120, blank=True,help_text="speed of w", validators=[RegexValidator(wind_speed_validator)])
-	temperature= models.CharField(max_length=120, blank=True,help_text="temperatur", validators=[RegexValidator(temperature_validator)])
-	carbon_dioxide= models.CharField(max_length=120, blank=True,help_text="carbon dio", validators=[RegexValidator(carbon_dioxide_validator)])
-	carbon_monoxide= models.CharField(max_length=120, blank=True,help_text="carbon mon", validators=[RegexValidator(carbon_monoxide_validator)])
-	oxygen= models.CharField(max_length=120, blank=True,help_text="oxygen (ga", validators=[RegexValidator(oxygen_validator)])
-	air_particulate_matter_concentration= models.CharField(max_length=120, blank=True,help_text="Concentrat", validators=[RegexValidator(air_particulate_matter_concentration_validator)])
-	volatile_organic_compounds= models.CharField(max_length=120, blank=True,help_text="concentrat")
-	methane= models.CharField(max_length=120, blank=True,help_text="methane (g", validators=[RegexValidator(methane_validator)])
-	salinity= models.CharField(max_length=120, blank=True,help_text="The total ", validators=[RegexValidator(salinity_validator)])
-	subspecific_genetic_lineage= models.CharField(max_length=120, blank=True,help_text="Informatio")
-	trophic_level= models.CharField(max_length=120, blank=True,help_text="Trophic le", choices=trophic_level_choice)
-	relationship_to_oxygen= models.CharField(max_length=120, blank=True,help_text="Is this or", choices=relationship_to_oxygen_choice)
-	known_pathogenicity= models.CharField(max_length=120, blank=True,help_text="To what is")
-	encoded_traits= models.CharField(max_length=120, blank=True,help_text="Should inc")
-	observed_biotic_relationship= models.CharField(max_length=120, blank=True,help_text="Is it free", choices=observed_biotic_relationship_choice)
-	chemical_administration= models.CharField(max_length=120, blank=True,help_text="list of ch")
-	perturbation= models.CharField(max_length=120, blank=True,help_text="type of pe")
-
-	fields = {
-		'project_name': 'project_name',
-		'experimental_factor': 'experimental_factor',
-		'ploidy': 'ploidy',
-		'number_of_replicons': 'number_of_replicons',
-		'extrachromosomal_elements': 'extrachromosomal_elements',
-		'estimated_size': 'estimated_size',
-		'reference_for_biomaterial': 'reference_for_biomaterial',
-		'annotation_source': 'annotation_source',
-		'sample_volume_or_weight_for_DNA_extraction': 'sample_volume_or_weight_for_DNA_extraction',
-		'nucleic_acid_extraction': 'nucleic_acid_extraction',
-		'nucleic_acid_amplification': 'nucleic_acid_amplification',
-		'library_size': 'library_size',
-		'library_reads_sequenced': 'library_reads_sequenced',
-		'library_construction_method': 'library_construction_method',
-		'library_vector': 'library_vector',
-		'library_screening_strategy': 'library_screening_strategy',
-		'target_gene': 'target_gene',
-		'target_subfragment': 'target_subfragment',
-		'pcr_primers': 'pcr_primers',
-		'multiplex_identifiers': 'multiplex_identifiers',
-		'adapters': 'adapters',
-		'pcr_conditions': 'pcr_conditions',
-		'sequencing_method': 'sequencing_method',
-		'sequence_quality_check': 'sequence_quality_check',
-		'chimera_check_software': 'chimera_check_software',
-		'relevant_electronic_resources': 'relevant_electronic_resources',
-		'relevant_standard_operating_procedures': 'relevant_standard_operating_procedures',
-		'negative_control_type': 'negative_control_type',
-		'positive_control_type': 'positive_control_type',
-		'collection_date': 'collection_date',
-		'altitude': 'altitude',
-		'geographic_location_country_and_or_sea': 'geographic_location_country_and_or_sea',
-		'geographic_location_latitude': 'geographic_location_latitude',
-		'geographic_location_longitude': 'geographic_location_longitude',
-		'geographic_location_region_and_locality': 'geographic_location_region_and_locality',
-		'broad_scale_environmental_context': 'broad_scale_environmental_context',
-		'local_environmental_context': 'local_environmental_context',
-		'environmental_medium': 'environmental_medium',
-		'elevation': 'elevation',
-		'ventilation_rate': 'ventilation_rate',
-		'ventilation_type': 'ventilation_type',
-		'source_material_identifiers': 'source_material_identifiers',
-		'sample_material_processing': 'sample_material_processing',
-		'isolation_and_growth_condition': 'isolation_and_growth_condition',
-		'propagation': 'propagation',
-		'amount_or_size_of_sample_collected': 'amount_or_size_of_sample_collected',
-		'oxygenation_status_of_sample': 'oxygenation_status_of_sample',
-		'organism_count': 'organism_count',
-		'sample_storage_duration': 'sample_storage_duration',
-		'sample_storage_temperature': 'sample_storage_temperature',
-		'sample_storage_location': 'sample_storage_location',
-		'sample_collection_device': 'sample_collection_device',
-		'sample_collection_method': 'sample_collection_method',
-		'host_disease_status': 'host_disease_status',
-		'host_scientific_name': 'host_scientific_name',
-		'barometric_pressure': 'barometric_pressure',
-		'humidity': 'humidity',
-		'pollutants': 'pollutants',
-		'solar_irradiance': 'solar_irradiance',
-		'wind_direction': 'wind_direction',
-		'wind_speed': 'wind_speed',
-		'temperature': 'temperature',
-		'carbon_dioxide': 'carbon_dioxide',
-		'carbon_monoxide': 'carbon_monoxide',
-		'oxygen': 'oxygen',
-		'air_particulate_matter_concentration': 'air_particulate_matter_concentration',
-		'volatile_organic_compounds': 'volatile_organic_compounds',
-		'methane': 'methane',
-		'salinity': 'salinity',
-		'subspecific_genetic_lineage': 'subspecific_genetic_lineage',
-		'trophic_level': 'trophic_level',
-		'relationship_to_oxygen': 'relationship_to_oxygen',
-		'known_pathogenicity': 'known_pathogenicity',
-		'encoded_traits': 'encoded_traits',
-		'observed_biotic_relationship': 'observed_biotic_relationship',
-		'chemical_administration': 'chemical_administration',
-		'perturbation': 'perturbation',
-	}
-
-	name = 'GSC_MIxS_air'
-
-class GSC_MIxS_air_unit(SelfDescribingModel):
-
-	sample_volume_or_weight_for_DNA_extraction_units = [('g', 'g'), ('mL', 'mL'), ('mg', 'mg'), ('ng', 'ng')]
-	altitude_units = [('m', 'm')]
-	geographic_location_latitude_units = [('DD', 'DD')]
-	geographic_location_longitude_units = [('DD', 'DD')]
-	elevation_units = [('m', 'm')]
-	ventilation_rate_units = [('L/sec', 'L/sec'), ('m3/min', 'm3/min')]
-	amount_or_size_of_sample_collected_units = [('L', 'L'), ('g', 'g'), ('kg', 'kg'), ('m2', 'm2'), ('m3', 'm3')]
-	sample_storage_duration_units = [('days', 'days'), ('hours', 'hours'), ('months', 'months'), ('weeks', 'weeks'), ('years', 'years')]
-	sample_storage_temperature_units = [('°C', '°C')]
-	barometric_pressure_units = [('Torr', 'Torr'), ('in. Hg', 'in. Hg'), ('millibar(hPa)', 'millibar(hPa)'), ('mm Hg', 'mm Hg')]
-	humidity_units = [('%', '%'), ('g/m3', 'g/m3')]
-	pollutants_units = [('M/L', 'M/L'), ('g', 'g'), ('mg/L', 'mg/L')]
-	solar_irradiance_units = [('W/m2', 'W/m2')]
-	wind_speed_units = [('km/h', 'km/h'), ('m/s', 'm/s')]
-	temperature_units = [('ºC', 'ºC')]
-	carbon_dioxide_units = [('µmol/L', 'µmol/L')]
-	carbon_monoxide_units = [('µM/L', 'µM/L')]
-	oxygen_units = [('mg/L', 'mg/L'), ('parts/million', 'parts/million')]
-	air_particulate_matter_concentration_units = [('µg/m3', 'µg/m3')]
-	volatile_organic_compounds_units = [('parts/million', 'parts/million'), ('µg/m3', 'µg/m3')]
-	methane_units = [('µM/L', 'µM/L')]
-	salinity_units = [('psu', 'psu')]
-
-	fields = {
-		'sample_volume_or_weight_for_DNA_extraction': 'sample_volume_or_weight_for_DNA_extraction',
-		'altitude': 'altitude',
-		'geographic_location_latitude': 'geographic_location_latitude',
-		'geographic_location_longitude': 'geographic_location_longitude',
-		'elevation': 'elevation',
-		'ventilation_rate': 'ventilation_rate',
-		'amount_or_size_of_sample_collected': 'amount_or_size_of_sample_collected',
-		'sample_storage_duration': 'sample_storage_duration',
-		'sample_storage_temperature': 'sample_storage_temperature',
-		'barometric_pressure': 'barometric_pressure',
-		'humidity': 'humidity',
-		'pollutants': 'pollutants',
-		'solar_irradiance': 'solar_irradiance',
-		'wind_speed': 'wind_speed',
-		'temperature': 'temperature',
-		'carbon_dioxide': 'carbon_dioxide',
-		'carbon_monoxide': 'carbon_monoxide',
-		'oxygen': 'oxygen',
-		'air_particulate_matter_concentration': 'air_particulate_matter_concentration',
-		'volatile_organic_compounds': 'volatile_organic_compounds',
-		'methane': 'methane',
-		'salinity': 'salinity',
-	}
-
-	name = 'GSC_MIxS_air'
-
-	sampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE, default=1)
-	sample = models.ForeignKey(Sample, on_delete=models.CASCADE, default=1)
-	sample_type = models.IntegerField(default=1)
-	sample_volume_or_weight_for_DNA_extraction = models.CharField(max_length=120, choices=sample_volume_or_weight_for_DNA_extraction_units, blank=False)
-	altitude = models.CharField(max_length=120, choices=altitude_units, blank=False)
-	geographic_location_latitude = models.CharField(max_length=120, choices=geographic_location_latitude_units, blank=False)
-	geographic_location_longitude = models.CharField(max_length=120, choices=geographic_location_longitude_units, blank=False)
-	elevation = models.CharField(max_length=120, choices=elevation_units, blank=False)
-	ventilation_rate = models.CharField(max_length=120, choices=ventilation_rate_units, blank=False)
-	amount_or_size_of_sample_collected = models.CharField(max_length=120, choices=amount_or_size_of_sample_collected_units, blank=False)
-	sample_storage_duration = models.CharField(max_length=120, choices=sample_storage_duration_units, blank=False)
-	sample_storage_temperature = models.CharField(max_length=120, choices=sample_storage_temperature_units, blank=False)
-	barometric_pressure = models.CharField(max_length=120, choices=barometric_pressure_units, blank=False)
-	humidity = models.CharField(max_length=120, choices=humidity_units, blank=False)
-	pollutants = models.CharField(max_length=120, choices=pollutants_units, blank=False)
-	solar_irradiance = models.CharField(max_length=120, choices=solar_irradiance_units, blank=False)
-	wind_speed = models.CharField(max_length=120, choices=wind_speed_units, blank=False)
-	temperature = models.CharField(max_length=120, choices=temperature_units, blank=False)
-	carbon_dioxide = models.CharField(max_length=120, choices=carbon_dioxide_units, blank=False)
-	carbon_monoxide = models.CharField(max_length=120, choices=carbon_monoxide_units, blank=False)
-	oxygen = models.CharField(max_length=120, choices=oxygen_units, blank=False)
-	air_particulate_matter_concentration = models.CharField(max_length=120, choices=air_particulate_matter_concentration_units, blank=False)
-	volatile_organic_compounds = models.CharField(max_length=120, choices=volatile_organic_compounds_units, blank=False)
-	methane = models.CharField(max_length=120, choices=methane_units, blank=False)
-	salinity = models.CharField(max_length=120, choices=salinity_units, blank=False)
-
-class GSC_MIMAGS(SelfDescribingModel):
-
-	relationship_to_oxygen_choice = [('aerobe', 'aerobe'), ('anaerobe', 'anaerobe'), ('facultative', 'facultative'), ('microaerophilic', 'microaerophilic'), ('microanaerobe', 'microanaerobe'), ('obligate aerobe', 'obligate aerobe'), ('obligate anaerobe', 'obligate anaerobe')]
-	sixteen_s_recovered_choice = [('No', 'No'), ('Yes', 'Yes')]
-	contamination_screening_input_choice = [('contigs', 'contigs'), ('reads', 'reads')]
-	reassembly_post_binning_choice = [('No', 'No'), ('Yes', 'Yes')]
-	assembly_quality_choice = [('Many fragments with little to no review of assembly other than reporting of standard assembly statistics', 'Many fragments with little to no review of assembly other than reporting of standard assembly statistics'), ('Multiple fragments where gaps span repetitive regions. Presence of the 23S, 16S, and 5S rRNA genes and at least 18 tRNAs', 'Multiple fragments where gaps span repetitive regions. Presence of the 23S, 16S, and 5S rRNA genes and at least 18 tRNAs'), ('Single contiguous sequence without gaps or ambiguities with a consensus error rate equivalent to Q50 or better', 'Single contiguous sequence without gaps or ambiguities with a consensus error rate equivalent to Q50 or better')]
-	geographic_location_country_and_or_sea_choice = [('Afghanistan', 'Afghanistan'), ('Albania', 'Albania'), ('Algeria', 'Algeria'), ('American Samoa', 'American Samoa'), ('Andorra', 'Andorra'), ('Angola', 'Angola'), ('Anguilla', 'Anguilla'), ('Antarctica', 'Antarctica'), ('Antigua and Barbuda', 'Antigua and Barbuda'), ('Arctic Ocean', 'Arctic Ocean'), ('Argentina', 'Argentina'), ('Armenia', 'Armenia'), ('Aruba', 'Aruba'), ('Ashmore and Cartier Islands', 'Ashmore and Cartier Islands'), ('Atlantic Ocean', 'Atlantic Ocean'), ('Australia', 'Australia'), ('Austria', 'Austria'), ('Azerbaijan', 'Azerbaijan'), ('Bahamas', 'Bahamas'), ('Bahrain', 'Bahrain'), ('Baker Island', 'Baker Island'), ('Baltic Sea', 'Baltic Sea'), ('Bangladesh', 'Bangladesh'), ('Barbados', 'Barbados'), ('Bassas da India', 'Bassas da India'), ('Belarus', 'Belarus'), ('Belgium', 'Belgium'), ('Belize', 'Belize'), ('Benin', 'Benin'), ('Bermuda', 'Bermuda'), ('Bhutan', 'Bhutan'), ('Bolivia', 'Bolivia'), ('Borneo', 'Borneo'), ('Bosnia and Herzegovina', 'Bosnia and Herzegovina'), ('Botswana', 'Botswana'), ('Bouvet Island', 'Bouvet Island'), ('Brazil', 'Brazil'), ('British Virgin Islands', 'British Virgin Islands'), ('Brunei', 'Brunei'), ('Bulgaria', 'Bulgaria'), ('Burkina Faso', 'Burkina Faso'), ('Burundi', 'Burundi'), ('Cambodia', 'Cambodia'), ('Cameroon', 'Cameroon'), ('Canada', 'Canada'), ('Cape Verde', 'Cape Verde'), ('Cayman Islands', 'Cayman Islands'), ('Central African Republic', 'Central African Republic'), ('Chad', 'Chad'), ('Chile', 'Chile'), ('China', 'China'), ('Christmas Island', 'Christmas Island'), ('Clipperton Island', 'Clipperton Island'), ('Cocos Islands', 'Cocos Islands'), ('Colombia', 'Colombia'), ('Comoros', 'Comoros'), ('Cook Islands', 'Cook Islands'), ('Coral Sea Islands', 'Coral Sea Islands'), ('Costa Rica', 'Costa Rica'), ("Cote d'Ivoire", "Cote d'Ivoire"), ('Croatia', 'Croatia'), ('Cuba', 'Cuba'), ('Curacao', 'Curacao'), ('Cyprus', 'Cyprus'), ('Czechia', 'Czechia'), ('Democratic Republic of the Congo', 'Democratic Republic of the Congo'), ('Denmark', 'Denmark'), ('Djibouti', 'Djibouti'), ('Dominica', 'Dominica'), ('Dominican Republic', 'Dominican Republic'), ('East Timor', 'East Timor'), ('Ecuador', 'Ecuador'), ('Egypt', 'Egypt'), ('El Salvador', 'El Salvador'), ('Equatorial Guinea', 'Equatorial Guinea'), ('Eritrea', 'Eritrea'), ('Estonia', 'Estonia'), ('Ethiopia', 'Ethiopia'), ('Europa Island', 'Europa Island'), ('Falkland Islands (Islas Malvinas)', 'Falkland Islands (Islas Malvinas)'), ('Faroe Islands', 'Faroe Islands'), ('Fiji', 'Fiji'), ('Finland', 'Finland'), ('France', 'France'), ('French Guiana', 'French Guiana'), ('French Polynesia', 'French Polynesia'), ('French Southern and Antarctic Lands', 'French Southern and Antarctic Lands'), ('Gabon', 'Gabon'), ('Gambia', 'Gambia'), ('Gaza Strip', 'Gaza Strip'), ('Georgia', 'Georgia'), ('Germany', 'Germany'), ('Ghana', 'Ghana'), ('Gibraltar', 'Gibraltar'), ('Glorioso Islands', 'Glorioso Islands'), ('Greece', 'Greece'), ('Greenland', 'Greenland'), ('Grenada', 'Grenada'), ('Guadeloupe', 'Guadeloupe'), ('Guam', 'Guam'), ('Guatemala', 'Guatemala'), ('Guernsey', 'Guernsey'), ('Guinea', 'Guinea'), ('Guinea-Bissau', 'Guinea-Bissau'), ('Guyana', 'Guyana'), ('Haiti', 'Haiti'), ('Heard Island and McDonald Islands', 'Heard Island and McDonald Islands'), ('Honduras', 'Honduras'), ('Hong Kong', 'Hong Kong'), ('Howland Island', 'Howland Island'), ('Hungary', 'Hungary'), ('Iceland', 'Iceland'), ('India', 'India'), ('Indian Ocean', 'Indian Ocean'), ('Indonesia', 'Indonesia'), ('Iran', 'Iran'), ('Iraq', 'Iraq'), ('Ireland', 'Ireland'), ('Isle of Man', 'Isle of Man'), ('Israel', 'Israel'), ('Italy', 'Italy'), ('Jamaica', 'Jamaica'), ('Jan Mayen', 'Jan Mayen'), ('Japan', 'Japan'), ('Jarvis Island', 'Jarvis Island'), ('Jersey', 'Jersey'), ('Johnston Atoll', 'Johnston Atoll'), ('Jordan', 'Jordan'), ('Juan de Nova Island', 'Juan de Nova Island'), ('Kazakhstan', 'Kazakhstan'), ('Kenya', 'Kenya'), ('Kerguelen Archipelago', 'Kerguelen Archipelago'), ('Kingman Reef', 'Kingman Reef'), ('Kiribati', 'Kiribati'), ('Kosovo', 'Kosovo'), ('Kuwait', 'Kuwait'), ('Kyrgyzstan', 'Kyrgyzstan'), ('Laos', 'Laos'), ('Latvia', 'Latvia'), ('Lebanon', 'Lebanon'), ('Lesotho', 'Lesotho'), ('Liberia', 'Liberia'), ('Libya', 'Libya'), ('Liechtenstein', 'Liechtenstein'), ('Lithuania', 'Lithuania'), ('Luxembourg', 'Luxembourg'), ('Macau', 'Macau'), ('Macedonia', 'Macedonia'), ('Madagascar', 'Madagascar'), ('Malawi', 'Malawi'), ('Malaysia', 'Malaysia'), ('Maldives', 'Maldives'), ('Mali', 'Mali'), ('Malta', 'Malta'), ('Marshall Islands', 'Marshall Islands'), ('Martinique', 'Martinique'), ('Mauritania', 'Mauritania'), ('Mauritius', 'Mauritius'), ('Mayotte', 'Mayotte'), ('Mediterranean Sea', 'Mediterranean Sea'), ('Mexico', 'Mexico'), ('Micronesia', 'Micronesia'), ('Midway Islands', 'Midway Islands'), ('Moldova', 'Moldova'), ('Monaco', 'Monaco'), ('Mongolia', 'Mongolia'), ('Montenegro', 'Montenegro'), ('Montserrat', 'Montserrat'), ('Morocco', 'Morocco'), ('Mozambique', 'Mozambique'), ('Myanmar', 'Myanmar'), ('Namibia', 'Namibia'), ('Nauru', 'Nauru'), ('Navassa Island', 'Navassa Island'), ('Nepal', 'Nepal'), ('Netherlands', 'Netherlands'), ('New Caledonia', 'New Caledonia'), ('New Zealand', 'New Zealand'), ('Nicaragua', 'Nicaragua'), ('Niger', 'Niger'), ('Nigeria', 'Nigeria'), ('Niue', 'Niue'), ('Norfolk Island', 'Norfolk Island'), ('North Korea', 'North Korea'), ('North Sea', 'North Sea'), ('Northern Mariana Islands', 'Northern Mariana Islands'), ('Norway', 'Norway'), ('Oman', 'Oman'), ('Pacific Ocean', 'Pacific Ocean'), ('Pakistan', 'Pakistan'), ('Palau', 'Palau'), ('Palmyra Atoll', 'Palmyra Atoll'), ('Panama', 'Panama'), ('Papua New Guinea', 'Papua New Guinea'), ('Paracel Islands', 'Paracel Islands'), ('Paraguay', 'Paraguay'), ('Peru', 'Peru'), ('Philippines', 'Philippines'), ('Pitcairn Islands', 'Pitcairn Islands'), ('Poland', 'Poland'), ('Portugal', 'Portugal'), ('Puerto Rico', 'Puerto Rico'), ('Qatar', 'Qatar'), ('Republic of the Congo', 'Republic of the Congo'), ('Reunion', 'Reunion'), ('Romania', 'Romania'), ('Ross Sea', 'Ross Sea'), ('Russia', 'Russia'), ('Rwanda', 'Rwanda'), ('Saint Helena', 'Saint Helena'), ('Saint Kitts and Nevis', 'Saint Kitts and Nevis'), ('Saint Lucia', 'Saint Lucia'), ('Saint Pierre and Miquelon', 'Saint Pierre and Miquelon'), ('Saint Vincent and the Grenadines', 'Saint Vincent and the Grenadines'), ('Samoa', 'Samoa'), ('San Marino', 'San Marino'), ('Sao Tome and Principe', 'Sao Tome and Principe'), ('Saudi Arabia', 'Saudi Arabia'), ('Senegal', 'Senegal'), ('Serbia', 'Serbia'), ('Seychelles', 'Seychelles'), ('Sierra Leone', 'Sierra Leone'), ('Singapore', 'Singapore'), ('Sint Maarten', 'Sint Maarten'), ('Slovakia', 'Slovakia'), ('Slovenia', 'Slovenia'), ('Solomon Islands', 'Solomon Islands'), ('Somalia', 'Somalia'), ('South Africa', 'South Africa'), ('South Georgia and the South Sandwich Islands', 'South Georgia and the South Sandwich Islands'), ('South Korea', 'South Korea'), ('Southern Ocean', 'Southern Ocean'), ('Spain', 'Spain'), ('Spratly Islands', 'Spratly Islands'), ('Sri Lanka', 'Sri Lanka'), ('Sudan', 'Sudan'), ('Suriname', 'Suriname'), ('Svalbard', 'Svalbard'), ('Swaziland', 'Swaziland'), ('Sweden', 'Sweden'), ('Switzerland', 'Switzerland'), ('Syria', 'Syria'), ('Taiwan', 'Taiwan'), ('Tajikistan', 'Tajikistan'), ('Tanzania', 'Tanzania'), ('Tasman Sea', 'Tasman Sea'), ('Thailand', 'Thailand'), ('Togo', 'Togo'), ('Tokelau', 'Tokelau'), ('Tonga', 'Tonga'), ('Trinidad and Tobago', 'Trinidad and Tobago'), ('Tromelin Island', 'Tromelin Island'), ('Tunisia', 'Tunisia'), ('Turkey', 'Turkey'), ('Turkmenistan', 'Turkmenistan'), ('Turks and Caicos Islands', 'Turks and Caicos Islands'), ('Tuvalu', 'Tuvalu'), ('USA', 'USA'), ('Uganda', 'Uganda'), ('Ukraine', 'Ukraine'), ('United Arab Emirates', 'United Arab Emirates'), ('United Kingdom', 'United Kingdom'), ('Uruguay', 'Uruguay'), ('Uzbekistan', 'Uzbekistan'), ('Vanuatu', 'Vanuatu'), ('Venezuela', 'Venezuela'), ('Viet Nam', 'Viet Nam'), ('Virgin Islands', 'Virgin Islands'), ('Wake Island', 'Wake Island'), ('Wallis and Futuna', 'Wallis and Futuna'), ('West Bank', 'West Bank'), ('Western Sahara', 'Western Sahara'), ('Yemen', 'Yemen'), ('Zambia', 'Zambia'), ('Zimbabwe', 'Zimbabwe'), ('missing', 'missing'), ('missing: control sample', 'missing: control sample'), ('missing: data agreement established pre-2023', 'missing: data agreement established pre-2023'), ('missing: endangered species', 'missing: endangered species'), ('missing: human-identifiable', 'missing: human-identifiable'), ('missing: lab stock', 'missing: lab stock'), ('missing: sample group', 'missing: sample group'), ('missing: synthetic construct', 'missing: synthetic construct'), ('missing: third party data', 'missing: third party data'), ('not applicable', 'not applicable'), ('not collected', 'not collected'), ('not provided', 'not provided'), ('restricted access', 'restricted access')]
-
-	sample_derived_from_validator = "(^[ESD]R[SR]\d{6,}(,[ESD]R[SR]\d{6,})*$)|(^SAM[END][AG]?\d+(,SAM[END][AG]?\d+)*$)|(^EGA[NR]\d{11}(,EGA[NR]\d{11})*$)|(^[ESD]R[SR]\d{6,}-[ESD]R[SR]\d{6,}$)|(^SAM[END][AG]?\d+-SAM[END][AG]?\d+$)|(^EGA[NR]\d{11}-EGA[NR]\d{11}$)"
-	number_of_standard_tRNAs_extracted_validator = "[+-]?[0-9]+"
-	completeness_score_validator = "^(\d|[1-9]\d|\d\.\d{1,2}|[1-9]\d\.\d{1,2}|100)$"
-	contamination_score_validator = "^(\d|[1-9]\d|\d\.\d{1,2}|[1-9]\d\.\d{1,2}|100)$"
-	collection_date_validator = "(^[12][0-9]{3}(-(0[1-9]|1[0-2])(-(0[1-9]|[12][0-9]|3[01])(T[0-9]{2}:[0-9]{2}(:[0-9]{2})?Z?([+-][0-9]{1,2})?)?)?)?(/[0-9]{4}(-[0-9]{2}(-[0-9]{2}(T[0-9]{2}:[0-9]{2}(:[0-9]{2})?Z?([+-][0-9]{1,2})?)?)?)?)?$)|(^not applicable$)|(^not collected$)|(^not provided$)|(^restricted access$)|(^missing: control sample$)|(^missing: sample group$)|(^missing: synthetic construct$)|(^missing: lab stock$)|(^missing: third party data$)|(^missing: data agreement established pre-2023$)|(^missing: endangered species$)|(^missing: human-identifiable$)|(^missing$)"
-	altitude_validator = "((0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?)|((^not collected$)|(^not provided$)|(^restricted access$)|(^missing: control sample$)|(^missing: sample group$)|(^missing: synthetic construct$)|(^missing: lab stock$)|(^missing: third party data$)|(^missing: data agreement established pre-2023$)|(^missing: endangered species$)|(^missing: human-identifiable$)|(^missing$))"
-	geographic_location_latitude_validator = "(^[+-]?[0-9]+.?[0-9]{0,8}$)|(^not applicable$)|(^not collected$)|(^not provided$)|(^restricted access$)|(^missing: control sample$)|(^missing: sample group$)|(^missing: synthetic construct$)|(^missing: lab stock$)|(^missing: third party data$)|(^missing: data agreement established pre-2023$)|(^missing: endangered species$)|(^missing: human-identifiable$)|(^missing$)"
-	geographic_location_longitude_validator = "(^[+-]?[0-9]+.?[0-9]{0,8}$)|(^not applicable$)|(^not collected$)|(^not provided$)|(^restricted access$)|(^missing: control sample$)|(^missing: sample group$)|(^missing: synthetic construct$)|(^missing: lab stock$)|(^missing: third party data$)|(^missing: data agreement established pre-2023$)|(^missing: endangered species$)|(^missing: human-identifiable$)|(^missing$)"
-	elevation_validator = "([+-]?(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?)|((^not collected$)|(^not provided$)|(^restricted access$)|(^missing: control sample$)|(^missing: sample group$)|(^missing: synthetic construct$)|(^missing: lab stock$)|(^missing: third party data$)|(^missing: data agreement established pre-2023$)|(^missing: endangered species$)|(^missing: human-identifiable$)|(^missing$))"
-	amount_or_size_of_sample_collected_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	library_size_validator = "[+-]?[0-9]+"
-	library_reads_sequenced_validator = "[+-]?[0-9]+"
-	depth_validator = "((0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?)|((^not collected$)|(^not provided$)|(^restricted access$)|(^missing: control sample$)|(^missing: sample group$)|(^missing: synthetic construct$)|(^missing: lab stock$)|(^missing: third party data$)|(^missing: data agreement established pre-2023$)|(^missing: endangered species$)|(^missing: human-identifiable$)|(^missing$))"
-
-	sampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE, default=1)
-	sample = models.ForeignKey(Sample, on_delete=models.CASCADE, default=1)
-	sample_type = models.IntegerField(default=1)
-	relationship_to_oxygen= models.CharField(max_length=120, blank=True,help_text="Is this or", choices=relationship_to_oxygen_choice)
-	sample_collection_device= models.CharField(max_length=120, blank=True,help_text="The device")
-	sample_collection_method= models.CharField(max_length=120, blank=True,help_text="The method")
-	metagenomic_source= models.CharField(max_length=120, blank=False,help_text="The metage")
-	sample_derived_from= models.CharField(max_length=120, blank=False,help_text="Reference ", validators=[RegexValidator(sample_derived_from_validator)])
-	project_name= models.CharField(max_length=120, blank=False,help_text="Name of th")
-	multiplex_identifiers= models.CharField(max_length=120, blank=True,help_text="Molecular ")
-	relevant_electronic_resources= models.CharField(max_length=120, blank=True,help_text="A related ")
-	relevant_standard_operating_procedures= models.CharField(max_length=120, blank=True,help_text="Standard o")
-	number_of_standard_tRNAs_extracted= models.CharField(max_length=120, blank=True,help_text="The total ", validators=[RegexValidator(number_of_standard_tRNAs_extracted_validator)])
-	feature_prediction= models.CharField(max_length=120, blank=True,help_text="Method use")
-	similarity_search_method= models.CharField(max_length=120, blank=True,help_text="Tool used ")
-	sixteen_s_recovered= models.CharField(max_length=120, blank=True,help_text="Can a 16S ", choices=sixteen_s_recovered_choice)
-	sixteen_s_recovery_software= models.CharField(max_length=120, blank=True,help_text="Tools used")
-	tRNA_extraction_software= models.CharField(max_length=120, blank=True,help_text="Tools used")
-	completeness_score= models.CharField(max_length=120, blank=False,help_text="Completene", validators=[RegexValidator(completeness_score_validator)])
-	completeness_software= models.CharField(max_length=120, blank=False,help_text="Tools used")
-	completeness_approach= models.CharField(max_length=120, blank=True,help_text="The approa")
-	contamination_score= models.CharField(max_length=120, blank=False,help_text="The contam", validators=[RegexValidator(contamination_score_validator)])
-	contamination_screening_input= models.CharField(max_length=120, blank=True,help_text="The type o", choices=contamination_screening_input_choice)
-	contamination_screening_parameters= models.CharField(max_length=120, blank=True,help_text="Specific p")
-	decontamination_software= models.CharField(max_length=120, blank=True,help_text="Tool(s) us")
-	binning_software= models.CharField(max_length=120, blank=False,help_text="Tool(s) us")
-	reassembly_post_binning= models.CharField(max_length=120, blank=True,help_text="Has an ass", choices=reassembly_post_binning_choice)
-	MAG_coverage_software= models.CharField(max_length=120, blank=True,help_text="Tool(s) us")
-	assembly_quality= models.CharField(max_length=120, blank=False,help_text="The assemb", choices=assembly_quality_choice)
-	binning_parameters= models.CharField(max_length=120, blank=False,help_text="The parame")
-	taxonomic_identity_marker= models.CharField(max_length=120, blank=False,help_text="The phylog")
-	isolation_source= models.CharField(max_length=120, blank=False,help_text="describes ")
-	collection_date= models.CharField(max_length=120, blank=False,help_text="The date t", validators=[RegexValidator(collection_date_validator)])
-	altitude= models.CharField(max_length=120, blank=True,help_text="The altitu", validators=[RegexValidator(altitude_validator)])
-	geographic_location_latitude= models.CharField(max_length=120, blank=False,help_text="The geogra", validators=[RegexValidator(geographic_location_latitude_validator)])
-	geographic_location_longitude= models.CharField(max_length=120, blank=False,help_text="The geogra", validators=[RegexValidator(geographic_location_longitude_validator)])
-	geographic_location_region_and_locality= models.CharField(max_length=120, blank=True,help_text="The geogra")
-	broad_scale_environmental_context= models.CharField(max_length=120, blank=False,help_text="Report the")
-	local_environmental_context= models.CharField(max_length=120, blank=False,help_text="Report the")
-	environmental_medium= models.CharField(max_length=120, blank=False,help_text="Report the")
-	elevation= models.CharField(max_length=120, blank=True,help_text="The elevat", validators=[RegexValidator(elevation_validator)])
-	amount_or_size_of_sample_collected= models.CharField(max_length=120, blank=True,help_text="The total ", validators=[RegexValidator(amount_or_size_of_sample_collected_validator)])
-	size_fraction_selected= models.CharField(max_length=120, blank=True,help_text="Filtering ")
-	geographic_location_country_and_or_sea= models.CharField(max_length=120, blank=False,help_text="The geogra", choices=geographic_location_country_and_or_sea_choice)
-	source_material_identifiers= models.CharField(max_length=120, blank=True,help_text="A unique i")
-	experimental_factor= models.CharField(max_length=120, blank=True,help_text="Experiment")
-	taxonomic_classification= models.CharField(max_length=120, blank=True,help_text="Method use")
-	annotation_source= models.CharField(max_length=120, blank=True,help_text="For cases ")
-	reference_for_biomaterial= models.CharField(max_length=120, blank=True,help_text="Primary pu")
-	reference_databases= models.CharField(max_length=120, blank=True,help_text="List of da")
-	sample_material_processing= models.CharField(max_length=120, blank=True,help_text="A brief de")
-	nucleic_acid_extraction= models.CharField(max_length=120, blank=True,help_text="A link to ")
-	nucleic_acid_amplification= models.CharField(max_length=120, blank=True,help_text="A link to ")
-	library_size= models.CharField(max_length=120, blank=True,help_text="Total numb", validators=[RegexValidator(library_size_validator)])
-	library_reads_sequenced= models.CharField(max_length=120, blank=True,help_text="Total numb", validators=[RegexValidator(library_reads_sequenced_validator)])
-	library_vector= models.CharField(max_length=120, blank=True,help_text="Cloning ve")
-	library_screening_strategy= models.CharField(max_length=120, blank=True,help_text="Specific e")
-	assembly_software= models.CharField(max_length=120, blank=False,help_text="Tool(s) us")
-	adapters= models.CharField(max_length=120, blank=True,help_text="Adapters p")
-	depth= models.CharField(max_length=120, blank=True,help_text="The vertic", validators=[RegexValidator(depth_validator)])
-
-	fields = {
-		'relationship_to_oxygen': 'relationship_to_oxygen',
-		'sample_collection_device': 'sample_collection_device',
-		'sample_collection_method': 'sample_collection_method',
-		'metagenomic_source': 'metagenomic_source',
-		'sample_derived_from': 'sample_derived_from',
-		'project_name': 'project_name',
-		'multiplex_identifiers': 'multiplex_identifiers',
-		'relevant_electronic_resources': 'relevant_electronic_resources',
-		'relevant_standard_operating_procedures': 'relevant_standard_operating_procedures',
-		'number_of_standard_tRNAs_extracted': 'number_of_standard_tRNAs_extracted',
-		'feature_prediction': 'feature_prediction',
-		'similarity_search_method': 'similarity_search_method',
-		'sixteen_s_recovered': 'sixteen_s_recovered',
-		'sixteen_s_recovery_software': 'sixteen_s_recovery_software',
-		'tRNA_extraction_software': 'tRNA_extraction_software',
-		'completeness_score': 'completeness_score',
-		'completeness_software': 'completeness_software',
-		'completeness_approach': 'completeness_approach',
-		'contamination_score': 'contamination_score',
-		'contamination_screening_input': 'contamination_screening_input',
-		'contamination_screening_parameters': 'contamination_screening_parameters',
-		'decontamination_software': 'decontamination_software',
-		'binning_software': 'binning_software',
-		'reassembly_post_binning': 'reassembly_post_binning',
-		'MAG_coverage_software': 'MAG_coverage_software',
-		'assembly_quality': 'assembly_quality',
-		'binning_parameters': 'binning_parameters',
-		'taxonomic_identity_marker': 'taxonomic_identity_marker',
-		'isolation_source': 'isolation_source',
-		'collection_date': 'collection_date',
-		'altitude': 'altitude',
-		'geographic_location_latitude': 'geographic_location_latitude',
-		'geographic_location_longitude': 'geographic_location_longitude',
-		'geographic_location_region_and_locality': 'geographic_location_region_and_locality',
-		'broad_scale_environmental_context': 'broad_scale_environmental_context',
-		'local_environmental_context': 'local_environmental_context',
-		'environmental_medium': 'environmental_medium',
-		'elevation': 'elevation',
-		'amount_or_size_of_sample_collected': 'amount_or_size_of_sample_collected',
-		'size_fraction_selected': 'size_fraction_selected',
-		'geographic_location_country_and_or_sea': 'geographic_location_country_and_or_sea',
-		'source_material_identifiers': 'source_material_identifiers',
-		'experimental_factor': 'experimental_factor',
-		'taxonomic_classification': 'taxonomic_classification',
-		'annotation_source': 'annotation_source',
-		'reference_for_biomaterial': 'reference_for_biomaterial',
-		'reference_databases': 'reference_databases',
-		'sample_material_processing': 'sample_material_processing',
-		'nucleic_acid_extraction': 'nucleic_acid_extraction',
-		'nucleic_acid_amplification': 'nucleic_acid_amplification',
-		'library_size': 'library_size',
-		'library_reads_sequenced': 'library_reads_sequenced',
-		'library_vector': 'library_vector',
-		'library_screening_strategy': 'library_screening_strategy',
-		'assembly_software': 'assembly_software',
-		'adapters': 'adapters',
-		'depth': 'depth',
-	}
-
-	name = 'GSC_MIMAGS'
-
-class GSC_MIMAGS_unit(SelfDescribingModel):
-
-	completeness_score_units = [('%', '%')]
-	contamination_score_units = [('%', '%')]
-	reassembly_post_binning_units = [('No', 'No'), ('Yes', 'Yes')]
-	altitude_units = [('m', 'm')]
-	geographic_location_latitude_units = [('DD', 'DD')]
-	geographic_location_longitude_units = [('DD', 'DD')]
-	elevation_units = [('m', 'm')]
-	amount_or_size_of_sample_collected_units = [('L', 'L'), ('g', 'g'), ('kg', 'kg'), ('m2', 'm2'), ('m3', 'm3')]
-	depth_units = [('m', 'm'), ('mm', 'mm')]
-
-	fields = {
-		'completeness_score': 'completeness_score',
-		'contamination_score': 'contamination_score',
-		'reassembly_post_binning': 'reassembly_post_binning',
-		'altitude': 'altitude',
-		'geographic_location_latitude': 'geographic_location_latitude',
-		'geographic_location_longitude': 'geographic_location_longitude',
-		'elevation': 'elevation',
-		'amount_or_size_of_sample_collected': 'amount_or_size_of_sample_collected',
-		'depth': 'depth',
-	}
-
-	name = 'GSC_MIMAGS'
-
-	sampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE, default=1)
-	sample = models.ForeignKey(Sample, on_delete=models.CASCADE, default=1)
-	sample_type = models.IntegerField(default=1)
-	completeness_score = models.CharField(max_length=120, choices=completeness_score_units, blank=False)
-	contamination_score = models.CharField(max_length=120, choices=contamination_score_units, blank=False)
-	reassembly_post_binning = models.CharField(max_length=120, choices=reassembly_post_binning_units, blank=False)
-	altitude = models.CharField(max_length=120, choices=altitude_units, blank=False)
-	geographic_location_latitude = models.CharField(max_length=120, choices=geographic_location_latitude_units, blank=False)
-	geographic_location_longitude = models.CharField(max_length=120, choices=geographic_location_longitude_units, blank=False)
-	elevation = models.CharField(max_length=120, choices=elevation_units, blank=False)
-	amount_or_size_of_sample_collected = models.CharField(max_length=120, choices=amount_or_size_of_sample_collected_units, blank=False)
-	depth = models.CharField(max_length=120, choices=depth_units, blank=False)
-
-class GSC_MIxS_plant_associated(SelfDescribingModel):
-
-	sequence_quality_check_choice = [('manual', 'manual'), ('none', 'none'), ('software', 'software')]
-	geographic_location_country_and_or_sea_choice = [('Afghanistan', 'Afghanistan'), ('Albania', 'Albania'), ('Algeria', 'Algeria'), ('American Samoa', 'American Samoa'), ('Andorra', 'Andorra'), ('Angola', 'Angola'), ('Anguilla', 'Anguilla'), ('Antarctica', 'Antarctica'), ('Antigua and Barbuda', 'Antigua and Barbuda'), ('Arctic Ocean', 'Arctic Ocean'), ('Argentina', 'Argentina'), ('Armenia', 'Armenia'), ('Aruba', 'Aruba'), ('Ashmore and Cartier Islands', 'Ashmore and Cartier Islands'), ('Atlantic Ocean', 'Atlantic Ocean'), ('Australia', 'Australia'), ('Austria', 'Austria'), ('Azerbaijan', 'Azerbaijan'), ('Bahamas', 'Bahamas'), ('Bahrain', 'Bahrain'), ('Baker Island', 'Baker Island'), ('Baltic Sea', 'Baltic Sea'), ('Bangladesh', 'Bangladesh'), ('Barbados', 'Barbados'), ('Bassas da India', 'Bassas da India'), ('Belarus', 'Belarus'), ('Belgium', 'Belgium'), ('Belize', 'Belize'), ('Benin', 'Benin'), ('Bermuda', 'Bermuda'), ('Bhutan', 'Bhutan'), ('Bolivia', 'Bolivia'), ('Borneo', 'Borneo'), ('Bosnia and Herzegovina', 'Bosnia and Herzegovina'), ('Botswana', 'Botswana'), ('Bouvet Island', 'Bouvet Island'), ('Brazil', 'Brazil'), ('British Virgin Islands', 'British Virgin Islands'), ('Brunei', 'Brunei'), ('Bulgaria', 'Bulgaria'), ('Burkina Faso', 'Burkina Faso'), ('Burundi', 'Burundi'), ('Cambodia', 'Cambodia'), ('Cameroon', 'Cameroon'), ('Canada', 'Canada'), ('Cape Verde', 'Cape Verde'), ('Cayman Islands', 'Cayman Islands'), ('Central African Republic', 'Central African Republic'), ('Chad', 'Chad'), ('Chile', 'Chile'), ('China', 'China'), ('Christmas Island', 'Christmas Island'), ('Clipperton Island', 'Clipperton Island'), ('Cocos Islands', 'Cocos Islands'), ('Colombia', 'Colombia'), ('Comoros', 'Comoros'), ('Cook Islands', 'Cook Islands'), ('Coral Sea Islands', 'Coral Sea Islands'), ('Costa Rica', 'Costa Rica'), ("Cote d'Ivoire", "Cote d'Ivoire"), ('Croatia', 'Croatia'), ('Cuba', 'Cuba'), ('Curacao', 'Curacao'), ('Cyprus', 'Cyprus'), ('Czech Republic', 'Czech Republic'), ('Democratic Republic of the Congo', 'Democratic Republic of the Congo'), ('Denmark', 'Denmark'), ('Djibouti', 'Djibouti'), ('Dominica', 'Dominica'), ('Dominican Republic', 'Dominican Republic'), ('East Timor', 'East Timor'), ('Ecuador', 'Ecuador'), ('Egypt', 'Egypt'), ('El Salvador', 'El Salvador'), ('Equatorial Guinea', 'Equatorial Guinea'), ('Eritrea', 'Eritrea'), ('Estonia', 'Estonia'), ('Ethiopia', 'Ethiopia'), ('Europa Island', 'Europa Island'), ('Falkland Islands (Islas Malvinas)', 'Falkland Islands (Islas Malvinas)'), ('Faroe Islands', 'Faroe Islands'), ('Fiji', 'Fiji'), ('Finland', 'Finland'), ('France', 'France'), ('French Guiana', 'French Guiana'), ('French Polynesia', 'French Polynesia'), ('French Southern and Antarctic Lands', 'French Southern and Antarctic Lands'), ('Gabon', 'Gabon'), ('Gambia', 'Gambia'), ('Gaza Strip', 'Gaza Strip'), ('Georgia', 'Georgia'), ('Germany', 'Germany'), ('Ghana', 'Ghana'), ('Gibraltar', 'Gibraltar'), ('Glorioso Islands', 'Glorioso Islands'), ('Greece', 'Greece'), ('Greenland', 'Greenland'), ('Grenada', 'Grenada'), ('Guadeloupe', 'Guadeloupe'), ('Guam', 'Guam'), ('Guatemala', 'Guatemala'), ('Guernsey', 'Guernsey'), ('Guinea', 'Guinea'), ('Guinea-Bissau', 'Guinea-Bissau'), ('Guyana', 'Guyana'), ('Haiti', 'Haiti'), ('Heard Island and McDonald Islands', 'Heard Island and McDonald Islands'), ('Honduras', 'Honduras'), ('Hong Kong', 'Hong Kong'), ('Howland Island', 'Howland Island'), ('Hungary', 'Hungary'), ('Iceland', 'Iceland'), ('India', 'India'), ('Indian Ocean', 'Indian Ocean'), ('Indonesia', 'Indonesia'), ('Iran', 'Iran'), ('Iraq', 'Iraq'), ('Ireland', 'Ireland'), ('Isle of Man', 'Isle of Man'), ('Israel', 'Israel'), ('Italy', 'Italy'), ('Jamaica', 'Jamaica'), ('Jan Mayen', 'Jan Mayen'), ('Japan', 'Japan'), ('Jarvis Island', 'Jarvis Island'), ('Jersey', 'Jersey'), ('Johnston Atoll', 'Johnston Atoll'), ('Jordan', 'Jordan'), ('Juan de Nova Island', 'Juan de Nova Island'), ('Kazakhstan', 'Kazakhstan'), ('Kenya', 'Kenya'), ('Kerguelen Archipelago', 'Kerguelen Archipelago'), ('Kingman Reef', 'Kingman Reef'), ('Kiribati', 'Kiribati'), ('Kosovo', 'Kosovo'), ('Kuwait', 'Kuwait'), ('Kyrgyzstan', 'Kyrgyzstan'), ('Laos', 'Laos'), ('Latvia', 'Latvia'), ('Lebanon', 'Lebanon'), ('Lesotho', 'Lesotho'), ('Liberia', 'Liberia'), ('Libya', 'Libya'), ('Liechtenstein', 'Liechtenstein'), ('Lithuania', 'Lithuania'), ('Luxembourg', 'Luxembourg'), ('Macau', 'Macau'), ('Macedonia', 'Macedonia'), ('Madagascar', 'Madagascar'), ('Malawi', 'Malawi'), ('Malaysia', 'Malaysia'), ('Maldives', 'Maldives'), ('Mali', 'Mali'), ('Malta', 'Malta'), ('Marshall Islands', 'Marshall Islands'), ('Martinique', 'Martinique'), ('Mauritania', 'Mauritania'), ('Mauritius', 'Mauritius'), ('Mayotte', 'Mayotte'), ('Mediterranean Sea', 'Mediterranean Sea'), ('Mexico', 'Mexico'), ('Micronesia', 'Micronesia'), ('Midway Islands', 'Midway Islands'), ('Moldova', 'Moldova'), ('Monaco', 'Monaco'), ('Mongolia', 'Mongolia'), ('Montenegro', 'Montenegro'), ('Montserrat', 'Montserrat'), ('Morocco', 'Morocco'), ('Mozambique', 'Mozambique'), ('Myanmar', 'Myanmar'), ('Namibia', 'Namibia'), ('Nauru', 'Nauru'), ('Navassa Island', 'Navassa Island'), ('Nepal', 'Nepal'), ('Netherlands', 'Netherlands'), ('New Caledonia', 'New Caledonia'), ('New Zealand', 'New Zealand'), ('Nicaragua', 'Nicaragua'), ('Niger', 'Niger'), ('Nigeria', 'Nigeria'), ('Niue', 'Niue'), ('Norfolk Island', 'Norfolk Island'), ('North Korea', 'North Korea'), ('North Sea', 'North Sea'), ('Northern Mariana Islands', 'Northern Mariana Islands'), ('Norway', 'Norway'), ('Oman', 'Oman'), ('Pacific Ocean', 'Pacific Ocean'), ('Pakistan', 'Pakistan'), ('Palau', 'Palau'), ('Palmyra Atoll', 'Palmyra Atoll'), ('Panama', 'Panama'), ('Papua New Guinea', 'Papua New Guinea'), ('Paracel Islands', 'Paracel Islands'), ('Paraguay', 'Paraguay'), ('Peru', 'Peru'), ('Philippines', 'Philippines'), ('Pitcairn Islands', 'Pitcairn Islands'), ('Poland', 'Poland'), ('Portugal', 'Portugal'), ('Puerto Rico', 'Puerto Rico'), ('Qatar', 'Qatar'), ('Republic of the Congo', 'Republic of the Congo'), ('Reunion', 'Reunion'), ('Romania', 'Romania'), ('Ross Sea', 'Ross Sea'), ('Russia', 'Russia'), ('Rwanda', 'Rwanda'), ('Saint Helena', 'Saint Helena'), ('Saint Kitts and Nevis', 'Saint Kitts and Nevis'), ('Saint Lucia', 'Saint Lucia'), ('Saint Pierre and Miquelon', 'Saint Pierre and Miquelon'), ('Saint Vincent and the Grenadines', 'Saint Vincent and the Grenadines'), ('Samoa', 'Samoa'), ('San Marino', 'San Marino'), ('Sao Tome and Principe', 'Sao Tome and Principe'), ('Saudi Arabia', 'Saudi Arabia'), ('Senegal', 'Senegal'), ('Serbia', 'Serbia'), ('Seychelles', 'Seychelles'), ('Sierra Leone', 'Sierra Leone'), ('Singapore', 'Singapore'), ('Sint Maarten', 'Sint Maarten'), ('Slovakia', 'Slovakia'), ('Slovenia', 'Slovenia'), ('Solomon Islands', 'Solomon Islands'), ('Somalia', 'Somalia'), ('South Africa', 'South Africa'), ('South Georgia and the South Sandwich Islands', 'South Georgia and the South Sandwich Islands'), ('South Korea', 'South Korea'), ('Southern Ocean', 'Southern Ocean'), ('Spain', 'Spain'), ('Spratly Islands', 'Spratly Islands'), ('Sri Lanka', 'Sri Lanka'), ('Sudan', 'Sudan'), ('Suriname', 'Suriname'), ('Svalbard', 'Svalbard'), ('Swaziland', 'Swaziland'), ('Sweden', 'Sweden'), ('Switzerland', 'Switzerland'), ('Syria', 'Syria'), ('Taiwan', 'Taiwan'), ('Tajikistan', 'Tajikistan'), ('Tanzania', 'Tanzania'), ('Tasman Sea', 'Tasman Sea'), ('Thailand', 'Thailand'), ('Togo', 'Togo'), ('Tokelau', 'Tokelau'), ('Tonga', 'Tonga'), ('Trinidad and Tobago', 'Trinidad and Tobago'), ('Tromelin Island', 'Tromelin Island'), ('Tunisia', 'Tunisia'), ('Turkey', 'Turkey'), ('Turkmenistan', 'Turkmenistan'), ('Turks and Caicos Islands', 'Turks and Caicos Islands'), ('Tuvalu', 'Tuvalu'), ('USA', 'USA'), ('Uganda', 'Uganda'), ('Ukraine', 'Ukraine'), ('United Arab Emirates', 'United Arab Emirates'), ('United Kingdom', 'United Kingdom'), ('Uruguay', 'Uruguay'), ('Uzbekistan', 'Uzbekistan'), ('Vanuatu', 'Vanuatu'), ('Venezuela', 'Venezuela'), ('Viet Nam', 'Viet Nam'), ('Virgin Islands', 'Virgin Islands'), ('Wake Island', 'Wake Island'), ('Wallis and Futuna', 'Wallis and Futuna'), ('West Bank', 'West Bank'), ('Western Sahara', 'Western Sahara'), ('Yemen', 'Yemen'), ('Zambia', 'Zambia'), ('Zimbabwe', 'Zimbabwe'), ('missing: control sample', 'missing: control sample'), ('missing: data agreement established pre-2023', 'missing: data agreement established pre-2023'), ('missing: endangered species', 'missing: endangered species'), ('missing: human-identifiable', 'missing: human-identifiable'), ('missing: lab stock', 'missing: lab stock'), ('missing: sample group', 'missing: sample group'), ('missing: synthetic construct', 'missing: synthetic construct'), ('missing: third party data', 'missing: third party data'), ('not applicable', 'not applicable'), ('not collected', 'not collected'), ('not provided', 'not provided'), ('restricted access', 'restricted access')]
-	oxygenation_status_of_sample_choice = [('aerobic', 'aerobic'), ('anaerobic', 'anaerobic')]
-	trophic_level_choice = [('autotroph', 'autotroph'), ('carboxydotroph', 'carboxydotroph'), ('chemoautotroph', 'chemoautotroph'), ('chemoheterotroph', 'chemoheterotroph'), ('chemolithoautotroph', 'chemolithoautotroph'), ('chemolithotroph', 'chemolithotroph'), ('chemoorganoheterotroph', 'chemoorganoheterotroph'), ('chemoorganotroph', 'chemoorganotroph'), ('chemosynthetic', 'chemosynthetic'), ('chemotroph', 'chemotroph'), ('copiotroph', 'copiotroph'), ('diazotroph', 'diazotroph'), ('facultative autotroph', 'facultative autotroph'), ('heterotroph', 'heterotroph'), ('lithoautotroph', 'lithoautotroph'), ('lithoheterotroph', 'lithoheterotroph'), ('lithotroph', 'lithotroph'), ('methanotroph', 'methanotroph'), ('methylotroph', 'methylotroph'), ('mixotroph', 'mixotroph'), ('obligate chemoautolithotroph', 'obligate chemoautolithotroph'), ('oligotroph', 'oligotroph'), ('organoheterotroph', 'organoheterotroph'), ('organotroph', 'organotroph'), ('photoautotroph', 'photoautotroph'), ('photoheterotroph', 'photoheterotroph'), ('photolithoautotroph', 'photolithoautotroph'), ('photolithotroph', 'photolithotroph'), ('photosynthetic', 'photosynthetic'), ('phototroph', 'phototroph')]
-	relationship_to_oxygen_choice = [('aerobe', 'aerobe'), ('anaerobe', 'anaerobe'), ('facultative', 'facultative'), ('microaerophilic', 'microaerophilic'), ('microanaerobe', 'microanaerobe'), ('obligate aerobe', 'obligate aerobe'), ('obligate anaerobe', 'obligate anaerobe')]
-	observed_biotic_relationship_choice = [('commensal', 'commensal'), ('free living', 'free living'), ('mutualism', 'mutualism'), ('parasite', 'parasite'), ('symbiont', 'symbiont')]
-
-	number_of_replicons_validator = "[+-]?[0-9]+"
-	extrachromosomal_elements_validator = "[+-]?[0-9]+"
-	estimated_size_validator = "[+-]?[0-9]+"
-	sample_volume_or_weight_for_DNA_extraction_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	library_size_validator = "[+-]?[0-9]+"
-	library_reads_sequenced_validator = "[+-]?[0-9]+"
-	collection_date_validator = "(^[12][0-9]{3}(-(0[1-9]|1[0-2])(-(0[1-9]|[12][0-9]|3[01])(T[0-9]{2}:[0-9]{2}(:[0-9]{2})?Z?([+-][0-9]{1,2})?)?)?)?(/[0-9]{4}(-[0-9]{2}(-[0-9]{2}(T[0-9]{2}:[0-9]{2}(:[0-9]{2})?Z?([+-][0-9]{1,2})?)?)?)?)?$)|(^not collected$)|(^not provided$)|(^restricted access$)|(^missing: control sample$)|(^missing: sample group$)|(^missing: synthetic construct$)|(^missing: lab stock$)|(^missing: third party data$)|(^missing: data agreement established pre-2023$)|(^missing: endangered species$)|(^missing: human-identifiable$)"
-	altitude_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	geographic_location_latitude_validator = "(^[+-]?[0-9]+.?[0-9]{0,8}$)|(^not collected$)|(^not provided$)|(^restricted access$)|(^missing: control sample$)|(^missing: sample group$)|(^missing: synthetic construct$)|(^missing: lab stock$)|(^missing: third party data$)|(^missing: data agreement established pre-2023$)|(^missing: endangered species$)|(^missing: human-identifiable$)"
-	geographic_location_longitude_validator = "(^[+-]?[0-9]+.?[0-9]{0,8}$)|(^not collected$)|(^not provided$)|(^restricted access$)|(^missing: control sample$)|(^missing: sample group$)|(^missing: synthetic construct$)|(^missing: lab stock$)|(^missing: third party data$)|(^missing: data agreement established pre-2023$)|(^missing: endangered species$)|(^missing: human-identifiable$)"
-	depth_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	elevation_validator = "[+-]?(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	amount_or_size_of_sample_collected_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	host_dry_mass_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	sample_storage_duration_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	sample_storage_temperature_validator = "[+-]?(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	host_wet_mass_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	host_age_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	host_taxid_validator = "[+-]?[0-9]+"
-	host_height_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	host_length_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	host_total_mass_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	temperature_validator = "[+-]?(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	salinity_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-
-	sampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE, default=1)
-	sample = models.ForeignKey(Sample, on_delete=models.CASCADE, default=1)
-	sample_type = models.IntegerField(default=1)
-	project_name= models.CharField(max_length=120, blank=False,help_text="Name of th")
-	experimental_factor= models.CharField(max_length=120, blank=True,help_text="Experiment")
-	ploidy= models.CharField(max_length=120, blank=True,help_text="The ploidy")
-	number_of_replicons= models.CharField(max_length=120, blank=True,help_text="Reports th", validators=[RegexValidator(number_of_replicons_validator)])
-	extrachromosomal_elements= models.CharField(max_length=120, blank=True,help_text="Do plasmid", validators=[RegexValidator(extrachromosomal_elements_validator)])
-	estimated_size= models.CharField(max_length=120, blank=True,help_text="The estima", validators=[RegexValidator(estimated_size_validator)])
-	reference_for_biomaterial= models.CharField(max_length=120, blank=True,help_text="Primary pu")
-	annotation_source= models.CharField(max_length=120, blank=True,help_text="For cases ")
-	sample_volume_or_weight_for_DNA_extraction= models.CharField(max_length=120, blank=True,help_text="Volume (ml", validators=[RegexValidator(sample_volume_or_weight_for_DNA_extraction_validator)])
-	nucleic_acid_extraction= models.CharField(max_length=120, blank=True,help_text="A link to ")
-	nucleic_acid_amplification= models.CharField(max_length=120, blank=True,help_text="A link to ")
-	library_size= models.CharField(max_length=120, blank=True,help_text="Total numb", validators=[RegexValidator(library_size_validator)])
-	library_reads_sequenced= models.CharField(max_length=120, blank=True,help_text="Total numb", validators=[RegexValidator(library_reads_sequenced_validator)])
-	library_construction_method= models.CharField(max_length=120, blank=True,help_text="Library co")
-	library_vector= models.CharField(max_length=120, blank=True,help_text="Cloning ve")
-	library_screening_strategy= models.CharField(max_length=120, blank=True,help_text="Specific e")
-	target_gene= models.CharField(max_length=120, blank=True,help_text="Targeted g")
-	target_subfragment= models.CharField(max_length=120, blank=True,help_text="Name of su")
-	pcr_primers= models.CharField(max_length=120, blank=True,help_text="PCR primer")
-	multiplex_identifiers= models.CharField(max_length=120, blank=True,help_text="Molecular ")
-	adapters= models.CharField(max_length=120, blank=True,help_text="Adapters p")
-	pcr_conditions= models.CharField(max_length=120, blank=True,help_text="Descriptio")
-	sequencing_method= models.CharField(max_length=120, blank=True,help_text="Sequencing")
-	sequence_quality_check= models.CharField(max_length=120, blank=True,help_text="Indicate i", choices=sequence_quality_check_choice)
-	chimera_check_software= models.CharField(max_length=120, blank=True,help_text="Tool(s) us")
-	relevant_electronic_resources= models.CharField(max_length=120, blank=True,help_text="A related ")
-	relevant_standard_operating_procedures= models.CharField(max_length=120, blank=True,help_text="Standard o")
-	negative_control_type= models.CharField(max_length=120, blank=True,help_text="The substa")
-	positive_control_type= models.CharField(max_length=120, blank=True,help_text="The substa")
-	collection_date= models.CharField(max_length=120, blank=False,help_text="The date t", validators=[RegexValidator(collection_date_validator)])
-	altitude= models.CharField(max_length=120, blank=True,help_text="The altitu", validators=[RegexValidator(altitude_validator)])
-	geographic_location_country_and_or_sea= models.CharField(max_length=120, blank=False,help_text="The locati", choices=geographic_location_country_and_or_sea_choice)
-	geographic_location_latitude= models.CharField(max_length=120, blank=False,help_text="The geogra", validators=[RegexValidator(geographic_location_latitude_validator)])
-	geographic_location_longitude= models.CharField(max_length=120, blank=False,help_text="The geogra", validators=[RegexValidator(geographic_location_longitude_validator)])
-	geographic_location_region_and_locality= models.CharField(max_length=120, blank=True,help_text="The geogra")
-	depth= models.CharField(max_length=120, blank=True,help_text="The vertic", validators=[RegexValidator(depth_validator)])
-	broad_scale_environmental_context= models.CharField(max_length=120, blank=False,help_text="Report the")
-	local_environmental_context= models.CharField(max_length=120, blank=False,help_text="Report the")
-	environmental_medium= models.CharField(max_length=120, blank=False,help_text="Report the")
-	elevation= models.CharField(max_length=120, blank=True,help_text="The elevat", validators=[RegexValidator(elevation_validator)])
-	source_material_identifiers= models.CharField(max_length=120, blank=True,help_text="A unique i")
-	sample_material_processing= models.CharField(max_length=120, blank=True,help_text="A brief de")
-	isolation_and_growth_condition= models.CharField(max_length=120, blank=True,help_text="Publicatio")
-	propagation= models.CharField(max_length=120, blank=True,help_text="The type o")
-	amount_or_size_of_sample_collected= models.CharField(max_length=120, blank=True,help_text="The total ", validators=[RegexValidator(amount_or_size_of_sample_collected_validator)])
-	host_dry_mass= models.CharField(max_length=120, blank=True,help_text="measuremen", validators=[RegexValidator(host_dry_mass_validator)])
-	oxygenation_status_of_sample= models.CharField(max_length=120, blank=True,help_text="oxygenatio", choices=oxygenation_status_of_sample_choice)
-	plant_product= models.CharField(max_length=120, blank=True,help_text="substance ")
-	organism_count= models.CharField(max_length=120, blank=True,help_text="Total cell")
-	sample_storage_duration= models.CharField(max_length=120, blank=True,help_text="duration f", validators=[RegexValidator(sample_storage_duration_validator)])
-	sample_storage_temperature= models.CharField(max_length=120, blank=True,help_text="temperatur", validators=[RegexValidator(sample_storage_temperature_validator)])
-	host_wet_mass= models.CharField(max_length=120, blank=True,help_text="measuremen", validators=[RegexValidator(host_wet_mass_validator)])
-	sample_storage_location= models.CharField(max_length=120, blank=True,help_text="location a")
-	sample_collection_device= models.CharField(max_length=120, blank=True,help_text="The device")
-	sample_collection_method= models.CharField(max_length=120, blank=True,help_text="The method")
-	host_disease_status= models.CharField(max_length=120, blank=True,help_text="list of di")
-	host_common_name= models.CharField(max_length=120, blank=True,help_text="common nam")
-	host_age= models.CharField(max_length=120, blank=True,help_text="age of hos", validators=[RegexValidator(host_age_validator)])
-	host_taxid= models.CharField(max_length=120, blank=True,help_text="NCBI taxon", validators=[RegexValidator(host_taxid_validator)])
-	host_life_stage= models.CharField(max_length=120, blank=True,help_text="descriptio")
-	host_height= models.CharField(max_length=120, blank=True,help_text="the height", validators=[RegexValidator(host_height_validator)])
-	host_length= models.CharField(max_length=120, blank=True,help_text="the length", validators=[RegexValidator(host_length_validator)])
-	plant_body_site= models.CharField(max_length=120, blank=True,help_text="name of bo")
-	host_total_mass= models.CharField(max_length=120, blank=True,help_text="total mass", validators=[RegexValidator(host_total_mass_validator)])
-	host_phenotype= models.CharField(max_length=120, blank=True,help_text="phenotype ")
-	host_subspecific_genetic_lineage= models.CharField(max_length=120, blank=True,help_text="Informatio")
-	climate_environment= models.CharField(max_length=120, blank=True,help_text="treatment ")
-	gaseous_environment= models.CharField(max_length=120, blank=True,help_text="use of con")
-	seasonal_environment= models.CharField(max_length=120, blank=True,help_text="treatment ")
-	temperature= models.CharField(max_length=120, blank=True,help_text="temperatur", validators=[RegexValidator(temperature_validator)])
-	salinity= models.CharField(max_length=120, blank=True,help_text="The total ", validators=[RegexValidator(salinity_validator)])
-	host_genotype= models.CharField(max_length=120, blank=True,help_text="observed g")
-	subspecific_genetic_lineage= models.CharField(max_length=120, blank=True,help_text="Informatio")
-	trophic_level= models.CharField(max_length=120, blank=True,help_text="Trophic le", choices=trophic_level_choice)
-	relationship_to_oxygen= models.CharField(max_length=120, blank=True,help_text="Is this or", choices=relationship_to_oxygen_choice)
-	known_pathogenicity= models.CharField(max_length=120, blank=True,help_text="To what is")
-	encoded_traits= models.CharField(max_length=120, blank=True,help_text="Should inc")
-	observed_biotic_relationship= models.CharField(max_length=120, blank=True,help_text="Is it free", choices=observed_biotic_relationship_choice)
-	air_temperature_regimen= models.CharField(max_length=120, blank=True,help_text="informatio")
-	antibiotic_regimen= models.CharField(max_length=120, blank=True,help_text="informatio")
-	chemical_mutagen= models.CharField(max_length=120, blank=True,help_text="treatment ")
-	fertilizer_regimen= models.CharField(max_length=120, blank=True,help_text="informatio")
-	fungicide_regimen= models.CharField(max_length=120, blank=True,help_text="informatio")
-	gravity= models.CharField(max_length=120, blank=True,help_text="informatio")
-	growth_hormone_regimen= models.CharField(max_length=120, blank=True,help_text="informatio")
-	growth_media= models.CharField(max_length=120, blank=True,help_text="informatio")
-	herbicide_regimen= models.CharField(max_length=120, blank=True,help_text="informatio")
-	humidity_regimen= models.CharField(max_length=120, blank=True,help_text="informatio")
-	mineral_nutrient_regimen= models.CharField(max_length=120, blank=True,help_text="informatio")
-	non_mineral_nutrient_regimen= models.CharField(max_length=120, blank=True,help_text="informatio")
-	pesticide_regimen= models.CharField(max_length=120, blank=True,help_text="informatio")
-	pH_regimen= models.CharField(max_length=120, blank=True,help_text="informatio")
-	radiation_regimen= models.CharField(max_length=120, blank=True,help_text="informatio")
-	rainfall_regimen= models.CharField(max_length=120, blank=True,help_text="informatio")
-	salt_regimen= models.CharField(max_length=120, blank=True,help_text="informatio")
-	standing_water_regimen= models.CharField(max_length=120, blank=True,help_text="treatment ")
-	tissue_culture_growth_media= models.CharField(max_length=120, blank=True,help_text="descriptio")
-	watering_regimen= models.CharField(max_length=120, blank=True,help_text="informatio")
-	water_temperature_regimen= models.CharField(max_length=120, blank=True,help_text="informatio")
-	mechanical_damage= models.CharField(max_length=120, blank=True,help_text="informatio")
-	chemical_administration= models.CharField(max_length=120, blank=True,help_text="list of ch")
-	perturbation= models.CharField(max_length=120, blank=True,help_text="type of pe")
-
-	fields = {
-		'project_name': 'project_name',
-		'experimental_factor': 'experimental_factor',
-		'ploidy': 'ploidy',
-		'number_of_replicons': 'number_of_replicons',
-		'extrachromosomal_elements': 'extrachromosomal_elements',
-		'estimated_size': 'estimated_size',
-		'reference_for_biomaterial': 'reference_for_biomaterial',
-		'annotation_source': 'annotation_source',
-		'sample_volume_or_weight_for_DNA_extraction': 'sample_volume_or_weight_for_DNA_extraction',
-		'nucleic_acid_extraction': 'nucleic_acid_extraction',
-		'nucleic_acid_amplification': 'nucleic_acid_amplification',
-		'library_size': 'library_size',
-		'library_reads_sequenced': 'library_reads_sequenced',
-		'library_construction_method': 'library_construction_method',
-		'library_vector': 'library_vector',
-		'library_screening_strategy': 'library_screening_strategy',
-		'target_gene': 'target_gene',
-		'target_subfragment': 'target_subfragment',
-		'pcr_primers': 'pcr_primers',
-		'multiplex_identifiers': 'multiplex_identifiers',
-		'adapters': 'adapters',
-		'pcr_conditions': 'pcr_conditions',
-		'sequencing_method': 'sequencing_method',
-		'sequence_quality_check': 'sequence_quality_check',
-		'chimera_check_software': 'chimera_check_software',
-		'relevant_electronic_resources': 'relevant_electronic_resources',
-		'relevant_standard_operating_procedures': 'relevant_standard_operating_procedures',
-		'negative_control_type': 'negative_control_type',
-		'positive_control_type': 'positive_control_type',
-		'collection_date': 'collection_date',
-		'altitude': 'altitude',
-		'geographic_location_country_and_or_sea': 'geographic_location_country_and_or_sea',
-		'geographic_location_latitude': 'geographic_location_latitude',
-		'geographic_location_longitude': 'geographic_location_longitude',
-		'geographic_location_region_and_locality': 'geographic_location_region_and_locality',
-		'depth': 'depth',
-		'broad_scale_environmental_context': 'broad_scale_environmental_context',
-		'local_environmental_context': 'local_environmental_context',
-		'environmental_medium': 'environmental_medium',
-		'elevation': 'elevation',
-		'source_material_identifiers': 'source_material_identifiers',
-		'sample_material_processing': 'sample_material_processing',
-		'isolation_and_growth_condition': 'isolation_and_growth_condition',
-		'propagation': 'propagation',
-		'amount_or_size_of_sample_collected': 'amount_or_size_of_sample_collected',
-		'host_dry_mass': 'host_dry_mass',
-		'oxygenation_status_of_sample': 'oxygenation_status_of_sample',
-		'plant_product': 'plant_product',
-		'organism_count': 'organism_count',
-		'sample_storage_duration': 'sample_storage_duration',
-		'sample_storage_temperature': 'sample_storage_temperature',
-		'host_wet_mass': 'host_wet_mass',
-		'sample_storage_location': 'sample_storage_location',
-		'sample_collection_device': 'sample_collection_device',
-		'sample_collection_method': 'sample_collection_method',
-		'host_disease_status': 'host_disease_status',
-		'host_common_name': 'host_common_name',
-		'host_age': 'host_age',
-		'host_taxid': 'host_taxid',
-		'host_life_stage': 'host_life_stage',
-		'host_height': 'host_height',
-		'host_length': 'host_length',
-		'plant_body_site': 'plant_body_site',
-		'host_total_mass': 'host_total_mass',
-		'host_phenotype': 'host_phenotype',
-		'host_subspecific_genetic_lineage': 'host_subspecific_genetic_lineage',
-		'climate_environment': 'climate_environment',
-		'gaseous_environment': 'gaseous_environment',
-		'seasonal_environment': 'seasonal_environment',
-		'temperature': 'temperature',
-		'salinity': 'salinity',
-		'host_genotype': 'host_genotype',
-		'subspecific_genetic_lineage': 'subspecific_genetic_lineage',
-		'trophic_level': 'trophic_level',
-		'relationship_to_oxygen': 'relationship_to_oxygen',
-		'known_pathogenicity': 'known_pathogenicity',
-		'encoded_traits': 'encoded_traits',
-		'observed_biotic_relationship': 'observed_biotic_relationship',
-		'air_temperature_regimen': 'air_temperature_regimen',
-		'antibiotic_regimen': 'antibiotic_regimen',
-		'chemical_mutagen': 'chemical_mutagen',
-		'fertilizer_regimen': 'fertilizer_regimen',
-		'fungicide_regimen': 'fungicide_regimen',
-		'gravity': 'gravity',
-		'growth_hormone_regimen': 'growth_hormone_regimen',
-		'growth_media': 'growth_media',
-		'herbicide_regimen': 'herbicide_regimen',
-		'humidity_regimen': 'humidity_regimen',
-		'mineral_nutrient_regimen': 'mineral_nutrient_regimen',
-		'non_mineral_nutrient_regimen': 'non_mineral_nutrient_regimen',
-		'pesticide_regimen': 'pesticide_regimen',
-		'pH_regimen': 'pH_regimen',
-		'radiation_regimen': 'radiation_regimen',
-		'rainfall_regimen': 'rainfall_regimen',
-		'salt_regimen': 'salt_regimen',
-		'standing_water_regimen': 'standing_water_regimen',
-		'tissue_culture_growth_media': 'tissue_culture_growth_media',
-		'watering_regimen': 'watering_regimen',
-		'water_temperature_regimen': 'water_temperature_regimen',
-		'mechanical_damage': 'mechanical_damage',
-		'chemical_administration': 'chemical_administration',
-		'perturbation': 'perturbation',
-	}
-
-	name = 'GSC_MIxS_plant_associated'
-
-class GSC_MIxS_plant_associated_unit(SelfDescribingModel):
-
-	sample_volume_or_weight_for_DNA_extraction_units = [('g', 'g'), ('mL', 'mL'), ('mg', 'mg'), ('ng', 'ng')]
-	altitude_units = [('m', 'm')]
-	geographic_location_latitude_units = [('DD', 'DD')]
-	geographic_location_longitude_units = [('DD', 'DD')]
-	depth_units = [('m', 'm')]
-	elevation_units = [('m', 'm')]
-	amount_or_size_of_sample_collected_units = [('L', 'L'), ('g', 'g'), ('kg', 'kg'), ('m2', 'm2'), ('m3', 'm3')]
-	host_dry_mass_units = [('g', 'g'), ('kg', 'kg'), ('mg', 'mg')]
-	sample_storage_duration_units = [('days', 'days'), ('hours', 'hours'), ('months', 'months'), ('weeks', 'weeks'), ('years', 'years')]
-	sample_storage_temperature_units = [('°C', '°C')]
-	host_wet_mass_units = [('g', 'g'), ('kg', 'kg'), ('mg', 'mg')]
-	host_age_units = [('centuries', 'centuries'), ('days', 'days'), ('decades', 'decades'), ('hours', 'hours'), ('minutes', 'minutes'), ('months', 'months'), ('seconds', 'seconds'), ('weeks', 'weeks'), ('years', 'years')]
-	host_height_units = [('cm', 'cm'), ('m', 'm'), ('mm', 'mm')]
-	host_length_units = [('cm', 'cm'), ('m', 'm'), ('mm', 'mm')]
-	host_total_mass_units = [('g', 'g'), ('kg', 'kg')]
-	temperature_units = [('ºC', 'ºC')]
-	salinity_units = [('psu', 'psu')]
-
-	fields = {
-		'sample_volume_or_weight_for_DNA_extraction': 'sample_volume_or_weight_for_DNA_extraction',
-		'altitude': 'altitude',
-		'geographic_location_latitude': 'geographic_location_latitude',
-		'geographic_location_longitude': 'geographic_location_longitude',
-		'depth': 'depth',
-		'elevation': 'elevation',
-		'amount_or_size_of_sample_collected': 'amount_or_size_of_sample_collected',
-		'host_dry_mass': 'host_dry_mass',
-		'sample_storage_duration': 'sample_storage_duration',
-		'sample_storage_temperature': 'sample_storage_temperature',
-		'host_wet_mass': 'host_wet_mass',
-		'host_age': 'host_age',
-		'host_height': 'host_height',
-		'host_length': 'host_length',
-		'host_total_mass': 'host_total_mass',
-		'temperature': 'temperature',
-		'salinity': 'salinity',
-	}
-
-	name = 'GSC_MIxS_plant_associated'
-
-	sampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE, default=1)
-	sample = models.ForeignKey(Sample, on_delete=models.CASCADE, default=1)
-	sample_type = models.IntegerField(default=1)
-	sample_volume_or_weight_for_DNA_extraction = models.CharField(max_length=120, choices=sample_volume_or_weight_for_DNA_extraction_units, blank=False)
-	altitude = models.CharField(max_length=120, choices=altitude_units, blank=False)
-	geographic_location_latitude = models.CharField(max_length=120, choices=geographic_location_latitude_units, blank=False)
-	geographic_location_longitude = models.CharField(max_length=120, choices=geographic_location_longitude_units, blank=False)
-	depth = models.CharField(max_length=120, choices=depth_units, blank=False)
-	elevation = models.CharField(max_length=120, choices=elevation_units, blank=False)
-	amount_or_size_of_sample_collected = models.CharField(max_length=120, choices=amount_or_size_of_sample_collected_units, blank=False)
-	host_dry_mass = models.CharField(max_length=120, choices=host_dry_mass_units, blank=False)
-	sample_storage_duration = models.CharField(max_length=120, choices=sample_storage_duration_units, blank=False)
-	sample_storage_temperature = models.CharField(max_length=120, choices=sample_storage_temperature_units, blank=False)
-	host_wet_mass = models.CharField(max_length=120, choices=host_wet_mass_units, blank=False)
-	host_age = models.CharField(max_length=120, choices=host_age_units, blank=False)
-	host_height = models.CharField(max_length=120, choices=host_height_units, blank=False)
-	host_length = models.CharField(max_length=120, choices=host_length_units, blank=False)
-	host_total_mass = models.CharField(max_length=120, choices=host_total_mass_units, blank=False)
-	temperature = models.CharField(max_length=120, choices=temperature_units, blank=False)
-	salinity = models.CharField(max_length=120, choices=salinity_units, blank=False)
-
 class GSC_MIxS_wastewater_sludge(SelfDescribingModel):
 
 	sequence_quality_check_choice = [('manual', 'manual'), ('none', 'none'), ('software', 'software')]
@@ -3288,732 +2515,6 @@ class GSC_MIxS_miscellaneous_natural_or_artificial_environment_unit(SelfDescribi
 	sulfate = models.CharField(max_length=120, choices=sulfate_units, blank=False)
 	sulfide = models.CharField(max_length=120, choices=sulfide_units, blank=False)
 
-class GSC_MIxS_human_oral(SelfDescribingModel):
-
-	sequence_quality_check_choice = [('manual', 'manual'), ('none', 'none'), ('software', 'software')]
-	geographic_location_country_and_or_sea_choice = [('Afghanistan', 'Afghanistan'), ('Albania', 'Albania'), ('Algeria', 'Algeria'), ('American Samoa', 'American Samoa'), ('Andorra', 'Andorra'), ('Angola', 'Angola'), ('Anguilla', 'Anguilla'), ('Antarctica', 'Antarctica'), ('Antigua and Barbuda', 'Antigua and Barbuda'), ('Arctic Ocean', 'Arctic Ocean'), ('Argentina', 'Argentina'), ('Armenia', 'Armenia'), ('Aruba', 'Aruba'), ('Ashmore and Cartier Islands', 'Ashmore and Cartier Islands'), ('Atlantic Ocean', 'Atlantic Ocean'), ('Australia', 'Australia'), ('Austria', 'Austria'), ('Azerbaijan', 'Azerbaijan'), ('Bahamas', 'Bahamas'), ('Bahrain', 'Bahrain'), ('Baker Island', 'Baker Island'), ('Baltic Sea', 'Baltic Sea'), ('Bangladesh', 'Bangladesh'), ('Barbados', 'Barbados'), ('Bassas da India', 'Bassas da India'), ('Belarus', 'Belarus'), ('Belgium', 'Belgium'), ('Belize', 'Belize'), ('Benin', 'Benin'), ('Bermuda', 'Bermuda'), ('Bhutan', 'Bhutan'), ('Bolivia', 'Bolivia'), ('Borneo', 'Borneo'), ('Bosnia and Herzegovina', 'Bosnia and Herzegovina'), ('Botswana', 'Botswana'), ('Bouvet Island', 'Bouvet Island'), ('Brazil', 'Brazil'), ('British Virgin Islands', 'British Virgin Islands'), ('Brunei', 'Brunei'), ('Bulgaria', 'Bulgaria'), ('Burkina Faso', 'Burkina Faso'), ('Burundi', 'Burundi'), ('Cambodia', 'Cambodia'), ('Cameroon', 'Cameroon'), ('Canada', 'Canada'), ('Cape Verde', 'Cape Verde'), ('Cayman Islands', 'Cayman Islands'), ('Central African Republic', 'Central African Republic'), ('Chad', 'Chad'), ('Chile', 'Chile'), ('China', 'China'), ('Christmas Island', 'Christmas Island'), ('Clipperton Island', 'Clipperton Island'), ('Cocos Islands', 'Cocos Islands'), ('Colombia', 'Colombia'), ('Comoros', 'Comoros'), ('Cook Islands', 'Cook Islands'), ('Coral Sea Islands', 'Coral Sea Islands'), ('Costa Rica', 'Costa Rica'), ("Cote d'Ivoire", "Cote d'Ivoire"), ('Croatia', 'Croatia'), ('Cuba', 'Cuba'), ('Curacao', 'Curacao'), ('Cyprus', 'Cyprus'), ('Czech Republic', 'Czech Republic'), ('Democratic Republic of the Congo', 'Democratic Republic of the Congo'), ('Denmark', 'Denmark'), ('Djibouti', 'Djibouti'), ('Dominica', 'Dominica'), ('Dominican Republic', 'Dominican Republic'), ('East Timor', 'East Timor'), ('Ecuador', 'Ecuador'), ('Egypt', 'Egypt'), ('El Salvador', 'El Salvador'), ('Equatorial Guinea', 'Equatorial Guinea'), ('Eritrea', 'Eritrea'), ('Estonia', 'Estonia'), ('Ethiopia', 'Ethiopia'), ('Europa Island', 'Europa Island'), ('Falkland Islands (Islas Malvinas)', 'Falkland Islands (Islas Malvinas)'), ('Faroe Islands', 'Faroe Islands'), ('Fiji', 'Fiji'), ('Finland', 'Finland'), ('France', 'France'), ('French Guiana', 'French Guiana'), ('French Polynesia', 'French Polynesia'), ('French Southern and Antarctic Lands', 'French Southern and Antarctic Lands'), ('Gabon', 'Gabon'), ('Gambia', 'Gambia'), ('Gaza Strip', 'Gaza Strip'), ('Georgia', 'Georgia'), ('Germany', 'Germany'), ('Ghana', 'Ghana'), ('Gibraltar', 'Gibraltar'), ('Glorioso Islands', 'Glorioso Islands'), ('Greece', 'Greece'), ('Greenland', 'Greenland'), ('Grenada', 'Grenada'), ('Guadeloupe', 'Guadeloupe'), ('Guam', 'Guam'), ('Guatemala', 'Guatemala'), ('Guernsey', 'Guernsey'), ('Guinea', 'Guinea'), ('Guinea-Bissau', 'Guinea-Bissau'), ('Guyana', 'Guyana'), ('Haiti', 'Haiti'), ('Heard Island and McDonald Islands', 'Heard Island and McDonald Islands'), ('Honduras', 'Honduras'), ('Hong Kong', 'Hong Kong'), ('Howland Island', 'Howland Island'), ('Hungary', 'Hungary'), ('Iceland', 'Iceland'), ('India', 'India'), ('Indian Ocean', 'Indian Ocean'), ('Indonesia', 'Indonesia'), ('Iran', 'Iran'), ('Iraq', 'Iraq'), ('Ireland', 'Ireland'), ('Isle of Man', 'Isle of Man'), ('Israel', 'Israel'), ('Italy', 'Italy'), ('Jamaica', 'Jamaica'), ('Jan Mayen', 'Jan Mayen'), ('Japan', 'Japan'), ('Jarvis Island', 'Jarvis Island'), ('Jersey', 'Jersey'), ('Johnston Atoll', 'Johnston Atoll'), ('Jordan', 'Jordan'), ('Juan de Nova Island', 'Juan de Nova Island'), ('Kazakhstan', 'Kazakhstan'), ('Kenya', 'Kenya'), ('Kerguelen Archipelago', 'Kerguelen Archipelago'), ('Kingman Reef', 'Kingman Reef'), ('Kiribati', 'Kiribati'), ('Kosovo', 'Kosovo'), ('Kuwait', 'Kuwait'), ('Kyrgyzstan', 'Kyrgyzstan'), ('Laos', 'Laos'), ('Latvia', 'Latvia'), ('Lebanon', 'Lebanon'), ('Lesotho', 'Lesotho'), ('Liberia', 'Liberia'), ('Libya', 'Libya'), ('Liechtenstein', 'Liechtenstein'), ('Lithuania', 'Lithuania'), ('Luxembourg', 'Luxembourg'), ('Macau', 'Macau'), ('Macedonia', 'Macedonia'), ('Madagascar', 'Madagascar'), ('Malawi', 'Malawi'), ('Malaysia', 'Malaysia'), ('Maldives', 'Maldives'), ('Mali', 'Mali'), ('Malta', 'Malta'), ('Marshall Islands', 'Marshall Islands'), ('Martinique', 'Martinique'), ('Mauritania', 'Mauritania'), ('Mauritius', 'Mauritius'), ('Mayotte', 'Mayotte'), ('Mediterranean Sea', 'Mediterranean Sea'), ('Mexico', 'Mexico'), ('Micronesia', 'Micronesia'), ('Midway Islands', 'Midway Islands'), ('Moldova', 'Moldova'), ('Monaco', 'Monaco'), ('Mongolia', 'Mongolia'), ('Montenegro', 'Montenegro'), ('Montserrat', 'Montserrat'), ('Morocco', 'Morocco'), ('Mozambique', 'Mozambique'), ('Myanmar', 'Myanmar'), ('Namibia', 'Namibia'), ('Nauru', 'Nauru'), ('Navassa Island', 'Navassa Island'), ('Nepal', 'Nepal'), ('Netherlands', 'Netherlands'), ('New Caledonia', 'New Caledonia'), ('New Zealand', 'New Zealand'), ('Nicaragua', 'Nicaragua'), ('Niger', 'Niger'), ('Nigeria', 'Nigeria'), ('Niue', 'Niue'), ('Norfolk Island', 'Norfolk Island'), ('North Korea', 'North Korea'), ('North Sea', 'North Sea'), ('Northern Mariana Islands', 'Northern Mariana Islands'), ('Norway', 'Norway'), ('Oman', 'Oman'), ('Pacific Ocean', 'Pacific Ocean'), ('Pakistan', 'Pakistan'), ('Palau', 'Palau'), ('Palmyra Atoll', 'Palmyra Atoll'), ('Panama', 'Panama'), ('Papua New Guinea', 'Papua New Guinea'), ('Paracel Islands', 'Paracel Islands'), ('Paraguay', 'Paraguay'), ('Peru', 'Peru'), ('Philippines', 'Philippines'), ('Pitcairn Islands', 'Pitcairn Islands'), ('Poland', 'Poland'), ('Portugal', 'Portugal'), ('Puerto Rico', 'Puerto Rico'), ('Qatar', 'Qatar'), ('Republic of the Congo', 'Republic of the Congo'), ('Reunion', 'Reunion'), ('Romania', 'Romania'), ('Ross Sea', 'Ross Sea'), ('Russia', 'Russia'), ('Rwanda', 'Rwanda'), ('Saint Helena', 'Saint Helena'), ('Saint Kitts and Nevis', 'Saint Kitts and Nevis'), ('Saint Lucia', 'Saint Lucia'), ('Saint Pierre and Miquelon', 'Saint Pierre and Miquelon'), ('Saint Vincent and the Grenadines', 'Saint Vincent and the Grenadines'), ('Samoa', 'Samoa'), ('San Marino', 'San Marino'), ('Sao Tome and Principe', 'Sao Tome and Principe'), ('Saudi Arabia', 'Saudi Arabia'), ('Senegal', 'Senegal'), ('Serbia', 'Serbia'), ('Seychelles', 'Seychelles'), ('Sierra Leone', 'Sierra Leone'), ('Singapore', 'Singapore'), ('Sint Maarten', 'Sint Maarten'), ('Slovakia', 'Slovakia'), ('Slovenia', 'Slovenia'), ('Solomon Islands', 'Solomon Islands'), ('Somalia', 'Somalia'), ('South Africa', 'South Africa'), ('South Georgia and the South Sandwich Islands', 'South Georgia and the South Sandwich Islands'), ('South Korea', 'South Korea'), ('Southern Ocean', 'Southern Ocean'), ('Spain', 'Spain'), ('Spratly Islands', 'Spratly Islands'), ('Sri Lanka', 'Sri Lanka'), ('Sudan', 'Sudan'), ('Suriname', 'Suriname'), ('Svalbard', 'Svalbard'), ('Swaziland', 'Swaziland'), ('Sweden', 'Sweden'), ('Switzerland', 'Switzerland'), ('Syria', 'Syria'), ('Taiwan', 'Taiwan'), ('Tajikistan', 'Tajikistan'), ('Tanzania', 'Tanzania'), ('Tasman Sea', 'Tasman Sea'), ('Thailand', 'Thailand'), ('Togo', 'Togo'), ('Tokelau', 'Tokelau'), ('Tonga', 'Tonga'), ('Trinidad and Tobago', 'Trinidad and Tobago'), ('Tromelin Island', 'Tromelin Island'), ('Tunisia', 'Tunisia'), ('Turkey', 'Turkey'), ('Turkmenistan', 'Turkmenistan'), ('Turks and Caicos Islands', 'Turks and Caicos Islands'), ('Tuvalu', 'Tuvalu'), ('USA', 'USA'), ('Uganda', 'Uganda'), ('Ukraine', 'Ukraine'), ('United Arab Emirates', 'United Arab Emirates'), ('United Kingdom', 'United Kingdom'), ('Uruguay', 'Uruguay'), ('Uzbekistan', 'Uzbekistan'), ('Vanuatu', 'Vanuatu'), ('Venezuela', 'Venezuela'), ('Viet Nam', 'Viet Nam'), ('Virgin Islands', 'Virgin Islands'), ('Wake Island', 'Wake Island'), ('Wallis and Futuna', 'Wallis and Futuna'), ('West Bank', 'West Bank'), ('Western Sahara', 'Western Sahara'), ('Yemen', 'Yemen'), ('Zambia', 'Zambia'), ('Zimbabwe', 'Zimbabwe'), ('missing: control sample', 'missing: control sample'), ('missing: data agreement established pre-2023', 'missing: data agreement established pre-2023'), ('missing: endangered species', 'missing: endangered species'), ('missing: human-identifiable', 'missing: human-identifiable'), ('missing: lab stock', 'missing: lab stock'), ('missing: sample group', 'missing: sample group'), ('missing: synthetic construct', 'missing: synthetic construct'), ('missing: third party data', 'missing: third party data'), ('not applicable', 'not applicable'), ('not collected', 'not collected'), ('not provided', 'not provided'), ('restricted access', 'restricted access')]
-	medical_history_performed_choice = [('No', 'No'), ('Yes', 'Yes')]
-	oxygenation_status_of_sample_choice = [('aerobic', 'aerobic'), ('anaerobic', 'anaerobic')]
-	IHMC_medication_code_choice = [('01=1=Analgesics/NSAIDS', '01=1=Analgesics/NSAIDS'), ('02=2=Anesthetics', '02=2=Anesthetics'), ('03=3=Antacids/H2 antagonists', '03=3=Antacids/H2 antagonists'), ('04=4=Anti-acne', '04=4=Anti-acne'), ('05=5=Anti-asthma/bronchodilators', '05=5=Anti-asthma/bronchodilators'), ('06=6=Anti-cholesterol/Anti-hyperlipidemic', '06=6=Anti-cholesterol/Anti-hyperlipidemic'), ('07=7=Anti-coagulants', '07=7=Anti-coagulants'), ('08=8=Antibiotics/(anti)-infectives, parasitics, microbials', '08=8=Antibiotics/(anti)-infectives, parasitics, microbials'), ('09=9=Antidepressants/mood-altering drugs', '09=9=Antidepressants/mood-altering drugs'), ('10=10=Antihistamines/ Decongestants', '10=10=Antihistamines/ Decongestants'), ('11=11=Antihypertensives', '11=11=Antihypertensives'), ('12=12=Cardiovascular, other than hyperlipidemic/HTN', '12=12=Cardiovascular, other than hyperlipidemic/HTN'), ('13=13=Contraceptives (oral, implant, injectable)', '13=13=Contraceptives (oral, implant, injectable)'), ('14=14=Emergency/support medications', '14=14=Emergency/support medications'), ('15=15=Endocrine/Metabolic agents', '15=15=Endocrine/Metabolic agents'), ('16=16=GI meds (anti-diarrheal, emetic, spasmodics)', '16=16=GI meds (anti-diarrheal, emetic, spasmodics)'), ('17=17=Herbal/homeopathic products', '17=17=Herbal/homeopathic products'), ('18=18=Hormones/steroids', '18=18=Hormones/steroids'), ('19=19=OTC cold & flu', '19=19=OTC cold & flu'), ('20=20=Vaccine prophylaxis', '20=20=Vaccine prophylaxis'), ('21=21=Vitamins, minerals, food supplements', '21=21=Vitamins, minerals, food supplements'), ('99=99=Other', '99=99=Other')]
-	host_occupation_choice = [('01=01 Accounting/Finance', '01=01 Accounting/Finance'), ('02=02 Advertising/Public Relations', '02=02 Advertising/Public Relations'), ('03=03 Arts/Entertainment/Publishing', '03=03 Arts/Entertainment/Publishing'), ('04=04 Automotive', '04=04 Automotive'), ('05=05 Banking/ Mortgage', '05=05 Banking/ Mortgage'), ('06=06 Biotech', '06=06 Biotech'), ('07=07 Broadcast/Journalism', '07=07 Broadcast/Journalism'), ('08=08 Business Development', '08=08 Business Development'), ('09=09 Clerical/Administrative', '09=09 Clerical/Administrative'), ('10=10 Construction/Trades', '10=10 Construction/Trades'), ('11=11 Consultant', '11=11 Consultant'), ('12=12 Customer Services', '12=12 Customer Services'), ('13=13 Design', '13=13 Design'), ('14=14 Education', '14=14 Education'), ('15=15 Engineering', '15=15 Engineering'), ('16=16 Entry Level', '16=16 Entry Level'), ('17=17 Executive', '17=17 Executive'), ('18=18 Food Service', '18=18 Food Service'), ('19=19 Government', '19=19 Government'), ('20=20 Grocery', '20=20 Grocery'), ('21=21 Healthcare', '21=21 Healthcare'), ('22=22 Hospitality', '22=22 Hospitality'), ('23=23 Human Resources', '23=23 Human Resources'), ('24=24 Information Technology', '24=24 Information Technology'), ('25=25 Insurance', '25=25 Insurance'), ('26=26 Law/Legal', '26=26 Law/Legal'), ('27=27 Management', '27=27 Management'), ('28=28 Manufacturing', '28=28 Manufacturing'), ('29=29 Marketing', '29=29 Marketing'), ('30=30 Pharmaceutical', '30=30 Pharmaceutical'), ('31=31 Professional Services', '31=31 Professional Services'), ('32=32 Purchasing', '32=32 Purchasing'), ('33=33 Quality Assurance (QA)', '33=33 Quality Assurance (QA)'), ('34=34 Research', '34=34 Research'), ('35=35 Restaurant', '35=35 Restaurant'), ('36=36 Retail', '36=36 Retail'), ('37=37 Sales', '37=37 Sales'), ('38=38 Science', '38=38 Science'), ('39=39 Security/Law Enforcement', '39=39 Security/Law Enforcement'), ('40=40 Shipping/Distribution', '40=40 Shipping/Distribution'), ('41=41 Strategy', '41=41 Strategy'), ('42=42 Student', '42=42 Student'), ('43=43 Telecommunications', '43=43 Telecommunications'), ('44=44 Training', '44=44 Training'), ('45=45 Transportation', '45=45 Transportation'), ('46=46 Warehouse', '46=46 Warehouse'), ('47=47 Other', '47=47 Other'), ('99=99 Unknown/Refused', '99=99 Unknown/Refused')]
-	host_sex_choice = [('female', 'female'), ('hermaphrodite', 'hermaphrodite'), ('male', 'male'), ('missing: control sample', 'missing: control sample'), ('missing: data agreement established pre-2023', 'missing: data agreement established pre-2023'), ('missing: endangered species', 'missing: endangered species'), ('missing: human-identifiable', 'missing: human-identifiable'), ('missing: lab stock', 'missing: lab stock'), ('missing: sample group', 'missing: sample group'), ('missing: synthetic construct', 'missing: synthetic construct'), ('missing: third party data', 'missing: third party data'), ('neuter', 'neuter'), ('not applicable', 'not applicable'), ('not collected', 'not collected'), ('not provided', 'not provided'), ('other', 'other'), ('restricted access', 'restricted access')]
-	trophic_level_choice = [('autotroph', 'autotroph'), ('carboxydotroph', 'carboxydotroph'), ('chemoautotroph', 'chemoautotroph'), ('chemoheterotroph', 'chemoheterotroph'), ('chemolithoautotroph', 'chemolithoautotroph'), ('chemolithotroph', 'chemolithotroph'), ('chemoorganoheterotroph', 'chemoorganoheterotroph'), ('chemoorganotroph', 'chemoorganotroph'), ('chemosynthetic', 'chemosynthetic'), ('chemotroph', 'chemotroph'), ('copiotroph', 'copiotroph'), ('diazotroph', 'diazotroph'), ('facultative autotroph', 'facultative autotroph'), ('heterotroph', 'heterotroph'), ('lithoautotroph', 'lithoautotroph'), ('lithoheterotroph', 'lithoheterotroph'), ('lithotroph', 'lithotroph'), ('methanotroph', 'methanotroph'), ('methylotroph', 'methylotroph'), ('mixotroph', 'mixotroph'), ('obligate chemoautolithotroph', 'obligate chemoautolithotroph'), ('oligotroph', 'oligotroph'), ('organoheterotroph', 'organoheterotroph'), ('organotroph', 'organotroph'), ('photoautotroph', 'photoautotroph'), ('photoheterotroph', 'photoheterotroph'), ('photolithoautotroph', 'photolithoautotroph'), ('photolithotroph', 'photolithotroph'), ('photosynthetic', 'photosynthetic'), ('phototroph', 'phototroph')]
-	relationship_to_oxygen_choice = [('aerobe', 'aerobe'), ('anaerobe', 'anaerobe'), ('facultative', 'facultative'), ('microaerophilic', 'microaerophilic'), ('microanaerobe', 'microanaerobe'), ('obligate aerobe', 'obligate aerobe'), ('obligate anaerobe', 'obligate anaerobe')]
-	observed_biotic_relationship_choice = [('commensal', 'commensal'), ('free living', 'free living'), ('mutualism', 'mutualism'), ('parasite', 'parasite'), ('symbiont', 'symbiont')]
-
-	number_of_replicons_validator = "[+-]?[0-9]+"
-	extrachromosomal_elements_validator = "[+-]?[0-9]+"
-	estimated_size_validator = "[+-]?[0-9]+"
-	sample_volume_or_weight_for_DNA_extraction_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	library_size_validator = "[+-]?[0-9]+"
-	library_reads_sequenced_validator = "[+-]?[0-9]+"
-	collection_date_validator = "(^[12][0-9]{3}(-(0[1-9]|1[0-2])(-(0[1-9]|[12][0-9]|3[01])(T[0-9]{2}:[0-9]{2}(:[0-9]{2})?Z?([+-][0-9]{1,2})?)?)?)?(/[0-9]{4}(-[0-9]{2}(-[0-9]{2}(T[0-9]{2}:[0-9]{2}(:[0-9]{2})?Z?([+-][0-9]{1,2})?)?)?)?)?$)|(^not collected$)|(^not provided$)|(^restricted access$)|(^missing: control sample$)|(^missing: sample group$)|(^missing: synthetic construct$)|(^missing: lab stock$)|(^missing: third party data$)|(^missing: data agreement established pre-2023$)|(^missing: endangered species$)|(^missing: human-identifiable$)"
-	geographic_location_latitude_validator = "(^[+-]?[0-9]+.?[0-9]{0,8}$)|(^not collected$)|(^not provided$)|(^restricted access$)|(^missing: control sample$)|(^missing: sample group$)|(^missing: synthetic construct$)|(^missing: lab stock$)|(^missing: third party data$)|(^missing: data agreement established pre-2023$)|(^missing: endangered species$)|(^missing: human-identifiable$)"
-	geographic_location_longitude_validator = "(^[+-]?[0-9]+.?[0-9]{0,8}$)|(^not collected$)|(^not provided$)|(^restricted access$)|(^missing: control sample$)|(^missing: sample group$)|(^missing: synthetic construct$)|(^missing: lab stock$)|(^missing: third party data$)|(^missing: data agreement established pre-2023$)|(^missing: endangered species$)|(^missing: human-identifiable$)"
-	amount_or_size_of_sample_collected_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	sample_storage_duration_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	sample_storage_temperature_validator = "[+-]?(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	host_age_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	host_height_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	host_body_mass_index_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	host_total_mass_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	host_body_temperature_validator = "[+-]?(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	temperature_validator = "[+-]?(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	salinity_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	time_since_last_toothbrushing_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	host_pulse_validator = "[+-]?[0-9]+"
-
-	sampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE, default=1)
-	sample = models.ForeignKey(Sample, on_delete=models.CASCADE, default=1)
-	sample_type = models.IntegerField(default=1)
-	project_name= models.CharField(max_length=120, blank=False,help_text="Name of th")
-	experimental_factor= models.CharField(max_length=120, blank=True,help_text="Experiment")
-	ploidy= models.CharField(max_length=120, blank=True,help_text="The ploidy")
-	number_of_replicons= models.CharField(max_length=120, blank=True,help_text="Reports th", validators=[RegexValidator(number_of_replicons_validator)])
-	extrachromosomal_elements= models.CharField(max_length=120, blank=True,help_text="Do plasmid", validators=[RegexValidator(extrachromosomal_elements_validator)])
-	estimated_size= models.CharField(max_length=120, blank=True,help_text="The estima", validators=[RegexValidator(estimated_size_validator)])
-	reference_for_biomaterial= models.CharField(max_length=120, blank=True,help_text="Primary pu")
-	annotation_source= models.CharField(max_length=120, blank=True,help_text="For cases ")
-	sample_volume_or_weight_for_DNA_extraction= models.CharField(max_length=120, blank=True,help_text="Volume (ml", validators=[RegexValidator(sample_volume_or_weight_for_DNA_extraction_validator)])
-	nucleic_acid_extraction= models.CharField(max_length=120, blank=True,help_text="A link to ")
-	nucleic_acid_amplification= models.CharField(max_length=120, blank=True,help_text="A link to ")
-	library_size= models.CharField(max_length=120, blank=True,help_text="Total numb", validators=[RegexValidator(library_size_validator)])
-	library_reads_sequenced= models.CharField(max_length=120, blank=True,help_text="Total numb", validators=[RegexValidator(library_reads_sequenced_validator)])
-	library_construction_method= models.CharField(max_length=120, blank=True,help_text="Library co")
-	library_vector= models.CharField(max_length=120, blank=True,help_text="Cloning ve")
-	library_screening_strategy= models.CharField(max_length=120, blank=True,help_text="Specific e")
-	target_gene= models.CharField(max_length=120, blank=True,help_text="Targeted g")
-	target_subfragment= models.CharField(max_length=120, blank=True,help_text="Name of su")
-	pcr_primers= models.CharField(max_length=120, blank=True,help_text="PCR primer")
-	multiplex_identifiers= models.CharField(max_length=120, blank=True,help_text="Molecular ")
-	adapters= models.CharField(max_length=120, blank=True,help_text="Adapters p")
-	pcr_conditions= models.CharField(max_length=120, blank=True,help_text="Descriptio")
-	sequencing_method= models.CharField(max_length=120, blank=True,help_text="Sequencing")
-	sequence_quality_check= models.CharField(max_length=120, blank=True,help_text="Indicate i", choices=sequence_quality_check_choice)
-	chimera_check_software= models.CharField(max_length=120, blank=True,help_text="Tool(s) us")
-	relevant_electronic_resources= models.CharField(max_length=120, blank=True,help_text="A related ")
-	relevant_standard_operating_procedures= models.CharField(max_length=120, blank=True,help_text="Standard o")
-	negative_control_type= models.CharField(max_length=120, blank=True,help_text="The substa")
-	positive_control_type= models.CharField(max_length=120, blank=True,help_text="The substa")
-	collection_date= models.CharField(max_length=120, blank=False,help_text="The date t", validators=[RegexValidator(collection_date_validator)])
-	geographic_location_country_and_or_sea= models.CharField(max_length=120, blank=False,help_text="The locati", choices=geographic_location_country_and_or_sea_choice)
-	geographic_location_latitude= models.CharField(max_length=120, blank=False,help_text="The geogra", validators=[RegexValidator(geographic_location_latitude_validator)])
-	geographic_location_longitude= models.CharField(max_length=120, blank=False,help_text="The geogra", validators=[RegexValidator(geographic_location_longitude_validator)])
-	geographic_location_region_and_locality= models.CharField(max_length=120, blank=True,help_text="The geogra")
-	broad_scale_environmental_context= models.CharField(max_length=120, blank=False,help_text="Report the")
-	local_environmental_context= models.CharField(max_length=120, blank=False,help_text="Report the")
-	environmental_medium= models.CharField(max_length=120, blank=False,help_text="Report the")
-	source_material_identifiers= models.CharField(max_length=120, blank=True,help_text="A unique i")
-	sample_material_processing= models.CharField(max_length=120, blank=True,help_text="A brief de")
-	isolation_and_growth_condition= models.CharField(max_length=120, blank=True,help_text="Publicatio")
-	propagation= models.CharField(max_length=120, blank=True,help_text="The type o")
-	amount_or_size_of_sample_collected= models.CharField(max_length=120, blank=True,help_text="The total ", validators=[RegexValidator(amount_or_size_of_sample_collected_validator)])
-	host_body_product= models.CharField(max_length=120, blank=True,help_text="substance ")
-	medical_history_performed= models.CharField(max_length=120, blank=True,help_text="whether fu", choices=medical_history_performed_choice)
-	oxygenation_status_of_sample= models.CharField(max_length=120, blank=True,help_text="oxygenatio", choices=oxygenation_status_of_sample_choice)
-	organism_count= models.CharField(max_length=120, blank=True,help_text="Total cell")
-	sample_storage_duration= models.CharField(max_length=120, blank=True,help_text="duration f", validators=[RegexValidator(sample_storage_duration_validator)])
-	sample_storage_temperature= models.CharField(max_length=120, blank=True,help_text="temperatur", validators=[RegexValidator(sample_storage_temperature_validator)])
-	sample_storage_location= models.CharField(max_length=120, blank=True,help_text="location a")
-	sample_collection_device= models.CharField(max_length=120, blank=True,help_text="The device")
-	sample_collection_method= models.CharField(max_length=120, blank=True,help_text="The method")
-	nose_mouth_teeth_throat_disorder= models.CharField(max_length=120, blank=True,help_text="History of")
-	host_disease_status= models.CharField(max_length=120, blank=True,help_text="list of di")
-	host_subject_id= models.CharField(max_length=120, blank=True,help_text="a unique i")
-	IHMC_medication_code= models.CharField(max_length=120, blank=True,help_text="can includ", choices=IHMC_medication_code_choice)
-	host_age= models.CharField(max_length=120, blank=True,help_text="age of hos", validators=[RegexValidator(host_age_validator)])
-	host_body_site= models.CharField(max_length=120, blank=True,help_text="name of bo")
-	host_height= models.CharField(max_length=120, blank=True,help_text="the height", validators=[RegexValidator(host_height_validator)])
-	host_body_mass_index= models.CharField(max_length=120, blank=True,help_text="body mass ", validators=[RegexValidator(host_body_mass_index_validator)])
-	ethnicity= models.CharField(max_length=120, blank=True,help_text="A category")
-	host_occupation= models.CharField(max_length=120, blank=True,help_text="most frequ", choices=host_occupation_choice)
-	host_total_mass= models.CharField(max_length=120, blank=True,help_text="total mass", validators=[RegexValidator(host_total_mass_validator)])
-	host_phenotype= models.CharField(max_length=120, blank=True,help_text="phenotype ")
-	host_body_temperature= models.CharField(max_length=120, blank=True,help_text="core body ", validators=[RegexValidator(host_body_temperature_validator)])
-	host_sex= models.CharField(max_length=120, blank=True,help_text="Gender or ", choices=host_sex_choice)
-	temperature= models.CharField(max_length=120, blank=True,help_text="temperatur", validators=[RegexValidator(temperature_validator)])
-	salinity= models.CharField(max_length=120, blank=True,help_text="The total ", validators=[RegexValidator(salinity_validator)])
-	time_since_last_toothbrushing= models.CharField(max_length=120, blank=True,help_text="specificat", validators=[RegexValidator(time_since_last_toothbrushing_validator)])
-	host_diet= models.CharField(max_length=120, blank=True,help_text="type of di")
-	host_last_meal= models.CharField(max_length=120, blank=True,help_text="content of")
-	host_family_relationship= models.CharField(max_length=120, blank=True,help_text="relationsh")
-	host_genotype= models.CharField(max_length=120, blank=True,help_text="observed g")
-	host_pulse= models.CharField(max_length=120, blank=True,help_text="resting pu", validators=[RegexValidator(host_pulse_validator)])
-	subspecific_genetic_lineage= models.CharField(max_length=120, blank=True,help_text="Informatio")
-	trophic_level= models.CharField(max_length=120, blank=True,help_text="Trophic le", choices=trophic_level_choice)
-	relationship_to_oxygen= models.CharField(max_length=120, blank=True,help_text="Is this or", choices=relationship_to_oxygen_choice)
-	known_pathogenicity= models.CharField(max_length=120, blank=True,help_text="To what is")
-	encoded_traits= models.CharField(max_length=120, blank=True,help_text="Should inc")
-	observed_biotic_relationship= models.CharField(max_length=120, blank=True,help_text="Is it free", choices=observed_biotic_relationship_choice)
-	chemical_administration= models.CharField(max_length=120, blank=True,help_text="list of ch")
-	perturbation= models.CharField(max_length=120, blank=True,help_text="type of pe")
-
-	fields = {
-		'project_name': 'project_name',
-		'experimental_factor': 'experimental_factor',
-		'ploidy': 'ploidy',
-		'number_of_replicons': 'number_of_replicons',
-		'extrachromosomal_elements': 'extrachromosomal_elements',
-		'estimated_size': 'estimated_size',
-		'reference_for_biomaterial': 'reference_for_biomaterial',
-		'annotation_source': 'annotation_source',
-		'sample_volume_or_weight_for_DNA_extraction': 'sample_volume_or_weight_for_DNA_extraction',
-		'nucleic_acid_extraction': 'nucleic_acid_extraction',
-		'nucleic_acid_amplification': 'nucleic_acid_amplification',
-		'library_size': 'library_size',
-		'library_reads_sequenced': 'library_reads_sequenced',
-		'library_construction_method': 'library_construction_method',
-		'library_vector': 'library_vector',
-		'library_screening_strategy': 'library_screening_strategy',
-		'target_gene': 'target_gene',
-		'target_subfragment': 'target_subfragment',
-		'pcr_primers': 'pcr_primers',
-		'multiplex_identifiers': 'multiplex_identifiers',
-		'adapters': 'adapters',
-		'pcr_conditions': 'pcr_conditions',
-		'sequencing_method': 'sequencing_method',
-		'sequence_quality_check': 'sequence_quality_check',
-		'chimera_check_software': 'chimera_check_software',
-		'relevant_electronic_resources': 'relevant_electronic_resources',
-		'relevant_standard_operating_procedures': 'relevant_standard_operating_procedures',
-		'negative_control_type': 'negative_control_type',
-		'positive_control_type': 'positive_control_type',
-		'collection_date': 'collection_date',
-		'geographic_location_country_and_or_sea': 'geographic_location_country_and_or_sea',
-		'geographic_location_latitude': 'geographic_location_latitude',
-		'geographic_location_longitude': 'geographic_location_longitude',
-		'geographic_location_region_and_locality': 'geographic_location_region_and_locality',
-		'broad_scale_environmental_context': 'broad_scale_environmental_context',
-		'local_environmental_context': 'local_environmental_context',
-		'environmental_medium': 'environmental_medium',
-		'source_material_identifiers': 'source_material_identifiers',
-		'sample_material_processing': 'sample_material_processing',
-		'isolation_and_growth_condition': 'isolation_and_growth_condition',
-		'propagation': 'propagation',
-		'amount_or_size_of_sample_collected': 'amount_or_size_of_sample_collected',
-		'host_body_product': 'host_body_product',
-		'medical_history_performed': 'medical_history_performed',
-		'oxygenation_status_of_sample': 'oxygenation_status_of_sample',
-		'organism_count': 'organism_count',
-		'sample_storage_duration': 'sample_storage_duration',
-		'sample_storage_temperature': 'sample_storage_temperature',
-		'sample_storage_location': 'sample_storage_location',
-		'sample_collection_device': 'sample_collection_device',
-		'sample_collection_method': 'sample_collection_method',
-		'nose_mouth_teeth_throat_disorder': 'nose_mouth_teeth_throat_disorder',
-		'host_disease_status': 'host_disease_status',
-		'host_subject_id': 'host_subject_id',
-		'IHMC_medication_code': 'IHMC_medication_code',
-		'host_age': 'host_age',
-		'host_body_site': 'host_body_site',
-		'host_height': 'host_height',
-		'host_body_mass_index': 'host_body_mass_index',
-		'ethnicity': 'ethnicity',
-		'host_occupation': 'host_occupation',
-		'host_total_mass': 'host_total_mass',
-		'host_phenotype': 'host_phenotype',
-		'host_body_temperature': 'host_body_temperature',
-		'host_sex': 'host_sex',
-		'temperature': 'temperature',
-		'salinity': 'salinity',
-		'time_since_last_toothbrushing': 'time_since_last_toothbrushing',
-		'host_diet': 'host_diet',
-		'host_last_meal': 'host_last_meal',
-		'host_family_relationship': 'host_family_relationship',
-		'host_genotype': 'host_genotype',
-		'host_pulse': 'host_pulse',
-		'subspecific_genetic_lineage': 'subspecific_genetic_lineage',
-		'trophic_level': 'trophic_level',
-		'relationship_to_oxygen': 'relationship_to_oxygen',
-		'known_pathogenicity': 'known_pathogenicity',
-		'encoded_traits': 'encoded_traits',
-		'observed_biotic_relationship': 'observed_biotic_relationship',
-		'chemical_administration': 'chemical_administration',
-		'perturbation': 'perturbation',
-	}
-
-	name = 'GSC_MIxS_human_oral'
-
-class GSC_MIxS_human_oral_unit(SelfDescribingModel):
-
-	sample_volume_or_weight_for_DNA_extraction_units = [('g', 'g'), ('mL', 'mL'), ('mg', 'mg'), ('ng', 'ng')]
-	geographic_location_latitude_units = [('DD', 'DD')]
-	geographic_location_longitude_units = [('DD', 'DD')]
-	amount_or_size_of_sample_collected_units = [('L', 'L'), ('g', 'g'), ('kg', 'kg'), ('m2', 'm2'), ('m3', 'm3')]
-	sample_storage_duration_units = [('days', 'days'), ('hours', 'hours'), ('months', 'months'), ('weeks', 'weeks'), ('years', 'years')]
-	sample_storage_temperature_units = [('°C', '°C')]
-	host_age_units = [('centuries', 'centuries'), ('days', 'days'), ('decades', 'decades'), ('hours', 'hours'), ('minutes', 'minutes'), ('months', 'months'), ('seconds', 'seconds'), ('weeks', 'weeks'), ('years', 'years')]
-	host_height_units = [('cm', 'cm'), ('m', 'm'), ('mm', 'mm')]
-	host_body_mass_index_units = [('kg/m2', 'kg/m2')]
-	host_total_mass_units = [('g', 'g'), ('kg', 'kg')]
-	host_body_temperature_units = [('ºC', 'ºC')]
-	temperature_units = [('ºC', 'ºC')]
-	salinity_units = [('psu', 'psu')]
-	time_since_last_toothbrushing_units = [('hours', 'hours'), ('minutes', 'minutes')]
-	host_pulse_units = [('bpm', 'bpm')]
-
-	fields = {
-		'sample_volume_or_weight_for_DNA_extraction': 'sample_volume_or_weight_for_DNA_extraction',
-		'geographic_location_latitude': 'geographic_location_latitude',
-		'geographic_location_longitude': 'geographic_location_longitude',
-		'amount_or_size_of_sample_collected': 'amount_or_size_of_sample_collected',
-		'sample_storage_duration': 'sample_storage_duration',
-		'sample_storage_temperature': 'sample_storage_temperature',
-		'host_age': 'host_age',
-		'host_height': 'host_height',
-		'host_body_mass_index': 'host_body_mass_index',
-		'host_total_mass': 'host_total_mass',
-		'host_body_temperature': 'host_body_temperature',
-		'temperature': 'temperature',
-		'salinity': 'salinity',
-		'time_since_last_toothbrushing': 'time_since_last_toothbrushing',
-		'host_pulse': 'host_pulse',
-	}
-
-	name = 'GSC_MIxS_human_oral'
-
-	sampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE, default=1)
-	sample = models.ForeignKey(Sample, on_delete=models.CASCADE, default=1)
-	sample_type = models.IntegerField(default=1)
-	sample_volume_or_weight_for_DNA_extraction = models.CharField(max_length=120, choices=sample_volume_or_weight_for_DNA_extraction_units, blank=False)
-	geographic_location_latitude = models.CharField(max_length=120, choices=geographic_location_latitude_units, blank=False)
-	geographic_location_longitude = models.CharField(max_length=120, choices=geographic_location_longitude_units, blank=False)
-	amount_or_size_of_sample_collected = models.CharField(max_length=120, choices=amount_or_size_of_sample_collected_units, blank=False)
-	sample_storage_duration = models.CharField(max_length=120, choices=sample_storage_duration_units, blank=False)
-	sample_storage_temperature = models.CharField(max_length=120, choices=sample_storage_temperature_units, blank=False)
-	host_age = models.CharField(max_length=120, choices=host_age_units, blank=False)
-	host_height = models.CharField(max_length=120, choices=host_height_units, blank=False)
-	host_body_mass_index = models.CharField(max_length=120, choices=host_body_mass_index_units, blank=False)
-	host_total_mass = models.CharField(max_length=120, choices=host_total_mass_units, blank=False)
-	host_body_temperature = models.CharField(max_length=120, choices=host_body_temperature_units, blank=False)
-	temperature = models.CharField(max_length=120, choices=temperature_units, blank=False)
-	salinity = models.CharField(max_length=120, choices=salinity_units, blank=False)
-	time_since_last_toothbrushing = models.CharField(max_length=120, choices=time_since_last_toothbrushing_units, blank=False)
-	host_pulse = models.CharField(max_length=120, choices=host_pulse_units, blank=False)
-
-class GSC_MIxS_sediment(SelfDescribingModel):
-
-	sequence_quality_check_choice = [('manual', 'manual'), ('none', 'none'), ('software', 'software')]
-	geographic_location_country_and_or_sea_choice = [('Afghanistan', 'Afghanistan'), ('Albania', 'Albania'), ('Algeria', 'Algeria'), ('American Samoa', 'American Samoa'), ('Andorra', 'Andorra'), ('Angola', 'Angola'), ('Anguilla', 'Anguilla'), ('Antarctica', 'Antarctica'), ('Antigua and Barbuda', 'Antigua and Barbuda'), ('Arctic Ocean', 'Arctic Ocean'), ('Argentina', 'Argentina'), ('Armenia', 'Armenia'), ('Aruba', 'Aruba'), ('Ashmore and Cartier Islands', 'Ashmore and Cartier Islands'), ('Atlantic Ocean', 'Atlantic Ocean'), ('Australia', 'Australia'), ('Austria', 'Austria'), ('Azerbaijan', 'Azerbaijan'), ('Bahamas', 'Bahamas'), ('Bahrain', 'Bahrain'), ('Baker Island', 'Baker Island'), ('Baltic Sea', 'Baltic Sea'), ('Bangladesh', 'Bangladesh'), ('Barbados', 'Barbados'), ('Bassas da India', 'Bassas da India'), ('Belarus', 'Belarus'), ('Belgium', 'Belgium'), ('Belize', 'Belize'), ('Benin', 'Benin'), ('Bermuda', 'Bermuda'), ('Bhutan', 'Bhutan'), ('Bolivia', 'Bolivia'), ('Borneo', 'Borneo'), ('Bosnia and Herzegovina', 'Bosnia and Herzegovina'), ('Botswana', 'Botswana'), ('Bouvet Island', 'Bouvet Island'), ('Brazil', 'Brazil'), ('British Virgin Islands', 'British Virgin Islands'), ('Brunei', 'Brunei'), ('Bulgaria', 'Bulgaria'), ('Burkina Faso', 'Burkina Faso'), ('Burundi', 'Burundi'), ('Cambodia', 'Cambodia'), ('Cameroon', 'Cameroon'), ('Canada', 'Canada'), ('Cape Verde', 'Cape Verde'), ('Cayman Islands', 'Cayman Islands'), ('Central African Republic', 'Central African Republic'), ('Chad', 'Chad'), ('Chile', 'Chile'), ('China', 'China'), ('Christmas Island', 'Christmas Island'), ('Clipperton Island', 'Clipperton Island'), ('Cocos Islands', 'Cocos Islands'), ('Colombia', 'Colombia'), ('Comoros', 'Comoros'), ('Cook Islands', 'Cook Islands'), ('Coral Sea Islands', 'Coral Sea Islands'), ('Costa Rica', 'Costa Rica'), ("Cote d'Ivoire", "Cote d'Ivoire"), ('Croatia', 'Croatia'), ('Cuba', 'Cuba'), ('Curacao', 'Curacao'), ('Cyprus', 'Cyprus'), ('Czech Republic', 'Czech Republic'), ('Democratic Republic of the Congo', 'Democratic Republic of the Congo'), ('Denmark', 'Denmark'), ('Djibouti', 'Djibouti'), ('Dominica', 'Dominica'), ('Dominican Republic', 'Dominican Republic'), ('East Timor', 'East Timor'), ('Ecuador', 'Ecuador'), ('Egypt', 'Egypt'), ('El Salvador', 'El Salvador'), ('Equatorial Guinea', 'Equatorial Guinea'), ('Eritrea', 'Eritrea'), ('Estonia', 'Estonia'), ('Ethiopia', 'Ethiopia'), ('Europa Island', 'Europa Island'), ('Falkland Islands (Islas Malvinas)', 'Falkland Islands (Islas Malvinas)'), ('Faroe Islands', 'Faroe Islands'), ('Fiji', 'Fiji'), ('Finland', 'Finland'), ('France', 'France'), ('French Guiana', 'French Guiana'), ('French Polynesia', 'French Polynesia'), ('French Southern and Antarctic Lands', 'French Southern and Antarctic Lands'), ('Gabon', 'Gabon'), ('Gambia', 'Gambia'), ('Gaza Strip', 'Gaza Strip'), ('Georgia', 'Georgia'), ('Germany', 'Germany'), ('Ghana', 'Ghana'), ('Gibraltar', 'Gibraltar'), ('Glorioso Islands', 'Glorioso Islands'), ('Greece', 'Greece'), ('Greenland', 'Greenland'), ('Grenada', 'Grenada'), ('Guadeloupe', 'Guadeloupe'), ('Guam', 'Guam'), ('Guatemala', 'Guatemala'), ('Guernsey', 'Guernsey'), ('Guinea', 'Guinea'), ('Guinea-Bissau', 'Guinea-Bissau'), ('Guyana', 'Guyana'), ('Haiti', 'Haiti'), ('Heard Island and McDonald Islands', 'Heard Island and McDonald Islands'), ('Honduras', 'Honduras'), ('Hong Kong', 'Hong Kong'), ('Howland Island', 'Howland Island'), ('Hungary', 'Hungary'), ('Iceland', 'Iceland'), ('India', 'India'), ('Indian Ocean', 'Indian Ocean'), ('Indonesia', 'Indonesia'), ('Iran', 'Iran'), ('Iraq', 'Iraq'), ('Ireland', 'Ireland'), ('Isle of Man', 'Isle of Man'), ('Israel', 'Israel'), ('Italy', 'Italy'), ('Jamaica', 'Jamaica'), ('Jan Mayen', 'Jan Mayen'), ('Japan', 'Japan'), ('Jarvis Island', 'Jarvis Island'), ('Jersey', 'Jersey'), ('Johnston Atoll', 'Johnston Atoll'), ('Jordan', 'Jordan'), ('Juan de Nova Island', 'Juan de Nova Island'), ('Kazakhstan', 'Kazakhstan'), ('Kenya', 'Kenya'), ('Kerguelen Archipelago', 'Kerguelen Archipelago'), ('Kingman Reef', 'Kingman Reef'), ('Kiribati', 'Kiribati'), ('Kosovo', 'Kosovo'), ('Kuwait', 'Kuwait'), ('Kyrgyzstan', 'Kyrgyzstan'), ('Laos', 'Laos'), ('Latvia', 'Latvia'), ('Lebanon', 'Lebanon'), ('Lesotho', 'Lesotho'), ('Liberia', 'Liberia'), ('Libya', 'Libya'), ('Liechtenstein', 'Liechtenstein'), ('Lithuania', 'Lithuania'), ('Luxembourg', 'Luxembourg'), ('Macau', 'Macau'), ('Macedonia', 'Macedonia'), ('Madagascar', 'Madagascar'), ('Malawi', 'Malawi'), ('Malaysia', 'Malaysia'), ('Maldives', 'Maldives'), ('Mali', 'Mali'), ('Malta', 'Malta'), ('Marshall Islands', 'Marshall Islands'), ('Martinique', 'Martinique'), ('Mauritania', 'Mauritania'), ('Mauritius', 'Mauritius'), ('Mayotte', 'Mayotte'), ('Mediterranean Sea', 'Mediterranean Sea'), ('Mexico', 'Mexico'), ('Micronesia', 'Micronesia'), ('Midway Islands', 'Midway Islands'), ('Moldova', 'Moldova'), ('Monaco', 'Monaco'), ('Mongolia', 'Mongolia'), ('Montenegro', 'Montenegro'), ('Montserrat', 'Montserrat'), ('Morocco', 'Morocco'), ('Mozambique', 'Mozambique'), ('Myanmar', 'Myanmar'), ('Namibia', 'Namibia'), ('Nauru', 'Nauru'), ('Navassa Island', 'Navassa Island'), ('Nepal', 'Nepal'), ('Netherlands', 'Netherlands'), ('New Caledonia', 'New Caledonia'), ('New Zealand', 'New Zealand'), ('Nicaragua', 'Nicaragua'), ('Niger', 'Niger'), ('Nigeria', 'Nigeria'), ('Niue', 'Niue'), ('Norfolk Island', 'Norfolk Island'), ('North Korea', 'North Korea'), ('North Sea', 'North Sea'), ('Northern Mariana Islands', 'Northern Mariana Islands'), ('Norway', 'Norway'), ('Oman', 'Oman'), ('Pacific Ocean', 'Pacific Ocean'), ('Pakistan', 'Pakistan'), ('Palau', 'Palau'), ('Palmyra Atoll', 'Palmyra Atoll'), ('Panama', 'Panama'), ('Papua New Guinea', 'Papua New Guinea'), ('Paracel Islands', 'Paracel Islands'), ('Paraguay', 'Paraguay'), ('Peru', 'Peru'), ('Philippines', 'Philippines'), ('Pitcairn Islands', 'Pitcairn Islands'), ('Poland', 'Poland'), ('Portugal', 'Portugal'), ('Puerto Rico', 'Puerto Rico'), ('Qatar', 'Qatar'), ('Republic of the Congo', 'Republic of the Congo'), ('Reunion', 'Reunion'), ('Romania', 'Romania'), ('Ross Sea', 'Ross Sea'), ('Russia', 'Russia'), ('Rwanda', 'Rwanda'), ('Saint Helena', 'Saint Helena'), ('Saint Kitts and Nevis', 'Saint Kitts and Nevis'), ('Saint Lucia', 'Saint Lucia'), ('Saint Pierre and Miquelon', 'Saint Pierre and Miquelon'), ('Saint Vincent and the Grenadines', 'Saint Vincent and the Grenadines'), ('Samoa', 'Samoa'), ('San Marino', 'San Marino'), ('Sao Tome and Principe', 'Sao Tome and Principe'), ('Saudi Arabia', 'Saudi Arabia'), ('Senegal', 'Senegal'), ('Serbia', 'Serbia'), ('Seychelles', 'Seychelles'), ('Sierra Leone', 'Sierra Leone'), ('Singapore', 'Singapore'), ('Sint Maarten', 'Sint Maarten'), ('Slovakia', 'Slovakia'), ('Slovenia', 'Slovenia'), ('Solomon Islands', 'Solomon Islands'), ('Somalia', 'Somalia'), ('South Africa', 'South Africa'), ('South Georgia and the South Sandwich Islands', 'South Georgia and the South Sandwich Islands'), ('South Korea', 'South Korea'), ('Southern Ocean', 'Southern Ocean'), ('Spain', 'Spain'), ('Spratly Islands', 'Spratly Islands'), ('Sri Lanka', 'Sri Lanka'), ('Sudan', 'Sudan'), ('Suriname', 'Suriname'), ('Svalbard', 'Svalbard'), ('Swaziland', 'Swaziland'), ('Sweden', 'Sweden'), ('Switzerland', 'Switzerland'), ('Syria', 'Syria'), ('Taiwan', 'Taiwan'), ('Tajikistan', 'Tajikistan'), ('Tanzania', 'Tanzania'), ('Tasman Sea', 'Tasman Sea'), ('Thailand', 'Thailand'), ('Togo', 'Togo'), ('Tokelau', 'Tokelau'), ('Tonga', 'Tonga'), ('Trinidad and Tobago', 'Trinidad and Tobago'), ('Tromelin Island', 'Tromelin Island'), ('Tunisia', 'Tunisia'), ('Turkey', 'Turkey'), ('Turkmenistan', 'Turkmenistan'), ('Turks and Caicos Islands', 'Turks and Caicos Islands'), ('Tuvalu', 'Tuvalu'), ('USA', 'USA'), ('Uganda', 'Uganda'), ('Ukraine', 'Ukraine'), ('United Arab Emirates', 'United Arab Emirates'), ('United Kingdom', 'United Kingdom'), ('Uruguay', 'Uruguay'), ('Uzbekistan', 'Uzbekistan'), ('Vanuatu', 'Vanuatu'), ('Venezuela', 'Venezuela'), ('Viet Nam', 'Viet Nam'), ('Virgin Islands', 'Virgin Islands'), ('Wake Island', 'Wake Island'), ('Wallis and Futuna', 'Wallis and Futuna'), ('West Bank', 'West Bank'), ('Western Sahara', 'Western Sahara'), ('Yemen', 'Yemen'), ('Zambia', 'Zambia'), ('Zimbabwe', 'Zimbabwe'), ('missing: control sample', 'missing: control sample'), ('missing: data agreement established pre-2023', 'missing: data agreement established pre-2023'), ('missing: endangered species', 'missing: endangered species'), ('missing: human-identifiable', 'missing: human-identifiable'), ('missing: lab stock', 'missing: lab stock'), ('missing: sample group', 'missing: sample group'), ('missing: synthetic construct', 'missing: synthetic construct'), ('missing: third party data', 'missing: third party data'), ('not applicable', 'not applicable'), ('not collected', 'not collected'), ('not provided', 'not provided'), ('restricted access', 'restricted access')]
-	oxygenation_status_of_sample_choice = [('aerobic', 'aerobic'), ('anaerobic', 'anaerobic')]
-	trophic_level_choice = [('autotroph', 'autotroph'), ('carboxydotroph', 'carboxydotroph'), ('chemoautotroph', 'chemoautotroph'), ('chemoheterotroph', 'chemoheterotroph'), ('chemolithoautotroph', 'chemolithoautotroph'), ('chemolithotroph', 'chemolithotroph'), ('chemoorganoheterotroph', 'chemoorganoheterotroph'), ('chemoorganotroph', 'chemoorganotroph'), ('chemosynthetic', 'chemosynthetic'), ('chemotroph', 'chemotroph'), ('copiotroph', 'copiotroph'), ('diazotroph', 'diazotroph'), ('facultative autotroph', 'facultative autotroph'), ('heterotroph', 'heterotroph'), ('lithoautotroph', 'lithoautotroph'), ('lithoheterotroph', 'lithoheterotroph'), ('lithotroph', 'lithotroph'), ('methanotroph', 'methanotroph'), ('methylotroph', 'methylotroph'), ('mixotroph', 'mixotroph'), ('obligate chemoautolithotroph', 'obligate chemoautolithotroph'), ('oligotroph', 'oligotroph'), ('organoheterotroph', 'organoheterotroph'), ('organotroph', 'organotroph'), ('photoautotroph', 'photoautotroph'), ('photoheterotroph', 'photoheterotroph'), ('photolithoautotroph', 'photolithoautotroph'), ('photolithotroph', 'photolithotroph'), ('photosynthetic', 'photosynthetic'), ('phototroph', 'phototroph')]
-	relationship_to_oxygen_choice = [('aerobe', 'aerobe'), ('anaerobe', 'anaerobe'), ('facultative', 'facultative'), ('microaerophilic', 'microaerophilic'), ('microanaerobe', 'microanaerobe'), ('obligate aerobe', 'obligate aerobe'), ('obligate anaerobe', 'obligate anaerobe')]
-	observed_biotic_relationship_choice = [('commensal', 'commensal'), ('free living', 'free living'), ('mutualism', 'mutualism'), ('parasite', 'parasite'), ('symbiont', 'symbiont')]
-
-	number_of_replicons_validator = "[+-]?[0-9]+"
-	extrachromosomal_elements_validator = "[+-]?[0-9]+"
-	estimated_size_validator = "[+-]?[0-9]+"
-	sample_volume_or_weight_for_DNA_extraction_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	library_size_validator = "[+-]?[0-9]+"
-	library_reads_sequenced_validator = "[+-]?[0-9]+"
-	collection_date_validator = "(^[12][0-9]{3}(-(0[1-9]|1[0-2])(-(0[1-9]|[12][0-9]|3[01])(T[0-9]{2}:[0-9]{2}(:[0-9]{2})?Z?([+-][0-9]{1,2})?)?)?)?(/[0-9]{4}(-[0-9]{2}(-[0-9]{2}(T[0-9]{2}:[0-9]{2}(:[0-9]{2})?Z?([+-][0-9]{1,2})?)?)?)?)?$)|(^not collected$)|(^not provided$)|(^restricted access$)|(^missing: control sample$)|(^missing: sample group$)|(^missing: synthetic construct$)|(^missing: lab stock$)|(^missing: third party data$)|(^missing: data agreement established pre-2023$)|(^missing: endangered species$)|(^missing: human-identifiable$)"
-	altitude_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	geographic_location_latitude_validator = "(^[+-]?[0-9]+.?[0-9]{0,8}$)|(^not collected$)|(^not provided$)|(^restricted access$)|(^missing: control sample$)|(^missing: sample group$)|(^missing: synthetic construct$)|(^missing: lab stock$)|(^missing: third party data$)|(^missing: data agreement established pre-2023$)|(^missing: endangered species$)|(^missing: human-identifiable$)"
-	geographic_location_longitude_validator = "(^[+-]?[0-9]+.?[0-9]{0,8}$)|(^not collected$)|(^not provided$)|(^restricted access$)|(^missing: control sample$)|(^missing: sample group$)|(^missing: synthetic construct$)|(^missing: lab stock$)|(^missing: third party data$)|(^missing: data agreement established pre-2023$)|(^missing: endangered species$)|(^missing: human-identifiable$)"
-	depth_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	elevation_validator = "[+-]?(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	amount_or_size_of_sample_collected_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	density_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	sample_storage_duration_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	sample_storage_temperature_validator = "[+-]?(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	alkyl_diethers_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	aminopeptidase_activity_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	ammonium_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	bacterial_carbon_production_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	bishomohopanol_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	bromide_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	calcium_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	carbon_nitrogen_ratio_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	chloride_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	chlorophyll_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	diether_lipids_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	dissolved_carbon_dioxide_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	dissolved_hydrogen_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	dissolved_inorganic_carbon_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	dissolved_organic_carbon_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	dissolved_organic_nitrogen_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	methane_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	dissolved_oxygen_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	glucosidase_activity_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	magnesium_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	n_alkanes_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	nitrate_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	nitrite_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	nitrogen_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	organic_carbon_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	organic_matter_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	organic_nitrogen_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	particulate_organic_carbon_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	petroleum_hydrocarbon_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	phaeopigments_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	phosphate_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	phospholipid_fatty_acid_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	potassium_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	redox_potential_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	salinity_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	total_carbon_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	silicate_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	sodium_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	total_organic_carbon_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	water_content_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	sulfate_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	sulfide_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	total_nitrogen_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-
-	sampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE, default=1)
-	sample = models.ForeignKey(Sample, on_delete=models.CASCADE, default=1)
-	sample_type = models.IntegerField(default=1)
-	project_name= models.CharField(max_length=120, blank=False,help_text="Name of th")
-	experimental_factor= models.CharField(max_length=120, blank=True,help_text="Experiment")
-	ploidy= models.CharField(max_length=120, blank=True,help_text="The ploidy")
-	number_of_replicons= models.CharField(max_length=120, blank=True,help_text="Reports th", validators=[RegexValidator(number_of_replicons_validator)])
-	extrachromosomal_elements= models.CharField(max_length=120, blank=True,help_text="Do plasmid", validators=[RegexValidator(extrachromosomal_elements_validator)])
-	estimated_size= models.CharField(max_length=120, blank=True,help_text="The estima", validators=[RegexValidator(estimated_size_validator)])
-	reference_for_biomaterial= models.CharField(max_length=120, blank=True,help_text="Primary pu")
-	annotation_source= models.CharField(max_length=120, blank=True,help_text="For cases ")
-	sample_volume_or_weight_for_DNA_extraction= models.CharField(max_length=120, blank=True,help_text="Volume (ml", validators=[RegexValidator(sample_volume_or_weight_for_DNA_extraction_validator)])
-	nucleic_acid_extraction= models.CharField(max_length=120, blank=True,help_text="A link to ")
-	nucleic_acid_amplification= models.CharField(max_length=120, blank=True,help_text="A link to ")
-	library_size= models.CharField(max_length=120, blank=True,help_text="Total numb", validators=[RegexValidator(library_size_validator)])
-	library_reads_sequenced= models.CharField(max_length=120, blank=True,help_text="Total numb", validators=[RegexValidator(library_reads_sequenced_validator)])
-	library_construction_method= models.CharField(max_length=120, blank=True,help_text="Library co")
-	library_vector= models.CharField(max_length=120, blank=True,help_text="Cloning ve")
-	library_screening_strategy= models.CharField(max_length=120, blank=True,help_text="Specific e")
-	target_gene= models.CharField(max_length=120, blank=True,help_text="Targeted g")
-	target_subfragment= models.CharField(max_length=120, blank=True,help_text="Name of su")
-	pcr_primers= models.CharField(max_length=120, blank=True,help_text="PCR primer")
-	multiplex_identifiers= models.CharField(max_length=120, blank=True,help_text="Molecular ")
-	adapters= models.CharField(max_length=120, blank=True,help_text="Adapters p")
-	pcr_conditions= models.CharField(max_length=120, blank=True,help_text="Descriptio")
-	sequencing_method= models.CharField(max_length=120, blank=True,help_text="Sequencing")
-	sequence_quality_check= models.CharField(max_length=120, blank=True,help_text="Indicate i", choices=sequence_quality_check_choice)
-	chimera_check_software= models.CharField(max_length=120, blank=True,help_text="Tool(s) us")
-	relevant_electronic_resources= models.CharField(max_length=120, blank=True,help_text="A related ")
-	relevant_standard_operating_procedures= models.CharField(max_length=120, blank=True,help_text="Standard o")
-	negative_control_type= models.CharField(max_length=120, blank=True,help_text="The substa")
-	positive_control_type= models.CharField(max_length=120, blank=True,help_text="The substa")
-	collection_date= models.CharField(max_length=120, blank=False,help_text="The date t", validators=[RegexValidator(collection_date_validator)])
-	altitude= models.CharField(max_length=120, blank=True,help_text="The altitu", validators=[RegexValidator(altitude_validator)])
-	geographic_location_country_and_or_sea= models.CharField(max_length=120, blank=False,help_text="The locati", choices=geographic_location_country_and_or_sea_choice)
-	geographic_location_latitude= models.CharField(max_length=120, blank=False,help_text="The geogra", validators=[RegexValidator(geographic_location_latitude_validator)])
-	geographic_location_longitude= models.CharField(max_length=120, blank=False,help_text="The geogra", validators=[RegexValidator(geographic_location_longitude_validator)])
-	geographic_location_region_and_locality= models.CharField(max_length=120, blank=True,help_text="The geogra")
-	depth= models.CharField(max_length=120, blank=False,help_text="The vertic", validators=[RegexValidator(depth_validator)])
-	broad_scale_environmental_context= models.CharField(max_length=120, blank=False,help_text="Report the")
-	local_environmental_context= models.CharField(max_length=120, blank=False,help_text="Report the")
-	environmental_medium= models.CharField(max_length=120, blank=False,help_text="Report the")
-	elevation= models.CharField(max_length=120, blank=False,help_text="The elevat", validators=[RegexValidator(elevation_validator)])
-	source_material_identifiers= models.CharField(max_length=120, blank=True,help_text="A unique i")
-	sample_material_processing= models.CharField(max_length=120, blank=True,help_text="A brief de")
-	isolation_and_growth_condition= models.CharField(max_length=120, blank=True,help_text="Publicatio")
-	propagation= models.CharField(max_length=120, blank=True,help_text="The type o")
-	amount_or_size_of_sample_collected= models.CharField(max_length=120, blank=True,help_text="The total ", validators=[RegexValidator(amount_or_size_of_sample_collected_validator)])
-	biomass= models.CharField(max_length=120, blank=True,help_text="amount of ")
-	density= models.CharField(max_length=120, blank=True,help_text="density of", validators=[RegexValidator(density_validator)])
-	oxygenation_status_of_sample= models.CharField(max_length=120, blank=True,help_text="oxygenatio", choices=oxygenation_status_of_sample_choice)
-	organism_count= models.CharField(max_length=120, blank=True,help_text="Total cell")
-	sample_storage_duration= models.CharField(max_length=120, blank=True,help_text="duration f", validators=[RegexValidator(sample_storage_duration_validator)])
-	sample_storage_temperature= models.CharField(max_length=120, blank=True,help_text="temperatur", validators=[RegexValidator(sample_storage_temperature_validator)])
-	sample_storage_location= models.CharField(max_length=120, blank=True,help_text="location a")
-	sample_collection_device= models.CharField(max_length=120, blank=True,help_text="The device")
-	sample_collection_method= models.CharField(max_length=120, blank=True,help_text="The method")
-	host_disease_status= models.CharField(max_length=120, blank=True,help_text="list of di")
-	host_scientific_name= models.CharField(max_length=120, blank=True,help_text="Scientific")
-	alkyl_diethers= models.CharField(max_length=120, blank=True,help_text="concentrat", validators=[RegexValidator(alkyl_diethers_validator)])
-	aminopeptidase_activity= models.CharField(max_length=120, blank=True,help_text="measuremen", validators=[RegexValidator(aminopeptidase_activity_validator)])
-	ammonium= models.CharField(max_length=120, blank=True,help_text="concentrat", validators=[RegexValidator(ammonium_validator)])
-	bacterial_carbon_production= models.CharField(max_length=120, blank=True,help_text="measuremen", validators=[RegexValidator(bacterial_carbon_production_validator)])
-	bishomohopanol= models.CharField(max_length=120, blank=True,help_text="concentrat", validators=[RegexValidator(bishomohopanol_validator)])
-	bromide= models.CharField(max_length=120, blank=True,help_text="concentrat", validators=[RegexValidator(bromide_validator)])
-	calcium= models.CharField(max_length=120, blank=True,help_text="concentrat", validators=[RegexValidator(calcium_validator)])
-	carbon_nitrogen_ratio= models.CharField(max_length=120, blank=True,help_text="ratio of a", validators=[RegexValidator(carbon_nitrogen_ratio_validator)])
-	chloride= models.CharField(max_length=120, blank=True,help_text="concentrat", validators=[RegexValidator(chloride_validator)])
-	chlorophyll= models.CharField(max_length=120, blank=True,help_text="concentrat", validators=[RegexValidator(chlorophyll_validator)])
-	diether_lipids= models.CharField(max_length=120, blank=True,help_text="concentrat", validators=[RegexValidator(diether_lipids_validator)])
-	dissolved_carbon_dioxide= models.CharField(max_length=120, blank=True,help_text="concentrat", validators=[RegexValidator(dissolved_carbon_dioxide_validator)])
-	dissolved_hydrogen= models.CharField(max_length=120, blank=True,help_text="concentrat", validators=[RegexValidator(dissolved_hydrogen_validator)])
-	dissolved_inorganic_carbon= models.CharField(max_length=120, blank=True,help_text="dissolved ", validators=[RegexValidator(dissolved_inorganic_carbon_validator)])
-	dissolved_organic_carbon= models.CharField(max_length=120, blank=True,help_text="concentrat", validators=[RegexValidator(dissolved_organic_carbon_validator)])
-	dissolved_organic_nitrogen= models.CharField(max_length=120, blank=True,help_text="dissolved ", validators=[RegexValidator(dissolved_organic_nitrogen_validator)])
-	methane= models.CharField(max_length=120, blank=True,help_text="methane (g", validators=[RegexValidator(methane_validator)])
-	dissolved_oxygen= models.CharField(max_length=120, blank=True,help_text="concentrat", validators=[RegexValidator(dissolved_oxygen_validator)])
-	glucosidase_activity= models.CharField(max_length=120, blank=True,help_text="measuremen", validators=[RegexValidator(glucosidase_activity_validator)])
-	magnesium= models.CharField(max_length=120, blank=True,help_text="concentrat", validators=[RegexValidator(magnesium_validator)])
-	n_alkanes= models.CharField(max_length=120, blank=True,help_text="concentrat", validators=[RegexValidator(n_alkanes_validator)])
-	nitrate= models.CharField(max_length=120, blank=True,help_text="concentrat", validators=[RegexValidator(nitrate_validator)])
-	nitrite= models.CharField(max_length=120, blank=True,help_text="concentrat", validators=[RegexValidator(nitrite_validator)])
-	nitrogen= models.CharField(max_length=120, blank=True,help_text="concentrat", validators=[RegexValidator(nitrogen_validator)])
-	organic_carbon= models.CharField(max_length=120, blank=True,help_text="concentrat", validators=[RegexValidator(organic_carbon_validator)])
-	organic_matter= models.CharField(max_length=120, blank=True,help_text="concentrat", validators=[RegexValidator(organic_matter_validator)])
-	organic_nitrogen= models.CharField(max_length=120, blank=True,help_text="concentrat", validators=[RegexValidator(organic_nitrogen_validator)])
-	particulate_organic_carbon= models.CharField(max_length=120, blank=True,help_text="concentrat", validators=[RegexValidator(particulate_organic_carbon_validator)])
-	petroleum_hydrocarbon= models.CharField(max_length=120, blank=True,help_text="concentrat", validators=[RegexValidator(petroleum_hydrocarbon_validator)])
-	phaeopigments= models.CharField(max_length=120, blank=True,help_text="concentrat", validators=[RegexValidator(phaeopigments_validator)])
-	phosphate= models.CharField(max_length=120, blank=True,help_text="concentrat", validators=[RegexValidator(phosphate_validator)])
-	phospholipid_fatty_acid= models.CharField(max_length=120, blank=True,help_text="concentrat", validators=[RegexValidator(phospholipid_fatty_acid_validator)])
-	potassium= models.CharField(max_length=120, blank=True,help_text="concentrat", validators=[RegexValidator(potassium_validator)])
-	redox_potential= models.CharField(max_length=120, blank=True,help_text="redox pote", validators=[RegexValidator(redox_potential_validator)])
-	salinity= models.CharField(max_length=120, blank=True,help_text="The total ", validators=[RegexValidator(salinity_validator)])
-	total_carbon= models.CharField(max_length=120, blank=True,help_text="total carb", validators=[RegexValidator(total_carbon_validator)])
-	silicate= models.CharField(max_length=120, blank=True,help_text="concentrat", validators=[RegexValidator(silicate_validator)])
-	sodium= models.CharField(max_length=120, blank=True,help_text="sodium con", validators=[RegexValidator(sodium_validator)])
-	total_organic_carbon= models.CharField(max_length=120, blank=True,help_text="Definition", validators=[RegexValidator(total_organic_carbon_validator)])
-	water_content= models.CharField(max_length=120, blank=True,help_text="water cont", validators=[RegexValidator(water_content_validator)])
-	sulfate= models.CharField(max_length=120, blank=True,help_text="concentrat", validators=[RegexValidator(sulfate_validator)])
-	sulfide= models.CharField(max_length=120, blank=True,help_text="concentrat", validators=[RegexValidator(sulfide_validator)])
-	total_nitrogen= models.CharField(max_length=120, blank=True,help_text="total nitr", validators=[RegexValidator(total_nitrogen_validator)])
-	subspecific_genetic_lineage= models.CharField(max_length=120, blank=True,help_text="Informatio")
-	trophic_level= models.CharField(max_length=120, blank=True,help_text="Trophic le", choices=trophic_level_choice)
-	relationship_to_oxygen= models.CharField(max_length=120, blank=True,help_text="Is this or", choices=relationship_to_oxygen_choice)
-	known_pathogenicity= models.CharField(max_length=120, blank=True,help_text="To what is")
-	encoded_traits= models.CharField(max_length=120, blank=True,help_text="Should inc")
-	observed_biotic_relationship= models.CharField(max_length=120, blank=True,help_text="Is it free", choices=observed_biotic_relationship_choice)
-	chemical_administration= models.CharField(max_length=120, blank=True,help_text="list of ch")
-	perturbation= models.CharField(max_length=120, blank=True,help_text="type of pe")
-
-	fields = {
-		'project_name': 'project_name',
-		'experimental_factor': 'experimental_factor',
-		'ploidy': 'ploidy',
-		'number_of_replicons': 'number_of_replicons',
-		'extrachromosomal_elements': 'extrachromosomal_elements',
-		'estimated_size': 'estimated_size',
-		'reference_for_biomaterial': 'reference_for_biomaterial',
-		'annotation_source': 'annotation_source',
-		'sample_volume_or_weight_for_DNA_extraction': 'sample_volume_or_weight_for_DNA_extraction',
-		'nucleic_acid_extraction': 'nucleic_acid_extraction',
-		'nucleic_acid_amplification': 'nucleic_acid_amplification',
-		'library_size': 'library_size',
-		'library_reads_sequenced': 'library_reads_sequenced',
-		'library_construction_method': 'library_construction_method',
-		'library_vector': 'library_vector',
-		'library_screening_strategy': 'library_screening_strategy',
-		'target_gene': 'target_gene',
-		'target_subfragment': 'target_subfragment',
-		'pcr_primers': 'pcr_primers',
-		'multiplex_identifiers': 'multiplex_identifiers',
-		'adapters': 'adapters',
-		'pcr_conditions': 'pcr_conditions',
-		'sequencing_method': 'sequencing_method',
-		'sequence_quality_check': 'sequence_quality_check',
-		'chimera_check_software': 'chimera_check_software',
-		'relevant_electronic_resources': 'relevant_electronic_resources',
-		'relevant_standard_operating_procedures': 'relevant_standard_operating_procedures',
-		'negative_control_type': 'negative_control_type',
-		'positive_control_type': 'positive_control_type',
-		'collection_date': 'collection_date',
-		'altitude': 'altitude',
-		'geographic_location_country_and_or_sea': 'geographic_location_country_and_or_sea',
-		'geographic_location_latitude': 'geographic_location_latitude',
-		'geographic_location_longitude': 'geographic_location_longitude',
-		'geographic_location_region_and_locality': 'geographic_location_region_and_locality',
-		'depth': 'depth',
-		'broad_scale_environmental_context': 'broad_scale_environmental_context',
-		'local_environmental_context': 'local_environmental_context',
-		'environmental_medium': 'environmental_medium',
-		'elevation': 'elevation',
-		'source_material_identifiers': 'source_material_identifiers',
-		'sample_material_processing': 'sample_material_processing',
-		'isolation_and_growth_condition': 'isolation_and_growth_condition',
-		'propagation': 'propagation',
-		'amount_or_size_of_sample_collected': 'amount_or_size_of_sample_collected',
-		'biomass': 'biomass',
-		'density': 'density',
-		'oxygenation_status_of_sample': 'oxygenation_status_of_sample',
-		'organism_count': 'organism_count',
-		'sample_storage_duration': 'sample_storage_duration',
-		'sample_storage_temperature': 'sample_storage_temperature',
-		'sample_storage_location': 'sample_storage_location',
-		'sample_collection_device': 'sample_collection_device',
-		'sample_collection_method': 'sample_collection_method',
-		'host_disease_status': 'host_disease_status',
-		'host_scientific_name': 'host_scientific_name',
-		'alkyl_diethers': 'alkyl_diethers',
-		'aminopeptidase_activity': 'aminopeptidase_activity',
-		'ammonium': 'ammonium',
-		'bacterial_carbon_production': 'bacterial_carbon_production',
-		'bishomohopanol': 'bishomohopanol',
-		'bromide': 'bromide',
-		'calcium': 'calcium',
-		'carbon_nitrogen_ratio': 'carbon_nitrogen_ratio',
-		'chloride': 'chloride',
-		'chlorophyll': 'chlorophyll',
-		'diether_lipids': 'diether_lipids',
-		'dissolved_carbon_dioxide': 'dissolved_carbon_dioxide',
-		'dissolved_hydrogen': 'dissolved_hydrogen',
-		'dissolved_inorganic_carbon': 'dissolved_inorganic_carbon',
-		'dissolved_organic_carbon': 'dissolved_organic_carbon',
-		'dissolved_organic_nitrogen': 'dissolved_organic_nitrogen',
-		'methane': 'methane',
-		'dissolved_oxygen': 'dissolved_oxygen',
-		'glucosidase_activity': 'glucosidase_activity',
-		'magnesium': 'magnesium',
-		'n_alkanes': 'n_alkanes',
-		'nitrate': 'nitrate',
-		'nitrite': 'nitrite',
-		'nitrogen': 'nitrogen',
-		'organic_carbon': 'organic_carbon',
-		'organic_matter': 'organic_matter',
-		'organic_nitrogen': 'organic_nitrogen',
-		'particulate_organic_carbon': 'particulate_organic_carbon',
-		'petroleum_hydrocarbon': 'petroleum_hydrocarbon',
-		'phaeopigments': 'phaeopigments',
-		'phosphate': 'phosphate',
-		'phospholipid_fatty_acid': 'phospholipid_fatty_acid',
-		'potassium': 'potassium',
-		'redox_potential': 'redox_potential',
-		'salinity': 'salinity',
-		'total_carbon': 'total_carbon',
-		'silicate': 'silicate',
-		'sodium': 'sodium',
-		'total_organic_carbon': 'total_organic_carbon',
-		'water_content': 'water_content',
-		'sulfate': 'sulfate',
-		'sulfide': 'sulfide',
-		'total_nitrogen': 'total_nitrogen',
-		'subspecific_genetic_lineage': 'subspecific_genetic_lineage',
-		'trophic_level': 'trophic_level',
-		'relationship_to_oxygen': 'relationship_to_oxygen',
-		'known_pathogenicity': 'known_pathogenicity',
-		'encoded_traits': 'encoded_traits',
-		'observed_biotic_relationship': 'observed_biotic_relationship',
-		'chemical_administration': 'chemical_administration',
-		'perturbation': 'perturbation',
-	}
-
-	name = 'GSC_MIxS_sediment'
-
-class GSC_MIxS_sediment_unit(SelfDescribingModel):
-
-	sample_volume_or_weight_for_DNA_extraction_units = [('g', 'g'), ('mL', 'mL'), ('mg', 'mg'), ('ng', 'ng')]
-	altitude_units = [('m', 'm')]
-	geographic_location_latitude_units = [('DD', 'DD')]
-	geographic_location_longitude_units = [('DD', 'DD')]
-	depth_units = [('m', 'm')]
-	elevation_units = [('m', 'm')]
-	amount_or_size_of_sample_collected_units = [('L', 'L'), ('g', 'g'), ('kg', 'kg'), ('m2', 'm2'), ('m3', 'm3')]
-	biomass_units = [('g', 'g'), ('kg', 'kg'), ('t', 't')]
-	density_units = [('g/m3', 'g/m3')]
-	sample_storage_duration_units = [('days', 'days'), ('hours', 'hours'), ('months', 'months'), ('weeks', 'weeks'), ('years', 'years')]
-	sample_storage_temperature_units = [('°C', '°C')]
-	alkyl_diethers_units = [('M/L', 'M/L'), ('µg/L', 'µg/L')]
-	aminopeptidase_activity_units = [('mol/L/h', 'mol/L/h')]
-	ammonium_units = [('µmol/L', 'µmol/L')]
-	bacterial_carbon_production_units = [('ng/h', 'ng/h')]
-	bishomohopanol_units = [('µg/L', 'µg/L'), ('µg/g', 'µg/g')]
-	bromide_units = [('parts/million', 'parts/million'), ('µmol/L', 'µmol/L')]
-	calcium_units = [('mg/L', 'mg/L'), ('parts/million', 'parts/million'), ('µmol/L', 'µmol/L')]
-	chloride_units = [('mg/L', 'mg/L')]
-	chlorophyll_units = [('mg/m3', 'mg/m3'), ('µg/L', 'µg/L')]
-	diether_lipids_units = [('ng/L', 'ng/L')]
-	dissolved_carbon_dioxide_units = [('µmol/L', 'µmol/L')]
-	dissolved_hydrogen_units = [('µmol/L', 'µmol/L')]
-	dissolved_inorganic_carbon_units = [('µg/L', 'µg/L')]
-	dissolved_organic_carbon_units = [('µmol/L', 'µmol/L')]
-	dissolved_organic_nitrogen_units = [('mg/L', 'mg/L'), ('µg/L', 'µg/L')]
-	methane_units = [('µM/L', 'µM/L')]
-	dissolved_oxygen_units = [('µmol/kg', 'µmol/kg')]
-	glucosidase_activity_units = [('mol/L/h', 'mol/L/h')]
-	magnesium_units = [('mg/L', 'mg/L'), ('mol/L', 'mol/L'), ('parts/million', 'parts/million')]
-	n_alkanes_units = [('µmol/L', 'µmol/L')]
-	nitrate_units = [('µmol/L', 'µmol/L')]
-	nitrite_units = [('µmol/L', 'µmol/L')]
-	nitrogen_units = [('µmol/L', 'µmol/L')]
-	organic_carbon_units = [('µmol/L', 'µmol/L')]
-	organic_matter_units = [('µg/L', 'µg/L')]
-	organic_nitrogen_units = [('µg/L', 'µg/L')]
-	particulate_organic_carbon_units = [('µg/L', 'µg/L')]
-	petroleum_hydrocarbon_units = [('µmol/L', 'µmol/L')]
-	phaeopigments_units = [('mg/m3', 'mg/m3'), ('µg/L', 'µg/L')]
-	phosphate_units = [('µmol/L', 'µmol/L')]
-	phospholipid_fatty_acid_units = [('mol/L', 'mol/L'), ('mol/g', 'mol/g')]
-	potassium_units = [('parts/million', 'parts/million'), ('µmol/L', 'µmol/L')]
-	redox_potential_units = [('mV', 'mV')]
-	salinity_units = [('psu', 'psu')]
-	total_carbon_units = [('µg/L', 'µg/L')]
-	silicate_units = [('µmol/L', 'µmol/L')]
-	sodium_units = [('parts/million', 'parts/million'), ('µmol/L', 'µmol/L')]
-	total_organic_carbon_units = [('g/kg', 'g/kg')]
-	water_content_units = [('cm3/cm3', 'cm3/cm3'), ('g/g', 'g/g')]
-	sulfate_units = [('mg/L', 'mg/L'), ('µmol/L', 'µmol/L')]
-	sulfide_units = [('mg/L', 'mg/L'), ('µmol/L', 'µmol/L')]
-	total_nitrogen_units = [('µg/L', 'µg/L'), ('µmol/L', 'µmol/L')]
-
-	fields = {
-		'sample_volume_or_weight_for_DNA_extraction': 'sample_volume_or_weight_for_DNA_extraction',
-		'altitude': 'altitude',
-		'geographic_location_latitude': 'geographic_location_latitude',
-		'geographic_location_longitude': 'geographic_location_longitude',
-		'depth': 'depth',
-		'elevation': 'elevation',
-		'amount_or_size_of_sample_collected': 'amount_or_size_of_sample_collected',
-		'biomass': 'biomass',
-		'density': 'density',
-		'sample_storage_duration': 'sample_storage_duration',
-		'sample_storage_temperature': 'sample_storage_temperature',
-		'alkyl_diethers': 'alkyl_diethers',
-		'aminopeptidase_activity': 'aminopeptidase_activity',
-		'ammonium': 'ammonium',
-		'bacterial_carbon_production': 'bacterial_carbon_production',
-		'bishomohopanol': 'bishomohopanol',
-		'bromide': 'bromide',
-		'calcium': 'calcium',
-		'chloride': 'chloride',
-		'chlorophyll': 'chlorophyll',
-		'diether_lipids': 'diether_lipids',
-		'dissolved_carbon_dioxide': 'dissolved_carbon_dioxide',
-		'dissolved_hydrogen': 'dissolved_hydrogen',
-		'dissolved_inorganic_carbon': 'dissolved_inorganic_carbon',
-		'dissolved_organic_carbon': 'dissolved_organic_carbon',
-		'dissolved_organic_nitrogen': 'dissolved_organic_nitrogen',
-		'methane': 'methane',
-		'dissolved_oxygen': 'dissolved_oxygen',
-		'glucosidase_activity': 'glucosidase_activity',
-		'magnesium': 'magnesium',
-		'n_alkanes': 'n_alkanes',
-		'nitrate': 'nitrate',
-		'nitrite': 'nitrite',
-		'nitrogen': 'nitrogen',
-		'organic_carbon': 'organic_carbon',
-		'organic_matter': 'organic_matter',
-		'organic_nitrogen': 'organic_nitrogen',
-		'particulate_organic_carbon': 'particulate_organic_carbon',
-		'petroleum_hydrocarbon': 'petroleum_hydrocarbon',
-		'phaeopigments': 'phaeopigments',
-		'phosphate': 'phosphate',
-		'phospholipid_fatty_acid': 'phospholipid_fatty_acid',
-		'potassium': 'potassium',
-		'redox_potential': 'redox_potential',
-		'salinity': 'salinity',
-		'total_carbon': 'total_carbon',
-		'silicate': 'silicate',
-		'sodium': 'sodium',
-		'total_organic_carbon': 'total_organic_carbon',
-		'water_content': 'water_content',
-		'sulfate': 'sulfate',
-		'sulfide': 'sulfide',
-		'total_nitrogen': 'total_nitrogen',
-	}
-
-	name = 'GSC_MIxS_sediment'
-
-	sampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE, default=1)
-	sample = models.ForeignKey(Sample, on_delete=models.CASCADE, default=1)
-	sample_type = models.IntegerField(default=1)
-	sample_volume_or_weight_for_DNA_extraction = models.CharField(max_length=120, choices=sample_volume_or_weight_for_DNA_extraction_units, blank=False)
-	altitude = models.CharField(max_length=120, choices=altitude_units, blank=False)
-	geographic_location_latitude = models.CharField(max_length=120, choices=geographic_location_latitude_units, blank=False)
-	geographic_location_longitude = models.CharField(max_length=120, choices=geographic_location_longitude_units, blank=False)
-	depth = models.CharField(max_length=120, choices=depth_units, blank=False)
-	elevation = models.CharField(max_length=120, choices=elevation_units, blank=False)
-	amount_or_size_of_sample_collected = models.CharField(max_length=120, choices=amount_or_size_of_sample_collected_units, blank=False)
-	biomass = models.CharField(max_length=120, choices=biomass_units, blank=False)
-	density = models.CharField(max_length=120, choices=density_units, blank=False)
-	sample_storage_duration = models.CharField(max_length=120, choices=sample_storage_duration_units, blank=False)
-	sample_storage_temperature = models.CharField(max_length=120, choices=sample_storage_temperature_units, blank=False)
-	alkyl_diethers = models.CharField(max_length=120, choices=alkyl_diethers_units, blank=False)
-	aminopeptidase_activity = models.CharField(max_length=120, choices=aminopeptidase_activity_units, blank=False)
-	ammonium = models.CharField(max_length=120, choices=ammonium_units, blank=False)
-	bacterial_carbon_production = models.CharField(max_length=120, choices=bacterial_carbon_production_units, blank=False)
-	bishomohopanol = models.CharField(max_length=120, choices=bishomohopanol_units, blank=False)
-	bromide = models.CharField(max_length=120, choices=bromide_units, blank=False)
-	calcium = models.CharField(max_length=120, choices=calcium_units, blank=False)
-	chloride = models.CharField(max_length=120, choices=chloride_units, blank=False)
-	chlorophyll = models.CharField(max_length=120, choices=chlorophyll_units, blank=False)
-	diether_lipids = models.CharField(max_length=120, choices=diether_lipids_units, blank=False)
-	dissolved_carbon_dioxide = models.CharField(max_length=120, choices=dissolved_carbon_dioxide_units, blank=False)
-	dissolved_hydrogen = models.CharField(max_length=120, choices=dissolved_hydrogen_units, blank=False)
-	dissolved_inorganic_carbon = models.CharField(max_length=120, choices=dissolved_inorganic_carbon_units, blank=False)
-	dissolved_organic_carbon = models.CharField(max_length=120, choices=dissolved_organic_carbon_units, blank=False)
-	dissolved_organic_nitrogen = models.CharField(max_length=120, choices=dissolved_organic_nitrogen_units, blank=False)
-	methane = models.CharField(max_length=120, choices=methane_units, blank=False)
-	dissolved_oxygen = models.CharField(max_length=120, choices=dissolved_oxygen_units, blank=False)
-	glucosidase_activity = models.CharField(max_length=120, choices=glucosidase_activity_units, blank=False)
-	magnesium = models.CharField(max_length=120, choices=magnesium_units, blank=False)
-	n_alkanes = models.CharField(max_length=120, choices=n_alkanes_units, blank=False)
-	nitrate = models.CharField(max_length=120, choices=nitrate_units, blank=False)
-	nitrite = models.CharField(max_length=120, choices=nitrite_units, blank=False)
-	nitrogen = models.CharField(max_length=120, choices=nitrogen_units, blank=False)
-	organic_carbon = models.CharField(max_length=120, choices=organic_carbon_units, blank=False)
-	organic_matter = models.CharField(max_length=120, choices=organic_matter_units, blank=False)
-	organic_nitrogen = models.CharField(max_length=120, choices=organic_nitrogen_units, blank=False)
-	particulate_organic_carbon = models.CharField(max_length=120, choices=particulate_organic_carbon_units, blank=False)
-	petroleum_hydrocarbon = models.CharField(max_length=120, choices=petroleum_hydrocarbon_units, blank=False)
-	phaeopigments = models.CharField(max_length=120, choices=phaeopigments_units, blank=False)
-	phosphate = models.CharField(max_length=120, choices=phosphate_units, blank=False)
-	phospholipid_fatty_acid = models.CharField(max_length=120, choices=phospholipid_fatty_acid_units, blank=False)
-	potassium = models.CharField(max_length=120, choices=potassium_units, blank=False)
-	redox_potential = models.CharField(max_length=120, choices=redox_potential_units, blank=False)
-	salinity = models.CharField(max_length=120, choices=salinity_units, blank=False)
-	total_carbon = models.CharField(max_length=120, choices=total_carbon_units, blank=False)
-	silicate = models.CharField(max_length=120, choices=silicate_units, blank=False)
-	sodium = models.CharField(max_length=120, choices=sodium_units, blank=False)
-	total_organic_carbon = models.CharField(max_length=120, choices=total_organic_carbon_units, blank=False)
-	water_content = models.CharField(max_length=120, choices=water_content_units, blank=False)
-	sulfate = models.CharField(max_length=120, choices=sulfate_units, blank=False)
-	sulfide = models.CharField(max_length=120, choices=sulfide_units, blank=False)
-	total_nitrogen = models.CharField(max_length=120, choices=total_nitrogen_units, blank=False)
-
 class GSC_MIxS_human_skin(SelfDescribingModel):
 
 	sequence_quality_check_choice = [('manual', 'manual'), ('none', 'none'), ('software', 'software')]
@@ -4280,341 +2781,99 @@ class GSC_MIxS_human_skin_unit(SelfDescribingModel):
 	time_since_last_wash = models.CharField(max_length=120, choices=time_since_last_wash_units, blank=False)
 	host_pulse = models.CharField(max_length=120, choices=host_pulse_units, blank=False)
 
-class GSC_MIxS_soil(SelfDescribingModel):
+class ENA_default_sample_checklist(SelfDescribingModel):
 
-	profile_position_choice = [('backslope', 'backslope'), ('footslope', 'footslope'), ('shoulder', 'shoulder'), ('summit', 'summit'), ('toeslope', 'toeslope')]
-	sequence_quality_check_choice = [('manual', 'manual'), ('none', 'none'), ('software', 'software')]
 	geographic_location_country_and_or_sea_choice = [('Afghanistan', 'Afghanistan'), ('Albania', 'Albania'), ('Algeria', 'Algeria'), ('American Samoa', 'American Samoa'), ('Andorra', 'Andorra'), ('Angola', 'Angola'), ('Anguilla', 'Anguilla'), ('Antarctica', 'Antarctica'), ('Antigua and Barbuda', 'Antigua and Barbuda'), ('Arctic Ocean', 'Arctic Ocean'), ('Argentina', 'Argentina'), ('Armenia', 'Armenia'), ('Aruba', 'Aruba'), ('Ashmore and Cartier Islands', 'Ashmore and Cartier Islands'), ('Atlantic Ocean', 'Atlantic Ocean'), ('Australia', 'Australia'), ('Austria', 'Austria'), ('Azerbaijan', 'Azerbaijan'), ('Bahamas', 'Bahamas'), ('Bahrain', 'Bahrain'), ('Baker Island', 'Baker Island'), ('Baltic Sea', 'Baltic Sea'), ('Bangladesh', 'Bangladesh'), ('Barbados', 'Barbados'), ('Bassas da India', 'Bassas da India'), ('Belarus', 'Belarus'), ('Belgium', 'Belgium'), ('Belize', 'Belize'), ('Benin', 'Benin'), ('Bermuda', 'Bermuda'), ('Bhutan', 'Bhutan'), ('Bolivia', 'Bolivia'), ('Borneo', 'Borneo'), ('Bosnia and Herzegovina', 'Bosnia and Herzegovina'), ('Botswana', 'Botswana'), ('Bouvet Island', 'Bouvet Island'), ('Brazil', 'Brazil'), ('British Virgin Islands', 'British Virgin Islands'), ('Brunei', 'Brunei'), ('Bulgaria', 'Bulgaria'), ('Burkina Faso', 'Burkina Faso'), ('Burundi', 'Burundi'), ('Cambodia', 'Cambodia'), ('Cameroon', 'Cameroon'), ('Canada', 'Canada'), ('Cape Verde', 'Cape Verde'), ('Cayman Islands', 'Cayman Islands'), ('Central African Republic', 'Central African Republic'), ('Chad', 'Chad'), ('Chile', 'Chile'), ('China', 'China'), ('Christmas Island', 'Christmas Island'), ('Clipperton Island', 'Clipperton Island'), ('Cocos Islands', 'Cocos Islands'), ('Colombia', 'Colombia'), ('Comoros', 'Comoros'), ('Cook Islands', 'Cook Islands'), ('Coral Sea Islands', 'Coral Sea Islands'), ('Costa Rica', 'Costa Rica'), ("Cote d'Ivoire", "Cote d'Ivoire"), ('Croatia', 'Croatia'), ('Cuba', 'Cuba'), ('Curacao', 'Curacao'), ('Cyprus', 'Cyprus'), ('Czech Republic', 'Czech Republic'), ('Democratic Republic of the Congo', 'Democratic Republic of the Congo'), ('Denmark', 'Denmark'), ('Djibouti', 'Djibouti'), ('Dominica', 'Dominica'), ('Dominican Republic', 'Dominican Republic'), ('East Timor', 'East Timor'), ('Ecuador', 'Ecuador'), ('Egypt', 'Egypt'), ('El Salvador', 'El Salvador'), ('Equatorial Guinea', 'Equatorial Guinea'), ('Eritrea', 'Eritrea'), ('Estonia', 'Estonia'), ('Ethiopia', 'Ethiopia'), ('Europa Island', 'Europa Island'), ('Falkland Islands (Islas Malvinas)', 'Falkland Islands (Islas Malvinas)'), ('Faroe Islands', 'Faroe Islands'), ('Fiji', 'Fiji'), ('Finland', 'Finland'), ('France', 'France'), ('French Guiana', 'French Guiana'), ('French Polynesia', 'French Polynesia'), ('French Southern and Antarctic Lands', 'French Southern and Antarctic Lands'), ('Gabon', 'Gabon'), ('Gambia', 'Gambia'), ('Gaza Strip', 'Gaza Strip'), ('Georgia', 'Georgia'), ('Germany', 'Germany'), ('Ghana', 'Ghana'), ('Gibraltar', 'Gibraltar'), ('Glorioso Islands', 'Glorioso Islands'), ('Greece', 'Greece'), ('Greenland', 'Greenland'), ('Grenada', 'Grenada'), ('Guadeloupe', 'Guadeloupe'), ('Guam', 'Guam'), ('Guatemala', 'Guatemala'), ('Guernsey', 'Guernsey'), ('Guinea', 'Guinea'), ('Guinea-Bissau', 'Guinea-Bissau'), ('Guyana', 'Guyana'), ('Haiti', 'Haiti'), ('Heard Island and McDonald Islands', 'Heard Island and McDonald Islands'), ('Honduras', 'Honduras'), ('Hong Kong', 'Hong Kong'), ('Howland Island', 'Howland Island'), ('Hungary', 'Hungary'), ('Iceland', 'Iceland'), ('India', 'India'), ('Indian Ocean', 'Indian Ocean'), ('Indonesia', 'Indonesia'), ('Iran', 'Iran'), ('Iraq', 'Iraq'), ('Ireland', 'Ireland'), ('Isle of Man', 'Isle of Man'), ('Israel', 'Israel'), ('Italy', 'Italy'), ('Jamaica', 'Jamaica'), ('Jan Mayen', 'Jan Mayen'), ('Japan', 'Japan'), ('Jarvis Island', 'Jarvis Island'), ('Jersey', 'Jersey'), ('Johnston Atoll', 'Johnston Atoll'), ('Jordan', 'Jordan'), ('Juan de Nova Island', 'Juan de Nova Island'), ('Kazakhstan', 'Kazakhstan'), ('Kenya', 'Kenya'), ('Kerguelen Archipelago', 'Kerguelen Archipelago'), ('Kingman Reef', 'Kingman Reef'), ('Kiribati', 'Kiribati'), ('Kosovo', 'Kosovo'), ('Kuwait', 'Kuwait'), ('Kyrgyzstan', 'Kyrgyzstan'), ('Laos', 'Laos'), ('Latvia', 'Latvia'), ('Lebanon', 'Lebanon'), ('Lesotho', 'Lesotho'), ('Liberia', 'Liberia'), ('Libya', 'Libya'), ('Liechtenstein', 'Liechtenstein'), ('Lithuania', 'Lithuania'), ('Luxembourg', 'Luxembourg'), ('Macau', 'Macau'), ('Macedonia', 'Macedonia'), ('Madagascar', 'Madagascar'), ('Malawi', 'Malawi'), ('Malaysia', 'Malaysia'), ('Maldives', 'Maldives'), ('Mali', 'Mali'), ('Malta', 'Malta'), ('Marshall Islands', 'Marshall Islands'), ('Martinique', 'Martinique'), ('Mauritania', 'Mauritania'), ('Mauritius', 'Mauritius'), ('Mayotte', 'Mayotte'), ('Mediterranean Sea', 'Mediterranean Sea'), ('Mexico', 'Mexico'), ('Micronesia', 'Micronesia'), ('Midway Islands', 'Midway Islands'), ('Moldova', 'Moldova'), ('Monaco', 'Monaco'), ('Mongolia', 'Mongolia'), ('Montenegro', 'Montenegro'), ('Montserrat', 'Montserrat'), ('Morocco', 'Morocco'), ('Mozambique', 'Mozambique'), ('Myanmar', 'Myanmar'), ('Namibia', 'Namibia'), ('Nauru', 'Nauru'), ('Navassa Island', 'Navassa Island'), ('Nepal', 'Nepal'), ('Netherlands', 'Netherlands'), ('New Caledonia', 'New Caledonia'), ('New Zealand', 'New Zealand'), ('Nicaragua', 'Nicaragua'), ('Niger', 'Niger'), ('Nigeria', 'Nigeria'), ('Niue', 'Niue'), ('Norfolk Island', 'Norfolk Island'), ('North Korea', 'North Korea'), ('North Sea', 'North Sea'), ('Northern Mariana Islands', 'Northern Mariana Islands'), ('Norway', 'Norway'), ('Oman', 'Oman'), ('Pacific Ocean', 'Pacific Ocean'), ('Pakistan', 'Pakistan'), ('Palau', 'Palau'), ('Palmyra Atoll', 'Palmyra Atoll'), ('Panama', 'Panama'), ('Papua New Guinea', 'Papua New Guinea'), ('Paracel Islands', 'Paracel Islands'), ('Paraguay', 'Paraguay'), ('Peru', 'Peru'), ('Philippines', 'Philippines'), ('Pitcairn Islands', 'Pitcairn Islands'), ('Poland', 'Poland'), ('Portugal', 'Portugal'), ('Puerto Rico', 'Puerto Rico'), ('Qatar', 'Qatar'), ('Republic of the Congo', 'Republic of the Congo'), ('Reunion', 'Reunion'), ('Romania', 'Romania'), ('Ross Sea', 'Ross Sea'), ('Russia', 'Russia'), ('Rwanda', 'Rwanda'), ('Saint Helena', 'Saint Helena'), ('Saint Kitts and Nevis', 'Saint Kitts and Nevis'), ('Saint Lucia', 'Saint Lucia'), ('Saint Pierre and Miquelon', 'Saint Pierre and Miquelon'), ('Saint Vincent and the Grenadines', 'Saint Vincent and the Grenadines'), ('Samoa', 'Samoa'), ('San Marino', 'San Marino'), ('Sao Tome and Principe', 'Sao Tome and Principe'), ('Saudi Arabia', 'Saudi Arabia'), ('Senegal', 'Senegal'), ('Serbia', 'Serbia'), ('Seychelles', 'Seychelles'), ('Sierra Leone', 'Sierra Leone'), ('Singapore', 'Singapore'), ('Sint Maarten', 'Sint Maarten'), ('Slovakia', 'Slovakia'), ('Slovenia', 'Slovenia'), ('Solomon Islands', 'Solomon Islands'), ('Somalia', 'Somalia'), ('South Africa', 'South Africa'), ('South Georgia and the South Sandwich Islands', 'South Georgia and the South Sandwich Islands'), ('South Korea', 'South Korea'), ('Southern Ocean', 'Southern Ocean'), ('Spain', 'Spain'), ('Spratly Islands', 'Spratly Islands'), ('Sri Lanka', 'Sri Lanka'), ('Sudan', 'Sudan'), ('Suriname', 'Suriname'), ('Svalbard', 'Svalbard'), ('Swaziland', 'Swaziland'), ('Sweden', 'Sweden'), ('Switzerland', 'Switzerland'), ('Syria', 'Syria'), ('Taiwan', 'Taiwan'), ('Tajikistan', 'Tajikistan'), ('Tanzania', 'Tanzania'), ('Tasman Sea', 'Tasman Sea'), ('Thailand', 'Thailand'), ('Togo', 'Togo'), ('Tokelau', 'Tokelau'), ('Tonga', 'Tonga'), ('Trinidad and Tobago', 'Trinidad and Tobago'), ('Tromelin Island', 'Tromelin Island'), ('Tunisia', 'Tunisia'), ('Turkey', 'Turkey'), ('Turkmenistan', 'Turkmenistan'), ('Turks and Caicos Islands', 'Turks and Caicos Islands'), ('Tuvalu', 'Tuvalu'), ('USA', 'USA'), ('Uganda', 'Uganda'), ('Ukraine', 'Ukraine'), ('United Arab Emirates', 'United Arab Emirates'), ('United Kingdom', 'United Kingdom'), ('Uruguay', 'Uruguay'), ('Uzbekistan', 'Uzbekistan'), ('Vanuatu', 'Vanuatu'), ('Venezuela', 'Venezuela'), ('Viet Nam', 'Viet Nam'), ('Virgin Islands', 'Virgin Islands'), ('Wake Island', 'Wake Island'), ('Wallis and Futuna', 'Wallis and Futuna'), ('West Bank', 'West Bank'), ('Western Sahara', 'Western Sahara'), ('Yemen', 'Yemen'), ('Zambia', 'Zambia'), ('Zimbabwe', 'Zimbabwe'), ('missing: control sample', 'missing: control sample'), ('missing: data agreement established pre-2023', 'missing: data agreement established pre-2023'), ('missing: endangered species', 'missing: endangered species'), ('missing: human-identifiable', 'missing: human-identifiable'), ('missing: lab stock', 'missing: lab stock'), ('missing: sample group', 'missing: sample group'), ('missing: synthetic construct', 'missing: synthetic construct'), ('missing: third party data', 'missing: third party data'), ('not applicable', 'not applicable'), ('not collected', 'not collected'), ('not provided', 'not provided'), ('restricted access', 'restricted access')]
-	soil_horizon_choice = [('A horizon', 'A horizon'), ('B horizon', 'B horizon'), ('C horizon', 'C horizon'), ('E horizon', 'E horizon'), ('O horizon', 'O horizon'), ('Permafrost', 'Permafrost'), ('R layer', 'R layer')]
-	soil_type_choice = [('Acrisol', 'Acrisol'), ('Albeluvisol', 'Albeluvisol'), ('Alisol', 'Alisol'), ('Andosol', 'Andosol'), ('Anthrosol', 'Anthrosol'), ('Arenosol', 'Arenosol'), ('Calcisol', 'Calcisol'), ('Cambisol', 'Cambisol'), ('Chernozem', 'Chernozem'), ('Cryosol', 'Cryosol'), ('Durisol', 'Durisol'), ('Ferralsol', 'Ferralsol'), ('Fluvisol', 'Fluvisol'), ('Gleysol', 'Gleysol'), ('Gypsisol', 'Gypsisol'), ('Histosol', 'Histosol'), ('Kastanozem', 'Kastanozem'), ('Leptosol', 'Leptosol'), ('Lixisol', 'Lixisol'), ('Luvisol', 'Luvisol'), ('Nitisol', 'Nitisol'), ('Phaeozem', 'Phaeozem'), ('Planosol', 'Planosol'), ('Plinthosol', 'Plinthosol'), ('Podzol', 'Podzol'), ('Regosol', 'Regosol'), ('Solonchak', 'Solonchak'), ('Solonetz', 'Solonetz'), ('Stagnosol', 'Stagnosol'), ('Technosol', 'Technosol'), ('Umbrisol', 'Umbrisol'), ('Vertisol', 'Vertisol')]
-	drainage_classification_choice = [('excessively drained', 'excessively drained'), ('moderately well', 'moderately well'), ('poorly', 'poorly'), ('somewhat poorly', 'somewhat poorly'), ('very poorly', 'very poorly'), ('well', 'well')]
-	history_tillage_choice = [('chisel', 'chisel'), ('cutting disc', 'cutting disc'), ('disc plough', 'disc plough'), ('drill', 'drill'), ('mouldboard', 'mouldboard'), ('ridge till', 'ridge till'), ('strip tillage', 'strip tillage'), ('tined', 'tined'), ('zonal tillage', 'zonal tillage')]
-	trophic_level_choice = [('autotroph', 'autotroph'), ('carboxydotroph', 'carboxydotroph'), ('chemoautotroph', 'chemoautotroph'), ('chemoheterotroph', 'chemoheterotroph'), ('chemolithoautotroph', 'chemolithoautotroph'), ('chemolithotroph', 'chemolithotroph'), ('chemoorganoheterotroph', 'chemoorganoheterotroph'), ('chemoorganotroph', 'chemoorganotroph'), ('chemosynthetic', 'chemosynthetic'), ('chemotroph', 'chemotroph'), ('copiotroph', 'copiotroph'), ('diazotroph', 'diazotroph'), ('facultative autotroph', 'facultative autotroph'), ('heterotroph', 'heterotroph'), ('lithoautotroph', 'lithoautotroph'), ('lithoheterotroph', 'lithoheterotroph'), ('lithotroph', 'lithotroph'), ('methanotroph', 'methanotroph'), ('methylotroph', 'methylotroph'), ('mixotroph', 'mixotroph'), ('obligate chemoautolithotroph', 'obligate chemoautolithotroph'), ('oligotroph', 'oligotroph'), ('organoheterotroph', 'organoheterotroph'), ('organotroph', 'organotroph'), ('photoautotroph', 'photoautotroph'), ('photoheterotroph', 'photoheterotroph'), ('photolithoautotroph', 'photolithoautotroph'), ('photolithotroph', 'photolithotroph'), ('photosynthetic', 'photosynthetic'), ('phototroph', 'phototroph')]
-	relationship_to_oxygen_choice = [('aerobe', 'aerobe'), ('anaerobe', 'anaerobe'), ('facultative', 'facultative'), ('microaerophilic', 'microaerophilic'), ('microanaerobe', 'microanaerobe'), ('obligate aerobe', 'obligate aerobe'), ('obligate anaerobe', 'obligate anaerobe')]
-	observed_biotic_relationship_choice = [('commensal', 'commensal'), ('free living', 'free living'), ('mutualism', 'mutualism'), ('parasite', 'parasite'), ('symbiont', 'symbiont')]
+	environmental_sample_choice = [('No', 'No'), ('Yes', 'Yes')]
 
-	slope_gradient_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	number_of_replicons_validator = "[+-]?[0-9]+"
-	extrachromosomal_elements_validator = "[+-]?[0-9]+"
-	estimated_size_validator = "[+-]?[0-9]+"
-	sample_volume_or_weight_for_DNA_extraction_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	library_size_validator = "[+-]?[0-9]+"
-	library_reads_sequenced_validator = "[+-]?[0-9]+"
 	collection_date_validator = "(^[12][0-9]{3}(-(0[1-9]|1[0-2])(-(0[1-9]|[12][0-9]|3[01])(T[0-9]{2}:[0-9]{2}(:[0-9]{2})?Z?([+-][0-9]{1,2})?)?)?)?(/[0-9]{4}(-[0-9]{2}(-[0-9]{2}(T[0-9]{2}:[0-9]{2}(:[0-9]{2})?Z?([+-][0-9]{1,2})?)?)?)?)?$)|(^not collected$)|(^not provided$)|(^restricted access$)|(^missing: control sample$)|(^missing: sample group$)|(^missing: synthetic construct$)|(^missing: lab stock$)|(^missing: third party data$)|(^missing: data agreement established pre-2023$)|(^missing: endangered species$)|(^missing: human-identifiable$)"
-	altitude_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	geographic_location_latitude_validator = "(^[+-]?[0-9]+.?[0-9]{0,8}$)|(^not collected$)|(^not provided$)|(^restricted access$)|(^missing: control sample$)|(^missing: sample group$)|(^missing: synthetic construct$)|(^missing: lab stock$)|(^missing: third party data$)|(^missing: data agreement established pre-2023$)|(^missing: endangered species$)|(^missing: human-identifiable$)"
-	geographic_location_longitude_validator = "(^[+-]?[0-9]+.?[0-9]{0,8}$)|(^not collected$)|(^not provided$)|(^restricted access$)|(^missing: control sample$)|(^missing: sample group$)|(^missing: synthetic construct$)|(^missing: lab stock$)|(^missing: third party data$)|(^missing: data agreement established pre-2023$)|(^missing: endangered species$)|(^missing: human-identifiable$)"
-	depth_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	elevation_validator = "[+-]?(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	amount_or_size_of_sample_collected_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	sample_weight_for_DNA_extraction_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	microbial_biomass_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	extreme_unusual_properties_Al_saturation_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	mean_annual_and_seasonal_temperature_validator = "[+-]?(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	mean_annual_and_seasonal_precipitation_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	temperature_validator = "[+-]?(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	pH_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	organic_matter_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	total_organic_carbon_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	water_content_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	total_nitrogen_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
 
 	sampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE, default=1)
 	sample = models.ForeignKey(Sample, on_delete=models.CASCADE, default=1)
 	sample_type = models.IntegerField(default=1)
-	slope_gradient= models.CharField(max_length=120, blank=True,help_text="commonly c", validators=[RegexValidator(slope_gradient_validator)])
-	slope_aspect= models.CharField(max_length=120, blank=True,help_text="the direct")
-	profile_position= models.CharField(max_length=120, blank=True,help_text="cross-sect", choices=profile_position_choice)
-	project_name= models.CharField(max_length=120, blank=False,help_text="Name of th")
-	experimental_factor= models.CharField(max_length=120, blank=True,help_text="Experiment")
-	ploidy= models.CharField(max_length=120, blank=True,help_text="The ploidy")
-	number_of_replicons= models.CharField(max_length=120, blank=True,help_text="Reports th", validators=[RegexValidator(number_of_replicons_validator)])
-	extrachromosomal_elements= models.CharField(max_length=120, blank=True,help_text="Do plasmid", validators=[RegexValidator(extrachromosomal_elements_validator)])
-	estimated_size= models.CharField(max_length=120, blank=True,help_text="The estima", validators=[RegexValidator(estimated_size_validator)])
-	reference_for_biomaterial= models.CharField(max_length=120, blank=True,help_text="Primary pu")
-	annotation_source= models.CharField(max_length=120, blank=True,help_text="For cases ")
-	sample_volume_or_weight_for_DNA_extraction= models.CharField(max_length=120, blank=True,help_text="Volume (ml", validators=[RegexValidator(sample_volume_or_weight_for_DNA_extraction_validator)])
-	nucleic_acid_extraction= models.CharField(max_length=120, blank=True,help_text="A link to ")
-	nucleic_acid_amplification= models.CharField(max_length=120, blank=True,help_text="A link to ")
-	library_size= models.CharField(max_length=120, blank=True,help_text="Total numb", validators=[RegexValidator(library_size_validator)])
-	library_reads_sequenced= models.CharField(max_length=120, blank=True,help_text="Total numb", validators=[RegexValidator(library_reads_sequenced_validator)])
-	library_construction_method= models.CharField(max_length=120, blank=True,help_text="Library co")
-	library_vector= models.CharField(max_length=120, blank=True,help_text="Cloning ve")
-	library_screening_strategy= models.CharField(max_length=120, blank=True,help_text="Specific e")
-	target_gene= models.CharField(max_length=120, blank=True,help_text="Targeted g")
-	target_subfragment= models.CharField(max_length=120, blank=True,help_text="Name of su")
-	pcr_primers= models.CharField(max_length=120, blank=True,help_text="PCR primer")
-	multiplex_identifiers= models.CharField(max_length=120, blank=True,help_text="Molecular ")
-	adapters= models.CharField(max_length=120, blank=True,help_text="Adapters p")
-	pcr_conditions= models.CharField(max_length=120, blank=True,help_text="Descriptio")
-	sequencing_method= models.CharField(max_length=120, blank=True,help_text="Sequencing")
-	sequence_quality_check= models.CharField(max_length=120, blank=True,help_text="Indicate i", choices=sequence_quality_check_choice)
-	chimera_check_software= models.CharField(max_length=120, blank=True,help_text="Tool(s) us")
-	relevant_electronic_resources= models.CharField(max_length=120, blank=True,help_text="A related ")
-	relevant_standard_operating_procedures= models.CharField(max_length=120, blank=True,help_text="Standard o")
-	pooling_of_DNA_extracts_if_done= models.CharField(max_length=120, blank=True,help_text="were multi")
-	negative_control_type= models.CharField(max_length=120, blank=True,help_text="The substa")
-	positive_control_type= models.CharField(max_length=120, blank=True,help_text="The substa")
+	cell_type= models.CharField(max_length=120, blank=True,help_text="cell type ")
+	dev_stage= models.CharField(max_length=120, blank=True,help_text="if the sam")
+	germline= models.CharField(max_length=120, blank=True,help_text="the sample")
+	tissue_lib= models.CharField(max_length=120, blank=True,help_text="tissue lib")
+	tissue_type= models.CharField(max_length=120, blank=True,help_text="tissue typ")
+	isolation_source= models.CharField(max_length=120, blank=True,help_text="describes ")
+	lat_lon= models.CharField(max_length=120, blank=True,help_text="geographic")
+	collected_by= models.CharField(max_length=120, blank=True,help_text="name of pe")
 	collection_date= models.CharField(max_length=120, blank=False,help_text="The date t", validators=[RegexValidator(collection_date_validator)])
-	altitude= models.CharField(max_length=120, blank=True,help_text="The altitu", validators=[RegexValidator(altitude_validator)])
 	geographic_location_country_and_or_sea= models.CharField(max_length=120, blank=False,help_text="The locati", choices=geographic_location_country_and_or_sea_choice)
-	geographic_location_latitude= models.CharField(max_length=120, blank=False,help_text="The geogra", validators=[RegexValidator(geographic_location_latitude_validator)])
-	geographic_location_longitude= models.CharField(max_length=120, blank=False,help_text="The geogra", validators=[RegexValidator(geographic_location_longitude_validator)])
 	geographic_location_region_and_locality= models.CharField(max_length=120, blank=True,help_text="The geogra")
-	depth= models.CharField(max_length=120, blank=False,help_text="The vertic", validators=[RegexValidator(depth_validator)])
-	broad_scale_environmental_context= models.CharField(max_length=120, blank=False,help_text="Report the")
-	local_environmental_context= models.CharField(max_length=120, blank=False,help_text="Report the")
-	environmental_medium= models.CharField(max_length=120, blank=False,help_text="Report the")
-	elevation= models.CharField(max_length=120, blank=False,help_text="The elevat", validators=[RegexValidator(elevation_validator)])
-	source_material_identifiers= models.CharField(max_length=120, blank=True,help_text="A unique i")
-	sample_material_processing= models.CharField(max_length=120, blank=True,help_text="A brief de")
-	isolation_and_growth_condition= models.CharField(max_length=120, blank=True,help_text="Publicatio")
-	propagation= models.CharField(max_length=120, blank=True,help_text="The type o")
-	amount_or_size_of_sample_collected= models.CharField(max_length=120, blank=True,help_text="The total ", validators=[RegexValidator(amount_or_size_of_sample_collected_validator)])
-	composite_design_sieving_if_any= models.CharField(max_length=120, blank=True,help_text="collection")
-	sample_weight_for_DNA_extraction= models.CharField(max_length=120, blank=True,help_text="weight (g)", validators=[RegexValidator(sample_weight_for_DNA_extraction_validator)])
-	storage_conditions_fresh_frozen_other= models.CharField(max_length=120, blank=True,help_text="explain ho")
-	microbial_biomass= models.CharField(max_length=120, blank=True,help_text="the part o", validators=[RegexValidator(microbial_biomass_validator)])
-	microbial_biomass_method= models.CharField(max_length=120, blank=True,help_text="reference ")
-	sample_collection_device= models.CharField(max_length=120, blank=True,help_text="The device")
-	sample_collection_method= models.CharField(max_length=120, blank=True,help_text="The method")
-	salinity_method= models.CharField(max_length=120, blank=True,help_text="reference ")
-	extreme_unusual_properties_heavy_metals= models.CharField(max_length=120, blank=True,help_text="heavy meta")
-	extreme_unusual_properties_heavy_metals_method= models.CharField(max_length=120, blank=True,help_text="reference ")
-	extreme_unusual_properties_Al_saturation= models.CharField(max_length=120, blank=True,help_text="aluminum s", validators=[RegexValidator(extreme_unusual_properties_Al_saturation_validator)])
-	extreme_unusual_properties_Al_saturation_method= models.CharField(max_length=120, blank=True,help_text="reference ")
-	host_disease_status= models.CharField(max_length=120, blank=True,help_text="list of di")
+	identified_by= models.CharField(max_length=120, blank=True,help_text="name of th")
+	environmental_sample= models.CharField(max_length=120, blank=True,help_text="identifies", choices=environmental_sample_choice)
+	mating_type= models.CharField(max_length=120, blank=True,help_text="mating typ")
+	sex= models.CharField(max_length=120, blank=True,help_text="sex of the")
+	lab_host= models.CharField(max_length=120, blank=True,help_text="scientific")
 	host_scientific_name= models.CharField(max_length=120, blank=True,help_text="Scientific")
-	link_to_climate_information= models.CharField(max_length=120, blank=True,help_text="link to cl")
-	link_to_classification_information= models.CharField(max_length=120, blank=True,help_text="link to di")
-	links_to_additional_analysis= models.CharField(max_length=120, blank=True,help_text="link to ad")
-	current_land_use= models.CharField(max_length=120, blank=True,help_text="present st")
-	current_vegetation= models.CharField(max_length=120, blank=True,help_text="vegetation")
-	current_vegetation_method= models.CharField(max_length=120, blank=True,help_text="reference ")
-	soil_horizon= models.CharField(max_length=120, blank=True,help_text="specific l", choices=soil_horizon_choice)
-	soil_horizon_method= models.CharField(max_length=120, blank=True,help_text="reference ")
-	mean_annual_and_seasonal_temperature= models.CharField(max_length=120, blank=True,help_text="mean annua", validators=[RegexValidator(mean_annual_and_seasonal_temperature_validator)])
-	mean_annual_and_seasonal_precipitation= models.CharField(max_length=120, blank=True,help_text="mean annua", validators=[RegexValidator(mean_annual_and_seasonal_precipitation_validator)])
-	soil_taxonomic_FAO_classification= models.CharField(max_length=120, blank=True,help_text="soil class")
-	soil_taxonomic_local_classification= models.CharField(max_length=120, blank=True,help_text="soil class")
-	soil_taxonomic_local_classification_method= models.CharField(max_length=120, blank=True,help_text="reference ")
-	soil_type= models.CharField(max_length=120, blank=True,help_text="Descriptio", choices=soil_type_choice)
-	soil_type_method= models.CharField(max_length=120, blank=True,help_text="reference ")
-	drainage_classification= models.CharField(max_length=120, blank=True,help_text="drainage c", choices=drainage_classification_choice)
-	temperature= models.CharField(max_length=120, blank=True,help_text="temperatur", validators=[RegexValidator(temperature_validator)])
-	soil_texture_measurement= models.CharField(max_length=120, blank=True,help_text="the relati")
-	soil_texture_method= models.CharField(max_length=120, blank=True,help_text="reference ")
-	pH= models.CharField(max_length=120, blank=True,help_text="pH measure", validators=[RegexValidator(pH_validator)])
-	pH_method= models.CharField(max_length=120, blank=True,help_text="reference ")
-	water_content_method= models.CharField(max_length=120, blank=True,help_text="reference ")
-	total_organic_C_method= models.CharField(max_length=120, blank=True,help_text="reference ")
-	total_nitrogen_method= models.CharField(max_length=120, blank=True,help_text="reference ")
-	organic_matter= models.CharField(max_length=120, blank=True,help_text="concentrat", validators=[RegexValidator(organic_matter_validator)])
-	total_organic_carbon= models.CharField(max_length=120, blank=True,help_text="Definition", validators=[RegexValidator(total_organic_carbon_validator)])
-	water_content= models.CharField(max_length=120, blank=True,help_text="water cont", validators=[RegexValidator(water_content_validator)])
-	total_nitrogen= models.CharField(max_length=120, blank=True,help_text="total nitr", validators=[RegexValidator(total_nitrogen_validator)])
-	history_previous_land_use= models.CharField(max_length=120, blank=True,help_text="previous l")
-	history_previous_land_use_method= models.CharField(max_length=120, blank=True,help_text="reference ")
-	history_crop_rotation= models.CharField(max_length=120, blank=True,help_text="whether or")
-	history_agrochemical_additions= models.CharField(max_length=120, blank=True,help_text="addition o")
-	history_tillage= models.CharField(max_length=120, blank=True,help_text="note metho", choices=history_tillage_choice)
-	history_fire= models.CharField(max_length=120, blank=True,help_text="historical")
-	history_flooding= models.CharField(max_length=120, blank=True,help_text="historical")
-	history_extreme_events= models.CharField(max_length=120, blank=True,help_text="unusual ph")
-	subspecific_genetic_lineage= models.CharField(max_length=120, blank=True,help_text="Informatio")
-	trophic_level= models.CharField(max_length=120, blank=True,help_text="Trophic le", choices=trophic_level_choice)
-	relationship_to_oxygen= models.CharField(max_length=120, blank=True,help_text="Is this or", choices=relationship_to_oxygen_choice)
-	known_pathogenicity= models.CharField(max_length=120, blank=True,help_text="To what is")
-	encoded_traits= models.CharField(max_length=120, blank=True,help_text="Should inc")
-	observed_biotic_relationship= models.CharField(max_length=120, blank=True,help_text="Is it free", choices=observed_biotic_relationship_choice)
-	perturbation= models.CharField(max_length=120, blank=True,help_text="type of pe")
+	bio_material= models.CharField(max_length=120, blank=True,help_text="Unique ide")
+	culture_collection= models.CharField(max_length=120, blank=True,help_text="Unique ide")
+	specimen_voucher= models.CharField(max_length=120, blank=True,help_text="Unique ide")
+	cultivar= models.CharField(max_length=120, blank=True,help_text="cultivar (")
+	ecotype= models.CharField(max_length=120, blank=True,help_text="a populati")
+	isolate= models.CharField(max_length=120, blank=True,help_text="individual")
+	sub_species= models.CharField(max_length=120, blank=True,help_text="name of su")
+	variety= models.CharField(max_length=120, blank=True,help_text="variety (=")
+	sub_strain= models.CharField(max_length=120, blank=True,help_text="name or id")
+	cell_line= models.CharField(max_length=120, blank=True,help_text="cell line ")
+	serotype= models.CharField(max_length=120, blank=True,help_text="serologica")
+	serovar= models.CharField(max_length=120, blank=True,help_text="serologica")
+	strain= models.CharField(max_length=120, blank=True,help_text="Name of th")
 
 	fields = {
-		'slope_gradient': 'slope_gradient',
-		'slope_aspect': 'slope_aspect',
-		'profile_position': 'profile_position',
-		'project_name': 'project_name',
-		'experimental_factor': 'experimental_factor',
-		'ploidy': 'ploidy',
-		'number_of_replicons': 'number_of_replicons',
-		'extrachromosomal_elements': 'extrachromosomal_elements',
-		'estimated_size': 'estimated_size',
-		'reference_for_biomaterial': 'reference_for_biomaterial',
-		'annotation_source': 'annotation_source',
-		'sample_volume_or_weight_for_DNA_extraction': 'sample_volume_or_weight_for_DNA_extraction',
-		'nucleic_acid_extraction': 'nucleic_acid_extraction',
-		'nucleic_acid_amplification': 'nucleic_acid_amplification',
-		'library_size': 'library_size',
-		'library_reads_sequenced': 'library_reads_sequenced',
-		'library_construction_method': 'library_construction_method',
-		'library_vector': 'library_vector',
-		'library_screening_strategy': 'library_screening_strategy',
-		'target_gene': 'target_gene',
-		'target_subfragment': 'target_subfragment',
-		'pcr_primers': 'pcr_primers',
-		'multiplex_identifiers': 'multiplex_identifiers',
-		'adapters': 'adapters',
-		'pcr_conditions': 'pcr_conditions',
-		'sequencing_method': 'sequencing_method',
-		'sequence_quality_check': 'sequence_quality_check',
-		'chimera_check_software': 'chimera_check_software',
-		'relevant_electronic_resources': 'relevant_electronic_resources',
-		'relevant_standard_operating_procedures': 'relevant_standard_operating_procedures',
-		'pooling_of_DNA_extracts_if_done': 'pooling_of_DNA_extracts_if_done',
-		'negative_control_type': 'negative_control_type',
-		'positive_control_type': 'positive_control_type',
+		'cell_type': 'cell_type',
+		'dev_stage': 'dev_stage',
+		'germline': 'germline',
+		'tissue_lib': 'tissue_lib',
+		'tissue_type': 'tissue_type',
+		'isolation_source': 'isolation_source',
+		'lat_lon': 'lat_lon',
+		'collected_by': 'collected_by',
 		'collection_date': 'collection_date',
-		'altitude': 'altitude',
 		'geographic_location_country_and_or_sea': 'geographic_location_country_and_or_sea',
-		'geographic_location_latitude': 'geographic_location_latitude',
-		'geographic_location_longitude': 'geographic_location_longitude',
 		'geographic_location_region_and_locality': 'geographic_location_region_and_locality',
-		'depth': 'depth',
-		'broad_scale_environmental_context': 'broad_scale_environmental_context',
-		'local_environmental_context': 'local_environmental_context',
-		'environmental_medium': 'environmental_medium',
-		'elevation': 'elevation',
-		'source_material_identifiers': 'source_material_identifiers',
-		'sample_material_processing': 'sample_material_processing',
-		'isolation_and_growth_condition': 'isolation_and_growth_condition',
-		'propagation': 'propagation',
-		'amount_or_size_of_sample_collected': 'amount_or_size_of_sample_collected',
-		'composite_design_sieving_if_any': 'composite_design_sieving_if_any',
-		'sample_weight_for_DNA_extraction': 'sample_weight_for_DNA_extraction',
-		'storage_conditions_fresh_frozen_other': 'storage_conditions_fresh_frozen_other',
-		'microbial_biomass': 'microbial_biomass',
-		'microbial_biomass_method': 'microbial_biomass_method',
-		'sample_collection_device': 'sample_collection_device',
-		'sample_collection_method': 'sample_collection_method',
-		'salinity_method': 'salinity_method',
-		'extreme_unusual_properties_heavy_metals': 'extreme_unusual_properties_heavy_metals',
-		'extreme_unusual_properties_heavy_metals_method': 'extreme_unusual_properties_heavy_metals_method',
-		'extreme_unusual_properties_Al_saturation': 'extreme_unusual_properties_Al_saturation',
-		'extreme_unusual_properties_Al_saturation_method': 'extreme_unusual_properties_Al_saturation_method',
-		'host_disease_status': 'host_disease_status',
+		'identified_by': 'identified_by',
+		'environmental_sample': 'environmental_sample',
+		'mating_type': 'mating_type',
+		'sex': 'sex',
+		'lab_host': 'lab_host',
 		'host_scientific_name': 'host_scientific_name',
-		'link_to_climate_information': 'link_to_climate_information',
-		'link_to_classification_information': 'link_to_classification_information',
-		'links_to_additional_analysis': 'links_to_additional_analysis',
-		'current_land_use': 'current_land_use',
-		'current_vegetation': 'current_vegetation',
-		'current_vegetation_method': 'current_vegetation_method',
-		'soil_horizon': 'soil_horizon',
-		'soil_horizon_method': 'soil_horizon_method',
-		'mean_annual_and_seasonal_temperature': 'mean_annual_and_seasonal_temperature',
-		'mean_annual_and_seasonal_precipitation': 'mean_annual_and_seasonal_precipitation',
-		'soil_taxonomic_FAO_classification': 'soil_taxonomic_FAO_classification',
-		'soil_taxonomic_local_classification': 'soil_taxonomic_local_classification',
-		'soil_taxonomic_local_classification_method': 'soil_taxonomic_local_classification_method',
-		'soil_type': 'soil_type',
-		'soil_type_method': 'soil_type_method',
-		'drainage_classification': 'drainage_classification',
-		'temperature': 'temperature',
-		'soil_texture_measurement': 'soil_texture_measurement',
-		'soil_texture_method': 'soil_texture_method',
-		'pH': 'pH',
-		'pH_method': 'pH_method',
-		'water_content_method': 'water_content_method',
-		'total_organic_C_method': 'total_organic_C_method',
-		'total_nitrogen_method': 'total_nitrogen_method',
-		'organic_matter': 'organic_matter',
-		'total_organic_carbon': 'total_organic_carbon',
-		'water_content': 'water_content',
-		'total_nitrogen': 'total_nitrogen',
-		'history_previous_land_use': 'history_previous_land_use',
-		'history_previous_land_use_method': 'history_previous_land_use_method',
-		'history_crop_rotation': 'history_crop_rotation',
-		'history_agrochemical_additions': 'history_agrochemical_additions',
-		'history_tillage': 'history_tillage',
-		'history_fire': 'history_fire',
-		'history_flooding': 'history_flooding',
-		'history_extreme_events': 'history_extreme_events',
-		'subspecific_genetic_lineage': 'subspecific_genetic_lineage',
-		'trophic_level': 'trophic_level',
-		'relationship_to_oxygen': 'relationship_to_oxygen',
-		'known_pathogenicity': 'known_pathogenicity',
-		'encoded_traits': 'encoded_traits',
-		'observed_biotic_relationship': 'observed_biotic_relationship',
-		'perturbation': 'perturbation',
+		'bio_material': 'bio_material',
+		'culture_collection': 'culture_collection',
+		'specimen_voucher': 'specimen_voucher',
+		'cultivar': 'cultivar',
+		'ecotype': 'ecotype',
+		'isolate': 'isolate',
+		'sub_species': 'sub_species',
+		'variety': 'variety',
+		'sub_strain': 'sub_strain',
+		'cell_line': 'cell_line',
+		'serotype': 'serotype',
+		'serovar': 'serovar',
+		'strain': 'strain',
 	}
 
-	name = 'GSC_MIxS_soil'
+	name = 'ENA_default_sample_checklist'
 
-class GSC_MIxS_soil_unit(SelfDescribingModel):
+class ENA_default_sample_checklist_unit(SelfDescribingModel):
 
-	slope_gradient_units = [('%', '%')]
-	sample_volume_or_weight_for_DNA_extraction_units = [('g', 'g'), ('mL', 'mL'), ('mg', 'mg'), ('ng', 'ng')]
-	altitude_units = [('m', 'm')]
-	geographic_location_latitude_units = [('DD', 'DD')]
-	geographic_location_longitude_units = [('DD', 'DD')]
-	depth_units = [('m', 'm')]
-	elevation_units = [('m', 'm')]
-	amount_or_size_of_sample_collected_units = [('L', 'L'), ('g', 'g'), ('kg', 'kg'), ('m2', 'm2'), ('m3', 'm3')]
-	sample_weight_for_DNA_extraction_units = [('g', 'g')]
-	microbial_biomass_units = [('g/kg', 'g/kg')]
-	extreme_unusual_properties_Al_saturation_units = [('%', '%')]
-	mean_annual_and_seasonal_temperature_units = [('ºC', 'ºC')]
-	mean_annual_and_seasonal_precipitation_units = [('mm', 'mm')]
-	temperature_units = [('ºC', 'ºC')]
-	soil_texture_measurement_units = [('% sand/silt/clay', '% sand/silt/clay')]
-	organic_matter_units = [('µg/L', 'µg/L')]
-	total_organic_carbon_units = [('g/kg', 'g/kg')]
-	water_content_units = [('cm3/cm3', 'cm3/cm3'), ('g/g', 'g/g')]
-	total_nitrogen_units = [('µg/L', 'µg/L'), ('µmol/L', 'µmol/L')]
 
 	fields = {
-		'slope_gradient': 'slope_gradient',
-		'sample_volume_or_weight_for_DNA_extraction': 'sample_volume_or_weight_for_DNA_extraction',
-		'altitude': 'altitude',
-		'geographic_location_latitude': 'geographic_location_latitude',
-		'geographic_location_longitude': 'geographic_location_longitude',
-		'depth': 'depth',
-		'elevation': 'elevation',
-		'amount_or_size_of_sample_collected': 'amount_or_size_of_sample_collected',
-		'sample_weight_for_DNA_extraction': 'sample_weight_for_DNA_extraction',
-		'microbial_biomass': 'microbial_biomass',
-		'extreme_unusual_properties_Al_saturation': 'extreme_unusual_properties_Al_saturation',
-		'mean_annual_and_seasonal_temperature': 'mean_annual_and_seasonal_temperature',
-		'mean_annual_and_seasonal_precipitation': 'mean_annual_and_seasonal_precipitation',
-		'temperature': 'temperature',
-		'soil_texture_measurement': 'soil_texture_measurement',
-		'organic_matter': 'organic_matter',
-		'total_organic_carbon': 'total_organic_carbon',
-		'water_content': 'water_content',
-		'total_nitrogen': 'total_nitrogen',
 	}
 
-	name = 'GSC_MIxS_soil'
+	name = 'ENA_default_sample_checklist'
 
 	sampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE, default=1)
 	sample = models.ForeignKey(Sample, on_delete=models.CASCADE, default=1)
 	sample_type = models.IntegerField(default=1)
-	slope_gradient = models.CharField(max_length=120, choices=slope_gradient_units, blank=False)
-	sample_volume_or_weight_for_DNA_extraction = models.CharField(max_length=120, choices=sample_volume_or_weight_for_DNA_extraction_units, blank=False)
-	altitude = models.CharField(max_length=120, choices=altitude_units, blank=False)
-	geographic_location_latitude = models.CharField(max_length=120, choices=geographic_location_latitude_units, blank=False)
-	geographic_location_longitude = models.CharField(max_length=120, choices=geographic_location_longitude_units, blank=False)
-	depth = models.CharField(max_length=120, choices=depth_units, blank=False)
-	elevation = models.CharField(max_length=120, choices=elevation_units, blank=False)
-	amount_or_size_of_sample_collected = models.CharField(max_length=120, choices=amount_or_size_of_sample_collected_units, blank=False)
-	sample_weight_for_DNA_extraction = models.CharField(max_length=120, choices=sample_weight_for_DNA_extraction_units, blank=False)
-	microbial_biomass = models.CharField(max_length=120, choices=microbial_biomass_units, blank=False)
-	extreme_unusual_properties_Al_saturation = models.CharField(max_length=120, choices=extreme_unusual_properties_Al_saturation_units, blank=False)
-	mean_annual_and_seasonal_temperature = models.CharField(max_length=120, choices=mean_annual_and_seasonal_temperature_units, blank=False)
-	mean_annual_and_seasonal_precipitation = models.CharField(max_length=120, choices=mean_annual_and_seasonal_precipitation_units, blank=False)
-	temperature = models.CharField(max_length=120, choices=temperature_units, blank=False)
-	soil_texture_measurement = models.CharField(max_length=120, choices=soil_texture_measurement_units, blank=False)
-	organic_matter = models.CharField(max_length=120, choices=organic_matter_units, blank=False)
-	total_organic_carbon = models.CharField(max_length=120, choices=total_organic_carbon_units, blank=False)
-	water_content = models.CharField(max_length=120, choices=water_content_units, blank=False)
-	total_nitrogen = models.CharField(max_length=120, choices=total_nitrogen_units, blank=False)
 
-class GSC_MIxS_host_associated(SelfDescribingModel):
+class GSC_MIxS_plant_associated(SelfDescribingModel):
 
 	sequence_quality_check_choice = [('manual', 'manual'), ('none', 'none'), ('software', 'software')]
 	geographic_location_country_and_or_sea_choice = [('Afghanistan', 'Afghanistan'), ('Albania', 'Albania'), ('Algeria', 'Algeria'), ('American Samoa', 'American Samoa'), ('Andorra', 'Andorra'), ('Angola', 'Angola'), ('Anguilla', 'Anguilla'), ('Antarctica', 'Antarctica'), ('Antigua and Barbuda', 'Antigua and Barbuda'), ('Arctic Ocean', 'Arctic Ocean'), ('Argentina', 'Argentina'), ('Armenia', 'Armenia'), ('Aruba', 'Aruba'), ('Ashmore and Cartier Islands', 'Ashmore and Cartier Islands'), ('Atlantic Ocean', 'Atlantic Ocean'), ('Australia', 'Australia'), ('Austria', 'Austria'), ('Azerbaijan', 'Azerbaijan'), ('Bahamas', 'Bahamas'), ('Bahrain', 'Bahrain'), ('Baker Island', 'Baker Island'), ('Baltic Sea', 'Baltic Sea'), ('Bangladesh', 'Bangladesh'), ('Barbados', 'Barbados'), ('Bassas da India', 'Bassas da India'), ('Belarus', 'Belarus'), ('Belgium', 'Belgium'), ('Belize', 'Belize'), ('Benin', 'Benin'), ('Bermuda', 'Bermuda'), ('Bhutan', 'Bhutan'), ('Bolivia', 'Bolivia'), ('Borneo', 'Borneo'), ('Bosnia and Herzegovina', 'Bosnia and Herzegovina'), ('Botswana', 'Botswana'), ('Bouvet Island', 'Bouvet Island'), ('Brazil', 'Brazil'), ('British Virgin Islands', 'British Virgin Islands'), ('Brunei', 'Brunei'), ('Bulgaria', 'Bulgaria'), ('Burkina Faso', 'Burkina Faso'), ('Burundi', 'Burundi'), ('Cambodia', 'Cambodia'), ('Cameroon', 'Cameroon'), ('Canada', 'Canada'), ('Cape Verde', 'Cape Verde'), ('Cayman Islands', 'Cayman Islands'), ('Central African Republic', 'Central African Republic'), ('Chad', 'Chad'), ('Chile', 'Chile'), ('China', 'China'), ('Christmas Island', 'Christmas Island'), ('Clipperton Island', 'Clipperton Island'), ('Cocos Islands', 'Cocos Islands'), ('Colombia', 'Colombia'), ('Comoros', 'Comoros'), ('Cook Islands', 'Cook Islands'), ('Coral Sea Islands', 'Coral Sea Islands'), ('Costa Rica', 'Costa Rica'), ("Cote d'Ivoire", "Cote d'Ivoire"), ('Croatia', 'Croatia'), ('Cuba', 'Cuba'), ('Curacao', 'Curacao'), ('Cyprus', 'Cyprus'), ('Czech Republic', 'Czech Republic'), ('Democratic Republic of the Congo', 'Democratic Republic of the Congo'), ('Denmark', 'Denmark'), ('Djibouti', 'Djibouti'), ('Dominica', 'Dominica'), ('Dominican Republic', 'Dominican Republic'), ('East Timor', 'East Timor'), ('Ecuador', 'Ecuador'), ('Egypt', 'Egypt'), ('El Salvador', 'El Salvador'), ('Equatorial Guinea', 'Equatorial Guinea'), ('Eritrea', 'Eritrea'), ('Estonia', 'Estonia'), ('Ethiopia', 'Ethiopia'), ('Europa Island', 'Europa Island'), ('Falkland Islands (Islas Malvinas)', 'Falkland Islands (Islas Malvinas)'), ('Faroe Islands', 'Faroe Islands'), ('Fiji', 'Fiji'), ('Finland', 'Finland'), ('France', 'France'), ('French Guiana', 'French Guiana'), ('French Polynesia', 'French Polynesia'), ('French Southern and Antarctic Lands', 'French Southern and Antarctic Lands'), ('Gabon', 'Gabon'), ('Gambia', 'Gambia'), ('Gaza Strip', 'Gaza Strip'), ('Georgia', 'Georgia'), ('Germany', 'Germany'), ('Ghana', 'Ghana'), ('Gibraltar', 'Gibraltar'), ('Glorioso Islands', 'Glorioso Islands'), ('Greece', 'Greece'), ('Greenland', 'Greenland'), ('Grenada', 'Grenada'), ('Guadeloupe', 'Guadeloupe'), ('Guam', 'Guam'), ('Guatemala', 'Guatemala'), ('Guernsey', 'Guernsey'), ('Guinea', 'Guinea'), ('Guinea-Bissau', 'Guinea-Bissau'), ('Guyana', 'Guyana'), ('Haiti', 'Haiti'), ('Heard Island and McDonald Islands', 'Heard Island and McDonald Islands'), ('Honduras', 'Honduras'), ('Hong Kong', 'Hong Kong'), ('Howland Island', 'Howland Island'), ('Hungary', 'Hungary'), ('Iceland', 'Iceland'), ('India', 'India'), ('Indian Ocean', 'Indian Ocean'), ('Indonesia', 'Indonesia'), ('Iran', 'Iran'), ('Iraq', 'Iraq'), ('Ireland', 'Ireland'), ('Isle of Man', 'Isle of Man'), ('Israel', 'Israel'), ('Italy', 'Italy'), ('Jamaica', 'Jamaica'), ('Jan Mayen', 'Jan Mayen'), ('Japan', 'Japan'), ('Jarvis Island', 'Jarvis Island'), ('Jersey', 'Jersey'), ('Johnston Atoll', 'Johnston Atoll'), ('Jordan', 'Jordan'), ('Juan de Nova Island', 'Juan de Nova Island'), ('Kazakhstan', 'Kazakhstan'), ('Kenya', 'Kenya'), ('Kerguelen Archipelago', 'Kerguelen Archipelago'), ('Kingman Reef', 'Kingman Reef'), ('Kiribati', 'Kiribati'), ('Kosovo', 'Kosovo'), ('Kuwait', 'Kuwait'), ('Kyrgyzstan', 'Kyrgyzstan'), ('Laos', 'Laos'), ('Latvia', 'Latvia'), ('Lebanon', 'Lebanon'), ('Lesotho', 'Lesotho'), ('Liberia', 'Liberia'), ('Libya', 'Libya'), ('Liechtenstein', 'Liechtenstein'), ('Lithuania', 'Lithuania'), ('Luxembourg', 'Luxembourg'), ('Macau', 'Macau'), ('Macedonia', 'Macedonia'), ('Madagascar', 'Madagascar'), ('Malawi', 'Malawi'), ('Malaysia', 'Malaysia'), ('Maldives', 'Maldives'), ('Mali', 'Mali'), ('Malta', 'Malta'), ('Marshall Islands', 'Marshall Islands'), ('Martinique', 'Martinique'), ('Mauritania', 'Mauritania'), ('Mauritius', 'Mauritius'), ('Mayotte', 'Mayotte'), ('Mediterranean Sea', 'Mediterranean Sea'), ('Mexico', 'Mexico'), ('Micronesia', 'Micronesia'), ('Midway Islands', 'Midway Islands'), ('Moldova', 'Moldova'), ('Monaco', 'Monaco'), ('Mongolia', 'Mongolia'), ('Montenegro', 'Montenegro'), ('Montserrat', 'Montserrat'), ('Morocco', 'Morocco'), ('Mozambique', 'Mozambique'), ('Myanmar', 'Myanmar'), ('Namibia', 'Namibia'), ('Nauru', 'Nauru'), ('Navassa Island', 'Navassa Island'), ('Nepal', 'Nepal'), ('Netherlands', 'Netherlands'), ('New Caledonia', 'New Caledonia'), ('New Zealand', 'New Zealand'), ('Nicaragua', 'Nicaragua'), ('Niger', 'Niger'), ('Nigeria', 'Nigeria'), ('Niue', 'Niue'), ('Norfolk Island', 'Norfolk Island'), ('North Korea', 'North Korea'), ('North Sea', 'North Sea'), ('Northern Mariana Islands', 'Northern Mariana Islands'), ('Norway', 'Norway'), ('Oman', 'Oman'), ('Pacific Ocean', 'Pacific Ocean'), ('Pakistan', 'Pakistan'), ('Palau', 'Palau'), ('Palmyra Atoll', 'Palmyra Atoll'), ('Panama', 'Panama'), ('Papua New Guinea', 'Papua New Guinea'), ('Paracel Islands', 'Paracel Islands'), ('Paraguay', 'Paraguay'), ('Peru', 'Peru'), ('Philippines', 'Philippines'), ('Pitcairn Islands', 'Pitcairn Islands'), ('Poland', 'Poland'), ('Portugal', 'Portugal'), ('Puerto Rico', 'Puerto Rico'), ('Qatar', 'Qatar'), ('Republic of the Congo', 'Republic of the Congo'), ('Reunion', 'Reunion'), ('Romania', 'Romania'), ('Ross Sea', 'Ross Sea'), ('Russia', 'Russia'), ('Rwanda', 'Rwanda'), ('Saint Helena', 'Saint Helena'), ('Saint Kitts and Nevis', 'Saint Kitts and Nevis'), ('Saint Lucia', 'Saint Lucia'), ('Saint Pierre and Miquelon', 'Saint Pierre and Miquelon'), ('Saint Vincent and the Grenadines', 'Saint Vincent and the Grenadines'), ('Samoa', 'Samoa'), ('San Marino', 'San Marino'), ('Sao Tome and Principe', 'Sao Tome and Principe'), ('Saudi Arabia', 'Saudi Arabia'), ('Senegal', 'Senegal'), ('Serbia', 'Serbia'), ('Seychelles', 'Seychelles'), ('Sierra Leone', 'Sierra Leone'), ('Singapore', 'Singapore'), ('Sint Maarten', 'Sint Maarten'), ('Slovakia', 'Slovakia'), ('Slovenia', 'Slovenia'), ('Solomon Islands', 'Solomon Islands'), ('Somalia', 'Somalia'), ('South Africa', 'South Africa'), ('South Georgia and the South Sandwich Islands', 'South Georgia and the South Sandwich Islands'), ('South Korea', 'South Korea'), ('Southern Ocean', 'Southern Ocean'), ('Spain', 'Spain'), ('Spratly Islands', 'Spratly Islands'), ('Sri Lanka', 'Sri Lanka'), ('Sudan', 'Sudan'), ('Suriname', 'Suriname'), ('Svalbard', 'Svalbard'), ('Swaziland', 'Swaziland'), ('Sweden', 'Sweden'), ('Switzerland', 'Switzerland'), ('Syria', 'Syria'), ('Taiwan', 'Taiwan'), ('Tajikistan', 'Tajikistan'), ('Tanzania', 'Tanzania'), ('Tasman Sea', 'Tasman Sea'), ('Thailand', 'Thailand'), ('Togo', 'Togo'), ('Tokelau', 'Tokelau'), ('Tonga', 'Tonga'), ('Trinidad and Tobago', 'Trinidad and Tobago'), ('Tromelin Island', 'Tromelin Island'), ('Tunisia', 'Tunisia'), ('Turkey', 'Turkey'), ('Turkmenistan', 'Turkmenistan'), ('Turks and Caicos Islands', 'Turks and Caicos Islands'), ('Tuvalu', 'Tuvalu'), ('USA', 'USA'), ('Uganda', 'Uganda'), ('Ukraine', 'Ukraine'), ('United Arab Emirates', 'United Arab Emirates'), ('United Kingdom', 'United Kingdom'), ('Uruguay', 'Uruguay'), ('Uzbekistan', 'Uzbekistan'), ('Vanuatu', 'Vanuatu'), ('Venezuela', 'Venezuela'), ('Viet Nam', 'Viet Nam'), ('Virgin Islands', 'Virgin Islands'), ('Wake Island', 'Wake Island'), ('Wallis and Futuna', 'Wallis and Futuna'), ('West Bank', 'West Bank'), ('Western Sahara', 'Western Sahara'), ('Yemen', 'Yemen'), ('Zambia', 'Zambia'), ('Zimbabwe', 'Zimbabwe'), ('missing: control sample', 'missing: control sample'), ('missing: data agreement established pre-2023', 'missing: data agreement established pre-2023'), ('missing: endangered species', 'missing: endangered species'), ('missing: human-identifiable', 'missing: human-identifiable'), ('missing: lab stock', 'missing: lab stock'), ('missing: sample group', 'missing: sample group'), ('missing: synthetic construct', 'missing: synthetic construct'), ('missing: third party data', 'missing: third party data'), ('not applicable', 'not applicable'), ('not collected', 'not collected'), ('not provided', 'not provided'), ('restricted access', 'restricted access')]
 	oxygenation_status_of_sample_choice = [('aerobic', 'aerobic'), ('anaerobic', 'anaerobic')]
-	host_sex_choice = [('female', 'female'), ('hermaphrodite', 'hermaphrodite'), ('male', 'male'), ('missing: control sample', 'missing: control sample'), ('missing: data agreement established pre-2023', 'missing: data agreement established pre-2023'), ('missing: endangered species', 'missing: endangered species'), ('missing: human-identifiable', 'missing: human-identifiable'), ('missing: lab stock', 'missing: lab stock'), ('missing: sample group', 'missing: sample group'), ('missing: synthetic construct', 'missing: synthetic construct'), ('missing: third party data', 'missing: third party data'), ('neuter', 'neuter'), ('not applicable', 'not applicable'), ('not collected', 'not collected'), ('not provided', 'not provided'), ('other', 'other'), ('restricted access', 'restricted access')]
 	trophic_level_choice = [('autotroph', 'autotroph'), ('carboxydotroph', 'carboxydotroph'), ('chemoautotroph', 'chemoautotroph'), ('chemoheterotroph', 'chemoheterotroph'), ('chemolithoautotroph', 'chemolithoautotroph'), ('chemolithotroph', 'chemolithotroph'), ('chemoorganoheterotroph', 'chemoorganoheterotroph'), ('chemoorganotroph', 'chemoorganotroph'), ('chemosynthetic', 'chemosynthetic'), ('chemotroph', 'chemotroph'), ('copiotroph', 'copiotroph'), ('diazotroph', 'diazotroph'), ('facultative autotroph', 'facultative autotroph'), ('heterotroph', 'heterotroph'), ('lithoautotroph', 'lithoautotroph'), ('lithoheterotroph', 'lithoheterotroph'), ('lithotroph', 'lithotroph'), ('methanotroph', 'methanotroph'), ('methylotroph', 'methylotroph'), ('mixotroph', 'mixotroph'), ('obligate chemoautolithotroph', 'obligate chemoautolithotroph'), ('oligotroph', 'oligotroph'), ('organoheterotroph', 'organoheterotroph'), ('organotroph', 'organotroph'), ('photoautotroph', 'photoautotroph'), ('photoheterotroph', 'photoheterotroph'), ('photolithoautotroph', 'photolithoautotroph'), ('photolithotroph', 'photolithotroph'), ('photosynthetic', 'photosynthetic'), ('phototroph', 'phototroph')]
 	relationship_to_oxygen_choice = [('aerobe', 'aerobe'), ('anaerobe', 'anaerobe'), ('facultative', 'facultative'), ('microaerophilic', 'microaerophilic'), ('microanaerobe', 'microanaerobe'), ('obligate aerobe', 'obligate aerobe'), ('obligate anaerobe', 'obligate anaerobe')]
 	observed_biotic_relationship_choice = [('commensal', 'commensal'), ('free living', 'free living'), ('mutualism', 'mutualism'), ('parasite', 'parasite'), ('symbiont', 'symbiont')]
@@ -4635,16 +2894,14 @@ class GSC_MIxS_host_associated(SelfDescribingModel):
 	host_dry_mass_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
 	sample_storage_duration_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
 	sample_storage_temperature_validator = "[+-]?(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	host_wet_mass_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
 	host_age_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
 	host_taxid_validator = "[+-]?[0-9]+"
 	host_height_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
 	host_length_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
 	host_total_mass_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	host_body_temperature_validator = "[+-]?(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
 	temperature_validator = "[+-]?(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
 	salinity_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	host_blood_pressure_diastolic_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	host_blood_pressure_systolic_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
 
 	sampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE, default=1)
 	sample = models.ForeignKey(Sample, on_delete=models.CASCADE, default=1)
@@ -4694,48 +2951,61 @@ class GSC_MIxS_host_associated(SelfDescribingModel):
 	isolation_and_growth_condition= models.CharField(max_length=120, blank=True,help_text="Publicatio")
 	propagation= models.CharField(max_length=120, blank=True,help_text="The type o")
 	amount_or_size_of_sample_collected= models.CharField(max_length=120, blank=True,help_text="The total ", validators=[RegexValidator(amount_or_size_of_sample_collected_validator)])
-	host_body_product= models.CharField(max_length=120, blank=True,help_text="substance ")
 	host_dry_mass= models.CharField(max_length=120, blank=True,help_text="measuremen", validators=[RegexValidator(host_dry_mass_validator)])
 	oxygenation_status_of_sample= models.CharField(max_length=120, blank=True,help_text="oxygenatio", choices=oxygenation_status_of_sample_choice)
+	plant_product= models.CharField(max_length=120, blank=True,help_text="substance ")
 	organism_count= models.CharField(max_length=120, blank=True,help_text="Total cell")
 	sample_storage_duration= models.CharField(max_length=120, blank=True,help_text="duration f", validators=[RegexValidator(sample_storage_duration_validator)])
 	sample_storage_temperature= models.CharField(max_length=120, blank=True,help_text="temperatur", validators=[RegexValidator(sample_storage_temperature_validator)])
+	host_wet_mass= models.CharField(max_length=120, blank=True,help_text="measuremen", validators=[RegexValidator(host_wet_mass_validator)])
 	sample_storage_location= models.CharField(max_length=120, blank=True,help_text="location a")
+	sample_collection_device= models.CharField(max_length=120, blank=True,help_text="The device")
+	sample_collection_method= models.CharField(max_length=120, blank=True,help_text="The method")
 	host_disease_status= models.CharField(max_length=120, blank=True,help_text="list of di")
 	host_common_name= models.CharField(max_length=120, blank=True,help_text="common nam")
-	host_subject_id= models.CharField(max_length=120, blank=True,help_text="a unique i")
 	host_age= models.CharField(max_length=120, blank=True,help_text="age of hos", validators=[RegexValidator(host_age_validator)])
 	host_taxid= models.CharField(max_length=120, blank=True,help_text="NCBI taxon", validators=[RegexValidator(host_taxid_validator)])
-	host_body_habitat= models.CharField(max_length=120, blank=True,help_text="original b")
-	host_body_site= models.CharField(max_length=120, blank=True,help_text="name of bo")
 	host_life_stage= models.CharField(max_length=120, blank=True,help_text="descriptio")
 	host_height= models.CharField(max_length=120, blank=True,help_text="the height", validators=[RegexValidator(host_height_validator)])
 	host_length= models.CharField(max_length=120, blank=True,help_text="the length", validators=[RegexValidator(host_length_validator)])
-	host_growth_conditions= models.CharField(max_length=120, blank=True,help_text="literature")
-	host_substrate= models.CharField(max_length=120, blank=True,help_text="the growth")
+	plant_body_site= models.CharField(max_length=120, blank=True,help_text="name of bo")
 	host_total_mass= models.CharField(max_length=120, blank=True,help_text="total mass", validators=[RegexValidator(host_total_mass_validator)])
 	host_phenotype= models.CharField(max_length=120, blank=True,help_text="phenotype ")
-	host_body_temperature= models.CharField(max_length=120, blank=True,help_text="core body ", validators=[RegexValidator(host_body_temperature_validator)])
-	host_color= models.CharField(max_length=120, blank=True,help_text="the color ")
-	host_shape= models.CharField(max_length=120, blank=True,help_text="morphologi")
-	host_sex= models.CharField(max_length=120, blank=True,help_text="Gender or ", choices=host_sex_choice)
-	host_scientific_name= models.CharField(max_length=120, blank=True,help_text="Scientific")
 	host_subspecific_genetic_lineage= models.CharField(max_length=120, blank=True,help_text="Informatio")
+	climate_environment= models.CharField(max_length=120, blank=True,help_text="treatment ")
+	gaseous_environment= models.CharField(max_length=120, blank=True,help_text="use of con")
+	seasonal_environment= models.CharField(max_length=120, blank=True,help_text="treatment ")
 	temperature= models.CharField(max_length=120, blank=True,help_text="temperatur", validators=[RegexValidator(temperature_validator)])
 	salinity= models.CharField(max_length=120, blank=True,help_text="The total ", validators=[RegexValidator(salinity_validator)])
-	host_blood_pressure_diastolic= models.CharField(max_length=120, blank=True,help_text="resting di", validators=[RegexValidator(host_blood_pressure_diastolic_validator)])
-	host_blood_pressure_systolic= models.CharField(max_length=120, blank=True,help_text="resting sy", validators=[RegexValidator(host_blood_pressure_systolic_validator)])
-	host_diet= models.CharField(max_length=120, blank=True,help_text="type of di")
-	host_last_meal= models.CharField(max_length=120, blank=True,help_text="content of")
-	host_family_relationship= models.CharField(max_length=120, blank=True,help_text="relationsh")
 	host_genotype= models.CharField(max_length=120, blank=True,help_text="observed g")
-	gravidity= models.CharField(max_length=120, blank=True,help_text="Whether or")
 	subspecific_genetic_lineage= models.CharField(max_length=120, blank=True,help_text="Informatio")
 	trophic_level= models.CharField(max_length=120, blank=True,help_text="Trophic le", choices=trophic_level_choice)
 	relationship_to_oxygen= models.CharField(max_length=120, blank=True,help_text="Is this or", choices=relationship_to_oxygen_choice)
 	known_pathogenicity= models.CharField(max_length=120, blank=True,help_text="To what is")
 	encoded_traits= models.CharField(max_length=120, blank=True,help_text="Should inc")
 	observed_biotic_relationship= models.CharField(max_length=120, blank=True,help_text="Is it free", choices=observed_biotic_relationship_choice)
+	air_temperature_regimen= models.CharField(max_length=120, blank=True,help_text="informatio")
+	antibiotic_regimen= models.CharField(max_length=120, blank=True,help_text="informatio")
+	chemical_mutagen= models.CharField(max_length=120, blank=True,help_text="treatment ")
+	fertilizer_regimen= models.CharField(max_length=120, blank=True,help_text="informatio")
+	fungicide_regimen= models.CharField(max_length=120, blank=True,help_text="informatio")
+	gravity= models.CharField(max_length=120, blank=True,help_text="informatio")
+	growth_hormone_regimen= models.CharField(max_length=120, blank=True,help_text="informatio")
+	growth_media= models.CharField(max_length=120, blank=True,help_text="informatio")
+	herbicide_regimen= models.CharField(max_length=120, blank=True,help_text="informatio")
+	humidity_regimen= models.CharField(max_length=120, blank=True,help_text="informatio")
+	mineral_nutrient_regimen= models.CharField(max_length=120, blank=True,help_text="informatio")
+	non_mineral_nutrient_regimen= models.CharField(max_length=120, blank=True,help_text="informatio")
+	pesticide_regimen= models.CharField(max_length=120, blank=True,help_text="informatio")
+	pH_regimen= models.CharField(max_length=120, blank=True,help_text="informatio")
+	radiation_regimen= models.CharField(max_length=120, blank=True,help_text="informatio")
+	rainfall_regimen= models.CharField(max_length=120, blank=True,help_text="informatio")
+	salt_regimen= models.CharField(max_length=120, blank=True,help_text="informatio")
+	standing_water_regimen= models.CharField(max_length=120, blank=True,help_text="treatment ")
+	tissue_culture_growth_media= models.CharField(max_length=120, blank=True,help_text="descriptio")
+	watering_regimen= models.CharField(max_length=120, blank=True,help_text="informatio")
+	water_temperature_regimen= models.CharField(max_length=120, blank=True,help_text="informatio")
+	mechanical_damage= models.CharField(max_length=120, blank=True,help_text="informatio")
 	chemical_administration= models.CharField(max_length=120, blank=True,help_text="list of ch")
 	perturbation= models.CharField(max_length=120, blank=True,help_text="type of pe")
 
@@ -4785,55 +3055,68 @@ class GSC_MIxS_host_associated(SelfDescribingModel):
 		'isolation_and_growth_condition': 'isolation_and_growth_condition',
 		'propagation': 'propagation',
 		'amount_or_size_of_sample_collected': 'amount_or_size_of_sample_collected',
-		'host_body_product': 'host_body_product',
 		'host_dry_mass': 'host_dry_mass',
 		'oxygenation_status_of_sample': 'oxygenation_status_of_sample',
+		'plant_product': 'plant_product',
 		'organism_count': 'organism_count',
 		'sample_storage_duration': 'sample_storage_duration',
 		'sample_storage_temperature': 'sample_storage_temperature',
+		'host_wet_mass': 'host_wet_mass',
 		'sample_storage_location': 'sample_storage_location',
+		'sample_collection_device': 'sample_collection_device',
+		'sample_collection_method': 'sample_collection_method',
 		'host_disease_status': 'host_disease_status',
 		'host_common_name': 'host_common_name',
-		'host_subject_id': 'host_subject_id',
 		'host_age': 'host_age',
 		'host_taxid': 'host_taxid',
-		'host_body_habitat': 'host_body_habitat',
-		'host_body_site': 'host_body_site',
 		'host_life_stage': 'host_life_stage',
 		'host_height': 'host_height',
 		'host_length': 'host_length',
-		'host_growth_conditions': 'host_growth_conditions',
-		'host_substrate': 'host_substrate',
+		'plant_body_site': 'plant_body_site',
 		'host_total_mass': 'host_total_mass',
 		'host_phenotype': 'host_phenotype',
-		'host_body_temperature': 'host_body_temperature',
-		'host_color': 'host_color',
-		'host_shape': 'host_shape',
-		'host_sex': 'host_sex',
-		'host_scientific_name': 'host_scientific_name',
 		'host_subspecific_genetic_lineage': 'host_subspecific_genetic_lineage',
+		'climate_environment': 'climate_environment',
+		'gaseous_environment': 'gaseous_environment',
+		'seasonal_environment': 'seasonal_environment',
 		'temperature': 'temperature',
 		'salinity': 'salinity',
-		'host_blood_pressure_diastolic': 'host_blood_pressure_diastolic',
-		'host_blood_pressure_systolic': 'host_blood_pressure_systolic',
-		'host_diet': 'host_diet',
-		'host_last_meal': 'host_last_meal',
-		'host_family_relationship': 'host_family_relationship',
 		'host_genotype': 'host_genotype',
-		'gravidity': 'gravidity',
 		'subspecific_genetic_lineage': 'subspecific_genetic_lineage',
 		'trophic_level': 'trophic_level',
 		'relationship_to_oxygen': 'relationship_to_oxygen',
 		'known_pathogenicity': 'known_pathogenicity',
 		'encoded_traits': 'encoded_traits',
 		'observed_biotic_relationship': 'observed_biotic_relationship',
+		'air_temperature_regimen': 'air_temperature_regimen',
+		'antibiotic_regimen': 'antibiotic_regimen',
+		'chemical_mutagen': 'chemical_mutagen',
+		'fertilizer_regimen': 'fertilizer_regimen',
+		'fungicide_regimen': 'fungicide_regimen',
+		'gravity': 'gravity',
+		'growth_hormone_regimen': 'growth_hormone_regimen',
+		'growth_media': 'growth_media',
+		'herbicide_regimen': 'herbicide_regimen',
+		'humidity_regimen': 'humidity_regimen',
+		'mineral_nutrient_regimen': 'mineral_nutrient_regimen',
+		'non_mineral_nutrient_regimen': 'non_mineral_nutrient_regimen',
+		'pesticide_regimen': 'pesticide_regimen',
+		'pH_regimen': 'pH_regimen',
+		'radiation_regimen': 'radiation_regimen',
+		'rainfall_regimen': 'rainfall_regimen',
+		'salt_regimen': 'salt_regimen',
+		'standing_water_regimen': 'standing_water_regimen',
+		'tissue_culture_growth_media': 'tissue_culture_growth_media',
+		'watering_regimen': 'watering_regimen',
+		'water_temperature_regimen': 'water_temperature_regimen',
+		'mechanical_damage': 'mechanical_damage',
 		'chemical_administration': 'chemical_administration',
 		'perturbation': 'perturbation',
 	}
 
-	name = 'GSC_MIxS_host_associated'
+	name = 'GSC_MIxS_plant_associated'
 
-class GSC_MIxS_host_associated_unit(SelfDescribingModel):
+class GSC_MIxS_plant_associated_unit(SelfDescribingModel):
 
 	sample_volume_or_weight_for_DNA_extraction_units = [('g', 'g'), ('mL', 'mL'), ('mg', 'mg'), ('ng', 'ng')]
 	altitude_units = [('m', 'm')]
@@ -4845,15 +3128,13 @@ class GSC_MIxS_host_associated_unit(SelfDescribingModel):
 	host_dry_mass_units = [('g', 'g'), ('kg', 'kg'), ('mg', 'mg')]
 	sample_storage_duration_units = [('days', 'days'), ('hours', 'hours'), ('months', 'months'), ('weeks', 'weeks'), ('years', 'years')]
 	sample_storage_temperature_units = [('°C', '°C')]
+	host_wet_mass_units = [('g', 'g'), ('kg', 'kg'), ('mg', 'mg')]
 	host_age_units = [('centuries', 'centuries'), ('days', 'days'), ('decades', 'decades'), ('hours', 'hours'), ('minutes', 'minutes'), ('months', 'months'), ('seconds', 'seconds'), ('weeks', 'weeks'), ('years', 'years')]
 	host_height_units = [('cm', 'cm'), ('m', 'm'), ('mm', 'mm')]
 	host_length_units = [('cm', 'cm'), ('m', 'm'), ('mm', 'mm')]
 	host_total_mass_units = [('g', 'g'), ('kg', 'kg')]
-	host_body_temperature_units = [('ºC', 'ºC')]
 	temperature_units = [('ºC', 'ºC')]
 	salinity_units = [('psu', 'psu')]
-	host_blood_pressure_diastolic_units = [('mm Hg', 'mm Hg')]
-	host_blood_pressure_systolic_units = [('mm Hg', 'mm Hg')]
 
 	fields = {
 		'sample_volume_or_weight_for_DNA_extraction': 'sample_volume_or_weight_for_DNA_extraction',
@@ -4866,18 +3147,16 @@ class GSC_MIxS_host_associated_unit(SelfDescribingModel):
 		'host_dry_mass': 'host_dry_mass',
 		'sample_storage_duration': 'sample_storage_duration',
 		'sample_storage_temperature': 'sample_storage_temperature',
+		'host_wet_mass': 'host_wet_mass',
 		'host_age': 'host_age',
 		'host_height': 'host_height',
 		'host_length': 'host_length',
 		'host_total_mass': 'host_total_mass',
-		'host_body_temperature': 'host_body_temperature',
 		'temperature': 'temperature',
 		'salinity': 'salinity',
-		'host_blood_pressure_diastolic': 'host_blood_pressure_diastolic',
-		'host_blood_pressure_systolic': 'host_blood_pressure_systolic',
 	}
 
-	name = 'GSC_MIxS_host_associated'
+	name = 'GSC_MIxS_plant_associated'
 
 	sampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE, default=1)
 	sample = models.ForeignKey(Sample, on_delete=models.CASCADE, default=1)
@@ -4892,317 +3171,13 @@ class GSC_MIxS_host_associated_unit(SelfDescribingModel):
 	host_dry_mass = models.CharField(max_length=120, choices=host_dry_mass_units, blank=False)
 	sample_storage_duration = models.CharField(max_length=120, choices=sample_storage_duration_units, blank=False)
 	sample_storage_temperature = models.CharField(max_length=120, choices=sample_storage_temperature_units, blank=False)
+	host_wet_mass = models.CharField(max_length=120, choices=host_wet_mass_units, blank=False)
 	host_age = models.CharField(max_length=120, choices=host_age_units, blank=False)
 	host_height = models.CharField(max_length=120, choices=host_height_units, blank=False)
 	host_length = models.CharField(max_length=120, choices=host_length_units, blank=False)
 	host_total_mass = models.CharField(max_length=120, choices=host_total_mass_units, blank=False)
-	host_body_temperature = models.CharField(max_length=120, choices=host_body_temperature_units, blank=False)
 	temperature = models.CharField(max_length=120, choices=temperature_units, blank=False)
 	salinity = models.CharField(max_length=120, choices=salinity_units, blank=False)
-	host_blood_pressure_diastolic = models.CharField(max_length=120, choices=host_blood_pressure_diastolic_units, blank=False)
-	host_blood_pressure_systolic = models.CharField(max_length=120, choices=host_blood_pressure_systolic_units, blank=False)
-
-class GSC_MIxS_human_associated(SelfDescribingModel):
-
-	sequence_quality_check_choice = [('manual', 'manual'), ('none', 'none'), ('software', 'software')]
-	study_completion_status_choice = [('No - adverse event', 'No - adverse event'), ('No - lost to follow up', 'No - lost to follow up'), ('No - non-compliance', 'No - non-compliance'), ('No - other', 'No - other'), ('Yes', 'Yes')]
-	geographic_location_country_and_or_sea_choice = [('Afghanistan', 'Afghanistan'), ('Albania', 'Albania'), ('Algeria', 'Algeria'), ('American Samoa', 'American Samoa'), ('Andorra', 'Andorra'), ('Angola', 'Angola'), ('Anguilla', 'Anguilla'), ('Antarctica', 'Antarctica'), ('Antigua and Barbuda', 'Antigua and Barbuda'), ('Arctic Ocean', 'Arctic Ocean'), ('Argentina', 'Argentina'), ('Armenia', 'Armenia'), ('Aruba', 'Aruba'), ('Ashmore and Cartier Islands', 'Ashmore and Cartier Islands'), ('Atlantic Ocean', 'Atlantic Ocean'), ('Australia', 'Australia'), ('Austria', 'Austria'), ('Azerbaijan', 'Azerbaijan'), ('Bahamas', 'Bahamas'), ('Bahrain', 'Bahrain'), ('Baker Island', 'Baker Island'), ('Baltic Sea', 'Baltic Sea'), ('Bangladesh', 'Bangladesh'), ('Barbados', 'Barbados'), ('Bassas da India', 'Bassas da India'), ('Belarus', 'Belarus'), ('Belgium', 'Belgium'), ('Belize', 'Belize'), ('Benin', 'Benin'), ('Bermuda', 'Bermuda'), ('Bhutan', 'Bhutan'), ('Bolivia', 'Bolivia'), ('Borneo', 'Borneo'), ('Bosnia and Herzegovina', 'Bosnia and Herzegovina'), ('Botswana', 'Botswana'), ('Bouvet Island', 'Bouvet Island'), ('Brazil', 'Brazil'), ('British Virgin Islands', 'British Virgin Islands'), ('Brunei', 'Brunei'), ('Bulgaria', 'Bulgaria'), ('Burkina Faso', 'Burkina Faso'), ('Burundi', 'Burundi'), ('Cambodia', 'Cambodia'), ('Cameroon', 'Cameroon'), ('Canada', 'Canada'), ('Cape Verde', 'Cape Verde'), ('Cayman Islands', 'Cayman Islands'), ('Central African Republic', 'Central African Republic'), ('Chad', 'Chad'), ('Chile', 'Chile'), ('China', 'China'), ('Christmas Island', 'Christmas Island'), ('Clipperton Island', 'Clipperton Island'), ('Cocos Islands', 'Cocos Islands'), ('Colombia', 'Colombia'), ('Comoros', 'Comoros'), ('Cook Islands', 'Cook Islands'), ('Coral Sea Islands', 'Coral Sea Islands'), ('Costa Rica', 'Costa Rica'), ("Cote d'Ivoire", "Cote d'Ivoire"), ('Croatia', 'Croatia'), ('Cuba', 'Cuba'), ('Curacao', 'Curacao'), ('Cyprus', 'Cyprus'), ('Czech Republic', 'Czech Republic'), ('Democratic Republic of the Congo', 'Democratic Republic of the Congo'), ('Denmark', 'Denmark'), ('Djibouti', 'Djibouti'), ('Dominica', 'Dominica'), ('Dominican Republic', 'Dominican Republic'), ('East Timor', 'East Timor'), ('Ecuador', 'Ecuador'), ('Egypt', 'Egypt'), ('El Salvador', 'El Salvador'), ('Equatorial Guinea', 'Equatorial Guinea'), ('Eritrea', 'Eritrea'), ('Estonia', 'Estonia'), ('Ethiopia', 'Ethiopia'), ('Europa Island', 'Europa Island'), ('Falkland Islands (Islas Malvinas)', 'Falkland Islands (Islas Malvinas)'), ('Faroe Islands', 'Faroe Islands'), ('Fiji', 'Fiji'), ('Finland', 'Finland'), ('France', 'France'), ('French Guiana', 'French Guiana'), ('French Polynesia', 'French Polynesia'), ('French Southern and Antarctic Lands', 'French Southern and Antarctic Lands'), ('Gabon', 'Gabon'), ('Gambia', 'Gambia'), ('Gaza Strip', 'Gaza Strip'), ('Georgia', 'Georgia'), ('Germany', 'Germany'), ('Ghana', 'Ghana'), ('Gibraltar', 'Gibraltar'), ('Glorioso Islands', 'Glorioso Islands'), ('Greece', 'Greece'), ('Greenland', 'Greenland'), ('Grenada', 'Grenada'), ('Guadeloupe', 'Guadeloupe'), ('Guam', 'Guam'), ('Guatemala', 'Guatemala'), ('Guernsey', 'Guernsey'), ('Guinea', 'Guinea'), ('Guinea-Bissau', 'Guinea-Bissau'), ('Guyana', 'Guyana'), ('Haiti', 'Haiti'), ('Heard Island and McDonald Islands', 'Heard Island and McDonald Islands'), ('Honduras', 'Honduras'), ('Hong Kong', 'Hong Kong'), ('Howland Island', 'Howland Island'), ('Hungary', 'Hungary'), ('Iceland', 'Iceland'), ('India', 'India'), ('Indian Ocean', 'Indian Ocean'), ('Indonesia', 'Indonesia'), ('Iran', 'Iran'), ('Iraq', 'Iraq'), ('Ireland', 'Ireland'), ('Isle of Man', 'Isle of Man'), ('Israel', 'Israel'), ('Italy', 'Italy'), ('Jamaica', 'Jamaica'), ('Jan Mayen', 'Jan Mayen'), ('Japan', 'Japan'), ('Jarvis Island', 'Jarvis Island'), ('Jersey', 'Jersey'), ('Johnston Atoll', 'Johnston Atoll'), ('Jordan', 'Jordan'), ('Juan de Nova Island', 'Juan de Nova Island'), ('Kazakhstan', 'Kazakhstan'), ('Kenya', 'Kenya'), ('Kerguelen Archipelago', 'Kerguelen Archipelago'), ('Kingman Reef', 'Kingman Reef'), ('Kiribati', 'Kiribati'), ('Kosovo', 'Kosovo'), ('Kuwait', 'Kuwait'), ('Kyrgyzstan', 'Kyrgyzstan'), ('Laos', 'Laos'), ('Latvia', 'Latvia'), ('Lebanon', 'Lebanon'), ('Lesotho', 'Lesotho'), ('Liberia', 'Liberia'), ('Libya', 'Libya'), ('Liechtenstein', 'Liechtenstein'), ('Lithuania', 'Lithuania'), ('Luxembourg', 'Luxembourg'), ('Macau', 'Macau'), ('Macedonia', 'Macedonia'), ('Madagascar', 'Madagascar'), ('Malawi', 'Malawi'), ('Malaysia', 'Malaysia'), ('Maldives', 'Maldives'), ('Mali', 'Mali'), ('Malta', 'Malta'), ('Marshall Islands', 'Marshall Islands'), ('Martinique', 'Martinique'), ('Mauritania', 'Mauritania'), ('Mauritius', 'Mauritius'), ('Mayotte', 'Mayotte'), ('Mediterranean Sea', 'Mediterranean Sea'), ('Mexico', 'Mexico'), ('Micronesia', 'Micronesia'), ('Midway Islands', 'Midway Islands'), ('Moldova', 'Moldova'), ('Monaco', 'Monaco'), ('Mongolia', 'Mongolia'), ('Montenegro', 'Montenegro'), ('Montserrat', 'Montserrat'), ('Morocco', 'Morocco'), ('Mozambique', 'Mozambique'), ('Myanmar', 'Myanmar'), ('Namibia', 'Namibia'), ('Nauru', 'Nauru'), ('Navassa Island', 'Navassa Island'), ('Nepal', 'Nepal'), ('Netherlands', 'Netherlands'), ('New Caledonia', 'New Caledonia'), ('New Zealand', 'New Zealand'), ('Nicaragua', 'Nicaragua'), ('Niger', 'Niger'), ('Nigeria', 'Nigeria'), ('Niue', 'Niue'), ('Norfolk Island', 'Norfolk Island'), ('North Korea', 'North Korea'), ('North Sea', 'North Sea'), ('Northern Mariana Islands', 'Northern Mariana Islands'), ('Norway', 'Norway'), ('Oman', 'Oman'), ('Pacific Ocean', 'Pacific Ocean'), ('Pakistan', 'Pakistan'), ('Palau', 'Palau'), ('Palmyra Atoll', 'Palmyra Atoll'), ('Panama', 'Panama'), ('Papua New Guinea', 'Papua New Guinea'), ('Paracel Islands', 'Paracel Islands'), ('Paraguay', 'Paraguay'), ('Peru', 'Peru'), ('Philippines', 'Philippines'), ('Pitcairn Islands', 'Pitcairn Islands'), ('Poland', 'Poland'), ('Portugal', 'Portugal'), ('Puerto Rico', 'Puerto Rico'), ('Qatar', 'Qatar'), ('Republic of the Congo', 'Republic of the Congo'), ('Reunion', 'Reunion'), ('Romania', 'Romania'), ('Ross Sea', 'Ross Sea'), ('Russia', 'Russia'), ('Rwanda', 'Rwanda'), ('Saint Helena', 'Saint Helena'), ('Saint Kitts and Nevis', 'Saint Kitts and Nevis'), ('Saint Lucia', 'Saint Lucia'), ('Saint Pierre and Miquelon', 'Saint Pierre and Miquelon'), ('Saint Vincent and the Grenadines', 'Saint Vincent and the Grenadines'), ('Samoa', 'Samoa'), ('San Marino', 'San Marino'), ('Sao Tome and Principe', 'Sao Tome and Principe'), ('Saudi Arabia', 'Saudi Arabia'), ('Senegal', 'Senegal'), ('Serbia', 'Serbia'), ('Seychelles', 'Seychelles'), ('Sierra Leone', 'Sierra Leone'), ('Singapore', 'Singapore'), ('Sint Maarten', 'Sint Maarten'), ('Slovakia', 'Slovakia'), ('Slovenia', 'Slovenia'), ('Solomon Islands', 'Solomon Islands'), ('Somalia', 'Somalia'), ('South Africa', 'South Africa'), ('South Georgia and the South Sandwich Islands', 'South Georgia and the South Sandwich Islands'), ('South Korea', 'South Korea'), ('Southern Ocean', 'Southern Ocean'), ('Spain', 'Spain'), ('Spratly Islands', 'Spratly Islands'), ('Sri Lanka', 'Sri Lanka'), ('Sudan', 'Sudan'), ('Suriname', 'Suriname'), ('Svalbard', 'Svalbard'), ('Swaziland', 'Swaziland'), ('Sweden', 'Sweden'), ('Switzerland', 'Switzerland'), ('Syria', 'Syria'), ('Taiwan', 'Taiwan'), ('Tajikistan', 'Tajikistan'), ('Tanzania', 'Tanzania'), ('Tasman Sea', 'Tasman Sea'), ('Thailand', 'Thailand'), ('Togo', 'Togo'), ('Tokelau', 'Tokelau'), ('Tonga', 'Tonga'), ('Trinidad and Tobago', 'Trinidad and Tobago'), ('Tromelin Island', 'Tromelin Island'), ('Tunisia', 'Tunisia'), ('Turkey', 'Turkey'), ('Turkmenistan', 'Turkmenistan'), ('Turks and Caicos Islands', 'Turks and Caicos Islands'), ('Tuvalu', 'Tuvalu'), ('USA', 'USA'), ('Uganda', 'Uganda'), ('Ukraine', 'Ukraine'), ('United Arab Emirates', 'United Arab Emirates'), ('United Kingdom', 'United Kingdom'), ('Uruguay', 'Uruguay'), ('Uzbekistan', 'Uzbekistan'), ('Vanuatu', 'Vanuatu'), ('Venezuela', 'Venezuela'), ('Viet Nam', 'Viet Nam'), ('Virgin Islands', 'Virgin Islands'), ('Wake Island', 'Wake Island'), ('Wallis and Futuna', 'Wallis and Futuna'), ('West Bank', 'West Bank'), ('Western Sahara', 'Western Sahara'), ('Yemen', 'Yemen'), ('Zambia', 'Zambia'), ('Zimbabwe', 'Zimbabwe'), ('missing: control sample', 'missing: control sample'), ('missing: data agreement established pre-2023', 'missing: data agreement established pre-2023'), ('missing: endangered species', 'missing: endangered species'), ('missing: human-identifiable', 'missing: human-identifiable'), ('missing: lab stock', 'missing: lab stock'), ('missing: sample group', 'missing: sample group'), ('missing: synthetic construct', 'missing: synthetic construct'), ('missing: third party data', 'missing: third party data'), ('not applicable', 'not applicable'), ('not collected', 'not collected'), ('not provided', 'not provided'), ('restricted access', 'restricted access')]
-	medical_history_performed_choice = [('No', 'No'), ('Yes', 'Yes')]
-	urine_collection_method_choice = [('catheter', 'catheter'), ('clean catch', 'clean catch')]
-	oxygenation_status_of_sample_choice = [('aerobic', 'aerobic'), ('anaerobic', 'anaerobic')]
-	host_HIV_status_choice = [('No', 'No'), ('Yes', 'Yes')]
-	IHMC_medication_code_choice = [('01=1=Analgesics/NSAIDS', '01=1=Analgesics/NSAIDS'), ('02=2=Anesthetics', '02=2=Anesthetics'), ('03=3=Antacids/H2 antagonists', '03=3=Antacids/H2 antagonists'), ('04=4=Anti-acne', '04=4=Anti-acne'), ('05=5=Anti-asthma/bronchodilators', '05=5=Anti-asthma/bronchodilators'), ('06=6=Anti-cholesterol/Anti-hyperlipidemic', '06=6=Anti-cholesterol/Anti-hyperlipidemic'), ('07=7=Anti-coagulants', '07=7=Anti-coagulants'), ('08=8=Antibiotics/(anti)-infectives, parasitics, microbials', '08=8=Antibiotics/(anti)-infectives, parasitics, microbials'), ('09=9=Antidepressants/mood-altering drugs', '09=9=Antidepressants/mood-altering drugs'), ('10=10=Antihistamines/ Decongestants', '10=10=Antihistamines/ Decongestants'), ('11=11=Antihypertensives', '11=11=Antihypertensives'), ('12=12=Cardiovascular, other than hyperlipidemic/HTN', '12=12=Cardiovascular, other than hyperlipidemic/HTN'), ('13=13=Contraceptives (oral, implant, injectable)', '13=13=Contraceptives (oral, implant, injectable)'), ('14=14=Emergency/support medications', '14=14=Emergency/support medications'), ('15=15=Endocrine/Metabolic agents', '15=15=Endocrine/Metabolic agents'), ('16=16=GI meds (anti-diarrheal, emetic, spasmodics)', '16=16=GI meds (anti-diarrheal, emetic, spasmodics)'), ('17=17=Herbal/homeopathic products', '17=17=Herbal/homeopathic products'), ('18=18=Hormones/steroids', '18=18=Hormones/steroids'), ('19=19=OTC cold & flu', '19=19=OTC cold & flu'), ('20=20=Vaccine prophylaxis', '20=20=Vaccine prophylaxis'), ('21=21=Vitamins, minerals, food supplements', '21=21=Vitamins, minerals, food supplements'), ('99=99=Other', '99=99=Other')]
-	host_occupation_choice = [('01=01 Accounting/Finance', '01=01 Accounting/Finance'), ('02=02 Advertising/Public Relations', '02=02 Advertising/Public Relations'), ('03=03 Arts/Entertainment/Publishing', '03=03 Arts/Entertainment/Publishing'), ('04=04 Automotive', '04=04 Automotive'), ('05=05 Banking/ Mortgage', '05=05 Banking/ Mortgage'), ('06=06 Biotech', '06=06 Biotech'), ('07=07 Broadcast/Journalism', '07=07 Broadcast/Journalism'), ('08=08 Business Development', '08=08 Business Development'), ('09=09 Clerical/Administrative', '09=09 Clerical/Administrative'), ('10=10 Construction/Trades', '10=10 Construction/Trades'), ('11=11 Consultant', '11=11 Consultant'), ('12=12 Customer Services', '12=12 Customer Services'), ('13=13 Design', '13=13 Design'), ('14=14 Education', '14=14 Education'), ('15=15 Engineering', '15=15 Engineering'), ('16=16 Entry Level', '16=16 Entry Level'), ('17=17 Executive', '17=17 Executive'), ('18=18 Food Service', '18=18 Food Service'), ('19=19 Government', '19=19 Government'), ('20=20 Grocery', '20=20 Grocery'), ('21=21 Healthcare', '21=21 Healthcare'), ('22=22 Hospitality', '22=22 Hospitality'), ('23=23 Human Resources', '23=23 Human Resources'), ('24=24 Information Technology', '24=24 Information Technology'), ('25=25 Insurance', '25=25 Insurance'), ('26=26 Law/Legal', '26=26 Law/Legal'), ('27=27 Management', '27=27 Management'), ('28=28 Manufacturing', '28=28 Manufacturing'), ('29=29 Marketing', '29=29 Marketing'), ('30=30 Pharmaceutical', '30=30 Pharmaceutical'), ('31=31 Professional Services', '31=31 Professional Services'), ('32=32 Purchasing', '32=32 Purchasing'), ('33=33 Quality Assurance (QA)', '33=33 Quality Assurance (QA)'), ('34=34 Research', '34=34 Research'), ('35=35 Restaurant', '35=35 Restaurant'), ('36=36 Retail', '36=36 Retail'), ('37=37 Sales', '37=37 Sales'), ('38=38 Science', '38=38 Science'), ('39=39 Security/Law Enforcement', '39=39 Security/Law Enforcement'), ('40=40 Shipping/Distribution', '40=40 Shipping/Distribution'), ('41=41 Strategy', '41=41 Strategy'), ('42=42 Student', '42=42 Student'), ('43=43 Telecommunications', '43=43 Telecommunications'), ('44=44 Training', '44=44 Training'), ('45=45 Transportation', '45=45 Transportation'), ('46=46 Warehouse', '46=46 Warehouse'), ('47=47 Other', '47=47 Other'), ('99=99 Unknown/Refused', '99=99 Unknown/Refused')]
-	host_sex_choice = [('female', 'female'), ('hermaphrodite', 'hermaphrodite'), ('male', 'male'), ('missing: control sample', 'missing: control sample'), ('missing: data agreement established pre-2023', 'missing: data agreement established pre-2023'), ('missing: endangered species', 'missing: endangered species'), ('missing: human-identifiable', 'missing: human-identifiable'), ('missing: lab stock', 'missing: lab stock'), ('missing: sample group', 'missing: sample group'), ('missing: synthetic construct', 'missing: synthetic construct'), ('missing: third party data', 'missing: third party data'), ('neuter', 'neuter'), ('not applicable', 'not applicable'), ('not collected', 'not collected'), ('not provided', 'not provided'), ('other', 'other'), ('restricted access', 'restricted access')]
-	smoker_choice = [('ex-smoker', 'ex-smoker'), ('non-smoker', 'non-smoker'), ('smoker', 'smoker')]
-	trophic_level_choice = [('autotroph', 'autotroph'), ('carboxydotroph', 'carboxydotroph'), ('chemoautotroph', 'chemoautotroph'), ('chemoheterotroph', 'chemoheterotroph'), ('chemolithoautotroph', 'chemolithoautotroph'), ('chemolithotroph', 'chemolithotroph'), ('chemoorganoheterotroph', 'chemoorganoheterotroph'), ('chemoorganotroph', 'chemoorganotroph'), ('chemosynthetic', 'chemosynthetic'), ('chemotroph', 'chemotroph'), ('copiotroph', 'copiotroph'), ('diazotroph', 'diazotroph'), ('facultative autotroph', 'facultative autotroph'), ('heterotroph', 'heterotroph'), ('lithoautotroph', 'lithoautotroph'), ('lithoheterotroph', 'lithoheterotroph'), ('lithotroph', 'lithotroph'), ('methanotroph', 'methanotroph'), ('methylotroph', 'methylotroph'), ('mixotroph', 'mixotroph'), ('obligate chemoautolithotroph', 'obligate chemoautolithotroph'), ('oligotroph', 'oligotroph'), ('organoheterotroph', 'organoheterotroph'), ('organotroph', 'organotroph'), ('photoautotroph', 'photoautotroph'), ('photoheterotroph', 'photoheterotroph'), ('photolithoautotroph', 'photolithoautotroph'), ('photolithotroph', 'photolithotroph'), ('photosynthetic', 'photosynthetic'), ('phototroph', 'phototroph')]
-	relationship_to_oxygen_choice = [('aerobe', 'aerobe'), ('anaerobe', 'anaerobe'), ('facultative', 'facultative'), ('microaerophilic', 'microaerophilic'), ('microanaerobe', 'microanaerobe'), ('obligate aerobe', 'obligate aerobe'), ('obligate anaerobe', 'obligate anaerobe')]
-	observed_biotic_relationship_choice = [('commensal', 'commensal'), ('free living', 'free living'), ('mutualism', 'mutualism'), ('parasite', 'parasite'), ('symbiont', 'symbiont')]
-
-	number_of_replicons_validator = "[+-]?[0-9]+"
-	extrachromosomal_elements_validator = "[+-]?[0-9]+"
-	estimated_size_validator = "[+-]?[0-9]+"
-	sample_volume_or_weight_for_DNA_extraction_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	library_size_validator = "[+-]?[0-9]+"
-	library_reads_sequenced_validator = "[+-]?[0-9]+"
-	collection_date_validator = "(^[12][0-9]{3}(-(0[1-9]|1[0-2])(-(0[1-9]|[12][0-9]|3[01])(T[0-9]{2}:[0-9]{2}(:[0-9]{2})?Z?([+-][0-9]{1,2})?)?)?)?(/[0-9]{4}(-[0-9]{2}(-[0-9]{2}(T[0-9]{2}:[0-9]{2}(:[0-9]{2})?Z?([+-][0-9]{1,2})?)?)?)?)?$)|(^not collected$)|(^not provided$)|(^restricted access$)|(^missing: control sample$)|(^missing: sample group$)|(^missing: synthetic construct$)|(^missing: lab stock$)|(^missing: third party data$)|(^missing: data agreement established pre-2023$)|(^missing: endangered species$)|(^missing: human-identifiable$)"
-	geographic_location_latitude_validator = "(^[+-]?[0-9]+.?[0-9]{0,8}$)|(^not collected$)|(^not provided$)|(^restricted access$)|(^missing: control sample$)|(^missing: sample group$)|(^missing: synthetic construct$)|(^missing: lab stock$)|(^missing: third party data$)|(^missing: data agreement established pre-2023$)|(^missing: endangered species$)|(^missing: human-identifiable$)"
-	geographic_location_longitude_validator = "(^[+-]?[0-9]+.?[0-9]{0,8}$)|(^not collected$)|(^not provided$)|(^restricted access$)|(^missing: control sample$)|(^missing: sample group$)|(^missing: synthetic construct$)|(^missing: lab stock$)|(^missing: third party data$)|(^missing: data agreement established pre-2023$)|(^missing: endangered species$)|(^missing: human-identifiable$)"
-	amount_or_size_of_sample_collected_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	sample_storage_duration_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	sample_storage_temperature_validator = "[+-]?(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	host_age_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	host_height_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	host_body_mass_index_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	host_total_mass_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	host_body_temperature_validator = "[+-]?(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	temperature_validator = "[+-]?(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	salinity_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	host_pulse_validator = "[+-]?[0-9]+"
-
-	sampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE, default=1)
-	sample = models.ForeignKey(Sample, on_delete=models.CASCADE, default=1)
-	sample_type = models.IntegerField(default=1)
-	project_name= models.CharField(max_length=120, blank=False,help_text="Name of th")
-	experimental_factor= models.CharField(max_length=120, blank=True,help_text="Experiment")
-	ploidy= models.CharField(max_length=120, blank=True,help_text="The ploidy")
-	number_of_replicons= models.CharField(max_length=120, blank=True,help_text="Reports th", validators=[RegexValidator(number_of_replicons_validator)])
-	extrachromosomal_elements= models.CharField(max_length=120, blank=True,help_text="Do plasmid", validators=[RegexValidator(extrachromosomal_elements_validator)])
-	estimated_size= models.CharField(max_length=120, blank=True,help_text="The estima", validators=[RegexValidator(estimated_size_validator)])
-	reference_for_biomaterial= models.CharField(max_length=120, blank=True,help_text="Primary pu")
-	annotation_source= models.CharField(max_length=120, blank=True,help_text="For cases ")
-	sample_volume_or_weight_for_DNA_extraction= models.CharField(max_length=120, blank=True,help_text="Volume (ml", validators=[RegexValidator(sample_volume_or_weight_for_DNA_extraction_validator)])
-	nucleic_acid_extraction= models.CharField(max_length=120, blank=True,help_text="A link to ")
-	nucleic_acid_amplification= models.CharField(max_length=120, blank=True,help_text="A link to ")
-	library_size= models.CharField(max_length=120, blank=True,help_text="Total numb", validators=[RegexValidator(library_size_validator)])
-	library_reads_sequenced= models.CharField(max_length=120, blank=True,help_text="Total numb", validators=[RegexValidator(library_reads_sequenced_validator)])
-	library_construction_method= models.CharField(max_length=120, blank=True,help_text="Library co")
-	library_vector= models.CharField(max_length=120, blank=True,help_text="Cloning ve")
-	library_screening_strategy= models.CharField(max_length=120, blank=True,help_text="Specific e")
-	target_gene= models.CharField(max_length=120, blank=True,help_text="Targeted g")
-	target_subfragment= models.CharField(max_length=120, blank=True,help_text="Name of su")
-	pcr_primers= models.CharField(max_length=120, blank=True,help_text="PCR primer")
-	multiplex_identifiers= models.CharField(max_length=120, blank=True,help_text="Molecular ")
-	adapters= models.CharField(max_length=120, blank=True,help_text="Adapters p")
-	pcr_conditions= models.CharField(max_length=120, blank=True,help_text="Descriptio")
-	sequencing_method= models.CharField(max_length=120, blank=True,help_text="Sequencing")
-	sequence_quality_check= models.CharField(max_length=120, blank=True,help_text="Indicate i", choices=sequence_quality_check_choice)
-	chimera_check_software= models.CharField(max_length=120, blank=True,help_text="Tool(s) us")
-	relevant_electronic_resources= models.CharField(max_length=120, blank=True,help_text="A related ")
-	relevant_standard_operating_procedures= models.CharField(max_length=120, blank=True,help_text="Standard o")
-	study_completion_status= models.CharField(max_length=120, blank=True,help_text="specificat", choices=study_completion_status_choice)
-	negative_control_type= models.CharField(max_length=120, blank=True,help_text="The substa")
-	positive_control_type= models.CharField(max_length=120, blank=True,help_text="The substa")
-	collection_date= models.CharField(max_length=120, blank=False,help_text="The date t", validators=[RegexValidator(collection_date_validator)])
-	geographic_location_country_and_or_sea= models.CharField(max_length=120, blank=False,help_text="The locati", choices=geographic_location_country_and_or_sea_choice)
-	geographic_location_latitude= models.CharField(max_length=120, blank=False,help_text="The geogra", validators=[RegexValidator(geographic_location_latitude_validator)])
-	geographic_location_longitude= models.CharField(max_length=120, blank=False,help_text="The geogra", validators=[RegexValidator(geographic_location_longitude_validator)])
-	geographic_location_region_and_locality= models.CharField(max_length=120, blank=True,help_text="The geogra")
-	broad_scale_environmental_context= models.CharField(max_length=120, blank=False,help_text="Report the")
-	local_environmental_context= models.CharField(max_length=120, blank=False,help_text="Report the")
-	environmental_medium= models.CharField(max_length=120, blank=False,help_text="Report the")
-	source_material_identifiers= models.CharField(max_length=120, blank=True,help_text="A unique i")
-	sample_material_processing= models.CharField(max_length=120, blank=True,help_text="A brief de")
-	isolation_and_growth_condition= models.CharField(max_length=120, blank=True,help_text="Publicatio")
-	propagation= models.CharField(max_length=120, blank=True,help_text="The type o")
-	amount_or_size_of_sample_collected= models.CharField(max_length=120, blank=True,help_text="The total ", validators=[RegexValidator(amount_or_size_of_sample_collected_validator)])
-	host_body_product= models.CharField(max_length=120, blank=True,help_text="substance ")
-	medical_history_performed= models.CharField(max_length=120, blank=True,help_text="whether fu", choices=medical_history_performed_choice)
-	urine_collection_method= models.CharField(max_length=120, blank=True,help_text="specificat", choices=urine_collection_method_choice)
-	oxygenation_status_of_sample= models.CharField(max_length=120, blank=True,help_text="oxygenatio", choices=oxygenation_status_of_sample_choice)
-	organism_count= models.CharField(max_length=120, blank=True,help_text="Total cell")
-	sample_storage_duration= models.CharField(max_length=120, blank=True,help_text="duration f", validators=[RegexValidator(sample_storage_duration_validator)])
-	sample_storage_temperature= models.CharField(max_length=120, blank=True,help_text="temperatur", validators=[RegexValidator(sample_storage_temperature_validator)])
-	sample_storage_location= models.CharField(max_length=120, blank=True,help_text="location a")
-	sample_collection_device= models.CharField(max_length=120, blank=True,help_text="The device")
-	sample_collection_method= models.CharField(max_length=120, blank=True,help_text="The method")
-	host_HIV_status= models.CharField(max_length=120, blank=True,help_text="HIV status", choices=host_HIV_status_choice)
-	host_disease_status= models.CharField(max_length=120, blank=True,help_text="list of di")
-	lung_pulmonary_disorder= models.CharField(max_length=120, blank=True,help_text="History of")
-	lung_nose_throat_disorder= models.CharField(max_length=120, blank=True,help_text="History of")
-	blood_blood_disorder= models.CharField(max_length=120, blank=True,help_text="History of")
-	urine_kidney_disorder= models.CharField(max_length=120, blank=True,help_text="History of")
-	urine_urogenital_tract_disorder= models.CharField(max_length=120, blank=True,help_text="History of")
-	host_subject_id= models.CharField(max_length=120, blank=True,help_text="a unique i")
-	IHMC_medication_code= models.CharField(max_length=120, blank=True,help_text="can includ", choices=IHMC_medication_code_choice)
-	host_age= models.CharField(max_length=120, blank=True,help_text="age of hos", validators=[RegexValidator(host_age_validator)])
-	host_body_site= models.CharField(max_length=120, blank=True,help_text="name of bo")
-	drug_usage= models.CharField(max_length=120, blank=True,help_text="any drug u")
-	host_height= models.CharField(max_length=120, blank=True,help_text="the height", validators=[RegexValidator(host_height_validator)])
-	host_body_mass_index= models.CharField(max_length=120, blank=True,help_text="body mass ", validators=[RegexValidator(host_body_mass_index_validator)])
-	ethnicity= models.CharField(max_length=120, blank=True,help_text="A category")
-	host_occupation= models.CharField(max_length=120, blank=True,help_text="most frequ", choices=host_occupation_choice)
-	host_total_mass= models.CharField(max_length=120, blank=True,help_text="total mass", validators=[RegexValidator(host_total_mass_validator)])
-	host_phenotype= models.CharField(max_length=120, blank=True,help_text="phenotype ")
-	host_body_temperature= models.CharField(max_length=120, blank=True,help_text="core body ", validators=[RegexValidator(host_body_temperature_validator)])
-	host_sex= models.CharField(max_length=120, blank=True,help_text="Gender or ", choices=host_sex_choice)
-	host_scientific_name= models.CharField(max_length=120, blank=True,help_text="Scientific")
-	presence_of_pets_or_farm_animals= models.CharField(max_length=120, blank=True,help_text="specificat")
-	temperature= models.CharField(max_length=120, blank=True,help_text="temperatur", validators=[RegexValidator(temperature_validator)])
-	salinity= models.CharField(max_length=120, blank=True,help_text="The total ", validators=[RegexValidator(salinity_validator)])
-	smoker= models.CharField(max_length=120, blank=True,help_text="specificat", choices=smoker_choice)
-	major_diet_change_in_last_six_months= models.CharField(max_length=120, blank=True,help_text="specificat")
-	weight_loss_in_last_three_months= models.CharField(max_length=120, blank=True,help_text="specificat")
-	travel_outside_the_country_in_last_six_months= models.CharField(max_length=120, blank=True,help_text="specificat")
-	host_diet= models.CharField(max_length=120, blank=True,help_text="type of di")
-	twin_sibling_presence= models.CharField(max_length=120, blank=True,help_text="specificat")
-	host_last_meal= models.CharField(max_length=120, blank=True,help_text="content of")
-	amniotic_fluid_gestation_state= models.CharField(max_length=120, blank=True,help_text="specificat")
-	host_family_relationship= models.CharField(max_length=120, blank=True,help_text="relationsh")
-	amniotic_fluid_maternal_health_status= models.CharField(max_length=120, blank=True,help_text="specificat")
-	host_genotype= models.CharField(max_length=120, blank=True,help_text="observed g")
-	amniotic_fluid_foetal_health_status= models.CharField(max_length=120, blank=True,help_text="specificat")
-	host_pulse= models.CharField(max_length=120, blank=True,help_text="resting pu", validators=[RegexValidator(host_pulse_validator)])
-	amniotic_fluid_color= models.CharField(max_length=120, blank=True,help_text="specificat")
-	subspecific_genetic_lineage= models.CharField(max_length=120, blank=True,help_text="Informatio")
-	trophic_level= models.CharField(max_length=120, blank=True,help_text="Trophic le", choices=trophic_level_choice)
-	relationship_to_oxygen= models.CharField(max_length=120, blank=True,help_text="Is this or", choices=relationship_to_oxygen_choice)
-	known_pathogenicity= models.CharField(max_length=120, blank=True,help_text="To what is")
-	encoded_traits= models.CharField(max_length=120, blank=True,help_text="Should inc")
-	observed_biotic_relationship= models.CharField(max_length=120, blank=True,help_text="Is it free", choices=observed_biotic_relationship_choice)
-	chemical_administration= models.CharField(max_length=120, blank=True,help_text="list of ch")
-	perturbation= models.CharField(max_length=120, blank=True,help_text="type of pe")
-
-	fields = {
-		'project_name': 'project_name',
-		'experimental_factor': 'experimental_factor',
-		'ploidy': 'ploidy',
-		'number_of_replicons': 'number_of_replicons',
-		'extrachromosomal_elements': 'extrachromosomal_elements',
-		'estimated_size': 'estimated_size',
-		'reference_for_biomaterial': 'reference_for_biomaterial',
-		'annotation_source': 'annotation_source',
-		'sample_volume_or_weight_for_DNA_extraction': 'sample_volume_or_weight_for_DNA_extraction',
-		'nucleic_acid_extraction': 'nucleic_acid_extraction',
-		'nucleic_acid_amplification': 'nucleic_acid_amplification',
-		'library_size': 'library_size',
-		'library_reads_sequenced': 'library_reads_sequenced',
-		'library_construction_method': 'library_construction_method',
-		'library_vector': 'library_vector',
-		'library_screening_strategy': 'library_screening_strategy',
-		'target_gene': 'target_gene',
-		'target_subfragment': 'target_subfragment',
-		'pcr_primers': 'pcr_primers',
-		'multiplex_identifiers': 'multiplex_identifiers',
-		'adapters': 'adapters',
-		'pcr_conditions': 'pcr_conditions',
-		'sequencing_method': 'sequencing_method',
-		'sequence_quality_check': 'sequence_quality_check',
-		'chimera_check_software': 'chimera_check_software',
-		'relevant_electronic_resources': 'relevant_electronic_resources',
-		'relevant_standard_operating_procedures': 'relevant_standard_operating_procedures',
-		'study_completion_status': 'study_completion_status',
-		'negative_control_type': 'negative_control_type',
-		'positive_control_type': 'positive_control_type',
-		'collection_date': 'collection_date',
-		'geographic_location_country_and_or_sea': 'geographic_location_country_and_or_sea',
-		'geographic_location_latitude': 'geographic_location_latitude',
-		'geographic_location_longitude': 'geographic_location_longitude',
-		'geographic_location_region_and_locality': 'geographic_location_region_and_locality',
-		'broad_scale_environmental_context': 'broad_scale_environmental_context',
-		'local_environmental_context': 'local_environmental_context',
-		'environmental_medium': 'environmental_medium',
-		'source_material_identifiers': 'source_material_identifiers',
-		'sample_material_processing': 'sample_material_processing',
-		'isolation_and_growth_condition': 'isolation_and_growth_condition',
-		'propagation': 'propagation',
-		'amount_or_size_of_sample_collected': 'amount_or_size_of_sample_collected',
-		'host_body_product': 'host_body_product',
-		'medical_history_performed': 'medical_history_performed',
-		'urine_collection_method': 'urine_collection_method',
-		'oxygenation_status_of_sample': 'oxygenation_status_of_sample',
-		'organism_count': 'organism_count',
-		'sample_storage_duration': 'sample_storage_duration',
-		'sample_storage_temperature': 'sample_storage_temperature',
-		'sample_storage_location': 'sample_storage_location',
-		'sample_collection_device': 'sample_collection_device',
-		'sample_collection_method': 'sample_collection_method',
-		'host_HIV_status': 'host_HIV_status',
-		'host_disease_status': 'host_disease_status',
-		'lung_pulmonary_disorder': 'lung_pulmonary_disorder',
-		'lung_nose_throat_disorder': 'lung_nose_throat_disorder',
-		'blood_blood_disorder': 'blood_blood_disorder',
-		'urine_kidney_disorder': 'urine_kidney_disorder',
-		'urine_urogenital_tract_disorder': 'urine_urogenital_tract_disorder',
-		'host_subject_id': 'host_subject_id',
-		'IHMC_medication_code': 'IHMC_medication_code',
-		'host_age': 'host_age',
-		'host_body_site': 'host_body_site',
-		'drug_usage': 'drug_usage',
-		'host_height': 'host_height',
-		'host_body_mass_index': 'host_body_mass_index',
-		'ethnicity': 'ethnicity',
-		'host_occupation': 'host_occupation',
-		'host_total_mass': 'host_total_mass',
-		'host_phenotype': 'host_phenotype',
-		'host_body_temperature': 'host_body_temperature',
-		'host_sex': 'host_sex',
-		'host_scientific_name': 'host_scientific_name',
-		'presence_of_pets_or_farm_animals': 'presence_of_pets_or_farm_animals',
-		'temperature': 'temperature',
-		'salinity': 'salinity',
-		'smoker': 'smoker',
-		'major_diet_change_in_last_six_months': 'major_diet_change_in_last_six_months',
-		'weight_loss_in_last_three_months': 'weight_loss_in_last_three_months',
-		'travel_outside_the_country_in_last_six_months': 'travel_outside_the_country_in_last_six_months',
-		'host_diet': 'host_diet',
-		'twin_sibling_presence': 'twin_sibling_presence',
-		'host_last_meal': 'host_last_meal',
-		'amniotic_fluid_gestation_state': 'amniotic_fluid_gestation_state',
-		'host_family_relationship': 'host_family_relationship',
-		'amniotic_fluid_maternal_health_status': 'amniotic_fluid_maternal_health_status',
-		'host_genotype': 'host_genotype',
-		'amniotic_fluid_foetal_health_status': 'amniotic_fluid_foetal_health_status',
-		'host_pulse': 'host_pulse',
-		'amniotic_fluid_color': 'amniotic_fluid_color',
-		'subspecific_genetic_lineage': 'subspecific_genetic_lineage',
-		'trophic_level': 'trophic_level',
-		'relationship_to_oxygen': 'relationship_to_oxygen',
-		'known_pathogenicity': 'known_pathogenicity',
-		'encoded_traits': 'encoded_traits',
-		'observed_biotic_relationship': 'observed_biotic_relationship',
-		'chemical_administration': 'chemical_administration',
-		'perturbation': 'perturbation',
-	}
-
-	name = 'GSC_MIxS_human_associated'
-
-class GSC_MIxS_human_associated_unit(SelfDescribingModel):
-
-	sample_volume_or_weight_for_DNA_extraction_units = [('g', 'g'), ('mL', 'mL'), ('mg', 'mg'), ('ng', 'ng')]
-	geographic_location_latitude_units = [('DD', 'DD')]
-	geographic_location_longitude_units = [('DD', 'DD')]
-	amount_or_size_of_sample_collected_units = [('L', 'L'), ('g', 'g'), ('kg', 'kg'), ('m2', 'm2'), ('m3', 'm3')]
-	sample_storage_duration_units = [('days', 'days'), ('hours', 'hours'), ('months', 'months'), ('weeks', 'weeks'), ('years', 'years')]
-	sample_storage_temperature_units = [('°C', '°C')]
-	host_age_units = [('centuries', 'centuries'), ('days', 'days'), ('decades', 'decades'), ('hours', 'hours'), ('minutes', 'minutes'), ('months', 'months'), ('seconds', 'seconds'), ('weeks', 'weeks'), ('years', 'years')]
-	host_height_units = [('cm', 'cm'), ('m', 'm'), ('mm', 'mm')]
-	host_body_mass_index_units = [('kg/m2', 'kg/m2')]
-	host_total_mass_units = [('g', 'g'), ('kg', 'kg')]
-	host_body_temperature_units = [('ºC', 'ºC')]
-	temperature_units = [('ºC', 'ºC')]
-	salinity_units = [('psu', 'psu')]
-	weight_loss_in_last_three_months_units = [('g', 'g'), ('kg', 'kg')]
-	host_pulse_units = [('bpm', 'bpm')]
-
-	fields = {
-		'sample_volume_or_weight_for_DNA_extraction': 'sample_volume_or_weight_for_DNA_extraction',
-		'geographic_location_latitude': 'geographic_location_latitude',
-		'geographic_location_longitude': 'geographic_location_longitude',
-		'amount_or_size_of_sample_collected': 'amount_or_size_of_sample_collected',
-		'sample_storage_duration': 'sample_storage_duration',
-		'sample_storage_temperature': 'sample_storage_temperature',
-		'host_age': 'host_age',
-		'host_height': 'host_height',
-		'host_body_mass_index': 'host_body_mass_index',
-		'host_total_mass': 'host_total_mass',
-		'host_body_temperature': 'host_body_temperature',
-		'temperature': 'temperature',
-		'salinity': 'salinity',
-		'weight_loss_in_last_three_months': 'weight_loss_in_last_three_months',
-		'host_pulse': 'host_pulse',
-	}
-
-	name = 'GSC_MIxS_human_associated'
-
-	sampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE, default=1)
-	sample = models.ForeignKey(Sample, on_delete=models.CASCADE, default=1)
-	sample_type = models.IntegerField(default=1)
-	sample_volume_or_weight_for_DNA_extraction = models.CharField(max_length=120, choices=sample_volume_or_weight_for_DNA_extraction_units, blank=False)
-	geographic_location_latitude = models.CharField(max_length=120, choices=geographic_location_latitude_units, blank=False)
-	geographic_location_longitude = models.CharField(max_length=120, choices=geographic_location_longitude_units, blank=False)
-	amount_or_size_of_sample_collected = models.CharField(max_length=120, choices=amount_or_size_of_sample_collected_units, blank=False)
-	sample_storage_duration = models.CharField(max_length=120, choices=sample_storage_duration_units, blank=False)
-	sample_storage_temperature = models.CharField(max_length=120, choices=sample_storage_temperature_units, blank=False)
-	host_age = models.CharField(max_length=120, choices=host_age_units, blank=False)
-	host_height = models.CharField(max_length=120, choices=host_height_units, blank=False)
-	host_body_mass_index = models.CharField(max_length=120, choices=host_body_mass_index_units, blank=False)
-	host_total_mass = models.CharField(max_length=120, choices=host_total_mass_units, blank=False)
-	host_body_temperature = models.CharField(max_length=120, choices=host_body_temperature_units, blank=False)
-	temperature = models.CharField(max_length=120, choices=temperature_units, blank=False)
-	salinity = models.CharField(max_length=120, choices=salinity_units, blank=False)
-	weight_loss_in_last_three_months = models.CharField(max_length=120, choices=weight_loss_in_last_three_months_units, blank=False)
-	host_pulse = models.CharField(max_length=120, choices=host_pulse_units, blank=False)
 
 class GSC_MIxS_water(SelfDescribingModel):
 
@@ -5795,181 +3770,334 @@ class GSC_MIxS_water_unit(SelfDescribingModel):
 	total_particulate_carbon = models.CharField(max_length=120, choices=total_particulate_carbon_units, blank=False)
 	total_phosphorus = models.CharField(max_length=120, choices=total_phosphorus_units, blank=False)
 
-class ENA_binned_metagenome(SelfDescribingModel):
+class GSC_MIxS_soil(SelfDescribingModel):
 
+	profile_position_choice = [('backslope', 'backslope'), ('footslope', 'footslope'), ('shoulder', 'shoulder'), ('summit', 'summit'), ('toeslope', 'toeslope')]
+	sequence_quality_check_choice = [('manual', 'manual'), ('none', 'none'), ('software', 'software')]
+	geographic_location_country_and_or_sea_choice = [('Afghanistan', 'Afghanistan'), ('Albania', 'Albania'), ('Algeria', 'Algeria'), ('American Samoa', 'American Samoa'), ('Andorra', 'Andorra'), ('Angola', 'Angola'), ('Anguilla', 'Anguilla'), ('Antarctica', 'Antarctica'), ('Antigua and Barbuda', 'Antigua and Barbuda'), ('Arctic Ocean', 'Arctic Ocean'), ('Argentina', 'Argentina'), ('Armenia', 'Armenia'), ('Aruba', 'Aruba'), ('Ashmore and Cartier Islands', 'Ashmore and Cartier Islands'), ('Atlantic Ocean', 'Atlantic Ocean'), ('Australia', 'Australia'), ('Austria', 'Austria'), ('Azerbaijan', 'Azerbaijan'), ('Bahamas', 'Bahamas'), ('Bahrain', 'Bahrain'), ('Baker Island', 'Baker Island'), ('Baltic Sea', 'Baltic Sea'), ('Bangladesh', 'Bangladesh'), ('Barbados', 'Barbados'), ('Bassas da India', 'Bassas da India'), ('Belarus', 'Belarus'), ('Belgium', 'Belgium'), ('Belize', 'Belize'), ('Benin', 'Benin'), ('Bermuda', 'Bermuda'), ('Bhutan', 'Bhutan'), ('Bolivia', 'Bolivia'), ('Borneo', 'Borneo'), ('Bosnia and Herzegovina', 'Bosnia and Herzegovina'), ('Botswana', 'Botswana'), ('Bouvet Island', 'Bouvet Island'), ('Brazil', 'Brazil'), ('British Virgin Islands', 'British Virgin Islands'), ('Brunei', 'Brunei'), ('Bulgaria', 'Bulgaria'), ('Burkina Faso', 'Burkina Faso'), ('Burundi', 'Burundi'), ('Cambodia', 'Cambodia'), ('Cameroon', 'Cameroon'), ('Canada', 'Canada'), ('Cape Verde', 'Cape Verde'), ('Cayman Islands', 'Cayman Islands'), ('Central African Republic', 'Central African Republic'), ('Chad', 'Chad'), ('Chile', 'Chile'), ('China', 'China'), ('Christmas Island', 'Christmas Island'), ('Clipperton Island', 'Clipperton Island'), ('Cocos Islands', 'Cocos Islands'), ('Colombia', 'Colombia'), ('Comoros', 'Comoros'), ('Cook Islands', 'Cook Islands'), ('Coral Sea Islands', 'Coral Sea Islands'), ('Costa Rica', 'Costa Rica'), ("Cote d'Ivoire", "Cote d'Ivoire"), ('Croatia', 'Croatia'), ('Cuba', 'Cuba'), ('Curacao', 'Curacao'), ('Cyprus', 'Cyprus'), ('Czech Republic', 'Czech Republic'), ('Democratic Republic of the Congo', 'Democratic Republic of the Congo'), ('Denmark', 'Denmark'), ('Djibouti', 'Djibouti'), ('Dominica', 'Dominica'), ('Dominican Republic', 'Dominican Republic'), ('East Timor', 'East Timor'), ('Ecuador', 'Ecuador'), ('Egypt', 'Egypt'), ('El Salvador', 'El Salvador'), ('Equatorial Guinea', 'Equatorial Guinea'), ('Eritrea', 'Eritrea'), ('Estonia', 'Estonia'), ('Ethiopia', 'Ethiopia'), ('Europa Island', 'Europa Island'), ('Falkland Islands (Islas Malvinas)', 'Falkland Islands (Islas Malvinas)'), ('Faroe Islands', 'Faroe Islands'), ('Fiji', 'Fiji'), ('Finland', 'Finland'), ('France', 'France'), ('French Guiana', 'French Guiana'), ('French Polynesia', 'French Polynesia'), ('French Southern and Antarctic Lands', 'French Southern and Antarctic Lands'), ('Gabon', 'Gabon'), ('Gambia', 'Gambia'), ('Gaza Strip', 'Gaza Strip'), ('Georgia', 'Georgia'), ('Germany', 'Germany'), ('Ghana', 'Ghana'), ('Gibraltar', 'Gibraltar'), ('Glorioso Islands', 'Glorioso Islands'), ('Greece', 'Greece'), ('Greenland', 'Greenland'), ('Grenada', 'Grenada'), ('Guadeloupe', 'Guadeloupe'), ('Guam', 'Guam'), ('Guatemala', 'Guatemala'), ('Guernsey', 'Guernsey'), ('Guinea', 'Guinea'), ('Guinea-Bissau', 'Guinea-Bissau'), ('Guyana', 'Guyana'), ('Haiti', 'Haiti'), ('Heard Island and McDonald Islands', 'Heard Island and McDonald Islands'), ('Honduras', 'Honduras'), ('Hong Kong', 'Hong Kong'), ('Howland Island', 'Howland Island'), ('Hungary', 'Hungary'), ('Iceland', 'Iceland'), ('India', 'India'), ('Indian Ocean', 'Indian Ocean'), ('Indonesia', 'Indonesia'), ('Iran', 'Iran'), ('Iraq', 'Iraq'), ('Ireland', 'Ireland'), ('Isle of Man', 'Isle of Man'), ('Israel', 'Israel'), ('Italy', 'Italy'), ('Jamaica', 'Jamaica'), ('Jan Mayen', 'Jan Mayen'), ('Japan', 'Japan'), ('Jarvis Island', 'Jarvis Island'), ('Jersey', 'Jersey'), ('Johnston Atoll', 'Johnston Atoll'), ('Jordan', 'Jordan'), ('Juan de Nova Island', 'Juan de Nova Island'), ('Kazakhstan', 'Kazakhstan'), ('Kenya', 'Kenya'), ('Kerguelen Archipelago', 'Kerguelen Archipelago'), ('Kingman Reef', 'Kingman Reef'), ('Kiribati', 'Kiribati'), ('Kosovo', 'Kosovo'), ('Kuwait', 'Kuwait'), ('Kyrgyzstan', 'Kyrgyzstan'), ('Laos', 'Laos'), ('Latvia', 'Latvia'), ('Lebanon', 'Lebanon'), ('Lesotho', 'Lesotho'), ('Liberia', 'Liberia'), ('Libya', 'Libya'), ('Liechtenstein', 'Liechtenstein'), ('Lithuania', 'Lithuania'), ('Luxembourg', 'Luxembourg'), ('Macau', 'Macau'), ('Macedonia', 'Macedonia'), ('Madagascar', 'Madagascar'), ('Malawi', 'Malawi'), ('Malaysia', 'Malaysia'), ('Maldives', 'Maldives'), ('Mali', 'Mali'), ('Malta', 'Malta'), ('Marshall Islands', 'Marshall Islands'), ('Martinique', 'Martinique'), ('Mauritania', 'Mauritania'), ('Mauritius', 'Mauritius'), ('Mayotte', 'Mayotte'), ('Mediterranean Sea', 'Mediterranean Sea'), ('Mexico', 'Mexico'), ('Micronesia', 'Micronesia'), ('Midway Islands', 'Midway Islands'), ('Moldova', 'Moldova'), ('Monaco', 'Monaco'), ('Mongolia', 'Mongolia'), ('Montenegro', 'Montenegro'), ('Montserrat', 'Montserrat'), ('Morocco', 'Morocco'), ('Mozambique', 'Mozambique'), ('Myanmar', 'Myanmar'), ('Namibia', 'Namibia'), ('Nauru', 'Nauru'), ('Navassa Island', 'Navassa Island'), ('Nepal', 'Nepal'), ('Netherlands', 'Netherlands'), ('New Caledonia', 'New Caledonia'), ('New Zealand', 'New Zealand'), ('Nicaragua', 'Nicaragua'), ('Niger', 'Niger'), ('Nigeria', 'Nigeria'), ('Niue', 'Niue'), ('Norfolk Island', 'Norfolk Island'), ('North Korea', 'North Korea'), ('North Sea', 'North Sea'), ('Northern Mariana Islands', 'Northern Mariana Islands'), ('Norway', 'Norway'), ('Oman', 'Oman'), ('Pacific Ocean', 'Pacific Ocean'), ('Pakistan', 'Pakistan'), ('Palau', 'Palau'), ('Palmyra Atoll', 'Palmyra Atoll'), ('Panama', 'Panama'), ('Papua New Guinea', 'Papua New Guinea'), ('Paracel Islands', 'Paracel Islands'), ('Paraguay', 'Paraguay'), ('Peru', 'Peru'), ('Philippines', 'Philippines'), ('Pitcairn Islands', 'Pitcairn Islands'), ('Poland', 'Poland'), ('Portugal', 'Portugal'), ('Puerto Rico', 'Puerto Rico'), ('Qatar', 'Qatar'), ('Republic of the Congo', 'Republic of the Congo'), ('Reunion', 'Reunion'), ('Romania', 'Romania'), ('Ross Sea', 'Ross Sea'), ('Russia', 'Russia'), ('Rwanda', 'Rwanda'), ('Saint Helena', 'Saint Helena'), ('Saint Kitts and Nevis', 'Saint Kitts and Nevis'), ('Saint Lucia', 'Saint Lucia'), ('Saint Pierre and Miquelon', 'Saint Pierre and Miquelon'), ('Saint Vincent and the Grenadines', 'Saint Vincent and the Grenadines'), ('Samoa', 'Samoa'), ('San Marino', 'San Marino'), ('Sao Tome and Principe', 'Sao Tome and Principe'), ('Saudi Arabia', 'Saudi Arabia'), ('Senegal', 'Senegal'), ('Serbia', 'Serbia'), ('Seychelles', 'Seychelles'), ('Sierra Leone', 'Sierra Leone'), ('Singapore', 'Singapore'), ('Sint Maarten', 'Sint Maarten'), ('Slovakia', 'Slovakia'), ('Slovenia', 'Slovenia'), ('Solomon Islands', 'Solomon Islands'), ('Somalia', 'Somalia'), ('South Africa', 'South Africa'), ('South Georgia and the South Sandwich Islands', 'South Georgia and the South Sandwich Islands'), ('South Korea', 'South Korea'), ('Southern Ocean', 'Southern Ocean'), ('Spain', 'Spain'), ('Spratly Islands', 'Spratly Islands'), ('Sri Lanka', 'Sri Lanka'), ('Sudan', 'Sudan'), ('Suriname', 'Suriname'), ('Svalbard', 'Svalbard'), ('Swaziland', 'Swaziland'), ('Sweden', 'Sweden'), ('Switzerland', 'Switzerland'), ('Syria', 'Syria'), ('Taiwan', 'Taiwan'), ('Tajikistan', 'Tajikistan'), ('Tanzania', 'Tanzania'), ('Tasman Sea', 'Tasman Sea'), ('Thailand', 'Thailand'), ('Togo', 'Togo'), ('Tokelau', 'Tokelau'), ('Tonga', 'Tonga'), ('Trinidad and Tobago', 'Trinidad and Tobago'), ('Tromelin Island', 'Tromelin Island'), ('Tunisia', 'Tunisia'), ('Turkey', 'Turkey'), ('Turkmenistan', 'Turkmenistan'), ('Turks and Caicos Islands', 'Turks and Caicos Islands'), ('Tuvalu', 'Tuvalu'), ('USA', 'USA'), ('Uganda', 'Uganda'), ('Ukraine', 'Ukraine'), ('United Arab Emirates', 'United Arab Emirates'), ('United Kingdom', 'United Kingdom'), ('Uruguay', 'Uruguay'), ('Uzbekistan', 'Uzbekistan'), ('Vanuatu', 'Vanuatu'), ('Venezuela', 'Venezuela'), ('Viet Nam', 'Viet Nam'), ('Virgin Islands', 'Virgin Islands'), ('Wake Island', 'Wake Island'), ('Wallis and Futuna', 'Wallis and Futuna'), ('West Bank', 'West Bank'), ('Western Sahara', 'Western Sahara'), ('Yemen', 'Yemen'), ('Zambia', 'Zambia'), ('Zimbabwe', 'Zimbabwe'), ('missing: control sample', 'missing: control sample'), ('missing: data agreement established pre-2023', 'missing: data agreement established pre-2023'), ('missing: endangered species', 'missing: endangered species'), ('missing: human-identifiable', 'missing: human-identifiable'), ('missing: lab stock', 'missing: lab stock'), ('missing: sample group', 'missing: sample group'), ('missing: synthetic construct', 'missing: synthetic construct'), ('missing: third party data', 'missing: third party data'), ('not applicable', 'not applicable'), ('not collected', 'not collected'), ('not provided', 'not provided'), ('restricted access', 'restricted access')]
+	soil_horizon_choice = [('A horizon', 'A horizon'), ('B horizon', 'B horizon'), ('C horizon', 'C horizon'), ('E horizon', 'E horizon'), ('O horizon', 'O horizon'), ('Permafrost', 'Permafrost'), ('R layer', 'R layer')]
+	soil_type_choice = [('Acrisol', 'Acrisol'), ('Albeluvisol', 'Albeluvisol'), ('Alisol', 'Alisol'), ('Andosol', 'Andosol'), ('Anthrosol', 'Anthrosol'), ('Arenosol', 'Arenosol'), ('Calcisol', 'Calcisol'), ('Cambisol', 'Cambisol'), ('Chernozem', 'Chernozem'), ('Cryosol', 'Cryosol'), ('Durisol', 'Durisol'), ('Ferralsol', 'Ferralsol'), ('Fluvisol', 'Fluvisol'), ('Gleysol', 'Gleysol'), ('Gypsisol', 'Gypsisol'), ('Histosol', 'Histosol'), ('Kastanozem', 'Kastanozem'), ('Leptosol', 'Leptosol'), ('Lixisol', 'Lixisol'), ('Luvisol', 'Luvisol'), ('Nitisol', 'Nitisol'), ('Phaeozem', 'Phaeozem'), ('Planosol', 'Planosol'), ('Plinthosol', 'Plinthosol'), ('Podzol', 'Podzol'), ('Regosol', 'Regosol'), ('Solonchak', 'Solonchak'), ('Solonetz', 'Solonetz'), ('Stagnosol', 'Stagnosol'), ('Technosol', 'Technosol'), ('Umbrisol', 'Umbrisol'), ('Vertisol', 'Vertisol')]
+	drainage_classification_choice = [('excessively drained', 'excessively drained'), ('moderately well', 'moderately well'), ('poorly', 'poorly'), ('somewhat poorly', 'somewhat poorly'), ('very poorly', 'very poorly'), ('well', 'well')]
+	history_tillage_choice = [('chisel', 'chisel'), ('cutting disc', 'cutting disc'), ('disc plough', 'disc plough'), ('drill', 'drill'), ('mouldboard', 'mouldboard'), ('ridge till', 'ridge till'), ('strip tillage', 'strip tillage'), ('tined', 'tined'), ('zonal tillage', 'zonal tillage')]
+	trophic_level_choice = [('autotroph', 'autotroph'), ('carboxydotroph', 'carboxydotroph'), ('chemoautotroph', 'chemoautotroph'), ('chemoheterotroph', 'chemoheterotroph'), ('chemolithoautotroph', 'chemolithoautotroph'), ('chemolithotroph', 'chemolithotroph'), ('chemoorganoheterotroph', 'chemoorganoheterotroph'), ('chemoorganotroph', 'chemoorganotroph'), ('chemosynthetic', 'chemosynthetic'), ('chemotroph', 'chemotroph'), ('copiotroph', 'copiotroph'), ('diazotroph', 'diazotroph'), ('facultative autotroph', 'facultative autotroph'), ('heterotroph', 'heterotroph'), ('lithoautotroph', 'lithoautotroph'), ('lithoheterotroph', 'lithoheterotroph'), ('lithotroph', 'lithotroph'), ('methanotroph', 'methanotroph'), ('methylotroph', 'methylotroph'), ('mixotroph', 'mixotroph'), ('obligate chemoautolithotroph', 'obligate chemoautolithotroph'), ('oligotroph', 'oligotroph'), ('organoheterotroph', 'organoheterotroph'), ('organotroph', 'organotroph'), ('photoautotroph', 'photoautotroph'), ('photoheterotroph', 'photoheterotroph'), ('photolithoautotroph', 'photolithoautotroph'), ('photolithotroph', 'photolithotroph'), ('photosynthetic', 'photosynthetic'), ('phototroph', 'phototroph')]
 	relationship_to_oxygen_choice = [('aerobe', 'aerobe'), ('anaerobe', 'anaerobe'), ('facultative', 'facultative'), ('microaerophilic', 'microaerophilic'), ('microanaerobe', 'microanaerobe'), ('obligate aerobe', 'obligate aerobe'), ('obligate anaerobe', 'obligate anaerobe')]
-	sixteen_s_recovered_choice = [('No', 'No'), ('Yes', 'Yes')]
-	contamination_screening_input_choice = [('contigs', 'contigs'), ('reads', 'reads')]
-	reassembly_post_binning_choice = [('No', 'No'), ('Yes', 'Yes')]
-	assembly_quality_choice = [('Many fragments with little to no review of assembly other than reporting of standard assembly statistics', 'Many fragments with little to no review of assembly other than reporting of standard assembly statistics'), ('Multiple fragments where gaps span repetitive regions. Presence of the 23S, 16S, and 5S rRNA genes and at least 18 tRNAs', 'Multiple fragments where gaps span repetitive regions. Presence of the 23S, 16S, and 5S rRNA genes and at least 18 tRNAs'), ('Single contiguous sequence without gaps or ambiguities with a consensus error rate equivalent to Q50 or better', 'Single contiguous sequence without gaps or ambiguities with a consensus error rate equivalent to Q50 or better')]
-	investigation_type_choice = [('bacteria_archaea', 'bacteria_archaea'), ('eukaryote', 'eukaryote'), ('metagenome', 'metagenome'), ('metagenome-assembled genome', 'metagenome-assembled genome'), ('metatranscriptome', 'metatranscriptome'), ('mimarks-specimen', 'mimarks-specimen'), ('mimarks-survey', 'mimarks-survey'), ('organelle', 'organelle'), ('plasmid', 'plasmid'), ('single amplified genome', 'single amplified genome'), ('uncultivated viral genomes', 'uncultivated viral genomes'), ('virus', 'virus')]
-	geographic_location_country_and_or_sea_choice = [('Afghanistan', 'Afghanistan'), ('Albania', 'Albania'), ('Algeria', 'Algeria'), ('American Samoa', 'American Samoa'), ('Andorra', 'Andorra'), ('Angola', 'Angola'), ('Anguilla', 'Anguilla'), ('Antarctica', 'Antarctica'), ('Antigua and Barbuda', 'Antigua and Barbuda'), ('Arctic Ocean', 'Arctic Ocean'), ('Argentina', 'Argentina'), ('Armenia', 'Armenia'), ('Aruba', 'Aruba'), ('Ashmore and Cartier Islands', 'Ashmore and Cartier Islands'), ('Atlantic Ocean', 'Atlantic Ocean'), ('Australia', 'Australia'), ('Austria', 'Austria'), ('Azerbaijan', 'Azerbaijan'), ('Bahamas', 'Bahamas'), ('Bahrain', 'Bahrain'), ('Baker Island', 'Baker Island'), ('Baltic Sea', 'Baltic Sea'), ('Bangladesh', 'Bangladesh'), ('Barbados', 'Barbados'), ('Bassas da India', 'Bassas da India'), ('Belarus', 'Belarus'), ('Belgium', 'Belgium'), ('Belize', 'Belize'), ('Benin', 'Benin'), ('Bermuda', 'Bermuda'), ('Bhutan', 'Bhutan'), ('Bolivia', 'Bolivia'), ('Borneo', 'Borneo'), ('Bosnia and Herzegovina', 'Bosnia and Herzegovina'), ('Botswana', 'Botswana'), ('Bouvet Island', 'Bouvet Island'), ('Brazil', 'Brazil'), ('British Virgin Islands', 'British Virgin Islands'), ('Brunei', 'Brunei'), ('Bulgaria', 'Bulgaria'), ('Burkina Faso', 'Burkina Faso'), ('Burundi', 'Burundi'), ('Cambodia', 'Cambodia'), ('Cameroon', 'Cameroon'), ('Canada', 'Canada'), ('Cape Verde', 'Cape Verde'), ('Cayman Islands', 'Cayman Islands'), ('Central African Republic', 'Central African Republic'), ('Chad', 'Chad'), ('Chile', 'Chile'), ('China', 'China'), ('Christmas Island', 'Christmas Island'), ('Clipperton Island', 'Clipperton Island'), ('Cocos Islands', 'Cocos Islands'), ('Colombia', 'Colombia'), ('Comoros', 'Comoros'), ('Cook Islands', 'Cook Islands'), ('Coral Sea Islands', 'Coral Sea Islands'), ('Costa Rica', 'Costa Rica'), ("Cote d'Ivoire", "Cote d'Ivoire"), ('Croatia', 'Croatia'), ('Cuba', 'Cuba'), ('Curacao', 'Curacao'), ('Cyprus', 'Cyprus'), ('Czechia', 'Czechia'), ('Democratic Republic of the Congo', 'Democratic Republic of the Congo'), ('Denmark', 'Denmark'), ('Djibouti', 'Djibouti'), ('Dominica', 'Dominica'), ('Dominican Republic', 'Dominican Republic'), ('East Timor', 'East Timor'), ('Ecuador', 'Ecuador'), ('Egypt', 'Egypt'), ('El Salvador', 'El Salvador'), ('Equatorial Guinea', 'Equatorial Guinea'), ('Eritrea', 'Eritrea'), ('Estonia', 'Estonia'), ('Ethiopia', 'Ethiopia'), ('Europa Island', 'Europa Island'), ('Falkland Islands (Islas Malvinas)', 'Falkland Islands (Islas Malvinas)'), ('Faroe Islands', 'Faroe Islands'), ('Fiji', 'Fiji'), ('Finland', 'Finland'), ('France', 'France'), ('French Guiana', 'French Guiana'), ('French Polynesia', 'French Polynesia'), ('French Southern and Antarctic Lands', 'French Southern and Antarctic Lands'), ('Gabon', 'Gabon'), ('Gambia', 'Gambia'), ('Gaza Strip', 'Gaza Strip'), ('Georgia', 'Georgia'), ('Germany', 'Germany'), ('Ghana', 'Ghana'), ('Gibraltar', 'Gibraltar'), ('Glorioso Islands', 'Glorioso Islands'), ('Greece', 'Greece'), ('Greenland', 'Greenland'), ('Grenada', 'Grenada'), ('Guadeloupe', 'Guadeloupe'), ('Guam', 'Guam'), ('Guatemala', 'Guatemala'), ('Guernsey', 'Guernsey'), ('Guinea', 'Guinea'), ('Guinea-Bissau', 'Guinea-Bissau'), ('Guyana', 'Guyana'), ('Haiti', 'Haiti'), ('Heard Island and McDonald Islands', 'Heard Island and McDonald Islands'), ('Honduras', 'Honduras'), ('Hong Kong', 'Hong Kong'), ('Howland Island', 'Howland Island'), ('Hungary', 'Hungary'), ('Iceland', 'Iceland'), ('India', 'India'), ('Indian Ocean', 'Indian Ocean'), ('Indonesia', 'Indonesia'), ('Iran', 'Iran'), ('Iraq', 'Iraq'), ('Ireland', 'Ireland'), ('Isle of Man', 'Isle of Man'), ('Israel', 'Israel'), ('Italy', 'Italy'), ('Jamaica', 'Jamaica'), ('Jan Mayen', 'Jan Mayen'), ('Japan', 'Japan'), ('Jarvis Island', 'Jarvis Island'), ('Jersey', 'Jersey'), ('Johnston Atoll', 'Johnston Atoll'), ('Jordan', 'Jordan'), ('Juan de Nova Island', 'Juan de Nova Island'), ('Kazakhstan', 'Kazakhstan'), ('Kenya', 'Kenya'), ('Kerguelen Archipelago', 'Kerguelen Archipelago'), ('Kingman Reef', 'Kingman Reef'), ('Kiribati', 'Kiribati'), ('Kosovo', 'Kosovo'), ('Kuwait', 'Kuwait'), ('Kyrgyzstan', 'Kyrgyzstan'), ('Laos', 'Laos'), ('Latvia', 'Latvia'), ('Lebanon', 'Lebanon'), ('Lesotho', 'Lesotho'), ('Liberia', 'Liberia'), ('Libya', 'Libya'), ('Liechtenstein', 'Liechtenstein'), ('Lithuania', 'Lithuania'), ('Luxembourg', 'Luxembourg'), ('Macau', 'Macau'), ('Macedonia', 'Macedonia'), ('Madagascar', 'Madagascar'), ('Malawi', 'Malawi'), ('Malaysia', 'Malaysia'), ('Maldives', 'Maldives'), ('Mali', 'Mali'), ('Malta', 'Malta'), ('Marshall Islands', 'Marshall Islands'), ('Martinique', 'Martinique'), ('Mauritania', 'Mauritania'), ('Mauritius', 'Mauritius'), ('Mayotte', 'Mayotte'), ('Mediterranean Sea', 'Mediterranean Sea'), ('Mexico', 'Mexico'), ('Micronesia', 'Micronesia'), ('Midway Islands', 'Midway Islands'), ('Moldova', 'Moldova'), ('Monaco', 'Monaco'), ('Mongolia', 'Mongolia'), ('Montenegro', 'Montenegro'), ('Montserrat', 'Montserrat'), ('Morocco', 'Morocco'), ('Mozambique', 'Mozambique'), ('Myanmar', 'Myanmar'), ('Namibia', 'Namibia'), ('Nauru', 'Nauru'), ('Navassa Island', 'Navassa Island'), ('Nepal', 'Nepal'), ('Netherlands', 'Netherlands'), ('New Caledonia', 'New Caledonia'), ('New Zealand', 'New Zealand'), ('Nicaragua', 'Nicaragua'), ('Niger', 'Niger'), ('Nigeria', 'Nigeria'), ('Niue', 'Niue'), ('Norfolk Island', 'Norfolk Island'), ('North Korea', 'North Korea'), ('North Sea', 'North Sea'), ('Northern Mariana Islands', 'Northern Mariana Islands'), ('Norway', 'Norway'), ('Oman', 'Oman'), ('Pacific Ocean', 'Pacific Ocean'), ('Pakistan', 'Pakistan'), ('Palau', 'Palau'), ('Palmyra Atoll', 'Palmyra Atoll'), ('Panama', 'Panama'), ('Papua New Guinea', 'Papua New Guinea'), ('Paracel Islands', 'Paracel Islands'), ('Paraguay', 'Paraguay'), ('Peru', 'Peru'), ('Philippines', 'Philippines'), ('Pitcairn Islands', 'Pitcairn Islands'), ('Poland', 'Poland'), ('Portugal', 'Portugal'), ('Puerto Rico', 'Puerto Rico'), ('Qatar', 'Qatar'), ('Republic of the Congo', 'Republic of the Congo'), ('Reunion', 'Reunion'), ('Romania', 'Romania'), ('Ross Sea', 'Ross Sea'), ('Russia', 'Russia'), ('Rwanda', 'Rwanda'), ('Saint Helena', 'Saint Helena'), ('Saint Kitts and Nevis', 'Saint Kitts and Nevis'), ('Saint Lucia', 'Saint Lucia'), ('Saint Pierre and Miquelon', 'Saint Pierre and Miquelon'), ('Saint Vincent and the Grenadines', 'Saint Vincent and the Grenadines'), ('Samoa', 'Samoa'), ('San Marino', 'San Marino'), ('Sao Tome and Principe', 'Sao Tome and Principe'), ('Saudi Arabia', 'Saudi Arabia'), ('Senegal', 'Senegal'), ('Serbia', 'Serbia'), ('Seychelles', 'Seychelles'), ('Sierra Leone', 'Sierra Leone'), ('Singapore', 'Singapore'), ('Sint Maarten', 'Sint Maarten'), ('Slovakia', 'Slovakia'), ('Slovenia', 'Slovenia'), ('Solomon Islands', 'Solomon Islands'), ('Somalia', 'Somalia'), ('South Africa', 'South Africa'), ('South Georgia and the South Sandwich Islands', 'South Georgia and the South Sandwich Islands'), ('South Korea', 'South Korea'), ('Southern Ocean', 'Southern Ocean'), ('Spain', 'Spain'), ('Spratly Islands', 'Spratly Islands'), ('Sri Lanka', 'Sri Lanka'), ('Sudan', 'Sudan'), ('Suriname', 'Suriname'), ('Svalbard', 'Svalbard'), ('Swaziland', 'Swaziland'), ('Sweden', 'Sweden'), ('Switzerland', 'Switzerland'), ('Syria', 'Syria'), ('Taiwan', 'Taiwan'), ('Tajikistan', 'Tajikistan'), ('Tanzania', 'Tanzania'), ('Tasman Sea', 'Tasman Sea'), ('Thailand', 'Thailand'), ('Togo', 'Togo'), ('Tokelau', 'Tokelau'), ('Tonga', 'Tonga'), ('Trinidad and Tobago', 'Trinidad and Tobago'), ('Tromelin Island', 'Tromelin Island'), ('Tunisia', 'Tunisia'), ('Turkey', 'Turkey'), ('Turkmenistan', 'Turkmenistan'), ('Turks and Caicos Islands', 'Turks and Caicos Islands'), ('Tuvalu', 'Tuvalu'), ('USA', 'USA'), ('Uganda', 'Uganda'), ('Ukraine', 'Ukraine'), ('United Arab Emirates', 'United Arab Emirates'), ('United Kingdom', 'United Kingdom'), ('Uruguay', 'Uruguay'), ('Uzbekistan', 'Uzbekistan'), ('Vanuatu', 'Vanuatu'), ('Venezuela', 'Venezuela'), ('Viet Nam', 'Viet Nam'), ('Virgin Islands', 'Virgin Islands'), ('Wake Island', 'Wake Island'), ('Wallis and Futuna', 'Wallis and Futuna'), ('West Bank', 'West Bank'), ('Western Sahara', 'Western Sahara'), ('Yemen', 'Yemen'), ('Zambia', 'Zambia'), ('Zimbabwe', 'Zimbabwe'), ('missing', 'missing'), ('missing: control sample', 'missing: control sample'), ('missing: data agreement established pre-2023', 'missing: data agreement established pre-2023'), ('missing: endangered species', 'missing: endangered species'), ('missing: human-identifiable', 'missing: human-identifiable'), ('missing: lab stock', 'missing: lab stock'), ('missing: sample group', 'missing: sample group'), ('missing: synthetic construct', 'missing: synthetic construct'), ('missing: third party data', 'missing: third party data'), ('not applicable', 'not applicable'), ('not collected', 'not collected'), ('not provided', 'not provided'), ('restricted access', 'restricted access')]
+	observed_biotic_relationship_choice = [('commensal', 'commensal'), ('free living', 'free living'), ('mutualism', 'mutualism'), ('parasite', 'parasite'), ('symbiont', 'symbiont')]
 
-	sample_derived_from_validator = "(^[ESD]R[SR]\d{6,}(,[ESD]R[SR]\d{6,})*$)|(^SAM[END][AG]?\d+(,SAM[END][AG]?\d+)*$)|(^EGA[NR]\d{11}(,EGA[NR]\d{11})*$)|(^[ESD]R[SR]\d{6,}-[ESD]R[SR]\d{6,}$)|(^SAM[END][AG]?\d+-SAM[END][AG]?\d+$)|(^EGA[NR]\d{11}-EGA[NR]\d{11}$)"
-	number_of_standard_tRNAs_extracted_validator = "[+-]?[0-9]+"
-	completeness_score_validator = "^(\d|[1-9]\d|\d\.\d{1,2}|[1-9]\d\.\d{1,2}|100)$"
-	contamination_score_validator = "^(\d|[1-9]\d|\d\.\d{1,2}|[1-9]\d\.\d{1,2}|100)$"
-	collection_date_validator = "(^[12][0-9]{3}(-(0[1-9]|1[0-2])(-(0[1-9]|[12][0-9]|3[01])(T[0-9]{2}:[0-9]{2}(:[0-9]{2})?Z?([+-][0-9]{1,2})?)?)?)?(/[0-9]{4}(-[0-9]{2}(-[0-9]{2}(T[0-9]{2}:[0-9]{2}(:[0-9]{2})?Z?([+-][0-9]{1,2})?)?)?)?)?$)|(^not applicable$)|(^not collected$)|(^not provided$)|(^restricted access$)|(^missing: control sample$)|(^missing: sample group$)|(^missing: synthetic construct$)|(^missing: lab stock$)|(^missing: third party data$)|(^missing: data agreement established pre-2023$)|(^missing: endangered species$)|(^missing: human-identifiable$)|(^missing$)"
-	altitude_validator = "((0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?)|((^not collected$)|(^not provided$)|(^restricted access$)|(^missing: control sample$)|(^missing: sample group$)|(^missing: synthetic construct$)|(^missing: lab stock$)|(^missing: third party data$)|(^missing: data agreement established pre-2023$)|(^missing: endangered species$)|(^missing: human-identifiable$)|(^missing$))"
-	geographic_location_latitude_validator = "(^[+-]?[0-9]+.?[0-9]{0,8}$)|(^not applicable$)|(^not collected$)|(^not provided$)|(^restricted access$)|(^missing: control sample$)|(^missing: sample group$)|(^missing: synthetic construct$)|(^missing: lab stock$)|(^missing: third party data$)|(^missing: data agreement established pre-2023$)|(^missing: endangered species$)|(^missing: human-identifiable$)|(^missing$)"
-	geographic_location_longitude_validator = "(^[+-]?[0-9]+.?[0-9]{0,8}$)|(^not applicable$)|(^not collected$)|(^not provided$)|(^restricted access$)|(^missing: control sample$)|(^missing: sample group$)|(^missing: synthetic construct$)|(^missing: lab stock$)|(^missing: third party data$)|(^missing: data agreement established pre-2023$)|(^missing: endangered species$)|(^missing: human-identifiable$)|(^missing$)"
-	elevation_validator = "([+-]?(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?)|((^not collected$)|(^not provided$)|(^restricted access$)|(^missing: control sample$)|(^missing: sample group$)|(^missing: synthetic construct$)|(^missing: lab stock$)|(^missing: third party data$)|(^missing: data agreement established pre-2023$)|(^missing: endangered species$)|(^missing: human-identifiable$)|(^missing$))"
-	amount_or_size_of_sample_collected_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	slope_gradient_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	number_of_replicons_validator = "[+-]?[0-9]+"
+	extrachromosomal_elements_validator = "[+-]?[0-9]+"
+	estimated_size_validator = "[+-]?[0-9]+"
+	sample_volume_or_weight_for_DNA_extraction_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
 	library_size_validator = "[+-]?[0-9]+"
 	library_reads_sequenced_validator = "[+-]?[0-9]+"
-	depth_validator = "((0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?)|((^not collected$)|(^not provided$)|(^restricted access$)|(^missing: control sample$)|(^missing: sample group$)|(^missing: synthetic construct$)|(^missing: lab stock$)|(^missing: third party data$)|(^missing: data agreement established pre-2023$)|(^missing: endangered species$)|(^missing: human-identifiable$)|(^missing$))"
+	collection_date_validator = "(^[12][0-9]{3}(-(0[1-9]|1[0-2])(-(0[1-9]|[12][0-9]|3[01])(T[0-9]{2}:[0-9]{2}(:[0-9]{2})?Z?([+-][0-9]{1,2})?)?)?)?(/[0-9]{4}(-[0-9]{2}(-[0-9]{2}(T[0-9]{2}:[0-9]{2}(:[0-9]{2})?Z?([+-][0-9]{1,2})?)?)?)?)?$)|(^not collected$)|(^not provided$)|(^restricted access$)|(^missing: control sample$)|(^missing: sample group$)|(^missing: synthetic construct$)|(^missing: lab stock$)|(^missing: third party data$)|(^missing: data agreement established pre-2023$)|(^missing: endangered species$)|(^missing: human-identifiable$)"
+	altitude_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	geographic_location_latitude_validator = "(^[+-]?[0-9]+.?[0-9]{0,8}$)|(^not collected$)|(^not provided$)|(^restricted access$)|(^missing: control sample$)|(^missing: sample group$)|(^missing: synthetic construct$)|(^missing: lab stock$)|(^missing: third party data$)|(^missing: data agreement established pre-2023$)|(^missing: endangered species$)|(^missing: human-identifiable$)"
+	geographic_location_longitude_validator = "(^[+-]?[0-9]+.?[0-9]{0,8}$)|(^not collected$)|(^not provided$)|(^restricted access$)|(^missing: control sample$)|(^missing: sample group$)|(^missing: synthetic construct$)|(^missing: lab stock$)|(^missing: third party data$)|(^missing: data agreement established pre-2023$)|(^missing: endangered species$)|(^missing: human-identifiable$)"
+	depth_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	elevation_validator = "[+-]?(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	amount_or_size_of_sample_collected_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	sample_weight_for_DNA_extraction_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	microbial_biomass_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	extreme_unusual_properties_Al_saturation_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	mean_annual_and_seasonal_temperature_validator = "[+-]?(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	mean_annual_and_seasonal_precipitation_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	temperature_validator = "[+-]?(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	pH_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	organic_matter_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	total_organic_carbon_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	water_content_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	total_nitrogen_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
 
 	sampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE, default=1)
 	sample = models.ForeignKey(Sample, on_delete=models.CASCADE, default=1)
 	sample_type = models.IntegerField(default=1)
-	relationship_to_oxygen= models.CharField(max_length=120, blank=True,help_text="Is this or", choices=relationship_to_oxygen_choice)
-	sample_collection_method= models.CharField(max_length=120, blank=True,help_text="The method")
-	metagenomic_source= models.CharField(max_length=120, blank=False,help_text="The metage")
-	sample_derived_from= models.CharField(max_length=120, blank=False,help_text="Reference ", validators=[RegexValidator(sample_derived_from_validator)])
+	slope_gradient= models.CharField(max_length=120, blank=True,help_text="commonly c", validators=[RegexValidator(slope_gradient_validator)])
+	slope_aspect= models.CharField(max_length=120, blank=True,help_text="the direct")
+	profile_position= models.CharField(max_length=120, blank=True,help_text="cross-sect", choices=profile_position_choice)
 	project_name= models.CharField(max_length=120, blank=False,help_text="Name of th")
-	multiplex_identifiers= models.CharField(max_length=120, blank=True,help_text="Molecular ")
-	relevant_electronic_resources= models.CharField(max_length=120, blank=True,help_text="A related ")
-	relevant_standard_operating_procedures= models.CharField(max_length=120, blank=True,help_text="Standard o")
-	number_of_standard_tRNAs_extracted= models.CharField(max_length=120, blank=True,help_text="The total ", validators=[RegexValidator(number_of_standard_tRNAs_extracted_validator)])
-	sixteen_s_recovered= models.CharField(max_length=120, blank=True,help_text="Can a 16S ", choices=sixteen_s_recovered_choice)
-	sixteen_s_recovery_software= models.CharField(max_length=120, blank=True,help_text="Tools used")
-	tRNA_extraction_software= models.CharField(max_length=120, blank=True,help_text="Tools used")
-	completeness_score= models.CharField(max_length=120, blank=False,help_text="Completene", validators=[RegexValidator(completeness_score_validator)])
-	completeness_software= models.CharField(max_length=120, blank=False,help_text="Tools used")
-	completeness_approach= models.CharField(max_length=120, blank=True,help_text="The approa")
-	contamination_score= models.CharField(max_length=120, blank=False,help_text="The contam", validators=[RegexValidator(contamination_score_validator)])
-	contamination_screening_input= models.CharField(max_length=120, blank=True,help_text="The type o", choices=contamination_screening_input_choice)
-	contamination_screening_parameters= models.CharField(max_length=120, blank=True,help_text="Specific p")
-	decontamination_software= models.CharField(max_length=120, blank=True,help_text="Tool(s) us")
-	binning_software= models.CharField(max_length=120, blank=False,help_text="Tool(s) us")
-	reassembly_post_binning= models.CharField(max_length=120, blank=True,help_text="Has an ass", choices=reassembly_post_binning_choice)
-	MAG_coverage_software= models.CharField(max_length=120, blank=True,help_text="Tool(s) us")
-	assembly_quality= models.CharField(max_length=120, blank=False,help_text="The assemb", choices=assembly_quality_choice)
-	investigation_type= models.CharField(max_length=120, blank=True,help_text="Nucleic Ac", choices=investigation_type_choice)
-	binning_parameters= models.CharField(max_length=120, blank=False,help_text="The parame")
-	taxonomic_identity_marker= models.CharField(max_length=120, blank=False,help_text="The phylog")
-	isolation_source= models.CharField(max_length=120, blank=False,help_text="describes ")
-	collection_date= models.CharField(max_length=120, blank=False,help_text="The date t", validators=[RegexValidator(collection_date_validator)])
-	altitude= models.CharField(max_length=120, blank=True,help_text="The altitu", validators=[RegexValidator(altitude_validator)])
-	geographic_location_latitude= models.CharField(max_length=120, blank=False,help_text="The geogra", validators=[RegexValidator(geographic_location_latitude_validator)])
-	geographic_location_longitude= models.CharField(max_length=120, blank=False,help_text="The geogra", validators=[RegexValidator(geographic_location_longitude_validator)])
-	broad_scale_environmental_context= models.CharField(max_length=120, blank=False,help_text="Report the")
-	local_environmental_context= models.CharField(max_length=120, blank=False,help_text="Report the")
-	environmental_medium= models.CharField(max_length=120, blank=False,help_text="Report the")
-	elevation= models.CharField(max_length=120, blank=True,help_text="The elevat", validators=[RegexValidator(elevation_validator)])
-	amount_or_size_of_sample_collected= models.CharField(max_length=120, blank=True,help_text="The total ", validators=[RegexValidator(amount_or_size_of_sample_collected_validator)])
-	size_fraction_selected= models.CharField(max_length=120, blank=True,help_text="Filtering ")
-	geographic_location_country_and_or_sea= models.CharField(max_length=120, blank=False,help_text="The geogra", choices=geographic_location_country_and_or_sea_choice)
-	source_material_identifiers= models.CharField(max_length=120, blank=True,help_text="A unique i")
 	experimental_factor= models.CharField(max_length=120, blank=True,help_text="Experiment")
-	taxonomic_classification= models.CharField(max_length=120, blank=True,help_text="Method use")
+	ploidy= models.CharField(max_length=120, blank=True,help_text="The ploidy")
+	number_of_replicons= models.CharField(max_length=120, blank=True,help_text="Reports th", validators=[RegexValidator(number_of_replicons_validator)])
+	extrachromosomal_elements= models.CharField(max_length=120, blank=True,help_text="Do plasmid", validators=[RegexValidator(extrachromosomal_elements_validator)])
+	estimated_size= models.CharField(max_length=120, blank=True,help_text="The estima", validators=[RegexValidator(estimated_size_validator)])
 	reference_for_biomaterial= models.CharField(max_length=120, blank=True,help_text="Primary pu")
-	sample_material_processing= models.CharField(max_length=120, blank=True,help_text="A brief de")
+	annotation_source= models.CharField(max_length=120, blank=True,help_text="For cases ")
+	sample_volume_or_weight_for_DNA_extraction= models.CharField(max_length=120, blank=True,help_text="Volume (ml", validators=[RegexValidator(sample_volume_or_weight_for_DNA_extraction_validator)])
 	nucleic_acid_extraction= models.CharField(max_length=120, blank=True,help_text="A link to ")
 	nucleic_acid_amplification= models.CharField(max_length=120, blank=True,help_text="A link to ")
 	library_size= models.CharField(max_length=120, blank=True,help_text="Total numb", validators=[RegexValidator(library_size_validator)])
 	library_reads_sequenced= models.CharField(max_length=120, blank=True,help_text="Total numb", validators=[RegexValidator(library_reads_sequenced_validator)])
+	library_construction_method= models.CharField(max_length=120, blank=True,help_text="Library co")
 	library_vector= models.CharField(max_length=120, blank=True,help_text="Cloning ve")
 	library_screening_strategy= models.CharField(max_length=120, blank=True,help_text="Specific e")
-	assembly_software= models.CharField(max_length=120, blank=False,help_text="Tool(s) us")
+	target_gene= models.CharField(max_length=120, blank=True,help_text="Targeted g")
+	target_subfragment= models.CharField(max_length=120, blank=True,help_text="Name of su")
+	pcr_primers= models.CharField(max_length=120, blank=True,help_text="PCR primer")
+	multiplex_identifiers= models.CharField(max_length=120, blank=True,help_text="Molecular ")
 	adapters= models.CharField(max_length=120, blank=True,help_text="Adapters p")
-	depth= models.CharField(max_length=120, blank=True,help_text="The vertic", validators=[RegexValidator(depth_validator)])
+	pcr_conditions= models.CharField(max_length=120, blank=True,help_text="Descriptio")
+	sequencing_method= models.CharField(max_length=120, blank=True,help_text="Sequencing")
+	sequence_quality_check= models.CharField(max_length=120, blank=True,help_text="Indicate i", choices=sequence_quality_check_choice)
+	chimera_check_software= models.CharField(max_length=120, blank=True,help_text="Tool(s) us")
+	relevant_electronic_resources= models.CharField(max_length=120, blank=True,help_text="A related ")
+	relevant_standard_operating_procedures= models.CharField(max_length=120, blank=True,help_text="Standard o")
+	pooling_of_DNA_extracts_if_done= models.CharField(max_length=120, blank=True,help_text="were multi")
+	negative_control_type= models.CharField(max_length=120, blank=True,help_text="The substa")
+	positive_control_type= models.CharField(max_length=120, blank=True,help_text="The substa")
+	collection_date= models.CharField(max_length=120, blank=False,help_text="The date t", validators=[RegexValidator(collection_date_validator)])
+	altitude= models.CharField(max_length=120, blank=True,help_text="The altitu", validators=[RegexValidator(altitude_validator)])
+	geographic_location_country_and_or_sea= models.CharField(max_length=120, blank=False,help_text="The locati", choices=geographic_location_country_and_or_sea_choice)
+	geographic_location_latitude= models.CharField(max_length=120, blank=False,help_text="The geogra", validators=[RegexValidator(geographic_location_latitude_validator)])
+	geographic_location_longitude= models.CharField(max_length=120, blank=False,help_text="The geogra", validators=[RegexValidator(geographic_location_longitude_validator)])
+	geographic_location_region_and_locality= models.CharField(max_length=120, blank=True,help_text="The geogra")
+	depth= models.CharField(max_length=120, blank=False,help_text="The vertic", validators=[RegexValidator(depth_validator)])
+	broad_scale_environmental_context= models.CharField(max_length=120, blank=False,help_text="Report the")
+	local_environmental_context= models.CharField(max_length=120, blank=False,help_text="Report the")
+	environmental_medium= models.CharField(max_length=120, blank=False,help_text="Report the")
+	elevation= models.CharField(max_length=120, blank=False,help_text="The elevat", validators=[RegexValidator(elevation_validator)])
+	source_material_identifiers= models.CharField(max_length=120, blank=True,help_text="A unique i")
+	sample_material_processing= models.CharField(max_length=120, blank=True,help_text="A brief de")
+	isolation_and_growth_condition= models.CharField(max_length=120, blank=True,help_text="Publicatio")
+	propagation= models.CharField(max_length=120, blank=True,help_text="The type o")
+	amount_or_size_of_sample_collected= models.CharField(max_length=120, blank=True,help_text="The total ", validators=[RegexValidator(amount_or_size_of_sample_collected_validator)])
+	composite_design_sieving_if_any= models.CharField(max_length=120, blank=True,help_text="collection")
+	sample_weight_for_DNA_extraction= models.CharField(max_length=120, blank=True,help_text="weight (g)", validators=[RegexValidator(sample_weight_for_DNA_extraction_validator)])
+	storage_conditions_fresh_frozen_other= models.CharField(max_length=120, blank=True,help_text="explain ho")
+	microbial_biomass= models.CharField(max_length=120, blank=True,help_text="the part o", validators=[RegexValidator(microbial_biomass_validator)])
+	microbial_biomass_method= models.CharField(max_length=120, blank=True,help_text="reference ")
+	sample_collection_device= models.CharField(max_length=120, blank=True,help_text="The device")
+	sample_collection_method= models.CharField(max_length=120, blank=True,help_text="The method")
+	salinity_method= models.CharField(max_length=120, blank=True,help_text="reference ")
+	extreme_unusual_properties_heavy_metals= models.CharField(max_length=120, blank=True,help_text="heavy meta")
+	extreme_unusual_properties_heavy_metals_method= models.CharField(max_length=120, blank=True,help_text="reference ")
+	extreme_unusual_properties_Al_saturation= models.CharField(max_length=120, blank=True,help_text="aluminum s", validators=[RegexValidator(extreme_unusual_properties_Al_saturation_validator)])
+	extreme_unusual_properties_Al_saturation_method= models.CharField(max_length=120, blank=True,help_text="reference ")
+	host_disease_status= models.CharField(max_length=120, blank=True,help_text="list of di")
+	host_scientific_name= models.CharField(max_length=120, blank=True,help_text="Scientific")
+	link_to_climate_information= models.CharField(max_length=120, blank=True,help_text="link to cl")
+	link_to_classification_information= models.CharField(max_length=120, blank=True,help_text="link to di")
+	links_to_additional_analysis= models.CharField(max_length=120, blank=True,help_text="link to ad")
+	current_land_use= models.CharField(max_length=120, blank=True,help_text="present st")
+	current_vegetation= models.CharField(max_length=120, blank=True,help_text="vegetation")
+	current_vegetation_method= models.CharField(max_length=120, blank=True,help_text="reference ")
+	soil_horizon= models.CharField(max_length=120, blank=True,help_text="specific l", choices=soil_horizon_choice)
+	soil_horizon_method= models.CharField(max_length=120, blank=True,help_text="reference ")
+	mean_annual_and_seasonal_temperature= models.CharField(max_length=120, blank=True,help_text="mean annua", validators=[RegexValidator(mean_annual_and_seasonal_temperature_validator)])
+	mean_annual_and_seasonal_precipitation= models.CharField(max_length=120, blank=True,help_text="mean annua", validators=[RegexValidator(mean_annual_and_seasonal_precipitation_validator)])
+	soil_taxonomic_FAO_classification= models.CharField(max_length=120, blank=True,help_text="soil class")
+	soil_taxonomic_local_classification= models.CharField(max_length=120, blank=True,help_text="soil class")
+	soil_taxonomic_local_classification_method= models.CharField(max_length=120, blank=True,help_text="reference ")
+	soil_type= models.CharField(max_length=120, blank=True,help_text="Descriptio", choices=soil_type_choice)
+	soil_type_method= models.CharField(max_length=120, blank=True,help_text="reference ")
+	drainage_classification= models.CharField(max_length=120, blank=True,help_text="drainage c", choices=drainage_classification_choice)
+	temperature= models.CharField(max_length=120, blank=True,help_text="temperatur", validators=[RegexValidator(temperature_validator)])
+	soil_texture_measurement= models.CharField(max_length=120, blank=True,help_text="the relati")
+	soil_texture_method= models.CharField(max_length=120, blank=True,help_text="reference ")
+	pH= models.CharField(max_length=120, blank=True,help_text="pH measure", validators=[RegexValidator(pH_validator)])
+	pH_method= models.CharField(max_length=120, blank=True,help_text="reference ")
+	water_content_method= models.CharField(max_length=120, blank=True,help_text="reference ")
+	total_organic_C_method= models.CharField(max_length=120, blank=True,help_text="reference ")
+	total_nitrogen_method= models.CharField(max_length=120, blank=True,help_text="reference ")
+	organic_matter= models.CharField(max_length=120, blank=True,help_text="concentrat", validators=[RegexValidator(organic_matter_validator)])
+	total_organic_carbon= models.CharField(max_length=120, blank=True,help_text="Definition", validators=[RegexValidator(total_organic_carbon_validator)])
+	water_content= models.CharField(max_length=120, blank=True,help_text="water cont", validators=[RegexValidator(water_content_validator)])
+	total_nitrogen= models.CharField(max_length=120, blank=True,help_text="total nitr", validators=[RegexValidator(total_nitrogen_validator)])
+	history_previous_land_use= models.CharField(max_length=120, blank=True,help_text="previous l")
+	history_previous_land_use_method= models.CharField(max_length=120, blank=True,help_text="reference ")
+	history_crop_rotation= models.CharField(max_length=120, blank=True,help_text="whether or")
+	history_agrochemical_additions= models.CharField(max_length=120, blank=True,help_text="addition o")
+	history_tillage= models.CharField(max_length=120, blank=True,help_text="note metho", choices=history_tillage_choice)
+	history_fire= models.CharField(max_length=120, blank=True,help_text="historical")
+	history_flooding= models.CharField(max_length=120, blank=True,help_text="historical")
+	history_extreme_events= models.CharField(max_length=120, blank=True,help_text="unusual ph")
+	subspecific_genetic_lineage= models.CharField(max_length=120, blank=True,help_text="Informatio")
+	trophic_level= models.CharField(max_length=120, blank=True,help_text="Trophic le", choices=trophic_level_choice)
+	relationship_to_oxygen= models.CharField(max_length=120, blank=True,help_text="Is this or", choices=relationship_to_oxygen_choice)
+	known_pathogenicity= models.CharField(max_length=120, blank=True,help_text="To what is")
+	encoded_traits= models.CharField(max_length=120, blank=True,help_text="Should inc")
+	observed_biotic_relationship= models.CharField(max_length=120, blank=True,help_text="Is it free", choices=observed_biotic_relationship_choice)
+	perturbation= models.CharField(max_length=120, blank=True,help_text="type of pe")
 
 	fields = {
-		'relationship_to_oxygen': 'relationship_to_oxygen',
-		'sample_collection_method': 'sample_collection_method',
-		'metagenomic_source': 'metagenomic_source',
-		'sample_derived_from': 'sample_derived_from',
+		'slope_gradient': 'slope_gradient',
+		'slope_aspect': 'slope_aspect',
+		'profile_position': 'profile_position',
 		'project_name': 'project_name',
-		'multiplex_identifiers': 'multiplex_identifiers',
-		'relevant_electronic_resources': 'relevant_electronic_resources',
-		'relevant_standard_operating_procedures': 'relevant_standard_operating_procedures',
-		'number_of_standard_tRNAs_extracted': 'number_of_standard_tRNAs_extracted',
-		'sixteen_s_recovered': 'sixteen_s_recovered',
-		'sixteen_s_recovery_software': 'sixteen_s_recovery_software',
-		'tRNA_extraction_software': 'tRNA_extraction_software',
-		'completeness_score': 'completeness_score',
-		'completeness_software': 'completeness_software',
-		'completeness_approach': 'completeness_approach',
-		'contamination_score': 'contamination_score',
-		'contamination_screening_input': 'contamination_screening_input',
-		'contamination_screening_parameters': 'contamination_screening_parameters',
-		'decontamination_software': 'decontamination_software',
-		'binning_software': 'binning_software',
-		'reassembly_post_binning': 'reassembly_post_binning',
-		'MAG_coverage_software': 'MAG_coverage_software',
-		'assembly_quality': 'assembly_quality',
-		'investigation_type': 'investigation_type',
-		'binning_parameters': 'binning_parameters',
-		'taxonomic_identity_marker': 'taxonomic_identity_marker',
-		'isolation_source': 'isolation_source',
-		'collection_date': 'collection_date',
-		'altitude': 'altitude',
-		'geographic_location_latitude': 'geographic_location_latitude',
-		'geographic_location_longitude': 'geographic_location_longitude',
-		'broad_scale_environmental_context': 'broad_scale_environmental_context',
-		'local_environmental_context': 'local_environmental_context',
-		'environmental_medium': 'environmental_medium',
-		'elevation': 'elevation',
-		'amount_or_size_of_sample_collected': 'amount_or_size_of_sample_collected',
-		'size_fraction_selected': 'size_fraction_selected',
-		'geographic_location_country_and_or_sea': 'geographic_location_country_and_or_sea',
-		'source_material_identifiers': 'source_material_identifiers',
 		'experimental_factor': 'experimental_factor',
-		'taxonomic_classification': 'taxonomic_classification',
+		'ploidy': 'ploidy',
+		'number_of_replicons': 'number_of_replicons',
+		'extrachromosomal_elements': 'extrachromosomal_elements',
+		'estimated_size': 'estimated_size',
 		'reference_for_biomaterial': 'reference_for_biomaterial',
-		'sample_material_processing': 'sample_material_processing',
+		'annotation_source': 'annotation_source',
+		'sample_volume_or_weight_for_DNA_extraction': 'sample_volume_or_weight_for_DNA_extraction',
 		'nucleic_acid_extraction': 'nucleic_acid_extraction',
 		'nucleic_acid_amplification': 'nucleic_acid_amplification',
 		'library_size': 'library_size',
 		'library_reads_sequenced': 'library_reads_sequenced',
+		'library_construction_method': 'library_construction_method',
 		'library_vector': 'library_vector',
 		'library_screening_strategy': 'library_screening_strategy',
-		'assembly_software': 'assembly_software',
+		'target_gene': 'target_gene',
+		'target_subfragment': 'target_subfragment',
+		'pcr_primers': 'pcr_primers',
+		'multiplex_identifiers': 'multiplex_identifiers',
 		'adapters': 'adapters',
+		'pcr_conditions': 'pcr_conditions',
+		'sequencing_method': 'sequencing_method',
+		'sequence_quality_check': 'sequence_quality_check',
+		'chimera_check_software': 'chimera_check_software',
+		'relevant_electronic_resources': 'relevant_electronic_resources',
+		'relevant_standard_operating_procedures': 'relevant_standard_operating_procedures',
+		'pooling_of_DNA_extracts_if_done': 'pooling_of_DNA_extracts_if_done',
+		'negative_control_type': 'negative_control_type',
+		'positive_control_type': 'positive_control_type',
+		'collection_date': 'collection_date',
+		'altitude': 'altitude',
+		'geographic_location_country_and_or_sea': 'geographic_location_country_and_or_sea',
+		'geographic_location_latitude': 'geographic_location_latitude',
+		'geographic_location_longitude': 'geographic_location_longitude',
+		'geographic_location_region_and_locality': 'geographic_location_region_and_locality',
 		'depth': 'depth',
+		'broad_scale_environmental_context': 'broad_scale_environmental_context',
+		'local_environmental_context': 'local_environmental_context',
+		'environmental_medium': 'environmental_medium',
+		'elevation': 'elevation',
+		'source_material_identifiers': 'source_material_identifiers',
+		'sample_material_processing': 'sample_material_processing',
+		'isolation_and_growth_condition': 'isolation_and_growth_condition',
+		'propagation': 'propagation',
+		'amount_or_size_of_sample_collected': 'amount_or_size_of_sample_collected',
+		'composite_design_sieving_if_any': 'composite_design_sieving_if_any',
+		'sample_weight_for_DNA_extraction': 'sample_weight_for_DNA_extraction',
+		'storage_conditions_fresh_frozen_other': 'storage_conditions_fresh_frozen_other',
+		'microbial_biomass': 'microbial_biomass',
+		'microbial_biomass_method': 'microbial_biomass_method',
+		'sample_collection_device': 'sample_collection_device',
+		'sample_collection_method': 'sample_collection_method',
+		'salinity_method': 'salinity_method',
+		'extreme_unusual_properties_heavy_metals': 'extreme_unusual_properties_heavy_metals',
+		'extreme_unusual_properties_heavy_metals_method': 'extreme_unusual_properties_heavy_metals_method',
+		'extreme_unusual_properties_Al_saturation': 'extreme_unusual_properties_Al_saturation',
+		'extreme_unusual_properties_Al_saturation_method': 'extreme_unusual_properties_Al_saturation_method',
+		'host_disease_status': 'host_disease_status',
+		'host_scientific_name': 'host_scientific_name',
+		'link_to_climate_information': 'link_to_climate_information',
+		'link_to_classification_information': 'link_to_classification_information',
+		'links_to_additional_analysis': 'links_to_additional_analysis',
+		'current_land_use': 'current_land_use',
+		'current_vegetation': 'current_vegetation',
+		'current_vegetation_method': 'current_vegetation_method',
+		'soil_horizon': 'soil_horizon',
+		'soil_horizon_method': 'soil_horizon_method',
+		'mean_annual_and_seasonal_temperature': 'mean_annual_and_seasonal_temperature',
+		'mean_annual_and_seasonal_precipitation': 'mean_annual_and_seasonal_precipitation',
+		'soil_taxonomic_FAO_classification': 'soil_taxonomic_FAO_classification',
+		'soil_taxonomic_local_classification': 'soil_taxonomic_local_classification',
+		'soil_taxonomic_local_classification_method': 'soil_taxonomic_local_classification_method',
+		'soil_type': 'soil_type',
+		'soil_type_method': 'soil_type_method',
+		'drainage_classification': 'drainage_classification',
+		'temperature': 'temperature',
+		'soil_texture_measurement': 'soil_texture_measurement',
+		'soil_texture_method': 'soil_texture_method',
+		'pH': 'pH',
+		'pH_method': 'pH_method',
+		'water_content_method': 'water_content_method',
+		'total_organic_C_method': 'total_organic_C_method',
+		'total_nitrogen_method': 'total_nitrogen_method',
+		'organic_matter': 'organic_matter',
+		'total_organic_carbon': 'total_organic_carbon',
+		'water_content': 'water_content',
+		'total_nitrogen': 'total_nitrogen',
+		'history_previous_land_use': 'history_previous_land_use',
+		'history_previous_land_use_method': 'history_previous_land_use_method',
+		'history_crop_rotation': 'history_crop_rotation',
+		'history_agrochemical_additions': 'history_agrochemical_additions',
+		'history_tillage': 'history_tillage',
+		'history_fire': 'history_fire',
+		'history_flooding': 'history_flooding',
+		'history_extreme_events': 'history_extreme_events',
+		'subspecific_genetic_lineage': 'subspecific_genetic_lineage',
+		'trophic_level': 'trophic_level',
+		'relationship_to_oxygen': 'relationship_to_oxygen',
+		'known_pathogenicity': 'known_pathogenicity',
+		'encoded_traits': 'encoded_traits',
+		'observed_biotic_relationship': 'observed_biotic_relationship',
+		'perturbation': 'perturbation',
 	}
 
-	name = 'ENA_binned_metagenome'
+	name = 'GSC_MIxS_soil'
 
-class ENA_binned_metagenome_unit(SelfDescribingModel):
+class GSC_MIxS_soil_unit(SelfDescribingModel):
 
-	completeness_score_units = [('%', '%')]
-	contamination_score_units = [('%', '%')]
-	reassembly_post_binning_units = [('No', 'No'), ('Yes', 'Yes')]
+	slope_gradient_units = [('%', '%')]
+	sample_volume_or_weight_for_DNA_extraction_units = [('g', 'g'), ('mL', 'mL'), ('mg', 'mg'), ('ng', 'ng')]
 	altitude_units = [('m', 'm')]
 	geographic_location_latitude_units = [('DD', 'DD')]
 	geographic_location_longitude_units = [('DD', 'DD')]
+	depth_units = [('m', 'm')]
 	elevation_units = [('m', 'm')]
 	amount_or_size_of_sample_collected_units = [('L', 'L'), ('g', 'g'), ('kg', 'kg'), ('m2', 'm2'), ('m3', 'm3')]
-	depth_units = [('m', 'm'), ('mm', 'mm')]
+	sample_weight_for_DNA_extraction_units = [('g', 'g')]
+	microbial_biomass_units = [('g/kg', 'g/kg')]
+	extreme_unusual_properties_Al_saturation_units = [('%', '%')]
+	mean_annual_and_seasonal_temperature_units = [('ºC', 'ºC')]
+	mean_annual_and_seasonal_precipitation_units = [('mm', 'mm')]
+	temperature_units = [('ºC', 'ºC')]
+	soil_texture_measurement_units = [('% sand/silt/clay', '% sand/silt/clay')]
+	organic_matter_units = [('µg/L', 'µg/L')]
+	total_organic_carbon_units = [('g/kg', 'g/kg')]
+	water_content_units = [('cm3/cm3', 'cm3/cm3'), ('g/g', 'g/g')]
+	total_nitrogen_units = [('µg/L', 'µg/L'), ('µmol/L', 'µmol/L')]
 
 	fields = {
-		'completeness_score': 'completeness_score',
-		'contamination_score': 'contamination_score',
-		'reassembly_post_binning': 'reassembly_post_binning',
+		'slope_gradient': 'slope_gradient',
+		'sample_volume_or_weight_for_DNA_extraction': 'sample_volume_or_weight_for_DNA_extraction',
 		'altitude': 'altitude',
 		'geographic_location_latitude': 'geographic_location_latitude',
 		'geographic_location_longitude': 'geographic_location_longitude',
+		'depth': 'depth',
 		'elevation': 'elevation',
 		'amount_or_size_of_sample_collected': 'amount_or_size_of_sample_collected',
-		'depth': 'depth',
+		'sample_weight_for_DNA_extraction': 'sample_weight_for_DNA_extraction',
+		'microbial_biomass': 'microbial_biomass',
+		'extreme_unusual_properties_Al_saturation': 'extreme_unusual_properties_Al_saturation',
+		'mean_annual_and_seasonal_temperature': 'mean_annual_and_seasonal_temperature',
+		'mean_annual_and_seasonal_precipitation': 'mean_annual_and_seasonal_precipitation',
+		'temperature': 'temperature',
+		'soil_texture_measurement': 'soil_texture_measurement',
+		'organic_matter': 'organic_matter',
+		'total_organic_carbon': 'total_organic_carbon',
+		'water_content': 'water_content',
+		'total_nitrogen': 'total_nitrogen',
 	}
 
-	name = 'ENA_binned_metagenome'
+	name = 'GSC_MIxS_soil'
 
 	sampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE, default=1)
 	sample = models.ForeignKey(Sample, on_delete=models.CASCADE, default=1)
 	sample_type = models.IntegerField(default=1)
-	completeness_score = models.CharField(max_length=120, choices=completeness_score_units, blank=False)
-	contamination_score = models.CharField(max_length=120, choices=contamination_score_units, blank=False)
-	reassembly_post_binning = models.CharField(max_length=120, choices=reassembly_post_binning_units, blank=False)
+	slope_gradient = models.CharField(max_length=120, choices=slope_gradient_units, blank=False)
+	sample_volume_or_weight_for_DNA_extraction = models.CharField(max_length=120, choices=sample_volume_or_weight_for_DNA_extraction_units, blank=False)
 	altitude = models.CharField(max_length=120, choices=altitude_units, blank=False)
 	geographic_location_latitude = models.CharField(max_length=120, choices=geographic_location_latitude_units, blank=False)
 	geographic_location_longitude = models.CharField(max_length=120, choices=geographic_location_longitude_units, blank=False)
+	depth = models.CharField(max_length=120, choices=depth_units, blank=False)
 	elevation = models.CharField(max_length=120, choices=elevation_units, blank=False)
 	amount_or_size_of_sample_collected = models.CharField(max_length=120, choices=amount_or_size_of_sample_collected_units, blank=False)
-	depth = models.CharField(max_length=120, choices=depth_units, blank=False)
+	sample_weight_for_DNA_extraction = models.CharField(max_length=120, choices=sample_weight_for_DNA_extraction_units, blank=False)
+	microbial_biomass = models.CharField(max_length=120, choices=microbial_biomass_units, blank=False)
+	extreme_unusual_properties_Al_saturation = models.CharField(max_length=120, choices=extreme_unusual_properties_Al_saturation_units, blank=False)
+	mean_annual_and_seasonal_temperature = models.CharField(max_length=120, choices=mean_annual_and_seasonal_temperature_units, blank=False)
+	mean_annual_and_seasonal_precipitation = models.CharField(max_length=120, choices=mean_annual_and_seasonal_precipitation_units, blank=False)
+	temperature = models.CharField(max_length=120, choices=temperature_units, blank=False)
+	soil_texture_measurement = models.CharField(max_length=120, choices=soil_texture_measurement_units, blank=False)
+	organic_matter = models.CharField(max_length=120, choices=organic_matter_units, blank=False)
+	total_organic_carbon = models.CharField(max_length=120, choices=total_organic_carbon_units, blank=False)
+	water_content = models.CharField(max_length=120, choices=water_content_units, blank=False)
+	total_nitrogen = models.CharField(max_length=120, choices=total_nitrogen_units, blank=False)
 
 class GSC_MIxS_human_gut(SelfDescribingModel):
 
@@ -6231,6 +4359,2057 @@ class GSC_MIxS_human_gut_unit(SelfDescribingModel):
 	temperature = models.CharField(max_length=120, choices=temperature_units, blank=False)
 	salinity = models.CharField(max_length=120, choices=salinity_units, blank=False)
 	host_pulse = models.CharField(max_length=120, choices=host_pulse_units, blank=False)
+
+class GSC_MIxS_host_associated(SelfDescribingModel):
+
+	sequence_quality_check_choice = [('manual', 'manual'), ('none', 'none'), ('software', 'software')]
+	geographic_location_country_and_or_sea_choice = [('Afghanistan', 'Afghanistan'), ('Albania', 'Albania'), ('Algeria', 'Algeria'), ('American Samoa', 'American Samoa'), ('Andorra', 'Andorra'), ('Angola', 'Angola'), ('Anguilla', 'Anguilla'), ('Antarctica', 'Antarctica'), ('Antigua and Barbuda', 'Antigua and Barbuda'), ('Arctic Ocean', 'Arctic Ocean'), ('Argentina', 'Argentina'), ('Armenia', 'Armenia'), ('Aruba', 'Aruba'), ('Ashmore and Cartier Islands', 'Ashmore and Cartier Islands'), ('Atlantic Ocean', 'Atlantic Ocean'), ('Australia', 'Australia'), ('Austria', 'Austria'), ('Azerbaijan', 'Azerbaijan'), ('Bahamas', 'Bahamas'), ('Bahrain', 'Bahrain'), ('Baker Island', 'Baker Island'), ('Baltic Sea', 'Baltic Sea'), ('Bangladesh', 'Bangladesh'), ('Barbados', 'Barbados'), ('Bassas da India', 'Bassas da India'), ('Belarus', 'Belarus'), ('Belgium', 'Belgium'), ('Belize', 'Belize'), ('Benin', 'Benin'), ('Bermuda', 'Bermuda'), ('Bhutan', 'Bhutan'), ('Bolivia', 'Bolivia'), ('Borneo', 'Borneo'), ('Bosnia and Herzegovina', 'Bosnia and Herzegovina'), ('Botswana', 'Botswana'), ('Bouvet Island', 'Bouvet Island'), ('Brazil', 'Brazil'), ('British Virgin Islands', 'British Virgin Islands'), ('Brunei', 'Brunei'), ('Bulgaria', 'Bulgaria'), ('Burkina Faso', 'Burkina Faso'), ('Burundi', 'Burundi'), ('Cambodia', 'Cambodia'), ('Cameroon', 'Cameroon'), ('Canada', 'Canada'), ('Cape Verde', 'Cape Verde'), ('Cayman Islands', 'Cayman Islands'), ('Central African Republic', 'Central African Republic'), ('Chad', 'Chad'), ('Chile', 'Chile'), ('China', 'China'), ('Christmas Island', 'Christmas Island'), ('Clipperton Island', 'Clipperton Island'), ('Cocos Islands', 'Cocos Islands'), ('Colombia', 'Colombia'), ('Comoros', 'Comoros'), ('Cook Islands', 'Cook Islands'), ('Coral Sea Islands', 'Coral Sea Islands'), ('Costa Rica', 'Costa Rica'), ("Cote d'Ivoire", "Cote d'Ivoire"), ('Croatia', 'Croatia'), ('Cuba', 'Cuba'), ('Curacao', 'Curacao'), ('Cyprus', 'Cyprus'), ('Czech Republic', 'Czech Republic'), ('Democratic Republic of the Congo', 'Democratic Republic of the Congo'), ('Denmark', 'Denmark'), ('Djibouti', 'Djibouti'), ('Dominica', 'Dominica'), ('Dominican Republic', 'Dominican Republic'), ('East Timor', 'East Timor'), ('Ecuador', 'Ecuador'), ('Egypt', 'Egypt'), ('El Salvador', 'El Salvador'), ('Equatorial Guinea', 'Equatorial Guinea'), ('Eritrea', 'Eritrea'), ('Estonia', 'Estonia'), ('Ethiopia', 'Ethiopia'), ('Europa Island', 'Europa Island'), ('Falkland Islands (Islas Malvinas)', 'Falkland Islands (Islas Malvinas)'), ('Faroe Islands', 'Faroe Islands'), ('Fiji', 'Fiji'), ('Finland', 'Finland'), ('France', 'France'), ('French Guiana', 'French Guiana'), ('French Polynesia', 'French Polynesia'), ('French Southern and Antarctic Lands', 'French Southern and Antarctic Lands'), ('Gabon', 'Gabon'), ('Gambia', 'Gambia'), ('Gaza Strip', 'Gaza Strip'), ('Georgia', 'Georgia'), ('Germany', 'Germany'), ('Ghana', 'Ghana'), ('Gibraltar', 'Gibraltar'), ('Glorioso Islands', 'Glorioso Islands'), ('Greece', 'Greece'), ('Greenland', 'Greenland'), ('Grenada', 'Grenada'), ('Guadeloupe', 'Guadeloupe'), ('Guam', 'Guam'), ('Guatemala', 'Guatemala'), ('Guernsey', 'Guernsey'), ('Guinea', 'Guinea'), ('Guinea-Bissau', 'Guinea-Bissau'), ('Guyana', 'Guyana'), ('Haiti', 'Haiti'), ('Heard Island and McDonald Islands', 'Heard Island and McDonald Islands'), ('Honduras', 'Honduras'), ('Hong Kong', 'Hong Kong'), ('Howland Island', 'Howland Island'), ('Hungary', 'Hungary'), ('Iceland', 'Iceland'), ('India', 'India'), ('Indian Ocean', 'Indian Ocean'), ('Indonesia', 'Indonesia'), ('Iran', 'Iran'), ('Iraq', 'Iraq'), ('Ireland', 'Ireland'), ('Isle of Man', 'Isle of Man'), ('Israel', 'Israel'), ('Italy', 'Italy'), ('Jamaica', 'Jamaica'), ('Jan Mayen', 'Jan Mayen'), ('Japan', 'Japan'), ('Jarvis Island', 'Jarvis Island'), ('Jersey', 'Jersey'), ('Johnston Atoll', 'Johnston Atoll'), ('Jordan', 'Jordan'), ('Juan de Nova Island', 'Juan de Nova Island'), ('Kazakhstan', 'Kazakhstan'), ('Kenya', 'Kenya'), ('Kerguelen Archipelago', 'Kerguelen Archipelago'), ('Kingman Reef', 'Kingman Reef'), ('Kiribati', 'Kiribati'), ('Kosovo', 'Kosovo'), ('Kuwait', 'Kuwait'), ('Kyrgyzstan', 'Kyrgyzstan'), ('Laos', 'Laos'), ('Latvia', 'Latvia'), ('Lebanon', 'Lebanon'), ('Lesotho', 'Lesotho'), ('Liberia', 'Liberia'), ('Libya', 'Libya'), ('Liechtenstein', 'Liechtenstein'), ('Lithuania', 'Lithuania'), ('Luxembourg', 'Luxembourg'), ('Macau', 'Macau'), ('Macedonia', 'Macedonia'), ('Madagascar', 'Madagascar'), ('Malawi', 'Malawi'), ('Malaysia', 'Malaysia'), ('Maldives', 'Maldives'), ('Mali', 'Mali'), ('Malta', 'Malta'), ('Marshall Islands', 'Marshall Islands'), ('Martinique', 'Martinique'), ('Mauritania', 'Mauritania'), ('Mauritius', 'Mauritius'), ('Mayotte', 'Mayotte'), ('Mediterranean Sea', 'Mediterranean Sea'), ('Mexico', 'Mexico'), ('Micronesia', 'Micronesia'), ('Midway Islands', 'Midway Islands'), ('Moldova', 'Moldova'), ('Monaco', 'Monaco'), ('Mongolia', 'Mongolia'), ('Montenegro', 'Montenegro'), ('Montserrat', 'Montserrat'), ('Morocco', 'Morocco'), ('Mozambique', 'Mozambique'), ('Myanmar', 'Myanmar'), ('Namibia', 'Namibia'), ('Nauru', 'Nauru'), ('Navassa Island', 'Navassa Island'), ('Nepal', 'Nepal'), ('Netherlands', 'Netherlands'), ('New Caledonia', 'New Caledonia'), ('New Zealand', 'New Zealand'), ('Nicaragua', 'Nicaragua'), ('Niger', 'Niger'), ('Nigeria', 'Nigeria'), ('Niue', 'Niue'), ('Norfolk Island', 'Norfolk Island'), ('North Korea', 'North Korea'), ('North Sea', 'North Sea'), ('Northern Mariana Islands', 'Northern Mariana Islands'), ('Norway', 'Norway'), ('Oman', 'Oman'), ('Pacific Ocean', 'Pacific Ocean'), ('Pakistan', 'Pakistan'), ('Palau', 'Palau'), ('Palmyra Atoll', 'Palmyra Atoll'), ('Panama', 'Panama'), ('Papua New Guinea', 'Papua New Guinea'), ('Paracel Islands', 'Paracel Islands'), ('Paraguay', 'Paraguay'), ('Peru', 'Peru'), ('Philippines', 'Philippines'), ('Pitcairn Islands', 'Pitcairn Islands'), ('Poland', 'Poland'), ('Portugal', 'Portugal'), ('Puerto Rico', 'Puerto Rico'), ('Qatar', 'Qatar'), ('Republic of the Congo', 'Republic of the Congo'), ('Reunion', 'Reunion'), ('Romania', 'Romania'), ('Ross Sea', 'Ross Sea'), ('Russia', 'Russia'), ('Rwanda', 'Rwanda'), ('Saint Helena', 'Saint Helena'), ('Saint Kitts and Nevis', 'Saint Kitts and Nevis'), ('Saint Lucia', 'Saint Lucia'), ('Saint Pierre and Miquelon', 'Saint Pierre and Miquelon'), ('Saint Vincent and the Grenadines', 'Saint Vincent and the Grenadines'), ('Samoa', 'Samoa'), ('San Marino', 'San Marino'), ('Sao Tome and Principe', 'Sao Tome and Principe'), ('Saudi Arabia', 'Saudi Arabia'), ('Senegal', 'Senegal'), ('Serbia', 'Serbia'), ('Seychelles', 'Seychelles'), ('Sierra Leone', 'Sierra Leone'), ('Singapore', 'Singapore'), ('Sint Maarten', 'Sint Maarten'), ('Slovakia', 'Slovakia'), ('Slovenia', 'Slovenia'), ('Solomon Islands', 'Solomon Islands'), ('Somalia', 'Somalia'), ('South Africa', 'South Africa'), ('South Georgia and the South Sandwich Islands', 'South Georgia and the South Sandwich Islands'), ('South Korea', 'South Korea'), ('Southern Ocean', 'Southern Ocean'), ('Spain', 'Spain'), ('Spratly Islands', 'Spratly Islands'), ('Sri Lanka', 'Sri Lanka'), ('Sudan', 'Sudan'), ('Suriname', 'Suriname'), ('Svalbard', 'Svalbard'), ('Swaziland', 'Swaziland'), ('Sweden', 'Sweden'), ('Switzerland', 'Switzerland'), ('Syria', 'Syria'), ('Taiwan', 'Taiwan'), ('Tajikistan', 'Tajikistan'), ('Tanzania', 'Tanzania'), ('Tasman Sea', 'Tasman Sea'), ('Thailand', 'Thailand'), ('Togo', 'Togo'), ('Tokelau', 'Tokelau'), ('Tonga', 'Tonga'), ('Trinidad and Tobago', 'Trinidad and Tobago'), ('Tromelin Island', 'Tromelin Island'), ('Tunisia', 'Tunisia'), ('Turkey', 'Turkey'), ('Turkmenistan', 'Turkmenistan'), ('Turks and Caicos Islands', 'Turks and Caicos Islands'), ('Tuvalu', 'Tuvalu'), ('USA', 'USA'), ('Uganda', 'Uganda'), ('Ukraine', 'Ukraine'), ('United Arab Emirates', 'United Arab Emirates'), ('United Kingdom', 'United Kingdom'), ('Uruguay', 'Uruguay'), ('Uzbekistan', 'Uzbekistan'), ('Vanuatu', 'Vanuatu'), ('Venezuela', 'Venezuela'), ('Viet Nam', 'Viet Nam'), ('Virgin Islands', 'Virgin Islands'), ('Wake Island', 'Wake Island'), ('Wallis and Futuna', 'Wallis and Futuna'), ('West Bank', 'West Bank'), ('Western Sahara', 'Western Sahara'), ('Yemen', 'Yemen'), ('Zambia', 'Zambia'), ('Zimbabwe', 'Zimbabwe'), ('missing: control sample', 'missing: control sample'), ('missing: data agreement established pre-2023', 'missing: data agreement established pre-2023'), ('missing: endangered species', 'missing: endangered species'), ('missing: human-identifiable', 'missing: human-identifiable'), ('missing: lab stock', 'missing: lab stock'), ('missing: sample group', 'missing: sample group'), ('missing: synthetic construct', 'missing: synthetic construct'), ('missing: third party data', 'missing: third party data'), ('not applicable', 'not applicable'), ('not collected', 'not collected'), ('not provided', 'not provided'), ('restricted access', 'restricted access')]
+	oxygenation_status_of_sample_choice = [('aerobic', 'aerobic'), ('anaerobic', 'anaerobic')]
+	host_sex_choice = [('female', 'female'), ('hermaphrodite', 'hermaphrodite'), ('male', 'male'), ('missing: control sample', 'missing: control sample'), ('missing: data agreement established pre-2023', 'missing: data agreement established pre-2023'), ('missing: endangered species', 'missing: endangered species'), ('missing: human-identifiable', 'missing: human-identifiable'), ('missing: lab stock', 'missing: lab stock'), ('missing: sample group', 'missing: sample group'), ('missing: synthetic construct', 'missing: synthetic construct'), ('missing: third party data', 'missing: third party data'), ('neuter', 'neuter'), ('not applicable', 'not applicable'), ('not collected', 'not collected'), ('not provided', 'not provided'), ('other', 'other'), ('restricted access', 'restricted access')]
+	trophic_level_choice = [('autotroph', 'autotroph'), ('carboxydotroph', 'carboxydotroph'), ('chemoautotroph', 'chemoautotroph'), ('chemoheterotroph', 'chemoheterotroph'), ('chemolithoautotroph', 'chemolithoautotroph'), ('chemolithotroph', 'chemolithotroph'), ('chemoorganoheterotroph', 'chemoorganoheterotroph'), ('chemoorganotroph', 'chemoorganotroph'), ('chemosynthetic', 'chemosynthetic'), ('chemotroph', 'chemotroph'), ('copiotroph', 'copiotroph'), ('diazotroph', 'diazotroph'), ('facultative autotroph', 'facultative autotroph'), ('heterotroph', 'heterotroph'), ('lithoautotroph', 'lithoautotroph'), ('lithoheterotroph', 'lithoheterotroph'), ('lithotroph', 'lithotroph'), ('methanotroph', 'methanotroph'), ('methylotroph', 'methylotroph'), ('mixotroph', 'mixotroph'), ('obligate chemoautolithotroph', 'obligate chemoautolithotroph'), ('oligotroph', 'oligotroph'), ('organoheterotroph', 'organoheterotroph'), ('organotroph', 'organotroph'), ('photoautotroph', 'photoautotroph'), ('photoheterotroph', 'photoheterotroph'), ('photolithoautotroph', 'photolithoautotroph'), ('photolithotroph', 'photolithotroph'), ('photosynthetic', 'photosynthetic'), ('phototroph', 'phototroph')]
+	relationship_to_oxygen_choice = [('aerobe', 'aerobe'), ('anaerobe', 'anaerobe'), ('facultative', 'facultative'), ('microaerophilic', 'microaerophilic'), ('microanaerobe', 'microanaerobe'), ('obligate aerobe', 'obligate aerobe'), ('obligate anaerobe', 'obligate anaerobe')]
+	observed_biotic_relationship_choice = [('commensal', 'commensal'), ('free living', 'free living'), ('mutualism', 'mutualism'), ('parasite', 'parasite'), ('symbiont', 'symbiont')]
+
+	number_of_replicons_validator = "[+-]?[0-9]+"
+	extrachromosomal_elements_validator = "[+-]?[0-9]+"
+	estimated_size_validator = "[+-]?[0-9]+"
+	sample_volume_or_weight_for_DNA_extraction_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	library_size_validator = "[+-]?[0-9]+"
+	library_reads_sequenced_validator = "[+-]?[0-9]+"
+	collection_date_validator = "(^[12][0-9]{3}(-(0[1-9]|1[0-2])(-(0[1-9]|[12][0-9]|3[01])(T[0-9]{2}:[0-9]{2}(:[0-9]{2})?Z?([+-][0-9]{1,2})?)?)?)?(/[0-9]{4}(-[0-9]{2}(-[0-9]{2}(T[0-9]{2}:[0-9]{2}(:[0-9]{2})?Z?([+-][0-9]{1,2})?)?)?)?)?$)|(^not collected$)|(^not provided$)|(^restricted access$)|(^missing: control sample$)|(^missing: sample group$)|(^missing: synthetic construct$)|(^missing: lab stock$)|(^missing: third party data$)|(^missing: data agreement established pre-2023$)|(^missing: endangered species$)|(^missing: human-identifiable$)"
+	altitude_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	geographic_location_latitude_validator = "(^[+-]?[0-9]+.?[0-9]{0,8}$)|(^not collected$)|(^not provided$)|(^restricted access$)|(^missing: control sample$)|(^missing: sample group$)|(^missing: synthetic construct$)|(^missing: lab stock$)|(^missing: third party data$)|(^missing: data agreement established pre-2023$)|(^missing: endangered species$)|(^missing: human-identifiable$)"
+	geographic_location_longitude_validator = "(^[+-]?[0-9]+.?[0-9]{0,8}$)|(^not collected$)|(^not provided$)|(^restricted access$)|(^missing: control sample$)|(^missing: sample group$)|(^missing: synthetic construct$)|(^missing: lab stock$)|(^missing: third party data$)|(^missing: data agreement established pre-2023$)|(^missing: endangered species$)|(^missing: human-identifiable$)"
+	depth_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	elevation_validator = "[+-]?(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	amount_or_size_of_sample_collected_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	host_dry_mass_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	sample_storage_duration_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	sample_storage_temperature_validator = "[+-]?(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	host_age_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	host_taxid_validator = "[+-]?[0-9]+"
+	host_height_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	host_length_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	host_total_mass_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	host_body_temperature_validator = "[+-]?(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	temperature_validator = "[+-]?(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	salinity_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	host_blood_pressure_diastolic_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	host_blood_pressure_systolic_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+
+	sampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE, default=1)
+	sample = models.ForeignKey(Sample, on_delete=models.CASCADE, default=1)
+	sample_type = models.IntegerField(default=1)
+	project_name= models.CharField(max_length=120, blank=False,help_text="Name of th")
+	experimental_factor= models.CharField(max_length=120, blank=True,help_text="Experiment")
+	ploidy= models.CharField(max_length=120, blank=True,help_text="The ploidy")
+	number_of_replicons= models.CharField(max_length=120, blank=True,help_text="Reports th", validators=[RegexValidator(number_of_replicons_validator)])
+	extrachromosomal_elements= models.CharField(max_length=120, blank=True,help_text="Do plasmid", validators=[RegexValidator(extrachromosomal_elements_validator)])
+	estimated_size= models.CharField(max_length=120, blank=True,help_text="The estima", validators=[RegexValidator(estimated_size_validator)])
+	reference_for_biomaterial= models.CharField(max_length=120, blank=True,help_text="Primary pu")
+	annotation_source= models.CharField(max_length=120, blank=True,help_text="For cases ")
+	sample_volume_or_weight_for_DNA_extraction= models.CharField(max_length=120, blank=True,help_text="Volume (ml", validators=[RegexValidator(sample_volume_or_weight_for_DNA_extraction_validator)])
+	nucleic_acid_extraction= models.CharField(max_length=120, blank=True,help_text="A link to ")
+	nucleic_acid_amplification= models.CharField(max_length=120, blank=True,help_text="A link to ")
+	library_size= models.CharField(max_length=120, blank=True,help_text="Total numb", validators=[RegexValidator(library_size_validator)])
+	library_reads_sequenced= models.CharField(max_length=120, blank=True,help_text="Total numb", validators=[RegexValidator(library_reads_sequenced_validator)])
+	library_construction_method= models.CharField(max_length=120, blank=True,help_text="Library co")
+	library_vector= models.CharField(max_length=120, blank=True,help_text="Cloning ve")
+	library_screening_strategy= models.CharField(max_length=120, blank=True,help_text="Specific e")
+	target_gene= models.CharField(max_length=120, blank=True,help_text="Targeted g")
+	target_subfragment= models.CharField(max_length=120, blank=True,help_text="Name of su")
+	pcr_primers= models.CharField(max_length=120, blank=True,help_text="PCR primer")
+	multiplex_identifiers= models.CharField(max_length=120, blank=True,help_text="Molecular ")
+	adapters= models.CharField(max_length=120, blank=True,help_text="Adapters p")
+	pcr_conditions= models.CharField(max_length=120, blank=True,help_text="Descriptio")
+	sequencing_method= models.CharField(max_length=120, blank=True,help_text="Sequencing")
+	sequence_quality_check= models.CharField(max_length=120, blank=True,help_text="Indicate i", choices=sequence_quality_check_choice)
+	chimera_check_software= models.CharField(max_length=120, blank=True,help_text="Tool(s) us")
+	relevant_electronic_resources= models.CharField(max_length=120, blank=True,help_text="A related ")
+	relevant_standard_operating_procedures= models.CharField(max_length=120, blank=True,help_text="Standard o")
+	negative_control_type= models.CharField(max_length=120, blank=True,help_text="The substa")
+	positive_control_type= models.CharField(max_length=120, blank=True,help_text="The substa")
+	collection_date= models.CharField(max_length=120, blank=False,help_text="The date t", validators=[RegexValidator(collection_date_validator)])
+	altitude= models.CharField(max_length=120, blank=True,help_text="The altitu", validators=[RegexValidator(altitude_validator)])
+	geographic_location_country_and_or_sea= models.CharField(max_length=120, blank=False,help_text="The locati", choices=geographic_location_country_and_or_sea_choice)
+	geographic_location_latitude= models.CharField(max_length=120, blank=False,help_text="The geogra", validators=[RegexValidator(geographic_location_latitude_validator)])
+	geographic_location_longitude= models.CharField(max_length=120, blank=False,help_text="The geogra", validators=[RegexValidator(geographic_location_longitude_validator)])
+	geographic_location_region_and_locality= models.CharField(max_length=120, blank=True,help_text="The geogra")
+	depth= models.CharField(max_length=120, blank=True,help_text="The vertic", validators=[RegexValidator(depth_validator)])
+	broad_scale_environmental_context= models.CharField(max_length=120, blank=False,help_text="Report the")
+	local_environmental_context= models.CharField(max_length=120, blank=False,help_text="Report the")
+	environmental_medium= models.CharField(max_length=120, blank=False,help_text="Report the")
+	elevation= models.CharField(max_length=120, blank=True,help_text="The elevat", validators=[RegexValidator(elevation_validator)])
+	source_material_identifiers= models.CharField(max_length=120, blank=True,help_text="A unique i")
+	sample_material_processing= models.CharField(max_length=120, blank=True,help_text="A brief de")
+	isolation_and_growth_condition= models.CharField(max_length=120, blank=True,help_text="Publicatio")
+	propagation= models.CharField(max_length=120, blank=True,help_text="The type o")
+	amount_or_size_of_sample_collected= models.CharField(max_length=120, blank=True,help_text="The total ", validators=[RegexValidator(amount_or_size_of_sample_collected_validator)])
+	host_body_product= models.CharField(max_length=120, blank=True,help_text="substance ")
+	host_dry_mass= models.CharField(max_length=120, blank=True,help_text="measuremen", validators=[RegexValidator(host_dry_mass_validator)])
+	oxygenation_status_of_sample= models.CharField(max_length=120, blank=True,help_text="oxygenatio", choices=oxygenation_status_of_sample_choice)
+	organism_count= models.CharField(max_length=120, blank=True,help_text="Total cell")
+	sample_storage_duration= models.CharField(max_length=120, blank=True,help_text="duration f", validators=[RegexValidator(sample_storage_duration_validator)])
+	sample_storage_temperature= models.CharField(max_length=120, blank=True,help_text="temperatur", validators=[RegexValidator(sample_storage_temperature_validator)])
+	sample_storage_location= models.CharField(max_length=120, blank=True,help_text="location a")
+	host_disease_status= models.CharField(max_length=120, blank=True,help_text="list of di")
+	host_common_name= models.CharField(max_length=120, blank=True,help_text="common nam")
+	host_subject_id= models.CharField(max_length=120, blank=True,help_text="a unique i")
+	host_age= models.CharField(max_length=120, blank=True,help_text="age of hos", validators=[RegexValidator(host_age_validator)])
+	host_taxid= models.CharField(max_length=120, blank=True,help_text="NCBI taxon", validators=[RegexValidator(host_taxid_validator)])
+	host_body_habitat= models.CharField(max_length=120, blank=True,help_text="original b")
+	host_body_site= models.CharField(max_length=120, blank=True,help_text="name of bo")
+	host_life_stage= models.CharField(max_length=120, blank=True,help_text="descriptio")
+	host_height= models.CharField(max_length=120, blank=True,help_text="the height", validators=[RegexValidator(host_height_validator)])
+	host_length= models.CharField(max_length=120, blank=True,help_text="the length", validators=[RegexValidator(host_length_validator)])
+	host_growth_conditions= models.CharField(max_length=120, blank=True,help_text="literature")
+	host_substrate= models.CharField(max_length=120, blank=True,help_text="the growth")
+	host_total_mass= models.CharField(max_length=120, blank=True,help_text="total mass", validators=[RegexValidator(host_total_mass_validator)])
+	host_phenotype= models.CharField(max_length=120, blank=True,help_text="phenotype ")
+	host_body_temperature= models.CharField(max_length=120, blank=True,help_text="core body ", validators=[RegexValidator(host_body_temperature_validator)])
+	host_color= models.CharField(max_length=120, blank=True,help_text="the color ")
+	host_shape= models.CharField(max_length=120, blank=True,help_text="morphologi")
+	host_sex= models.CharField(max_length=120, blank=True,help_text="Gender or ", choices=host_sex_choice)
+	host_scientific_name= models.CharField(max_length=120, blank=True,help_text="Scientific")
+	host_subspecific_genetic_lineage= models.CharField(max_length=120, blank=True,help_text="Informatio")
+	temperature= models.CharField(max_length=120, blank=True,help_text="temperatur", validators=[RegexValidator(temperature_validator)])
+	salinity= models.CharField(max_length=120, blank=True,help_text="The total ", validators=[RegexValidator(salinity_validator)])
+	host_blood_pressure_diastolic= models.CharField(max_length=120, blank=True,help_text="resting di", validators=[RegexValidator(host_blood_pressure_diastolic_validator)])
+	host_blood_pressure_systolic= models.CharField(max_length=120, blank=True,help_text="resting sy", validators=[RegexValidator(host_blood_pressure_systolic_validator)])
+	host_diet= models.CharField(max_length=120, blank=True,help_text="type of di")
+	host_last_meal= models.CharField(max_length=120, blank=True,help_text="content of")
+	host_family_relationship= models.CharField(max_length=120, blank=True,help_text="relationsh")
+	host_genotype= models.CharField(max_length=120, blank=True,help_text="observed g")
+	gravidity= models.CharField(max_length=120, blank=True,help_text="Whether or")
+	subspecific_genetic_lineage= models.CharField(max_length=120, blank=True,help_text="Informatio")
+	trophic_level= models.CharField(max_length=120, blank=True,help_text="Trophic le", choices=trophic_level_choice)
+	relationship_to_oxygen= models.CharField(max_length=120, blank=True,help_text="Is this or", choices=relationship_to_oxygen_choice)
+	known_pathogenicity= models.CharField(max_length=120, blank=True,help_text="To what is")
+	encoded_traits= models.CharField(max_length=120, blank=True,help_text="Should inc")
+	observed_biotic_relationship= models.CharField(max_length=120, blank=True,help_text="Is it free", choices=observed_biotic_relationship_choice)
+	chemical_administration= models.CharField(max_length=120, blank=True,help_text="list of ch")
+	perturbation= models.CharField(max_length=120, blank=True,help_text="type of pe")
+
+	fields = {
+		'project_name': 'project_name',
+		'experimental_factor': 'experimental_factor',
+		'ploidy': 'ploidy',
+		'number_of_replicons': 'number_of_replicons',
+		'extrachromosomal_elements': 'extrachromosomal_elements',
+		'estimated_size': 'estimated_size',
+		'reference_for_biomaterial': 'reference_for_biomaterial',
+		'annotation_source': 'annotation_source',
+		'sample_volume_or_weight_for_DNA_extraction': 'sample_volume_or_weight_for_DNA_extraction',
+		'nucleic_acid_extraction': 'nucleic_acid_extraction',
+		'nucleic_acid_amplification': 'nucleic_acid_amplification',
+		'library_size': 'library_size',
+		'library_reads_sequenced': 'library_reads_sequenced',
+		'library_construction_method': 'library_construction_method',
+		'library_vector': 'library_vector',
+		'library_screening_strategy': 'library_screening_strategy',
+		'target_gene': 'target_gene',
+		'target_subfragment': 'target_subfragment',
+		'pcr_primers': 'pcr_primers',
+		'multiplex_identifiers': 'multiplex_identifiers',
+		'adapters': 'adapters',
+		'pcr_conditions': 'pcr_conditions',
+		'sequencing_method': 'sequencing_method',
+		'sequence_quality_check': 'sequence_quality_check',
+		'chimera_check_software': 'chimera_check_software',
+		'relevant_electronic_resources': 'relevant_electronic_resources',
+		'relevant_standard_operating_procedures': 'relevant_standard_operating_procedures',
+		'negative_control_type': 'negative_control_type',
+		'positive_control_type': 'positive_control_type',
+		'collection_date': 'collection_date',
+		'altitude': 'altitude',
+		'geographic_location_country_and_or_sea': 'geographic_location_country_and_or_sea',
+		'geographic_location_latitude': 'geographic_location_latitude',
+		'geographic_location_longitude': 'geographic_location_longitude',
+		'geographic_location_region_and_locality': 'geographic_location_region_and_locality',
+		'depth': 'depth',
+		'broad_scale_environmental_context': 'broad_scale_environmental_context',
+		'local_environmental_context': 'local_environmental_context',
+		'environmental_medium': 'environmental_medium',
+		'elevation': 'elevation',
+		'source_material_identifiers': 'source_material_identifiers',
+		'sample_material_processing': 'sample_material_processing',
+		'isolation_and_growth_condition': 'isolation_and_growth_condition',
+		'propagation': 'propagation',
+		'amount_or_size_of_sample_collected': 'amount_or_size_of_sample_collected',
+		'host_body_product': 'host_body_product',
+		'host_dry_mass': 'host_dry_mass',
+		'oxygenation_status_of_sample': 'oxygenation_status_of_sample',
+		'organism_count': 'organism_count',
+		'sample_storage_duration': 'sample_storage_duration',
+		'sample_storage_temperature': 'sample_storage_temperature',
+		'sample_storage_location': 'sample_storage_location',
+		'host_disease_status': 'host_disease_status',
+		'host_common_name': 'host_common_name',
+		'host_subject_id': 'host_subject_id',
+		'host_age': 'host_age',
+		'host_taxid': 'host_taxid',
+		'host_body_habitat': 'host_body_habitat',
+		'host_body_site': 'host_body_site',
+		'host_life_stage': 'host_life_stage',
+		'host_height': 'host_height',
+		'host_length': 'host_length',
+		'host_growth_conditions': 'host_growth_conditions',
+		'host_substrate': 'host_substrate',
+		'host_total_mass': 'host_total_mass',
+		'host_phenotype': 'host_phenotype',
+		'host_body_temperature': 'host_body_temperature',
+		'host_color': 'host_color',
+		'host_shape': 'host_shape',
+		'host_sex': 'host_sex',
+		'host_scientific_name': 'host_scientific_name',
+		'host_subspecific_genetic_lineage': 'host_subspecific_genetic_lineage',
+		'temperature': 'temperature',
+		'salinity': 'salinity',
+		'host_blood_pressure_diastolic': 'host_blood_pressure_diastolic',
+		'host_blood_pressure_systolic': 'host_blood_pressure_systolic',
+		'host_diet': 'host_diet',
+		'host_last_meal': 'host_last_meal',
+		'host_family_relationship': 'host_family_relationship',
+		'host_genotype': 'host_genotype',
+		'gravidity': 'gravidity',
+		'subspecific_genetic_lineage': 'subspecific_genetic_lineage',
+		'trophic_level': 'trophic_level',
+		'relationship_to_oxygen': 'relationship_to_oxygen',
+		'known_pathogenicity': 'known_pathogenicity',
+		'encoded_traits': 'encoded_traits',
+		'observed_biotic_relationship': 'observed_biotic_relationship',
+		'chemical_administration': 'chemical_administration',
+		'perturbation': 'perturbation',
+	}
+
+	name = 'GSC_MIxS_host_associated'
+
+class GSC_MIxS_host_associated_unit(SelfDescribingModel):
+
+	sample_volume_or_weight_for_DNA_extraction_units = [('g', 'g'), ('mL', 'mL'), ('mg', 'mg'), ('ng', 'ng')]
+	altitude_units = [('m', 'm')]
+	geographic_location_latitude_units = [('DD', 'DD')]
+	geographic_location_longitude_units = [('DD', 'DD')]
+	depth_units = [('m', 'm')]
+	elevation_units = [('m', 'm')]
+	amount_or_size_of_sample_collected_units = [('L', 'L'), ('g', 'g'), ('kg', 'kg'), ('m2', 'm2'), ('m3', 'm3')]
+	host_dry_mass_units = [('g', 'g'), ('kg', 'kg'), ('mg', 'mg')]
+	sample_storage_duration_units = [('days', 'days'), ('hours', 'hours'), ('months', 'months'), ('weeks', 'weeks'), ('years', 'years')]
+	sample_storage_temperature_units = [('°C', '°C')]
+	host_age_units = [('centuries', 'centuries'), ('days', 'days'), ('decades', 'decades'), ('hours', 'hours'), ('minutes', 'minutes'), ('months', 'months'), ('seconds', 'seconds'), ('weeks', 'weeks'), ('years', 'years')]
+	host_height_units = [('cm', 'cm'), ('m', 'm'), ('mm', 'mm')]
+	host_length_units = [('cm', 'cm'), ('m', 'm'), ('mm', 'mm')]
+	host_total_mass_units = [('g', 'g'), ('kg', 'kg')]
+	host_body_temperature_units = [('ºC', 'ºC')]
+	temperature_units = [('ºC', 'ºC')]
+	salinity_units = [('psu', 'psu')]
+	host_blood_pressure_diastolic_units = [('mm Hg', 'mm Hg')]
+	host_blood_pressure_systolic_units = [('mm Hg', 'mm Hg')]
+
+	fields = {
+		'sample_volume_or_weight_for_DNA_extraction': 'sample_volume_or_weight_for_DNA_extraction',
+		'altitude': 'altitude',
+		'geographic_location_latitude': 'geographic_location_latitude',
+		'geographic_location_longitude': 'geographic_location_longitude',
+		'depth': 'depth',
+		'elevation': 'elevation',
+		'amount_or_size_of_sample_collected': 'amount_or_size_of_sample_collected',
+		'host_dry_mass': 'host_dry_mass',
+		'sample_storage_duration': 'sample_storage_duration',
+		'sample_storage_temperature': 'sample_storage_temperature',
+		'host_age': 'host_age',
+		'host_height': 'host_height',
+		'host_length': 'host_length',
+		'host_total_mass': 'host_total_mass',
+		'host_body_temperature': 'host_body_temperature',
+		'temperature': 'temperature',
+		'salinity': 'salinity',
+		'host_blood_pressure_diastolic': 'host_blood_pressure_diastolic',
+		'host_blood_pressure_systolic': 'host_blood_pressure_systolic',
+	}
+
+	name = 'GSC_MIxS_host_associated'
+
+	sampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE, default=1)
+	sample = models.ForeignKey(Sample, on_delete=models.CASCADE, default=1)
+	sample_type = models.IntegerField(default=1)
+	sample_volume_or_weight_for_DNA_extraction = models.CharField(max_length=120, choices=sample_volume_or_weight_for_DNA_extraction_units, blank=False)
+	altitude = models.CharField(max_length=120, choices=altitude_units, blank=False)
+	geographic_location_latitude = models.CharField(max_length=120, choices=geographic_location_latitude_units, blank=False)
+	geographic_location_longitude = models.CharField(max_length=120, choices=geographic_location_longitude_units, blank=False)
+	depth = models.CharField(max_length=120, choices=depth_units, blank=False)
+	elevation = models.CharField(max_length=120, choices=elevation_units, blank=False)
+	amount_or_size_of_sample_collected = models.CharField(max_length=120, choices=amount_or_size_of_sample_collected_units, blank=False)
+	host_dry_mass = models.CharField(max_length=120, choices=host_dry_mass_units, blank=False)
+	sample_storage_duration = models.CharField(max_length=120, choices=sample_storage_duration_units, blank=False)
+	sample_storage_temperature = models.CharField(max_length=120, choices=sample_storage_temperature_units, blank=False)
+	host_age = models.CharField(max_length=120, choices=host_age_units, blank=False)
+	host_height = models.CharField(max_length=120, choices=host_height_units, blank=False)
+	host_length = models.CharField(max_length=120, choices=host_length_units, blank=False)
+	host_total_mass = models.CharField(max_length=120, choices=host_total_mass_units, blank=False)
+	host_body_temperature = models.CharField(max_length=120, choices=host_body_temperature_units, blank=False)
+	temperature = models.CharField(max_length=120, choices=temperature_units, blank=False)
+	salinity = models.CharField(max_length=120, choices=salinity_units, blank=False)
+	host_blood_pressure_diastolic = models.CharField(max_length=120, choices=host_blood_pressure_diastolic_units, blank=False)
+	host_blood_pressure_systolic = models.CharField(max_length=120, choices=host_blood_pressure_systolic_units, blank=False)
+
+class GSC_MIxS_human_vaginal(SelfDescribingModel):
+
+	sequence_quality_check_choice = [('manual', 'manual'), ('none', 'none'), ('software', 'software')]
+	geographic_location_country_and_or_sea_choice = [('Afghanistan', 'Afghanistan'), ('Albania', 'Albania'), ('Algeria', 'Algeria'), ('American Samoa', 'American Samoa'), ('Andorra', 'Andorra'), ('Angola', 'Angola'), ('Anguilla', 'Anguilla'), ('Antarctica', 'Antarctica'), ('Antigua and Barbuda', 'Antigua and Barbuda'), ('Arctic Ocean', 'Arctic Ocean'), ('Argentina', 'Argentina'), ('Armenia', 'Armenia'), ('Aruba', 'Aruba'), ('Ashmore and Cartier Islands', 'Ashmore and Cartier Islands'), ('Atlantic Ocean', 'Atlantic Ocean'), ('Australia', 'Australia'), ('Austria', 'Austria'), ('Azerbaijan', 'Azerbaijan'), ('Bahamas', 'Bahamas'), ('Bahrain', 'Bahrain'), ('Baker Island', 'Baker Island'), ('Baltic Sea', 'Baltic Sea'), ('Bangladesh', 'Bangladesh'), ('Barbados', 'Barbados'), ('Bassas da India', 'Bassas da India'), ('Belarus', 'Belarus'), ('Belgium', 'Belgium'), ('Belize', 'Belize'), ('Benin', 'Benin'), ('Bermuda', 'Bermuda'), ('Bhutan', 'Bhutan'), ('Bolivia', 'Bolivia'), ('Borneo', 'Borneo'), ('Bosnia and Herzegovina', 'Bosnia and Herzegovina'), ('Botswana', 'Botswana'), ('Bouvet Island', 'Bouvet Island'), ('Brazil', 'Brazil'), ('British Virgin Islands', 'British Virgin Islands'), ('Brunei', 'Brunei'), ('Bulgaria', 'Bulgaria'), ('Burkina Faso', 'Burkina Faso'), ('Burundi', 'Burundi'), ('Cambodia', 'Cambodia'), ('Cameroon', 'Cameroon'), ('Canada', 'Canada'), ('Cape Verde', 'Cape Verde'), ('Cayman Islands', 'Cayman Islands'), ('Central African Republic', 'Central African Republic'), ('Chad', 'Chad'), ('Chile', 'Chile'), ('China', 'China'), ('Christmas Island', 'Christmas Island'), ('Clipperton Island', 'Clipperton Island'), ('Cocos Islands', 'Cocos Islands'), ('Colombia', 'Colombia'), ('Comoros', 'Comoros'), ('Cook Islands', 'Cook Islands'), ('Coral Sea Islands', 'Coral Sea Islands'), ('Costa Rica', 'Costa Rica'), ("Cote d'Ivoire", "Cote d'Ivoire"), ('Croatia', 'Croatia'), ('Cuba', 'Cuba'), ('Curacao', 'Curacao'), ('Cyprus', 'Cyprus'), ('Czech Republic', 'Czech Republic'), ('Democratic Republic of the Congo', 'Democratic Republic of the Congo'), ('Denmark', 'Denmark'), ('Djibouti', 'Djibouti'), ('Dominica', 'Dominica'), ('Dominican Republic', 'Dominican Republic'), ('East Timor', 'East Timor'), ('Ecuador', 'Ecuador'), ('Egypt', 'Egypt'), ('El Salvador', 'El Salvador'), ('Equatorial Guinea', 'Equatorial Guinea'), ('Eritrea', 'Eritrea'), ('Estonia', 'Estonia'), ('Ethiopia', 'Ethiopia'), ('Europa Island', 'Europa Island'), ('Falkland Islands (Islas Malvinas)', 'Falkland Islands (Islas Malvinas)'), ('Faroe Islands', 'Faroe Islands'), ('Fiji', 'Fiji'), ('Finland', 'Finland'), ('France', 'France'), ('French Guiana', 'French Guiana'), ('French Polynesia', 'French Polynesia'), ('French Southern and Antarctic Lands', 'French Southern and Antarctic Lands'), ('Gabon', 'Gabon'), ('Gambia', 'Gambia'), ('Gaza Strip', 'Gaza Strip'), ('Georgia', 'Georgia'), ('Germany', 'Germany'), ('Ghana', 'Ghana'), ('Gibraltar', 'Gibraltar'), ('Glorioso Islands', 'Glorioso Islands'), ('Greece', 'Greece'), ('Greenland', 'Greenland'), ('Grenada', 'Grenada'), ('Guadeloupe', 'Guadeloupe'), ('Guam', 'Guam'), ('Guatemala', 'Guatemala'), ('Guernsey', 'Guernsey'), ('Guinea', 'Guinea'), ('Guinea-Bissau', 'Guinea-Bissau'), ('Guyana', 'Guyana'), ('Haiti', 'Haiti'), ('Heard Island and McDonald Islands', 'Heard Island and McDonald Islands'), ('Honduras', 'Honduras'), ('Hong Kong', 'Hong Kong'), ('Howland Island', 'Howland Island'), ('Hungary', 'Hungary'), ('Iceland', 'Iceland'), ('India', 'India'), ('Indian Ocean', 'Indian Ocean'), ('Indonesia', 'Indonesia'), ('Iran', 'Iran'), ('Iraq', 'Iraq'), ('Ireland', 'Ireland'), ('Isle of Man', 'Isle of Man'), ('Israel', 'Israel'), ('Italy', 'Italy'), ('Jamaica', 'Jamaica'), ('Jan Mayen', 'Jan Mayen'), ('Japan', 'Japan'), ('Jarvis Island', 'Jarvis Island'), ('Jersey', 'Jersey'), ('Johnston Atoll', 'Johnston Atoll'), ('Jordan', 'Jordan'), ('Juan de Nova Island', 'Juan de Nova Island'), ('Kazakhstan', 'Kazakhstan'), ('Kenya', 'Kenya'), ('Kerguelen Archipelago', 'Kerguelen Archipelago'), ('Kingman Reef', 'Kingman Reef'), ('Kiribati', 'Kiribati'), ('Kosovo', 'Kosovo'), ('Kuwait', 'Kuwait'), ('Kyrgyzstan', 'Kyrgyzstan'), ('Laos', 'Laos'), ('Latvia', 'Latvia'), ('Lebanon', 'Lebanon'), ('Lesotho', 'Lesotho'), ('Liberia', 'Liberia'), ('Libya', 'Libya'), ('Liechtenstein', 'Liechtenstein'), ('Lithuania', 'Lithuania'), ('Luxembourg', 'Luxembourg'), ('Macau', 'Macau'), ('Macedonia', 'Macedonia'), ('Madagascar', 'Madagascar'), ('Malawi', 'Malawi'), ('Malaysia', 'Malaysia'), ('Maldives', 'Maldives'), ('Mali', 'Mali'), ('Malta', 'Malta'), ('Marshall Islands', 'Marshall Islands'), ('Martinique', 'Martinique'), ('Mauritania', 'Mauritania'), ('Mauritius', 'Mauritius'), ('Mayotte', 'Mayotte'), ('Mediterranean Sea', 'Mediterranean Sea'), ('Mexico', 'Mexico'), ('Micronesia', 'Micronesia'), ('Midway Islands', 'Midway Islands'), ('Moldova', 'Moldova'), ('Monaco', 'Monaco'), ('Mongolia', 'Mongolia'), ('Montenegro', 'Montenegro'), ('Montserrat', 'Montserrat'), ('Morocco', 'Morocco'), ('Mozambique', 'Mozambique'), ('Myanmar', 'Myanmar'), ('Namibia', 'Namibia'), ('Nauru', 'Nauru'), ('Navassa Island', 'Navassa Island'), ('Nepal', 'Nepal'), ('Netherlands', 'Netherlands'), ('New Caledonia', 'New Caledonia'), ('New Zealand', 'New Zealand'), ('Nicaragua', 'Nicaragua'), ('Niger', 'Niger'), ('Nigeria', 'Nigeria'), ('Niue', 'Niue'), ('Norfolk Island', 'Norfolk Island'), ('North Korea', 'North Korea'), ('North Sea', 'North Sea'), ('Northern Mariana Islands', 'Northern Mariana Islands'), ('Norway', 'Norway'), ('Oman', 'Oman'), ('Pacific Ocean', 'Pacific Ocean'), ('Pakistan', 'Pakistan'), ('Palau', 'Palau'), ('Palmyra Atoll', 'Palmyra Atoll'), ('Panama', 'Panama'), ('Papua New Guinea', 'Papua New Guinea'), ('Paracel Islands', 'Paracel Islands'), ('Paraguay', 'Paraguay'), ('Peru', 'Peru'), ('Philippines', 'Philippines'), ('Pitcairn Islands', 'Pitcairn Islands'), ('Poland', 'Poland'), ('Portugal', 'Portugal'), ('Puerto Rico', 'Puerto Rico'), ('Qatar', 'Qatar'), ('Republic of the Congo', 'Republic of the Congo'), ('Reunion', 'Reunion'), ('Romania', 'Romania'), ('Ross Sea', 'Ross Sea'), ('Russia', 'Russia'), ('Rwanda', 'Rwanda'), ('Saint Helena', 'Saint Helena'), ('Saint Kitts and Nevis', 'Saint Kitts and Nevis'), ('Saint Lucia', 'Saint Lucia'), ('Saint Pierre and Miquelon', 'Saint Pierre and Miquelon'), ('Saint Vincent and the Grenadines', 'Saint Vincent and the Grenadines'), ('Samoa', 'Samoa'), ('San Marino', 'San Marino'), ('Sao Tome and Principe', 'Sao Tome and Principe'), ('Saudi Arabia', 'Saudi Arabia'), ('Senegal', 'Senegal'), ('Serbia', 'Serbia'), ('Seychelles', 'Seychelles'), ('Sierra Leone', 'Sierra Leone'), ('Singapore', 'Singapore'), ('Sint Maarten', 'Sint Maarten'), ('Slovakia', 'Slovakia'), ('Slovenia', 'Slovenia'), ('Solomon Islands', 'Solomon Islands'), ('Somalia', 'Somalia'), ('South Africa', 'South Africa'), ('South Georgia and the South Sandwich Islands', 'South Georgia and the South Sandwich Islands'), ('South Korea', 'South Korea'), ('Southern Ocean', 'Southern Ocean'), ('Spain', 'Spain'), ('Spratly Islands', 'Spratly Islands'), ('Sri Lanka', 'Sri Lanka'), ('Sudan', 'Sudan'), ('Suriname', 'Suriname'), ('Svalbard', 'Svalbard'), ('Swaziland', 'Swaziland'), ('Sweden', 'Sweden'), ('Switzerland', 'Switzerland'), ('Syria', 'Syria'), ('Taiwan', 'Taiwan'), ('Tajikistan', 'Tajikistan'), ('Tanzania', 'Tanzania'), ('Tasman Sea', 'Tasman Sea'), ('Thailand', 'Thailand'), ('Togo', 'Togo'), ('Tokelau', 'Tokelau'), ('Tonga', 'Tonga'), ('Trinidad and Tobago', 'Trinidad and Tobago'), ('Tromelin Island', 'Tromelin Island'), ('Tunisia', 'Tunisia'), ('Turkey', 'Turkey'), ('Turkmenistan', 'Turkmenistan'), ('Turks and Caicos Islands', 'Turks and Caicos Islands'), ('Tuvalu', 'Tuvalu'), ('USA', 'USA'), ('Uganda', 'Uganda'), ('Ukraine', 'Ukraine'), ('United Arab Emirates', 'United Arab Emirates'), ('United Kingdom', 'United Kingdom'), ('Uruguay', 'Uruguay'), ('Uzbekistan', 'Uzbekistan'), ('Vanuatu', 'Vanuatu'), ('Venezuela', 'Venezuela'), ('Viet Nam', 'Viet Nam'), ('Virgin Islands', 'Virgin Islands'), ('Wake Island', 'Wake Island'), ('Wallis and Futuna', 'Wallis and Futuna'), ('West Bank', 'West Bank'), ('Western Sahara', 'Western Sahara'), ('Yemen', 'Yemen'), ('Zambia', 'Zambia'), ('Zimbabwe', 'Zimbabwe'), ('missing: control sample', 'missing: control sample'), ('missing: data agreement established pre-2023', 'missing: data agreement established pre-2023'), ('missing: endangered species', 'missing: endangered species'), ('missing: human-identifiable', 'missing: human-identifiable'), ('missing: lab stock', 'missing: lab stock'), ('missing: sample group', 'missing: sample group'), ('missing: synthetic construct', 'missing: synthetic construct'), ('missing: third party data', 'missing: third party data'), ('not applicable', 'not applicable'), ('not collected', 'not collected'), ('not provided', 'not provided'), ('restricted access', 'restricted access')]
+	medical_history_performed_choice = [('No', 'No'), ('Yes', 'Yes')]
+	oxygenation_status_of_sample_choice = [('aerobic', 'aerobic'), ('anaerobic', 'anaerobic')]
+	IHMC_medication_code_choice = [('01=1=Analgesics/NSAIDS', '01=1=Analgesics/NSAIDS'), ('02=2=Anesthetics', '02=2=Anesthetics'), ('03=3=Antacids/H2 antagonists', '03=3=Antacids/H2 antagonists'), ('04=4=Anti-acne', '04=4=Anti-acne'), ('05=5=Anti-asthma/bronchodilators', '05=5=Anti-asthma/bronchodilators'), ('06=6=Anti-cholesterol/Anti-hyperlipidemic', '06=6=Anti-cholesterol/Anti-hyperlipidemic'), ('07=7=Anti-coagulants', '07=7=Anti-coagulants'), ('08=8=Antibiotics/(anti)-infectives, parasitics, microbials', '08=8=Antibiotics/(anti)-infectives, parasitics, microbials'), ('09=9=Antidepressants/mood-altering drugs', '09=9=Antidepressants/mood-altering drugs'), ('10=10=Antihistamines/ Decongestants', '10=10=Antihistamines/ Decongestants'), ('11=11=Antihypertensives', '11=11=Antihypertensives'), ('12=12=Cardiovascular, other than hyperlipidemic/HTN', '12=12=Cardiovascular, other than hyperlipidemic/HTN'), ('13=13=Contraceptives (oral, implant, injectable)', '13=13=Contraceptives (oral, implant, injectable)'), ('14=14=Emergency/support medications', '14=14=Emergency/support medications'), ('15=15=Endocrine/Metabolic agents', '15=15=Endocrine/Metabolic agents'), ('16=16=GI meds (anti-diarrheal, emetic, spasmodics)', '16=16=GI meds (anti-diarrheal, emetic, spasmodics)'), ('17=17=Herbal/homeopathic products', '17=17=Herbal/homeopathic products'), ('18=18=Hormones/steroids', '18=18=Hormones/steroids'), ('19=19=OTC cold & flu', '19=19=OTC cold & flu'), ('20=20=Vaccine prophylaxis', '20=20=Vaccine prophylaxis'), ('21=21=Vitamins, minerals, food supplements', '21=21=Vitamins, minerals, food supplements'), ('99=99=Other', '99=99=Other')]
+	host_occupation_choice = [('01=01 Accounting/Finance', '01=01 Accounting/Finance'), ('02=02 Advertising/Public Relations', '02=02 Advertising/Public Relations'), ('03=03 Arts/Entertainment/Publishing', '03=03 Arts/Entertainment/Publishing'), ('04=04 Automotive', '04=04 Automotive'), ('05=05 Banking/ Mortgage', '05=05 Banking/ Mortgage'), ('06=06 Biotech', '06=06 Biotech'), ('07=07 Broadcast/Journalism', '07=07 Broadcast/Journalism'), ('08=08 Business Development', '08=08 Business Development'), ('09=09 Clerical/Administrative', '09=09 Clerical/Administrative'), ('10=10 Construction/Trades', '10=10 Construction/Trades'), ('11=11 Consultant', '11=11 Consultant'), ('12=12 Customer Services', '12=12 Customer Services'), ('13=13 Design', '13=13 Design'), ('14=14 Education', '14=14 Education'), ('15=15 Engineering', '15=15 Engineering'), ('16=16 Entry Level', '16=16 Entry Level'), ('17=17 Executive', '17=17 Executive'), ('18=18 Food Service', '18=18 Food Service'), ('19=19 Government', '19=19 Government'), ('20=20 Grocery', '20=20 Grocery'), ('21=21 Healthcare', '21=21 Healthcare'), ('22=22 Hospitality', '22=22 Hospitality'), ('23=23 Human Resources', '23=23 Human Resources'), ('24=24 Information Technology', '24=24 Information Technology'), ('25=25 Insurance', '25=25 Insurance'), ('26=26 Law/Legal', '26=26 Law/Legal'), ('27=27 Management', '27=27 Management'), ('28=28 Manufacturing', '28=28 Manufacturing'), ('29=29 Marketing', '29=29 Marketing'), ('30=30 Pharmaceutical', '30=30 Pharmaceutical'), ('31=31 Professional Services', '31=31 Professional Services'), ('32=32 Purchasing', '32=32 Purchasing'), ('33=33 Quality Assurance (QA)', '33=33 Quality Assurance (QA)'), ('34=34 Research', '34=34 Research'), ('35=35 Restaurant', '35=35 Restaurant'), ('36=36 Retail', '36=36 Retail'), ('37=37 Sales', '37=37 Sales'), ('38=38 Science', '38=38 Science'), ('39=39 Security/Law Enforcement', '39=39 Security/Law Enforcement'), ('40=40 Shipping/Distribution', '40=40 Shipping/Distribution'), ('41=41 Strategy', '41=41 Strategy'), ('42=42 Student', '42=42 Student'), ('43=43 Telecommunications', '43=43 Telecommunications'), ('44=44 Training', '44=44 Training'), ('45=45 Transportation', '45=45 Transportation'), ('46=46 Warehouse', '46=46 Warehouse'), ('47=47 Other', '47=47 Other'), ('99=99 Unknown/Refused', '99=99 Unknown/Refused')]
+	host_sex_choice = [('female', 'female'), ('hermaphrodite', 'hermaphrodite'), ('male', 'male'), ('missing: control sample', 'missing: control sample'), ('missing: data agreement established pre-2023', 'missing: data agreement established pre-2023'), ('missing: endangered species', 'missing: endangered species'), ('missing: human-identifiable', 'missing: human-identifiable'), ('missing: lab stock', 'missing: lab stock'), ('missing: sample group', 'missing: sample group'), ('missing: synthetic construct', 'missing: synthetic construct'), ('missing: third party data', 'missing: third party data'), ('neuter', 'neuter'), ('not applicable', 'not applicable'), ('not collected', 'not collected'), ('not provided', 'not provided'), ('other', 'other'), ('restricted access', 'restricted access')]
+	hysterectomy_choice = [('No', 'No'), ('Yes', 'Yes')]
+	trophic_level_choice = [('autotroph', 'autotroph'), ('carboxydotroph', 'carboxydotroph'), ('chemoautotroph', 'chemoautotroph'), ('chemoheterotroph', 'chemoheterotroph'), ('chemolithoautotroph', 'chemolithoautotroph'), ('chemolithotroph', 'chemolithotroph'), ('chemoorganoheterotroph', 'chemoorganoheterotroph'), ('chemoorganotroph', 'chemoorganotroph'), ('chemosynthetic', 'chemosynthetic'), ('chemotroph', 'chemotroph'), ('copiotroph', 'copiotroph'), ('diazotroph', 'diazotroph'), ('facultative autotroph', 'facultative autotroph'), ('heterotroph', 'heterotroph'), ('lithoautotroph', 'lithoautotroph'), ('lithoheterotroph', 'lithoheterotroph'), ('lithotroph', 'lithotroph'), ('methanotroph', 'methanotroph'), ('methylotroph', 'methylotroph'), ('mixotroph', 'mixotroph'), ('obligate chemoautolithotroph', 'obligate chemoautolithotroph'), ('oligotroph', 'oligotroph'), ('organoheterotroph', 'organoheterotroph'), ('organotroph', 'organotroph'), ('photoautotroph', 'photoautotroph'), ('photoheterotroph', 'photoheterotroph'), ('photolithoautotroph', 'photolithoautotroph'), ('photolithotroph', 'photolithotroph'), ('photosynthetic', 'photosynthetic'), ('phototroph', 'phototroph')]
+	relationship_to_oxygen_choice = [('aerobe', 'aerobe'), ('anaerobe', 'anaerobe'), ('facultative', 'facultative'), ('microaerophilic', 'microaerophilic'), ('microanaerobe', 'microanaerobe'), ('obligate aerobe', 'obligate aerobe'), ('obligate anaerobe', 'obligate anaerobe')]
+	observed_biotic_relationship_choice = [('commensal', 'commensal'), ('free living', 'free living'), ('mutualism', 'mutualism'), ('parasite', 'parasite'), ('symbiont', 'symbiont')]
+
+	number_of_replicons_validator = "[+-]?[0-9]+"
+	extrachromosomal_elements_validator = "[+-]?[0-9]+"
+	estimated_size_validator = "[+-]?[0-9]+"
+	sample_volume_or_weight_for_DNA_extraction_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	library_size_validator = "[+-]?[0-9]+"
+	library_reads_sequenced_validator = "[+-]?[0-9]+"
+	collection_date_validator = "(^[12][0-9]{3}(-(0[1-9]|1[0-2])(-(0[1-9]|[12][0-9]|3[01])(T[0-9]{2}:[0-9]{2}(:[0-9]{2})?Z?([+-][0-9]{1,2})?)?)?)?(/[0-9]{4}(-[0-9]{2}(-[0-9]{2}(T[0-9]{2}:[0-9]{2}(:[0-9]{2})?Z?([+-][0-9]{1,2})?)?)?)?)?$)|(^not collected$)|(^not provided$)|(^restricted access$)|(^missing: control sample$)|(^missing: sample group$)|(^missing: synthetic construct$)|(^missing: lab stock$)|(^missing: third party data$)|(^missing: data agreement established pre-2023$)|(^missing: endangered species$)|(^missing: human-identifiable$)"
+	geographic_location_latitude_validator = "(^[+-]?[0-9]+.?[0-9]{0,8}$)|(^not collected$)|(^not provided$)|(^restricted access$)|(^missing: control sample$)|(^missing: sample group$)|(^missing: synthetic construct$)|(^missing: lab stock$)|(^missing: third party data$)|(^missing: data agreement established pre-2023$)|(^missing: endangered species$)|(^missing: human-identifiable$)"
+	geographic_location_longitude_validator = "(^[+-]?[0-9]+.?[0-9]{0,8}$)|(^not collected$)|(^not provided$)|(^restricted access$)|(^missing: control sample$)|(^missing: sample group$)|(^missing: synthetic construct$)|(^missing: lab stock$)|(^missing: third party data$)|(^missing: data agreement established pre-2023$)|(^missing: endangered species$)|(^missing: human-identifiable$)"
+	amount_or_size_of_sample_collected_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	sample_storage_duration_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	sample_storage_temperature_validator = "[+-]?(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	host_age_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	host_height_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	host_body_mass_index_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	host_total_mass_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	host_body_temperature_validator = "[+-]?(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	temperature_validator = "[+-]?(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	salinity_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	host_pulse_validator = "[+-]?[0-9]+"
+
+	sampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE, default=1)
+	sample = models.ForeignKey(Sample, on_delete=models.CASCADE, default=1)
+	sample_type = models.IntegerField(default=1)
+	project_name= models.CharField(max_length=120, blank=False,help_text="Name of th")
+	experimental_factor= models.CharField(max_length=120, blank=True,help_text="Experiment")
+	ploidy= models.CharField(max_length=120, blank=True,help_text="The ploidy")
+	number_of_replicons= models.CharField(max_length=120, blank=True,help_text="Reports th", validators=[RegexValidator(number_of_replicons_validator)])
+	extrachromosomal_elements= models.CharField(max_length=120, blank=True,help_text="Do plasmid", validators=[RegexValidator(extrachromosomal_elements_validator)])
+	estimated_size= models.CharField(max_length=120, blank=True,help_text="The estima", validators=[RegexValidator(estimated_size_validator)])
+	reference_for_biomaterial= models.CharField(max_length=120, blank=True,help_text="Primary pu")
+	annotation_source= models.CharField(max_length=120, blank=True,help_text="For cases ")
+	sample_volume_or_weight_for_DNA_extraction= models.CharField(max_length=120, blank=True,help_text="Volume (ml", validators=[RegexValidator(sample_volume_or_weight_for_DNA_extraction_validator)])
+	nucleic_acid_extraction= models.CharField(max_length=120, blank=True,help_text="A link to ")
+	nucleic_acid_amplification= models.CharField(max_length=120, blank=True,help_text="A link to ")
+	library_size= models.CharField(max_length=120, blank=True,help_text="Total numb", validators=[RegexValidator(library_size_validator)])
+	library_reads_sequenced= models.CharField(max_length=120, blank=True,help_text="Total numb", validators=[RegexValidator(library_reads_sequenced_validator)])
+	library_construction_method= models.CharField(max_length=120, blank=True,help_text="Library co")
+	library_vector= models.CharField(max_length=120, blank=True,help_text="Cloning ve")
+	library_screening_strategy= models.CharField(max_length=120, blank=True,help_text="Specific e")
+	target_gene= models.CharField(max_length=120, blank=True,help_text="Targeted g")
+	target_subfragment= models.CharField(max_length=120, blank=True,help_text="Name of su")
+	pcr_primers= models.CharField(max_length=120, blank=True,help_text="PCR primer")
+	multiplex_identifiers= models.CharField(max_length=120, blank=True,help_text="Molecular ")
+	adapters= models.CharField(max_length=120, blank=True,help_text="Adapters p")
+	pcr_conditions= models.CharField(max_length=120, blank=True,help_text="Descriptio")
+	sequencing_method= models.CharField(max_length=120, blank=True,help_text="Sequencing")
+	sequence_quality_check= models.CharField(max_length=120, blank=True,help_text="Indicate i", choices=sequence_quality_check_choice)
+	chimera_check_software= models.CharField(max_length=120, blank=True,help_text="Tool(s) us")
+	relevant_electronic_resources= models.CharField(max_length=120, blank=True,help_text="A related ")
+	relevant_standard_operating_procedures= models.CharField(max_length=120, blank=True,help_text="Standard o")
+	negative_control_type= models.CharField(max_length=120, blank=True,help_text="The substa")
+	positive_control_type= models.CharField(max_length=120, blank=True,help_text="The substa")
+	collection_date= models.CharField(max_length=120, blank=False,help_text="The date t", validators=[RegexValidator(collection_date_validator)])
+	geographic_location_country_and_or_sea= models.CharField(max_length=120, blank=False,help_text="The locati", choices=geographic_location_country_and_or_sea_choice)
+	geographic_location_latitude= models.CharField(max_length=120, blank=False,help_text="The geogra", validators=[RegexValidator(geographic_location_latitude_validator)])
+	geographic_location_longitude= models.CharField(max_length=120, blank=False,help_text="The geogra", validators=[RegexValidator(geographic_location_longitude_validator)])
+	geographic_location_region_and_locality= models.CharField(max_length=120, blank=True,help_text="The geogra")
+	broad_scale_environmental_context= models.CharField(max_length=120, blank=False,help_text="Report the")
+	local_environmental_context= models.CharField(max_length=120, blank=False,help_text="Report the")
+	environmental_medium= models.CharField(max_length=120, blank=False,help_text="Report the")
+	source_material_identifiers= models.CharField(max_length=120, blank=True,help_text="A unique i")
+	sample_material_processing= models.CharField(max_length=120, blank=True,help_text="A brief de")
+	isolation_and_growth_condition= models.CharField(max_length=120, blank=True,help_text="Publicatio")
+	propagation= models.CharField(max_length=120, blank=True,help_text="The type o")
+	amount_or_size_of_sample_collected= models.CharField(max_length=120, blank=True,help_text="The total ", validators=[RegexValidator(amount_or_size_of_sample_collected_validator)])
+	host_body_product= models.CharField(max_length=120, blank=True,help_text="substance ")
+	medical_history_performed= models.CharField(max_length=120, blank=True,help_text="whether fu", choices=medical_history_performed_choice)
+	oxygenation_status_of_sample= models.CharField(max_length=120, blank=True,help_text="oxygenatio", choices=oxygenation_status_of_sample_choice)
+	organism_count= models.CharField(max_length=120, blank=True,help_text="Total cell")
+	sample_storage_duration= models.CharField(max_length=120, blank=True,help_text="duration f", validators=[RegexValidator(sample_storage_duration_validator)])
+	sample_storage_temperature= models.CharField(max_length=120, blank=True,help_text="temperatur", validators=[RegexValidator(sample_storage_temperature_validator)])
+	sample_storage_location= models.CharField(max_length=120, blank=True,help_text="location a")
+	sample_collection_device= models.CharField(max_length=120, blank=True,help_text="The device")
+	sample_collection_method= models.CharField(max_length=120, blank=True,help_text="The method")
+	gynecological_disorder= models.CharField(max_length=120, blank=True,help_text="History of")
+	urogenital_disorder= models.CharField(max_length=120, blank=True,help_text="History of")
+	host_disease_status= models.CharField(max_length=120, blank=True,help_text="list of di")
+	host_subject_id= models.CharField(max_length=120, blank=True,help_text="a unique i")
+	IHMC_medication_code= models.CharField(max_length=120, blank=True,help_text="can includ", choices=IHMC_medication_code_choice)
+	host_age= models.CharField(max_length=120, blank=True,help_text="age of hos", validators=[RegexValidator(host_age_validator)])
+	host_body_site= models.CharField(max_length=120, blank=True,help_text="name of bo")
+	host_height= models.CharField(max_length=120, blank=True,help_text="the height", validators=[RegexValidator(host_height_validator)])
+	host_body_mass_index= models.CharField(max_length=120, blank=True,help_text="body mass ", validators=[RegexValidator(host_body_mass_index_validator)])
+	ethnicity= models.CharField(max_length=120, blank=True,help_text="A category")
+	host_occupation= models.CharField(max_length=120, blank=True,help_text="most frequ", choices=host_occupation_choice)
+	host_total_mass= models.CharField(max_length=120, blank=True,help_text="total mass", validators=[RegexValidator(host_total_mass_validator)])
+	host_phenotype= models.CharField(max_length=120, blank=True,help_text="phenotype ")
+	host_body_temperature= models.CharField(max_length=120, blank=True,help_text="core body ", validators=[RegexValidator(host_body_temperature_validator)])
+	host_sex= models.CharField(max_length=120, blank=True,help_text="Gender or ", choices=host_sex_choice)
+	temperature= models.CharField(max_length=120, blank=True,help_text="temperatur", validators=[RegexValidator(temperature_validator)])
+	salinity= models.CharField(max_length=120, blank=True,help_text="The total ", validators=[RegexValidator(salinity_validator)])
+	menarche= models.CharField(max_length=120, blank=True,help_text="date of mo")
+	sexual_activity= models.CharField(max_length=120, blank=True,help_text="current se")
+	pregnancy= models.CharField(max_length=120, blank=True,help_text="date due o")
+	douche= models.CharField(max_length=120, blank=True,help_text="date of mo")
+	birth_control= models.CharField(max_length=120, blank=True,help_text="specificat")
+	menopause= models.CharField(max_length=120, blank=True,help_text="date of on")
+	HRT= models.CharField(max_length=120, blank=True,help_text="whether su")
+	hysterectomy= models.CharField(max_length=120, blank=True,help_text="specificat", choices=hysterectomy_choice)
+	host_diet= models.CharField(max_length=120, blank=True,help_text="type of di")
+	host_last_meal= models.CharField(max_length=120, blank=True,help_text="content of")
+	host_family_relationship= models.CharField(max_length=120, blank=True,help_text="relationsh")
+	host_genotype= models.CharField(max_length=120, blank=True,help_text="observed g")
+	host_pulse= models.CharField(max_length=120, blank=True,help_text="resting pu", validators=[RegexValidator(host_pulse_validator)])
+	subspecific_genetic_lineage= models.CharField(max_length=120, blank=True,help_text="Informatio")
+	trophic_level= models.CharField(max_length=120, blank=True,help_text="Trophic le", choices=trophic_level_choice)
+	relationship_to_oxygen= models.CharField(max_length=120, blank=True,help_text="Is this or", choices=relationship_to_oxygen_choice)
+	known_pathogenicity= models.CharField(max_length=120, blank=True,help_text="To what is")
+	encoded_traits= models.CharField(max_length=120, blank=True,help_text="Should inc")
+	observed_biotic_relationship= models.CharField(max_length=120, blank=True,help_text="Is it free", choices=observed_biotic_relationship_choice)
+	chemical_administration= models.CharField(max_length=120, blank=True,help_text="list of ch")
+	perturbation= models.CharField(max_length=120, blank=True,help_text="type of pe")
+
+	fields = {
+		'project_name': 'project_name',
+		'experimental_factor': 'experimental_factor',
+		'ploidy': 'ploidy',
+		'number_of_replicons': 'number_of_replicons',
+		'extrachromosomal_elements': 'extrachromosomal_elements',
+		'estimated_size': 'estimated_size',
+		'reference_for_biomaterial': 'reference_for_biomaterial',
+		'annotation_source': 'annotation_source',
+		'sample_volume_or_weight_for_DNA_extraction': 'sample_volume_or_weight_for_DNA_extraction',
+		'nucleic_acid_extraction': 'nucleic_acid_extraction',
+		'nucleic_acid_amplification': 'nucleic_acid_amplification',
+		'library_size': 'library_size',
+		'library_reads_sequenced': 'library_reads_sequenced',
+		'library_construction_method': 'library_construction_method',
+		'library_vector': 'library_vector',
+		'library_screening_strategy': 'library_screening_strategy',
+		'target_gene': 'target_gene',
+		'target_subfragment': 'target_subfragment',
+		'pcr_primers': 'pcr_primers',
+		'multiplex_identifiers': 'multiplex_identifiers',
+		'adapters': 'adapters',
+		'pcr_conditions': 'pcr_conditions',
+		'sequencing_method': 'sequencing_method',
+		'sequence_quality_check': 'sequence_quality_check',
+		'chimera_check_software': 'chimera_check_software',
+		'relevant_electronic_resources': 'relevant_electronic_resources',
+		'relevant_standard_operating_procedures': 'relevant_standard_operating_procedures',
+		'negative_control_type': 'negative_control_type',
+		'positive_control_type': 'positive_control_type',
+		'collection_date': 'collection_date',
+		'geographic_location_country_and_or_sea': 'geographic_location_country_and_or_sea',
+		'geographic_location_latitude': 'geographic_location_latitude',
+		'geographic_location_longitude': 'geographic_location_longitude',
+		'geographic_location_region_and_locality': 'geographic_location_region_and_locality',
+		'broad_scale_environmental_context': 'broad_scale_environmental_context',
+		'local_environmental_context': 'local_environmental_context',
+		'environmental_medium': 'environmental_medium',
+		'source_material_identifiers': 'source_material_identifiers',
+		'sample_material_processing': 'sample_material_processing',
+		'isolation_and_growth_condition': 'isolation_and_growth_condition',
+		'propagation': 'propagation',
+		'amount_or_size_of_sample_collected': 'amount_or_size_of_sample_collected',
+		'host_body_product': 'host_body_product',
+		'medical_history_performed': 'medical_history_performed',
+		'oxygenation_status_of_sample': 'oxygenation_status_of_sample',
+		'organism_count': 'organism_count',
+		'sample_storage_duration': 'sample_storage_duration',
+		'sample_storage_temperature': 'sample_storage_temperature',
+		'sample_storage_location': 'sample_storage_location',
+		'sample_collection_device': 'sample_collection_device',
+		'sample_collection_method': 'sample_collection_method',
+		'gynecological_disorder': 'gynecological_disorder',
+		'urogenital_disorder': 'urogenital_disorder',
+		'host_disease_status': 'host_disease_status',
+		'host_subject_id': 'host_subject_id',
+		'IHMC_medication_code': 'IHMC_medication_code',
+		'host_age': 'host_age',
+		'host_body_site': 'host_body_site',
+		'host_height': 'host_height',
+		'host_body_mass_index': 'host_body_mass_index',
+		'ethnicity': 'ethnicity',
+		'host_occupation': 'host_occupation',
+		'host_total_mass': 'host_total_mass',
+		'host_phenotype': 'host_phenotype',
+		'host_body_temperature': 'host_body_temperature',
+		'host_sex': 'host_sex',
+		'temperature': 'temperature',
+		'salinity': 'salinity',
+		'menarche': 'menarche',
+		'sexual_activity': 'sexual_activity',
+		'pregnancy': 'pregnancy',
+		'douche': 'douche',
+		'birth_control': 'birth_control',
+		'menopause': 'menopause',
+		'HRT': 'HRT',
+		'hysterectomy': 'hysterectomy',
+		'host_diet': 'host_diet',
+		'host_last_meal': 'host_last_meal',
+		'host_family_relationship': 'host_family_relationship',
+		'host_genotype': 'host_genotype',
+		'host_pulse': 'host_pulse',
+		'subspecific_genetic_lineage': 'subspecific_genetic_lineage',
+		'trophic_level': 'trophic_level',
+		'relationship_to_oxygen': 'relationship_to_oxygen',
+		'known_pathogenicity': 'known_pathogenicity',
+		'encoded_traits': 'encoded_traits',
+		'observed_biotic_relationship': 'observed_biotic_relationship',
+		'chemical_administration': 'chemical_administration',
+		'perturbation': 'perturbation',
+	}
+
+	name = 'GSC_MIxS_human_vaginal'
+
+class GSC_MIxS_human_vaginal_unit(SelfDescribingModel):
+
+	sample_volume_or_weight_for_DNA_extraction_units = [('g', 'g'), ('mL', 'mL'), ('mg', 'mg'), ('ng', 'ng')]
+	geographic_location_latitude_units = [('DD', 'DD')]
+	geographic_location_longitude_units = [('DD', 'DD')]
+	amount_or_size_of_sample_collected_units = [('L', 'L'), ('g', 'g'), ('kg', 'kg'), ('m2', 'm2'), ('m3', 'm3')]
+	sample_storage_duration_units = [('days', 'days'), ('hours', 'hours'), ('months', 'months'), ('weeks', 'weeks'), ('years', 'years')]
+	sample_storage_temperature_units = [('°C', '°C')]
+	host_age_units = [('centuries', 'centuries'), ('days', 'days'), ('decades', 'decades'), ('hours', 'hours'), ('minutes', 'minutes'), ('months', 'months'), ('seconds', 'seconds'), ('weeks', 'weeks'), ('years', 'years')]
+	host_height_units = [('cm', 'cm'), ('m', 'm'), ('mm', 'mm')]
+	host_body_mass_index_units = [('kg/m2', 'kg/m2')]
+	host_total_mass_units = [('g', 'g'), ('kg', 'kg')]
+	host_body_temperature_units = [('ºC', 'ºC')]
+	temperature_units = [('ºC', 'ºC')]
+	salinity_units = [('psu', 'psu')]
+	host_pulse_units = [('bpm', 'bpm')]
+
+	fields = {
+		'sample_volume_or_weight_for_DNA_extraction': 'sample_volume_or_weight_for_DNA_extraction',
+		'geographic_location_latitude': 'geographic_location_latitude',
+		'geographic_location_longitude': 'geographic_location_longitude',
+		'amount_or_size_of_sample_collected': 'amount_or_size_of_sample_collected',
+		'sample_storage_duration': 'sample_storage_duration',
+		'sample_storage_temperature': 'sample_storage_temperature',
+		'host_age': 'host_age',
+		'host_height': 'host_height',
+		'host_body_mass_index': 'host_body_mass_index',
+		'host_total_mass': 'host_total_mass',
+		'host_body_temperature': 'host_body_temperature',
+		'temperature': 'temperature',
+		'salinity': 'salinity',
+		'host_pulse': 'host_pulse',
+	}
+
+	name = 'GSC_MIxS_human_vaginal'
+
+	sampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE, default=1)
+	sample = models.ForeignKey(Sample, on_delete=models.CASCADE, default=1)
+	sample_type = models.IntegerField(default=1)
+	sample_volume_or_weight_for_DNA_extraction = models.CharField(max_length=120, choices=sample_volume_or_weight_for_DNA_extraction_units, blank=False)
+	geographic_location_latitude = models.CharField(max_length=120, choices=geographic_location_latitude_units, blank=False)
+	geographic_location_longitude = models.CharField(max_length=120, choices=geographic_location_longitude_units, blank=False)
+	amount_or_size_of_sample_collected = models.CharField(max_length=120, choices=amount_or_size_of_sample_collected_units, blank=False)
+	sample_storage_duration = models.CharField(max_length=120, choices=sample_storage_duration_units, blank=False)
+	sample_storage_temperature = models.CharField(max_length=120, choices=sample_storage_temperature_units, blank=False)
+	host_age = models.CharField(max_length=120, choices=host_age_units, blank=False)
+	host_height = models.CharField(max_length=120, choices=host_height_units, blank=False)
+	host_body_mass_index = models.CharField(max_length=120, choices=host_body_mass_index_units, blank=False)
+	host_total_mass = models.CharField(max_length=120, choices=host_total_mass_units, blank=False)
+	host_body_temperature = models.CharField(max_length=120, choices=host_body_temperature_units, blank=False)
+	temperature = models.CharField(max_length=120, choices=temperature_units, blank=False)
+	salinity = models.CharField(max_length=120, choices=salinity_units, blank=False)
+	host_pulse = models.CharField(max_length=120, choices=host_pulse_units, blank=False)
+
+class GSC_MIxS_human_oral(SelfDescribingModel):
+
+	sequence_quality_check_choice = [('manual', 'manual'), ('none', 'none'), ('software', 'software')]
+	geographic_location_country_and_or_sea_choice = [('Afghanistan', 'Afghanistan'), ('Albania', 'Albania'), ('Algeria', 'Algeria'), ('American Samoa', 'American Samoa'), ('Andorra', 'Andorra'), ('Angola', 'Angola'), ('Anguilla', 'Anguilla'), ('Antarctica', 'Antarctica'), ('Antigua and Barbuda', 'Antigua and Barbuda'), ('Arctic Ocean', 'Arctic Ocean'), ('Argentina', 'Argentina'), ('Armenia', 'Armenia'), ('Aruba', 'Aruba'), ('Ashmore and Cartier Islands', 'Ashmore and Cartier Islands'), ('Atlantic Ocean', 'Atlantic Ocean'), ('Australia', 'Australia'), ('Austria', 'Austria'), ('Azerbaijan', 'Azerbaijan'), ('Bahamas', 'Bahamas'), ('Bahrain', 'Bahrain'), ('Baker Island', 'Baker Island'), ('Baltic Sea', 'Baltic Sea'), ('Bangladesh', 'Bangladesh'), ('Barbados', 'Barbados'), ('Bassas da India', 'Bassas da India'), ('Belarus', 'Belarus'), ('Belgium', 'Belgium'), ('Belize', 'Belize'), ('Benin', 'Benin'), ('Bermuda', 'Bermuda'), ('Bhutan', 'Bhutan'), ('Bolivia', 'Bolivia'), ('Borneo', 'Borneo'), ('Bosnia and Herzegovina', 'Bosnia and Herzegovina'), ('Botswana', 'Botswana'), ('Bouvet Island', 'Bouvet Island'), ('Brazil', 'Brazil'), ('British Virgin Islands', 'British Virgin Islands'), ('Brunei', 'Brunei'), ('Bulgaria', 'Bulgaria'), ('Burkina Faso', 'Burkina Faso'), ('Burundi', 'Burundi'), ('Cambodia', 'Cambodia'), ('Cameroon', 'Cameroon'), ('Canada', 'Canada'), ('Cape Verde', 'Cape Verde'), ('Cayman Islands', 'Cayman Islands'), ('Central African Republic', 'Central African Republic'), ('Chad', 'Chad'), ('Chile', 'Chile'), ('China', 'China'), ('Christmas Island', 'Christmas Island'), ('Clipperton Island', 'Clipperton Island'), ('Cocos Islands', 'Cocos Islands'), ('Colombia', 'Colombia'), ('Comoros', 'Comoros'), ('Cook Islands', 'Cook Islands'), ('Coral Sea Islands', 'Coral Sea Islands'), ('Costa Rica', 'Costa Rica'), ("Cote d'Ivoire", "Cote d'Ivoire"), ('Croatia', 'Croatia'), ('Cuba', 'Cuba'), ('Curacao', 'Curacao'), ('Cyprus', 'Cyprus'), ('Czech Republic', 'Czech Republic'), ('Democratic Republic of the Congo', 'Democratic Republic of the Congo'), ('Denmark', 'Denmark'), ('Djibouti', 'Djibouti'), ('Dominica', 'Dominica'), ('Dominican Republic', 'Dominican Republic'), ('East Timor', 'East Timor'), ('Ecuador', 'Ecuador'), ('Egypt', 'Egypt'), ('El Salvador', 'El Salvador'), ('Equatorial Guinea', 'Equatorial Guinea'), ('Eritrea', 'Eritrea'), ('Estonia', 'Estonia'), ('Ethiopia', 'Ethiopia'), ('Europa Island', 'Europa Island'), ('Falkland Islands (Islas Malvinas)', 'Falkland Islands (Islas Malvinas)'), ('Faroe Islands', 'Faroe Islands'), ('Fiji', 'Fiji'), ('Finland', 'Finland'), ('France', 'France'), ('French Guiana', 'French Guiana'), ('French Polynesia', 'French Polynesia'), ('French Southern and Antarctic Lands', 'French Southern and Antarctic Lands'), ('Gabon', 'Gabon'), ('Gambia', 'Gambia'), ('Gaza Strip', 'Gaza Strip'), ('Georgia', 'Georgia'), ('Germany', 'Germany'), ('Ghana', 'Ghana'), ('Gibraltar', 'Gibraltar'), ('Glorioso Islands', 'Glorioso Islands'), ('Greece', 'Greece'), ('Greenland', 'Greenland'), ('Grenada', 'Grenada'), ('Guadeloupe', 'Guadeloupe'), ('Guam', 'Guam'), ('Guatemala', 'Guatemala'), ('Guernsey', 'Guernsey'), ('Guinea', 'Guinea'), ('Guinea-Bissau', 'Guinea-Bissau'), ('Guyana', 'Guyana'), ('Haiti', 'Haiti'), ('Heard Island and McDonald Islands', 'Heard Island and McDonald Islands'), ('Honduras', 'Honduras'), ('Hong Kong', 'Hong Kong'), ('Howland Island', 'Howland Island'), ('Hungary', 'Hungary'), ('Iceland', 'Iceland'), ('India', 'India'), ('Indian Ocean', 'Indian Ocean'), ('Indonesia', 'Indonesia'), ('Iran', 'Iran'), ('Iraq', 'Iraq'), ('Ireland', 'Ireland'), ('Isle of Man', 'Isle of Man'), ('Israel', 'Israel'), ('Italy', 'Italy'), ('Jamaica', 'Jamaica'), ('Jan Mayen', 'Jan Mayen'), ('Japan', 'Japan'), ('Jarvis Island', 'Jarvis Island'), ('Jersey', 'Jersey'), ('Johnston Atoll', 'Johnston Atoll'), ('Jordan', 'Jordan'), ('Juan de Nova Island', 'Juan de Nova Island'), ('Kazakhstan', 'Kazakhstan'), ('Kenya', 'Kenya'), ('Kerguelen Archipelago', 'Kerguelen Archipelago'), ('Kingman Reef', 'Kingman Reef'), ('Kiribati', 'Kiribati'), ('Kosovo', 'Kosovo'), ('Kuwait', 'Kuwait'), ('Kyrgyzstan', 'Kyrgyzstan'), ('Laos', 'Laos'), ('Latvia', 'Latvia'), ('Lebanon', 'Lebanon'), ('Lesotho', 'Lesotho'), ('Liberia', 'Liberia'), ('Libya', 'Libya'), ('Liechtenstein', 'Liechtenstein'), ('Lithuania', 'Lithuania'), ('Luxembourg', 'Luxembourg'), ('Macau', 'Macau'), ('Macedonia', 'Macedonia'), ('Madagascar', 'Madagascar'), ('Malawi', 'Malawi'), ('Malaysia', 'Malaysia'), ('Maldives', 'Maldives'), ('Mali', 'Mali'), ('Malta', 'Malta'), ('Marshall Islands', 'Marshall Islands'), ('Martinique', 'Martinique'), ('Mauritania', 'Mauritania'), ('Mauritius', 'Mauritius'), ('Mayotte', 'Mayotte'), ('Mediterranean Sea', 'Mediterranean Sea'), ('Mexico', 'Mexico'), ('Micronesia', 'Micronesia'), ('Midway Islands', 'Midway Islands'), ('Moldova', 'Moldova'), ('Monaco', 'Monaco'), ('Mongolia', 'Mongolia'), ('Montenegro', 'Montenegro'), ('Montserrat', 'Montserrat'), ('Morocco', 'Morocco'), ('Mozambique', 'Mozambique'), ('Myanmar', 'Myanmar'), ('Namibia', 'Namibia'), ('Nauru', 'Nauru'), ('Navassa Island', 'Navassa Island'), ('Nepal', 'Nepal'), ('Netherlands', 'Netherlands'), ('New Caledonia', 'New Caledonia'), ('New Zealand', 'New Zealand'), ('Nicaragua', 'Nicaragua'), ('Niger', 'Niger'), ('Nigeria', 'Nigeria'), ('Niue', 'Niue'), ('Norfolk Island', 'Norfolk Island'), ('North Korea', 'North Korea'), ('North Sea', 'North Sea'), ('Northern Mariana Islands', 'Northern Mariana Islands'), ('Norway', 'Norway'), ('Oman', 'Oman'), ('Pacific Ocean', 'Pacific Ocean'), ('Pakistan', 'Pakistan'), ('Palau', 'Palau'), ('Palmyra Atoll', 'Palmyra Atoll'), ('Panama', 'Panama'), ('Papua New Guinea', 'Papua New Guinea'), ('Paracel Islands', 'Paracel Islands'), ('Paraguay', 'Paraguay'), ('Peru', 'Peru'), ('Philippines', 'Philippines'), ('Pitcairn Islands', 'Pitcairn Islands'), ('Poland', 'Poland'), ('Portugal', 'Portugal'), ('Puerto Rico', 'Puerto Rico'), ('Qatar', 'Qatar'), ('Republic of the Congo', 'Republic of the Congo'), ('Reunion', 'Reunion'), ('Romania', 'Romania'), ('Ross Sea', 'Ross Sea'), ('Russia', 'Russia'), ('Rwanda', 'Rwanda'), ('Saint Helena', 'Saint Helena'), ('Saint Kitts and Nevis', 'Saint Kitts and Nevis'), ('Saint Lucia', 'Saint Lucia'), ('Saint Pierre and Miquelon', 'Saint Pierre and Miquelon'), ('Saint Vincent and the Grenadines', 'Saint Vincent and the Grenadines'), ('Samoa', 'Samoa'), ('San Marino', 'San Marino'), ('Sao Tome and Principe', 'Sao Tome and Principe'), ('Saudi Arabia', 'Saudi Arabia'), ('Senegal', 'Senegal'), ('Serbia', 'Serbia'), ('Seychelles', 'Seychelles'), ('Sierra Leone', 'Sierra Leone'), ('Singapore', 'Singapore'), ('Sint Maarten', 'Sint Maarten'), ('Slovakia', 'Slovakia'), ('Slovenia', 'Slovenia'), ('Solomon Islands', 'Solomon Islands'), ('Somalia', 'Somalia'), ('South Africa', 'South Africa'), ('South Georgia and the South Sandwich Islands', 'South Georgia and the South Sandwich Islands'), ('South Korea', 'South Korea'), ('Southern Ocean', 'Southern Ocean'), ('Spain', 'Spain'), ('Spratly Islands', 'Spratly Islands'), ('Sri Lanka', 'Sri Lanka'), ('Sudan', 'Sudan'), ('Suriname', 'Suriname'), ('Svalbard', 'Svalbard'), ('Swaziland', 'Swaziland'), ('Sweden', 'Sweden'), ('Switzerland', 'Switzerland'), ('Syria', 'Syria'), ('Taiwan', 'Taiwan'), ('Tajikistan', 'Tajikistan'), ('Tanzania', 'Tanzania'), ('Tasman Sea', 'Tasman Sea'), ('Thailand', 'Thailand'), ('Togo', 'Togo'), ('Tokelau', 'Tokelau'), ('Tonga', 'Tonga'), ('Trinidad and Tobago', 'Trinidad and Tobago'), ('Tromelin Island', 'Tromelin Island'), ('Tunisia', 'Tunisia'), ('Turkey', 'Turkey'), ('Turkmenistan', 'Turkmenistan'), ('Turks and Caicos Islands', 'Turks and Caicos Islands'), ('Tuvalu', 'Tuvalu'), ('USA', 'USA'), ('Uganda', 'Uganda'), ('Ukraine', 'Ukraine'), ('United Arab Emirates', 'United Arab Emirates'), ('United Kingdom', 'United Kingdom'), ('Uruguay', 'Uruguay'), ('Uzbekistan', 'Uzbekistan'), ('Vanuatu', 'Vanuatu'), ('Venezuela', 'Venezuela'), ('Viet Nam', 'Viet Nam'), ('Virgin Islands', 'Virgin Islands'), ('Wake Island', 'Wake Island'), ('Wallis and Futuna', 'Wallis and Futuna'), ('West Bank', 'West Bank'), ('Western Sahara', 'Western Sahara'), ('Yemen', 'Yemen'), ('Zambia', 'Zambia'), ('Zimbabwe', 'Zimbabwe'), ('missing: control sample', 'missing: control sample'), ('missing: data agreement established pre-2023', 'missing: data agreement established pre-2023'), ('missing: endangered species', 'missing: endangered species'), ('missing: human-identifiable', 'missing: human-identifiable'), ('missing: lab stock', 'missing: lab stock'), ('missing: sample group', 'missing: sample group'), ('missing: synthetic construct', 'missing: synthetic construct'), ('missing: third party data', 'missing: third party data'), ('not applicable', 'not applicable'), ('not collected', 'not collected'), ('not provided', 'not provided'), ('restricted access', 'restricted access')]
+	medical_history_performed_choice = [('No', 'No'), ('Yes', 'Yes')]
+	oxygenation_status_of_sample_choice = [('aerobic', 'aerobic'), ('anaerobic', 'anaerobic')]
+	IHMC_medication_code_choice = [('01=1=Analgesics/NSAIDS', '01=1=Analgesics/NSAIDS'), ('02=2=Anesthetics', '02=2=Anesthetics'), ('03=3=Antacids/H2 antagonists', '03=3=Antacids/H2 antagonists'), ('04=4=Anti-acne', '04=4=Anti-acne'), ('05=5=Anti-asthma/bronchodilators', '05=5=Anti-asthma/bronchodilators'), ('06=6=Anti-cholesterol/Anti-hyperlipidemic', '06=6=Anti-cholesterol/Anti-hyperlipidemic'), ('07=7=Anti-coagulants', '07=7=Anti-coagulants'), ('08=8=Antibiotics/(anti)-infectives, parasitics, microbials', '08=8=Antibiotics/(anti)-infectives, parasitics, microbials'), ('09=9=Antidepressants/mood-altering drugs', '09=9=Antidepressants/mood-altering drugs'), ('10=10=Antihistamines/ Decongestants', '10=10=Antihistamines/ Decongestants'), ('11=11=Antihypertensives', '11=11=Antihypertensives'), ('12=12=Cardiovascular, other than hyperlipidemic/HTN', '12=12=Cardiovascular, other than hyperlipidemic/HTN'), ('13=13=Contraceptives (oral, implant, injectable)', '13=13=Contraceptives (oral, implant, injectable)'), ('14=14=Emergency/support medications', '14=14=Emergency/support medications'), ('15=15=Endocrine/Metabolic agents', '15=15=Endocrine/Metabolic agents'), ('16=16=GI meds (anti-diarrheal, emetic, spasmodics)', '16=16=GI meds (anti-diarrheal, emetic, spasmodics)'), ('17=17=Herbal/homeopathic products', '17=17=Herbal/homeopathic products'), ('18=18=Hormones/steroids', '18=18=Hormones/steroids'), ('19=19=OTC cold & flu', '19=19=OTC cold & flu'), ('20=20=Vaccine prophylaxis', '20=20=Vaccine prophylaxis'), ('21=21=Vitamins, minerals, food supplements', '21=21=Vitamins, minerals, food supplements'), ('99=99=Other', '99=99=Other')]
+	host_occupation_choice = [('01=01 Accounting/Finance', '01=01 Accounting/Finance'), ('02=02 Advertising/Public Relations', '02=02 Advertising/Public Relations'), ('03=03 Arts/Entertainment/Publishing', '03=03 Arts/Entertainment/Publishing'), ('04=04 Automotive', '04=04 Automotive'), ('05=05 Banking/ Mortgage', '05=05 Banking/ Mortgage'), ('06=06 Biotech', '06=06 Biotech'), ('07=07 Broadcast/Journalism', '07=07 Broadcast/Journalism'), ('08=08 Business Development', '08=08 Business Development'), ('09=09 Clerical/Administrative', '09=09 Clerical/Administrative'), ('10=10 Construction/Trades', '10=10 Construction/Trades'), ('11=11 Consultant', '11=11 Consultant'), ('12=12 Customer Services', '12=12 Customer Services'), ('13=13 Design', '13=13 Design'), ('14=14 Education', '14=14 Education'), ('15=15 Engineering', '15=15 Engineering'), ('16=16 Entry Level', '16=16 Entry Level'), ('17=17 Executive', '17=17 Executive'), ('18=18 Food Service', '18=18 Food Service'), ('19=19 Government', '19=19 Government'), ('20=20 Grocery', '20=20 Grocery'), ('21=21 Healthcare', '21=21 Healthcare'), ('22=22 Hospitality', '22=22 Hospitality'), ('23=23 Human Resources', '23=23 Human Resources'), ('24=24 Information Technology', '24=24 Information Technology'), ('25=25 Insurance', '25=25 Insurance'), ('26=26 Law/Legal', '26=26 Law/Legal'), ('27=27 Management', '27=27 Management'), ('28=28 Manufacturing', '28=28 Manufacturing'), ('29=29 Marketing', '29=29 Marketing'), ('30=30 Pharmaceutical', '30=30 Pharmaceutical'), ('31=31 Professional Services', '31=31 Professional Services'), ('32=32 Purchasing', '32=32 Purchasing'), ('33=33 Quality Assurance (QA)', '33=33 Quality Assurance (QA)'), ('34=34 Research', '34=34 Research'), ('35=35 Restaurant', '35=35 Restaurant'), ('36=36 Retail', '36=36 Retail'), ('37=37 Sales', '37=37 Sales'), ('38=38 Science', '38=38 Science'), ('39=39 Security/Law Enforcement', '39=39 Security/Law Enforcement'), ('40=40 Shipping/Distribution', '40=40 Shipping/Distribution'), ('41=41 Strategy', '41=41 Strategy'), ('42=42 Student', '42=42 Student'), ('43=43 Telecommunications', '43=43 Telecommunications'), ('44=44 Training', '44=44 Training'), ('45=45 Transportation', '45=45 Transportation'), ('46=46 Warehouse', '46=46 Warehouse'), ('47=47 Other', '47=47 Other'), ('99=99 Unknown/Refused', '99=99 Unknown/Refused')]
+	host_sex_choice = [('female', 'female'), ('hermaphrodite', 'hermaphrodite'), ('male', 'male'), ('missing: control sample', 'missing: control sample'), ('missing: data agreement established pre-2023', 'missing: data agreement established pre-2023'), ('missing: endangered species', 'missing: endangered species'), ('missing: human-identifiable', 'missing: human-identifiable'), ('missing: lab stock', 'missing: lab stock'), ('missing: sample group', 'missing: sample group'), ('missing: synthetic construct', 'missing: synthetic construct'), ('missing: third party data', 'missing: third party data'), ('neuter', 'neuter'), ('not applicable', 'not applicable'), ('not collected', 'not collected'), ('not provided', 'not provided'), ('other', 'other'), ('restricted access', 'restricted access')]
+	trophic_level_choice = [('autotroph', 'autotroph'), ('carboxydotroph', 'carboxydotroph'), ('chemoautotroph', 'chemoautotroph'), ('chemoheterotroph', 'chemoheterotroph'), ('chemolithoautotroph', 'chemolithoautotroph'), ('chemolithotroph', 'chemolithotroph'), ('chemoorganoheterotroph', 'chemoorganoheterotroph'), ('chemoorganotroph', 'chemoorganotroph'), ('chemosynthetic', 'chemosynthetic'), ('chemotroph', 'chemotroph'), ('copiotroph', 'copiotroph'), ('diazotroph', 'diazotroph'), ('facultative autotroph', 'facultative autotroph'), ('heterotroph', 'heterotroph'), ('lithoautotroph', 'lithoautotroph'), ('lithoheterotroph', 'lithoheterotroph'), ('lithotroph', 'lithotroph'), ('methanotroph', 'methanotroph'), ('methylotroph', 'methylotroph'), ('mixotroph', 'mixotroph'), ('obligate chemoautolithotroph', 'obligate chemoautolithotroph'), ('oligotroph', 'oligotroph'), ('organoheterotroph', 'organoheterotroph'), ('organotroph', 'organotroph'), ('photoautotroph', 'photoautotroph'), ('photoheterotroph', 'photoheterotroph'), ('photolithoautotroph', 'photolithoautotroph'), ('photolithotroph', 'photolithotroph'), ('photosynthetic', 'photosynthetic'), ('phototroph', 'phototroph')]
+	relationship_to_oxygen_choice = [('aerobe', 'aerobe'), ('anaerobe', 'anaerobe'), ('facultative', 'facultative'), ('microaerophilic', 'microaerophilic'), ('microanaerobe', 'microanaerobe'), ('obligate aerobe', 'obligate aerobe'), ('obligate anaerobe', 'obligate anaerobe')]
+	observed_biotic_relationship_choice = [('commensal', 'commensal'), ('free living', 'free living'), ('mutualism', 'mutualism'), ('parasite', 'parasite'), ('symbiont', 'symbiont')]
+
+	number_of_replicons_validator = "[+-]?[0-9]+"
+	extrachromosomal_elements_validator = "[+-]?[0-9]+"
+	estimated_size_validator = "[+-]?[0-9]+"
+	sample_volume_or_weight_for_DNA_extraction_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	library_size_validator = "[+-]?[0-9]+"
+	library_reads_sequenced_validator = "[+-]?[0-9]+"
+	collection_date_validator = "(^[12][0-9]{3}(-(0[1-9]|1[0-2])(-(0[1-9]|[12][0-9]|3[01])(T[0-9]{2}:[0-9]{2}(:[0-9]{2})?Z?([+-][0-9]{1,2})?)?)?)?(/[0-9]{4}(-[0-9]{2}(-[0-9]{2}(T[0-9]{2}:[0-9]{2}(:[0-9]{2})?Z?([+-][0-9]{1,2})?)?)?)?)?$)|(^not collected$)|(^not provided$)|(^restricted access$)|(^missing: control sample$)|(^missing: sample group$)|(^missing: synthetic construct$)|(^missing: lab stock$)|(^missing: third party data$)|(^missing: data agreement established pre-2023$)|(^missing: endangered species$)|(^missing: human-identifiable$)"
+	geographic_location_latitude_validator = "(^[+-]?[0-9]+.?[0-9]{0,8}$)|(^not collected$)|(^not provided$)|(^restricted access$)|(^missing: control sample$)|(^missing: sample group$)|(^missing: synthetic construct$)|(^missing: lab stock$)|(^missing: third party data$)|(^missing: data agreement established pre-2023$)|(^missing: endangered species$)|(^missing: human-identifiable$)"
+	geographic_location_longitude_validator = "(^[+-]?[0-9]+.?[0-9]{0,8}$)|(^not collected$)|(^not provided$)|(^restricted access$)|(^missing: control sample$)|(^missing: sample group$)|(^missing: synthetic construct$)|(^missing: lab stock$)|(^missing: third party data$)|(^missing: data agreement established pre-2023$)|(^missing: endangered species$)|(^missing: human-identifiable$)"
+	amount_or_size_of_sample_collected_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	sample_storage_duration_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	sample_storage_temperature_validator = "[+-]?(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	host_age_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	host_height_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	host_body_mass_index_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	host_total_mass_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	host_body_temperature_validator = "[+-]?(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	temperature_validator = "[+-]?(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	salinity_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	time_since_last_toothbrushing_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	host_pulse_validator = "[+-]?[0-9]+"
+
+	sampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE, default=1)
+	sample = models.ForeignKey(Sample, on_delete=models.CASCADE, default=1)
+	sample_type = models.IntegerField(default=1)
+	project_name= models.CharField(max_length=120, blank=False,help_text="Name of th")
+	experimental_factor= models.CharField(max_length=120, blank=True,help_text="Experiment")
+	ploidy= models.CharField(max_length=120, blank=True,help_text="The ploidy")
+	number_of_replicons= models.CharField(max_length=120, blank=True,help_text="Reports th", validators=[RegexValidator(number_of_replicons_validator)])
+	extrachromosomal_elements= models.CharField(max_length=120, blank=True,help_text="Do plasmid", validators=[RegexValidator(extrachromosomal_elements_validator)])
+	estimated_size= models.CharField(max_length=120, blank=True,help_text="The estima", validators=[RegexValidator(estimated_size_validator)])
+	reference_for_biomaterial= models.CharField(max_length=120, blank=True,help_text="Primary pu")
+	annotation_source= models.CharField(max_length=120, blank=True,help_text="For cases ")
+	sample_volume_or_weight_for_DNA_extraction= models.CharField(max_length=120, blank=True,help_text="Volume (ml", validators=[RegexValidator(sample_volume_or_weight_for_DNA_extraction_validator)])
+	nucleic_acid_extraction= models.CharField(max_length=120, blank=True,help_text="A link to ")
+	nucleic_acid_amplification= models.CharField(max_length=120, blank=True,help_text="A link to ")
+	library_size= models.CharField(max_length=120, blank=True,help_text="Total numb", validators=[RegexValidator(library_size_validator)])
+	library_reads_sequenced= models.CharField(max_length=120, blank=True,help_text="Total numb", validators=[RegexValidator(library_reads_sequenced_validator)])
+	library_construction_method= models.CharField(max_length=120, blank=True,help_text="Library co")
+	library_vector= models.CharField(max_length=120, blank=True,help_text="Cloning ve")
+	library_screening_strategy= models.CharField(max_length=120, blank=True,help_text="Specific e")
+	target_gene= models.CharField(max_length=120, blank=True,help_text="Targeted g")
+	target_subfragment= models.CharField(max_length=120, blank=True,help_text="Name of su")
+	pcr_primers= models.CharField(max_length=120, blank=True,help_text="PCR primer")
+	multiplex_identifiers= models.CharField(max_length=120, blank=True,help_text="Molecular ")
+	adapters= models.CharField(max_length=120, blank=True,help_text="Adapters p")
+	pcr_conditions= models.CharField(max_length=120, blank=True,help_text="Descriptio")
+	sequencing_method= models.CharField(max_length=120, blank=True,help_text="Sequencing")
+	sequence_quality_check= models.CharField(max_length=120, blank=True,help_text="Indicate i", choices=sequence_quality_check_choice)
+	chimera_check_software= models.CharField(max_length=120, blank=True,help_text="Tool(s) us")
+	relevant_electronic_resources= models.CharField(max_length=120, blank=True,help_text="A related ")
+	relevant_standard_operating_procedures= models.CharField(max_length=120, blank=True,help_text="Standard o")
+	negative_control_type= models.CharField(max_length=120, blank=True,help_text="The substa")
+	positive_control_type= models.CharField(max_length=120, blank=True,help_text="The substa")
+	collection_date= models.CharField(max_length=120, blank=False,help_text="The date t", validators=[RegexValidator(collection_date_validator)])
+	geographic_location_country_and_or_sea= models.CharField(max_length=120, blank=False,help_text="The locati", choices=geographic_location_country_and_or_sea_choice)
+	geographic_location_latitude= models.CharField(max_length=120, blank=False,help_text="The geogra", validators=[RegexValidator(geographic_location_latitude_validator)])
+	geographic_location_longitude= models.CharField(max_length=120, blank=False,help_text="The geogra", validators=[RegexValidator(geographic_location_longitude_validator)])
+	geographic_location_region_and_locality= models.CharField(max_length=120, blank=True,help_text="The geogra")
+	broad_scale_environmental_context= models.CharField(max_length=120, blank=False,help_text="Report the")
+	local_environmental_context= models.CharField(max_length=120, blank=False,help_text="Report the")
+	environmental_medium= models.CharField(max_length=120, blank=False,help_text="Report the")
+	source_material_identifiers= models.CharField(max_length=120, blank=True,help_text="A unique i")
+	sample_material_processing= models.CharField(max_length=120, blank=True,help_text="A brief de")
+	isolation_and_growth_condition= models.CharField(max_length=120, blank=True,help_text="Publicatio")
+	propagation= models.CharField(max_length=120, blank=True,help_text="The type o")
+	amount_or_size_of_sample_collected= models.CharField(max_length=120, blank=True,help_text="The total ", validators=[RegexValidator(amount_or_size_of_sample_collected_validator)])
+	host_body_product= models.CharField(max_length=120, blank=True,help_text="substance ")
+	medical_history_performed= models.CharField(max_length=120, blank=True,help_text="whether fu", choices=medical_history_performed_choice)
+	oxygenation_status_of_sample= models.CharField(max_length=120, blank=True,help_text="oxygenatio", choices=oxygenation_status_of_sample_choice)
+	organism_count= models.CharField(max_length=120, blank=True,help_text="Total cell")
+	sample_storage_duration= models.CharField(max_length=120, blank=True,help_text="duration f", validators=[RegexValidator(sample_storage_duration_validator)])
+	sample_storage_temperature= models.CharField(max_length=120, blank=True,help_text="temperatur", validators=[RegexValidator(sample_storage_temperature_validator)])
+	sample_storage_location= models.CharField(max_length=120, blank=True,help_text="location a")
+	sample_collection_device= models.CharField(max_length=120, blank=True,help_text="The device")
+	sample_collection_method= models.CharField(max_length=120, blank=True,help_text="The method")
+	nose_mouth_teeth_throat_disorder= models.CharField(max_length=120, blank=True,help_text="History of")
+	host_disease_status= models.CharField(max_length=120, blank=True,help_text="list of di")
+	host_subject_id= models.CharField(max_length=120, blank=True,help_text="a unique i")
+	IHMC_medication_code= models.CharField(max_length=120, blank=True,help_text="can includ", choices=IHMC_medication_code_choice)
+	host_age= models.CharField(max_length=120, blank=True,help_text="age of hos", validators=[RegexValidator(host_age_validator)])
+	host_body_site= models.CharField(max_length=120, blank=True,help_text="name of bo")
+	host_height= models.CharField(max_length=120, blank=True,help_text="the height", validators=[RegexValidator(host_height_validator)])
+	host_body_mass_index= models.CharField(max_length=120, blank=True,help_text="body mass ", validators=[RegexValidator(host_body_mass_index_validator)])
+	ethnicity= models.CharField(max_length=120, blank=True,help_text="A category")
+	host_occupation= models.CharField(max_length=120, blank=True,help_text="most frequ", choices=host_occupation_choice)
+	host_total_mass= models.CharField(max_length=120, blank=True,help_text="total mass", validators=[RegexValidator(host_total_mass_validator)])
+	host_phenotype= models.CharField(max_length=120, blank=True,help_text="phenotype ")
+	host_body_temperature= models.CharField(max_length=120, blank=True,help_text="core body ", validators=[RegexValidator(host_body_temperature_validator)])
+	host_sex= models.CharField(max_length=120, blank=True,help_text="Gender or ", choices=host_sex_choice)
+	temperature= models.CharField(max_length=120, blank=True,help_text="temperatur", validators=[RegexValidator(temperature_validator)])
+	salinity= models.CharField(max_length=120, blank=True,help_text="The total ", validators=[RegexValidator(salinity_validator)])
+	time_since_last_toothbrushing= models.CharField(max_length=120, blank=True,help_text="specificat", validators=[RegexValidator(time_since_last_toothbrushing_validator)])
+	host_diet= models.CharField(max_length=120, blank=True,help_text="type of di")
+	host_last_meal= models.CharField(max_length=120, blank=True,help_text="content of")
+	host_family_relationship= models.CharField(max_length=120, blank=True,help_text="relationsh")
+	host_genotype= models.CharField(max_length=120, blank=True,help_text="observed g")
+	host_pulse= models.CharField(max_length=120, blank=True,help_text="resting pu", validators=[RegexValidator(host_pulse_validator)])
+	subspecific_genetic_lineage= models.CharField(max_length=120, blank=True,help_text="Informatio")
+	trophic_level= models.CharField(max_length=120, blank=True,help_text="Trophic le", choices=trophic_level_choice)
+	relationship_to_oxygen= models.CharField(max_length=120, blank=True,help_text="Is this or", choices=relationship_to_oxygen_choice)
+	known_pathogenicity= models.CharField(max_length=120, blank=True,help_text="To what is")
+	encoded_traits= models.CharField(max_length=120, blank=True,help_text="Should inc")
+	observed_biotic_relationship= models.CharField(max_length=120, blank=True,help_text="Is it free", choices=observed_biotic_relationship_choice)
+	chemical_administration= models.CharField(max_length=120, blank=True,help_text="list of ch")
+	perturbation= models.CharField(max_length=120, blank=True,help_text="type of pe")
+
+	fields = {
+		'project_name': 'project_name',
+		'experimental_factor': 'experimental_factor',
+		'ploidy': 'ploidy',
+		'number_of_replicons': 'number_of_replicons',
+		'extrachromosomal_elements': 'extrachromosomal_elements',
+		'estimated_size': 'estimated_size',
+		'reference_for_biomaterial': 'reference_for_biomaterial',
+		'annotation_source': 'annotation_source',
+		'sample_volume_or_weight_for_DNA_extraction': 'sample_volume_or_weight_for_DNA_extraction',
+		'nucleic_acid_extraction': 'nucleic_acid_extraction',
+		'nucleic_acid_amplification': 'nucleic_acid_amplification',
+		'library_size': 'library_size',
+		'library_reads_sequenced': 'library_reads_sequenced',
+		'library_construction_method': 'library_construction_method',
+		'library_vector': 'library_vector',
+		'library_screening_strategy': 'library_screening_strategy',
+		'target_gene': 'target_gene',
+		'target_subfragment': 'target_subfragment',
+		'pcr_primers': 'pcr_primers',
+		'multiplex_identifiers': 'multiplex_identifiers',
+		'adapters': 'adapters',
+		'pcr_conditions': 'pcr_conditions',
+		'sequencing_method': 'sequencing_method',
+		'sequence_quality_check': 'sequence_quality_check',
+		'chimera_check_software': 'chimera_check_software',
+		'relevant_electronic_resources': 'relevant_electronic_resources',
+		'relevant_standard_operating_procedures': 'relevant_standard_operating_procedures',
+		'negative_control_type': 'negative_control_type',
+		'positive_control_type': 'positive_control_type',
+		'collection_date': 'collection_date',
+		'geographic_location_country_and_or_sea': 'geographic_location_country_and_or_sea',
+		'geographic_location_latitude': 'geographic_location_latitude',
+		'geographic_location_longitude': 'geographic_location_longitude',
+		'geographic_location_region_and_locality': 'geographic_location_region_and_locality',
+		'broad_scale_environmental_context': 'broad_scale_environmental_context',
+		'local_environmental_context': 'local_environmental_context',
+		'environmental_medium': 'environmental_medium',
+		'source_material_identifiers': 'source_material_identifiers',
+		'sample_material_processing': 'sample_material_processing',
+		'isolation_and_growth_condition': 'isolation_and_growth_condition',
+		'propagation': 'propagation',
+		'amount_or_size_of_sample_collected': 'amount_or_size_of_sample_collected',
+		'host_body_product': 'host_body_product',
+		'medical_history_performed': 'medical_history_performed',
+		'oxygenation_status_of_sample': 'oxygenation_status_of_sample',
+		'organism_count': 'organism_count',
+		'sample_storage_duration': 'sample_storage_duration',
+		'sample_storage_temperature': 'sample_storage_temperature',
+		'sample_storage_location': 'sample_storage_location',
+		'sample_collection_device': 'sample_collection_device',
+		'sample_collection_method': 'sample_collection_method',
+		'nose_mouth_teeth_throat_disorder': 'nose_mouth_teeth_throat_disorder',
+		'host_disease_status': 'host_disease_status',
+		'host_subject_id': 'host_subject_id',
+		'IHMC_medication_code': 'IHMC_medication_code',
+		'host_age': 'host_age',
+		'host_body_site': 'host_body_site',
+		'host_height': 'host_height',
+		'host_body_mass_index': 'host_body_mass_index',
+		'ethnicity': 'ethnicity',
+		'host_occupation': 'host_occupation',
+		'host_total_mass': 'host_total_mass',
+		'host_phenotype': 'host_phenotype',
+		'host_body_temperature': 'host_body_temperature',
+		'host_sex': 'host_sex',
+		'temperature': 'temperature',
+		'salinity': 'salinity',
+		'time_since_last_toothbrushing': 'time_since_last_toothbrushing',
+		'host_diet': 'host_diet',
+		'host_last_meal': 'host_last_meal',
+		'host_family_relationship': 'host_family_relationship',
+		'host_genotype': 'host_genotype',
+		'host_pulse': 'host_pulse',
+		'subspecific_genetic_lineage': 'subspecific_genetic_lineage',
+		'trophic_level': 'trophic_level',
+		'relationship_to_oxygen': 'relationship_to_oxygen',
+		'known_pathogenicity': 'known_pathogenicity',
+		'encoded_traits': 'encoded_traits',
+		'observed_biotic_relationship': 'observed_biotic_relationship',
+		'chemical_administration': 'chemical_administration',
+		'perturbation': 'perturbation',
+	}
+
+	name = 'GSC_MIxS_human_oral'
+
+class GSC_MIxS_human_oral_unit(SelfDescribingModel):
+
+	sample_volume_or_weight_for_DNA_extraction_units = [('g', 'g'), ('mL', 'mL'), ('mg', 'mg'), ('ng', 'ng')]
+	geographic_location_latitude_units = [('DD', 'DD')]
+	geographic_location_longitude_units = [('DD', 'DD')]
+	amount_or_size_of_sample_collected_units = [('L', 'L'), ('g', 'g'), ('kg', 'kg'), ('m2', 'm2'), ('m3', 'm3')]
+	sample_storage_duration_units = [('days', 'days'), ('hours', 'hours'), ('months', 'months'), ('weeks', 'weeks'), ('years', 'years')]
+	sample_storage_temperature_units = [('°C', '°C')]
+	host_age_units = [('centuries', 'centuries'), ('days', 'days'), ('decades', 'decades'), ('hours', 'hours'), ('minutes', 'minutes'), ('months', 'months'), ('seconds', 'seconds'), ('weeks', 'weeks'), ('years', 'years')]
+	host_height_units = [('cm', 'cm'), ('m', 'm'), ('mm', 'mm')]
+	host_body_mass_index_units = [('kg/m2', 'kg/m2')]
+	host_total_mass_units = [('g', 'g'), ('kg', 'kg')]
+	host_body_temperature_units = [('ºC', 'ºC')]
+	temperature_units = [('ºC', 'ºC')]
+	salinity_units = [('psu', 'psu')]
+	time_since_last_toothbrushing_units = [('hours', 'hours'), ('minutes', 'minutes')]
+	host_pulse_units = [('bpm', 'bpm')]
+
+	fields = {
+		'sample_volume_or_weight_for_DNA_extraction': 'sample_volume_or_weight_for_DNA_extraction',
+		'geographic_location_latitude': 'geographic_location_latitude',
+		'geographic_location_longitude': 'geographic_location_longitude',
+		'amount_or_size_of_sample_collected': 'amount_or_size_of_sample_collected',
+		'sample_storage_duration': 'sample_storage_duration',
+		'sample_storage_temperature': 'sample_storage_temperature',
+		'host_age': 'host_age',
+		'host_height': 'host_height',
+		'host_body_mass_index': 'host_body_mass_index',
+		'host_total_mass': 'host_total_mass',
+		'host_body_temperature': 'host_body_temperature',
+		'temperature': 'temperature',
+		'salinity': 'salinity',
+		'time_since_last_toothbrushing': 'time_since_last_toothbrushing',
+		'host_pulse': 'host_pulse',
+	}
+
+	name = 'GSC_MIxS_human_oral'
+
+	sampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE, default=1)
+	sample = models.ForeignKey(Sample, on_delete=models.CASCADE, default=1)
+	sample_type = models.IntegerField(default=1)
+	sample_volume_or_weight_for_DNA_extraction = models.CharField(max_length=120, choices=sample_volume_or_weight_for_DNA_extraction_units, blank=False)
+	geographic_location_latitude = models.CharField(max_length=120, choices=geographic_location_latitude_units, blank=False)
+	geographic_location_longitude = models.CharField(max_length=120, choices=geographic_location_longitude_units, blank=False)
+	amount_or_size_of_sample_collected = models.CharField(max_length=120, choices=amount_or_size_of_sample_collected_units, blank=False)
+	sample_storage_duration = models.CharField(max_length=120, choices=sample_storage_duration_units, blank=False)
+	sample_storage_temperature = models.CharField(max_length=120, choices=sample_storage_temperature_units, blank=False)
+	host_age = models.CharField(max_length=120, choices=host_age_units, blank=False)
+	host_height = models.CharField(max_length=120, choices=host_height_units, blank=False)
+	host_body_mass_index = models.CharField(max_length=120, choices=host_body_mass_index_units, blank=False)
+	host_total_mass = models.CharField(max_length=120, choices=host_total_mass_units, blank=False)
+	host_body_temperature = models.CharField(max_length=120, choices=host_body_temperature_units, blank=False)
+	temperature = models.CharField(max_length=120, choices=temperature_units, blank=False)
+	salinity = models.CharField(max_length=120, choices=salinity_units, blank=False)
+	time_since_last_toothbrushing = models.CharField(max_length=120, choices=time_since_last_toothbrushing_units, blank=False)
+	host_pulse = models.CharField(max_length=120, choices=host_pulse_units, blank=False)
+
+class ENA_binned_metagenome(SelfDescribingModel):
+
+	relationship_to_oxygen_choice = [('aerobe', 'aerobe'), ('anaerobe', 'anaerobe'), ('facultative', 'facultative'), ('microaerophilic', 'microaerophilic'), ('microanaerobe', 'microanaerobe'), ('obligate aerobe', 'obligate aerobe'), ('obligate anaerobe', 'obligate anaerobe')]
+	sixteen_s_recovered_choice = [('No', 'No'), ('Yes', 'Yes')]
+	contamination_screening_input_choice = [('contigs', 'contigs'), ('reads', 'reads')]
+	reassembly_post_binning_choice = [('No', 'No'), ('Yes', 'Yes')]
+	assembly_quality_choice = [('Many fragments with little to no review of assembly other than reporting of standard assembly statistics', 'Many fragments with little to no review of assembly other than reporting of standard assembly statistics'), ('Multiple fragments where gaps span repetitive regions. Presence of the 23S, 16S, and 5S rRNA genes and at least 18 tRNAs', 'Multiple fragments where gaps span repetitive regions. Presence of the 23S, 16S, and 5S rRNA genes and at least 18 tRNAs'), ('Single contiguous sequence without gaps or ambiguities with a consensus error rate equivalent to Q50 or better', 'Single contiguous sequence without gaps or ambiguities with a consensus error rate equivalent to Q50 or better')]
+	investigation_type_choice = [('bacteria_archaea', 'bacteria_archaea'), ('eukaryote', 'eukaryote'), ('metagenome', 'metagenome'), ('metagenome-assembled genome', 'metagenome-assembled genome'), ('metatranscriptome', 'metatranscriptome'), ('mimarks-specimen', 'mimarks-specimen'), ('mimarks-survey', 'mimarks-survey'), ('organelle', 'organelle'), ('plasmid', 'plasmid'), ('single amplified genome', 'single amplified genome'), ('uncultivated viral genomes', 'uncultivated viral genomes'), ('virus', 'virus')]
+	geographic_location_country_and_or_sea_choice = [('Afghanistan', 'Afghanistan'), ('Albania', 'Albania'), ('Algeria', 'Algeria'), ('American Samoa', 'American Samoa'), ('Andorra', 'Andorra'), ('Angola', 'Angola'), ('Anguilla', 'Anguilla'), ('Antarctica', 'Antarctica'), ('Antigua and Barbuda', 'Antigua and Barbuda'), ('Arctic Ocean', 'Arctic Ocean'), ('Argentina', 'Argentina'), ('Armenia', 'Armenia'), ('Aruba', 'Aruba'), ('Ashmore and Cartier Islands', 'Ashmore and Cartier Islands'), ('Atlantic Ocean', 'Atlantic Ocean'), ('Australia', 'Australia'), ('Austria', 'Austria'), ('Azerbaijan', 'Azerbaijan'), ('Bahamas', 'Bahamas'), ('Bahrain', 'Bahrain'), ('Baker Island', 'Baker Island'), ('Baltic Sea', 'Baltic Sea'), ('Bangladesh', 'Bangladesh'), ('Barbados', 'Barbados'), ('Bassas da India', 'Bassas da India'), ('Belarus', 'Belarus'), ('Belgium', 'Belgium'), ('Belize', 'Belize'), ('Benin', 'Benin'), ('Bermuda', 'Bermuda'), ('Bhutan', 'Bhutan'), ('Bolivia', 'Bolivia'), ('Borneo', 'Borneo'), ('Bosnia and Herzegovina', 'Bosnia and Herzegovina'), ('Botswana', 'Botswana'), ('Bouvet Island', 'Bouvet Island'), ('Brazil', 'Brazil'), ('British Virgin Islands', 'British Virgin Islands'), ('Brunei', 'Brunei'), ('Bulgaria', 'Bulgaria'), ('Burkina Faso', 'Burkina Faso'), ('Burundi', 'Burundi'), ('Cambodia', 'Cambodia'), ('Cameroon', 'Cameroon'), ('Canada', 'Canada'), ('Cape Verde', 'Cape Verde'), ('Cayman Islands', 'Cayman Islands'), ('Central African Republic', 'Central African Republic'), ('Chad', 'Chad'), ('Chile', 'Chile'), ('China', 'China'), ('Christmas Island', 'Christmas Island'), ('Clipperton Island', 'Clipperton Island'), ('Cocos Islands', 'Cocos Islands'), ('Colombia', 'Colombia'), ('Comoros', 'Comoros'), ('Cook Islands', 'Cook Islands'), ('Coral Sea Islands', 'Coral Sea Islands'), ('Costa Rica', 'Costa Rica'), ("Cote d'Ivoire", "Cote d'Ivoire"), ('Croatia', 'Croatia'), ('Cuba', 'Cuba'), ('Curacao', 'Curacao'), ('Cyprus', 'Cyprus'), ('Czechia', 'Czechia'), ('Democratic Republic of the Congo', 'Democratic Republic of the Congo'), ('Denmark', 'Denmark'), ('Djibouti', 'Djibouti'), ('Dominica', 'Dominica'), ('Dominican Republic', 'Dominican Republic'), ('East Timor', 'East Timor'), ('Ecuador', 'Ecuador'), ('Egypt', 'Egypt'), ('El Salvador', 'El Salvador'), ('Equatorial Guinea', 'Equatorial Guinea'), ('Eritrea', 'Eritrea'), ('Estonia', 'Estonia'), ('Ethiopia', 'Ethiopia'), ('Europa Island', 'Europa Island'), ('Falkland Islands (Islas Malvinas)', 'Falkland Islands (Islas Malvinas)'), ('Faroe Islands', 'Faroe Islands'), ('Fiji', 'Fiji'), ('Finland', 'Finland'), ('France', 'France'), ('French Guiana', 'French Guiana'), ('French Polynesia', 'French Polynesia'), ('French Southern and Antarctic Lands', 'French Southern and Antarctic Lands'), ('Gabon', 'Gabon'), ('Gambia', 'Gambia'), ('Gaza Strip', 'Gaza Strip'), ('Georgia', 'Georgia'), ('Germany', 'Germany'), ('Ghana', 'Ghana'), ('Gibraltar', 'Gibraltar'), ('Glorioso Islands', 'Glorioso Islands'), ('Greece', 'Greece'), ('Greenland', 'Greenland'), ('Grenada', 'Grenada'), ('Guadeloupe', 'Guadeloupe'), ('Guam', 'Guam'), ('Guatemala', 'Guatemala'), ('Guernsey', 'Guernsey'), ('Guinea', 'Guinea'), ('Guinea-Bissau', 'Guinea-Bissau'), ('Guyana', 'Guyana'), ('Haiti', 'Haiti'), ('Heard Island and McDonald Islands', 'Heard Island and McDonald Islands'), ('Honduras', 'Honduras'), ('Hong Kong', 'Hong Kong'), ('Howland Island', 'Howland Island'), ('Hungary', 'Hungary'), ('Iceland', 'Iceland'), ('India', 'India'), ('Indian Ocean', 'Indian Ocean'), ('Indonesia', 'Indonesia'), ('Iran', 'Iran'), ('Iraq', 'Iraq'), ('Ireland', 'Ireland'), ('Isle of Man', 'Isle of Man'), ('Israel', 'Israel'), ('Italy', 'Italy'), ('Jamaica', 'Jamaica'), ('Jan Mayen', 'Jan Mayen'), ('Japan', 'Japan'), ('Jarvis Island', 'Jarvis Island'), ('Jersey', 'Jersey'), ('Johnston Atoll', 'Johnston Atoll'), ('Jordan', 'Jordan'), ('Juan de Nova Island', 'Juan de Nova Island'), ('Kazakhstan', 'Kazakhstan'), ('Kenya', 'Kenya'), ('Kerguelen Archipelago', 'Kerguelen Archipelago'), ('Kingman Reef', 'Kingman Reef'), ('Kiribati', 'Kiribati'), ('Kosovo', 'Kosovo'), ('Kuwait', 'Kuwait'), ('Kyrgyzstan', 'Kyrgyzstan'), ('Laos', 'Laos'), ('Latvia', 'Latvia'), ('Lebanon', 'Lebanon'), ('Lesotho', 'Lesotho'), ('Liberia', 'Liberia'), ('Libya', 'Libya'), ('Liechtenstein', 'Liechtenstein'), ('Lithuania', 'Lithuania'), ('Luxembourg', 'Luxembourg'), ('Macau', 'Macau'), ('Macedonia', 'Macedonia'), ('Madagascar', 'Madagascar'), ('Malawi', 'Malawi'), ('Malaysia', 'Malaysia'), ('Maldives', 'Maldives'), ('Mali', 'Mali'), ('Malta', 'Malta'), ('Marshall Islands', 'Marshall Islands'), ('Martinique', 'Martinique'), ('Mauritania', 'Mauritania'), ('Mauritius', 'Mauritius'), ('Mayotte', 'Mayotte'), ('Mediterranean Sea', 'Mediterranean Sea'), ('Mexico', 'Mexico'), ('Micronesia', 'Micronesia'), ('Midway Islands', 'Midway Islands'), ('Moldova', 'Moldova'), ('Monaco', 'Monaco'), ('Mongolia', 'Mongolia'), ('Montenegro', 'Montenegro'), ('Montserrat', 'Montserrat'), ('Morocco', 'Morocco'), ('Mozambique', 'Mozambique'), ('Myanmar', 'Myanmar'), ('Namibia', 'Namibia'), ('Nauru', 'Nauru'), ('Navassa Island', 'Navassa Island'), ('Nepal', 'Nepal'), ('Netherlands', 'Netherlands'), ('New Caledonia', 'New Caledonia'), ('New Zealand', 'New Zealand'), ('Nicaragua', 'Nicaragua'), ('Niger', 'Niger'), ('Nigeria', 'Nigeria'), ('Niue', 'Niue'), ('Norfolk Island', 'Norfolk Island'), ('North Korea', 'North Korea'), ('North Sea', 'North Sea'), ('Northern Mariana Islands', 'Northern Mariana Islands'), ('Norway', 'Norway'), ('Oman', 'Oman'), ('Pacific Ocean', 'Pacific Ocean'), ('Pakistan', 'Pakistan'), ('Palau', 'Palau'), ('Palmyra Atoll', 'Palmyra Atoll'), ('Panama', 'Panama'), ('Papua New Guinea', 'Papua New Guinea'), ('Paracel Islands', 'Paracel Islands'), ('Paraguay', 'Paraguay'), ('Peru', 'Peru'), ('Philippines', 'Philippines'), ('Pitcairn Islands', 'Pitcairn Islands'), ('Poland', 'Poland'), ('Portugal', 'Portugal'), ('Puerto Rico', 'Puerto Rico'), ('Qatar', 'Qatar'), ('Republic of the Congo', 'Republic of the Congo'), ('Reunion', 'Reunion'), ('Romania', 'Romania'), ('Ross Sea', 'Ross Sea'), ('Russia', 'Russia'), ('Rwanda', 'Rwanda'), ('Saint Helena', 'Saint Helena'), ('Saint Kitts and Nevis', 'Saint Kitts and Nevis'), ('Saint Lucia', 'Saint Lucia'), ('Saint Pierre and Miquelon', 'Saint Pierre and Miquelon'), ('Saint Vincent and the Grenadines', 'Saint Vincent and the Grenadines'), ('Samoa', 'Samoa'), ('San Marino', 'San Marino'), ('Sao Tome and Principe', 'Sao Tome and Principe'), ('Saudi Arabia', 'Saudi Arabia'), ('Senegal', 'Senegal'), ('Serbia', 'Serbia'), ('Seychelles', 'Seychelles'), ('Sierra Leone', 'Sierra Leone'), ('Singapore', 'Singapore'), ('Sint Maarten', 'Sint Maarten'), ('Slovakia', 'Slovakia'), ('Slovenia', 'Slovenia'), ('Solomon Islands', 'Solomon Islands'), ('Somalia', 'Somalia'), ('South Africa', 'South Africa'), ('South Georgia and the South Sandwich Islands', 'South Georgia and the South Sandwich Islands'), ('South Korea', 'South Korea'), ('Southern Ocean', 'Southern Ocean'), ('Spain', 'Spain'), ('Spratly Islands', 'Spratly Islands'), ('Sri Lanka', 'Sri Lanka'), ('Sudan', 'Sudan'), ('Suriname', 'Suriname'), ('Svalbard', 'Svalbard'), ('Swaziland', 'Swaziland'), ('Sweden', 'Sweden'), ('Switzerland', 'Switzerland'), ('Syria', 'Syria'), ('Taiwan', 'Taiwan'), ('Tajikistan', 'Tajikistan'), ('Tanzania', 'Tanzania'), ('Tasman Sea', 'Tasman Sea'), ('Thailand', 'Thailand'), ('Togo', 'Togo'), ('Tokelau', 'Tokelau'), ('Tonga', 'Tonga'), ('Trinidad and Tobago', 'Trinidad and Tobago'), ('Tromelin Island', 'Tromelin Island'), ('Tunisia', 'Tunisia'), ('Turkey', 'Turkey'), ('Turkmenistan', 'Turkmenistan'), ('Turks and Caicos Islands', 'Turks and Caicos Islands'), ('Tuvalu', 'Tuvalu'), ('USA', 'USA'), ('Uganda', 'Uganda'), ('Ukraine', 'Ukraine'), ('United Arab Emirates', 'United Arab Emirates'), ('United Kingdom', 'United Kingdom'), ('Uruguay', 'Uruguay'), ('Uzbekistan', 'Uzbekistan'), ('Vanuatu', 'Vanuatu'), ('Venezuela', 'Venezuela'), ('Viet Nam', 'Viet Nam'), ('Virgin Islands', 'Virgin Islands'), ('Wake Island', 'Wake Island'), ('Wallis and Futuna', 'Wallis and Futuna'), ('West Bank', 'West Bank'), ('Western Sahara', 'Western Sahara'), ('Yemen', 'Yemen'), ('Zambia', 'Zambia'), ('Zimbabwe', 'Zimbabwe'), ('missing', 'missing'), ('missing: control sample', 'missing: control sample'), ('missing: data agreement established pre-2023', 'missing: data agreement established pre-2023'), ('missing: endangered species', 'missing: endangered species'), ('missing: human-identifiable', 'missing: human-identifiable'), ('missing: lab stock', 'missing: lab stock'), ('missing: sample group', 'missing: sample group'), ('missing: synthetic construct', 'missing: synthetic construct'), ('missing: third party data', 'missing: third party data'), ('not applicable', 'not applicable'), ('not collected', 'not collected'), ('not provided', 'not provided'), ('restricted access', 'restricted access')]
+
+	sample_derived_from_validator = "(^[ESD]R[SR]\d{6,}(,[ESD]R[SR]\d{6,})*$)|(^SAM[END][AG]?\d+(,SAM[END][AG]?\d+)*$)|(^EGA[NR]\d{11}(,EGA[NR]\d{11})*$)|(^[ESD]R[SR]\d{6,}-[ESD]R[SR]\d{6,}$)|(^SAM[END][AG]?\d+-SAM[END][AG]?\d+$)|(^EGA[NR]\d{11}-EGA[NR]\d{11}$)"
+	number_of_standard_tRNAs_extracted_validator = "[+-]?[0-9]+"
+	completeness_score_validator = "^(\d|[1-9]\d|\d\.\d{1,2}|[1-9]\d\.\d{1,2}|100)$"
+	contamination_score_validator = "^(\d|[1-9]\d|\d\.\d{1,2}|[1-9]\d\.\d{1,2}|100)$"
+	collection_date_validator = "(^[12][0-9]{3}(-(0[1-9]|1[0-2])(-(0[1-9]|[12][0-9]|3[01])(T[0-9]{2}:[0-9]{2}(:[0-9]{2})?Z?([+-][0-9]{1,2})?)?)?)?(/[0-9]{4}(-[0-9]{2}(-[0-9]{2}(T[0-9]{2}:[0-9]{2}(:[0-9]{2})?Z?([+-][0-9]{1,2})?)?)?)?)?$)|(^not applicable$)|(^not collected$)|(^not provided$)|(^restricted access$)|(^missing: control sample$)|(^missing: sample group$)|(^missing: synthetic construct$)|(^missing: lab stock$)|(^missing: third party data$)|(^missing: data agreement established pre-2023$)|(^missing: endangered species$)|(^missing: human-identifiable$)|(^missing$)"
+	altitude_validator = "((0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?)|((^not collected$)|(^not provided$)|(^restricted access$)|(^missing: control sample$)|(^missing: sample group$)|(^missing: synthetic construct$)|(^missing: lab stock$)|(^missing: third party data$)|(^missing: data agreement established pre-2023$)|(^missing: endangered species$)|(^missing: human-identifiable$)|(^missing$))"
+	geographic_location_latitude_validator = "(^[+-]?[0-9]+.?[0-9]{0,8}$)|(^not applicable$)|(^not collected$)|(^not provided$)|(^restricted access$)|(^missing: control sample$)|(^missing: sample group$)|(^missing: synthetic construct$)|(^missing: lab stock$)|(^missing: third party data$)|(^missing: data agreement established pre-2023$)|(^missing: endangered species$)|(^missing: human-identifiable$)|(^missing$)"
+	geographic_location_longitude_validator = "(^[+-]?[0-9]+.?[0-9]{0,8}$)|(^not applicable$)|(^not collected$)|(^not provided$)|(^restricted access$)|(^missing: control sample$)|(^missing: sample group$)|(^missing: synthetic construct$)|(^missing: lab stock$)|(^missing: third party data$)|(^missing: data agreement established pre-2023$)|(^missing: endangered species$)|(^missing: human-identifiable$)|(^missing$)"
+	elevation_validator = "([+-]?(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?)|((^not collected$)|(^not provided$)|(^restricted access$)|(^missing: control sample$)|(^missing: sample group$)|(^missing: synthetic construct$)|(^missing: lab stock$)|(^missing: third party data$)|(^missing: data agreement established pre-2023$)|(^missing: endangered species$)|(^missing: human-identifiable$)|(^missing$))"
+	amount_or_size_of_sample_collected_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	library_size_validator = "[+-]?[0-9]+"
+	library_reads_sequenced_validator = "[+-]?[0-9]+"
+	depth_validator = "((0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?)|((^not collected$)|(^not provided$)|(^restricted access$)|(^missing: control sample$)|(^missing: sample group$)|(^missing: synthetic construct$)|(^missing: lab stock$)|(^missing: third party data$)|(^missing: data agreement established pre-2023$)|(^missing: endangered species$)|(^missing: human-identifiable$)|(^missing$))"
+
+	sampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE, default=1)
+	sample = models.ForeignKey(Sample, on_delete=models.CASCADE, default=1)
+	sample_type = models.IntegerField(default=1)
+	relationship_to_oxygen= models.CharField(max_length=120, blank=True,help_text="Is this or", choices=relationship_to_oxygen_choice)
+	sample_collection_method= models.CharField(max_length=120, blank=True,help_text="The method")
+	metagenomic_source= models.CharField(max_length=120, blank=False,help_text="The metage")
+	sample_derived_from= models.CharField(max_length=120, blank=False,help_text="Reference ", validators=[RegexValidator(sample_derived_from_validator)])
+	project_name= models.CharField(max_length=120, blank=False,help_text="Name of th")
+	multiplex_identifiers= models.CharField(max_length=120, blank=True,help_text="Molecular ")
+	relevant_electronic_resources= models.CharField(max_length=120, blank=True,help_text="A related ")
+	relevant_standard_operating_procedures= models.CharField(max_length=120, blank=True,help_text="Standard o")
+	number_of_standard_tRNAs_extracted= models.CharField(max_length=120, blank=True,help_text="The total ", validators=[RegexValidator(number_of_standard_tRNAs_extracted_validator)])
+	sixteen_s_recovered= models.CharField(max_length=120, blank=True,help_text="Can a 16S ", choices=sixteen_s_recovered_choice)
+	sixteen_s_recovery_software= models.CharField(max_length=120, blank=True,help_text="Tools used")
+	tRNA_extraction_software= models.CharField(max_length=120, blank=True,help_text="Tools used")
+	completeness_score= models.CharField(max_length=120, blank=False,help_text="Completene", validators=[RegexValidator(completeness_score_validator)])
+	completeness_software= models.CharField(max_length=120, blank=False,help_text="Tools used")
+	completeness_approach= models.CharField(max_length=120, blank=True,help_text="The approa")
+	contamination_score= models.CharField(max_length=120, blank=False,help_text="The contam", validators=[RegexValidator(contamination_score_validator)])
+	contamination_screening_input= models.CharField(max_length=120, blank=True,help_text="The type o", choices=contamination_screening_input_choice)
+	contamination_screening_parameters= models.CharField(max_length=120, blank=True,help_text="Specific p")
+	decontamination_software= models.CharField(max_length=120, blank=True,help_text="Tool(s) us")
+	binning_software= models.CharField(max_length=120, blank=False,help_text="Tool(s) us")
+	reassembly_post_binning= models.CharField(max_length=120, blank=True,help_text="Has an ass", choices=reassembly_post_binning_choice)
+	MAG_coverage_software= models.CharField(max_length=120, blank=True,help_text="Tool(s) us")
+	assembly_quality= models.CharField(max_length=120, blank=False,help_text="The assemb", choices=assembly_quality_choice)
+	investigation_type= models.CharField(max_length=120, blank=True,help_text="Nucleic Ac", choices=investigation_type_choice)
+	binning_parameters= models.CharField(max_length=120, blank=False,help_text="The parame")
+	taxonomic_identity_marker= models.CharField(max_length=120, blank=False,help_text="The phylog")
+	isolation_source= models.CharField(max_length=120, blank=False,help_text="describes ")
+	collection_date= models.CharField(max_length=120, blank=False,help_text="The date t", validators=[RegexValidator(collection_date_validator)])
+	altitude= models.CharField(max_length=120, blank=True,help_text="The altitu", validators=[RegexValidator(altitude_validator)])
+	geographic_location_latitude= models.CharField(max_length=120, blank=False,help_text="The geogra", validators=[RegexValidator(geographic_location_latitude_validator)])
+	geographic_location_longitude= models.CharField(max_length=120, blank=False,help_text="The geogra", validators=[RegexValidator(geographic_location_longitude_validator)])
+	broad_scale_environmental_context= models.CharField(max_length=120, blank=False,help_text="Report the")
+	local_environmental_context= models.CharField(max_length=120, blank=False,help_text="Report the")
+	environmental_medium= models.CharField(max_length=120, blank=False,help_text="Report the")
+	elevation= models.CharField(max_length=120, blank=True,help_text="The elevat", validators=[RegexValidator(elevation_validator)])
+	amount_or_size_of_sample_collected= models.CharField(max_length=120, blank=True,help_text="The total ", validators=[RegexValidator(amount_or_size_of_sample_collected_validator)])
+	size_fraction_selected= models.CharField(max_length=120, blank=True,help_text="Filtering ")
+	geographic_location_country_and_or_sea= models.CharField(max_length=120, blank=False,help_text="The geogra", choices=geographic_location_country_and_or_sea_choice)
+	source_material_identifiers= models.CharField(max_length=120, blank=True,help_text="A unique i")
+	experimental_factor= models.CharField(max_length=120, blank=True,help_text="Experiment")
+	taxonomic_classification= models.CharField(max_length=120, blank=True,help_text="Method use")
+	reference_for_biomaterial= models.CharField(max_length=120, blank=True,help_text="Primary pu")
+	sample_material_processing= models.CharField(max_length=120, blank=True,help_text="A brief de")
+	nucleic_acid_extraction= models.CharField(max_length=120, blank=True,help_text="A link to ")
+	nucleic_acid_amplification= models.CharField(max_length=120, blank=True,help_text="A link to ")
+	library_size= models.CharField(max_length=120, blank=True,help_text="Total numb", validators=[RegexValidator(library_size_validator)])
+	library_reads_sequenced= models.CharField(max_length=120, blank=True,help_text="Total numb", validators=[RegexValidator(library_reads_sequenced_validator)])
+	library_vector= models.CharField(max_length=120, blank=True,help_text="Cloning ve")
+	library_screening_strategy= models.CharField(max_length=120, blank=True,help_text="Specific e")
+	assembly_software= models.CharField(max_length=120, blank=False,help_text="Tool(s) us")
+	adapters= models.CharField(max_length=120, blank=True,help_text="Adapters p")
+	depth= models.CharField(max_length=120, blank=True,help_text="The vertic", validators=[RegexValidator(depth_validator)])
+
+	fields = {
+		'relationship_to_oxygen': 'relationship_to_oxygen',
+		'sample_collection_method': 'sample_collection_method',
+		'metagenomic_source': 'metagenomic_source',
+		'sample_derived_from': 'sample_derived_from',
+		'project_name': 'project_name',
+		'multiplex_identifiers': 'multiplex_identifiers',
+		'relevant_electronic_resources': 'relevant_electronic_resources',
+		'relevant_standard_operating_procedures': 'relevant_standard_operating_procedures',
+		'number_of_standard_tRNAs_extracted': 'number_of_standard_tRNAs_extracted',
+		'sixteen_s_recovered': 'sixteen_s_recovered',
+		'sixteen_s_recovery_software': 'sixteen_s_recovery_software',
+		'tRNA_extraction_software': 'tRNA_extraction_software',
+		'completeness_score': 'completeness_score',
+		'completeness_software': 'completeness_software',
+		'completeness_approach': 'completeness_approach',
+		'contamination_score': 'contamination_score',
+		'contamination_screening_input': 'contamination_screening_input',
+		'contamination_screening_parameters': 'contamination_screening_parameters',
+		'decontamination_software': 'decontamination_software',
+		'binning_software': 'binning_software',
+		'reassembly_post_binning': 'reassembly_post_binning',
+		'MAG_coverage_software': 'MAG_coverage_software',
+		'assembly_quality': 'assembly_quality',
+		'investigation_type': 'investigation_type',
+		'binning_parameters': 'binning_parameters',
+		'taxonomic_identity_marker': 'taxonomic_identity_marker',
+		'isolation_source': 'isolation_source',
+		'collection_date': 'collection_date',
+		'altitude': 'altitude',
+		'geographic_location_latitude': 'geographic_location_latitude',
+		'geographic_location_longitude': 'geographic_location_longitude',
+		'broad_scale_environmental_context': 'broad_scale_environmental_context',
+		'local_environmental_context': 'local_environmental_context',
+		'environmental_medium': 'environmental_medium',
+		'elevation': 'elevation',
+		'amount_or_size_of_sample_collected': 'amount_or_size_of_sample_collected',
+		'size_fraction_selected': 'size_fraction_selected',
+		'geographic_location_country_and_or_sea': 'geographic_location_country_and_or_sea',
+		'source_material_identifiers': 'source_material_identifiers',
+		'experimental_factor': 'experimental_factor',
+		'taxonomic_classification': 'taxonomic_classification',
+		'reference_for_biomaterial': 'reference_for_biomaterial',
+		'sample_material_processing': 'sample_material_processing',
+		'nucleic_acid_extraction': 'nucleic_acid_extraction',
+		'nucleic_acid_amplification': 'nucleic_acid_amplification',
+		'library_size': 'library_size',
+		'library_reads_sequenced': 'library_reads_sequenced',
+		'library_vector': 'library_vector',
+		'library_screening_strategy': 'library_screening_strategy',
+		'assembly_software': 'assembly_software',
+		'adapters': 'adapters',
+		'depth': 'depth',
+	}
+
+	name = 'ENA_binned_metagenome'
+
+class ENA_binned_metagenome_unit(SelfDescribingModel):
+
+	completeness_score_units = [('%', '%')]
+	contamination_score_units = [('%', '%')]
+	reassembly_post_binning_units = [('No', 'No'), ('Yes', 'Yes')]
+	altitude_units = [('m', 'm')]
+	geographic_location_latitude_units = [('DD', 'DD')]
+	geographic_location_longitude_units = [('DD', 'DD')]
+	elevation_units = [('m', 'm')]
+	amount_or_size_of_sample_collected_units = [('L', 'L'), ('g', 'g'), ('kg', 'kg'), ('m2', 'm2'), ('m3', 'm3')]
+	depth_units = [('m', 'm'), ('mm', 'mm')]
+
+	fields = {
+		'completeness_score': 'completeness_score',
+		'contamination_score': 'contamination_score',
+		'reassembly_post_binning': 'reassembly_post_binning',
+		'altitude': 'altitude',
+		'geographic_location_latitude': 'geographic_location_latitude',
+		'geographic_location_longitude': 'geographic_location_longitude',
+		'elevation': 'elevation',
+		'amount_or_size_of_sample_collected': 'amount_or_size_of_sample_collected',
+		'depth': 'depth',
+	}
+
+	name = 'ENA_binned_metagenome'
+
+	sampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE, default=1)
+	sample = models.ForeignKey(Sample, on_delete=models.CASCADE, default=1)
+	sample_type = models.IntegerField(default=1)
+	completeness_score = models.CharField(max_length=120, choices=completeness_score_units, blank=False)
+	contamination_score = models.CharField(max_length=120, choices=contamination_score_units, blank=False)
+	reassembly_post_binning = models.CharField(max_length=120, choices=reassembly_post_binning_units, blank=False)
+	altitude = models.CharField(max_length=120, choices=altitude_units, blank=False)
+	geographic_location_latitude = models.CharField(max_length=120, choices=geographic_location_latitude_units, blank=False)
+	geographic_location_longitude = models.CharField(max_length=120, choices=geographic_location_longitude_units, blank=False)
+	elevation = models.CharField(max_length=120, choices=elevation_units, blank=False)
+	amount_or_size_of_sample_collected = models.CharField(max_length=120, choices=amount_or_size_of_sample_collected_units, blank=False)
+	depth = models.CharField(max_length=120, choices=depth_units, blank=False)
+
+class GSC_MIxS_sediment(SelfDescribingModel):
+
+	sequence_quality_check_choice = [('manual', 'manual'), ('none', 'none'), ('software', 'software')]
+	geographic_location_country_and_or_sea_choice = [('Afghanistan', 'Afghanistan'), ('Albania', 'Albania'), ('Algeria', 'Algeria'), ('American Samoa', 'American Samoa'), ('Andorra', 'Andorra'), ('Angola', 'Angola'), ('Anguilla', 'Anguilla'), ('Antarctica', 'Antarctica'), ('Antigua and Barbuda', 'Antigua and Barbuda'), ('Arctic Ocean', 'Arctic Ocean'), ('Argentina', 'Argentina'), ('Armenia', 'Armenia'), ('Aruba', 'Aruba'), ('Ashmore and Cartier Islands', 'Ashmore and Cartier Islands'), ('Atlantic Ocean', 'Atlantic Ocean'), ('Australia', 'Australia'), ('Austria', 'Austria'), ('Azerbaijan', 'Azerbaijan'), ('Bahamas', 'Bahamas'), ('Bahrain', 'Bahrain'), ('Baker Island', 'Baker Island'), ('Baltic Sea', 'Baltic Sea'), ('Bangladesh', 'Bangladesh'), ('Barbados', 'Barbados'), ('Bassas da India', 'Bassas da India'), ('Belarus', 'Belarus'), ('Belgium', 'Belgium'), ('Belize', 'Belize'), ('Benin', 'Benin'), ('Bermuda', 'Bermuda'), ('Bhutan', 'Bhutan'), ('Bolivia', 'Bolivia'), ('Borneo', 'Borneo'), ('Bosnia and Herzegovina', 'Bosnia and Herzegovina'), ('Botswana', 'Botswana'), ('Bouvet Island', 'Bouvet Island'), ('Brazil', 'Brazil'), ('British Virgin Islands', 'British Virgin Islands'), ('Brunei', 'Brunei'), ('Bulgaria', 'Bulgaria'), ('Burkina Faso', 'Burkina Faso'), ('Burundi', 'Burundi'), ('Cambodia', 'Cambodia'), ('Cameroon', 'Cameroon'), ('Canada', 'Canada'), ('Cape Verde', 'Cape Verde'), ('Cayman Islands', 'Cayman Islands'), ('Central African Republic', 'Central African Republic'), ('Chad', 'Chad'), ('Chile', 'Chile'), ('China', 'China'), ('Christmas Island', 'Christmas Island'), ('Clipperton Island', 'Clipperton Island'), ('Cocos Islands', 'Cocos Islands'), ('Colombia', 'Colombia'), ('Comoros', 'Comoros'), ('Cook Islands', 'Cook Islands'), ('Coral Sea Islands', 'Coral Sea Islands'), ('Costa Rica', 'Costa Rica'), ("Cote d'Ivoire", "Cote d'Ivoire"), ('Croatia', 'Croatia'), ('Cuba', 'Cuba'), ('Curacao', 'Curacao'), ('Cyprus', 'Cyprus'), ('Czech Republic', 'Czech Republic'), ('Democratic Republic of the Congo', 'Democratic Republic of the Congo'), ('Denmark', 'Denmark'), ('Djibouti', 'Djibouti'), ('Dominica', 'Dominica'), ('Dominican Republic', 'Dominican Republic'), ('East Timor', 'East Timor'), ('Ecuador', 'Ecuador'), ('Egypt', 'Egypt'), ('El Salvador', 'El Salvador'), ('Equatorial Guinea', 'Equatorial Guinea'), ('Eritrea', 'Eritrea'), ('Estonia', 'Estonia'), ('Ethiopia', 'Ethiopia'), ('Europa Island', 'Europa Island'), ('Falkland Islands (Islas Malvinas)', 'Falkland Islands (Islas Malvinas)'), ('Faroe Islands', 'Faroe Islands'), ('Fiji', 'Fiji'), ('Finland', 'Finland'), ('France', 'France'), ('French Guiana', 'French Guiana'), ('French Polynesia', 'French Polynesia'), ('French Southern and Antarctic Lands', 'French Southern and Antarctic Lands'), ('Gabon', 'Gabon'), ('Gambia', 'Gambia'), ('Gaza Strip', 'Gaza Strip'), ('Georgia', 'Georgia'), ('Germany', 'Germany'), ('Ghana', 'Ghana'), ('Gibraltar', 'Gibraltar'), ('Glorioso Islands', 'Glorioso Islands'), ('Greece', 'Greece'), ('Greenland', 'Greenland'), ('Grenada', 'Grenada'), ('Guadeloupe', 'Guadeloupe'), ('Guam', 'Guam'), ('Guatemala', 'Guatemala'), ('Guernsey', 'Guernsey'), ('Guinea', 'Guinea'), ('Guinea-Bissau', 'Guinea-Bissau'), ('Guyana', 'Guyana'), ('Haiti', 'Haiti'), ('Heard Island and McDonald Islands', 'Heard Island and McDonald Islands'), ('Honduras', 'Honduras'), ('Hong Kong', 'Hong Kong'), ('Howland Island', 'Howland Island'), ('Hungary', 'Hungary'), ('Iceland', 'Iceland'), ('India', 'India'), ('Indian Ocean', 'Indian Ocean'), ('Indonesia', 'Indonesia'), ('Iran', 'Iran'), ('Iraq', 'Iraq'), ('Ireland', 'Ireland'), ('Isle of Man', 'Isle of Man'), ('Israel', 'Israel'), ('Italy', 'Italy'), ('Jamaica', 'Jamaica'), ('Jan Mayen', 'Jan Mayen'), ('Japan', 'Japan'), ('Jarvis Island', 'Jarvis Island'), ('Jersey', 'Jersey'), ('Johnston Atoll', 'Johnston Atoll'), ('Jordan', 'Jordan'), ('Juan de Nova Island', 'Juan de Nova Island'), ('Kazakhstan', 'Kazakhstan'), ('Kenya', 'Kenya'), ('Kerguelen Archipelago', 'Kerguelen Archipelago'), ('Kingman Reef', 'Kingman Reef'), ('Kiribati', 'Kiribati'), ('Kosovo', 'Kosovo'), ('Kuwait', 'Kuwait'), ('Kyrgyzstan', 'Kyrgyzstan'), ('Laos', 'Laos'), ('Latvia', 'Latvia'), ('Lebanon', 'Lebanon'), ('Lesotho', 'Lesotho'), ('Liberia', 'Liberia'), ('Libya', 'Libya'), ('Liechtenstein', 'Liechtenstein'), ('Lithuania', 'Lithuania'), ('Luxembourg', 'Luxembourg'), ('Macau', 'Macau'), ('Macedonia', 'Macedonia'), ('Madagascar', 'Madagascar'), ('Malawi', 'Malawi'), ('Malaysia', 'Malaysia'), ('Maldives', 'Maldives'), ('Mali', 'Mali'), ('Malta', 'Malta'), ('Marshall Islands', 'Marshall Islands'), ('Martinique', 'Martinique'), ('Mauritania', 'Mauritania'), ('Mauritius', 'Mauritius'), ('Mayotte', 'Mayotte'), ('Mediterranean Sea', 'Mediterranean Sea'), ('Mexico', 'Mexico'), ('Micronesia', 'Micronesia'), ('Midway Islands', 'Midway Islands'), ('Moldova', 'Moldova'), ('Monaco', 'Monaco'), ('Mongolia', 'Mongolia'), ('Montenegro', 'Montenegro'), ('Montserrat', 'Montserrat'), ('Morocco', 'Morocco'), ('Mozambique', 'Mozambique'), ('Myanmar', 'Myanmar'), ('Namibia', 'Namibia'), ('Nauru', 'Nauru'), ('Navassa Island', 'Navassa Island'), ('Nepal', 'Nepal'), ('Netherlands', 'Netherlands'), ('New Caledonia', 'New Caledonia'), ('New Zealand', 'New Zealand'), ('Nicaragua', 'Nicaragua'), ('Niger', 'Niger'), ('Nigeria', 'Nigeria'), ('Niue', 'Niue'), ('Norfolk Island', 'Norfolk Island'), ('North Korea', 'North Korea'), ('North Sea', 'North Sea'), ('Northern Mariana Islands', 'Northern Mariana Islands'), ('Norway', 'Norway'), ('Oman', 'Oman'), ('Pacific Ocean', 'Pacific Ocean'), ('Pakistan', 'Pakistan'), ('Palau', 'Palau'), ('Palmyra Atoll', 'Palmyra Atoll'), ('Panama', 'Panama'), ('Papua New Guinea', 'Papua New Guinea'), ('Paracel Islands', 'Paracel Islands'), ('Paraguay', 'Paraguay'), ('Peru', 'Peru'), ('Philippines', 'Philippines'), ('Pitcairn Islands', 'Pitcairn Islands'), ('Poland', 'Poland'), ('Portugal', 'Portugal'), ('Puerto Rico', 'Puerto Rico'), ('Qatar', 'Qatar'), ('Republic of the Congo', 'Republic of the Congo'), ('Reunion', 'Reunion'), ('Romania', 'Romania'), ('Ross Sea', 'Ross Sea'), ('Russia', 'Russia'), ('Rwanda', 'Rwanda'), ('Saint Helena', 'Saint Helena'), ('Saint Kitts and Nevis', 'Saint Kitts and Nevis'), ('Saint Lucia', 'Saint Lucia'), ('Saint Pierre and Miquelon', 'Saint Pierre and Miquelon'), ('Saint Vincent and the Grenadines', 'Saint Vincent and the Grenadines'), ('Samoa', 'Samoa'), ('San Marino', 'San Marino'), ('Sao Tome and Principe', 'Sao Tome and Principe'), ('Saudi Arabia', 'Saudi Arabia'), ('Senegal', 'Senegal'), ('Serbia', 'Serbia'), ('Seychelles', 'Seychelles'), ('Sierra Leone', 'Sierra Leone'), ('Singapore', 'Singapore'), ('Sint Maarten', 'Sint Maarten'), ('Slovakia', 'Slovakia'), ('Slovenia', 'Slovenia'), ('Solomon Islands', 'Solomon Islands'), ('Somalia', 'Somalia'), ('South Africa', 'South Africa'), ('South Georgia and the South Sandwich Islands', 'South Georgia and the South Sandwich Islands'), ('South Korea', 'South Korea'), ('Southern Ocean', 'Southern Ocean'), ('Spain', 'Spain'), ('Spratly Islands', 'Spratly Islands'), ('Sri Lanka', 'Sri Lanka'), ('Sudan', 'Sudan'), ('Suriname', 'Suriname'), ('Svalbard', 'Svalbard'), ('Swaziland', 'Swaziland'), ('Sweden', 'Sweden'), ('Switzerland', 'Switzerland'), ('Syria', 'Syria'), ('Taiwan', 'Taiwan'), ('Tajikistan', 'Tajikistan'), ('Tanzania', 'Tanzania'), ('Tasman Sea', 'Tasman Sea'), ('Thailand', 'Thailand'), ('Togo', 'Togo'), ('Tokelau', 'Tokelau'), ('Tonga', 'Tonga'), ('Trinidad and Tobago', 'Trinidad and Tobago'), ('Tromelin Island', 'Tromelin Island'), ('Tunisia', 'Tunisia'), ('Turkey', 'Turkey'), ('Turkmenistan', 'Turkmenistan'), ('Turks and Caicos Islands', 'Turks and Caicos Islands'), ('Tuvalu', 'Tuvalu'), ('USA', 'USA'), ('Uganda', 'Uganda'), ('Ukraine', 'Ukraine'), ('United Arab Emirates', 'United Arab Emirates'), ('United Kingdom', 'United Kingdom'), ('Uruguay', 'Uruguay'), ('Uzbekistan', 'Uzbekistan'), ('Vanuatu', 'Vanuatu'), ('Venezuela', 'Venezuela'), ('Viet Nam', 'Viet Nam'), ('Virgin Islands', 'Virgin Islands'), ('Wake Island', 'Wake Island'), ('Wallis and Futuna', 'Wallis and Futuna'), ('West Bank', 'West Bank'), ('Western Sahara', 'Western Sahara'), ('Yemen', 'Yemen'), ('Zambia', 'Zambia'), ('Zimbabwe', 'Zimbabwe'), ('missing: control sample', 'missing: control sample'), ('missing: data agreement established pre-2023', 'missing: data agreement established pre-2023'), ('missing: endangered species', 'missing: endangered species'), ('missing: human-identifiable', 'missing: human-identifiable'), ('missing: lab stock', 'missing: lab stock'), ('missing: sample group', 'missing: sample group'), ('missing: synthetic construct', 'missing: synthetic construct'), ('missing: third party data', 'missing: third party data'), ('not applicable', 'not applicable'), ('not collected', 'not collected'), ('not provided', 'not provided'), ('restricted access', 'restricted access')]
+	oxygenation_status_of_sample_choice = [('aerobic', 'aerobic'), ('anaerobic', 'anaerobic')]
+	trophic_level_choice = [('autotroph', 'autotroph'), ('carboxydotroph', 'carboxydotroph'), ('chemoautotroph', 'chemoautotroph'), ('chemoheterotroph', 'chemoheterotroph'), ('chemolithoautotroph', 'chemolithoautotroph'), ('chemolithotroph', 'chemolithotroph'), ('chemoorganoheterotroph', 'chemoorganoheterotroph'), ('chemoorganotroph', 'chemoorganotroph'), ('chemosynthetic', 'chemosynthetic'), ('chemotroph', 'chemotroph'), ('copiotroph', 'copiotroph'), ('diazotroph', 'diazotroph'), ('facultative autotroph', 'facultative autotroph'), ('heterotroph', 'heterotroph'), ('lithoautotroph', 'lithoautotroph'), ('lithoheterotroph', 'lithoheterotroph'), ('lithotroph', 'lithotroph'), ('methanotroph', 'methanotroph'), ('methylotroph', 'methylotroph'), ('mixotroph', 'mixotroph'), ('obligate chemoautolithotroph', 'obligate chemoautolithotroph'), ('oligotroph', 'oligotroph'), ('organoheterotroph', 'organoheterotroph'), ('organotroph', 'organotroph'), ('photoautotroph', 'photoautotroph'), ('photoheterotroph', 'photoheterotroph'), ('photolithoautotroph', 'photolithoautotroph'), ('photolithotroph', 'photolithotroph'), ('photosynthetic', 'photosynthetic'), ('phototroph', 'phototroph')]
+	relationship_to_oxygen_choice = [('aerobe', 'aerobe'), ('anaerobe', 'anaerobe'), ('facultative', 'facultative'), ('microaerophilic', 'microaerophilic'), ('microanaerobe', 'microanaerobe'), ('obligate aerobe', 'obligate aerobe'), ('obligate anaerobe', 'obligate anaerobe')]
+	observed_biotic_relationship_choice = [('commensal', 'commensal'), ('free living', 'free living'), ('mutualism', 'mutualism'), ('parasite', 'parasite'), ('symbiont', 'symbiont')]
+
+	number_of_replicons_validator = "[+-]?[0-9]+"
+	extrachromosomal_elements_validator = "[+-]?[0-9]+"
+	estimated_size_validator = "[+-]?[0-9]+"
+	sample_volume_or_weight_for_DNA_extraction_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	library_size_validator = "[+-]?[0-9]+"
+	library_reads_sequenced_validator = "[+-]?[0-9]+"
+	collection_date_validator = "(^[12][0-9]{3}(-(0[1-9]|1[0-2])(-(0[1-9]|[12][0-9]|3[01])(T[0-9]{2}:[0-9]{2}(:[0-9]{2})?Z?([+-][0-9]{1,2})?)?)?)?(/[0-9]{4}(-[0-9]{2}(-[0-9]{2}(T[0-9]{2}:[0-9]{2}(:[0-9]{2})?Z?([+-][0-9]{1,2})?)?)?)?)?$)|(^not collected$)|(^not provided$)|(^restricted access$)|(^missing: control sample$)|(^missing: sample group$)|(^missing: synthetic construct$)|(^missing: lab stock$)|(^missing: third party data$)|(^missing: data agreement established pre-2023$)|(^missing: endangered species$)|(^missing: human-identifiable$)"
+	altitude_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	geographic_location_latitude_validator = "(^[+-]?[0-9]+.?[0-9]{0,8}$)|(^not collected$)|(^not provided$)|(^restricted access$)|(^missing: control sample$)|(^missing: sample group$)|(^missing: synthetic construct$)|(^missing: lab stock$)|(^missing: third party data$)|(^missing: data agreement established pre-2023$)|(^missing: endangered species$)|(^missing: human-identifiable$)"
+	geographic_location_longitude_validator = "(^[+-]?[0-9]+.?[0-9]{0,8}$)|(^not collected$)|(^not provided$)|(^restricted access$)|(^missing: control sample$)|(^missing: sample group$)|(^missing: synthetic construct$)|(^missing: lab stock$)|(^missing: third party data$)|(^missing: data agreement established pre-2023$)|(^missing: endangered species$)|(^missing: human-identifiable$)"
+	depth_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	elevation_validator = "[+-]?(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	amount_or_size_of_sample_collected_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	density_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	sample_storage_duration_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	sample_storage_temperature_validator = "[+-]?(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	alkyl_diethers_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	aminopeptidase_activity_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	ammonium_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	bacterial_carbon_production_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	bishomohopanol_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	bromide_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	calcium_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	carbon_nitrogen_ratio_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	chloride_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	chlorophyll_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	diether_lipids_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	dissolved_carbon_dioxide_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	dissolved_hydrogen_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	dissolved_inorganic_carbon_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	dissolved_organic_carbon_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	dissolved_organic_nitrogen_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	methane_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	dissolved_oxygen_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	glucosidase_activity_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	magnesium_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	n_alkanes_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	nitrate_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	nitrite_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	nitrogen_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	organic_carbon_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	organic_matter_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	organic_nitrogen_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	particulate_organic_carbon_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	petroleum_hydrocarbon_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	phaeopigments_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	phosphate_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	phospholipid_fatty_acid_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	potassium_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	redox_potential_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	salinity_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	total_carbon_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	silicate_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	sodium_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	total_organic_carbon_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	water_content_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	sulfate_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	sulfide_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	total_nitrogen_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+
+	sampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE, default=1)
+	sample = models.ForeignKey(Sample, on_delete=models.CASCADE, default=1)
+	sample_type = models.IntegerField(default=1)
+	project_name= models.CharField(max_length=120, blank=False,help_text="Name of th")
+	experimental_factor= models.CharField(max_length=120, blank=True,help_text="Experiment")
+	ploidy= models.CharField(max_length=120, blank=True,help_text="The ploidy")
+	number_of_replicons= models.CharField(max_length=120, blank=True,help_text="Reports th", validators=[RegexValidator(number_of_replicons_validator)])
+	extrachromosomal_elements= models.CharField(max_length=120, blank=True,help_text="Do plasmid", validators=[RegexValidator(extrachromosomal_elements_validator)])
+	estimated_size= models.CharField(max_length=120, blank=True,help_text="The estima", validators=[RegexValidator(estimated_size_validator)])
+	reference_for_biomaterial= models.CharField(max_length=120, blank=True,help_text="Primary pu")
+	annotation_source= models.CharField(max_length=120, blank=True,help_text="For cases ")
+	sample_volume_or_weight_for_DNA_extraction= models.CharField(max_length=120, blank=True,help_text="Volume (ml", validators=[RegexValidator(sample_volume_or_weight_for_DNA_extraction_validator)])
+	nucleic_acid_extraction= models.CharField(max_length=120, blank=True,help_text="A link to ")
+	nucleic_acid_amplification= models.CharField(max_length=120, blank=True,help_text="A link to ")
+	library_size= models.CharField(max_length=120, blank=True,help_text="Total numb", validators=[RegexValidator(library_size_validator)])
+	library_reads_sequenced= models.CharField(max_length=120, blank=True,help_text="Total numb", validators=[RegexValidator(library_reads_sequenced_validator)])
+	library_construction_method= models.CharField(max_length=120, blank=True,help_text="Library co")
+	library_vector= models.CharField(max_length=120, blank=True,help_text="Cloning ve")
+	library_screening_strategy= models.CharField(max_length=120, blank=True,help_text="Specific e")
+	target_gene= models.CharField(max_length=120, blank=True,help_text="Targeted g")
+	target_subfragment= models.CharField(max_length=120, blank=True,help_text="Name of su")
+	pcr_primers= models.CharField(max_length=120, blank=True,help_text="PCR primer")
+	multiplex_identifiers= models.CharField(max_length=120, blank=True,help_text="Molecular ")
+	adapters= models.CharField(max_length=120, blank=True,help_text="Adapters p")
+	pcr_conditions= models.CharField(max_length=120, blank=True,help_text="Descriptio")
+	sequencing_method= models.CharField(max_length=120, blank=True,help_text="Sequencing")
+	sequence_quality_check= models.CharField(max_length=120, blank=True,help_text="Indicate i", choices=sequence_quality_check_choice)
+	chimera_check_software= models.CharField(max_length=120, blank=True,help_text="Tool(s) us")
+	relevant_electronic_resources= models.CharField(max_length=120, blank=True,help_text="A related ")
+	relevant_standard_operating_procedures= models.CharField(max_length=120, blank=True,help_text="Standard o")
+	negative_control_type= models.CharField(max_length=120, blank=True,help_text="The substa")
+	positive_control_type= models.CharField(max_length=120, blank=True,help_text="The substa")
+	collection_date= models.CharField(max_length=120, blank=False,help_text="The date t", validators=[RegexValidator(collection_date_validator)])
+	altitude= models.CharField(max_length=120, blank=True,help_text="The altitu", validators=[RegexValidator(altitude_validator)])
+	geographic_location_country_and_or_sea= models.CharField(max_length=120, blank=False,help_text="The locati", choices=geographic_location_country_and_or_sea_choice)
+	geographic_location_latitude= models.CharField(max_length=120, blank=False,help_text="The geogra", validators=[RegexValidator(geographic_location_latitude_validator)])
+	geographic_location_longitude= models.CharField(max_length=120, blank=False,help_text="The geogra", validators=[RegexValidator(geographic_location_longitude_validator)])
+	geographic_location_region_and_locality= models.CharField(max_length=120, blank=True,help_text="The geogra")
+	depth= models.CharField(max_length=120, blank=False,help_text="The vertic", validators=[RegexValidator(depth_validator)])
+	broad_scale_environmental_context= models.CharField(max_length=120, blank=False,help_text="Report the")
+	local_environmental_context= models.CharField(max_length=120, blank=False,help_text="Report the")
+	environmental_medium= models.CharField(max_length=120, blank=False,help_text="Report the")
+	elevation= models.CharField(max_length=120, blank=False,help_text="The elevat", validators=[RegexValidator(elevation_validator)])
+	source_material_identifiers= models.CharField(max_length=120, blank=True,help_text="A unique i")
+	sample_material_processing= models.CharField(max_length=120, blank=True,help_text="A brief de")
+	isolation_and_growth_condition= models.CharField(max_length=120, blank=True,help_text="Publicatio")
+	propagation= models.CharField(max_length=120, blank=True,help_text="The type o")
+	amount_or_size_of_sample_collected= models.CharField(max_length=120, blank=True,help_text="The total ", validators=[RegexValidator(amount_or_size_of_sample_collected_validator)])
+	biomass= models.CharField(max_length=120, blank=True,help_text="amount of ")
+	density= models.CharField(max_length=120, blank=True,help_text="density of", validators=[RegexValidator(density_validator)])
+	oxygenation_status_of_sample= models.CharField(max_length=120, blank=True,help_text="oxygenatio", choices=oxygenation_status_of_sample_choice)
+	organism_count= models.CharField(max_length=120, blank=True,help_text="Total cell")
+	sample_storage_duration= models.CharField(max_length=120, blank=True,help_text="duration f", validators=[RegexValidator(sample_storage_duration_validator)])
+	sample_storage_temperature= models.CharField(max_length=120, blank=True,help_text="temperatur", validators=[RegexValidator(sample_storage_temperature_validator)])
+	sample_storage_location= models.CharField(max_length=120, blank=True,help_text="location a")
+	sample_collection_device= models.CharField(max_length=120, blank=True,help_text="The device")
+	sample_collection_method= models.CharField(max_length=120, blank=True,help_text="The method")
+	host_disease_status= models.CharField(max_length=120, blank=True,help_text="list of di")
+	host_scientific_name= models.CharField(max_length=120, blank=True,help_text="Scientific")
+	alkyl_diethers= models.CharField(max_length=120, blank=True,help_text="concentrat", validators=[RegexValidator(alkyl_diethers_validator)])
+	aminopeptidase_activity= models.CharField(max_length=120, blank=True,help_text="measuremen", validators=[RegexValidator(aminopeptidase_activity_validator)])
+	ammonium= models.CharField(max_length=120, blank=True,help_text="concentrat", validators=[RegexValidator(ammonium_validator)])
+	bacterial_carbon_production= models.CharField(max_length=120, blank=True,help_text="measuremen", validators=[RegexValidator(bacterial_carbon_production_validator)])
+	bishomohopanol= models.CharField(max_length=120, blank=True,help_text="concentrat", validators=[RegexValidator(bishomohopanol_validator)])
+	bromide= models.CharField(max_length=120, blank=True,help_text="concentrat", validators=[RegexValidator(bromide_validator)])
+	calcium= models.CharField(max_length=120, blank=True,help_text="concentrat", validators=[RegexValidator(calcium_validator)])
+	carbon_nitrogen_ratio= models.CharField(max_length=120, blank=True,help_text="ratio of a", validators=[RegexValidator(carbon_nitrogen_ratio_validator)])
+	chloride= models.CharField(max_length=120, blank=True,help_text="concentrat", validators=[RegexValidator(chloride_validator)])
+	chlorophyll= models.CharField(max_length=120, blank=True,help_text="concentrat", validators=[RegexValidator(chlorophyll_validator)])
+	diether_lipids= models.CharField(max_length=120, blank=True,help_text="concentrat", validators=[RegexValidator(diether_lipids_validator)])
+	dissolved_carbon_dioxide= models.CharField(max_length=120, blank=True,help_text="concentrat", validators=[RegexValidator(dissolved_carbon_dioxide_validator)])
+	dissolved_hydrogen= models.CharField(max_length=120, blank=True,help_text="concentrat", validators=[RegexValidator(dissolved_hydrogen_validator)])
+	dissolved_inorganic_carbon= models.CharField(max_length=120, blank=True,help_text="dissolved ", validators=[RegexValidator(dissolved_inorganic_carbon_validator)])
+	dissolved_organic_carbon= models.CharField(max_length=120, blank=True,help_text="concentrat", validators=[RegexValidator(dissolved_organic_carbon_validator)])
+	dissolved_organic_nitrogen= models.CharField(max_length=120, blank=True,help_text="dissolved ", validators=[RegexValidator(dissolved_organic_nitrogen_validator)])
+	methane= models.CharField(max_length=120, blank=True,help_text="methane (g", validators=[RegexValidator(methane_validator)])
+	dissolved_oxygen= models.CharField(max_length=120, blank=True,help_text="concentrat", validators=[RegexValidator(dissolved_oxygen_validator)])
+	glucosidase_activity= models.CharField(max_length=120, blank=True,help_text="measuremen", validators=[RegexValidator(glucosidase_activity_validator)])
+	magnesium= models.CharField(max_length=120, blank=True,help_text="concentrat", validators=[RegexValidator(magnesium_validator)])
+	n_alkanes= models.CharField(max_length=120, blank=True,help_text="concentrat", validators=[RegexValidator(n_alkanes_validator)])
+	nitrate= models.CharField(max_length=120, blank=True,help_text="concentrat", validators=[RegexValidator(nitrate_validator)])
+	nitrite= models.CharField(max_length=120, blank=True,help_text="concentrat", validators=[RegexValidator(nitrite_validator)])
+	nitrogen= models.CharField(max_length=120, blank=True,help_text="concentrat", validators=[RegexValidator(nitrogen_validator)])
+	organic_carbon= models.CharField(max_length=120, blank=True,help_text="concentrat", validators=[RegexValidator(organic_carbon_validator)])
+	organic_matter= models.CharField(max_length=120, blank=True,help_text="concentrat", validators=[RegexValidator(organic_matter_validator)])
+	organic_nitrogen= models.CharField(max_length=120, blank=True,help_text="concentrat", validators=[RegexValidator(organic_nitrogen_validator)])
+	particulate_organic_carbon= models.CharField(max_length=120, blank=True,help_text="concentrat", validators=[RegexValidator(particulate_organic_carbon_validator)])
+	petroleum_hydrocarbon= models.CharField(max_length=120, blank=True,help_text="concentrat", validators=[RegexValidator(petroleum_hydrocarbon_validator)])
+	phaeopigments= models.CharField(max_length=120, blank=True,help_text="concentrat", validators=[RegexValidator(phaeopigments_validator)])
+	phosphate= models.CharField(max_length=120, blank=True,help_text="concentrat", validators=[RegexValidator(phosphate_validator)])
+	phospholipid_fatty_acid= models.CharField(max_length=120, blank=True,help_text="concentrat", validators=[RegexValidator(phospholipid_fatty_acid_validator)])
+	potassium= models.CharField(max_length=120, blank=True,help_text="concentrat", validators=[RegexValidator(potassium_validator)])
+	redox_potential= models.CharField(max_length=120, blank=True,help_text="redox pote", validators=[RegexValidator(redox_potential_validator)])
+	salinity= models.CharField(max_length=120, blank=True,help_text="The total ", validators=[RegexValidator(salinity_validator)])
+	total_carbon= models.CharField(max_length=120, blank=True,help_text="total carb", validators=[RegexValidator(total_carbon_validator)])
+	silicate= models.CharField(max_length=120, blank=True,help_text="concentrat", validators=[RegexValidator(silicate_validator)])
+	sodium= models.CharField(max_length=120, blank=True,help_text="sodium con", validators=[RegexValidator(sodium_validator)])
+	total_organic_carbon= models.CharField(max_length=120, blank=True,help_text="Definition", validators=[RegexValidator(total_organic_carbon_validator)])
+	water_content= models.CharField(max_length=120, blank=True,help_text="water cont", validators=[RegexValidator(water_content_validator)])
+	sulfate= models.CharField(max_length=120, blank=True,help_text="concentrat", validators=[RegexValidator(sulfate_validator)])
+	sulfide= models.CharField(max_length=120, blank=True,help_text="concentrat", validators=[RegexValidator(sulfide_validator)])
+	total_nitrogen= models.CharField(max_length=120, blank=True,help_text="total nitr", validators=[RegexValidator(total_nitrogen_validator)])
+	subspecific_genetic_lineage= models.CharField(max_length=120, blank=True,help_text="Informatio")
+	trophic_level= models.CharField(max_length=120, blank=True,help_text="Trophic le", choices=trophic_level_choice)
+	relationship_to_oxygen= models.CharField(max_length=120, blank=True,help_text="Is this or", choices=relationship_to_oxygen_choice)
+	known_pathogenicity= models.CharField(max_length=120, blank=True,help_text="To what is")
+	encoded_traits= models.CharField(max_length=120, blank=True,help_text="Should inc")
+	observed_biotic_relationship= models.CharField(max_length=120, blank=True,help_text="Is it free", choices=observed_biotic_relationship_choice)
+	chemical_administration= models.CharField(max_length=120, blank=True,help_text="list of ch")
+	perturbation= models.CharField(max_length=120, blank=True,help_text="type of pe")
+
+	fields = {
+		'project_name': 'project_name',
+		'experimental_factor': 'experimental_factor',
+		'ploidy': 'ploidy',
+		'number_of_replicons': 'number_of_replicons',
+		'extrachromosomal_elements': 'extrachromosomal_elements',
+		'estimated_size': 'estimated_size',
+		'reference_for_biomaterial': 'reference_for_biomaterial',
+		'annotation_source': 'annotation_source',
+		'sample_volume_or_weight_for_DNA_extraction': 'sample_volume_or_weight_for_DNA_extraction',
+		'nucleic_acid_extraction': 'nucleic_acid_extraction',
+		'nucleic_acid_amplification': 'nucleic_acid_amplification',
+		'library_size': 'library_size',
+		'library_reads_sequenced': 'library_reads_sequenced',
+		'library_construction_method': 'library_construction_method',
+		'library_vector': 'library_vector',
+		'library_screening_strategy': 'library_screening_strategy',
+		'target_gene': 'target_gene',
+		'target_subfragment': 'target_subfragment',
+		'pcr_primers': 'pcr_primers',
+		'multiplex_identifiers': 'multiplex_identifiers',
+		'adapters': 'adapters',
+		'pcr_conditions': 'pcr_conditions',
+		'sequencing_method': 'sequencing_method',
+		'sequence_quality_check': 'sequence_quality_check',
+		'chimera_check_software': 'chimera_check_software',
+		'relevant_electronic_resources': 'relevant_electronic_resources',
+		'relevant_standard_operating_procedures': 'relevant_standard_operating_procedures',
+		'negative_control_type': 'negative_control_type',
+		'positive_control_type': 'positive_control_type',
+		'collection_date': 'collection_date',
+		'altitude': 'altitude',
+		'geographic_location_country_and_or_sea': 'geographic_location_country_and_or_sea',
+		'geographic_location_latitude': 'geographic_location_latitude',
+		'geographic_location_longitude': 'geographic_location_longitude',
+		'geographic_location_region_and_locality': 'geographic_location_region_and_locality',
+		'depth': 'depth',
+		'broad_scale_environmental_context': 'broad_scale_environmental_context',
+		'local_environmental_context': 'local_environmental_context',
+		'environmental_medium': 'environmental_medium',
+		'elevation': 'elevation',
+		'source_material_identifiers': 'source_material_identifiers',
+		'sample_material_processing': 'sample_material_processing',
+		'isolation_and_growth_condition': 'isolation_and_growth_condition',
+		'propagation': 'propagation',
+		'amount_or_size_of_sample_collected': 'amount_or_size_of_sample_collected',
+		'biomass': 'biomass',
+		'density': 'density',
+		'oxygenation_status_of_sample': 'oxygenation_status_of_sample',
+		'organism_count': 'organism_count',
+		'sample_storage_duration': 'sample_storage_duration',
+		'sample_storage_temperature': 'sample_storage_temperature',
+		'sample_storage_location': 'sample_storage_location',
+		'sample_collection_device': 'sample_collection_device',
+		'sample_collection_method': 'sample_collection_method',
+		'host_disease_status': 'host_disease_status',
+		'host_scientific_name': 'host_scientific_name',
+		'alkyl_diethers': 'alkyl_diethers',
+		'aminopeptidase_activity': 'aminopeptidase_activity',
+		'ammonium': 'ammonium',
+		'bacterial_carbon_production': 'bacterial_carbon_production',
+		'bishomohopanol': 'bishomohopanol',
+		'bromide': 'bromide',
+		'calcium': 'calcium',
+		'carbon_nitrogen_ratio': 'carbon_nitrogen_ratio',
+		'chloride': 'chloride',
+		'chlorophyll': 'chlorophyll',
+		'diether_lipids': 'diether_lipids',
+		'dissolved_carbon_dioxide': 'dissolved_carbon_dioxide',
+		'dissolved_hydrogen': 'dissolved_hydrogen',
+		'dissolved_inorganic_carbon': 'dissolved_inorganic_carbon',
+		'dissolved_organic_carbon': 'dissolved_organic_carbon',
+		'dissolved_organic_nitrogen': 'dissolved_organic_nitrogen',
+		'methane': 'methane',
+		'dissolved_oxygen': 'dissolved_oxygen',
+		'glucosidase_activity': 'glucosidase_activity',
+		'magnesium': 'magnesium',
+		'n_alkanes': 'n_alkanes',
+		'nitrate': 'nitrate',
+		'nitrite': 'nitrite',
+		'nitrogen': 'nitrogen',
+		'organic_carbon': 'organic_carbon',
+		'organic_matter': 'organic_matter',
+		'organic_nitrogen': 'organic_nitrogen',
+		'particulate_organic_carbon': 'particulate_organic_carbon',
+		'petroleum_hydrocarbon': 'petroleum_hydrocarbon',
+		'phaeopigments': 'phaeopigments',
+		'phosphate': 'phosphate',
+		'phospholipid_fatty_acid': 'phospholipid_fatty_acid',
+		'potassium': 'potassium',
+		'redox_potential': 'redox_potential',
+		'salinity': 'salinity',
+		'total_carbon': 'total_carbon',
+		'silicate': 'silicate',
+		'sodium': 'sodium',
+		'total_organic_carbon': 'total_organic_carbon',
+		'water_content': 'water_content',
+		'sulfate': 'sulfate',
+		'sulfide': 'sulfide',
+		'total_nitrogen': 'total_nitrogen',
+		'subspecific_genetic_lineage': 'subspecific_genetic_lineage',
+		'trophic_level': 'trophic_level',
+		'relationship_to_oxygen': 'relationship_to_oxygen',
+		'known_pathogenicity': 'known_pathogenicity',
+		'encoded_traits': 'encoded_traits',
+		'observed_biotic_relationship': 'observed_biotic_relationship',
+		'chemical_administration': 'chemical_administration',
+		'perturbation': 'perturbation',
+	}
+
+	name = 'GSC_MIxS_sediment'
+
+class GSC_MIxS_sediment_unit(SelfDescribingModel):
+
+	sample_volume_or_weight_for_DNA_extraction_units = [('g', 'g'), ('mL', 'mL'), ('mg', 'mg'), ('ng', 'ng')]
+	altitude_units = [('m', 'm')]
+	geographic_location_latitude_units = [('DD', 'DD')]
+	geographic_location_longitude_units = [('DD', 'DD')]
+	depth_units = [('m', 'm')]
+	elevation_units = [('m', 'm')]
+	amount_or_size_of_sample_collected_units = [('L', 'L'), ('g', 'g'), ('kg', 'kg'), ('m2', 'm2'), ('m3', 'm3')]
+	biomass_units = [('g', 'g'), ('kg', 'kg'), ('t', 't')]
+	density_units = [('g/m3', 'g/m3')]
+	sample_storage_duration_units = [('days', 'days'), ('hours', 'hours'), ('months', 'months'), ('weeks', 'weeks'), ('years', 'years')]
+	sample_storage_temperature_units = [('°C', '°C')]
+	alkyl_diethers_units = [('M/L', 'M/L'), ('µg/L', 'µg/L')]
+	aminopeptidase_activity_units = [('mol/L/h', 'mol/L/h')]
+	ammonium_units = [('µmol/L', 'µmol/L')]
+	bacterial_carbon_production_units = [('ng/h', 'ng/h')]
+	bishomohopanol_units = [('µg/L', 'µg/L'), ('µg/g', 'µg/g')]
+	bromide_units = [('parts/million', 'parts/million'), ('µmol/L', 'µmol/L')]
+	calcium_units = [('mg/L', 'mg/L'), ('parts/million', 'parts/million'), ('µmol/L', 'µmol/L')]
+	chloride_units = [('mg/L', 'mg/L')]
+	chlorophyll_units = [('mg/m3', 'mg/m3'), ('µg/L', 'µg/L')]
+	diether_lipids_units = [('ng/L', 'ng/L')]
+	dissolved_carbon_dioxide_units = [('µmol/L', 'µmol/L')]
+	dissolved_hydrogen_units = [('µmol/L', 'µmol/L')]
+	dissolved_inorganic_carbon_units = [('µg/L', 'µg/L')]
+	dissolved_organic_carbon_units = [('µmol/L', 'µmol/L')]
+	dissolved_organic_nitrogen_units = [('mg/L', 'mg/L'), ('µg/L', 'µg/L')]
+	methane_units = [('µM/L', 'µM/L')]
+	dissolved_oxygen_units = [('µmol/kg', 'µmol/kg')]
+	glucosidase_activity_units = [('mol/L/h', 'mol/L/h')]
+	magnesium_units = [('mg/L', 'mg/L'), ('mol/L', 'mol/L'), ('parts/million', 'parts/million')]
+	n_alkanes_units = [('µmol/L', 'µmol/L')]
+	nitrate_units = [('µmol/L', 'µmol/L')]
+	nitrite_units = [('µmol/L', 'µmol/L')]
+	nitrogen_units = [('µmol/L', 'µmol/L')]
+	organic_carbon_units = [('µmol/L', 'µmol/L')]
+	organic_matter_units = [('µg/L', 'µg/L')]
+	organic_nitrogen_units = [('µg/L', 'µg/L')]
+	particulate_organic_carbon_units = [('µg/L', 'µg/L')]
+	petroleum_hydrocarbon_units = [('µmol/L', 'µmol/L')]
+	phaeopigments_units = [('mg/m3', 'mg/m3'), ('µg/L', 'µg/L')]
+	phosphate_units = [('µmol/L', 'µmol/L')]
+	phospholipid_fatty_acid_units = [('mol/L', 'mol/L'), ('mol/g', 'mol/g')]
+	potassium_units = [('parts/million', 'parts/million'), ('µmol/L', 'µmol/L')]
+	redox_potential_units = [('mV', 'mV')]
+	salinity_units = [('psu', 'psu')]
+	total_carbon_units = [('µg/L', 'µg/L')]
+	silicate_units = [('µmol/L', 'µmol/L')]
+	sodium_units = [('parts/million', 'parts/million'), ('µmol/L', 'µmol/L')]
+	total_organic_carbon_units = [('g/kg', 'g/kg')]
+	water_content_units = [('cm3/cm3', 'cm3/cm3'), ('g/g', 'g/g')]
+	sulfate_units = [('mg/L', 'mg/L'), ('µmol/L', 'µmol/L')]
+	sulfide_units = [('mg/L', 'mg/L'), ('µmol/L', 'µmol/L')]
+	total_nitrogen_units = [('µg/L', 'µg/L'), ('µmol/L', 'µmol/L')]
+
+	fields = {
+		'sample_volume_or_weight_for_DNA_extraction': 'sample_volume_or_weight_for_DNA_extraction',
+		'altitude': 'altitude',
+		'geographic_location_latitude': 'geographic_location_latitude',
+		'geographic_location_longitude': 'geographic_location_longitude',
+		'depth': 'depth',
+		'elevation': 'elevation',
+		'amount_or_size_of_sample_collected': 'amount_or_size_of_sample_collected',
+		'biomass': 'biomass',
+		'density': 'density',
+		'sample_storage_duration': 'sample_storage_duration',
+		'sample_storage_temperature': 'sample_storage_temperature',
+		'alkyl_diethers': 'alkyl_diethers',
+		'aminopeptidase_activity': 'aminopeptidase_activity',
+		'ammonium': 'ammonium',
+		'bacterial_carbon_production': 'bacterial_carbon_production',
+		'bishomohopanol': 'bishomohopanol',
+		'bromide': 'bromide',
+		'calcium': 'calcium',
+		'chloride': 'chloride',
+		'chlorophyll': 'chlorophyll',
+		'diether_lipids': 'diether_lipids',
+		'dissolved_carbon_dioxide': 'dissolved_carbon_dioxide',
+		'dissolved_hydrogen': 'dissolved_hydrogen',
+		'dissolved_inorganic_carbon': 'dissolved_inorganic_carbon',
+		'dissolved_organic_carbon': 'dissolved_organic_carbon',
+		'dissolved_organic_nitrogen': 'dissolved_organic_nitrogen',
+		'methane': 'methane',
+		'dissolved_oxygen': 'dissolved_oxygen',
+		'glucosidase_activity': 'glucosidase_activity',
+		'magnesium': 'magnesium',
+		'n_alkanes': 'n_alkanes',
+		'nitrate': 'nitrate',
+		'nitrite': 'nitrite',
+		'nitrogen': 'nitrogen',
+		'organic_carbon': 'organic_carbon',
+		'organic_matter': 'organic_matter',
+		'organic_nitrogen': 'organic_nitrogen',
+		'particulate_organic_carbon': 'particulate_organic_carbon',
+		'petroleum_hydrocarbon': 'petroleum_hydrocarbon',
+		'phaeopigments': 'phaeopigments',
+		'phosphate': 'phosphate',
+		'phospholipid_fatty_acid': 'phospholipid_fatty_acid',
+		'potassium': 'potassium',
+		'redox_potential': 'redox_potential',
+		'salinity': 'salinity',
+		'total_carbon': 'total_carbon',
+		'silicate': 'silicate',
+		'sodium': 'sodium',
+		'total_organic_carbon': 'total_organic_carbon',
+		'water_content': 'water_content',
+		'sulfate': 'sulfate',
+		'sulfide': 'sulfide',
+		'total_nitrogen': 'total_nitrogen',
+	}
+
+	name = 'GSC_MIxS_sediment'
+
+	sampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE, default=1)
+	sample = models.ForeignKey(Sample, on_delete=models.CASCADE, default=1)
+	sample_type = models.IntegerField(default=1)
+	sample_volume_or_weight_for_DNA_extraction = models.CharField(max_length=120, choices=sample_volume_or_weight_for_DNA_extraction_units, blank=False)
+	altitude = models.CharField(max_length=120, choices=altitude_units, blank=False)
+	geographic_location_latitude = models.CharField(max_length=120, choices=geographic_location_latitude_units, blank=False)
+	geographic_location_longitude = models.CharField(max_length=120, choices=geographic_location_longitude_units, blank=False)
+	depth = models.CharField(max_length=120, choices=depth_units, blank=False)
+	elevation = models.CharField(max_length=120, choices=elevation_units, blank=False)
+	amount_or_size_of_sample_collected = models.CharField(max_length=120, choices=amount_or_size_of_sample_collected_units, blank=False)
+	biomass = models.CharField(max_length=120, choices=biomass_units, blank=False)
+	density = models.CharField(max_length=120, choices=density_units, blank=False)
+	sample_storage_duration = models.CharField(max_length=120, choices=sample_storage_duration_units, blank=False)
+	sample_storage_temperature = models.CharField(max_length=120, choices=sample_storage_temperature_units, blank=False)
+	alkyl_diethers = models.CharField(max_length=120, choices=alkyl_diethers_units, blank=False)
+	aminopeptidase_activity = models.CharField(max_length=120, choices=aminopeptidase_activity_units, blank=False)
+	ammonium = models.CharField(max_length=120, choices=ammonium_units, blank=False)
+	bacterial_carbon_production = models.CharField(max_length=120, choices=bacterial_carbon_production_units, blank=False)
+	bishomohopanol = models.CharField(max_length=120, choices=bishomohopanol_units, blank=False)
+	bromide = models.CharField(max_length=120, choices=bromide_units, blank=False)
+	calcium = models.CharField(max_length=120, choices=calcium_units, blank=False)
+	chloride = models.CharField(max_length=120, choices=chloride_units, blank=False)
+	chlorophyll = models.CharField(max_length=120, choices=chlorophyll_units, blank=False)
+	diether_lipids = models.CharField(max_length=120, choices=diether_lipids_units, blank=False)
+	dissolved_carbon_dioxide = models.CharField(max_length=120, choices=dissolved_carbon_dioxide_units, blank=False)
+	dissolved_hydrogen = models.CharField(max_length=120, choices=dissolved_hydrogen_units, blank=False)
+	dissolved_inorganic_carbon = models.CharField(max_length=120, choices=dissolved_inorganic_carbon_units, blank=False)
+	dissolved_organic_carbon = models.CharField(max_length=120, choices=dissolved_organic_carbon_units, blank=False)
+	dissolved_organic_nitrogen = models.CharField(max_length=120, choices=dissolved_organic_nitrogen_units, blank=False)
+	methane = models.CharField(max_length=120, choices=methane_units, blank=False)
+	dissolved_oxygen = models.CharField(max_length=120, choices=dissolved_oxygen_units, blank=False)
+	glucosidase_activity = models.CharField(max_length=120, choices=glucosidase_activity_units, blank=False)
+	magnesium = models.CharField(max_length=120, choices=magnesium_units, blank=False)
+	n_alkanes = models.CharField(max_length=120, choices=n_alkanes_units, blank=False)
+	nitrate = models.CharField(max_length=120, choices=nitrate_units, blank=False)
+	nitrite = models.CharField(max_length=120, choices=nitrite_units, blank=False)
+	nitrogen = models.CharField(max_length=120, choices=nitrogen_units, blank=False)
+	organic_carbon = models.CharField(max_length=120, choices=organic_carbon_units, blank=False)
+	organic_matter = models.CharField(max_length=120, choices=organic_matter_units, blank=False)
+	organic_nitrogen = models.CharField(max_length=120, choices=organic_nitrogen_units, blank=False)
+	particulate_organic_carbon = models.CharField(max_length=120, choices=particulate_organic_carbon_units, blank=False)
+	petroleum_hydrocarbon = models.CharField(max_length=120, choices=petroleum_hydrocarbon_units, blank=False)
+	phaeopigments = models.CharField(max_length=120, choices=phaeopigments_units, blank=False)
+	phosphate = models.CharField(max_length=120, choices=phosphate_units, blank=False)
+	phospholipid_fatty_acid = models.CharField(max_length=120, choices=phospholipid_fatty_acid_units, blank=False)
+	potassium = models.CharField(max_length=120, choices=potassium_units, blank=False)
+	redox_potential = models.CharField(max_length=120, choices=redox_potential_units, blank=False)
+	salinity = models.CharField(max_length=120, choices=salinity_units, blank=False)
+	total_carbon = models.CharField(max_length=120, choices=total_carbon_units, blank=False)
+	silicate = models.CharField(max_length=120, choices=silicate_units, blank=False)
+	sodium = models.CharField(max_length=120, choices=sodium_units, blank=False)
+	total_organic_carbon = models.CharField(max_length=120, choices=total_organic_carbon_units, blank=False)
+	water_content = models.CharField(max_length=120, choices=water_content_units, blank=False)
+	sulfate = models.CharField(max_length=120, choices=sulfate_units, blank=False)
+	sulfide = models.CharField(max_length=120, choices=sulfide_units, blank=False)
+	total_nitrogen = models.CharField(max_length=120, choices=total_nitrogen_units, blank=False)
+
+class GSC_MIxS_human_associated(SelfDescribingModel):
+
+	sequence_quality_check_choice = [('manual', 'manual'), ('none', 'none'), ('software', 'software')]
+	study_completion_status_choice = [('No - adverse event', 'No - adverse event'), ('No - lost to follow up', 'No - lost to follow up'), ('No - non-compliance', 'No - non-compliance'), ('No - other', 'No - other'), ('Yes', 'Yes')]
+	geographic_location_country_and_or_sea_choice = [('Afghanistan', 'Afghanistan'), ('Albania', 'Albania'), ('Algeria', 'Algeria'), ('American Samoa', 'American Samoa'), ('Andorra', 'Andorra'), ('Angola', 'Angola'), ('Anguilla', 'Anguilla'), ('Antarctica', 'Antarctica'), ('Antigua and Barbuda', 'Antigua and Barbuda'), ('Arctic Ocean', 'Arctic Ocean'), ('Argentina', 'Argentina'), ('Armenia', 'Armenia'), ('Aruba', 'Aruba'), ('Ashmore and Cartier Islands', 'Ashmore and Cartier Islands'), ('Atlantic Ocean', 'Atlantic Ocean'), ('Australia', 'Australia'), ('Austria', 'Austria'), ('Azerbaijan', 'Azerbaijan'), ('Bahamas', 'Bahamas'), ('Bahrain', 'Bahrain'), ('Baker Island', 'Baker Island'), ('Baltic Sea', 'Baltic Sea'), ('Bangladesh', 'Bangladesh'), ('Barbados', 'Barbados'), ('Bassas da India', 'Bassas da India'), ('Belarus', 'Belarus'), ('Belgium', 'Belgium'), ('Belize', 'Belize'), ('Benin', 'Benin'), ('Bermuda', 'Bermuda'), ('Bhutan', 'Bhutan'), ('Bolivia', 'Bolivia'), ('Borneo', 'Borneo'), ('Bosnia and Herzegovina', 'Bosnia and Herzegovina'), ('Botswana', 'Botswana'), ('Bouvet Island', 'Bouvet Island'), ('Brazil', 'Brazil'), ('British Virgin Islands', 'British Virgin Islands'), ('Brunei', 'Brunei'), ('Bulgaria', 'Bulgaria'), ('Burkina Faso', 'Burkina Faso'), ('Burundi', 'Burundi'), ('Cambodia', 'Cambodia'), ('Cameroon', 'Cameroon'), ('Canada', 'Canada'), ('Cape Verde', 'Cape Verde'), ('Cayman Islands', 'Cayman Islands'), ('Central African Republic', 'Central African Republic'), ('Chad', 'Chad'), ('Chile', 'Chile'), ('China', 'China'), ('Christmas Island', 'Christmas Island'), ('Clipperton Island', 'Clipperton Island'), ('Cocos Islands', 'Cocos Islands'), ('Colombia', 'Colombia'), ('Comoros', 'Comoros'), ('Cook Islands', 'Cook Islands'), ('Coral Sea Islands', 'Coral Sea Islands'), ('Costa Rica', 'Costa Rica'), ("Cote d'Ivoire", "Cote d'Ivoire"), ('Croatia', 'Croatia'), ('Cuba', 'Cuba'), ('Curacao', 'Curacao'), ('Cyprus', 'Cyprus'), ('Czech Republic', 'Czech Republic'), ('Democratic Republic of the Congo', 'Democratic Republic of the Congo'), ('Denmark', 'Denmark'), ('Djibouti', 'Djibouti'), ('Dominica', 'Dominica'), ('Dominican Republic', 'Dominican Republic'), ('East Timor', 'East Timor'), ('Ecuador', 'Ecuador'), ('Egypt', 'Egypt'), ('El Salvador', 'El Salvador'), ('Equatorial Guinea', 'Equatorial Guinea'), ('Eritrea', 'Eritrea'), ('Estonia', 'Estonia'), ('Ethiopia', 'Ethiopia'), ('Europa Island', 'Europa Island'), ('Falkland Islands (Islas Malvinas)', 'Falkland Islands (Islas Malvinas)'), ('Faroe Islands', 'Faroe Islands'), ('Fiji', 'Fiji'), ('Finland', 'Finland'), ('France', 'France'), ('French Guiana', 'French Guiana'), ('French Polynesia', 'French Polynesia'), ('French Southern and Antarctic Lands', 'French Southern and Antarctic Lands'), ('Gabon', 'Gabon'), ('Gambia', 'Gambia'), ('Gaza Strip', 'Gaza Strip'), ('Georgia', 'Georgia'), ('Germany', 'Germany'), ('Ghana', 'Ghana'), ('Gibraltar', 'Gibraltar'), ('Glorioso Islands', 'Glorioso Islands'), ('Greece', 'Greece'), ('Greenland', 'Greenland'), ('Grenada', 'Grenada'), ('Guadeloupe', 'Guadeloupe'), ('Guam', 'Guam'), ('Guatemala', 'Guatemala'), ('Guernsey', 'Guernsey'), ('Guinea', 'Guinea'), ('Guinea-Bissau', 'Guinea-Bissau'), ('Guyana', 'Guyana'), ('Haiti', 'Haiti'), ('Heard Island and McDonald Islands', 'Heard Island and McDonald Islands'), ('Honduras', 'Honduras'), ('Hong Kong', 'Hong Kong'), ('Howland Island', 'Howland Island'), ('Hungary', 'Hungary'), ('Iceland', 'Iceland'), ('India', 'India'), ('Indian Ocean', 'Indian Ocean'), ('Indonesia', 'Indonesia'), ('Iran', 'Iran'), ('Iraq', 'Iraq'), ('Ireland', 'Ireland'), ('Isle of Man', 'Isle of Man'), ('Israel', 'Israel'), ('Italy', 'Italy'), ('Jamaica', 'Jamaica'), ('Jan Mayen', 'Jan Mayen'), ('Japan', 'Japan'), ('Jarvis Island', 'Jarvis Island'), ('Jersey', 'Jersey'), ('Johnston Atoll', 'Johnston Atoll'), ('Jordan', 'Jordan'), ('Juan de Nova Island', 'Juan de Nova Island'), ('Kazakhstan', 'Kazakhstan'), ('Kenya', 'Kenya'), ('Kerguelen Archipelago', 'Kerguelen Archipelago'), ('Kingman Reef', 'Kingman Reef'), ('Kiribati', 'Kiribati'), ('Kosovo', 'Kosovo'), ('Kuwait', 'Kuwait'), ('Kyrgyzstan', 'Kyrgyzstan'), ('Laos', 'Laos'), ('Latvia', 'Latvia'), ('Lebanon', 'Lebanon'), ('Lesotho', 'Lesotho'), ('Liberia', 'Liberia'), ('Libya', 'Libya'), ('Liechtenstein', 'Liechtenstein'), ('Lithuania', 'Lithuania'), ('Luxembourg', 'Luxembourg'), ('Macau', 'Macau'), ('Macedonia', 'Macedonia'), ('Madagascar', 'Madagascar'), ('Malawi', 'Malawi'), ('Malaysia', 'Malaysia'), ('Maldives', 'Maldives'), ('Mali', 'Mali'), ('Malta', 'Malta'), ('Marshall Islands', 'Marshall Islands'), ('Martinique', 'Martinique'), ('Mauritania', 'Mauritania'), ('Mauritius', 'Mauritius'), ('Mayotte', 'Mayotte'), ('Mediterranean Sea', 'Mediterranean Sea'), ('Mexico', 'Mexico'), ('Micronesia', 'Micronesia'), ('Midway Islands', 'Midway Islands'), ('Moldova', 'Moldova'), ('Monaco', 'Monaco'), ('Mongolia', 'Mongolia'), ('Montenegro', 'Montenegro'), ('Montserrat', 'Montserrat'), ('Morocco', 'Morocco'), ('Mozambique', 'Mozambique'), ('Myanmar', 'Myanmar'), ('Namibia', 'Namibia'), ('Nauru', 'Nauru'), ('Navassa Island', 'Navassa Island'), ('Nepal', 'Nepal'), ('Netherlands', 'Netherlands'), ('New Caledonia', 'New Caledonia'), ('New Zealand', 'New Zealand'), ('Nicaragua', 'Nicaragua'), ('Niger', 'Niger'), ('Nigeria', 'Nigeria'), ('Niue', 'Niue'), ('Norfolk Island', 'Norfolk Island'), ('North Korea', 'North Korea'), ('North Sea', 'North Sea'), ('Northern Mariana Islands', 'Northern Mariana Islands'), ('Norway', 'Norway'), ('Oman', 'Oman'), ('Pacific Ocean', 'Pacific Ocean'), ('Pakistan', 'Pakistan'), ('Palau', 'Palau'), ('Palmyra Atoll', 'Palmyra Atoll'), ('Panama', 'Panama'), ('Papua New Guinea', 'Papua New Guinea'), ('Paracel Islands', 'Paracel Islands'), ('Paraguay', 'Paraguay'), ('Peru', 'Peru'), ('Philippines', 'Philippines'), ('Pitcairn Islands', 'Pitcairn Islands'), ('Poland', 'Poland'), ('Portugal', 'Portugal'), ('Puerto Rico', 'Puerto Rico'), ('Qatar', 'Qatar'), ('Republic of the Congo', 'Republic of the Congo'), ('Reunion', 'Reunion'), ('Romania', 'Romania'), ('Ross Sea', 'Ross Sea'), ('Russia', 'Russia'), ('Rwanda', 'Rwanda'), ('Saint Helena', 'Saint Helena'), ('Saint Kitts and Nevis', 'Saint Kitts and Nevis'), ('Saint Lucia', 'Saint Lucia'), ('Saint Pierre and Miquelon', 'Saint Pierre and Miquelon'), ('Saint Vincent and the Grenadines', 'Saint Vincent and the Grenadines'), ('Samoa', 'Samoa'), ('San Marino', 'San Marino'), ('Sao Tome and Principe', 'Sao Tome and Principe'), ('Saudi Arabia', 'Saudi Arabia'), ('Senegal', 'Senegal'), ('Serbia', 'Serbia'), ('Seychelles', 'Seychelles'), ('Sierra Leone', 'Sierra Leone'), ('Singapore', 'Singapore'), ('Sint Maarten', 'Sint Maarten'), ('Slovakia', 'Slovakia'), ('Slovenia', 'Slovenia'), ('Solomon Islands', 'Solomon Islands'), ('Somalia', 'Somalia'), ('South Africa', 'South Africa'), ('South Georgia and the South Sandwich Islands', 'South Georgia and the South Sandwich Islands'), ('South Korea', 'South Korea'), ('Southern Ocean', 'Southern Ocean'), ('Spain', 'Spain'), ('Spratly Islands', 'Spratly Islands'), ('Sri Lanka', 'Sri Lanka'), ('Sudan', 'Sudan'), ('Suriname', 'Suriname'), ('Svalbard', 'Svalbard'), ('Swaziland', 'Swaziland'), ('Sweden', 'Sweden'), ('Switzerland', 'Switzerland'), ('Syria', 'Syria'), ('Taiwan', 'Taiwan'), ('Tajikistan', 'Tajikistan'), ('Tanzania', 'Tanzania'), ('Tasman Sea', 'Tasman Sea'), ('Thailand', 'Thailand'), ('Togo', 'Togo'), ('Tokelau', 'Tokelau'), ('Tonga', 'Tonga'), ('Trinidad and Tobago', 'Trinidad and Tobago'), ('Tromelin Island', 'Tromelin Island'), ('Tunisia', 'Tunisia'), ('Turkey', 'Turkey'), ('Turkmenistan', 'Turkmenistan'), ('Turks and Caicos Islands', 'Turks and Caicos Islands'), ('Tuvalu', 'Tuvalu'), ('USA', 'USA'), ('Uganda', 'Uganda'), ('Ukraine', 'Ukraine'), ('United Arab Emirates', 'United Arab Emirates'), ('United Kingdom', 'United Kingdom'), ('Uruguay', 'Uruguay'), ('Uzbekistan', 'Uzbekistan'), ('Vanuatu', 'Vanuatu'), ('Venezuela', 'Venezuela'), ('Viet Nam', 'Viet Nam'), ('Virgin Islands', 'Virgin Islands'), ('Wake Island', 'Wake Island'), ('Wallis and Futuna', 'Wallis and Futuna'), ('West Bank', 'West Bank'), ('Western Sahara', 'Western Sahara'), ('Yemen', 'Yemen'), ('Zambia', 'Zambia'), ('Zimbabwe', 'Zimbabwe'), ('missing: control sample', 'missing: control sample'), ('missing: data agreement established pre-2023', 'missing: data agreement established pre-2023'), ('missing: endangered species', 'missing: endangered species'), ('missing: human-identifiable', 'missing: human-identifiable'), ('missing: lab stock', 'missing: lab stock'), ('missing: sample group', 'missing: sample group'), ('missing: synthetic construct', 'missing: synthetic construct'), ('missing: third party data', 'missing: third party data'), ('not applicable', 'not applicable'), ('not collected', 'not collected'), ('not provided', 'not provided'), ('restricted access', 'restricted access')]
+	medical_history_performed_choice = [('No', 'No'), ('Yes', 'Yes')]
+	urine_collection_method_choice = [('catheter', 'catheter'), ('clean catch', 'clean catch')]
+	oxygenation_status_of_sample_choice = [('aerobic', 'aerobic'), ('anaerobic', 'anaerobic')]
+	host_HIV_status_choice = [('No', 'No'), ('Yes', 'Yes')]
+	IHMC_medication_code_choice = [('01=1=Analgesics/NSAIDS', '01=1=Analgesics/NSAIDS'), ('02=2=Anesthetics', '02=2=Anesthetics'), ('03=3=Antacids/H2 antagonists', '03=3=Antacids/H2 antagonists'), ('04=4=Anti-acne', '04=4=Anti-acne'), ('05=5=Anti-asthma/bronchodilators', '05=5=Anti-asthma/bronchodilators'), ('06=6=Anti-cholesterol/Anti-hyperlipidemic', '06=6=Anti-cholesterol/Anti-hyperlipidemic'), ('07=7=Anti-coagulants', '07=7=Anti-coagulants'), ('08=8=Antibiotics/(anti)-infectives, parasitics, microbials', '08=8=Antibiotics/(anti)-infectives, parasitics, microbials'), ('09=9=Antidepressants/mood-altering drugs', '09=9=Antidepressants/mood-altering drugs'), ('10=10=Antihistamines/ Decongestants', '10=10=Antihistamines/ Decongestants'), ('11=11=Antihypertensives', '11=11=Antihypertensives'), ('12=12=Cardiovascular, other than hyperlipidemic/HTN', '12=12=Cardiovascular, other than hyperlipidemic/HTN'), ('13=13=Contraceptives (oral, implant, injectable)', '13=13=Contraceptives (oral, implant, injectable)'), ('14=14=Emergency/support medications', '14=14=Emergency/support medications'), ('15=15=Endocrine/Metabolic agents', '15=15=Endocrine/Metabolic agents'), ('16=16=GI meds (anti-diarrheal, emetic, spasmodics)', '16=16=GI meds (anti-diarrheal, emetic, spasmodics)'), ('17=17=Herbal/homeopathic products', '17=17=Herbal/homeopathic products'), ('18=18=Hormones/steroids', '18=18=Hormones/steroids'), ('19=19=OTC cold & flu', '19=19=OTC cold & flu'), ('20=20=Vaccine prophylaxis', '20=20=Vaccine prophylaxis'), ('21=21=Vitamins, minerals, food supplements', '21=21=Vitamins, minerals, food supplements'), ('99=99=Other', '99=99=Other')]
+	host_occupation_choice = [('01=01 Accounting/Finance', '01=01 Accounting/Finance'), ('02=02 Advertising/Public Relations', '02=02 Advertising/Public Relations'), ('03=03 Arts/Entertainment/Publishing', '03=03 Arts/Entertainment/Publishing'), ('04=04 Automotive', '04=04 Automotive'), ('05=05 Banking/ Mortgage', '05=05 Banking/ Mortgage'), ('06=06 Biotech', '06=06 Biotech'), ('07=07 Broadcast/Journalism', '07=07 Broadcast/Journalism'), ('08=08 Business Development', '08=08 Business Development'), ('09=09 Clerical/Administrative', '09=09 Clerical/Administrative'), ('10=10 Construction/Trades', '10=10 Construction/Trades'), ('11=11 Consultant', '11=11 Consultant'), ('12=12 Customer Services', '12=12 Customer Services'), ('13=13 Design', '13=13 Design'), ('14=14 Education', '14=14 Education'), ('15=15 Engineering', '15=15 Engineering'), ('16=16 Entry Level', '16=16 Entry Level'), ('17=17 Executive', '17=17 Executive'), ('18=18 Food Service', '18=18 Food Service'), ('19=19 Government', '19=19 Government'), ('20=20 Grocery', '20=20 Grocery'), ('21=21 Healthcare', '21=21 Healthcare'), ('22=22 Hospitality', '22=22 Hospitality'), ('23=23 Human Resources', '23=23 Human Resources'), ('24=24 Information Technology', '24=24 Information Technology'), ('25=25 Insurance', '25=25 Insurance'), ('26=26 Law/Legal', '26=26 Law/Legal'), ('27=27 Management', '27=27 Management'), ('28=28 Manufacturing', '28=28 Manufacturing'), ('29=29 Marketing', '29=29 Marketing'), ('30=30 Pharmaceutical', '30=30 Pharmaceutical'), ('31=31 Professional Services', '31=31 Professional Services'), ('32=32 Purchasing', '32=32 Purchasing'), ('33=33 Quality Assurance (QA)', '33=33 Quality Assurance (QA)'), ('34=34 Research', '34=34 Research'), ('35=35 Restaurant', '35=35 Restaurant'), ('36=36 Retail', '36=36 Retail'), ('37=37 Sales', '37=37 Sales'), ('38=38 Science', '38=38 Science'), ('39=39 Security/Law Enforcement', '39=39 Security/Law Enforcement'), ('40=40 Shipping/Distribution', '40=40 Shipping/Distribution'), ('41=41 Strategy', '41=41 Strategy'), ('42=42 Student', '42=42 Student'), ('43=43 Telecommunications', '43=43 Telecommunications'), ('44=44 Training', '44=44 Training'), ('45=45 Transportation', '45=45 Transportation'), ('46=46 Warehouse', '46=46 Warehouse'), ('47=47 Other', '47=47 Other'), ('99=99 Unknown/Refused', '99=99 Unknown/Refused')]
+	host_sex_choice = [('female', 'female'), ('hermaphrodite', 'hermaphrodite'), ('male', 'male'), ('missing: control sample', 'missing: control sample'), ('missing: data agreement established pre-2023', 'missing: data agreement established pre-2023'), ('missing: endangered species', 'missing: endangered species'), ('missing: human-identifiable', 'missing: human-identifiable'), ('missing: lab stock', 'missing: lab stock'), ('missing: sample group', 'missing: sample group'), ('missing: synthetic construct', 'missing: synthetic construct'), ('missing: third party data', 'missing: third party data'), ('neuter', 'neuter'), ('not applicable', 'not applicable'), ('not collected', 'not collected'), ('not provided', 'not provided'), ('other', 'other'), ('restricted access', 'restricted access')]
+	smoker_choice = [('ex-smoker', 'ex-smoker'), ('non-smoker', 'non-smoker'), ('smoker', 'smoker')]
+	trophic_level_choice = [('autotroph', 'autotroph'), ('carboxydotroph', 'carboxydotroph'), ('chemoautotroph', 'chemoautotroph'), ('chemoheterotroph', 'chemoheterotroph'), ('chemolithoautotroph', 'chemolithoautotroph'), ('chemolithotroph', 'chemolithotroph'), ('chemoorganoheterotroph', 'chemoorganoheterotroph'), ('chemoorganotroph', 'chemoorganotroph'), ('chemosynthetic', 'chemosynthetic'), ('chemotroph', 'chemotroph'), ('copiotroph', 'copiotroph'), ('diazotroph', 'diazotroph'), ('facultative autotroph', 'facultative autotroph'), ('heterotroph', 'heterotroph'), ('lithoautotroph', 'lithoautotroph'), ('lithoheterotroph', 'lithoheterotroph'), ('lithotroph', 'lithotroph'), ('methanotroph', 'methanotroph'), ('methylotroph', 'methylotroph'), ('mixotroph', 'mixotroph'), ('obligate chemoautolithotroph', 'obligate chemoautolithotroph'), ('oligotroph', 'oligotroph'), ('organoheterotroph', 'organoheterotroph'), ('organotroph', 'organotroph'), ('photoautotroph', 'photoautotroph'), ('photoheterotroph', 'photoheterotroph'), ('photolithoautotroph', 'photolithoautotroph'), ('photolithotroph', 'photolithotroph'), ('photosynthetic', 'photosynthetic'), ('phototroph', 'phototroph')]
+	relationship_to_oxygen_choice = [('aerobe', 'aerobe'), ('anaerobe', 'anaerobe'), ('facultative', 'facultative'), ('microaerophilic', 'microaerophilic'), ('microanaerobe', 'microanaerobe'), ('obligate aerobe', 'obligate aerobe'), ('obligate anaerobe', 'obligate anaerobe')]
+	observed_biotic_relationship_choice = [('commensal', 'commensal'), ('free living', 'free living'), ('mutualism', 'mutualism'), ('parasite', 'parasite'), ('symbiont', 'symbiont')]
+
+	number_of_replicons_validator = "[+-]?[0-9]+"
+	extrachromosomal_elements_validator = "[+-]?[0-9]+"
+	estimated_size_validator = "[+-]?[0-9]+"
+	sample_volume_or_weight_for_DNA_extraction_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	library_size_validator = "[+-]?[0-9]+"
+	library_reads_sequenced_validator = "[+-]?[0-9]+"
+	collection_date_validator = "(^[12][0-9]{3}(-(0[1-9]|1[0-2])(-(0[1-9]|[12][0-9]|3[01])(T[0-9]{2}:[0-9]{2}(:[0-9]{2})?Z?([+-][0-9]{1,2})?)?)?)?(/[0-9]{4}(-[0-9]{2}(-[0-9]{2}(T[0-9]{2}:[0-9]{2}(:[0-9]{2})?Z?([+-][0-9]{1,2})?)?)?)?)?$)|(^not collected$)|(^not provided$)|(^restricted access$)|(^missing: control sample$)|(^missing: sample group$)|(^missing: synthetic construct$)|(^missing: lab stock$)|(^missing: third party data$)|(^missing: data agreement established pre-2023$)|(^missing: endangered species$)|(^missing: human-identifiable$)"
+	geographic_location_latitude_validator = "(^[+-]?[0-9]+.?[0-9]{0,8}$)|(^not collected$)|(^not provided$)|(^restricted access$)|(^missing: control sample$)|(^missing: sample group$)|(^missing: synthetic construct$)|(^missing: lab stock$)|(^missing: third party data$)|(^missing: data agreement established pre-2023$)|(^missing: endangered species$)|(^missing: human-identifiable$)"
+	geographic_location_longitude_validator = "(^[+-]?[0-9]+.?[0-9]{0,8}$)|(^not collected$)|(^not provided$)|(^restricted access$)|(^missing: control sample$)|(^missing: sample group$)|(^missing: synthetic construct$)|(^missing: lab stock$)|(^missing: third party data$)|(^missing: data agreement established pre-2023$)|(^missing: endangered species$)|(^missing: human-identifiable$)"
+	amount_or_size_of_sample_collected_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	sample_storage_duration_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	sample_storage_temperature_validator = "[+-]?(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	host_age_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	host_height_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	host_body_mass_index_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	host_total_mass_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	host_body_temperature_validator = "[+-]?(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	temperature_validator = "[+-]?(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	salinity_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	host_pulse_validator = "[+-]?[0-9]+"
+
+	sampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE, default=1)
+	sample = models.ForeignKey(Sample, on_delete=models.CASCADE, default=1)
+	sample_type = models.IntegerField(default=1)
+	project_name= models.CharField(max_length=120, blank=False,help_text="Name of th")
+	experimental_factor= models.CharField(max_length=120, blank=True,help_text="Experiment")
+	ploidy= models.CharField(max_length=120, blank=True,help_text="The ploidy")
+	number_of_replicons= models.CharField(max_length=120, blank=True,help_text="Reports th", validators=[RegexValidator(number_of_replicons_validator)])
+	extrachromosomal_elements= models.CharField(max_length=120, blank=True,help_text="Do plasmid", validators=[RegexValidator(extrachromosomal_elements_validator)])
+	estimated_size= models.CharField(max_length=120, blank=True,help_text="The estima", validators=[RegexValidator(estimated_size_validator)])
+	reference_for_biomaterial= models.CharField(max_length=120, blank=True,help_text="Primary pu")
+	annotation_source= models.CharField(max_length=120, blank=True,help_text="For cases ")
+	sample_volume_or_weight_for_DNA_extraction= models.CharField(max_length=120, blank=True,help_text="Volume (ml", validators=[RegexValidator(sample_volume_or_weight_for_DNA_extraction_validator)])
+	nucleic_acid_extraction= models.CharField(max_length=120, blank=True,help_text="A link to ")
+	nucleic_acid_amplification= models.CharField(max_length=120, blank=True,help_text="A link to ")
+	library_size= models.CharField(max_length=120, blank=True,help_text="Total numb", validators=[RegexValidator(library_size_validator)])
+	library_reads_sequenced= models.CharField(max_length=120, blank=True,help_text="Total numb", validators=[RegexValidator(library_reads_sequenced_validator)])
+	library_construction_method= models.CharField(max_length=120, blank=True,help_text="Library co")
+	library_vector= models.CharField(max_length=120, blank=True,help_text="Cloning ve")
+	library_screening_strategy= models.CharField(max_length=120, blank=True,help_text="Specific e")
+	target_gene= models.CharField(max_length=120, blank=True,help_text="Targeted g")
+	target_subfragment= models.CharField(max_length=120, blank=True,help_text="Name of su")
+	pcr_primers= models.CharField(max_length=120, blank=True,help_text="PCR primer")
+	multiplex_identifiers= models.CharField(max_length=120, blank=True,help_text="Molecular ")
+	adapters= models.CharField(max_length=120, blank=True,help_text="Adapters p")
+	pcr_conditions= models.CharField(max_length=120, blank=True,help_text="Descriptio")
+	sequencing_method= models.CharField(max_length=120, blank=True,help_text="Sequencing")
+	sequence_quality_check= models.CharField(max_length=120, blank=True,help_text="Indicate i", choices=sequence_quality_check_choice)
+	chimera_check_software= models.CharField(max_length=120, blank=True,help_text="Tool(s) us")
+	relevant_electronic_resources= models.CharField(max_length=120, blank=True,help_text="A related ")
+	relevant_standard_operating_procedures= models.CharField(max_length=120, blank=True,help_text="Standard o")
+	study_completion_status= models.CharField(max_length=120, blank=True,help_text="specificat", choices=study_completion_status_choice)
+	negative_control_type= models.CharField(max_length=120, blank=True,help_text="The substa")
+	positive_control_type= models.CharField(max_length=120, blank=True,help_text="The substa")
+	collection_date= models.CharField(max_length=120, blank=False,help_text="The date t", validators=[RegexValidator(collection_date_validator)])
+	geographic_location_country_and_or_sea= models.CharField(max_length=120, blank=False,help_text="The locati", choices=geographic_location_country_and_or_sea_choice)
+	geographic_location_latitude= models.CharField(max_length=120, blank=False,help_text="The geogra", validators=[RegexValidator(geographic_location_latitude_validator)])
+	geographic_location_longitude= models.CharField(max_length=120, blank=False,help_text="The geogra", validators=[RegexValidator(geographic_location_longitude_validator)])
+	geographic_location_region_and_locality= models.CharField(max_length=120, blank=True,help_text="The geogra")
+	broad_scale_environmental_context= models.CharField(max_length=120, blank=False,help_text="Report the")
+	local_environmental_context= models.CharField(max_length=120, blank=False,help_text="Report the")
+	environmental_medium= models.CharField(max_length=120, blank=False,help_text="Report the")
+	source_material_identifiers= models.CharField(max_length=120, blank=True,help_text="A unique i")
+	sample_material_processing= models.CharField(max_length=120, blank=True,help_text="A brief de")
+	isolation_and_growth_condition= models.CharField(max_length=120, blank=True,help_text="Publicatio")
+	propagation= models.CharField(max_length=120, blank=True,help_text="The type o")
+	amount_or_size_of_sample_collected= models.CharField(max_length=120, blank=True,help_text="The total ", validators=[RegexValidator(amount_or_size_of_sample_collected_validator)])
+	host_body_product= models.CharField(max_length=120, blank=True,help_text="substance ")
+	medical_history_performed= models.CharField(max_length=120, blank=True,help_text="whether fu", choices=medical_history_performed_choice)
+	urine_collection_method= models.CharField(max_length=120, blank=True,help_text="specificat", choices=urine_collection_method_choice)
+	oxygenation_status_of_sample= models.CharField(max_length=120, blank=True,help_text="oxygenatio", choices=oxygenation_status_of_sample_choice)
+	organism_count= models.CharField(max_length=120, blank=True,help_text="Total cell")
+	sample_storage_duration= models.CharField(max_length=120, blank=True,help_text="duration f", validators=[RegexValidator(sample_storage_duration_validator)])
+	sample_storage_temperature= models.CharField(max_length=120, blank=True,help_text="temperatur", validators=[RegexValidator(sample_storage_temperature_validator)])
+	sample_storage_location= models.CharField(max_length=120, blank=True,help_text="location a")
+	sample_collection_device= models.CharField(max_length=120, blank=True,help_text="The device")
+	sample_collection_method= models.CharField(max_length=120, blank=True,help_text="The method")
+	host_HIV_status= models.CharField(max_length=120, blank=True,help_text="HIV status", choices=host_HIV_status_choice)
+	host_disease_status= models.CharField(max_length=120, blank=True,help_text="list of di")
+	lung_pulmonary_disorder= models.CharField(max_length=120, blank=True,help_text="History of")
+	lung_nose_throat_disorder= models.CharField(max_length=120, blank=True,help_text="History of")
+	blood_blood_disorder= models.CharField(max_length=120, blank=True,help_text="History of")
+	urine_kidney_disorder= models.CharField(max_length=120, blank=True,help_text="History of")
+	urine_urogenital_tract_disorder= models.CharField(max_length=120, blank=True,help_text="History of")
+	host_subject_id= models.CharField(max_length=120, blank=True,help_text="a unique i")
+	IHMC_medication_code= models.CharField(max_length=120, blank=True,help_text="can includ", choices=IHMC_medication_code_choice)
+	host_age= models.CharField(max_length=120, blank=True,help_text="age of hos", validators=[RegexValidator(host_age_validator)])
+	host_body_site= models.CharField(max_length=120, blank=True,help_text="name of bo")
+	drug_usage= models.CharField(max_length=120, blank=True,help_text="any drug u")
+	host_height= models.CharField(max_length=120, blank=True,help_text="the height", validators=[RegexValidator(host_height_validator)])
+	host_body_mass_index= models.CharField(max_length=120, blank=True,help_text="body mass ", validators=[RegexValidator(host_body_mass_index_validator)])
+	ethnicity= models.CharField(max_length=120, blank=True,help_text="A category")
+	host_occupation= models.CharField(max_length=120, blank=True,help_text="most frequ", choices=host_occupation_choice)
+	host_total_mass= models.CharField(max_length=120, blank=True,help_text="total mass", validators=[RegexValidator(host_total_mass_validator)])
+	host_phenotype= models.CharField(max_length=120, blank=True,help_text="phenotype ")
+	host_body_temperature= models.CharField(max_length=120, blank=True,help_text="core body ", validators=[RegexValidator(host_body_temperature_validator)])
+	host_sex= models.CharField(max_length=120, blank=True,help_text="Gender or ", choices=host_sex_choice)
+	host_scientific_name= models.CharField(max_length=120, blank=True,help_text="Scientific")
+	presence_of_pets_or_farm_animals= models.CharField(max_length=120, blank=True,help_text="specificat")
+	temperature= models.CharField(max_length=120, blank=True,help_text="temperatur", validators=[RegexValidator(temperature_validator)])
+	salinity= models.CharField(max_length=120, blank=True,help_text="The total ", validators=[RegexValidator(salinity_validator)])
+	smoker= models.CharField(max_length=120, blank=True,help_text="specificat", choices=smoker_choice)
+	major_diet_change_in_last_six_months= models.CharField(max_length=120, blank=True,help_text="specificat")
+	weight_loss_in_last_three_months= models.CharField(max_length=120, blank=True,help_text="specificat")
+	travel_outside_the_country_in_last_six_months= models.CharField(max_length=120, blank=True,help_text="specificat")
+	host_diet= models.CharField(max_length=120, blank=True,help_text="type of di")
+	twin_sibling_presence= models.CharField(max_length=120, blank=True,help_text="specificat")
+	host_last_meal= models.CharField(max_length=120, blank=True,help_text="content of")
+	amniotic_fluid_gestation_state= models.CharField(max_length=120, blank=True,help_text="specificat")
+	host_family_relationship= models.CharField(max_length=120, blank=True,help_text="relationsh")
+	amniotic_fluid_maternal_health_status= models.CharField(max_length=120, blank=True,help_text="specificat")
+	host_genotype= models.CharField(max_length=120, blank=True,help_text="observed g")
+	amniotic_fluid_foetal_health_status= models.CharField(max_length=120, blank=True,help_text="specificat")
+	host_pulse= models.CharField(max_length=120, blank=True,help_text="resting pu", validators=[RegexValidator(host_pulse_validator)])
+	amniotic_fluid_color= models.CharField(max_length=120, blank=True,help_text="specificat")
+	subspecific_genetic_lineage= models.CharField(max_length=120, blank=True,help_text="Informatio")
+	trophic_level= models.CharField(max_length=120, blank=True,help_text="Trophic le", choices=trophic_level_choice)
+	relationship_to_oxygen= models.CharField(max_length=120, blank=True,help_text="Is this or", choices=relationship_to_oxygen_choice)
+	known_pathogenicity= models.CharField(max_length=120, blank=True,help_text="To what is")
+	encoded_traits= models.CharField(max_length=120, blank=True,help_text="Should inc")
+	observed_biotic_relationship= models.CharField(max_length=120, blank=True,help_text="Is it free", choices=observed_biotic_relationship_choice)
+	chemical_administration= models.CharField(max_length=120, blank=True,help_text="list of ch")
+	perturbation= models.CharField(max_length=120, blank=True,help_text="type of pe")
+
+	fields = {
+		'project_name': 'project_name',
+		'experimental_factor': 'experimental_factor',
+		'ploidy': 'ploidy',
+		'number_of_replicons': 'number_of_replicons',
+		'extrachromosomal_elements': 'extrachromosomal_elements',
+		'estimated_size': 'estimated_size',
+		'reference_for_biomaterial': 'reference_for_biomaterial',
+		'annotation_source': 'annotation_source',
+		'sample_volume_or_weight_for_DNA_extraction': 'sample_volume_or_weight_for_DNA_extraction',
+		'nucleic_acid_extraction': 'nucleic_acid_extraction',
+		'nucleic_acid_amplification': 'nucleic_acid_amplification',
+		'library_size': 'library_size',
+		'library_reads_sequenced': 'library_reads_sequenced',
+		'library_construction_method': 'library_construction_method',
+		'library_vector': 'library_vector',
+		'library_screening_strategy': 'library_screening_strategy',
+		'target_gene': 'target_gene',
+		'target_subfragment': 'target_subfragment',
+		'pcr_primers': 'pcr_primers',
+		'multiplex_identifiers': 'multiplex_identifiers',
+		'adapters': 'adapters',
+		'pcr_conditions': 'pcr_conditions',
+		'sequencing_method': 'sequencing_method',
+		'sequence_quality_check': 'sequence_quality_check',
+		'chimera_check_software': 'chimera_check_software',
+		'relevant_electronic_resources': 'relevant_electronic_resources',
+		'relevant_standard_operating_procedures': 'relevant_standard_operating_procedures',
+		'study_completion_status': 'study_completion_status',
+		'negative_control_type': 'negative_control_type',
+		'positive_control_type': 'positive_control_type',
+		'collection_date': 'collection_date',
+		'geographic_location_country_and_or_sea': 'geographic_location_country_and_or_sea',
+		'geographic_location_latitude': 'geographic_location_latitude',
+		'geographic_location_longitude': 'geographic_location_longitude',
+		'geographic_location_region_and_locality': 'geographic_location_region_and_locality',
+		'broad_scale_environmental_context': 'broad_scale_environmental_context',
+		'local_environmental_context': 'local_environmental_context',
+		'environmental_medium': 'environmental_medium',
+		'source_material_identifiers': 'source_material_identifiers',
+		'sample_material_processing': 'sample_material_processing',
+		'isolation_and_growth_condition': 'isolation_and_growth_condition',
+		'propagation': 'propagation',
+		'amount_or_size_of_sample_collected': 'amount_or_size_of_sample_collected',
+		'host_body_product': 'host_body_product',
+		'medical_history_performed': 'medical_history_performed',
+		'urine_collection_method': 'urine_collection_method',
+		'oxygenation_status_of_sample': 'oxygenation_status_of_sample',
+		'organism_count': 'organism_count',
+		'sample_storage_duration': 'sample_storage_duration',
+		'sample_storage_temperature': 'sample_storage_temperature',
+		'sample_storage_location': 'sample_storage_location',
+		'sample_collection_device': 'sample_collection_device',
+		'sample_collection_method': 'sample_collection_method',
+		'host_HIV_status': 'host_HIV_status',
+		'host_disease_status': 'host_disease_status',
+		'lung_pulmonary_disorder': 'lung_pulmonary_disorder',
+		'lung_nose_throat_disorder': 'lung_nose_throat_disorder',
+		'blood_blood_disorder': 'blood_blood_disorder',
+		'urine_kidney_disorder': 'urine_kidney_disorder',
+		'urine_urogenital_tract_disorder': 'urine_urogenital_tract_disorder',
+		'host_subject_id': 'host_subject_id',
+		'IHMC_medication_code': 'IHMC_medication_code',
+		'host_age': 'host_age',
+		'host_body_site': 'host_body_site',
+		'drug_usage': 'drug_usage',
+		'host_height': 'host_height',
+		'host_body_mass_index': 'host_body_mass_index',
+		'ethnicity': 'ethnicity',
+		'host_occupation': 'host_occupation',
+		'host_total_mass': 'host_total_mass',
+		'host_phenotype': 'host_phenotype',
+		'host_body_temperature': 'host_body_temperature',
+		'host_sex': 'host_sex',
+		'host_scientific_name': 'host_scientific_name',
+		'presence_of_pets_or_farm_animals': 'presence_of_pets_or_farm_animals',
+		'temperature': 'temperature',
+		'salinity': 'salinity',
+		'smoker': 'smoker',
+		'major_diet_change_in_last_six_months': 'major_diet_change_in_last_six_months',
+		'weight_loss_in_last_three_months': 'weight_loss_in_last_three_months',
+		'travel_outside_the_country_in_last_six_months': 'travel_outside_the_country_in_last_six_months',
+		'host_diet': 'host_diet',
+		'twin_sibling_presence': 'twin_sibling_presence',
+		'host_last_meal': 'host_last_meal',
+		'amniotic_fluid_gestation_state': 'amniotic_fluid_gestation_state',
+		'host_family_relationship': 'host_family_relationship',
+		'amniotic_fluid_maternal_health_status': 'amniotic_fluid_maternal_health_status',
+		'host_genotype': 'host_genotype',
+		'amniotic_fluid_foetal_health_status': 'amniotic_fluid_foetal_health_status',
+		'host_pulse': 'host_pulse',
+		'amniotic_fluid_color': 'amniotic_fluid_color',
+		'subspecific_genetic_lineage': 'subspecific_genetic_lineage',
+		'trophic_level': 'trophic_level',
+		'relationship_to_oxygen': 'relationship_to_oxygen',
+		'known_pathogenicity': 'known_pathogenicity',
+		'encoded_traits': 'encoded_traits',
+		'observed_biotic_relationship': 'observed_biotic_relationship',
+		'chemical_administration': 'chemical_administration',
+		'perturbation': 'perturbation',
+	}
+
+	name = 'GSC_MIxS_human_associated'
+
+class GSC_MIxS_human_associated_unit(SelfDescribingModel):
+
+	sample_volume_or_weight_for_DNA_extraction_units = [('g', 'g'), ('mL', 'mL'), ('mg', 'mg'), ('ng', 'ng')]
+	geographic_location_latitude_units = [('DD', 'DD')]
+	geographic_location_longitude_units = [('DD', 'DD')]
+	amount_or_size_of_sample_collected_units = [('L', 'L'), ('g', 'g'), ('kg', 'kg'), ('m2', 'm2'), ('m3', 'm3')]
+	sample_storage_duration_units = [('days', 'days'), ('hours', 'hours'), ('months', 'months'), ('weeks', 'weeks'), ('years', 'years')]
+	sample_storage_temperature_units = [('°C', '°C')]
+	host_age_units = [('centuries', 'centuries'), ('days', 'days'), ('decades', 'decades'), ('hours', 'hours'), ('minutes', 'minutes'), ('months', 'months'), ('seconds', 'seconds'), ('weeks', 'weeks'), ('years', 'years')]
+	host_height_units = [('cm', 'cm'), ('m', 'm'), ('mm', 'mm')]
+	host_body_mass_index_units = [('kg/m2', 'kg/m2')]
+	host_total_mass_units = [('g', 'g'), ('kg', 'kg')]
+	host_body_temperature_units = [('ºC', 'ºC')]
+	temperature_units = [('ºC', 'ºC')]
+	salinity_units = [('psu', 'psu')]
+	weight_loss_in_last_three_months_units = [('g', 'g'), ('kg', 'kg')]
+	host_pulse_units = [('bpm', 'bpm')]
+
+	fields = {
+		'sample_volume_or_weight_for_DNA_extraction': 'sample_volume_or_weight_for_DNA_extraction',
+		'geographic_location_latitude': 'geographic_location_latitude',
+		'geographic_location_longitude': 'geographic_location_longitude',
+		'amount_or_size_of_sample_collected': 'amount_or_size_of_sample_collected',
+		'sample_storage_duration': 'sample_storage_duration',
+		'sample_storage_temperature': 'sample_storage_temperature',
+		'host_age': 'host_age',
+		'host_height': 'host_height',
+		'host_body_mass_index': 'host_body_mass_index',
+		'host_total_mass': 'host_total_mass',
+		'host_body_temperature': 'host_body_temperature',
+		'temperature': 'temperature',
+		'salinity': 'salinity',
+		'weight_loss_in_last_three_months': 'weight_loss_in_last_three_months',
+		'host_pulse': 'host_pulse',
+	}
+
+	name = 'GSC_MIxS_human_associated'
+
+	sampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE, default=1)
+	sample = models.ForeignKey(Sample, on_delete=models.CASCADE, default=1)
+	sample_type = models.IntegerField(default=1)
+	sample_volume_or_weight_for_DNA_extraction = models.CharField(max_length=120, choices=sample_volume_or_weight_for_DNA_extraction_units, blank=False)
+	geographic_location_latitude = models.CharField(max_length=120, choices=geographic_location_latitude_units, blank=False)
+	geographic_location_longitude = models.CharField(max_length=120, choices=geographic_location_longitude_units, blank=False)
+	amount_or_size_of_sample_collected = models.CharField(max_length=120, choices=amount_or_size_of_sample_collected_units, blank=False)
+	sample_storage_duration = models.CharField(max_length=120, choices=sample_storage_duration_units, blank=False)
+	sample_storage_temperature = models.CharField(max_length=120, choices=sample_storage_temperature_units, blank=False)
+	host_age = models.CharField(max_length=120, choices=host_age_units, blank=False)
+	host_height = models.CharField(max_length=120, choices=host_height_units, blank=False)
+	host_body_mass_index = models.CharField(max_length=120, choices=host_body_mass_index_units, blank=False)
+	host_total_mass = models.CharField(max_length=120, choices=host_total_mass_units, blank=False)
+	host_body_temperature = models.CharField(max_length=120, choices=host_body_temperature_units, blank=False)
+	temperature = models.CharField(max_length=120, choices=temperature_units, blank=False)
+	salinity = models.CharField(max_length=120, choices=salinity_units, blank=False)
+	weight_loss_in_last_three_months = models.CharField(max_length=120, choices=weight_loss_in_last_three_months_units, blank=False)
+	host_pulse = models.CharField(max_length=120, choices=host_pulse_units, blank=False)
+
+class GSC_MIxS_air(SelfDescribingModel):
+
+	sequence_quality_check_choice = [('manual', 'manual'), ('none', 'none'), ('software', 'software')]
+	geographic_location_country_and_or_sea_choice = [('Afghanistan', 'Afghanistan'), ('Albania', 'Albania'), ('Algeria', 'Algeria'), ('American Samoa', 'American Samoa'), ('Andorra', 'Andorra'), ('Angola', 'Angola'), ('Anguilla', 'Anguilla'), ('Antarctica', 'Antarctica'), ('Antigua and Barbuda', 'Antigua and Barbuda'), ('Arctic Ocean', 'Arctic Ocean'), ('Argentina', 'Argentina'), ('Armenia', 'Armenia'), ('Aruba', 'Aruba'), ('Ashmore and Cartier Islands', 'Ashmore and Cartier Islands'), ('Atlantic Ocean', 'Atlantic Ocean'), ('Australia', 'Australia'), ('Austria', 'Austria'), ('Azerbaijan', 'Azerbaijan'), ('Bahamas', 'Bahamas'), ('Bahrain', 'Bahrain'), ('Baker Island', 'Baker Island'), ('Baltic Sea', 'Baltic Sea'), ('Bangladesh', 'Bangladesh'), ('Barbados', 'Barbados'), ('Bassas da India', 'Bassas da India'), ('Belarus', 'Belarus'), ('Belgium', 'Belgium'), ('Belize', 'Belize'), ('Benin', 'Benin'), ('Bermuda', 'Bermuda'), ('Bhutan', 'Bhutan'), ('Bolivia', 'Bolivia'), ('Borneo', 'Borneo'), ('Bosnia and Herzegovina', 'Bosnia and Herzegovina'), ('Botswana', 'Botswana'), ('Bouvet Island', 'Bouvet Island'), ('Brazil', 'Brazil'), ('British Virgin Islands', 'British Virgin Islands'), ('Brunei', 'Brunei'), ('Bulgaria', 'Bulgaria'), ('Burkina Faso', 'Burkina Faso'), ('Burundi', 'Burundi'), ('Cambodia', 'Cambodia'), ('Cameroon', 'Cameroon'), ('Canada', 'Canada'), ('Cape Verde', 'Cape Verde'), ('Cayman Islands', 'Cayman Islands'), ('Central African Republic', 'Central African Republic'), ('Chad', 'Chad'), ('Chile', 'Chile'), ('China', 'China'), ('Christmas Island', 'Christmas Island'), ('Clipperton Island', 'Clipperton Island'), ('Cocos Islands', 'Cocos Islands'), ('Colombia', 'Colombia'), ('Comoros', 'Comoros'), ('Cook Islands', 'Cook Islands'), ('Coral Sea Islands', 'Coral Sea Islands'), ('Costa Rica', 'Costa Rica'), ("Cote d'Ivoire", "Cote d'Ivoire"), ('Croatia', 'Croatia'), ('Cuba', 'Cuba'), ('Curacao', 'Curacao'), ('Cyprus', 'Cyprus'), ('Czech Republic', 'Czech Republic'), ('Democratic Republic of the Congo', 'Democratic Republic of the Congo'), ('Denmark', 'Denmark'), ('Djibouti', 'Djibouti'), ('Dominica', 'Dominica'), ('Dominican Republic', 'Dominican Republic'), ('East Timor', 'East Timor'), ('Ecuador', 'Ecuador'), ('Egypt', 'Egypt'), ('El Salvador', 'El Salvador'), ('Equatorial Guinea', 'Equatorial Guinea'), ('Eritrea', 'Eritrea'), ('Estonia', 'Estonia'), ('Ethiopia', 'Ethiopia'), ('Europa Island', 'Europa Island'), ('Falkland Islands (Islas Malvinas)', 'Falkland Islands (Islas Malvinas)'), ('Faroe Islands', 'Faroe Islands'), ('Fiji', 'Fiji'), ('Finland', 'Finland'), ('France', 'France'), ('French Guiana', 'French Guiana'), ('French Polynesia', 'French Polynesia'), ('French Southern and Antarctic Lands', 'French Southern and Antarctic Lands'), ('Gabon', 'Gabon'), ('Gambia', 'Gambia'), ('Gaza Strip', 'Gaza Strip'), ('Georgia', 'Georgia'), ('Germany', 'Germany'), ('Ghana', 'Ghana'), ('Gibraltar', 'Gibraltar'), ('Glorioso Islands', 'Glorioso Islands'), ('Greece', 'Greece'), ('Greenland', 'Greenland'), ('Grenada', 'Grenada'), ('Guadeloupe', 'Guadeloupe'), ('Guam', 'Guam'), ('Guatemala', 'Guatemala'), ('Guernsey', 'Guernsey'), ('Guinea', 'Guinea'), ('Guinea-Bissau', 'Guinea-Bissau'), ('Guyana', 'Guyana'), ('Haiti', 'Haiti'), ('Heard Island and McDonald Islands', 'Heard Island and McDonald Islands'), ('Honduras', 'Honduras'), ('Hong Kong', 'Hong Kong'), ('Howland Island', 'Howland Island'), ('Hungary', 'Hungary'), ('Iceland', 'Iceland'), ('India', 'India'), ('Indian Ocean', 'Indian Ocean'), ('Indonesia', 'Indonesia'), ('Iran', 'Iran'), ('Iraq', 'Iraq'), ('Ireland', 'Ireland'), ('Isle of Man', 'Isle of Man'), ('Israel', 'Israel'), ('Italy', 'Italy'), ('Jamaica', 'Jamaica'), ('Jan Mayen', 'Jan Mayen'), ('Japan', 'Japan'), ('Jarvis Island', 'Jarvis Island'), ('Jersey', 'Jersey'), ('Johnston Atoll', 'Johnston Atoll'), ('Jordan', 'Jordan'), ('Juan de Nova Island', 'Juan de Nova Island'), ('Kazakhstan', 'Kazakhstan'), ('Kenya', 'Kenya'), ('Kerguelen Archipelago', 'Kerguelen Archipelago'), ('Kingman Reef', 'Kingman Reef'), ('Kiribati', 'Kiribati'), ('Kosovo', 'Kosovo'), ('Kuwait', 'Kuwait'), ('Kyrgyzstan', 'Kyrgyzstan'), ('Laos', 'Laos'), ('Latvia', 'Latvia'), ('Lebanon', 'Lebanon'), ('Lesotho', 'Lesotho'), ('Liberia', 'Liberia'), ('Libya', 'Libya'), ('Liechtenstein', 'Liechtenstein'), ('Lithuania', 'Lithuania'), ('Luxembourg', 'Luxembourg'), ('Macau', 'Macau'), ('Macedonia', 'Macedonia'), ('Madagascar', 'Madagascar'), ('Malawi', 'Malawi'), ('Malaysia', 'Malaysia'), ('Maldives', 'Maldives'), ('Mali', 'Mali'), ('Malta', 'Malta'), ('Marshall Islands', 'Marshall Islands'), ('Martinique', 'Martinique'), ('Mauritania', 'Mauritania'), ('Mauritius', 'Mauritius'), ('Mayotte', 'Mayotte'), ('Mediterranean Sea', 'Mediterranean Sea'), ('Mexico', 'Mexico'), ('Micronesia', 'Micronesia'), ('Midway Islands', 'Midway Islands'), ('Moldova', 'Moldova'), ('Monaco', 'Monaco'), ('Mongolia', 'Mongolia'), ('Montenegro', 'Montenegro'), ('Montserrat', 'Montserrat'), ('Morocco', 'Morocco'), ('Mozambique', 'Mozambique'), ('Myanmar', 'Myanmar'), ('Namibia', 'Namibia'), ('Nauru', 'Nauru'), ('Navassa Island', 'Navassa Island'), ('Nepal', 'Nepal'), ('Netherlands', 'Netherlands'), ('New Caledonia', 'New Caledonia'), ('New Zealand', 'New Zealand'), ('Nicaragua', 'Nicaragua'), ('Niger', 'Niger'), ('Nigeria', 'Nigeria'), ('Niue', 'Niue'), ('Norfolk Island', 'Norfolk Island'), ('North Korea', 'North Korea'), ('North Sea', 'North Sea'), ('Northern Mariana Islands', 'Northern Mariana Islands'), ('Norway', 'Norway'), ('Oman', 'Oman'), ('Pacific Ocean', 'Pacific Ocean'), ('Pakistan', 'Pakistan'), ('Palau', 'Palau'), ('Palmyra Atoll', 'Palmyra Atoll'), ('Panama', 'Panama'), ('Papua New Guinea', 'Papua New Guinea'), ('Paracel Islands', 'Paracel Islands'), ('Paraguay', 'Paraguay'), ('Peru', 'Peru'), ('Philippines', 'Philippines'), ('Pitcairn Islands', 'Pitcairn Islands'), ('Poland', 'Poland'), ('Portugal', 'Portugal'), ('Puerto Rico', 'Puerto Rico'), ('Qatar', 'Qatar'), ('Republic of the Congo', 'Republic of the Congo'), ('Reunion', 'Reunion'), ('Romania', 'Romania'), ('Ross Sea', 'Ross Sea'), ('Russia', 'Russia'), ('Rwanda', 'Rwanda'), ('Saint Helena', 'Saint Helena'), ('Saint Kitts and Nevis', 'Saint Kitts and Nevis'), ('Saint Lucia', 'Saint Lucia'), ('Saint Pierre and Miquelon', 'Saint Pierre and Miquelon'), ('Saint Vincent and the Grenadines', 'Saint Vincent and the Grenadines'), ('Samoa', 'Samoa'), ('San Marino', 'San Marino'), ('Sao Tome and Principe', 'Sao Tome and Principe'), ('Saudi Arabia', 'Saudi Arabia'), ('Senegal', 'Senegal'), ('Serbia', 'Serbia'), ('Seychelles', 'Seychelles'), ('Sierra Leone', 'Sierra Leone'), ('Singapore', 'Singapore'), ('Sint Maarten', 'Sint Maarten'), ('Slovakia', 'Slovakia'), ('Slovenia', 'Slovenia'), ('Solomon Islands', 'Solomon Islands'), ('Somalia', 'Somalia'), ('South Africa', 'South Africa'), ('South Georgia and the South Sandwich Islands', 'South Georgia and the South Sandwich Islands'), ('South Korea', 'South Korea'), ('Southern Ocean', 'Southern Ocean'), ('Spain', 'Spain'), ('Spratly Islands', 'Spratly Islands'), ('Sri Lanka', 'Sri Lanka'), ('Sudan', 'Sudan'), ('Suriname', 'Suriname'), ('Svalbard', 'Svalbard'), ('Swaziland', 'Swaziland'), ('Sweden', 'Sweden'), ('Switzerland', 'Switzerland'), ('Syria', 'Syria'), ('Taiwan', 'Taiwan'), ('Tajikistan', 'Tajikistan'), ('Tanzania', 'Tanzania'), ('Tasman Sea', 'Tasman Sea'), ('Thailand', 'Thailand'), ('Togo', 'Togo'), ('Tokelau', 'Tokelau'), ('Tonga', 'Tonga'), ('Trinidad and Tobago', 'Trinidad and Tobago'), ('Tromelin Island', 'Tromelin Island'), ('Tunisia', 'Tunisia'), ('Turkey', 'Turkey'), ('Turkmenistan', 'Turkmenistan'), ('Turks and Caicos Islands', 'Turks and Caicos Islands'), ('Tuvalu', 'Tuvalu'), ('USA', 'USA'), ('Uganda', 'Uganda'), ('Ukraine', 'Ukraine'), ('United Arab Emirates', 'United Arab Emirates'), ('United Kingdom', 'United Kingdom'), ('Uruguay', 'Uruguay'), ('Uzbekistan', 'Uzbekistan'), ('Vanuatu', 'Vanuatu'), ('Venezuela', 'Venezuela'), ('Viet Nam', 'Viet Nam'), ('Virgin Islands', 'Virgin Islands'), ('Wake Island', 'Wake Island'), ('Wallis and Futuna', 'Wallis and Futuna'), ('West Bank', 'West Bank'), ('Western Sahara', 'Western Sahara'), ('Yemen', 'Yemen'), ('Zambia', 'Zambia'), ('Zimbabwe', 'Zimbabwe'), ('missing: control sample', 'missing: control sample'), ('missing: data agreement established pre-2023', 'missing: data agreement established pre-2023'), ('missing: endangered species', 'missing: endangered species'), ('missing: human-identifiable', 'missing: human-identifiable'), ('missing: lab stock', 'missing: lab stock'), ('missing: sample group', 'missing: sample group'), ('missing: synthetic construct', 'missing: synthetic construct'), ('missing: third party data', 'missing: third party data'), ('not applicable', 'not applicable'), ('not collected', 'not collected'), ('not provided', 'not provided'), ('restricted access', 'restricted access')]
+	ventilation_type_choice = [('forced ventilation', 'forced ventilation'), ('mechanical ventilation', 'mechanical ventilation'), ('natural ventilation', 'natural ventilation')]
+	oxygenation_status_of_sample_choice = [('aerobic', 'aerobic'), ('anaerobic', 'anaerobic')]
+	trophic_level_choice = [('autotroph', 'autotroph'), ('carboxydotroph', 'carboxydotroph'), ('chemoautotroph', 'chemoautotroph'), ('chemoheterotroph', 'chemoheterotroph'), ('chemolithoautotroph', 'chemolithoautotroph'), ('chemolithotroph', 'chemolithotroph'), ('chemoorganoheterotroph', 'chemoorganoheterotroph'), ('chemoorganotroph', 'chemoorganotroph'), ('chemosynthetic', 'chemosynthetic'), ('chemotroph', 'chemotroph'), ('copiotroph', 'copiotroph'), ('diazotroph', 'diazotroph'), ('facultative autotroph', 'facultative autotroph'), ('heterotroph', 'heterotroph'), ('lithoautotroph', 'lithoautotroph'), ('lithoheterotroph', 'lithoheterotroph'), ('lithotroph', 'lithotroph'), ('methanotroph', 'methanotroph'), ('methylotroph', 'methylotroph'), ('mixotroph', 'mixotroph'), ('obligate chemoautolithotroph', 'obligate chemoautolithotroph'), ('oligotroph', 'oligotroph'), ('organoheterotroph', 'organoheterotroph'), ('organotroph', 'organotroph'), ('photoautotroph', 'photoautotroph'), ('photoheterotroph', 'photoheterotroph'), ('photolithoautotroph', 'photolithoautotroph'), ('photolithotroph', 'photolithotroph'), ('photosynthetic', 'photosynthetic'), ('phototroph', 'phototroph')]
+	relationship_to_oxygen_choice = [('aerobe', 'aerobe'), ('anaerobe', 'anaerobe'), ('facultative', 'facultative'), ('microaerophilic', 'microaerophilic'), ('microanaerobe', 'microanaerobe'), ('obligate aerobe', 'obligate aerobe'), ('obligate anaerobe', 'obligate anaerobe')]
+	observed_biotic_relationship_choice = [('commensal', 'commensal'), ('free living', 'free living'), ('mutualism', 'mutualism'), ('parasite', 'parasite'), ('symbiont', 'symbiont')]
+
+	number_of_replicons_validator = "[+-]?[0-9]+"
+	extrachromosomal_elements_validator = "[+-]?[0-9]+"
+	estimated_size_validator = "[+-]?[0-9]+"
+	sample_volume_or_weight_for_DNA_extraction_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	library_size_validator = "[+-]?[0-9]+"
+	library_reads_sequenced_validator = "[+-]?[0-9]+"
+	collection_date_validator = "(^[12][0-9]{3}(-(0[1-9]|1[0-2])(-(0[1-9]|[12][0-9]|3[01])(T[0-9]{2}:[0-9]{2}(:[0-9]{2})?Z?([+-][0-9]{1,2})?)?)?)?(/[0-9]{4}(-[0-9]{2}(-[0-9]{2}(T[0-9]{2}:[0-9]{2}(:[0-9]{2})?Z?([+-][0-9]{1,2})?)?)?)?)?$)|(^not collected$)|(^not provided$)|(^restricted access$)|(^missing: control sample$)|(^missing: sample group$)|(^missing: synthetic construct$)|(^missing: lab stock$)|(^missing: third party data$)|(^missing: data agreement established pre-2023$)|(^missing: endangered species$)|(^missing: human-identifiable$)"
+	altitude_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	geographic_location_latitude_validator = "(^[+-]?[0-9]+.?[0-9]{0,8}$)|(^not collected$)|(^not provided$)|(^restricted access$)|(^missing: control sample$)|(^missing: sample group$)|(^missing: synthetic construct$)|(^missing: lab stock$)|(^missing: third party data$)|(^missing: data agreement established pre-2023$)|(^missing: endangered species$)|(^missing: human-identifiable$)"
+	geographic_location_longitude_validator = "(^[+-]?[0-9]+.?[0-9]{0,8}$)|(^not collected$)|(^not provided$)|(^restricted access$)|(^missing: control sample$)|(^missing: sample group$)|(^missing: synthetic construct$)|(^missing: lab stock$)|(^missing: third party data$)|(^missing: data agreement established pre-2023$)|(^missing: endangered species$)|(^missing: human-identifiable$)"
+	elevation_validator = "[+-]?(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	ventilation_rate_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	amount_or_size_of_sample_collected_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	sample_storage_duration_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	sample_storage_temperature_validator = "[+-]?(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	barometric_pressure_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	humidity_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	solar_irradiance_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	wind_speed_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	temperature_validator = "[+-]?(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	carbon_dioxide_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	carbon_monoxide_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	oxygen_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	air_particulate_matter_concentration_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	methane_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	salinity_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+
+	sampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE, default=1)
+	sample = models.ForeignKey(Sample, on_delete=models.CASCADE, default=1)
+	sample_type = models.IntegerField(default=1)
+	project_name= models.CharField(max_length=120, blank=False,help_text="Name of th")
+	experimental_factor= models.CharField(max_length=120, blank=True,help_text="Experiment")
+	ploidy= models.CharField(max_length=120, blank=True,help_text="The ploidy")
+	number_of_replicons= models.CharField(max_length=120, blank=True,help_text="Reports th", validators=[RegexValidator(number_of_replicons_validator)])
+	extrachromosomal_elements= models.CharField(max_length=120, blank=True,help_text="Do plasmid", validators=[RegexValidator(extrachromosomal_elements_validator)])
+	estimated_size= models.CharField(max_length=120, blank=True,help_text="The estima", validators=[RegexValidator(estimated_size_validator)])
+	reference_for_biomaterial= models.CharField(max_length=120, blank=True,help_text="Primary pu")
+	annotation_source= models.CharField(max_length=120, blank=True,help_text="For cases ")
+	sample_volume_or_weight_for_DNA_extraction= models.CharField(max_length=120, blank=True,help_text="Volume (ml", validators=[RegexValidator(sample_volume_or_weight_for_DNA_extraction_validator)])
+	nucleic_acid_extraction= models.CharField(max_length=120, blank=True,help_text="A link to ")
+	nucleic_acid_amplification= models.CharField(max_length=120, blank=True,help_text="A link to ")
+	library_size= models.CharField(max_length=120, blank=True,help_text="Total numb", validators=[RegexValidator(library_size_validator)])
+	library_reads_sequenced= models.CharField(max_length=120, blank=True,help_text="Total numb", validators=[RegexValidator(library_reads_sequenced_validator)])
+	library_construction_method= models.CharField(max_length=120, blank=True,help_text="Library co")
+	library_vector= models.CharField(max_length=120, blank=True,help_text="Cloning ve")
+	library_screening_strategy= models.CharField(max_length=120, blank=True,help_text="Specific e")
+	target_gene= models.CharField(max_length=120, blank=True,help_text="Targeted g")
+	target_subfragment= models.CharField(max_length=120, blank=True,help_text="Name of su")
+	pcr_primers= models.CharField(max_length=120, blank=True,help_text="PCR primer")
+	multiplex_identifiers= models.CharField(max_length=120, blank=True,help_text="Molecular ")
+	adapters= models.CharField(max_length=120, blank=True,help_text="Adapters p")
+	pcr_conditions= models.CharField(max_length=120, blank=True,help_text="Descriptio")
+	sequencing_method= models.CharField(max_length=120, blank=True,help_text="Sequencing")
+	sequence_quality_check= models.CharField(max_length=120, blank=True,help_text="Indicate i", choices=sequence_quality_check_choice)
+	chimera_check_software= models.CharField(max_length=120, blank=True,help_text="Tool(s) us")
+	relevant_electronic_resources= models.CharField(max_length=120, blank=True,help_text="A related ")
+	relevant_standard_operating_procedures= models.CharField(max_length=120, blank=True,help_text="Standard o")
+	negative_control_type= models.CharField(max_length=120, blank=True,help_text="The substa")
+	positive_control_type= models.CharField(max_length=120, blank=True,help_text="The substa")
+	collection_date= models.CharField(max_length=120, blank=False,help_text="The date t", validators=[RegexValidator(collection_date_validator)])
+	altitude= models.CharField(max_length=120, blank=False,help_text="The altitu", validators=[RegexValidator(altitude_validator)])
+	geographic_location_country_and_or_sea= models.CharField(max_length=120, blank=False,help_text="The locati", choices=geographic_location_country_and_or_sea_choice)
+	geographic_location_latitude= models.CharField(max_length=120, blank=False,help_text="The geogra", validators=[RegexValidator(geographic_location_latitude_validator)])
+	geographic_location_longitude= models.CharField(max_length=120, blank=False,help_text="The geogra", validators=[RegexValidator(geographic_location_longitude_validator)])
+	geographic_location_region_and_locality= models.CharField(max_length=120, blank=True,help_text="The geogra")
+	broad_scale_environmental_context= models.CharField(max_length=120, blank=False,help_text="Report the")
+	local_environmental_context= models.CharField(max_length=120, blank=False,help_text="Report the")
+	environmental_medium= models.CharField(max_length=120, blank=False,help_text="Report the")
+	elevation= models.CharField(max_length=120, blank=True,help_text="The elevat", validators=[RegexValidator(elevation_validator)])
+	ventilation_rate= models.CharField(max_length=120, blank=True,help_text="ventilatio", validators=[RegexValidator(ventilation_rate_validator)])
+	ventilation_type= models.CharField(max_length=120, blank=True,help_text="The intent", choices=ventilation_type_choice)
+	source_material_identifiers= models.CharField(max_length=120, blank=True,help_text="A unique i")
+	sample_material_processing= models.CharField(max_length=120, blank=True,help_text="A brief de")
+	isolation_and_growth_condition= models.CharField(max_length=120, blank=True,help_text="Publicatio")
+	propagation= models.CharField(max_length=120, blank=True,help_text="The type o")
+	amount_or_size_of_sample_collected= models.CharField(max_length=120, blank=True,help_text="The total ", validators=[RegexValidator(amount_or_size_of_sample_collected_validator)])
+	oxygenation_status_of_sample= models.CharField(max_length=120, blank=True,help_text="oxygenatio", choices=oxygenation_status_of_sample_choice)
+	organism_count= models.CharField(max_length=120, blank=True,help_text="Total cell")
+	sample_storage_duration= models.CharField(max_length=120, blank=True,help_text="duration f", validators=[RegexValidator(sample_storage_duration_validator)])
+	sample_storage_temperature= models.CharField(max_length=120, blank=True,help_text="temperatur", validators=[RegexValidator(sample_storage_temperature_validator)])
+	sample_storage_location= models.CharField(max_length=120, blank=True,help_text="location a")
+	sample_collection_device= models.CharField(max_length=120, blank=True,help_text="The device")
+	sample_collection_method= models.CharField(max_length=120, blank=True,help_text="The method")
+	host_disease_status= models.CharField(max_length=120, blank=True,help_text="list of di")
+	host_scientific_name= models.CharField(max_length=120, blank=True,help_text="Scientific")
+	barometric_pressure= models.CharField(max_length=120, blank=True,help_text="force per ", validators=[RegexValidator(barometric_pressure_validator)])
+	humidity= models.CharField(max_length=120, blank=True,help_text="amount of ", validators=[RegexValidator(humidity_validator)])
+	pollutants= models.CharField(max_length=120, blank=True,help_text="pollutant ")
+	solar_irradiance= models.CharField(max_length=120, blank=True,help_text="the amount", validators=[RegexValidator(solar_irradiance_validator)])
+	wind_direction= models.CharField(max_length=120, blank=True,help_text="wind direc")
+	wind_speed= models.CharField(max_length=120, blank=True,help_text="speed of w", validators=[RegexValidator(wind_speed_validator)])
+	temperature= models.CharField(max_length=120, blank=True,help_text="temperatur", validators=[RegexValidator(temperature_validator)])
+	carbon_dioxide= models.CharField(max_length=120, blank=True,help_text="carbon dio", validators=[RegexValidator(carbon_dioxide_validator)])
+	carbon_monoxide= models.CharField(max_length=120, blank=True,help_text="carbon mon", validators=[RegexValidator(carbon_monoxide_validator)])
+	oxygen= models.CharField(max_length=120, blank=True,help_text="oxygen (ga", validators=[RegexValidator(oxygen_validator)])
+	air_particulate_matter_concentration= models.CharField(max_length=120, blank=True,help_text="Concentrat", validators=[RegexValidator(air_particulate_matter_concentration_validator)])
+	volatile_organic_compounds= models.CharField(max_length=120, blank=True,help_text="concentrat")
+	methane= models.CharField(max_length=120, blank=True,help_text="methane (g", validators=[RegexValidator(methane_validator)])
+	salinity= models.CharField(max_length=120, blank=True,help_text="The total ", validators=[RegexValidator(salinity_validator)])
+	subspecific_genetic_lineage= models.CharField(max_length=120, blank=True,help_text="Informatio")
+	trophic_level= models.CharField(max_length=120, blank=True,help_text="Trophic le", choices=trophic_level_choice)
+	relationship_to_oxygen= models.CharField(max_length=120, blank=True,help_text="Is this or", choices=relationship_to_oxygen_choice)
+	known_pathogenicity= models.CharField(max_length=120, blank=True,help_text="To what is")
+	encoded_traits= models.CharField(max_length=120, blank=True,help_text="Should inc")
+	observed_biotic_relationship= models.CharField(max_length=120, blank=True,help_text="Is it free", choices=observed_biotic_relationship_choice)
+	chemical_administration= models.CharField(max_length=120, blank=True,help_text="list of ch")
+	perturbation= models.CharField(max_length=120, blank=True,help_text="type of pe")
+
+	fields = {
+		'project_name': 'project_name',
+		'experimental_factor': 'experimental_factor',
+		'ploidy': 'ploidy',
+		'number_of_replicons': 'number_of_replicons',
+		'extrachromosomal_elements': 'extrachromosomal_elements',
+		'estimated_size': 'estimated_size',
+		'reference_for_biomaterial': 'reference_for_biomaterial',
+		'annotation_source': 'annotation_source',
+		'sample_volume_or_weight_for_DNA_extraction': 'sample_volume_or_weight_for_DNA_extraction',
+		'nucleic_acid_extraction': 'nucleic_acid_extraction',
+		'nucleic_acid_amplification': 'nucleic_acid_amplification',
+		'library_size': 'library_size',
+		'library_reads_sequenced': 'library_reads_sequenced',
+		'library_construction_method': 'library_construction_method',
+		'library_vector': 'library_vector',
+		'library_screening_strategy': 'library_screening_strategy',
+		'target_gene': 'target_gene',
+		'target_subfragment': 'target_subfragment',
+		'pcr_primers': 'pcr_primers',
+		'multiplex_identifiers': 'multiplex_identifiers',
+		'adapters': 'adapters',
+		'pcr_conditions': 'pcr_conditions',
+		'sequencing_method': 'sequencing_method',
+		'sequence_quality_check': 'sequence_quality_check',
+		'chimera_check_software': 'chimera_check_software',
+		'relevant_electronic_resources': 'relevant_electronic_resources',
+		'relevant_standard_operating_procedures': 'relevant_standard_operating_procedures',
+		'negative_control_type': 'negative_control_type',
+		'positive_control_type': 'positive_control_type',
+		'collection_date': 'collection_date',
+		'altitude': 'altitude',
+		'geographic_location_country_and_or_sea': 'geographic_location_country_and_or_sea',
+		'geographic_location_latitude': 'geographic_location_latitude',
+		'geographic_location_longitude': 'geographic_location_longitude',
+		'geographic_location_region_and_locality': 'geographic_location_region_and_locality',
+		'broad_scale_environmental_context': 'broad_scale_environmental_context',
+		'local_environmental_context': 'local_environmental_context',
+		'environmental_medium': 'environmental_medium',
+		'elevation': 'elevation',
+		'ventilation_rate': 'ventilation_rate',
+		'ventilation_type': 'ventilation_type',
+		'source_material_identifiers': 'source_material_identifiers',
+		'sample_material_processing': 'sample_material_processing',
+		'isolation_and_growth_condition': 'isolation_and_growth_condition',
+		'propagation': 'propagation',
+		'amount_or_size_of_sample_collected': 'amount_or_size_of_sample_collected',
+		'oxygenation_status_of_sample': 'oxygenation_status_of_sample',
+		'organism_count': 'organism_count',
+		'sample_storage_duration': 'sample_storage_duration',
+		'sample_storage_temperature': 'sample_storage_temperature',
+		'sample_storage_location': 'sample_storage_location',
+		'sample_collection_device': 'sample_collection_device',
+		'sample_collection_method': 'sample_collection_method',
+		'host_disease_status': 'host_disease_status',
+		'host_scientific_name': 'host_scientific_name',
+		'barometric_pressure': 'barometric_pressure',
+		'humidity': 'humidity',
+		'pollutants': 'pollutants',
+		'solar_irradiance': 'solar_irradiance',
+		'wind_direction': 'wind_direction',
+		'wind_speed': 'wind_speed',
+		'temperature': 'temperature',
+		'carbon_dioxide': 'carbon_dioxide',
+		'carbon_monoxide': 'carbon_monoxide',
+		'oxygen': 'oxygen',
+		'air_particulate_matter_concentration': 'air_particulate_matter_concentration',
+		'volatile_organic_compounds': 'volatile_organic_compounds',
+		'methane': 'methane',
+		'salinity': 'salinity',
+		'subspecific_genetic_lineage': 'subspecific_genetic_lineage',
+		'trophic_level': 'trophic_level',
+		'relationship_to_oxygen': 'relationship_to_oxygen',
+		'known_pathogenicity': 'known_pathogenicity',
+		'encoded_traits': 'encoded_traits',
+		'observed_biotic_relationship': 'observed_biotic_relationship',
+		'chemical_administration': 'chemical_administration',
+		'perturbation': 'perturbation',
+	}
+
+	name = 'GSC_MIxS_air'
+
+class GSC_MIxS_air_unit(SelfDescribingModel):
+
+	sample_volume_or_weight_for_DNA_extraction_units = [('g', 'g'), ('mL', 'mL'), ('mg', 'mg'), ('ng', 'ng')]
+	altitude_units = [('m', 'm')]
+	geographic_location_latitude_units = [('DD', 'DD')]
+	geographic_location_longitude_units = [('DD', 'DD')]
+	elevation_units = [('m', 'm')]
+	ventilation_rate_units = [('L/sec', 'L/sec'), ('m3/min', 'm3/min')]
+	amount_or_size_of_sample_collected_units = [('L', 'L'), ('g', 'g'), ('kg', 'kg'), ('m2', 'm2'), ('m3', 'm3')]
+	sample_storage_duration_units = [('days', 'days'), ('hours', 'hours'), ('months', 'months'), ('weeks', 'weeks'), ('years', 'years')]
+	sample_storage_temperature_units = [('°C', '°C')]
+	barometric_pressure_units = [('Torr', 'Torr'), ('in. Hg', 'in. Hg'), ('millibar(hPa)', 'millibar(hPa)'), ('mm Hg', 'mm Hg')]
+	humidity_units = [('%', '%'), ('g/m3', 'g/m3')]
+	pollutants_units = [('M/L', 'M/L'), ('g', 'g'), ('mg/L', 'mg/L')]
+	solar_irradiance_units = [('W/m2', 'W/m2')]
+	wind_speed_units = [('km/h', 'km/h'), ('m/s', 'm/s')]
+	temperature_units = [('ºC', 'ºC')]
+	carbon_dioxide_units = [('µmol/L', 'µmol/L')]
+	carbon_monoxide_units = [('µM/L', 'µM/L')]
+	oxygen_units = [('mg/L', 'mg/L'), ('parts/million', 'parts/million')]
+	air_particulate_matter_concentration_units = [('µg/m3', 'µg/m3')]
+	volatile_organic_compounds_units = [('parts/million', 'parts/million'), ('µg/m3', 'µg/m3')]
+	methane_units = [('µM/L', 'µM/L')]
+	salinity_units = [('psu', 'psu')]
+
+	fields = {
+		'sample_volume_or_weight_for_DNA_extraction': 'sample_volume_or_weight_for_DNA_extraction',
+		'altitude': 'altitude',
+		'geographic_location_latitude': 'geographic_location_latitude',
+		'geographic_location_longitude': 'geographic_location_longitude',
+		'elevation': 'elevation',
+		'ventilation_rate': 'ventilation_rate',
+		'amount_or_size_of_sample_collected': 'amount_or_size_of_sample_collected',
+		'sample_storage_duration': 'sample_storage_duration',
+		'sample_storage_temperature': 'sample_storage_temperature',
+		'barometric_pressure': 'barometric_pressure',
+		'humidity': 'humidity',
+		'pollutants': 'pollutants',
+		'solar_irradiance': 'solar_irradiance',
+		'wind_speed': 'wind_speed',
+		'temperature': 'temperature',
+		'carbon_dioxide': 'carbon_dioxide',
+		'carbon_monoxide': 'carbon_monoxide',
+		'oxygen': 'oxygen',
+		'air_particulate_matter_concentration': 'air_particulate_matter_concentration',
+		'volatile_organic_compounds': 'volatile_organic_compounds',
+		'methane': 'methane',
+		'salinity': 'salinity',
+	}
+
+	name = 'GSC_MIxS_air'
+
+	sampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE, default=1)
+	sample = models.ForeignKey(Sample, on_delete=models.CASCADE, default=1)
+	sample_type = models.IntegerField(default=1)
+	sample_volume_or_weight_for_DNA_extraction = models.CharField(max_length=120, choices=sample_volume_or_weight_for_DNA_extraction_units, blank=False)
+	altitude = models.CharField(max_length=120, choices=altitude_units, blank=False)
+	geographic_location_latitude = models.CharField(max_length=120, choices=geographic_location_latitude_units, blank=False)
+	geographic_location_longitude = models.CharField(max_length=120, choices=geographic_location_longitude_units, blank=False)
+	elevation = models.CharField(max_length=120, choices=elevation_units, blank=False)
+	ventilation_rate = models.CharField(max_length=120, choices=ventilation_rate_units, blank=False)
+	amount_or_size_of_sample_collected = models.CharField(max_length=120, choices=amount_or_size_of_sample_collected_units, blank=False)
+	sample_storage_duration = models.CharField(max_length=120, choices=sample_storage_duration_units, blank=False)
+	sample_storage_temperature = models.CharField(max_length=120, choices=sample_storage_temperature_units, blank=False)
+	barometric_pressure = models.CharField(max_length=120, choices=barometric_pressure_units, blank=False)
+	humidity = models.CharField(max_length=120, choices=humidity_units, blank=False)
+	pollutants = models.CharField(max_length=120, choices=pollutants_units, blank=False)
+	solar_irradiance = models.CharField(max_length=120, choices=solar_irradiance_units, blank=False)
+	wind_speed = models.CharField(max_length=120, choices=wind_speed_units, blank=False)
+	temperature = models.CharField(max_length=120, choices=temperature_units, blank=False)
+	carbon_dioxide = models.CharField(max_length=120, choices=carbon_dioxide_units, blank=False)
+	carbon_monoxide = models.CharField(max_length=120, choices=carbon_monoxide_units, blank=False)
+	oxygen = models.CharField(max_length=120, choices=oxygen_units, blank=False)
+	air_particulate_matter_concentration = models.CharField(max_length=120, choices=air_particulate_matter_concentration_units, blank=False)
+	volatile_organic_compounds = models.CharField(max_length=120, choices=volatile_organic_compounds_units, blank=False)
+	methane = models.CharField(max_length=120, choices=methane_units, blank=False)
+	salinity = models.CharField(max_length=120, choices=salinity_units, blank=False)
 
 class GSC_MIxS_microbial_mat_biolfilm(SelfDescribingModel):
 
@@ -6728,368 +6907,189 @@ class GSC_MIxS_microbial_mat_biolfilm_unit(SelfDescribingModel):
 	sulfide = models.CharField(max_length=120, choices=sulfide_units, blank=False)
 	total_nitrogen = models.CharField(max_length=120, choices=total_nitrogen_units, blank=False)
 
-class GSC_MIxS_human_vaginal(SelfDescribingModel):
+class GSC_MIMAGS(SelfDescribingModel):
 
-	sequence_quality_check_choice = [('manual', 'manual'), ('none', 'none'), ('software', 'software')]
-	geographic_location_country_and_or_sea_choice = [('Afghanistan', 'Afghanistan'), ('Albania', 'Albania'), ('Algeria', 'Algeria'), ('American Samoa', 'American Samoa'), ('Andorra', 'Andorra'), ('Angola', 'Angola'), ('Anguilla', 'Anguilla'), ('Antarctica', 'Antarctica'), ('Antigua and Barbuda', 'Antigua and Barbuda'), ('Arctic Ocean', 'Arctic Ocean'), ('Argentina', 'Argentina'), ('Armenia', 'Armenia'), ('Aruba', 'Aruba'), ('Ashmore and Cartier Islands', 'Ashmore and Cartier Islands'), ('Atlantic Ocean', 'Atlantic Ocean'), ('Australia', 'Australia'), ('Austria', 'Austria'), ('Azerbaijan', 'Azerbaijan'), ('Bahamas', 'Bahamas'), ('Bahrain', 'Bahrain'), ('Baker Island', 'Baker Island'), ('Baltic Sea', 'Baltic Sea'), ('Bangladesh', 'Bangladesh'), ('Barbados', 'Barbados'), ('Bassas da India', 'Bassas da India'), ('Belarus', 'Belarus'), ('Belgium', 'Belgium'), ('Belize', 'Belize'), ('Benin', 'Benin'), ('Bermuda', 'Bermuda'), ('Bhutan', 'Bhutan'), ('Bolivia', 'Bolivia'), ('Borneo', 'Borneo'), ('Bosnia and Herzegovina', 'Bosnia and Herzegovina'), ('Botswana', 'Botswana'), ('Bouvet Island', 'Bouvet Island'), ('Brazil', 'Brazil'), ('British Virgin Islands', 'British Virgin Islands'), ('Brunei', 'Brunei'), ('Bulgaria', 'Bulgaria'), ('Burkina Faso', 'Burkina Faso'), ('Burundi', 'Burundi'), ('Cambodia', 'Cambodia'), ('Cameroon', 'Cameroon'), ('Canada', 'Canada'), ('Cape Verde', 'Cape Verde'), ('Cayman Islands', 'Cayman Islands'), ('Central African Republic', 'Central African Republic'), ('Chad', 'Chad'), ('Chile', 'Chile'), ('China', 'China'), ('Christmas Island', 'Christmas Island'), ('Clipperton Island', 'Clipperton Island'), ('Cocos Islands', 'Cocos Islands'), ('Colombia', 'Colombia'), ('Comoros', 'Comoros'), ('Cook Islands', 'Cook Islands'), ('Coral Sea Islands', 'Coral Sea Islands'), ('Costa Rica', 'Costa Rica'), ("Cote d'Ivoire", "Cote d'Ivoire"), ('Croatia', 'Croatia'), ('Cuba', 'Cuba'), ('Curacao', 'Curacao'), ('Cyprus', 'Cyprus'), ('Czech Republic', 'Czech Republic'), ('Democratic Republic of the Congo', 'Democratic Republic of the Congo'), ('Denmark', 'Denmark'), ('Djibouti', 'Djibouti'), ('Dominica', 'Dominica'), ('Dominican Republic', 'Dominican Republic'), ('East Timor', 'East Timor'), ('Ecuador', 'Ecuador'), ('Egypt', 'Egypt'), ('El Salvador', 'El Salvador'), ('Equatorial Guinea', 'Equatorial Guinea'), ('Eritrea', 'Eritrea'), ('Estonia', 'Estonia'), ('Ethiopia', 'Ethiopia'), ('Europa Island', 'Europa Island'), ('Falkland Islands (Islas Malvinas)', 'Falkland Islands (Islas Malvinas)'), ('Faroe Islands', 'Faroe Islands'), ('Fiji', 'Fiji'), ('Finland', 'Finland'), ('France', 'France'), ('French Guiana', 'French Guiana'), ('French Polynesia', 'French Polynesia'), ('French Southern and Antarctic Lands', 'French Southern and Antarctic Lands'), ('Gabon', 'Gabon'), ('Gambia', 'Gambia'), ('Gaza Strip', 'Gaza Strip'), ('Georgia', 'Georgia'), ('Germany', 'Germany'), ('Ghana', 'Ghana'), ('Gibraltar', 'Gibraltar'), ('Glorioso Islands', 'Glorioso Islands'), ('Greece', 'Greece'), ('Greenland', 'Greenland'), ('Grenada', 'Grenada'), ('Guadeloupe', 'Guadeloupe'), ('Guam', 'Guam'), ('Guatemala', 'Guatemala'), ('Guernsey', 'Guernsey'), ('Guinea', 'Guinea'), ('Guinea-Bissau', 'Guinea-Bissau'), ('Guyana', 'Guyana'), ('Haiti', 'Haiti'), ('Heard Island and McDonald Islands', 'Heard Island and McDonald Islands'), ('Honduras', 'Honduras'), ('Hong Kong', 'Hong Kong'), ('Howland Island', 'Howland Island'), ('Hungary', 'Hungary'), ('Iceland', 'Iceland'), ('India', 'India'), ('Indian Ocean', 'Indian Ocean'), ('Indonesia', 'Indonesia'), ('Iran', 'Iran'), ('Iraq', 'Iraq'), ('Ireland', 'Ireland'), ('Isle of Man', 'Isle of Man'), ('Israel', 'Israel'), ('Italy', 'Italy'), ('Jamaica', 'Jamaica'), ('Jan Mayen', 'Jan Mayen'), ('Japan', 'Japan'), ('Jarvis Island', 'Jarvis Island'), ('Jersey', 'Jersey'), ('Johnston Atoll', 'Johnston Atoll'), ('Jordan', 'Jordan'), ('Juan de Nova Island', 'Juan de Nova Island'), ('Kazakhstan', 'Kazakhstan'), ('Kenya', 'Kenya'), ('Kerguelen Archipelago', 'Kerguelen Archipelago'), ('Kingman Reef', 'Kingman Reef'), ('Kiribati', 'Kiribati'), ('Kosovo', 'Kosovo'), ('Kuwait', 'Kuwait'), ('Kyrgyzstan', 'Kyrgyzstan'), ('Laos', 'Laos'), ('Latvia', 'Latvia'), ('Lebanon', 'Lebanon'), ('Lesotho', 'Lesotho'), ('Liberia', 'Liberia'), ('Libya', 'Libya'), ('Liechtenstein', 'Liechtenstein'), ('Lithuania', 'Lithuania'), ('Luxembourg', 'Luxembourg'), ('Macau', 'Macau'), ('Macedonia', 'Macedonia'), ('Madagascar', 'Madagascar'), ('Malawi', 'Malawi'), ('Malaysia', 'Malaysia'), ('Maldives', 'Maldives'), ('Mali', 'Mali'), ('Malta', 'Malta'), ('Marshall Islands', 'Marshall Islands'), ('Martinique', 'Martinique'), ('Mauritania', 'Mauritania'), ('Mauritius', 'Mauritius'), ('Mayotte', 'Mayotte'), ('Mediterranean Sea', 'Mediterranean Sea'), ('Mexico', 'Mexico'), ('Micronesia', 'Micronesia'), ('Midway Islands', 'Midway Islands'), ('Moldova', 'Moldova'), ('Monaco', 'Monaco'), ('Mongolia', 'Mongolia'), ('Montenegro', 'Montenegro'), ('Montserrat', 'Montserrat'), ('Morocco', 'Morocco'), ('Mozambique', 'Mozambique'), ('Myanmar', 'Myanmar'), ('Namibia', 'Namibia'), ('Nauru', 'Nauru'), ('Navassa Island', 'Navassa Island'), ('Nepal', 'Nepal'), ('Netherlands', 'Netherlands'), ('New Caledonia', 'New Caledonia'), ('New Zealand', 'New Zealand'), ('Nicaragua', 'Nicaragua'), ('Niger', 'Niger'), ('Nigeria', 'Nigeria'), ('Niue', 'Niue'), ('Norfolk Island', 'Norfolk Island'), ('North Korea', 'North Korea'), ('North Sea', 'North Sea'), ('Northern Mariana Islands', 'Northern Mariana Islands'), ('Norway', 'Norway'), ('Oman', 'Oman'), ('Pacific Ocean', 'Pacific Ocean'), ('Pakistan', 'Pakistan'), ('Palau', 'Palau'), ('Palmyra Atoll', 'Palmyra Atoll'), ('Panama', 'Panama'), ('Papua New Guinea', 'Papua New Guinea'), ('Paracel Islands', 'Paracel Islands'), ('Paraguay', 'Paraguay'), ('Peru', 'Peru'), ('Philippines', 'Philippines'), ('Pitcairn Islands', 'Pitcairn Islands'), ('Poland', 'Poland'), ('Portugal', 'Portugal'), ('Puerto Rico', 'Puerto Rico'), ('Qatar', 'Qatar'), ('Republic of the Congo', 'Republic of the Congo'), ('Reunion', 'Reunion'), ('Romania', 'Romania'), ('Ross Sea', 'Ross Sea'), ('Russia', 'Russia'), ('Rwanda', 'Rwanda'), ('Saint Helena', 'Saint Helena'), ('Saint Kitts and Nevis', 'Saint Kitts and Nevis'), ('Saint Lucia', 'Saint Lucia'), ('Saint Pierre and Miquelon', 'Saint Pierre and Miquelon'), ('Saint Vincent and the Grenadines', 'Saint Vincent and the Grenadines'), ('Samoa', 'Samoa'), ('San Marino', 'San Marino'), ('Sao Tome and Principe', 'Sao Tome and Principe'), ('Saudi Arabia', 'Saudi Arabia'), ('Senegal', 'Senegal'), ('Serbia', 'Serbia'), ('Seychelles', 'Seychelles'), ('Sierra Leone', 'Sierra Leone'), ('Singapore', 'Singapore'), ('Sint Maarten', 'Sint Maarten'), ('Slovakia', 'Slovakia'), ('Slovenia', 'Slovenia'), ('Solomon Islands', 'Solomon Islands'), ('Somalia', 'Somalia'), ('South Africa', 'South Africa'), ('South Georgia and the South Sandwich Islands', 'South Georgia and the South Sandwich Islands'), ('South Korea', 'South Korea'), ('Southern Ocean', 'Southern Ocean'), ('Spain', 'Spain'), ('Spratly Islands', 'Spratly Islands'), ('Sri Lanka', 'Sri Lanka'), ('Sudan', 'Sudan'), ('Suriname', 'Suriname'), ('Svalbard', 'Svalbard'), ('Swaziland', 'Swaziland'), ('Sweden', 'Sweden'), ('Switzerland', 'Switzerland'), ('Syria', 'Syria'), ('Taiwan', 'Taiwan'), ('Tajikistan', 'Tajikistan'), ('Tanzania', 'Tanzania'), ('Tasman Sea', 'Tasman Sea'), ('Thailand', 'Thailand'), ('Togo', 'Togo'), ('Tokelau', 'Tokelau'), ('Tonga', 'Tonga'), ('Trinidad and Tobago', 'Trinidad and Tobago'), ('Tromelin Island', 'Tromelin Island'), ('Tunisia', 'Tunisia'), ('Turkey', 'Turkey'), ('Turkmenistan', 'Turkmenistan'), ('Turks and Caicos Islands', 'Turks and Caicos Islands'), ('Tuvalu', 'Tuvalu'), ('USA', 'USA'), ('Uganda', 'Uganda'), ('Ukraine', 'Ukraine'), ('United Arab Emirates', 'United Arab Emirates'), ('United Kingdom', 'United Kingdom'), ('Uruguay', 'Uruguay'), ('Uzbekistan', 'Uzbekistan'), ('Vanuatu', 'Vanuatu'), ('Venezuela', 'Venezuela'), ('Viet Nam', 'Viet Nam'), ('Virgin Islands', 'Virgin Islands'), ('Wake Island', 'Wake Island'), ('Wallis and Futuna', 'Wallis and Futuna'), ('West Bank', 'West Bank'), ('Western Sahara', 'Western Sahara'), ('Yemen', 'Yemen'), ('Zambia', 'Zambia'), ('Zimbabwe', 'Zimbabwe'), ('missing: control sample', 'missing: control sample'), ('missing: data agreement established pre-2023', 'missing: data agreement established pre-2023'), ('missing: endangered species', 'missing: endangered species'), ('missing: human-identifiable', 'missing: human-identifiable'), ('missing: lab stock', 'missing: lab stock'), ('missing: sample group', 'missing: sample group'), ('missing: synthetic construct', 'missing: synthetic construct'), ('missing: third party data', 'missing: third party data'), ('not applicable', 'not applicable'), ('not collected', 'not collected'), ('not provided', 'not provided'), ('restricted access', 'restricted access')]
-	medical_history_performed_choice = [('No', 'No'), ('Yes', 'Yes')]
-	oxygenation_status_of_sample_choice = [('aerobic', 'aerobic'), ('anaerobic', 'anaerobic')]
-	IHMC_medication_code_choice = [('01=1=Analgesics/NSAIDS', '01=1=Analgesics/NSAIDS'), ('02=2=Anesthetics', '02=2=Anesthetics'), ('03=3=Antacids/H2 antagonists', '03=3=Antacids/H2 antagonists'), ('04=4=Anti-acne', '04=4=Anti-acne'), ('05=5=Anti-asthma/bronchodilators', '05=5=Anti-asthma/bronchodilators'), ('06=6=Anti-cholesterol/Anti-hyperlipidemic', '06=6=Anti-cholesterol/Anti-hyperlipidemic'), ('07=7=Anti-coagulants', '07=7=Anti-coagulants'), ('08=8=Antibiotics/(anti)-infectives, parasitics, microbials', '08=8=Antibiotics/(anti)-infectives, parasitics, microbials'), ('09=9=Antidepressants/mood-altering drugs', '09=9=Antidepressants/mood-altering drugs'), ('10=10=Antihistamines/ Decongestants', '10=10=Antihistamines/ Decongestants'), ('11=11=Antihypertensives', '11=11=Antihypertensives'), ('12=12=Cardiovascular, other than hyperlipidemic/HTN', '12=12=Cardiovascular, other than hyperlipidemic/HTN'), ('13=13=Contraceptives (oral, implant, injectable)', '13=13=Contraceptives (oral, implant, injectable)'), ('14=14=Emergency/support medications', '14=14=Emergency/support medications'), ('15=15=Endocrine/Metabolic agents', '15=15=Endocrine/Metabolic agents'), ('16=16=GI meds (anti-diarrheal, emetic, spasmodics)', '16=16=GI meds (anti-diarrheal, emetic, spasmodics)'), ('17=17=Herbal/homeopathic products', '17=17=Herbal/homeopathic products'), ('18=18=Hormones/steroids', '18=18=Hormones/steroids'), ('19=19=OTC cold & flu', '19=19=OTC cold & flu'), ('20=20=Vaccine prophylaxis', '20=20=Vaccine prophylaxis'), ('21=21=Vitamins, minerals, food supplements', '21=21=Vitamins, minerals, food supplements'), ('99=99=Other', '99=99=Other')]
-	host_occupation_choice = [('01=01 Accounting/Finance', '01=01 Accounting/Finance'), ('02=02 Advertising/Public Relations', '02=02 Advertising/Public Relations'), ('03=03 Arts/Entertainment/Publishing', '03=03 Arts/Entertainment/Publishing'), ('04=04 Automotive', '04=04 Automotive'), ('05=05 Banking/ Mortgage', '05=05 Banking/ Mortgage'), ('06=06 Biotech', '06=06 Biotech'), ('07=07 Broadcast/Journalism', '07=07 Broadcast/Journalism'), ('08=08 Business Development', '08=08 Business Development'), ('09=09 Clerical/Administrative', '09=09 Clerical/Administrative'), ('10=10 Construction/Trades', '10=10 Construction/Trades'), ('11=11 Consultant', '11=11 Consultant'), ('12=12 Customer Services', '12=12 Customer Services'), ('13=13 Design', '13=13 Design'), ('14=14 Education', '14=14 Education'), ('15=15 Engineering', '15=15 Engineering'), ('16=16 Entry Level', '16=16 Entry Level'), ('17=17 Executive', '17=17 Executive'), ('18=18 Food Service', '18=18 Food Service'), ('19=19 Government', '19=19 Government'), ('20=20 Grocery', '20=20 Grocery'), ('21=21 Healthcare', '21=21 Healthcare'), ('22=22 Hospitality', '22=22 Hospitality'), ('23=23 Human Resources', '23=23 Human Resources'), ('24=24 Information Technology', '24=24 Information Technology'), ('25=25 Insurance', '25=25 Insurance'), ('26=26 Law/Legal', '26=26 Law/Legal'), ('27=27 Management', '27=27 Management'), ('28=28 Manufacturing', '28=28 Manufacturing'), ('29=29 Marketing', '29=29 Marketing'), ('30=30 Pharmaceutical', '30=30 Pharmaceutical'), ('31=31 Professional Services', '31=31 Professional Services'), ('32=32 Purchasing', '32=32 Purchasing'), ('33=33 Quality Assurance (QA)', '33=33 Quality Assurance (QA)'), ('34=34 Research', '34=34 Research'), ('35=35 Restaurant', '35=35 Restaurant'), ('36=36 Retail', '36=36 Retail'), ('37=37 Sales', '37=37 Sales'), ('38=38 Science', '38=38 Science'), ('39=39 Security/Law Enforcement', '39=39 Security/Law Enforcement'), ('40=40 Shipping/Distribution', '40=40 Shipping/Distribution'), ('41=41 Strategy', '41=41 Strategy'), ('42=42 Student', '42=42 Student'), ('43=43 Telecommunications', '43=43 Telecommunications'), ('44=44 Training', '44=44 Training'), ('45=45 Transportation', '45=45 Transportation'), ('46=46 Warehouse', '46=46 Warehouse'), ('47=47 Other', '47=47 Other'), ('99=99 Unknown/Refused', '99=99 Unknown/Refused')]
-	host_sex_choice = [('female', 'female'), ('hermaphrodite', 'hermaphrodite'), ('male', 'male'), ('missing: control sample', 'missing: control sample'), ('missing: data agreement established pre-2023', 'missing: data agreement established pre-2023'), ('missing: endangered species', 'missing: endangered species'), ('missing: human-identifiable', 'missing: human-identifiable'), ('missing: lab stock', 'missing: lab stock'), ('missing: sample group', 'missing: sample group'), ('missing: synthetic construct', 'missing: synthetic construct'), ('missing: third party data', 'missing: third party data'), ('neuter', 'neuter'), ('not applicable', 'not applicable'), ('not collected', 'not collected'), ('not provided', 'not provided'), ('other', 'other'), ('restricted access', 'restricted access')]
-	hysterectomy_choice = [('No', 'No'), ('Yes', 'Yes')]
-	trophic_level_choice = [('autotroph', 'autotroph'), ('carboxydotroph', 'carboxydotroph'), ('chemoautotroph', 'chemoautotroph'), ('chemoheterotroph', 'chemoheterotroph'), ('chemolithoautotroph', 'chemolithoautotroph'), ('chemolithotroph', 'chemolithotroph'), ('chemoorganoheterotroph', 'chemoorganoheterotroph'), ('chemoorganotroph', 'chemoorganotroph'), ('chemosynthetic', 'chemosynthetic'), ('chemotroph', 'chemotroph'), ('copiotroph', 'copiotroph'), ('diazotroph', 'diazotroph'), ('facultative autotroph', 'facultative autotroph'), ('heterotroph', 'heterotroph'), ('lithoautotroph', 'lithoautotroph'), ('lithoheterotroph', 'lithoheterotroph'), ('lithotroph', 'lithotroph'), ('methanotroph', 'methanotroph'), ('methylotroph', 'methylotroph'), ('mixotroph', 'mixotroph'), ('obligate chemoautolithotroph', 'obligate chemoautolithotroph'), ('oligotroph', 'oligotroph'), ('organoheterotroph', 'organoheterotroph'), ('organotroph', 'organotroph'), ('photoautotroph', 'photoautotroph'), ('photoheterotroph', 'photoheterotroph'), ('photolithoautotroph', 'photolithoautotroph'), ('photolithotroph', 'photolithotroph'), ('photosynthetic', 'photosynthetic'), ('phototroph', 'phototroph')]
 	relationship_to_oxygen_choice = [('aerobe', 'aerobe'), ('anaerobe', 'anaerobe'), ('facultative', 'facultative'), ('microaerophilic', 'microaerophilic'), ('microanaerobe', 'microanaerobe'), ('obligate aerobe', 'obligate aerobe'), ('obligate anaerobe', 'obligate anaerobe')]
-	observed_biotic_relationship_choice = [('commensal', 'commensal'), ('free living', 'free living'), ('mutualism', 'mutualism'), ('parasite', 'parasite'), ('symbiont', 'symbiont')]
+	sixteen_s_recovered_choice = [('No', 'No'), ('Yes', 'Yes')]
+	contamination_screening_input_choice = [('contigs', 'contigs'), ('reads', 'reads')]
+	reassembly_post_binning_choice = [('No', 'No'), ('Yes', 'Yes')]
+	assembly_quality_choice = [('Many fragments with little to no review of assembly other than reporting of standard assembly statistics', 'Many fragments with little to no review of assembly other than reporting of standard assembly statistics'), ('Multiple fragments where gaps span repetitive regions. Presence of the 23S, 16S, and 5S rRNA genes and at least 18 tRNAs', 'Multiple fragments where gaps span repetitive regions. Presence of the 23S, 16S, and 5S rRNA genes and at least 18 tRNAs'), ('Single contiguous sequence without gaps or ambiguities with a consensus error rate equivalent to Q50 or better', 'Single contiguous sequence without gaps or ambiguities with a consensus error rate equivalent to Q50 or better')]
+	geographic_location_country_and_or_sea_choice = [('Afghanistan', 'Afghanistan'), ('Albania', 'Albania'), ('Algeria', 'Algeria'), ('American Samoa', 'American Samoa'), ('Andorra', 'Andorra'), ('Angola', 'Angola'), ('Anguilla', 'Anguilla'), ('Antarctica', 'Antarctica'), ('Antigua and Barbuda', 'Antigua and Barbuda'), ('Arctic Ocean', 'Arctic Ocean'), ('Argentina', 'Argentina'), ('Armenia', 'Armenia'), ('Aruba', 'Aruba'), ('Ashmore and Cartier Islands', 'Ashmore and Cartier Islands'), ('Atlantic Ocean', 'Atlantic Ocean'), ('Australia', 'Australia'), ('Austria', 'Austria'), ('Azerbaijan', 'Azerbaijan'), ('Bahamas', 'Bahamas'), ('Bahrain', 'Bahrain'), ('Baker Island', 'Baker Island'), ('Baltic Sea', 'Baltic Sea'), ('Bangladesh', 'Bangladesh'), ('Barbados', 'Barbados'), ('Bassas da India', 'Bassas da India'), ('Belarus', 'Belarus'), ('Belgium', 'Belgium'), ('Belize', 'Belize'), ('Benin', 'Benin'), ('Bermuda', 'Bermuda'), ('Bhutan', 'Bhutan'), ('Bolivia', 'Bolivia'), ('Borneo', 'Borneo'), ('Bosnia and Herzegovina', 'Bosnia and Herzegovina'), ('Botswana', 'Botswana'), ('Bouvet Island', 'Bouvet Island'), ('Brazil', 'Brazil'), ('British Virgin Islands', 'British Virgin Islands'), ('Brunei', 'Brunei'), ('Bulgaria', 'Bulgaria'), ('Burkina Faso', 'Burkina Faso'), ('Burundi', 'Burundi'), ('Cambodia', 'Cambodia'), ('Cameroon', 'Cameroon'), ('Canada', 'Canada'), ('Cape Verde', 'Cape Verde'), ('Cayman Islands', 'Cayman Islands'), ('Central African Republic', 'Central African Republic'), ('Chad', 'Chad'), ('Chile', 'Chile'), ('China', 'China'), ('Christmas Island', 'Christmas Island'), ('Clipperton Island', 'Clipperton Island'), ('Cocos Islands', 'Cocos Islands'), ('Colombia', 'Colombia'), ('Comoros', 'Comoros'), ('Cook Islands', 'Cook Islands'), ('Coral Sea Islands', 'Coral Sea Islands'), ('Costa Rica', 'Costa Rica'), ("Cote d'Ivoire", "Cote d'Ivoire"), ('Croatia', 'Croatia'), ('Cuba', 'Cuba'), ('Curacao', 'Curacao'), ('Cyprus', 'Cyprus'), ('Czechia', 'Czechia'), ('Democratic Republic of the Congo', 'Democratic Republic of the Congo'), ('Denmark', 'Denmark'), ('Djibouti', 'Djibouti'), ('Dominica', 'Dominica'), ('Dominican Republic', 'Dominican Republic'), ('East Timor', 'East Timor'), ('Ecuador', 'Ecuador'), ('Egypt', 'Egypt'), ('El Salvador', 'El Salvador'), ('Equatorial Guinea', 'Equatorial Guinea'), ('Eritrea', 'Eritrea'), ('Estonia', 'Estonia'), ('Ethiopia', 'Ethiopia'), ('Europa Island', 'Europa Island'), ('Falkland Islands (Islas Malvinas)', 'Falkland Islands (Islas Malvinas)'), ('Faroe Islands', 'Faroe Islands'), ('Fiji', 'Fiji'), ('Finland', 'Finland'), ('France', 'France'), ('French Guiana', 'French Guiana'), ('French Polynesia', 'French Polynesia'), ('French Southern and Antarctic Lands', 'French Southern and Antarctic Lands'), ('Gabon', 'Gabon'), ('Gambia', 'Gambia'), ('Gaza Strip', 'Gaza Strip'), ('Georgia', 'Georgia'), ('Germany', 'Germany'), ('Ghana', 'Ghana'), ('Gibraltar', 'Gibraltar'), ('Glorioso Islands', 'Glorioso Islands'), ('Greece', 'Greece'), ('Greenland', 'Greenland'), ('Grenada', 'Grenada'), ('Guadeloupe', 'Guadeloupe'), ('Guam', 'Guam'), ('Guatemala', 'Guatemala'), ('Guernsey', 'Guernsey'), ('Guinea', 'Guinea'), ('Guinea-Bissau', 'Guinea-Bissau'), ('Guyana', 'Guyana'), ('Haiti', 'Haiti'), ('Heard Island and McDonald Islands', 'Heard Island and McDonald Islands'), ('Honduras', 'Honduras'), ('Hong Kong', 'Hong Kong'), ('Howland Island', 'Howland Island'), ('Hungary', 'Hungary'), ('Iceland', 'Iceland'), ('India', 'India'), ('Indian Ocean', 'Indian Ocean'), ('Indonesia', 'Indonesia'), ('Iran', 'Iran'), ('Iraq', 'Iraq'), ('Ireland', 'Ireland'), ('Isle of Man', 'Isle of Man'), ('Israel', 'Israel'), ('Italy', 'Italy'), ('Jamaica', 'Jamaica'), ('Jan Mayen', 'Jan Mayen'), ('Japan', 'Japan'), ('Jarvis Island', 'Jarvis Island'), ('Jersey', 'Jersey'), ('Johnston Atoll', 'Johnston Atoll'), ('Jordan', 'Jordan'), ('Juan de Nova Island', 'Juan de Nova Island'), ('Kazakhstan', 'Kazakhstan'), ('Kenya', 'Kenya'), ('Kerguelen Archipelago', 'Kerguelen Archipelago'), ('Kingman Reef', 'Kingman Reef'), ('Kiribati', 'Kiribati'), ('Kosovo', 'Kosovo'), ('Kuwait', 'Kuwait'), ('Kyrgyzstan', 'Kyrgyzstan'), ('Laos', 'Laos'), ('Latvia', 'Latvia'), ('Lebanon', 'Lebanon'), ('Lesotho', 'Lesotho'), ('Liberia', 'Liberia'), ('Libya', 'Libya'), ('Liechtenstein', 'Liechtenstein'), ('Lithuania', 'Lithuania'), ('Luxembourg', 'Luxembourg'), ('Macau', 'Macau'), ('Macedonia', 'Macedonia'), ('Madagascar', 'Madagascar'), ('Malawi', 'Malawi'), ('Malaysia', 'Malaysia'), ('Maldives', 'Maldives'), ('Mali', 'Mali'), ('Malta', 'Malta'), ('Marshall Islands', 'Marshall Islands'), ('Martinique', 'Martinique'), ('Mauritania', 'Mauritania'), ('Mauritius', 'Mauritius'), ('Mayotte', 'Mayotte'), ('Mediterranean Sea', 'Mediterranean Sea'), ('Mexico', 'Mexico'), ('Micronesia', 'Micronesia'), ('Midway Islands', 'Midway Islands'), ('Moldova', 'Moldova'), ('Monaco', 'Monaco'), ('Mongolia', 'Mongolia'), ('Montenegro', 'Montenegro'), ('Montserrat', 'Montserrat'), ('Morocco', 'Morocco'), ('Mozambique', 'Mozambique'), ('Myanmar', 'Myanmar'), ('Namibia', 'Namibia'), ('Nauru', 'Nauru'), ('Navassa Island', 'Navassa Island'), ('Nepal', 'Nepal'), ('Netherlands', 'Netherlands'), ('New Caledonia', 'New Caledonia'), ('New Zealand', 'New Zealand'), ('Nicaragua', 'Nicaragua'), ('Niger', 'Niger'), ('Nigeria', 'Nigeria'), ('Niue', 'Niue'), ('Norfolk Island', 'Norfolk Island'), ('North Korea', 'North Korea'), ('North Sea', 'North Sea'), ('Northern Mariana Islands', 'Northern Mariana Islands'), ('Norway', 'Norway'), ('Oman', 'Oman'), ('Pacific Ocean', 'Pacific Ocean'), ('Pakistan', 'Pakistan'), ('Palau', 'Palau'), ('Palmyra Atoll', 'Palmyra Atoll'), ('Panama', 'Panama'), ('Papua New Guinea', 'Papua New Guinea'), ('Paracel Islands', 'Paracel Islands'), ('Paraguay', 'Paraguay'), ('Peru', 'Peru'), ('Philippines', 'Philippines'), ('Pitcairn Islands', 'Pitcairn Islands'), ('Poland', 'Poland'), ('Portugal', 'Portugal'), ('Puerto Rico', 'Puerto Rico'), ('Qatar', 'Qatar'), ('Republic of the Congo', 'Republic of the Congo'), ('Reunion', 'Reunion'), ('Romania', 'Romania'), ('Ross Sea', 'Ross Sea'), ('Russia', 'Russia'), ('Rwanda', 'Rwanda'), ('Saint Helena', 'Saint Helena'), ('Saint Kitts and Nevis', 'Saint Kitts and Nevis'), ('Saint Lucia', 'Saint Lucia'), ('Saint Pierre and Miquelon', 'Saint Pierre and Miquelon'), ('Saint Vincent and the Grenadines', 'Saint Vincent and the Grenadines'), ('Samoa', 'Samoa'), ('San Marino', 'San Marino'), ('Sao Tome and Principe', 'Sao Tome and Principe'), ('Saudi Arabia', 'Saudi Arabia'), ('Senegal', 'Senegal'), ('Serbia', 'Serbia'), ('Seychelles', 'Seychelles'), ('Sierra Leone', 'Sierra Leone'), ('Singapore', 'Singapore'), ('Sint Maarten', 'Sint Maarten'), ('Slovakia', 'Slovakia'), ('Slovenia', 'Slovenia'), ('Solomon Islands', 'Solomon Islands'), ('Somalia', 'Somalia'), ('South Africa', 'South Africa'), ('South Georgia and the South Sandwich Islands', 'South Georgia and the South Sandwich Islands'), ('South Korea', 'South Korea'), ('Southern Ocean', 'Southern Ocean'), ('Spain', 'Spain'), ('Spratly Islands', 'Spratly Islands'), ('Sri Lanka', 'Sri Lanka'), ('Sudan', 'Sudan'), ('Suriname', 'Suriname'), ('Svalbard', 'Svalbard'), ('Swaziland', 'Swaziland'), ('Sweden', 'Sweden'), ('Switzerland', 'Switzerland'), ('Syria', 'Syria'), ('Taiwan', 'Taiwan'), ('Tajikistan', 'Tajikistan'), ('Tanzania', 'Tanzania'), ('Tasman Sea', 'Tasman Sea'), ('Thailand', 'Thailand'), ('Togo', 'Togo'), ('Tokelau', 'Tokelau'), ('Tonga', 'Tonga'), ('Trinidad and Tobago', 'Trinidad and Tobago'), ('Tromelin Island', 'Tromelin Island'), ('Tunisia', 'Tunisia'), ('Turkey', 'Turkey'), ('Turkmenistan', 'Turkmenistan'), ('Turks and Caicos Islands', 'Turks and Caicos Islands'), ('Tuvalu', 'Tuvalu'), ('USA', 'USA'), ('Uganda', 'Uganda'), ('Ukraine', 'Ukraine'), ('United Arab Emirates', 'United Arab Emirates'), ('United Kingdom', 'United Kingdom'), ('Uruguay', 'Uruguay'), ('Uzbekistan', 'Uzbekistan'), ('Vanuatu', 'Vanuatu'), ('Venezuela', 'Venezuela'), ('Viet Nam', 'Viet Nam'), ('Virgin Islands', 'Virgin Islands'), ('Wake Island', 'Wake Island'), ('Wallis and Futuna', 'Wallis and Futuna'), ('West Bank', 'West Bank'), ('Western Sahara', 'Western Sahara'), ('Yemen', 'Yemen'), ('Zambia', 'Zambia'), ('Zimbabwe', 'Zimbabwe'), ('missing', 'missing'), ('missing: control sample', 'missing: control sample'), ('missing: data agreement established pre-2023', 'missing: data agreement established pre-2023'), ('missing: endangered species', 'missing: endangered species'), ('missing: human-identifiable', 'missing: human-identifiable'), ('missing: lab stock', 'missing: lab stock'), ('missing: sample group', 'missing: sample group'), ('missing: synthetic construct', 'missing: synthetic construct'), ('missing: third party data', 'missing: third party data'), ('not applicable', 'not applicable'), ('not collected', 'not collected'), ('not provided', 'not provided'), ('restricted access', 'restricted access')]
 
-	number_of_replicons_validator = "[+-]?[0-9]+"
-	extrachromosomal_elements_validator = "[+-]?[0-9]+"
-	estimated_size_validator = "[+-]?[0-9]+"
-	sample_volume_or_weight_for_DNA_extraction_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
+	sample_derived_from_validator = "(^[ESD]R[SR]\d{6,}(,[ESD]R[SR]\d{6,})*$)|(^SAM[END][AG]?\d+(,SAM[END][AG]?\d+)*$)|(^EGA[NR]\d{11}(,EGA[NR]\d{11})*$)|(^[ESD]R[SR]\d{6,}-[ESD]R[SR]\d{6,}$)|(^SAM[END][AG]?\d+-SAM[END][AG]?\d+$)|(^EGA[NR]\d{11}-EGA[NR]\d{11}$)"
+	number_of_standard_tRNAs_extracted_validator = "[+-]?[0-9]+"
+	completeness_score_validator = "^(\d|[1-9]\d|\d\.\d{1,2}|[1-9]\d\.\d{1,2}|100)$"
+	contamination_score_validator = "^(\d|[1-9]\d|\d\.\d{1,2}|[1-9]\d\.\d{1,2}|100)$"
+	collection_date_validator = "(^[12][0-9]{3}(-(0[1-9]|1[0-2])(-(0[1-9]|[12][0-9]|3[01])(T[0-9]{2}:[0-9]{2}(:[0-9]{2})?Z?([+-][0-9]{1,2})?)?)?)?(/[0-9]{4}(-[0-9]{2}(-[0-9]{2}(T[0-9]{2}:[0-9]{2}(:[0-9]{2})?Z?([+-][0-9]{1,2})?)?)?)?)?$)|(^not applicable$)|(^not collected$)|(^not provided$)|(^restricted access$)|(^missing: control sample$)|(^missing: sample group$)|(^missing: synthetic construct$)|(^missing: lab stock$)|(^missing: third party data$)|(^missing: data agreement established pre-2023$)|(^missing: endangered species$)|(^missing: human-identifiable$)|(^missing$)"
+	altitude_validator = "((0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?)|((^not collected$)|(^not provided$)|(^restricted access$)|(^missing: control sample$)|(^missing: sample group$)|(^missing: synthetic construct$)|(^missing: lab stock$)|(^missing: third party data$)|(^missing: data agreement established pre-2023$)|(^missing: endangered species$)|(^missing: human-identifiable$)|(^missing$))"
+	geographic_location_latitude_validator = "(^[+-]?[0-9]+.?[0-9]{0,8}$)|(^not applicable$)|(^not collected$)|(^not provided$)|(^restricted access$)|(^missing: control sample$)|(^missing: sample group$)|(^missing: synthetic construct$)|(^missing: lab stock$)|(^missing: third party data$)|(^missing: data agreement established pre-2023$)|(^missing: endangered species$)|(^missing: human-identifiable$)|(^missing$)"
+	geographic_location_longitude_validator = "(^[+-]?[0-9]+.?[0-9]{0,8}$)|(^not applicable$)|(^not collected$)|(^not provided$)|(^restricted access$)|(^missing: control sample$)|(^missing: sample group$)|(^missing: synthetic construct$)|(^missing: lab stock$)|(^missing: third party data$)|(^missing: data agreement established pre-2023$)|(^missing: endangered species$)|(^missing: human-identifiable$)|(^missing$)"
+	elevation_validator = "([+-]?(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?)|((^not collected$)|(^not provided$)|(^restricted access$)|(^missing: control sample$)|(^missing: sample group$)|(^missing: synthetic construct$)|(^missing: lab stock$)|(^missing: third party data$)|(^missing: data agreement established pre-2023$)|(^missing: endangered species$)|(^missing: human-identifiable$)|(^missing$))"
+	amount_or_size_of_sample_collected_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
 	library_size_validator = "[+-]?[0-9]+"
 	library_reads_sequenced_validator = "[+-]?[0-9]+"
-	collection_date_validator = "(^[12][0-9]{3}(-(0[1-9]|1[0-2])(-(0[1-9]|[12][0-9]|3[01])(T[0-9]{2}:[0-9]{2}(:[0-9]{2})?Z?([+-][0-9]{1,2})?)?)?)?(/[0-9]{4}(-[0-9]{2}(-[0-9]{2}(T[0-9]{2}:[0-9]{2}(:[0-9]{2})?Z?([+-][0-9]{1,2})?)?)?)?)?$)|(^not collected$)|(^not provided$)|(^restricted access$)|(^missing: control sample$)|(^missing: sample group$)|(^missing: synthetic construct$)|(^missing: lab stock$)|(^missing: third party data$)|(^missing: data agreement established pre-2023$)|(^missing: endangered species$)|(^missing: human-identifiable$)"
-	geographic_location_latitude_validator = "(^[+-]?[0-9]+.?[0-9]{0,8}$)|(^not collected$)|(^not provided$)|(^restricted access$)|(^missing: control sample$)|(^missing: sample group$)|(^missing: synthetic construct$)|(^missing: lab stock$)|(^missing: third party data$)|(^missing: data agreement established pre-2023$)|(^missing: endangered species$)|(^missing: human-identifiable$)"
-	geographic_location_longitude_validator = "(^[+-]?[0-9]+.?[0-9]{0,8}$)|(^not collected$)|(^not provided$)|(^restricted access$)|(^missing: control sample$)|(^missing: sample group$)|(^missing: synthetic construct$)|(^missing: lab stock$)|(^missing: third party data$)|(^missing: data agreement established pre-2023$)|(^missing: endangered species$)|(^missing: human-identifiable$)"
-	amount_or_size_of_sample_collected_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	sample_storage_duration_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	sample_storage_temperature_validator = "[+-]?(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	host_age_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	host_height_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	host_body_mass_index_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	host_total_mass_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	host_body_temperature_validator = "[+-]?(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	temperature_validator = "[+-]?(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	salinity_validator = "(0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?"
-	host_pulse_validator = "[+-]?[0-9]+"
+	depth_validator = "((0|((0\.)|([1-9][0-9]*\.?))[0-9]*)([Ee][+-]?[0-9]+)?)|((^not collected$)|(^not provided$)|(^restricted access$)|(^missing: control sample$)|(^missing: sample group$)|(^missing: synthetic construct$)|(^missing: lab stock$)|(^missing: third party data$)|(^missing: data agreement established pre-2023$)|(^missing: endangered species$)|(^missing: human-identifiable$)|(^missing$))"
 
 	sampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE, default=1)
 	sample = models.ForeignKey(Sample, on_delete=models.CASCADE, default=1)
 	sample_type = models.IntegerField(default=1)
+	relationship_to_oxygen= models.CharField(max_length=120, blank=True,help_text="Is this or", choices=relationship_to_oxygen_choice)
+	sample_collection_device= models.CharField(max_length=120, blank=True,help_text="The device")
+	sample_collection_method= models.CharField(max_length=120, blank=True,help_text="The method")
+	metagenomic_source= models.CharField(max_length=120, blank=False,help_text="The metage")
+	sample_derived_from= models.CharField(max_length=120, blank=False,help_text="Reference ", validators=[RegexValidator(sample_derived_from_validator)])
 	project_name= models.CharField(max_length=120, blank=False,help_text="Name of th")
-	experimental_factor= models.CharField(max_length=120, blank=True,help_text="Experiment")
-	ploidy= models.CharField(max_length=120, blank=True,help_text="The ploidy")
-	number_of_replicons= models.CharField(max_length=120, blank=True,help_text="Reports th", validators=[RegexValidator(number_of_replicons_validator)])
-	extrachromosomal_elements= models.CharField(max_length=120, blank=True,help_text="Do plasmid", validators=[RegexValidator(extrachromosomal_elements_validator)])
-	estimated_size= models.CharField(max_length=120, blank=True,help_text="The estima", validators=[RegexValidator(estimated_size_validator)])
-	reference_for_biomaterial= models.CharField(max_length=120, blank=True,help_text="Primary pu")
-	annotation_source= models.CharField(max_length=120, blank=True,help_text="For cases ")
-	sample_volume_or_weight_for_DNA_extraction= models.CharField(max_length=120, blank=True,help_text="Volume (ml", validators=[RegexValidator(sample_volume_or_weight_for_DNA_extraction_validator)])
-	nucleic_acid_extraction= models.CharField(max_length=120, blank=True,help_text="A link to ")
-	nucleic_acid_amplification= models.CharField(max_length=120, blank=True,help_text="A link to ")
-	library_size= models.CharField(max_length=120, blank=True,help_text="Total numb", validators=[RegexValidator(library_size_validator)])
-	library_reads_sequenced= models.CharField(max_length=120, blank=True,help_text="Total numb", validators=[RegexValidator(library_reads_sequenced_validator)])
-	library_construction_method= models.CharField(max_length=120, blank=True,help_text="Library co")
-	library_vector= models.CharField(max_length=120, blank=True,help_text="Cloning ve")
-	library_screening_strategy= models.CharField(max_length=120, blank=True,help_text="Specific e")
-	target_gene= models.CharField(max_length=120, blank=True,help_text="Targeted g")
-	target_subfragment= models.CharField(max_length=120, blank=True,help_text="Name of su")
-	pcr_primers= models.CharField(max_length=120, blank=True,help_text="PCR primer")
 	multiplex_identifiers= models.CharField(max_length=120, blank=True,help_text="Molecular ")
-	adapters= models.CharField(max_length=120, blank=True,help_text="Adapters p")
-	pcr_conditions= models.CharField(max_length=120, blank=True,help_text="Descriptio")
-	sequencing_method= models.CharField(max_length=120, blank=True,help_text="Sequencing")
-	sequence_quality_check= models.CharField(max_length=120, blank=True,help_text="Indicate i", choices=sequence_quality_check_choice)
-	chimera_check_software= models.CharField(max_length=120, blank=True,help_text="Tool(s) us")
 	relevant_electronic_resources= models.CharField(max_length=120, blank=True,help_text="A related ")
 	relevant_standard_operating_procedures= models.CharField(max_length=120, blank=True,help_text="Standard o")
-	negative_control_type= models.CharField(max_length=120, blank=True,help_text="The substa")
-	positive_control_type= models.CharField(max_length=120, blank=True,help_text="The substa")
+	number_of_standard_tRNAs_extracted= models.CharField(max_length=120, blank=True,help_text="The total ", validators=[RegexValidator(number_of_standard_tRNAs_extracted_validator)])
+	feature_prediction= models.CharField(max_length=120, blank=True,help_text="Method use")
+	similarity_search_method= models.CharField(max_length=120, blank=True,help_text="Tool used ")
+	sixteen_s_recovered= models.CharField(max_length=120, blank=True,help_text="Can a 16S ", choices=sixteen_s_recovered_choice)
+	sixteen_s_recovery_software= models.CharField(max_length=120, blank=True,help_text="Tools used")
+	tRNA_extraction_software= models.CharField(max_length=120, blank=True,help_text="Tools used")
+	completeness_score= models.CharField(max_length=120, blank=False,help_text="Completene", validators=[RegexValidator(completeness_score_validator)])
+	completeness_software= models.CharField(max_length=120, blank=False,help_text="Tools used")
+	completeness_approach= models.CharField(max_length=120, blank=True,help_text="The approa")
+	contamination_score= models.CharField(max_length=120, blank=False,help_text="The contam", validators=[RegexValidator(contamination_score_validator)])
+	contamination_screening_input= models.CharField(max_length=120, blank=True,help_text="The type o", choices=contamination_screening_input_choice)
+	contamination_screening_parameters= models.CharField(max_length=120, blank=True,help_text="Specific p")
+	decontamination_software= models.CharField(max_length=120, blank=True,help_text="Tool(s) us")
+	binning_software= models.CharField(max_length=120, blank=False,help_text="Tool(s) us")
+	reassembly_post_binning= models.CharField(max_length=120, blank=True,help_text="Has an ass", choices=reassembly_post_binning_choice)
+	MAG_coverage_software= models.CharField(max_length=120, blank=True,help_text="Tool(s) us")
+	assembly_quality= models.CharField(max_length=120, blank=False,help_text="The assemb", choices=assembly_quality_choice)
+	binning_parameters= models.CharField(max_length=120, blank=False,help_text="The parame")
+	taxonomic_identity_marker= models.CharField(max_length=120, blank=False,help_text="The phylog")
+	isolation_source= models.CharField(max_length=120, blank=False,help_text="describes ")
 	collection_date= models.CharField(max_length=120, blank=False,help_text="The date t", validators=[RegexValidator(collection_date_validator)])
-	geographic_location_country_and_or_sea= models.CharField(max_length=120, blank=False,help_text="The locati", choices=geographic_location_country_and_or_sea_choice)
+	altitude= models.CharField(max_length=120, blank=True,help_text="The altitu", validators=[RegexValidator(altitude_validator)])
 	geographic_location_latitude= models.CharField(max_length=120, blank=False,help_text="The geogra", validators=[RegexValidator(geographic_location_latitude_validator)])
 	geographic_location_longitude= models.CharField(max_length=120, blank=False,help_text="The geogra", validators=[RegexValidator(geographic_location_longitude_validator)])
 	geographic_location_region_and_locality= models.CharField(max_length=120, blank=True,help_text="The geogra")
 	broad_scale_environmental_context= models.CharField(max_length=120, blank=False,help_text="Report the")
 	local_environmental_context= models.CharField(max_length=120, blank=False,help_text="Report the")
 	environmental_medium= models.CharField(max_length=120, blank=False,help_text="Report the")
-	source_material_identifiers= models.CharField(max_length=120, blank=True,help_text="A unique i")
-	sample_material_processing= models.CharField(max_length=120, blank=True,help_text="A brief de")
-	isolation_and_growth_condition= models.CharField(max_length=120, blank=True,help_text="Publicatio")
-	propagation= models.CharField(max_length=120, blank=True,help_text="The type o")
+	elevation= models.CharField(max_length=120, blank=True,help_text="The elevat", validators=[RegexValidator(elevation_validator)])
 	amount_or_size_of_sample_collected= models.CharField(max_length=120, blank=True,help_text="The total ", validators=[RegexValidator(amount_or_size_of_sample_collected_validator)])
-	host_body_product= models.CharField(max_length=120, blank=True,help_text="substance ")
-	medical_history_performed= models.CharField(max_length=120, blank=True,help_text="whether fu", choices=medical_history_performed_choice)
-	oxygenation_status_of_sample= models.CharField(max_length=120, blank=True,help_text="oxygenatio", choices=oxygenation_status_of_sample_choice)
-	organism_count= models.CharField(max_length=120, blank=True,help_text="Total cell")
-	sample_storage_duration= models.CharField(max_length=120, blank=True,help_text="duration f", validators=[RegexValidator(sample_storage_duration_validator)])
-	sample_storage_temperature= models.CharField(max_length=120, blank=True,help_text="temperatur", validators=[RegexValidator(sample_storage_temperature_validator)])
-	sample_storage_location= models.CharField(max_length=120, blank=True,help_text="location a")
-	sample_collection_device= models.CharField(max_length=120, blank=True,help_text="The device")
-	sample_collection_method= models.CharField(max_length=120, blank=True,help_text="The method")
-	gynecological_disorder= models.CharField(max_length=120, blank=True,help_text="History of")
-	urogenital_disorder= models.CharField(max_length=120, blank=True,help_text="History of")
-	host_disease_status= models.CharField(max_length=120, blank=True,help_text="list of di")
-	host_subject_id= models.CharField(max_length=120, blank=True,help_text="a unique i")
-	IHMC_medication_code= models.CharField(max_length=120, blank=True,help_text="can includ", choices=IHMC_medication_code_choice)
-	host_age= models.CharField(max_length=120, blank=True,help_text="age of hos", validators=[RegexValidator(host_age_validator)])
-	host_body_site= models.CharField(max_length=120, blank=True,help_text="name of bo")
-	host_height= models.CharField(max_length=120, blank=True,help_text="the height", validators=[RegexValidator(host_height_validator)])
-	host_body_mass_index= models.CharField(max_length=120, blank=True,help_text="body mass ", validators=[RegexValidator(host_body_mass_index_validator)])
-	ethnicity= models.CharField(max_length=120, blank=True,help_text="A category")
-	host_occupation= models.CharField(max_length=120, blank=True,help_text="most frequ", choices=host_occupation_choice)
-	host_total_mass= models.CharField(max_length=120, blank=True,help_text="total mass", validators=[RegexValidator(host_total_mass_validator)])
-	host_phenotype= models.CharField(max_length=120, blank=True,help_text="phenotype ")
-	host_body_temperature= models.CharField(max_length=120, blank=True,help_text="core body ", validators=[RegexValidator(host_body_temperature_validator)])
-	host_sex= models.CharField(max_length=120, blank=True,help_text="Gender or ", choices=host_sex_choice)
-	temperature= models.CharField(max_length=120, blank=True,help_text="temperatur", validators=[RegexValidator(temperature_validator)])
-	salinity= models.CharField(max_length=120, blank=True,help_text="The total ", validators=[RegexValidator(salinity_validator)])
-	menarche= models.CharField(max_length=120, blank=True,help_text="date of mo")
-	sexual_activity= models.CharField(max_length=120, blank=True,help_text="current se")
-	pregnancy= models.CharField(max_length=120, blank=True,help_text="date due o")
-	douche= models.CharField(max_length=120, blank=True,help_text="date of mo")
-	birth_control= models.CharField(max_length=120, blank=True,help_text="specificat")
-	menopause= models.CharField(max_length=120, blank=True,help_text="date of on")
-	HRT= models.CharField(max_length=120, blank=True,help_text="whether su")
-	hysterectomy= models.CharField(max_length=120, blank=True,help_text="specificat", choices=hysterectomy_choice)
-	host_diet= models.CharField(max_length=120, blank=True,help_text="type of di")
-	host_last_meal= models.CharField(max_length=120, blank=True,help_text="content of")
-	host_family_relationship= models.CharField(max_length=120, blank=True,help_text="relationsh")
-	host_genotype= models.CharField(max_length=120, blank=True,help_text="observed g")
-	host_pulse= models.CharField(max_length=120, blank=True,help_text="resting pu", validators=[RegexValidator(host_pulse_validator)])
-	subspecific_genetic_lineage= models.CharField(max_length=120, blank=True,help_text="Informatio")
-	trophic_level= models.CharField(max_length=120, blank=True,help_text="Trophic le", choices=trophic_level_choice)
-	relationship_to_oxygen= models.CharField(max_length=120, blank=True,help_text="Is this or", choices=relationship_to_oxygen_choice)
-	known_pathogenicity= models.CharField(max_length=120, blank=True,help_text="To what is")
-	encoded_traits= models.CharField(max_length=120, blank=True,help_text="Should inc")
-	observed_biotic_relationship= models.CharField(max_length=120, blank=True,help_text="Is it free", choices=observed_biotic_relationship_choice)
-	chemical_administration= models.CharField(max_length=120, blank=True,help_text="list of ch")
-	perturbation= models.CharField(max_length=120, blank=True,help_text="type of pe")
+	size_fraction_selected= models.CharField(max_length=120, blank=True,help_text="Filtering ")
+	geographic_location_country_and_or_sea= models.CharField(max_length=120, blank=False,help_text="The geogra", choices=geographic_location_country_and_or_sea_choice)
+	source_material_identifiers= models.CharField(max_length=120, blank=True,help_text="A unique i")
+	experimental_factor= models.CharField(max_length=120, blank=True,help_text="Experiment")
+	taxonomic_classification= models.CharField(max_length=120, blank=True,help_text="Method use")
+	annotation_source= models.CharField(max_length=120, blank=True,help_text="For cases ")
+	reference_for_biomaterial= models.CharField(max_length=120, blank=True,help_text="Primary pu")
+	reference_databases= models.CharField(max_length=120, blank=True,help_text="List of da")
+	sample_material_processing= models.CharField(max_length=120, blank=True,help_text="A brief de")
+	nucleic_acid_extraction= models.CharField(max_length=120, blank=True,help_text="A link to ")
+	nucleic_acid_amplification= models.CharField(max_length=120, blank=True,help_text="A link to ")
+	library_size= models.CharField(max_length=120, blank=True,help_text="Total numb", validators=[RegexValidator(library_size_validator)])
+	library_reads_sequenced= models.CharField(max_length=120, blank=True,help_text="Total numb", validators=[RegexValidator(library_reads_sequenced_validator)])
+	library_vector= models.CharField(max_length=120, blank=True,help_text="Cloning ve")
+	library_screening_strategy= models.CharField(max_length=120, blank=True,help_text="Specific e")
+	assembly_software= models.CharField(max_length=120, blank=False,help_text="Tool(s) us")
+	adapters= models.CharField(max_length=120, blank=True,help_text="Adapters p")
+	depth= models.CharField(max_length=120, blank=True,help_text="The vertic", validators=[RegexValidator(depth_validator)])
 
 	fields = {
+		'relationship_to_oxygen': 'relationship_to_oxygen',
+		'sample_collection_device': 'sample_collection_device',
+		'sample_collection_method': 'sample_collection_method',
+		'metagenomic_source': 'metagenomic_source',
+		'sample_derived_from': 'sample_derived_from',
 		'project_name': 'project_name',
-		'experimental_factor': 'experimental_factor',
-		'ploidy': 'ploidy',
-		'number_of_replicons': 'number_of_replicons',
-		'extrachromosomal_elements': 'extrachromosomal_elements',
-		'estimated_size': 'estimated_size',
-		'reference_for_biomaterial': 'reference_for_biomaterial',
-		'annotation_source': 'annotation_source',
-		'sample_volume_or_weight_for_DNA_extraction': 'sample_volume_or_weight_for_DNA_extraction',
-		'nucleic_acid_extraction': 'nucleic_acid_extraction',
-		'nucleic_acid_amplification': 'nucleic_acid_amplification',
-		'library_size': 'library_size',
-		'library_reads_sequenced': 'library_reads_sequenced',
-		'library_construction_method': 'library_construction_method',
-		'library_vector': 'library_vector',
-		'library_screening_strategy': 'library_screening_strategy',
-		'target_gene': 'target_gene',
-		'target_subfragment': 'target_subfragment',
-		'pcr_primers': 'pcr_primers',
 		'multiplex_identifiers': 'multiplex_identifiers',
-		'adapters': 'adapters',
-		'pcr_conditions': 'pcr_conditions',
-		'sequencing_method': 'sequencing_method',
-		'sequence_quality_check': 'sequence_quality_check',
-		'chimera_check_software': 'chimera_check_software',
 		'relevant_electronic_resources': 'relevant_electronic_resources',
 		'relevant_standard_operating_procedures': 'relevant_standard_operating_procedures',
-		'negative_control_type': 'negative_control_type',
-		'positive_control_type': 'positive_control_type',
+		'number_of_standard_tRNAs_extracted': 'number_of_standard_tRNAs_extracted',
+		'feature_prediction': 'feature_prediction',
+		'similarity_search_method': 'similarity_search_method',
+		'sixteen_s_recovered': 'sixteen_s_recovered',
+		'sixteen_s_recovery_software': 'sixteen_s_recovery_software',
+		'tRNA_extraction_software': 'tRNA_extraction_software',
+		'completeness_score': 'completeness_score',
+		'completeness_software': 'completeness_software',
+		'completeness_approach': 'completeness_approach',
+		'contamination_score': 'contamination_score',
+		'contamination_screening_input': 'contamination_screening_input',
+		'contamination_screening_parameters': 'contamination_screening_parameters',
+		'decontamination_software': 'decontamination_software',
+		'binning_software': 'binning_software',
+		'reassembly_post_binning': 'reassembly_post_binning',
+		'MAG_coverage_software': 'MAG_coverage_software',
+		'assembly_quality': 'assembly_quality',
+		'binning_parameters': 'binning_parameters',
+		'taxonomic_identity_marker': 'taxonomic_identity_marker',
+		'isolation_source': 'isolation_source',
 		'collection_date': 'collection_date',
-		'geographic_location_country_and_or_sea': 'geographic_location_country_and_or_sea',
+		'altitude': 'altitude',
 		'geographic_location_latitude': 'geographic_location_latitude',
 		'geographic_location_longitude': 'geographic_location_longitude',
 		'geographic_location_region_and_locality': 'geographic_location_region_and_locality',
 		'broad_scale_environmental_context': 'broad_scale_environmental_context',
 		'local_environmental_context': 'local_environmental_context',
 		'environmental_medium': 'environmental_medium',
-		'source_material_identifiers': 'source_material_identifiers',
-		'sample_material_processing': 'sample_material_processing',
-		'isolation_and_growth_condition': 'isolation_and_growth_condition',
-		'propagation': 'propagation',
+		'elevation': 'elevation',
 		'amount_or_size_of_sample_collected': 'amount_or_size_of_sample_collected',
-		'host_body_product': 'host_body_product',
-		'medical_history_performed': 'medical_history_performed',
-		'oxygenation_status_of_sample': 'oxygenation_status_of_sample',
-		'organism_count': 'organism_count',
-		'sample_storage_duration': 'sample_storage_duration',
-		'sample_storage_temperature': 'sample_storage_temperature',
-		'sample_storage_location': 'sample_storage_location',
-		'sample_collection_device': 'sample_collection_device',
-		'sample_collection_method': 'sample_collection_method',
-		'gynecological_disorder': 'gynecological_disorder',
-		'urogenital_disorder': 'urogenital_disorder',
-		'host_disease_status': 'host_disease_status',
-		'host_subject_id': 'host_subject_id',
-		'IHMC_medication_code': 'IHMC_medication_code',
-		'host_age': 'host_age',
-		'host_body_site': 'host_body_site',
-		'host_height': 'host_height',
-		'host_body_mass_index': 'host_body_mass_index',
-		'ethnicity': 'ethnicity',
-		'host_occupation': 'host_occupation',
-		'host_total_mass': 'host_total_mass',
-		'host_phenotype': 'host_phenotype',
-		'host_body_temperature': 'host_body_temperature',
-		'host_sex': 'host_sex',
-		'temperature': 'temperature',
-		'salinity': 'salinity',
-		'menarche': 'menarche',
-		'sexual_activity': 'sexual_activity',
-		'pregnancy': 'pregnancy',
-		'douche': 'douche',
-		'birth_control': 'birth_control',
-		'menopause': 'menopause',
-		'HRT': 'HRT',
-		'hysterectomy': 'hysterectomy',
-		'host_diet': 'host_diet',
-		'host_last_meal': 'host_last_meal',
-		'host_family_relationship': 'host_family_relationship',
-		'host_genotype': 'host_genotype',
-		'host_pulse': 'host_pulse',
-		'subspecific_genetic_lineage': 'subspecific_genetic_lineage',
-		'trophic_level': 'trophic_level',
-		'relationship_to_oxygen': 'relationship_to_oxygen',
-		'known_pathogenicity': 'known_pathogenicity',
-		'encoded_traits': 'encoded_traits',
-		'observed_biotic_relationship': 'observed_biotic_relationship',
-		'chemical_administration': 'chemical_administration',
-		'perturbation': 'perturbation',
+		'size_fraction_selected': 'size_fraction_selected',
+		'geographic_location_country_and_or_sea': 'geographic_location_country_and_or_sea',
+		'source_material_identifiers': 'source_material_identifiers',
+		'experimental_factor': 'experimental_factor',
+		'taxonomic_classification': 'taxonomic_classification',
+		'annotation_source': 'annotation_source',
+		'reference_for_biomaterial': 'reference_for_biomaterial',
+		'reference_databases': 'reference_databases',
+		'sample_material_processing': 'sample_material_processing',
+		'nucleic_acid_extraction': 'nucleic_acid_extraction',
+		'nucleic_acid_amplification': 'nucleic_acid_amplification',
+		'library_size': 'library_size',
+		'library_reads_sequenced': 'library_reads_sequenced',
+		'library_vector': 'library_vector',
+		'library_screening_strategy': 'library_screening_strategy',
+		'assembly_software': 'assembly_software',
+		'adapters': 'adapters',
+		'depth': 'depth',
 	}
 
-	name = 'GSC_MIxS_human_vaginal'
+	name = 'GSC_MIMAGS'
 
-class GSC_MIxS_human_vaginal_unit(SelfDescribingModel):
+class GSC_MIMAGS_unit(SelfDescribingModel):
 
-	sample_volume_or_weight_for_DNA_extraction_units = [('g', 'g'), ('mL', 'mL'), ('mg', 'mg'), ('ng', 'ng')]
+	completeness_score_units = [('%', '%')]
+	contamination_score_units = [('%', '%')]
+	reassembly_post_binning_units = [('No', 'No'), ('Yes', 'Yes')]
+	altitude_units = [('m', 'm')]
 	geographic_location_latitude_units = [('DD', 'DD')]
 	geographic_location_longitude_units = [('DD', 'DD')]
+	elevation_units = [('m', 'm')]
 	amount_or_size_of_sample_collected_units = [('L', 'L'), ('g', 'g'), ('kg', 'kg'), ('m2', 'm2'), ('m3', 'm3')]
-	sample_storage_duration_units = [('days', 'days'), ('hours', 'hours'), ('months', 'months'), ('weeks', 'weeks'), ('years', 'years')]
-	sample_storage_temperature_units = [('°C', '°C')]
-	host_age_units = [('centuries', 'centuries'), ('days', 'days'), ('decades', 'decades'), ('hours', 'hours'), ('minutes', 'minutes'), ('months', 'months'), ('seconds', 'seconds'), ('weeks', 'weeks'), ('years', 'years')]
-	host_height_units = [('cm', 'cm'), ('m', 'm'), ('mm', 'mm')]
-	host_body_mass_index_units = [('kg/m2', 'kg/m2')]
-	host_total_mass_units = [('g', 'g'), ('kg', 'kg')]
-	host_body_temperature_units = [('ºC', 'ºC')]
-	temperature_units = [('ºC', 'ºC')]
-	salinity_units = [('psu', 'psu')]
-	host_pulse_units = [('bpm', 'bpm')]
+	depth_units = [('m', 'm'), ('mm', 'mm')]
 
 	fields = {
-		'sample_volume_or_weight_for_DNA_extraction': 'sample_volume_or_weight_for_DNA_extraction',
+		'completeness_score': 'completeness_score',
+		'contamination_score': 'contamination_score',
+		'reassembly_post_binning': 'reassembly_post_binning',
+		'altitude': 'altitude',
 		'geographic_location_latitude': 'geographic_location_latitude',
 		'geographic_location_longitude': 'geographic_location_longitude',
+		'elevation': 'elevation',
 		'amount_or_size_of_sample_collected': 'amount_or_size_of_sample_collected',
-		'sample_storage_duration': 'sample_storage_duration',
-		'sample_storage_temperature': 'sample_storage_temperature',
-		'host_age': 'host_age',
-		'host_height': 'host_height',
-		'host_body_mass_index': 'host_body_mass_index',
-		'host_total_mass': 'host_total_mass',
-		'host_body_temperature': 'host_body_temperature',
-		'temperature': 'temperature',
-		'salinity': 'salinity',
-		'host_pulse': 'host_pulse',
+		'depth': 'depth',
 	}
 
-	name = 'GSC_MIxS_human_vaginal'
+	name = 'GSC_MIMAGS'
 
 	sampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE, default=1)
 	sample = models.ForeignKey(Sample, on_delete=models.CASCADE, default=1)
 	sample_type = models.IntegerField(default=1)
-	sample_volume_or_weight_for_DNA_extraction = models.CharField(max_length=120, choices=sample_volume_or_weight_for_DNA_extraction_units, blank=False)
+	completeness_score = models.CharField(max_length=120, choices=completeness_score_units, blank=False)
+	contamination_score = models.CharField(max_length=120, choices=contamination_score_units, blank=False)
+	reassembly_post_binning = models.CharField(max_length=120, choices=reassembly_post_binning_units, blank=False)
+	altitude = models.CharField(max_length=120, choices=altitude_units, blank=False)
 	geographic_location_latitude = models.CharField(max_length=120, choices=geographic_location_latitude_units, blank=False)
 	geographic_location_longitude = models.CharField(max_length=120, choices=geographic_location_longitude_units, blank=False)
+	elevation = models.CharField(max_length=120, choices=elevation_units, blank=False)
 	amount_or_size_of_sample_collected = models.CharField(max_length=120, choices=amount_or_size_of_sample_collected_units, blank=False)
-	sample_storage_duration = models.CharField(max_length=120, choices=sample_storage_duration_units, blank=False)
-	sample_storage_temperature = models.CharField(max_length=120, choices=sample_storage_temperature_units, blank=False)
-	host_age = models.CharField(max_length=120, choices=host_age_units, blank=False)
-	host_height = models.CharField(max_length=120, choices=host_height_units, blank=False)
-	host_body_mass_index = models.CharField(max_length=120, choices=host_body_mass_index_units, blank=False)
-	host_total_mass = models.CharField(max_length=120, choices=host_total_mass_units, blank=False)
-	host_body_temperature = models.CharField(max_length=120, choices=host_body_temperature_units, blank=False)
-	temperature = models.CharField(max_length=120, choices=temperature_units, blank=False)
-	salinity = models.CharField(max_length=120, choices=salinity_units, blank=False)
-	host_pulse = models.CharField(max_length=120, choices=host_pulse_units, blank=False)
-
-class ENA_default_sample_checklist(SelfDescribingModel):
-
-	geographic_location_country_and_or_sea_choice = [('Afghanistan', 'Afghanistan'), ('Albania', 'Albania'), ('Algeria', 'Algeria'), ('American Samoa', 'American Samoa'), ('Andorra', 'Andorra'), ('Angola', 'Angola'), ('Anguilla', 'Anguilla'), ('Antarctica', 'Antarctica'), ('Antigua and Barbuda', 'Antigua and Barbuda'), ('Arctic Ocean', 'Arctic Ocean'), ('Argentina', 'Argentina'), ('Armenia', 'Armenia'), ('Aruba', 'Aruba'), ('Ashmore and Cartier Islands', 'Ashmore and Cartier Islands'), ('Atlantic Ocean', 'Atlantic Ocean'), ('Australia', 'Australia'), ('Austria', 'Austria'), ('Azerbaijan', 'Azerbaijan'), ('Bahamas', 'Bahamas'), ('Bahrain', 'Bahrain'), ('Baker Island', 'Baker Island'), ('Baltic Sea', 'Baltic Sea'), ('Bangladesh', 'Bangladesh'), ('Barbados', 'Barbados'), ('Bassas da India', 'Bassas da India'), ('Belarus', 'Belarus'), ('Belgium', 'Belgium'), ('Belize', 'Belize'), ('Benin', 'Benin'), ('Bermuda', 'Bermuda'), ('Bhutan', 'Bhutan'), ('Bolivia', 'Bolivia'), ('Borneo', 'Borneo'), ('Bosnia and Herzegovina', 'Bosnia and Herzegovina'), ('Botswana', 'Botswana'), ('Bouvet Island', 'Bouvet Island'), ('Brazil', 'Brazil'), ('British Virgin Islands', 'British Virgin Islands'), ('Brunei', 'Brunei'), ('Bulgaria', 'Bulgaria'), ('Burkina Faso', 'Burkina Faso'), ('Burundi', 'Burundi'), ('Cambodia', 'Cambodia'), ('Cameroon', 'Cameroon'), ('Canada', 'Canada'), ('Cape Verde', 'Cape Verde'), ('Cayman Islands', 'Cayman Islands'), ('Central African Republic', 'Central African Republic'), ('Chad', 'Chad'), ('Chile', 'Chile'), ('China', 'China'), ('Christmas Island', 'Christmas Island'), ('Clipperton Island', 'Clipperton Island'), ('Cocos Islands', 'Cocos Islands'), ('Colombia', 'Colombia'), ('Comoros', 'Comoros'), ('Cook Islands', 'Cook Islands'), ('Coral Sea Islands', 'Coral Sea Islands'), ('Costa Rica', 'Costa Rica'), ("Cote d'Ivoire", "Cote d'Ivoire"), ('Croatia', 'Croatia'), ('Cuba', 'Cuba'), ('Curacao', 'Curacao'), ('Cyprus', 'Cyprus'), ('Czech Republic', 'Czech Republic'), ('Democratic Republic of the Congo', 'Democratic Republic of the Congo'), ('Denmark', 'Denmark'), ('Djibouti', 'Djibouti'), ('Dominica', 'Dominica'), ('Dominican Republic', 'Dominican Republic'), ('East Timor', 'East Timor'), ('Ecuador', 'Ecuador'), ('Egypt', 'Egypt'), ('El Salvador', 'El Salvador'), ('Equatorial Guinea', 'Equatorial Guinea'), ('Eritrea', 'Eritrea'), ('Estonia', 'Estonia'), ('Ethiopia', 'Ethiopia'), ('Europa Island', 'Europa Island'), ('Falkland Islands (Islas Malvinas)', 'Falkland Islands (Islas Malvinas)'), ('Faroe Islands', 'Faroe Islands'), ('Fiji', 'Fiji'), ('Finland', 'Finland'), ('France', 'France'), ('French Guiana', 'French Guiana'), ('French Polynesia', 'French Polynesia'), ('French Southern and Antarctic Lands', 'French Southern and Antarctic Lands'), ('Gabon', 'Gabon'), ('Gambia', 'Gambia'), ('Gaza Strip', 'Gaza Strip'), ('Georgia', 'Georgia'), ('Germany', 'Germany'), ('Ghana', 'Ghana'), ('Gibraltar', 'Gibraltar'), ('Glorioso Islands', 'Glorioso Islands'), ('Greece', 'Greece'), ('Greenland', 'Greenland'), ('Grenada', 'Grenada'), ('Guadeloupe', 'Guadeloupe'), ('Guam', 'Guam'), ('Guatemala', 'Guatemala'), ('Guernsey', 'Guernsey'), ('Guinea', 'Guinea'), ('Guinea-Bissau', 'Guinea-Bissau'), ('Guyana', 'Guyana'), ('Haiti', 'Haiti'), ('Heard Island and McDonald Islands', 'Heard Island and McDonald Islands'), ('Honduras', 'Honduras'), ('Hong Kong', 'Hong Kong'), ('Howland Island', 'Howland Island'), ('Hungary', 'Hungary'), ('Iceland', 'Iceland'), ('India', 'India'), ('Indian Ocean', 'Indian Ocean'), ('Indonesia', 'Indonesia'), ('Iran', 'Iran'), ('Iraq', 'Iraq'), ('Ireland', 'Ireland'), ('Isle of Man', 'Isle of Man'), ('Israel', 'Israel'), ('Italy', 'Italy'), ('Jamaica', 'Jamaica'), ('Jan Mayen', 'Jan Mayen'), ('Japan', 'Japan'), ('Jarvis Island', 'Jarvis Island'), ('Jersey', 'Jersey'), ('Johnston Atoll', 'Johnston Atoll'), ('Jordan', 'Jordan'), ('Juan de Nova Island', 'Juan de Nova Island'), ('Kazakhstan', 'Kazakhstan'), ('Kenya', 'Kenya'), ('Kerguelen Archipelago', 'Kerguelen Archipelago'), ('Kingman Reef', 'Kingman Reef'), ('Kiribati', 'Kiribati'), ('Kosovo', 'Kosovo'), ('Kuwait', 'Kuwait'), ('Kyrgyzstan', 'Kyrgyzstan'), ('Laos', 'Laos'), ('Latvia', 'Latvia'), ('Lebanon', 'Lebanon'), ('Lesotho', 'Lesotho'), ('Liberia', 'Liberia'), ('Libya', 'Libya'), ('Liechtenstein', 'Liechtenstein'), ('Lithuania', 'Lithuania'), ('Luxembourg', 'Luxembourg'), ('Macau', 'Macau'), ('Macedonia', 'Macedonia'), ('Madagascar', 'Madagascar'), ('Malawi', 'Malawi'), ('Malaysia', 'Malaysia'), ('Maldives', 'Maldives'), ('Mali', 'Mali'), ('Malta', 'Malta'), ('Marshall Islands', 'Marshall Islands'), ('Martinique', 'Martinique'), ('Mauritania', 'Mauritania'), ('Mauritius', 'Mauritius'), ('Mayotte', 'Mayotte'), ('Mediterranean Sea', 'Mediterranean Sea'), ('Mexico', 'Mexico'), ('Micronesia', 'Micronesia'), ('Midway Islands', 'Midway Islands'), ('Moldova', 'Moldova'), ('Monaco', 'Monaco'), ('Mongolia', 'Mongolia'), ('Montenegro', 'Montenegro'), ('Montserrat', 'Montserrat'), ('Morocco', 'Morocco'), ('Mozambique', 'Mozambique'), ('Myanmar', 'Myanmar'), ('Namibia', 'Namibia'), ('Nauru', 'Nauru'), ('Navassa Island', 'Navassa Island'), ('Nepal', 'Nepal'), ('Netherlands', 'Netherlands'), ('New Caledonia', 'New Caledonia'), ('New Zealand', 'New Zealand'), ('Nicaragua', 'Nicaragua'), ('Niger', 'Niger'), ('Nigeria', 'Nigeria'), ('Niue', 'Niue'), ('Norfolk Island', 'Norfolk Island'), ('North Korea', 'North Korea'), ('North Sea', 'North Sea'), ('Northern Mariana Islands', 'Northern Mariana Islands'), ('Norway', 'Norway'), ('Oman', 'Oman'), ('Pacific Ocean', 'Pacific Ocean'), ('Pakistan', 'Pakistan'), ('Palau', 'Palau'), ('Palmyra Atoll', 'Palmyra Atoll'), ('Panama', 'Panama'), ('Papua New Guinea', 'Papua New Guinea'), ('Paracel Islands', 'Paracel Islands'), ('Paraguay', 'Paraguay'), ('Peru', 'Peru'), ('Philippines', 'Philippines'), ('Pitcairn Islands', 'Pitcairn Islands'), ('Poland', 'Poland'), ('Portugal', 'Portugal'), ('Puerto Rico', 'Puerto Rico'), ('Qatar', 'Qatar'), ('Republic of the Congo', 'Republic of the Congo'), ('Reunion', 'Reunion'), ('Romania', 'Romania'), ('Ross Sea', 'Ross Sea'), ('Russia', 'Russia'), ('Rwanda', 'Rwanda'), ('Saint Helena', 'Saint Helena'), ('Saint Kitts and Nevis', 'Saint Kitts and Nevis'), ('Saint Lucia', 'Saint Lucia'), ('Saint Pierre and Miquelon', 'Saint Pierre and Miquelon'), ('Saint Vincent and the Grenadines', 'Saint Vincent and the Grenadines'), ('Samoa', 'Samoa'), ('San Marino', 'San Marino'), ('Sao Tome and Principe', 'Sao Tome and Principe'), ('Saudi Arabia', 'Saudi Arabia'), ('Senegal', 'Senegal'), ('Serbia', 'Serbia'), ('Seychelles', 'Seychelles'), ('Sierra Leone', 'Sierra Leone'), ('Singapore', 'Singapore'), ('Sint Maarten', 'Sint Maarten'), ('Slovakia', 'Slovakia'), ('Slovenia', 'Slovenia'), ('Solomon Islands', 'Solomon Islands'), ('Somalia', 'Somalia'), ('South Africa', 'South Africa'), ('South Georgia and the South Sandwich Islands', 'South Georgia and the South Sandwich Islands'), ('South Korea', 'South Korea'), ('Southern Ocean', 'Southern Ocean'), ('Spain', 'Spain'), ('Spratly Islands', 'Spratly Islands'), ('Sri Lanka', 'Sri Lanka'), ('Sudan', 'Sudan'), ('Suriname', 'Suriname'), ('Svalbard', 'Svalbard'), ('Swaziland', 'Swaziland'), ('Sweden', 'Sweden'), ('Switzerland', 'Switzerland'), ('Syria', 'Syria'), ('Taiwan', 'Taiwan'), ('Tajikistan', 'Tajikistan'), ('Tanzania', 'Tanzania'), ('Tasman Sea', 'Tasman Sea'), ('Thailand', 'Thailand'), ('Togo', 'Togo'), ('Tokelau', 'Tokelau'), ('Tonga', 'Tonga'), ('Trinidad and Tobago', 'Trinidad and Tobago'), ('Tromelin Island', 'Tromelin Island'), ('Tunisia', 'Tunisia'), ('Turkey', 'Turkey'), ('Turkmenistan', 'Turkmenistan'), ('Turks and Caicos Islands', 'Turks and Caicos Islands'), ('Tuvalu', 'Tuvalu'), ('USA', 'USA'), ('Uganda', 'Uganda'), ('Ukraine', 'Ukraine'), ('United Arab Emirates', 'United Arab Emirates'), ('United Kingdom', 'United Kingdom'), ('Uruguay', 'Uruguay'), ('Uzbekistan', 'Uzbekistan'), ('Vanuatu', 'Vanuatu'), ('Venezuela', 'Venezuela'), ('Viet Nam', 'Viet Nam'), ('Virgin Islands', 'Virgin Islands'), ('Wake Island', 'Wake Island'), ('Wallis and Futuna', 'Wallis and Futuna'), ('West Bank', 'West Bank'), ('Western Sahara', 'Western Sahara'), ('Yemen', 'Yemen'), ('Zambia', 'Zambia'), ('Zimbabwe', 'Zimbabwe'), ('missing: control sample', 'missing: control sample'), ('missing: data agreement established pre-2023', 'missing: data agreement established pre-2023'), ('missing: endangered species', 'missing: endangered species'), ('missing: human-identifiable', 'missing: human-identifiable'), ('missing: lab stock', 'missing: lab stock'), ('missing: sample group', 'missing: sample group'), ('missing: synthetic construct', 'missing: synthetic construct'), ('missing: third party data', 'missing: third party data'), ('not applicable', 'not applicable'), ('not collected', 'not collected'), ('not provided', 'not provided'), ('restricted access', 'restricted access')]
-	environmental_sample_choice = [('No', 'No'), ('Yes', 'Yes')]
-
-	collection_date_validator = "(^[12][0-9]{3}(-(0[1-9]|1[0-2])(-(0[1-9]|[12][0-9]|3[01])(T[0-9]{2}:[0-9]{2}(:[0-9]{2})?Z?([+-][0-9]{1,2})?)?)?)?(/[0-9]{4}(-[0-9]{2}(-[0-9]{2}(T[0-9]{2}:[0-9]{2}(:[0-9]{2})?Z?([+-][0-9]{1,2})?)?)?)?)?$)|(^not collected$)|(^not provided$)|(^restricted access$)|(^missing: control sample$)|(^missing: sample group$)|(^missing: synthetic construct$)|(^missing: lab stock$)|(^missing: third party data$)|(^missing: data agreement established pre-2023$)|(^missing: endangered species$)|(^missing: human-identifiable$)"
-
-	sampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE, default=1)
-	sample = models.ForeignKey(Sample, on_delete=models.CASCADE, default=1)
-	sample_type = models.IntegerField(default=1)
-	cell_type= models.CharField(max_length=120, blank=True,help_text="cell type ")
-	dev_stage= models.CharField(max_length=120, blank=True,help_text="if the sam")
-	germline= models.CharField(max_length=120, blank=True,help_text="the sample")
-	tissue_lib= models.CharField(max_length=120, blank=True,help_text="tissue lib")
-	tissue_type= models.CharField(max_length=120, blank=True,help_text="tissue typ")
-	isolation_source= models.CharField(max_length=120, blank=True,help_text="describes ")
-	lat_lon= models.CharField(max_length=120, blank=True,help_text="geographic")
-	collected_by= models.CharField(max_length=120, blank=True,help_text="name of pe")
-	collection_date= models.CharField(max_length=120, blank=False,help_text="The date t", validators=[RegexValidator(collection_date_validator)])
-	geographic_location_country_and_or_sea= models.CharField(max_length=120, blank=False,help_text="The locati", choices=geographic_location_country_and_or_sea_choice)
-	geographic_location_region_and_locality= models.CharField(max_length=120, blank=True,help_text="The geogra")
-	identified_by= models.CharField(max_length=120, blank=True,help_text="name of th")
-	environmental_sample= models.CharField(max_length=120, blank=True,help_text="identifies", choices=environmental_sample_choice)
-	mating_type= models.CharField(max_length=120, blank=True,help_text="mating typ")
-	sex= models.CharField(max_length=120, blank=True,help_text="sex of the")
-	lab_host= models.CharField(max_length=120, blank=True,help_text="scientific")
-	host_scientific_name= models.CharField(max_length=120, blank=True,help_text="Scientific")
-	bio_material= models.CharField(max_length=120, blank=True,help_text="Unique ide")
-	culture_collection= models.CharField(max_length=120, blank=True,help_text="Unique ide")
-	specimen_voucher= models.CharField(max_length=120, blank=True,help_text="Unique ide")
-	cultivar= models.CharField(max_length=120, blank=True,help_text="cultivar (")
-	ecotype= models.CharField(max_length=120, blank=True,help_text="a populati")
-	isolate= models.CharField(max_length=120, blank=True,help_text="individual")
-	sub_species= models.CharField(max_length=120, blank=True,help_text="name of su")
-	variety= models.CharField(max_length=120, blank=True,help_text="variety (=")
-	sub_strain= models.CharField(max_length=120, blank=True,help_text="name or id")
-	cell_line= models.CharField(max_length=120, blank=True,help_text="cell line ")
-	serotype= models.CharField(max_length=120, blank=True,help_text="serologica")
-	serovar= models.CharField(max_length=120, blank=True,help_text="serologica")
-	strain= models.CharField(max_length=120, blank=True,help_text="Name of th")
-
-	fields = {
-		'cell_type': 'cell_type',
-		'dev_stage': 'dev_stage',
-		'germline': 'germline',
-		'tissue_lib': 'tissue_lib',
-		'tissue_type': 'tissue_type',
-		'isolation_source': 'isolation_source',
-		'lat_lon': 'lat_lon',
-		'collected_by': 'collected_by',
-		'collection_date': 'collection_date',
-		'geographic_location_country_and_or_sea': 'geographic_location_country_and_or_sea',
-		'geographic_location_region_and_locality': 'geographic_location_region_and_locality',
-		'identified_by': 'identified_by',
-		'environmental_sample': 'environmental_sample',
-		'mating_type': 'mating_type',
-		'sex': 'sex',
-		'lab_host': 'lab_host',
-		'host_scientific_name': 'host_scientific_name',
-		'bio_material': 'bio_material',
-		'culture_collection': 'culture_collection',
-		'specimen_voucher': 'specimen_voucher',
-		'cultivar': 'cultivar',
-		'ecotype': 'ecotype',
-		'isolate': 'isolate',
-		'sub_species': 'sub_species',
-		'variety': 'variety',
-		'sub_strain': 'sub_strain',
-		'cell_line': 'cell_line',
-		'serotype': 'serotype',
-		'serovar': 'serovar',
-		'strain': 'strain',
-	}
-
-	name = 'ENA_default_sample_checklist'
-
-class ENA_default_sample_checklist_unit(SelfDescribingModel):
-
-
-	fields = {
-	}
-
-	name = 'ENA_default_sample_checklist'
-
-	sampleset = models.ForeignKey(Sampleset, on_delete=models.CASCADE, default=1)
-	sample = models.ForeignKey(Sample, on_delete=models.CASCADE, default=1)
-	sample_type = models.IntegerField(default=1)
+	depth = models.CharField(max_length=120, choices=depth_units, blank=False)
 
 
