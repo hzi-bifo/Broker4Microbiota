@@ -566,8 +566,8 @@ class SampleAdmin(admin.ModelAdmin):
             template_1_path = f"template_{template_number}_1.fastq.gz"
             template_2_path = f"template_{template_number}_2.fastq.gz"
 
-            template_1 = os.path.join(settings.LOCAL_DIR, '..', template_1_path)
-            template_2 = os.path.join(settings.LOCAL_DIR, '..', template_2_path)
+            template_1 = os.path.join(settings.TEMPLATE_DIR, '..', template_1_path)
+            template_2 = os.path.join(settings.TEMPLATE_DIR, '..', template_2_path)
             paired_read_1 = os.path.join(settings.LOCAL_DIR, sample.sample_alias + '_1.fastq.gz')
             paired_read_2 = os.path.join(settings.LOCAL_DIR, sample.sample_alias + '_2.fastq.gz')
 
