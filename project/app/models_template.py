@@ -83,6 +83,7 @@ class SelfDescribingModel(models.Model):
         yaml = []
         if include:
             for k, v in self.fields.items():
+                v = v.replace('_', ' ')
                 if k in include:
                     yaml.append(f"{indent}{v}: \"{getattr(self, k).replace('\n', '|')}\"")
                     try:
@@ -95,6 +96,7 @@ class SelfDescribingModel(models.Model):
                         pass
         else:
             for k, v in self.fields.items():
+                v = v.replace('_', ' ')
                 if k not in exclude:
                     yaml.append(f"{indent}{v}: \"{getattr(self, k).replace('\n', '|')}\"")
                     try:
