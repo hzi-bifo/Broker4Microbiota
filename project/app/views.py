@@ -354,8 +354,9 @@ def metadata_view(request, project_id, order_id):
 
                 assembly_sample_set = order.sampleset_set.filter(sample_type=SAMPLE_TYPE_ASSEMBLY).first()
                 if not assembly_sample_set:
-                    assembly_sample_set = Sampleset(order=order, sample_type=SAMPLE_TYPE_ASSEMBLY) 
-                assembly_sample_set.checklists = sample_set.checklists
+                    assembly_sample_set = Sampleset(order=order, sample_type=SAMPLE_TYPE_ASSEMBLY)
+                # Always update checklists to match the main sample set
+                assembly_sample_set.checklists = sample_set.checklists if sample_set.checklists else []
                 assembly_sample_set.include = ""
                 assembly_sample_set.exclude = ""
                 assembly_sample_set.custom = ""
@@ -568,12 +569,50 @@ def samples_view(request, project_id, order_id, sample_type):
         # Get the sample set early so we can determine inclusions/exclusions
         sample_set = order.sampleset_set.filter(sample_type=sample_type).first()
         
-        # For assembly/bin samples, use the normal sample's sampleset to get checklist configuration
-        if not sample_set and sample_type in [SAMPLE_TYPE_ASSEMBLY, SAMPLE_TYPE_BIN, SAMPLE_TYPE_MAG]:
-            sample_set = order.sampleset_set.filter(sample_type=SAMPLE_TYPE_NORMAL).first()
+        # For assembly samples, if no sample_set exists or checklists are empty, 
+        # inherit from the main (NORMAL) sample set
+        if sample_type == SAMPLE_TYPE_ASSEMBLY:
+            main_sample_set = order.sampleset_set.filter(sample_type=SAMPLE_TYPE_NORMAL).first()
+            if main_sample_set and main_sample_set.checklists:
+                if not sample_set:
+                    sample_set = Sampleset(order=order, sample_type=SAMPLE_TYPE_ASSEMBLY)
+                    sample_set.checklists = main_sample_set.checklists
+                    sample_set.include = ""
+                    sample_set.exclude = ""
+                    sample_set.custom = ""
+                    sample_set.save()
+                elif not sample_set.checklists:
+                    sample_set.checklists = main_sample_set.checklists
+                    sample_set.save()
+        
+        # For BIN samples, create with ENA_binned_metagenome if doesn't exist
+        elif sample_type == SAMPLE_TYPE_BIN and not sample_set:
+            sample_set = Sampleset(order=order, sample_type=SAMPLE_TYPE_BIN)
+            sample_set.checklists = [settings.BIN_CHECKLIST]
+            sample_set.include = ""
+            sample_set.exclude = ""
+            sample_set.custom = ""
+            sample_set.save()
+            
+        # For MAG samples, create with GSC_MIMAGS if doesn't exist
+        elif sample_type == SAMPLE_TYPE_MAG and not sample_set:
+            sample_set = Sampleset(order=order, sample_type=SAMPLE_TYPE_MAG)
+            sample_set.checklists = [settings.MAG_CHECKLIST]
+            sample_set.include = ""
+            sample_set.exclude = ""
+            sample_set.custom = ""
+            sample_set.save()
+        
+        # Debug logging
+        print(f"Debug: sample_type={sample_type}, sample_set={sample_set}")
+        if sample_set:
+            print(f"Debug: sample_set.checklists={sample_set.checklists}")
+        else:
+            print("Debug: No sample_set found!")
         
         # Determine inclusions and exclusions based on field selection or legacy logic
-        if sample_set and sample_set.selected_fields:
+        # For BIN and MAG samples, ignore selected_fields since they use different checklists
+        if sample_set and sample_set.selected_fields and sample_type not in [SAMPLE_TYPE_BIN, SAMPLE_TYPE_MAG]:
             # Build inclusions list: ALL required fields + selected optional fields
             inclusions = []
             
@@ -649,10 +688,8 @@ def samples_view(request, project_id, order_id, sample_type):
                     checklist_class_name = Sampleset.checklist_structure[checklist_name]['checklist_class_name']
                     checklist_item_class =  getattr(importlib.import_module("app.models"), checklist_class_name)
                     
-                    # Always use SAMPLE_TYPE_NORMAL for checklist entries
-                    checklist_sample_type = SAMPLE_TYPE_NORMAL if sample_type in [SAMPLE_TYPE_ASSEMBLY, SAMPLE_TYPE_BIN, SAMPLE_TYPE_MAG] else sample_type
                     try:
-                        checklist_item_class.objects.filter(sampleset=sample_set, sample_type=checklist_sample_type).delete()
+                        checklist_item_class.objects.filter(sampleset=sample_set, sample_type=sample_type).delete()
                     except:
                         pass
 
@@ -660,7 +697,7 @@ def samples_view(request, project_id, order_id, sample_type):
                     unitchecklist_item_class =  getattr(importlib.import_module("app.models"), unitchecklist_class_name)
                     
                     try:
-                        unitchecklist_item_class.objects.filter(sampleset=sample_set, sample_type=checklist_sample_type).delete()
+                        unitchecklist_item_class.objects.filter(sampleset=sample_set, sample_type=sample_type).delete()
                     except:
                         pass
 
@@ -686,14 +723,12 @@ def samples_view(request, project_id, order_id, sample_type):
                             checklist_code = Sampleset.checklist_structure[checklist_name]['checklist_code']  
                             checklist_class_name = Sampleset.checklist_structure[checklist_name]['checklist_class_name']
                             checklist_item_class =  getattr(importlib.import_module("app.models"), checklist_class_name)
-                            # Always use SAMPLE_TYPE_NORMAL for checklist entries
-                            checklist_sample_type = SAMPLE_TYPE_NORMAL if sample_type in [SAMPLE_TYPE_ASSEMBLY, SAMPLE_TYPE_BIN, SAMPLE_TYPE_MAG] else sample_type
-                            checklist_item_instance = checklist_item_class(sampleset = sample_set, sample = sample, sample_type=checklist_sample_type)
+                            checklist_item_instance = checklist_item_class(sampleset = sample_set, sample = sample, sample_type=sample_type)
                             checklist_item_instance.setFieldsFromResponse(sample_info, inclusions)
                             checklist_item_instance.save()
                             unitchecklist_class_name = Sampleset.checklist_structure[checklist_name]['unitchecklist_class_name']
                             unitchecklist_item_class =  getattr(importlib.import_module("app.models"), unitchecklist_class_name)
-                            unitchecklist_item_instance = unitchecklist_item_class(sampleset = sample_set, sample = sample, sample_type=checklist_sample_type)
+                            unitchecklist_item_instance = unitchecklist_item_class(sampleset = sample_set, sample = sample, sample_type=sample_type)
                             # unitchecklist_item_instance.setFieldsFromResponse(sample_info)
                             unitchecklist_item_instance.save()
                         except Exception as checklist_error:
@@ -722,6 +757,9 @@ def samples_view(request, project_id, order_id, sample_type):
         print(f"Retrieved samples: {list(samples)}")
 
         checklists = sample_set.checklists if sample_set else []
+        print(f"Debug: checklists for sample_type {sample_type}: {checklists}")
+        print(f"Debug: inclusions = {inclusions}")
+        print(f"Debug: exclusions = {exclusions}")
         
         extra_choices = []
         if sample_type == SAMPLE_TYPE_ASSEMBLY:
@@ -888,11 +926,10 @@ def samples_view(request, project_id, order_id, sample_type):
             
             # get the checklist objects for this sample_set
             try:
-                # Always use SAMPLE_TYPE_NORMAL for checklist entries since they're only created for normal samples
-                checklist_sample_type = SAMPLE_TYPE_NORMAL if sample_type in [SAMPLE_TYPE_ASSEMBLY, SAMPLE_TYPE_BIN, SAMPLE_TYPE_MAG] else sample_type
-                checklist_entries = checklist_entries_class.objects.filter(sampleset=sample_set, sample_type=checklist_sample_type) 
+                checklist_entries = checklist_entries_class.objects.filter(sampleset=sample_set, sample_type=sample_type) 
                 checklist_entries_list.append(checklist_entries)
-            except:
+            except Exception as e:
+                print(f"Error getting checklist entries for {checklist_name}: {str(e)}")
                 pass
         samples_headers = samples_headers + f"]"
 
@@ -906,9 +943,7 @@ def samples_view(request, project_id, order_id, sample_type):
 
             # get the actual data for the checklists for this sample    
             for checklist_type in checklist_entries_list:
-                # Always use SAMPLE_TYPE_NORMAL for checklist entries since they're only created for normal samples
-                checklist_sample_type = SAMPLE_TYPE_NORMAL if sample_type in [SAMPLE_TYPE_ASSEMBLY, SAMPLE_TYPE_BIN, SAMPLE_TYPE_MAG] else sample_type
-                for checklist in checklist_type.all().filter(sampleset=sample_set, sample=sample, sample_type=checklist_sample_type):
+                for checklist in checklist_type.all().filter(sampleset=sample_set, sample=sample, sample_type=sample_type):
                     fields = checklist.getFields(inclusions, exclusions)
                     output.update(fields)    
 

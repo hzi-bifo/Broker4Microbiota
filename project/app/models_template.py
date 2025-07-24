@@ -172,7 +172,7 @@ class SelfDescribingModel(models.Model):
                         headers = headers + f", type: 'autocomplete', source: {single_choice}, strict: true, allowInvalid: true"
                     try:
                         validator = getattr(self, f"{k}_validator")
-                        headers = headers + f", validator: {k}_validator, allowInvalid: true"
+                        # headers = headers + f", validator: {k}_validator, allowInvalid: true"
                     except:
                         pass
                     headers = headers + f"}},\n"
@@ -941,7 +941,7 @@ class Sample(SelfDescribingModel):
                         headers = headers + f", type: 'autocomplete', source: {single_choice}, strict: true, allowInvalid: true"
                     try:
                         validator = getattr(self, f"{k}_validator")
-                        headers = headers + f", validator: {k}_validator, allowInvalid: true"
+                        # headers = headers + f", validator: {k}_validator, allowInvalid: true"
                     except:
                         pass
                     headers = headers + f"}},\n"

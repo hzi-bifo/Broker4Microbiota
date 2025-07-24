@@ -197,7 +197,7 @@ def produceModels(data, model_data, field_names):
                     checklist_output = checklist_output + f",help_text=\"{field_description}\""
                 if field_validator:
                     checklist_output = checklist_output + f", validators=[RegexValidator({field_validator_name})]"
-                    validator_output = validator_output + f"\t{field_validator_name} = \"{field_validator}\"\n"
+                    validator_output = validator_output + f"\t{field_validator_name} = r\"{field_validator}\"\n"
                 if field_type == 'TEXT_CHOICES':
                     checklist_output = checklist_output + f", choices={field_choice_name}"
                     choice_output = choice_output + f"\t{field_choice_name} = {field_choices}\n"
