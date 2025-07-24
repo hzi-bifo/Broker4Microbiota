@@ -779,7 +779,7 @@ def samples_view(request, project_id, order_id, sample_type):
                 }
                 
                 # Apply field overrides if they exist
-                if sample_set.field_overrides and field_name in sample_set.field_overrides:
+                if sample_set and sample_set.field_overrides and field_name in sample_set.field_overrides:
                     overrides = sample_set.field_overrides[field_name]
                     if 'required' in overrides:
                         field_info['required'] = overrides['required']
@@ -841,7 +841,7 @@ def samples_view(request, project_id, order_id, sample_type):
                     }
                     
                     # Apply field overrides if they exist
-                    if sample_set.field_overrides and field_name in sample_set.field_overrides:
+                    if sample_set and sample_set.field_overrides and field_name in sample_set.field_overrides:
                         overrides = sample_set.field_overrides[field_name]
                         if 'required' in overrides:
                             field_info['required'] = overrides['required']
