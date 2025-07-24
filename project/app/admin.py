@@ -425,18 +425,18 @@ class ProjectAdmin(admin.ModelAdmin):
             if bins:
                yaml.extend(Bin.getSubMGYAMLFooter())
 
-            if mag_samples:
-                yaml.extend(Mag.getSubMGYAMLHeader())
-            mag_data = {}
-            for mag_sample in mag_samples:
-                bin = mag_sample.bin
-                mag_data[bin.bin_number] = mag_sample.mag_data
-            for mag_sample in mag_samples:
-                yaml.extend(Mag.getSubMGYAMLMagDataYAML(mag_sample.mag_data))
-                break
-            for mag_sample in mag_samples:
-                yaml.extend(mag_sample.getSubMGYAML(SAMPLE_TYPE_MAG))
-                break
+            # if mag_samples:
+            #     yaml.extend(Mag.getSubMGYAMLHeader())
+            # mag_data = {}
+            # for mag_sample in mag_samples:
+            #     bin = mag_sample.bin
+            #     mag_data[bin.bin_number] = mag_sample.mag_data
+            # for mag_sample in mag_samples:
+            #     yaml.extend(Mag.getSubMGYAMLMagDataYAML(mag_sample.mag_data))
+            #     break
+            # for mag_sample in mag_samples:
+            #     yaml.extend(mag_sample.getSubMGYAML(SAMPLE_TYPE_MAG))
+            #     break
 
             if alignments:
                 yaml.extend(Alignment.getSubMGYAMLHeader())

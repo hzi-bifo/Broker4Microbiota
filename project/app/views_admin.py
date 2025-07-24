@@ -1582,166 +1582,153 @@ def admin_settings(request):
     
     return render(request, 'admin_settings.html', context)
 
-
 @staff_member_required
 @require_http_methods(["POST"])
 def admin_generate_submg_run(request, project_id):
     """
-    Generate SubMG run for a project and all its orders
-    Based on the Django admin action generate_submg_run_including_children
+    Generate SubMG run for a project and all its orders.
+    Based on the Django admin action generate_submg_run_including_children.
     """
     project = get_object_or_404(Project, id=project_id)
-    
-    # Create dependency object, which is a dictionary of object lists
-    projects = []
+
+    # Prepare related objects
+    projects = [project]
     orders = []
     samples = []
     assembly_samples = []
     bin_samples = []
     mag_samples = []
     reads = []
-    assemblys = []
+    assemblies = []
     bins = []
     alignments = []
-    
-    # Collect the project and all its dependencies
-    if not project.submitted and project not in projects:
-        projects.append(project)
-        for order in project.order_set.all():
-            if order not in orders:
-                orders.append(order)
-                for sample in order.sample_set.all():
-                    if sample.sample_type == SAMPLE_TYPE_NORMAL and sample not in samples:
-                        samples.append(sample)
-                        for read in sample.read_set.all():
-                            if read not in reads:
-                                reads.append(read)
-                    elif sample.sample_type == SAMPLE_TYPE_ASSEMBLY and sample not in assembly_samples:
-                        assembly_samples.append(sample)
-                    elif sample.sample_type == SAMPLE_TYPE_BIN and sample not in bin_samples:
-                        bin_samples.append(sample)
-                    elif sample.sample_type == SAMPLE_TYPE_MAG and sample not in mag_samples:
-                        mag_samples.append(sample)
-                        
-                for assembly in order.assembly_set.all():
-                    if assembly not in assemblys:
-                        assemblys.append(assembly)
-                        for read in assembly.read.all():
-                            if read not in reads:
-                                reads.append(read)
-                                
-                for bin in order.bin_set.all():
-                    if bin not in bins:
-                        bins.append(bin)
-                        
-                for alignment in order.alignment_set.all():
-                    if alignment not in alignments:
-                        alignments.append(alignment)
-    
-    # Generate YAML content
-    yaml = []
-    for project in projects:
+
+    for order in project.order_set.all():
+        orders.append(order)
+
+        for sample in order.sample_set.all():
+            if sample.sample_type == SAMPLE_TYPE_NORMAL:
+                samples.append(sample)
+                reads.extend([r for r in sample.read_set.all() if r not in reads])
+            elif sample.sample_type == SAMPLE_TYPE_ASSEMBLY:
+                assembly_samples.append(sample)
+            elif sample.sample_type == SAMPLE_TYPE_BIN:
+                bin_samples.append(sample)
+            elif sample.sample_type == SAMPLE_TYPE_MAG:
+                mag_samples.append(sample)
+
+        for assembly in order.assembly_set.all():
+            assemblies.append(assembly)
+            reads.extend([r for r in assembly.read.all() if r not in reads])
+
+        bins.extend(order.bin_set.all())
+        alignments.extend(order.alignment_set.all())
+
+    # Get MAG taxonomic info
+    tax_ids = []
+    scientific_names = []
+
+    for mag_sample in mag_samples:
+        mag_sample.getSubMGTaxId(tax_ids)
+        mag_sample.getSubMGScientificName(scientific_names)
+
+    unique_tax_ids = set(tax_ids)
+    unique_scientific_names = set(scientific_names)
+
+    if len(unique_tax_ids) != 1:
+        raise Exception(f"Expected 1 unique tax ID, found: {unique_tax_ids}")
+    if len(unique_scientific_names) != 1:
+        raise Exception(f"Expected 1 unique scientific name, found: {unique_scientific_names}")
+
+    tax_id = list(unique_tax_ids)[0]
+    scientific_name = list(unique_scientific_names)[0]
+
+    sequencing_platforms = []
+    for order in orders:
+        sequencing_platforms = order.getSubMGSequencingPlatforms(sequencing_platforms)
+
+    # Generate one SubMGRun per order
+    for order in orders:
+        yaml = []
+
+        # Project and order YAML
         yaml.extend(project.getSubMGYAML())
-    
-    # Get platform list from orders
-    sequencingPlatforms = []
-    for order in orders:
-        sequencingPlatforms = order.getSubMGSequencingPlatforms(sequencingPlatforms)
-        
-    for order in orders:
-        yaml.extend(order.getSubMGYAML(sequencingPlatforms))
-        
-        # Create SubMG run for this order
+        yaml.extend(order.getSubMGYAML(sequencing_platforms))
+
+        # Taxonomic metadata
+        if mag_samples:
+            representative = mag_samples[0]
+            yaml.extend(representative.getSubMGTaxIdYAML([tax_id]))
+            yaml.extend(representative.getSubMGScientificNameYAML([scientific_name]))
+
+        # Sample YAML
         if samples:
             yaml.extend(Sample.getSubMGYAMLHeader())
-        for sample in samples:
-            yaml.extend(sample.getSubMGYAML(SAMPLE_TYPE_NORMAL))
-            
+            for s in samples:
+                yaml.extend(s.getSubMGYAML(SAMPLE_TYPE_NORMAL))
+
+        # Read YAML
         if reads:
             yaml.extend(Read.getSubMGYAMLHeader())
-        for read in reads:
-            yaml.extend(read.getSubMGYAML())
-            
-        if assemblys:
+            for r in reads:
+                yaml.extend(r.getSubMGYAML())
+
+        # Assembly YAML
+        if assemblies:
             yaml.extend(Assembly.getSubMGYAMLHeader())
-        for assembly in assemblys:
-            yaml.extend(assembly.getSubMGYAML())
-        for assembly_sample in assembly_samples:
-            yaml.extend(assembly_sample.getSubMGYAML(SAMPLE_TYPE_ASSEMBLY))
-        if assemblys:
+            for a in assemblies:
+                yaml.extend(a.getSubMGYAML())
+            for sa in assembly_samples:
+                yaml.extend(sa.getSubMGYAML(SAMPLE_TYPE_ASSEMBLY))
             yaml.extend(Assembly.getSubMGYAMLFooter())
-            
+
+        # Bin YAML
         if bins:
             yaml.extend(Bin.getSubMGYAMLHeader())
-        for bin in bins:
-            yaml.extend(bin.getSubMGYAML())
-            break
-            
-        tax_ids = {}
-        tax_ids_content = ""
-        for bin_sample in bin_samples:
-            bin = bin_sample.bin
-            tax_ids[bin.file.split('/')[-1].replace(".fa.gz", "")] = [bin_sample.scientific_name, bin_sample.tax_id]
-            
-        for bin in bins:
-            yaml.extend(bin.getSubMGYAMLTaxIDYAML())
-            tax_ids_content = bin.getSubMGYAMLTaxIDContent(tax_ids)
-            break
-            
-        for bin_sample in bin_samples:
-            yaml.extend(bin_sample.getSubMGYAML(SAMPLE_TYPE_BIN))
-            break
-            
-        if bins:
+            for b in bins:
+                yaml.extend(b.getSubMGYAML())
+            # Tax ID mapping
+            bin_tax_map = {
+                b.file.split('/')[-1].replace(".fa.gz", ""): [s.scientific_name, s.tax_id]
+                for s in bin_samples if (b := s.bin)
+            }
+            for b in bins:
+                yaml.extend(b.getSubMGYAMLTaxIDYAML())
+                tax_ids_content = b.getSubMGYAMLTaxIDContent(bin_tax_map)
+                break
+            for s in bin_samples:
+                yaml.extend(s.getSubMGYAML(SAMPLE_TYPE_BIN))
             yaml.extend(Bin.getSubMGYAMLFooter())
-            
-        if mag_samples:
-            yaml.extend(Mag.getSubMGYAMLHeader())
-            
-        mag_data = {}
-        for mag_sample in mag_samples:
-            bin = mag_sample.bin
-            mag_data[bin.bin_number] = mag_sample.mag_data
-            
-        for mag_sample in mag_samples:
-            yaml.extend(Mag.getSubMGYAMLMagDataYAML(mag_sample.mag_data))
-            break
-            
-        for mag_sample in mag_samples:
-            yaml.extend(mag_sample.getSubMGYAML(SAMPLE_TYPE_MAG))
-            break
-            
+        else:
+            tax_ids_content = ""
+
+        # Alignment YAML
         if alignments:
             yaml.extend(Alignment.getSubMGYAMLHeader())
-        for alignment in alignments:
-            yaml.extend(alignment.getSubMGYAML())
-            break
-            
-        # Create SubMGRun object
-        subMG_run = SubMGRun.objects.create(order=order)
-        output = '\n'.join(yaml)
+            for a in alignments:
+                yaml.extend(a.getSubMGYAML())
+
+        # Create and save SubMGRun
+        submg_run = SubMGRun.objects.create(order=order)
+        submg_run.yaml = '\n'.join(yaml)
         if bins:
-            subMG_run.tax_ids = tax_ids_content
-        subMG_run.yaml = output
-        
-        # Save to temporary file
-        output_file_path = "/tmp/output.txt"
-        with open(output_file_path, 'w') as output_file:
-            print(output, file=output_file)
-            
-        subMG_run.save()
-        
-        # Add many-to-many relationships
-        subMG_run.projects.set(projects)
-        subMG_run.samples.set(samples)
-        subMG_run.reads.set(reads)
-        subMG_run.assemblys.set(assemblys)
-        subMG_run.bins.set(bins)
-        
+            submg_run.tax_ids = tax_ids_content
+        submg_run.save()
+
+        # Save M2M relationships
+        submg_run.projects.set(projects)
+        submg_run.samples.set(samples)
+        submg_run.reads.set(reads)
+        submg_run.assemblys.set(assemblies)
+        submg_run.bins.set(bins)
+
+        # Optional: Write to file for debugging
+        with open("/tmp/output.txt", 'w') as f:
+            print(submg_run.yaml, file=f)
+
     messages.success(request, f"SubMG run generated successfully for project '{project.title}'.")
-    
-    # Redirect back to project detail page
-    return redirect('admin_project_detail', project_id=project_id)
+    return redirect('admin_project_detail', project_id=project.id)
+
 
 
 @staff_member_required
