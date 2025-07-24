@@ -170,11 +170,12 @@ class SelfDescribingModel(models.Model):
                         # ['Afghanistan', 'Albania']
                         single_choice = extra_choices
                         headers = headers + f", type: 'autocomplete', source: {single_choice}, strict: true, allowInvalid: true"
-                    try:
-                        validator = getattr(self, f"{k}_validator")
-                        headers = headers + f", validator: {k}_validator, allowInvalid: true"
-                    except:
-                        pass
+                    # Validators disabled due to JavaScript errors
+                    # try:
+                    #     validator = getattr(self, f"{k}_validator")
+                    #     headers = headers + f", validator: {k}_validator, allowInvalid: true"
+                    # except:
+                    #     pass
                     headers = headers + f"}},\n"
 
         return headers + ""
@@ -939,11 +940,12 @@ class Sample(SelfDescribingModel):
                         # ['Afghanistan', 'Albania']
                         single_choice = extra_choices
                         headers = headers + f", type: 'autocomplete', source: {single_choice}, strict: true, allowInvalid: true"
-                    try:
-                        validator = getattr(self, f"{k}_validator")
-                        headers = headers + f", validator: {k}_validator, allowInvalid: true"
-                    except:
-                        pass
+                    # Validators disabled due to JavaScript errors
+                    # try:
+                    #     validator = getattr(self, f"{k}_validator")
+                    #     headers = headers + f", validator: {k}_validator, allowInvalid: true"
+                    # except:
+                    #     pass
                     headers = headers + f"}},\n"
 
         return headers + ""
