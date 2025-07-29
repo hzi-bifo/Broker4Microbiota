@@ -121,13 +121,11 @@ For detailed documentation on:
 - API endpoints
 - Troubleshooting
 
-Please refer to the [full documentation](README.md.backup).
 
 ## Support
 
 For issues, questions, or contributions:
 - [GitHub Issues](https://github.com/hzi-bifo/Broker4Microbiota/issues)
-- [Full Documentation](README.md.backup)
 
 ## Funding
 
