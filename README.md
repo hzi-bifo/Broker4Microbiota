@@ -1,6 +1,6 @@
 # Broker4Microbiota
 
-![Broker4Microbiota Logo](logo.png)
+![Broker4Microbiota Banner](banner.png)
 
 A Django-based metadata collection and management system for microbiome sequencing facilities. Streamlines the process of collecting sequencing orders, managing sample metadata according to MIxS standards, and submitting data to the European Nucleotide Archive (ENA).
 
