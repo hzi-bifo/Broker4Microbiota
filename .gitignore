@@ -16,12 +16,14 @@ ENV/
 *.pyc
 *.old
 *.bak
+*.puppet-bak
 *.jar
 local_settings.py
 db.sqlite3
 db.sqlite3-journal
 media/
 staticfiles/
+
 
 # Environment variables
 .env
@@ -51,4 +53,6 @@ project/static_root/
 \!staticfiles/xml/*.xml
 \!project/staticfiles/xml/*.xml
 \!project/static/xml/*.xml
+nextflow
+checkm_mem_increase.nf
 EOF < /dev/null

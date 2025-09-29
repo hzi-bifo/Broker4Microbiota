@@ -197,3 +197,5 @@ LOGGING = {
         },
     },
 }
+
+MAG_NEXTFLOW_STUB_MODE = True

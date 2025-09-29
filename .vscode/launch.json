@@ -2,17 +2,20 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Python: Django",
+      "name": "Django (no autoreload, subproc, logs)",
       "type": "python",
       "request": "launch",
-      "program": "${workspaceFolder}/project/manage.py",
-      "args": [
-        "runserver",
-        "--noreload"
-      ],
+      "program": "manage.py",                 // simpler when cwd is set
+      "args": ["runserver", "0.0.0.0:8000", "--noreload"],
       "django": true,
-      "justMyCode": true,
-      "console": "integratedTerminal"
+      "justMyCode": false,
+      "subProcess": true,                     // follow any child processes just in case
+      "console": "integratedTerminal",
+      "cwd": "${workspaceFolder}/project",    // IMPORTANT: points to the folder that contains manage.py
+      "envFile": "${workspaceFolder}/.env",   // if you use one
+      "redirectOutput": true,
+      "logToFile": true
     }
   ]
 }
+

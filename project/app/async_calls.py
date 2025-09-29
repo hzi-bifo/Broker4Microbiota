@@ -8,8 +8,15 @@ import os
 import subprocess
 import glob
 
-
 def run_mag(mag_run, run_folder):
+    if settings.MAG_NEXTFLOW_STUB_MODE:
+        run_mag_stub(mag_run, run_folder)
+    else:
+        run_mag_real(mag_run, run_folder)
+
+    return
+
+def run_mag_real(mag_run, run_folder):
 
     sample_sheet = f"{run_folder}/samplesheet.csv"
     cluster_config = f"{run_folder}/cluster_config.cfg"
@@ -50,6 +57,45 @@ def run_mag(mag_run, run_folder):
     mag_run_instance.save()
 
     return
+
+def run_mag_stub(mag_run, run_folder):
+
+    sample_sheet = f"{run_folder}/samplesheet.csv"
+    cluster_config = f"{run_folder}/cluster_config.cfg"
+
+    mag_run.status = 'running'
+    mag_run.save()
+
+    with open(os.path.join(run_folder, 'script.sh'), 'w') as file:
+        print(f"#!/bin/bash", file=file)
+
+        print(f"cd {run_folder}", file=file)
+        for read in mag_run.reads.all():
+            sample = read.sample
+            print(f"sleep 30", file=file)
+            print(f"mkdir -p {run_folder}/Assembly/MEGAHIT", file=file)
+            print(f"mkdir -p {run_folder}/GenomeBinning/MaxBin2/Maxbin2_bins", file=file)
+            print(f"mkdir -p {run_folder}/GenomeBinning/QC", file=file)
+            print(f"cp {run_folder}/../../MEGAHIT-sample_1.contigs.fa.gz {run_folder}/Assembly/MEGAHIT/MEGAHIT-{sample.sample_id}.contigs.fa.gz", file=file)    
+            print(f"cp {run_folder}/../../MEGAHIT-MaxBin2-sample_1.001.fa {run_folder}/GenomeBinning/MaxBin2/Maxbin2_bins/MEGAHIT-MaxBin2-{sample.sample_id}.001.fa", file=file)
+            print(f"cp {run_folder}/../../checkm_summary.tsv {run_folder}/GenomeBinning/QC/checkm_summary.tsv", file=file)
+            print(f"cp {run_folder}/../../sample_1.sorted.bam {run_folder}/{sample.sample_id}.sorted.bam", file=file)        
+        
+    os.chmod(os.path.join(run_folder, 'script.sh'), 0o744)
+
+    output = os.path.join(run_folder, 'output')
+    error = os.path.join(run_folder, 'error')
+    script_location = os.path.join(run_folder, 'script.sh')
+    uuid = async_task('subprocess.run', f"{script_location}", shell=True, capture_output=True, hook='app.hooks.process_mag_result')
+
+    mag_run_instance = MagRunInstance(magRun=mag_run)
+    mag_run_instance.run_folder = run_folder
+    mag_run_instance.status = 'running'
+    mag_run_instance.uuid = uuid
+    mag_run_instance.save()
+
+    return
+
 
 def run_submg(submg_run, run_folder):
 
