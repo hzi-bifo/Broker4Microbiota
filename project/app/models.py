@@ -84,7 +84,7 @@ class SelfDescribingModel(models.Model):
         if include:
             for k, v in self.fields.items():
                 if k in include:
-                    yaml.append(f"{indent}{v}: \"{getattr(self, k).replace('\n', '|')}\"")
+                    yaml.append(f'{indent}{v}: "{getattr(self, k).replace(chr(10), "|")}"')
                     try:
                         unitoption = getattr(unitchecklist_item_instance, k + "_units")[0][0]
                         current_unitoption = getattr(unitchecklist_item_instance, f"{k}")
@@ -96,7 +96,7 @@ class SelfDescribingModel(models.Model):
         else:
             for k, v in self.fields.items():
                 if k not in exclude:
-                    yaml.append(f"{indent}{v}: \"{getattr(self, k).replace('\n', '|')}\"")
+                    yaml.append(f"{indent}{v}: \"{getattr(self, k).replace(chr(10), '|')}\"")
                     try:
                         unitoption = getattr(unitchecklist_item_instance, k + "_units")[0][0]
                         current_unitoption = getattr(unitchecklist_item_instance, f"{k}")
