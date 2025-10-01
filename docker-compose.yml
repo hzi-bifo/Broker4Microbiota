@@ -1,0 +1,48 @@
+services:
+  web:
+    build:
+      context: .
+      args:
+        PROJECT_DIR: ${PROJECT_DIR:-project}
+      dockerfile: Dockerfile-web
+    environment:
+      PROJECT_DIR: ${PROJECT_DIR:-project}
+      ROLE: web
+      RUN_MIGRATIONS: "1"
+      RUN_COLLECTSTATIC: "1"
+      DJANGO_DEBUG: "1"
+    # env_file:
+    #   - .env    # uncomment only if you have a real .env
+    volumes:
+      - ./project/db.sqlite3:/app/project/db.sqlite3
+      - ./project/media/test:/app/project/media/test
+      - ./project/project/settings_LOCAL.py:/app/project/project/settings.py
+    ports:
+      - "8000:8000"
+    entrypoint: ["bash","/usr/local/bin/docker-entrypoint.sh"]
+    command: bash -lc 'python "$PROJECT_DIR/manage.py" runserver 0.0.0.0:8000'
+    restart: unless-stopped
+    network_mode: bridge
+
+  qworker:
+    build:
+      context: .
+      args:
+        PROJECT_DIR: ${PROJECT_DIR:-project}
+      dockerfile: Dockerfile-qworker
+    environment:
+      PROJECT_DIR: ${PROJECT_DIR:-project}
+      ROLE: worker
+      DJANGO_DEBUG: "1"
+    # env_file:
+    #   - .env
+    volumes:
+      - ./project/db.sqlite3:/app/project/db.sqlite3
+      - ./project/media/test:/app/project/media/test
+      - ./project/project/settings_LOCAL.py:/app/project/project/settings.py
+    depends_on:
+      - web
+    # entrypoint: ["bash","/usr/local/bin/docker-entrypoint.sh"]
+    command: bash -lc 'python "$PROJECT_DIR/manage.py" qcluster'
+    restart: unless-stopped
+    network_mode: bridge

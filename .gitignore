@@ -55,4 +55,5 @@ project/static_root/
 \!project/static/xml/*.xml
 nextflow
 checkm_mem_increase.nf
+settings_LOCAL.py
 EOF < /dev/null

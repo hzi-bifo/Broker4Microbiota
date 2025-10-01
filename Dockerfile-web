@@ -1,0 +1,41 @@
+FROM python:3.11-slim
+
+ARG PROJECT_DIR=project
+ENV PROJECT_DIR=${PROJECT_DIR}
+ENV PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 PIP_NO_CACHE_DIR=1 DJANGO_DEBUG=1
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    bash ca-certificates build-essential util-linux wget \
+ && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+
+RUN wget https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-Linux-x86_64.sh -O /tmp/Miniforge3-Linux-x86_64.sh
+RUN /bin/bash /tmp/Miniforge3-Linux-x86_64.sh -b -p /opt/conda && \
+    rm /tmp/Miniforge3-Linux-x86_64.sh && \
+    echo "export PATH=/opt/conda/bin:$PATH" > /etc/profile.d/conda.sh
+
+ENV PATH /opt/conda/bin:$PATH
+
+RUN conda config --env --add channels bioconda && \
+    conda config --env --add channels conda-forge && \
+    conda config --system --add channels bioconda && \
+    conda config --system --add channels conda-forge && \
+    conda create -y -n broker python=3 bwa samtools && \
+    /opt/conda/bin/activate broker && \
+    pip install Django requests biopython phonenumbers django-widget-tweaks django-phonenumber-field django-clearcache django-q2 xmltodict blessed pillow nextflow jsonschema
+
+# COPY requirements.txt /app/requirements.txt
+# RUN python -m pip install --upgrade pip && python -m pip install -r /app/requirements.txt
+
+COPY . /app
+
+# Keep entrypoint out of /app to avoid being shadowed by the bind mount
+COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh
+
+EXPOSE 8000
+ENTRYPOINT ["bash","/usr/local/bin/docker-entrypoint.sh"]
+# web's default command (worker overrides this in compose)
+CMD ["bash","-lc","python \"$PROJECT_DIR/manage.py\" runserver 0.0.0.0:8000"]
+
