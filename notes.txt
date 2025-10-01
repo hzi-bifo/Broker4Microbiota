@@ -1,7 +1,7 @@
 Running as user which is a member of docker group
 
 Ensure ./project/db.sqlite3, ./project/media/test exist
-Take a copy of ./project/project/settings.py as ./project/project/settings_LOCAL.py and modify as required
+Take a copy of ./project/project/settings.py as ./settings_LOCAL.py and modify as required
 export PROJECT_DIR=project
 docker compose down -v
 docker images

@@ -16,7 +16,7 @@ services:
     volumes:
       - ./project/db.sqlite3:/app/project/db.sqlite3
       - ./project/media/test:/app/project/media/test
-      - ./project/project/settings_LOCAL.py:/app/project/project/settings.py
+      - ./settings_LOCAL.py:/app/project/project/settings.py
     ports:
       - "8000:8000"
     entrypoint: ["bash","/usr/local/bin/docker-entrypoint.sh"]
@@ -39,7 +39,7 @@ services:
     volumes:
       - ./project/db.sqlite3:/app/project/db.sqlite3
       - ./project/media/test:/app/project/media/test
-      - ./project/project/settings_LOCAL.py:/app/project/project/settings.py
+      - ./settings_LOCAL.py:/app/project/project/settings.py
     depends_on:
       - web
     # entrypoint: ["bash","/usr/local/bin/docker-entrypoint.sh"]

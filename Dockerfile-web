@@ -28,7 +28,10 @@ RUN conda config --env --add channels bioconda && \
 # COPY requirements.txt /app/requirements.txt
 # RUN python -m pip install --upgrade pip && python -m pip install -r /app/requirements.txt
 
-COPY . /app
+COPY project /app
+
+RUN find /app \( -name __pycache__ -o -name \*.sqlite3 -o -name debug.log \) -exec rm -rf {} \;
+RUN rm -rf /app/project/media/test/*
 
 # Keep entrypoint out of /app to avoid being shadowed by the bind mount
 COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
