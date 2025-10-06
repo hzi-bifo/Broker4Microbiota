@@ -79,6 +79,7 @@ def run_mag_stub(mag_run, run_folder):
             print(f"cp {run_folder}/../../MEGAHIT-sample_1.contigs.fa.gz {run_folder}/Assembly/MEGAHIT/MEGAHIT-{sample.sample_id}.contigs.fa.gz", file=file)    
             print(f"cp {run_folder}/../../MEGAHIT-MaxBin2-sample_1.001.fa {run_folder}/GenomeBinning/MaxBin2/Maxbin2_bins/MEGAHIT-MaxBin2-{sample.sample_id}.001.fa", file=file)
             print(f"cp {run_folder}/../../checkm_summary.tsv {run_folder}/GenomeBinning/QC/checkm_summary.tsv", file=file)
+            print(f"sed -i 's/sample_1/{sample.sample_id}/g' {run_folder}/GenomeBinning/QC/checkm_summary.tsv", file=file)
             print(f"cp {run_folder}/../../sample_1.sorted.bam {run_folder}/{sample.sample_id}.sorted.bam", file=file)        
         
     os.chmod(os.path.join(run_folder, 'script.sh'), 0o744)

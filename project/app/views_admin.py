@@ -1636,9 +1636,9 @@ def admin_generate_submg_run(request, project_id):
     unique_scientific_names = set(scientific_names)
 
     if len(unique_tax_ids) != 1:
-        raise Exception(f"Expected 1 unique tax ID, found: {unique_tax_ids}")
+        raise Exception(f"Expected 1 unique tax ID, found: {len(unique_tax_ids)}")
     if len(unique_scientific_names) != 1:
-        raise Exception(f"Expected 1 unique scientific name, found: {unique_scientific_names}")
+        raise Exception(f"Expected 1 unique scientific name, found: {len(unique_scientific_names)}")
 
     tax_id = list(unique_tax_ids)[0]
     scientific_name = list(unique_scientific_names)[0]

@@ -38,6 +38,8 @@ RUN bash -lc 'source "/root/.sdkman/bin/sdkman-init.sh"; curl -s https://get.nex
 
 RUN mkdir /tmp/git && \
     git clone https://github.com/metagenomics/submg.git /tmp/git && \
+    cd /tmp/git && \
+    git checkout cbd4e4e94b012fddffa05757545e8f50f86d01b1 && \
     conda create -y -n submg python=3.9 openjdk=23.0.1 
 
 RUN bash -lc 'source /opt/conda/bin/activate submg && \
