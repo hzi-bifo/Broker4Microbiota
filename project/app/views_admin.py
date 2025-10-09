@@ -558,6 +558,9 @@ def admin_user_create(request):
         form = UserCreateForm(request.POST)
         if form.is_valid():
             user = form.save()
+            if settings.AUTO_CREATE_USERS_AS_ADMIN:
+                user.is_staff = True
+                user.save()            
             messages.success(request, f'User {user.username} created successfully')
             return redirect('admin_user_list')
     else:

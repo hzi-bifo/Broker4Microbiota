@@ -233,7 +233,7 @@ class SelfDescribingModel(models.Model):
             value = ''
             # do k lookup
             if k == 'sample_id':
-                pass
+                value = getattr(self, k)
             elif k == 'sample_title':
                 value = assembly_sample_title
             elif k == 'sample_alias':

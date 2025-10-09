@@ -1,3 +1,4 @@
+import os
 from django_q.tasks import async_task, result
 from .models import MagRun, MagRunInstance, Assembly, Bin, Order, Alignment, SubMGRun, SubMGRunInstance, Sample, Read, Sampleset, SAMPLE_TYPE_NORMAL, SAMPLE_TYPE_ASSEMBLY, SAMPLE_TYPE_BIN, SAMPLE_TYPE_MAG
 import re
@@ -161,23 +162,20 @@ def process_submg_result_inner(returncode, id):
                     biological_sample_samplesheet_xml = xmltodict.parse(biological_sample_samplesheet_data)
                     biological_sample_samplesheet_json = json.loads(json.dumps(biological_sample_samplesheet_xml))
                     for sampleset_attribute, sampleset_value in biological_sample_samplesheet_json.items():
-                        biological_sample_alias = None
-                        biological_sample_title = None
-                        for sample_attribute, sample_value in sampleset_value.items():
-                            for sample in sample_value:
-                                biological_sample_alias = sample['@alias']
-                                biological_sample_title = sample['TITLE']
+                        for sample_attribute, sample_value in sampleset_value.items():                     
+                            biological_sample_alias = sample_value['@alias']
+                            biological_sample_title = sample_value['TITLE']
 
-                                if biological_sample_alias == sample_alias:
+                            if biological_sample_alias == sample_alias:
 
-                                    try:
-                                        sample=Sample.objects.get(order = order, sample_type=SAMPLE_TYPE_NORMAL, sample_title=biological_sample_title)
-                                        sample.sample_accession_number = sample_accession_id
-                                        sample.sample_biosample_number = sample_external_accession_id
-                                        sample.save()
-                                    except Sample.DoesNotExist:
-                                        pass
-                                    break
+                                try:
+                                    sample=Sample.objects.get(order = order, sample_type=SAMPLE_TYPE_NORMAL, sample_title=biological_sample_title)
+                                    sample.sample_accession_number = sample_accession_id
+                                    sample.sample_biosample_number = sample_external_accession_id
+                                    sample.save()
+                                except Sample.DoesNotExist:
+                                    pass
+                                break
 
 
         # Process reads
@@ -240,85 +238,88 @@ def process_submg_result_inner(returncode, id):
 
         # Get details of assemly sample constructed by SubMG and convert XML to JSON
 
+        # Only present if multiple samples were co-assembled
         assembly_sample_samplesheet_path = f"{run_folder}/staging/assembly_submission/co_assembly_sample/coassembly_samplesheet.xml"
 
-        assembly_sample_title_dict = {}
-        assembly_sample_name_dict = {}
-        assembly_sample_attributes_dict = {}
-        
-        with open(assembly_sample_samplesheet_path) as assembly_sample_samplesheet_content:
-            assembly_sample_samplesheet_data = assembly_sample_samplesheet_content.read()
-            assembly_sample_samplesheet_xml = xmltodict.parse(assembly_sample_samplesheet_data)
-            assembly_sample_samplesheet_json = json.loads(json.dumps(assembly_sample_samplesheet_xml))
-            for samplesheet_attribute, samplesheet_value in assembly_sample_samplesheet_json.items():
-                for sample_attribute, sample_value in samplesheet_value.items():
-                    for attribute, value in sample_value.items():
-                        if attribute == '@alias':
-                            # string
-                            assembly_sample_alias = value
-                        if attribute == 'TITLE':
-                            # string
-                            assembly_sample_title = value
-                        if attribute == 'SAMPLE_NAME':
-                            # dictionary
-                            assembly_sample_name = value
-                        if attribute == 'SAMPLE_ATTRIBUTES':
-                            # list of dictionaries (with TAG and VALUE)
-                            assembly_sample_attributes = value.items()                                
-            assembly_sample_title_dict[assembly_sample_alias] = assembly_sample_title
-            assembly_sample_name_dict[assembly_sample_alias] = assembly_sample_name
-            assembly_sample_attributes_dict[assembly_sample_alias] = assembly_sample_attributes
+        if os.path.exists(assembly_sample_samplesheet_path):
 
-            # create assembly sample objects
-            try:
-                sample = Sample.objects.get(order = order, sample_type=SAMPLE_TYPE_ASSEMBLY)
-            except Sample.DoesNotExist:
-                sample=Sample(order = order, sample_type=SAMPLE_TYPE_ASSEMBLY, sample_alias=assembly_sample_title)
-            sample.setFieldsFromSubMG(assembly_sample_title, assembly_sample_title_dict[assembly_sample_alias], assembly_sample_name_dict[assembly_sample_alias], assembly_sample_attributes_dict[assembly_sample_alias])
-            sample.sampleset = sample_set
-            sample.save()
+            assembly_sample_title_dict = {}
+            assembly_sample_name_dict = {}
+            assembly_sample_attributes_dict = {}
+            
+            with open(assembly_sample_samplesheet_path) as assembly_sample_samplesheet_content:
+                assembly_sample_samplesheet_data = assembly_sample_samplesheet_content.read()
+                assembly_sample_samplesheet_xml = xmltodict.parse(assembly_sample_samplesheet_data)
+                assembly_sample_samplesheet_json = json.loads(json.dumps(assembly_sample_samplesheet_xml))
+                for samplesheet_attribute, samplesheet_value in assembly_sample_samplesheet_json.items():
+                    for sample_attribute, sample_value in samplesheet_value.items():
+                        for attribute, value in sample_value.items():
+                            if attribute == '@alias':
+                                # string
+                                assembly_sample_alias = value
+                            if attribute == 'TITLE':
+                                # string
+                                assembly_sample_title = value
+                            if attribute == 'SAMPLE_NAME':
+                                # dictionary
+                                assembly_sample_name = value
+                            if attribute == 'SAMPLE_ATTRIBUTES':
+                                # list of dictionaries (with TAG and VALUE)
+                                assembly_sample_attributes = value.items()                                
+                assembly_sample_title_dict[assembly_sample_alias] = assembly_sample_title
+                assembly_sample_name_dict[assembly_sample_alias] = assembly_sample_name
+                assembly_sample_attributes_dict[assembly_sample_alias] = assembly_sample_attributes
 
-            checklists = sample_set.checklists
-
-            # create new checklists based on the received data
-
-            for checklist in checklists:
-                checklist_name = checklist
-                checklist_code = Sampleset.checklist_structure[checklist_name]['checklist_code']  
-                checklist_class_name = Sampleset.checklist_structure[checklist_name]['checklist_class_name']
-                checklist_item_class =  getattr(importlib.import_module("app.models"), checklist_class_name)
+                # create assembly sample objects
                 try:
-                    checklist_item_instance = checklist_item_class.objects.get(sampleset = sample_set, sample = sample, sample_type=SAMPLE_TYPE_ASSEMBLY)
-                except checklist_item_class.DoesNotExist:
-                    checklist_item_instance = checklist_item_class(sampleset = sample_set, sample = sample, sample_type=SAMPLE_TYPE_ASSEMBLY)
-                checklist_item_instance.setFieldsFromSubMG(assembly_sample_alias, assembly_sample_title_dict[assembly_sample_alias], assembly_sample_name_dict[assembly_sample_alias], assembly_sample_attributes_dict[assembly_sample_alias])
-                checklist_item_instance.save()
-                unitchecklist_class_name = Sampleset.checklist_structure[checklist_name]['unitchecklist_class_name']
-                unitchecklist_item_class =  getattr(importlib.import_module("app.models"), unitchecklist_class_name)
-                try:
-                    unitchecklist_item_instance = unitchecklist_item_class.objects.get(sampleset = sample_set, sample = sample, sample_type=SAMPLE_TYPE_ASSEMBLY)
-                except unitchecklist_item_class.DoesNotExist:
-                    unitchecklist_item_instance = unitchecklist_item_class(sampleset = sample_set, sample = sample, sample_type=SAMPLE_TYPE_ASSEMBLY)
-                # unitchecklist_item_instance.setFieldsFromResponse(sample_info)
-                unitchecklist_item_instance.save()
+                    sample = Sample.objects.get(order = order, sample_type=SAMPLE_TYPE_ASSEMBLY)
+                except Sample.DoesNotExist:
+                    sample=Sample(order = order, sample_type=SAMPLE_TYPE_ASSEMBLY, sample_alias=assembly_sample_title)
+                sample.setFieldsFromSubMG(assembly_sample_title, assembly_sample_title_dict[assembly_sample_alias], assembly_sample_name_dict[assembly_sample_alias], assembly_sample_attributes_dict[assembly_sample_alias])
+                sample.sampleset = sample_set
+                sample.save()
 
-        # Update assembly sample accession numbers
+                checklists = sample_set.checklists
 
-        assembly_sample_file_path = f"{run_folder}/logging/co_assembly_sample/assembly_samplesheet_receipt.xml"
-        assembly_sample_files = glob.glob(assembly_sample_file_path)
-        for assembly_sample_file in assembly_sample_files:
-            with open(assembly_sample_file) as assembly_sample_file_content:
-                for line in assembly_sample_file_content:
-                    if "SAMPLE accession" in line:
-                        assembly_sample_alias = line.split('alias="')[1].split('"')[0]
-                        assembly_sample_accession_id = line.split('accession="')[1].split('"')[0]
-                    if "EXT_ID" in line:
-                        assembly_sample_external_accession_id = line.split('accession="')[1].split('"')[0]      
+                # create new checklists based on the received data
 
-            assembly_sample=Sample.objects.get(order = order, sample_type=SAMPLE_TYPE_ASSEMBLY, sample_alias=assembly_sample_title)
-            assembly_sample.sample_accession_number = sample_accession_id
-            assembly_sample.sample_biosample_number = sample_external_accession_id
-            assembly_sample.save()
+                for checklist in checklists:
+                    checklist_name = checklist
+                    checklist_code = Sampleset.checklist_structure[checklist_name]['checklist_code']  
+                    checklist_class_name = Sampleset.checklist_structure[checklist_name]['checklist_class_name']
+                    checklist_item_class =  getattr(importlib.import_module("app.models"), checklist_class_name)
+                    try:
+                        checklist_item_instance = checklist_item_class.objects.get(sampleset = sample_set, sample = sample, sample_type=SAMPLE_TYPE_ASSEMBLY)
+                    except checklist_item_class.DoesNotExist:
+                        checklist_item_instance = checklist_item_class(sampleset = sample_set, sample = sample, sample_type=SAMPLE_TYPE_ASSEMBLY)
+                    checklist_item_instance.setFieldsFromSubMG(assembly_sample_alias, assembly_sample_title_dict[assembly_sample_alias], assembly_sample_name_dict[assembly_sample_alias], assembly_sample_attributes_dict[assembly_sample_alias])
+                    checklist_item_instance.save()
+                    unitchecklist_class_name = Sampleset.checklist_structure[checklist_name]['unitchecklist_class_name']
+                    unitchecklist_item_class =  getattr(importlib.import_module("app.models"), unitchecklist_class_name)
+                    try:
+                        unitchecklist_item_instance = unitchecklist_item_class.objects.get(sampleset = sample_set, sample = sample, sample_type=SAMPLE_TYPE_ASSEMBLY)
+                    except unitchecklist_item_class.DoesNotExist:
+                        unitchecklist_item_instance = unitchecklist_item_class(sampleset = sample_set, sample = sample, sample_type=SAMPLE_TYPE_ASSEMBLY)
+                    # unitchecklist_item_instance.setFieldsFromResponse(sample_info)
+                    unitchecklist_item_instance.save()
+
+            # Update assembly sample accession numbers
+
+            assembly_sample_file_path = f"{run_folder}/logging/co_assembly_sample/assembly_samplesheet_receipt.xml"
+            assembly_sample_files = glob.glob(assembly_sample_file_path)
+            for assembly_sample_file in assembly_sample_files:
+                with open(assembly_sample_file) as assembly_sample_file_content:
+                    for line in assembly_sample_file_content:
+                        if "SAMPLE accession" in line:
+                            assembly_sample_alias = line.split('alias="')[1].split('"')[0]
+                            assembly_sample_accession_id = line.split('accession="')[1].split('"')[0]
+                        if "EXT_ID" in line:
+                            assembly_sample_external_accession_id = line.split('accession="')[1].split('"')[0]      
+
+                assembly_sample=Sample.objects.get(order = order, sample_type=SAMPLE_TYPE_ASSEMBLY, sample_alias=assembly_sample_title)
+                assembly_sample.sample_accession_number = assembly_sample_accession_id
+                assembly_sample.sample_biosample_number = assembly_sample_external_accession_id
+                assembly_sample.save()
 
 
         # Process bins
@@ -422,8 +423,8 @@ def process_submg_result_inner(returncode, id):
                         bin_sample_external_accession_id = line.split('accession="')[1].split('"')[0]      
 
             bin_sample=Sample.objects.get(order = order, sample_type=SAMPLE_TYPE_BIN, sample_title=bin_sample_alias)
-            bin_sample.sample_accession_number = sample_accession_id
-            bin_sample.sample_biosample_number = sample_external_accession_id
+            bin_sample.sample_accession_number = bin_sample_accession_id
+            bin_sample.sample_biosample_number = bin_sample_external_accession_id
             bin_sample.save()
 
 
@@ -432,3 +433,9 @@ def process_submg_result_inner(returncode, id):
         # MAG should be created for each bin sample
 
         # set sample entries as read-only???
+
+        try:
+            submg_run_instance.save()
+            submg_run.save()
+        except Exception as e:
+            logger.error(f"Error saving SubMG run status: {str(e)}")        

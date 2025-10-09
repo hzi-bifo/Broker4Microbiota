@@ -54,6 +54,9 @@ def register_view(request):
         form = UserCreationForm(request.POST)
         if form.is_valid():
             user = form.save()
+            if settings.AUTO_CREATE_USERS_AS_ADMIN:
+                user.is_staff = True
+                user.save()
             login(request, user)
             messages.success(request, f'Welcome {user.username}! Your account has been created successfully. You can now submit sequencing orders.')
             return redirect('project_list')
@@ -569,8 +572,8 @@ def samples_view(request, project_id, order_id, sample_type):
         sample_set = order.sampleset_set.filter(sample_type=sample_type).first()
         
         # For assembly/bin samples, use the normal sample's sampleset to get checklist configuration
-        if not sample_set and sample_type in [SAMPLE_TYPE_ASSEMBLY, SAMPLE_TYPE_BIN, SAMPLE_TYPE_MAG]:
-            sample_set = order.sampleset_set.filter(sample_type=SAMPLE_TYPE_NORMAL).first()
+        if not sample_set:
+            sample_set = order.sampleset_set.filter(sample_type=sample_type).first()
         
         # Determine inclusions and exclusions based on field selection or legacy logic
         if sample_set and sample_set.selected_fields:
@@ -586,6 +589,13 @@ def samples_view(request, project_id, order_id, sample_type):
             # Add assembly-specific fields if this is an assembly sample
             if sample_type == SAMPLE_TYPE_ASSEMBLY:
                 essential_sample_fields.append('assembly')
+            for field_name in essential_sample_fields:
+                if field_name not in inclusions:
+                    inclusions.append(field_name)
+
+            # Add assembly-specific fields if this is an assembly sample
+            if sample_type == SAMPLE_TYPE_BIN:
+                essential_sample_fields.append('bin')
             for field_name in essential_sample_fields:
                 if field_name not in inclusions:
                     inclusions.append(field_name)
@@ -624,7 +634,7 @@ def samples_view(request, project_id, order_id, sample_type):
             if sample_type == SAMPLE_TYPE_NORMAL:
                 exclusions = "assembly,bin"
             elif sample_type == SAMPLE_TYPE_ASSEMBLY:
-                exclusions = "bin_identifier"
+                exclusions = "bin"
             elif sample_type == SAMPLE_TYPE_BIN:
                 exclusions = "assembly"
             elif sample_type == SAMPLE_TYPE_MAG:
@@ -650,7 +660,7 @@ def samples_view(request, project_id, order_id, sample_type):
                     checklist_item_class =  getattr(importlib.import_module("app.models"), checklist_class_name)
                     
                     # Always use SAMPLE_TYPE_NORMAL for checklist entries
-                    checklist_sample_type = SAMPLE_TYPE_NORMAL if sample_type in [SAMPLE_TYPE_ASSEMBLY, SAMPLE_TYPE_BIN, SAMPLE_TYPE_MAG] else sample_type
+                    checklist_sample_type =  sample_type
                     try:
                         checklist_item_class.objects.filter(sampleset=sample_set, sample_type=checklist_sample_type).delete()
                     except:
@@ -687,7 +697,7 @@ def samples_view(request, project_id, order_id, sample_type):
                             checklist_class_name = Sampleset.checklist_structure[checklist_name]['checklist_class_name']
                             checklist_item_class =  getattr(importlib.import_module("app.models"), checklist_class_name)
                             # Always use SAMPLE_TYPE_NORMAL for checklist entries
-                            checklist_sample_type = SAMPLE_TYPE_NORMAL if sample_type in [SAMPLE_TYPE_ASSEMBLY, SAMPLE_TYPE_BIN, SAMPLE_TYPE_MAG] else sample_type
+                            checklist_sample_type = sample_type
                             checklist_item_instance = checklist_item_class(sampleset = sample_set, sample = sample, sample_type=checklist_sample_type)
                             checklist_item_instance.setFieldsFromResponse(sample_info, inclusions)
                             checklist_item_instance.save()
@@ -984,7 +994,8 @@ def samples_view(request, project_id, order_id, sample_type):
 def test_submg(request):
     if request.user.is_authenticated and request.user.is_staff:
         # Test endpoint - staff users only
-        id = 5  # Default to 48 for backwards compatibility
+        # select * from app_submgruninstance
+        id = 26  # Default to 48 for backwards compatibility
         returncode = 0
         
         try:
