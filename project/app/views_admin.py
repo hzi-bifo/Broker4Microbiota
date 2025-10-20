@@ -14,6 +14,7 @@ from django.views.decorators.http import require_http_methods
 from collections import OrderedDict
 import csv
 import importlib
+import json
 import os
 import shutil
 import hashlib
@@ -1596,38 +1597,15 @@ def admin_generate_submg_run(request, project_id):
 
     # Prepare related objects
     projects = [project]
-    orders = []
-    samples = []
-    assembly_samples = []
-    bin_samples = []
-    mag_samples = []
-    reads = []
-    assemblies = []
-    bins = []
-    alignments = []
-
-    for order in project.order_set.all():
-        orders.append(order)
-
-        for sample in order.sample_set.all():
-            if sample.sample_type == SAMPLE_TYPE_NORMAL:
-                samples.append(sample)
-                reads.extend([r for r in sample.read_set.all() if r not in reads])
-            elif sample.sample_type == SAMPLE_TYPE_ASSEMBLY:
-                assembly_samples.append(sample)
-            elif sample.sample_type == SAMPLE_TYPE_BIN:
-                bin_samples.append(sample)
-            elif sample.sample_type == SAMPLE_TYPE_MAG:
-                mag_samples.append(sample)
-
-        for assembly in order.assembly_set.all():
-            assemblies.append(assembly)
-            reads.extend([r for r in assembly.read.all() if r not in reads])
-
-        bins.extend(order.bin_set.all())
-        alignments.extend(order.alignment_set.all())
+    orders = list(project.order_set.all())
 
     # Get MAG taxonomic info
+    mag_samples = list(
+        Sample.objects.filter(
+            order__project=project,
+            sample_type=SAMPLE_TYPE_MAG
+        )
+    )
     tax_ids = []
     scientific_names = []
 
@@ -1650,85 +1628,157 @@ def admin_generate_submg_run(request, project_id):
     for order in orders:
         sequencing_platforms = order.getSubMGSequencingPlatforms(sequencing_platforms)
 
-    # Generate one SubMGRun per order
+    # Generate SubMG runs (one per assembly where applicable)
     for order in orders:
-        yaml = []
+        order_samples = []
+        order_assembly_samples = []
+        order_bin_samples = []
+        order_mag_samples = []
+        order_reads = []
+        seen_read_ids = set()
 
-        # Project and order YAML
-        yaml.extend(project.getSubMGYAML())
-        yaml.extend(order.getSubMGYAML(sequencing_platforms))
+        for sample in order.sample_set.all():
+            if sample.sample_type == SAMPLE_TYPE_NORMAL:
+                order_samples.append(sample)
+                for read in sample.read_set.all():
+                    if read.id not in seen_read_ids:
+                        order_reads.append(read)
+                        seen_read_ids.add(read.id)
+            elif sample.sample_type == SAMPLE_TYPE_ASSEMBLY:
+                order_assembly_samples.append(sample)
+            elif sample.sample_type == SAMPLE_TYPE_BIN:
+                order_bin_samples.append(sample)
+            elif sample.sample_type == SAMPLE_TYPE_MAG:
+                order_mag_samples.append(sample)
 
-        # Taxonomic metadata
+        order_assemblies = list(order.assembly_set.all())
+        for assembly in order_assemblies:
+            for read in assembly.read.all():
+                if read.id not in seen_read_ids:
+                    order_reads.append(read)
+                    seen_read_ids.add(read.id)
+
+        order_bins = list(order.bin_set.all())
+        order_alignments = list(order.alignment_set.all())
+        tax_ids_content = ""
+
+        base_yaml = []
+        base_yaml.extend(project.getSubMGYAML())
+        base_yaml.extend(order.getSubMGYAML(sequencing_platforms))
+
         if mag_samples:
             representative = mag_samples[0]
-            yaml.extend(representative.getSubMGTaxIdYAML([tax_id]))
-            yaml.extend(representative.getSubMGScientificNameYAML([scientific_name]))
+            base_yaml.extend(representative.getSubMGTaxIdYAML([tax_id]))
+            base_yaml.extend(representative.getSubMGScientificNameYAML([scientific_name]))
 
-        # Sample YAML
-        if samples:
-            yaml.extend(Sample.getSubMGYAMLHeader())
-            for s in samples:
-                yaml.extend(s.getSubMGYAML(SAMPLE_TYPE_NORMAL))
+        if order_samples:
+            base_yaml.extend(Sample.getSubMGYAMLHeader())
+            for sample in order_samples:
+                base_yaml.extend(sample.getSubMGYAML(SAMPLE_TYPE_NORMAL))
 
-        # Read YAML
-        if reads:
-            yaml.extend(Read.getSubMGYAMLHeader())
-            for r in reads:
-                yaml.extend(r.getSubMGYAML())
+        if order_reads:
+            base_yaml.extend(Read.getSubMGYAMLHeader())
+            for read in order_reads:
+                base_yaml.extend(read.getSubMGYAML())
 
-        # Assembly YAML
-        if assemblies:
-            yaml.extend(Assembly.getSubMGYAMLHeader())
-            for a in assemblies:
-                yaml.extend(a.getSubMGYAML())
-            for sa in assembly_samples:
-                yaml.extend(sa.getSubMGYAML(SAMPLE_TYPE_ASSEMBLY))
-            yaml.extend(Assembly.getSubMGYAMLFooter())
+        if order_bins:
+            base_yaml.extend(Bin.getSubMGYAMLHeader())
 
-        # Bin YAML
-        if bins:
-            yaml.extend(Bin.getSubMGYAMLHeader())
-            for b in bins:
-                yaml.extend(b.getSubMGYAML())
-            # Tax ID mapping
-            bin_tax_map = {
-                b.file.split('/')[-1].replace(".fa", ""): [s.scientific_name, s.tax_id]
-                for s in bin_samples if (b := s.bin)
+            primary_bin = None
+            if order_bin_samples:
+                primary_bin = order_bin_samples[0].bin
+            if not primary_bin and order_bins:
+                primary_bin = order_bins[0]
+
+            if primary_bin:
+                base_yaml.extend(primary_bin.getSubMGYAML())
+
+            bin_tax_map = OrderedDict()
+            for sample in order_bin_samples:
+                bin_obj = sample.bin
+                if not bin_obj or not bin_obj.file:
+                    continue
+                key = Path(bin_obj.file).name.replace(".fa", "")
+                bin_tax_map[key] = [sample.scientific_name, sample.tax_id]
+
+            if primary_bin:
+                base_yaml.extend(primary_bin.getSubMGYAMLTaxIDYAML())
+                tax_ids_content = primary_bin.getSubMGYAMLTaxIDContent(bin_tax_map)
+            else:
+                tax_ids_content = ""
+
+            if order_bin_samples:
+                base_yaml.extend(order_bin_samples[0].getSubMGYAML(SAMPLE_TYPE_BIN))
+
+            base_yaml.extend(Bin.getSubMGYAMLFooter())
+
+        if order_alignments:
+            base_yaml.extend(Alignment.getSubMGYAMLHeader())
+            for alignment in order_alignments:
+                base_yaml.extend(alignment.getSubMGYAML())
+
+        base_yaml_snapshot = list(base_yaml)
+
+        yaml_entries = [
+            {
+                "key": "base",
+                "label": "Submission",
+                "content": '\n'.join(base_yaml_snapshot)
             }
-            for b in bins:
-                yaml.extend(b.getSubMGYAMLTaxIDYAML())
-                tax_ids_content = b.getSubMGYAMLTaxIDContent(bin_tax_map)
-                break
-            for s in bin_samples:
-                yaml.extend(s.getSubMGYAML(SAMPLE_TYPE_BIN))
-            yaml.extend(Bin.getSubMGYAMLFooter())
-        else:
-            tax_ids_content = ""
+        ]
 
-        # Alignment YAML
-        if alignments:
-            yaml.extend(Alignment.getSubMGYAMLHeader())
-            for a in alignments:
-                yaml.extend(a.getSubMGYAML())
+        if order_assemblies:
+            for assembly in order_assemblies:
+                assembly_section = []
+                assembly_section.extend(Assembly.getSubMGYAMLHeader())
+                assembly_section.extend(assembly.getSubMGYAML())
 
-        # Create and save SubMGRun
+                related_samples = [
+                    sample for sample in order_assembly_samples if sample.assembly_id == assembly.id
+                ]
+                if not related_samples:
+                    continue
+                for assembly_sample in related_samples:
+                    assembly_section.extend(assembly_sample.getSubMGYAML(SAMPLE_TYPE_ASSEMBLY))
+
+                assembly_section.extend(Assembly.getSubMGYAMLFooter())
+
+                label = assembly.file or f"Assembly {assembly.id}"
+                sample_label = related_samples[0].sample_title or related_samples[0].sample_alias
+                if sample_label:
+                    label = sample_label
+
+                yaml_entries.append(
+                    {
+                        "key": f"assembly-{assembly.id}",
+                        "label": label,
+                        "content": '\n'.join(assembly_section)
+                    }
+                )
+
         submg_run = SubMGRun.objects.create(order=order)
-        submg_run.yaml = '\n'.join(yaml)
-        if bins:
+        submg_run.yaml = json.dumps(yaml_entries)
+        if tax_ids_content:
             submg_run.tax_ids = tax_ids_content
         submg_run.save()
 
-        # Save M2M relationships
         submg_run.projects.set(projects)
-        submg_run.samples.set(samples)
-        submg_run.reads.set(reads)
-        submg_run.assemblys.set(assemblies)
-        submg_run.bins.set(bins)
+        submg_run.reads.set(order_reads)
+        submg_run.bins.set(order_bins)
+        submg_run.assemblys.set(order_assemblies)
 
-        # Optional: Write to file for debugging
+        sample_map = OrderedDict()
+        for sample in order_samples + order_bin_samples + order_mag_samples + order_assembly_samples:
+            sample_map[sample.id] = sample
+        submg_run.samples.set(sample_map.values())
+
+
         with open("/tmp/output.txt", 'w') as f:
-            print(submg_run.yaml, file=f)
-
+            for entry in yaml_entries:
+                label = entry.get('label') or 'YAML'
+                f.write(f"# {label}\n")
+                f.write(entry.get('content', ''))
+                f.write("\n\n")
     messages.success(request, f"SubMG run generated successfully for project '{project.title}'.")
     return redirect('admin_project_detail', project_id=project.id)
 
@@ -1855,14 +1905,33 @@ def admin_start_submg_run(request, submg_run_id):
         run_folder = os.path.join(settings.LOCAL_DIR, f"{run_id}")
         os.makedirs(run_folder, exist_ok=True)
         
-        # Write SubMG YAML file with updated tax_ids path
-        with open(os.path.join(run_folder, 'submg.yaml'), 'w') as file:
-            file.write(submg_run.yaml.replace('tax_ids.txt', f'{run_folder}/tax_ids.txt'))
-        
-        # Write tax_ids.txt file
-        with open(os.path.join(run_folder, 'tax_ids.txt'), 'w') as file:
-            file.write(submg_run.tax_ids)
-        
+        # Write SubMG YAML files with updated tax_ids path
+        try:
+            yaml_entries = json.loads(submg_run.yaml or "[]")
+            if not isinstance(yaml_entries, list):
+                raise ValueError
+        except (json.JSONDecodeError, ValueError):
+            yaml_entries = [{"label": "Submission", "content": submg_run.yaml or ""}]
+        if not yaml_entries:
+            yaml_entries = [{"label": "Submission", "content": ""}]
+
+        tax_ids_filename = None
+        if submg_run.tax_ids:
+            tax_ids_filename = f"tax_ids_{submg_run.id}.txt"
+
+        for index, entry in enumerate(yaml_entries):
+            filename = f"submg_{submg_run.id}.yaml" if index == 0 else f"submg_{submg_run.id}_{index}.yaml"
+            yaml_path = os.path.join(run_folder, filename)
+            yaml_content = entry.get('content', '') or ''
+            if tax_ids_filename:
+                yaml_content = yaml_content.replace('tax_ids.txt', os.path.join(run_folder, tax_ids_filename))
+            with open(yaml_path, 'w') as file:
+                file.write(yaml_content)
+
+        if tax_ids_filename:
+            with open(os.path.join(run_folder, tax_ids_filename), 'w') as file:
+                file.write(submg_run.tax_ids)
+
         # Create SubMG run instance
         submg_run_instance = submg_run.submgruninstance_set.create(
             run_folder=run_folder

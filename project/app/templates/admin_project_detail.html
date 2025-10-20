@@ -860,18 +860,24 @@
                     {% endif %}
                   </td>
                   <td>
-                    {% if run.yaml %}
-                    <button class="button is-small is-light" 
-                            onclick="event.stopPropagation(); showYAMLModal({{ run.id }}, '{{ run.yaml|escapejs }}')"
-                            title="View YAML configuration">
-                      <span class="icon">
-                        <i class="fas fa-code"></i>
-                      </span>
-                      <span>View YAML</span>
-                    </button>
-                    {% else %}
-                    <span class="has-text-grey">-</span>
-                    {% endif %}
+                    {% with entries=run.get_yaml_entries %}
+                      {% if entries %}
+                        <div class="buttons are-small is-flex is-flex-wrap-wrap">
+                          {% for entry in entries %}
+                            <button class="button is-small is-light"
+                                    onclick="event.stopPropagation(); showYAMLModal({{ run.id }}, {{ forloop.counter0 }}, '{{ entry.content|escapejs }}', '{{ entry.label|default:"YAML"|escapejs }}')"
+                                    title="View YAML configuration">
+                              <span class="icon">
+                                <i class="fas fa-code"></i>
+                              </span>
+                              <span>View YAML{% if entry.label %} ({{ entry.label }}){% endif %}</span>
+                            </button>
+                          {% endfor %}
+                        </div>
+                      {% else %}
+                        <span class="has-text-grey">-</span>
+                      {% endif %}
+                    {% endwith %}
                   </td>
                   <td>
                     <div class="buttons are-small">
@@ -1516,29 +1522,29 @@ function copyXML(elementId) {
   });
 }
 
-function showYAMLModal(runId, yamlContent) {
+function showYAMLModal(runId, entryIndex, yamlContent, label) {
   // Create modal HTML
   const modalHTML = `
-    <div class="modal is-active" id="yaml-modal-${runId}">
-      <div class="modal-background" onclick="closeYAMLModal(${runId})"></div>
+    <div class="modal is-active" id="yaml-modal-${runId}-${entryIndex}">
+      <div class="modal-background" onclick="closeYAMLModal(${runId}, ${entryIndex})"></div>
       <div class="modal-card" style="width: 90%; max-width: 1000px;">
         <header class="modal-card-head">
-          <p class="modal-card-title">SubMG Run #${runId} - YAML Configuration</p>
-          <button class="delete" aria-label="close" onclick="closeYAMLModal(${runId})"></button>
+          <p class="modal-card-title">SubMG Run #${runId} - ${(label || 'YAML Configuration')}</p>
+          <button class="delete" aria-label="close" onclick="closeYAMLModal(${runId}, ${entryIndex})"></button>
         </header>
         <section class="modal-card-body">
           <div class="buttons mb-3">
-            <button class="button is-small is-info" onclick="copyYAML('yaml-content-${runId}')">
+            <button class="button is-small is-info" onclick="copyYAML('yaml-content-${runId}-${entryIndex}', this)">
               <span class="icon">
                 <i class="fas fa-copy"></i>
               </span>
               <span>Copy YAML</span>
             </button>
           </div>
-          <pre id="yaml-content-${runId}" style="background-color: #f5f5f5; padding: 1rem; border-radius: 4px; overflow-x: auto;"><code>${yamlContent}</code></pre>
+          <pre id="yaml-content-${runId}-${entryIndex}" style="background-color: #f5f5f5; padding: 1rem; border-radius: 4px; overflow-x: auto;"><code>${yamlContent}</code></pre>
         </section>
         <footer class="modal-card-foot">
-          <button class="button" onclick="closeYAMLModal(${runId})">Close</button>
+          <button class="button" onclick="closeYAMLModal(${runId}, ${entryIndex})">Close</button>
         </footer>
       </div>
     </div>
@@ -1548,17 +1554,17 @@ function showYAMLModal(runId, yamlContent) {
   document.body.insertAdjacentHTML('beforeend', modalHTML);
 }
 
-function closeYAMLModal(runId) {
-  const modal = document.getElementById(`yaml-modal-${runId}`);
+function closeYAMLModal(runId, entryIndex) {
+  const modal = document.getElementById(`yaml-modal-${runId}-${entryIndex}`);
   if (modal) {
     modal.remove();
   }
 }
 
-function copyYAML(elementId) {
+function copyYAML(elementId, trigger) {
   const yamlText = document.getElementById(elementId).textContent;
   navigator.clipboard.writeText(yamlText).then(() => {
-    const button = event.target.closest('button');
+    const button = trigger || event.target.closest('button');
     const originalHTML = button.innerHTML;
     button.innerHTML = '<span class="icon"><i class="fas fa-check"></i></span><span>Copied!</span>';
     button.classList.add('is-success');

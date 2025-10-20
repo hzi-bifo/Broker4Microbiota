@@ -1314,6 +1314,24 @@ class SubMGRun(models.Model):
     yaml = models.CharField(max_length=100, null=True, blank=True)
     tax_ids = models.CharField(max_length=100, null=True, blank=True)
 
+    def get_yaml_entries(self):
+        try:
+            entries = json.loads(self.yaml or "[]")
+        except (TypeError, json.JSONDecodeError):
+            return [{'label': '', 'content': self.yaml or ''}]
+        if not isinstance(entries, list) or not entries:
+            return [{'label': '', 'content': self.yaml or ''}]
+        normalized = []
+        for entry in entries:
+            if isinstance(entry, dict):
+                normalized.append({
+                    'label': entry.get('label') or entry.get('name') or '',
+                    'content': entry.get('content', '') or ''
+                })
+            else:
+                normalized.append({'label': '', 'content': str(entry)})
+        return normalized
+
     # Accession stuff
     # Mark things as submitted files
 

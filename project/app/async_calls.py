@@ -34,10 +34,10 @@ def run_mag_real(mag_run, run_folder):
         print(f"source {settings.CONDA_PATH}/bin/activate broker", file=file)
         print(f"cd /tmp")        
         print(f"{settings.CONDA_PATH}/envs/broker/bin/nextflow run hzi-bifo/mag -w /tmp --input {sample_sheet} -profile singularity -c {cluster_config} --outdir {run_folder} {settings.MAG_ADDITIONAL_OPTIONS}", file=file)
-        print(f"assembly_file=$(find {run_folder} -name '*.contigs.fa.gz')", file=file)
         print(f"cd {run_folder}", file=file)
         for read in mag_run.reads.all():
             sample = read.sample
+            print(f"assembly_file=$(find {run_folder}Assembly/MEGAHIT -name 'MEGAHIT-{sample.sample_id}.contigs.fa.gz')", file=file)
             print(f"bwa index ${{assembly_file}}", file=file)            
             print(f"bwa mem ${{assembly_file}} {read.file_1} {read.file_2} | samtools sort -o {sample.sample_id}.sorted.bam", file=file)
         print(f"cd {run_folder}/GenomeBinning/MaxBin2/Maxbin2_bins", file=file)
@@ -69,19 +69,23 @@ def run_mag_stub(mag_run, run_folder):
     with open(os.path.join(run_folder, 'script.sh'), 'w') as file:
         print(f"#!/bin/bash", file=file)
 
+        sample_count = 1
         print(f"cd {run_folder}", file=file)
+        print(f"sleep 30", file=file)
+        print(f"mkdir -p {run_folder}/Assembly/MEGAHIT", file=file)
+        print(f"mkdir -p {run_folder}/GenomeBinning/MaxBin2/Maxbin2_bins", file=file)
+        print(f"mkdir -p {run_folder}/GenomeBinning/QC", file=file) 
+        print(f"cp {run_folder}/../../checkm_summary_HEADER.tsv {run_folder}/GenomeBinning/QC/checkm_summary.tsv", file=file)
         for read in mag_run.reads.all():
+            if sample_count > 2:
+                break
             sample = read.sample
-            print(f"sleep 30", file=file)
-            print(f"mkdir -p {run_folder}/Assembly/MEGAHIT", file=file)
-            print(f"mkdir -p {run_folder}/GenomeBinning/MaxBin2/Maxbin2_bins", file=file)
-            print(f"mkdir -p {run_folder}/GenomeBinning/QC", file=file)
-            print(f"cp {run_folder}/../../MEGAHIT-sample_1.contigs.fa.gz {run_folder}/Assembly/MEGAHIT/MEGAHIT-{sample.sample_id}.contigs.fa.gz", file=file)    
-            print(f"cp {run_folder}/../../MEGAHIT-MaxBin2-sample_1.001.fa {run_folder}/GenomeBinning/MaxBin2/Maxbin2_bins/MEGAHIT-MaxBin2-{sample.sample_id}.001.fa", file=file)
-            print(f"cp {run_folder}/../../checkm_summary.tsv {run_folder}/GenomeBinning/QC/checkm_summary.tsv", file=file)
-            print(f"sed -i 's/sample_1/{sample.sample_id}.001/g' {run_folder}/GenomeBinning/QC/checkm_summary.tsv", file=file)
-            print(f"cp {run_folder}/../../sample_1.sorted.bam {run_folder}/{sample.sample_id}.sorted.bam", file=file)        
-        
+            print(f"cp {run_folder}/../../MEGAHIT-sample_{sample_count}.contigs.fa.gz {run_folder}/Assembly/MEGAHIT/MEGAHIT-{sample.sample_id}.contigs.fa.gz", file=file)    
+            print(f"cp {run_folder}/../../MEGAHIT-MaxBin2-sample_{sample_count}.001.fa {run_folder}/GenomeBinning/MaxBin2/Maxbin2_bins/MEGAHIT-MaxBin2-{sample.sample_id}.001.fa", file=file)
+            print(f"cat {run_folder}/../../checkm_summary_BODY.tsv |sed -e 's/sample_1/{sample.sample_id}.001/g' >> {run_folder}/GenomeBinning/QC/checkm_summary.tsv", file=file)
+            print(f"cp {run_folder}/../../sample_{sample_count}.sorted.bam {run_folder}/{sample.sample_id}.sorted.bam", file=file)      
+            sample_count += 1  
+
     os.chmod(os.path.join(run_folder, 'script.sh'), 0o744)
 
     output = os.path.join(run_folder, 'output')
@@ -100,7 +104,8 @@ def run_mag_stub(mag_run, run_folder):
 
 def run_submg(submg_run, run_folder):
 
-    submg_yaml = f"{run_folder}/submg.yaml"
+    yaml_filename = f"submg_{submg_run.id}.yaml"
+    submg_yaml = os.path.join(run_folder, yaml_filename)
     staging_dir = f"{run_folder}/staging"
     logging_dir = f"{run_folder}/logging"
 

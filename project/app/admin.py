@@ -1124,13 +1124,33 @@ class SubMGRunAdmin(admin.ModelAdmin):
             # Create a new temporary folder for the run
             id = random.randint(1000000, 9999999)
             run_folder = os.path.join(settings.LOCAL_DIR, f"{id}")
-            os.makedirs(run_folder)
+            os.makedirs(run_folder, exist_ok=True)
 
-            with open(os.path.join(run_folder, 'submg.yaml'), 'w') as file:
-                print(submg_run.yaml.replace('tax_ids.txt', f'{run_folder}/tax_ids.txt'), file=file)
+            try:
+                yaml_entries = json.loads(submg_run.yaml or "[]")
+                if not isinstance(yaml_entries, list):
+                    raise ValueError
+            except (json.JSONDecodeError, ValueError):
+                yaml_entries = [{"label": "Submission", "content": submg_run.yaml or ""}]
+            if not yaml_entries:
+                yaml_entries = [{"label": "Submission", "content": ""}]
 
-            with open(os.path.join(run_folder, 'tax_ids.txt'), 'w') as file:
-                print(submg_run.tax_ids, file=file)
+            tax_ids_filename = None
+            if submg_run.tax_ids:
+                tax_ids_filename = f"tax_ids_{submg_run.id}.txt"
+
+            for index, entry in enumerate(yaml_entries):
+                filename = f"submg_{submg_run.id}.yaml" if index == 0 else f"submg_{submg_run.id}_{index}.yaml"
+                yaml_path = os.path.join(run_folder, filename)
+                yaml_content = entry.get('content', '') or ''
+                if tax_ids_filename:
+                    yaml_content = yaml_content.replace('tax_ids.txt', os.path.join(run_folder, tax_ids_filename))
+                with open(yaml_path, 'w') as file:
+                    file.write(yaml_content)
+
+            if tax_ids_filename:
+                with open(os.path.join(run_folder, tax_ids_filename), 'w') as file:
+                    file.write(submg_run.tax_ids)
 
             # Create a mag run instance
             # completed_process = subprocess.run(f"sleep 30; echo hello", shell=True, capture_output=True)
