@@ -102,17 +102,25 @@ def run_mag_stub(mag_run, run_folder):
     return
 
 
+
+
 def run_submg(submg_run, run_folder):
 
-    yaml_filename = f"submg_{submg_run.id}.yaml"
-    submg_yaml = os.path.join(run_folder, yaml_filename)
     staging_dir = f"{run_folder}/staging"
     logging_dir = f"{run_folder}/logging"
+    output = os.path.join(run_folder, 'output')
+    error = os.path.join(run_folder, 'error')
+
+    yaml_files = sorted(glob.glob(os.path.join(run_folder, "*.yaml")))
+    if not yaml_files:
+        raise FileNotFoundError(f"No YAML files found in {run_folder} for SubMG run {submg_run.id}")
+    total_yaml_files = len(yaml_files)
 
     submg_run.status = 'running'
     submg_run.save()
 
-    with open(os.path.join(run_folder, 'script.sh'), 'w') as file:
+    script_location = os.path.join(run_folder, 'script.sh')
+    with open(script_location, 'w') as file:
         print(f"#!/bin/bash", file=file)
         print(f"#SBATCH -p {settings.MAG_NEXTFLOW_CLUSTER_QUEUE}", file=file)
         print(f"#SBATCH -c {settings.MAG_NEXTFLOW_CLUSTER_CORES}", file=file)
@@ -123,18 +131,51 @@ def run_submg(submg_run, run_folder):
         print(f"export ENA_USER={settings.ENA_USER}", file=file)
         print(f"export ENA_PASSWORD={settings.ENA_PASSWORD}", file=file)
         print(f"source {settings.CONDA_PATH}/bin/activate submg", file=file)
-        print(f"{settings.CONDA_PATH}/envs/submg/bin/submg submit --config {submg_yaml} --staging_dir {staging_dir} --logging_dir {logging_dir} --submit_samples --submit_reads --submit_assembly --submit_bins --skip_checks", file=file)
-
-    os.chmod(os.path.join(run_folder, 'script.sh'), 0o744)
-
-    output = os.path.join(run_folder, 'output')
-    error = os.path.join(run_folder, 'error')
-    script_location = os.path.join(run_folder, 'script.sh')
+        print(f'if [ -L "{staging_dir}" ]; then rm "{staging_dir}"; fi', file=file)
+        print(f'if [ -L "{logging_dir}" ]; then rm "{logging_dir}"; fi', file=file)
+        print(f'mkdir -p "{staging_dir}"', file=file)
+        print(f'mkdir -p "{logging_dir}"', file=file)
+        print(f'rm -f "{output}"', file=file)
+        print(f'rm -f "{error}"', file=file)
+        for index, yaml_path in enumerate(yaml_files):
+            staging_with_index = f"{staging_dir}_{index}"
+            logging_with_index = f"{logging_dir}_{index}"
+            output_with_index = f"{output}_{index}"
+            error_with_index = f"{error}_{index}"
+            submit_command_parts = [
+                f"{settings.CONDA_PATH}/envs/submg/bin/submg submit",
+                f'--config "{yaml_path}"',
+                f"--staging_dir {staging_dir}",
+                f"--logging_dir {logging_dir}"
+            ]
+            if index == 0:
+                submit_command_parts.append("--submit_samples --submit_reads --submit_assembly --submit_bins --skip_checks")
+            else:
+                submit_command_parts.append("--submit_assembly --skip_checks")
+            submit_command = " ".join(submit_command_parts)
+            print(f'{submit_command} > "{output}" 2> "{error}"', file=file)
+            print(f'if [ -e "{staging_with_index}" ]; then rm -rf "{staging_with_index}"; fi', file=file)
+            print(f'if [ -e "{logging_with_index}" ]; then rm -rf "{logging_with_index}"; fi', file=file)
+            print(f'if [ -e "{output_with_index}" ]; then rm -f "{output_with_index}"; fi', file=file)
+            print(f'if [ -e "{error_with_index}" ]; then rm -f "{error_with_index}"; fi', file=file)
+            print(f'if [ -d "{staging_dir}" ]; then mv "{staging_dir}" "{staging_with_index}"; fi', file=file)
+            print(f'if [ -d "{logging_dir}" ]; then mv "{logging_dir}" "{logging_with_index}"; fi', file=file)
+            print(f'if [ -f "{output}" ]; then mv "{output}" "{output_with_index}"; fi', file=file)
+            print(f'if [ -f "{error}" ]; then mv "{error}" "{error_with_index}"; fi', file=file)
+            if index < total_yaml_files - 1:
+                print(f'mkdir -p "{staging_dir}"', file=file)
+                print(f'mkdir -p "{logging_dir}"', file=file)
+            else:
+                print(f'if [ -d "{staging_with_index}" ]; then ln -sfn "{staging_with_index}" "{staging_dir}"; fi', file=file)
+                print(f'if [ -d "{logging_with_index}" ]; then ln -sfn "{logging_with_index}" "{logging_dir}"; fi', file=file)
+                print(f'if [ -f "{output_with_index}" ]; then ln -sf "{output_with_index}" "{output}"; fi', file=file)
+                print(f'if [ -f "{error_with_index}" ]; then ln -sf "{error_with_index}" "{error}"; fi', file=file)
+    os.chmod(script_location, 0o744)
 
     if settings.USE_SLURM_FOR_SUBMG:
-        submission_command = f"/usr/bin/sbatch -p {settings.MAG_NEXTFLOW_CLUSTER_QUEUE} --output={output} --error={error} -W {script_location}"
+        submission_command = f"/usr/bin/sbatch -p {settings.MAG_NEXTFLOW_CLUSTER_QUEUE} -W {script_location}"
     else:
-        submission_command = f"{script_location} > {output} 2> {error}"
+        submission_command = f"{script_location}"
 
     uuid = async_task('subprocess.run', f"{submission_command}", shell=True, capture_output=True, hook='app.hooks.process_submg_result')
     # debug only

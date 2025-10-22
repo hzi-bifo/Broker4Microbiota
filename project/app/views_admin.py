@@ -1693,15 +1693,37 @@ def admin_generate_submg_run(request, project_id):
             if primary_bin:
                 base_yaml.extend(primary_bin.getSubMGYAML())
 
-            bin_tax_map = OrderedDict()
+            bin_samples_by_id = {}
             for sample in order_bin_samples:
-                bin_obj = sample.bin
+                if sample.bin_id:
+                    bin_samples_by_id.setdefault(sample.bin_id, []).append(sample)
+
+            def get_associated_sample(bin_obj):
+                samples = bin_samples_by_id.get(bin_obj.id)
+                if not samples:
+                    samples = list(Sample.objects.filter(bin=bin_obj, sample_type=SAMPLE_TYPE_BIN))
+                if not samples:
+                    return None
+                for candidate in samples:
+                    if candidate.scientific_name and candidate.tax_id:
+                        return candidate
+                return samples[0]
+
+            bin_tax_map = OrderedDict()
+            for bin_obj in order_bins:
                 if not bin_obj or not bin_obj.file:
                     continue
                 key = Path(bin_obj.file).name.replace(".fa", "")
-                bin_tax_map[key] = [sample.scientific_name, sample.tax_id]
+                matching_sample = get_associated_sample(bin_obj)
+                scientific_name_value = (
+                    matching_sample.scientific_name if matching_sample and matching_sample.scientific_name else ""
+                )
+                tax_id_value = (
+                    matching_sample.tax_id if matching_sample and matching_sample.tax_id else ""
+                )
+                bin_tax_map[key] = [scientific_name_value, tax_id_value]
 
-            if primary_bin:
+            if primary_bin and bin_tax_map:
                 base_yaml.extend(primary_bin.getSubMGYAMLTaxIDYAML())
                 tax_ids_content = primary_bin.getSubMGYAMLTaxIDContent(bin_tax_map)
             else:
@@ -1717,6 +1739,55 @@ def admin_generate_submg_run(request, project_id):
             for alignment in order_alignments:
                 base_yaml.extend(alignment.getSubMGYAML())
 
+        used_assembly_sample_ids = set()
+        def build_assembly_section(assembly):
+            section = []
+            section.extend(Assembly.getSubMGYAMLHeader())
+            section.extend(assembly.getSubMGYAML())
+            related_samples = [
+                sample for sample in order_assembly_samples if sample.assembly_id == assembly.id
+            ]
+            if not related_samples:
+                related_samples = list(
+                    Sample.objects.filter(
+                        order=order,
+                        sample_type=SAMPLE_TYPE_ASSEMBLY,
+                        assembly=assembly
+                    )
+                )
+            assembly_stem = Path(assembly.file or "").stem
+            if not related_samples and assembly_stem:
+                related_samples = [
+                    sample for sample in order_assembly_samples
+                    if sample.sample_alias and sample.sample_alias in assembly_stem
+                ]
+            if not related_samples:
+                remaining_samples = [
+                    sample for sample in order_assembly_samples
+                    if sample.id not in used_assembly_sample_ids
+                ]
+                related_samples = remaining_samples
+            related_samples = [
+                sample for sample in related_samples
+                if sample.id not in used_assembly_sample_ids
+            ]
+            label = assembly.file or f"Assembly {assembly.id}"
+            if related_samples:
+                for assembly_sample in related_samples:
+                    section.extend(assembly_sample.getSubMGYAML(SAMPLE_TYPE_ASSEMBLY))
+                sample_label = related_samples[0].sample_title or related_samples[0].sample_alias
+                if sample_label:
+                    label = sample_label
+                used_assembly_sample_ids.update(sample.id for sample in related_samples)
+            section.extend(Assembly.getSubMGYAMLFooter())
+            return section, label
+        primary_assembly_included = False
+        if order_assemblies:
+            primary_section, _ = build_assembly_section(order_assemblies[0])
+            if primary_section:
+                base_yaml.extend(primary_section)
+                primary_assembly_included = True
+
         base_yaml_snapshot = list(base_yaml)
 
         yaml_entries = [
@@ -1728,26 +1799,12 @@ def admin_generate_submg_run(request, project_id):
         ]
 
         if order_assemblies:
-            for assembly in order_assemblies:
-                assembly_section = []
-                assembly_section.extend(Assembly.getSubMGYAMLHeader())
-                assembly_section.extend(assembly.getSubMGYAML())
-
-                related_samples = [
-                    sample for sample in order_assembly_samples if sample.assembly_id == assembly.id
-                ]
-                if not related_samples:
+            for index, assembly in enumerate(order_assemblies):
+                assembly_section, label = build_assembly_section(assembly)
+                if not assembly_section:
                     continue
-                for assembly_sample in related_samples:
-                    assembly_section.extend(assembly_sample.getSubMGYAML(SAMPLE_TYPE_ASSEMBLY))
-
-                assembly_section.extend(Assembly.getSubMGYAMLFooter())
-
-                label = assembly.file or f"Assembly {assembly.id}"
-                sample_label = related_samples[0].sample_title or related_samples[0].sample_alias
-                if sample_label:
-                    label = sample_label
-
+                if index == 0 and primary_assembly_included:
+                    continue
                 yaml_entries.append(
                     {
                         "key": f"assembly-{assembly.id}",

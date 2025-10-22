@@ -1216,7 +1216,7 @@ class Bin(models.Model):
 
         content += f"Bin_id\tScientific_name\tTax_id\n"
         for tax_id in tax_ids:
-            content += f"{tax_id}\t{tax_ids[tax_id][0]}\t{tax_ids[tax_id][1]}"
+            content += f"{tax_id}\t{tax_ids[tax_id][0]}\t{tax_ids[tax_id][1]}\n"
 
         return content
 
@@ -1311,8 +1311,8 @@ class SubMGRun(models.Model):
     type = models.CharField(max_length=100, null=True, blank=True)
     status = models.CharField(max_length=100, null=True, blank=True)
 
-    yaml = models.CharField(max_length=100, null=True, blank=True)
-    tax_ids = models.CharField(max_length=100, null=True, blank=True)
+    yaml = models.TextField(null=True, blank=True)
+    tax_ids = models.TextField(null=True, blank=True)
 
     def get_yaml_entries(self):
         try:

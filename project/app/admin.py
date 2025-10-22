@@ -3,6 +3,7 @@ import random
 import time
 import subprocess
 import gzip
+from collections import OrderedDict
 import requests
 from django.contrib import admin, messages
 from django.shortcuts import render, redirect
@@ -405,25 +406,51 @@ class ProjectAdmin(admin.ModelAdmin):
             if assemblys:   
                yaml.extend(Assembly.getSubMGYAMLFooter())
 
+            tax_ids_content = ""
             if bins:
                 yaml.extend(Bin.getSubMGYAMLHeader())
-            for bin in bins:
-                yaml.extend(bin.getSubMGYAML())
-                break
-            tax_ids = {}
-            tax_ids_content = ""
-            for bin_sample in bin_samples:
-                bin = bin_sample.bin
-                tax_ids[bin.file.split('/')[-1].replace(".fa", "")] = [bin_sample.scientific_name, bin_sample.tax_id]
-            for bin in bins:
-                yaml.extend(bin.getSubMGYAMLTaxIDYAML())
-                tax_ids_content = bin.getSubMGYAMLTaxIDContent(tax_ids)
-                break 
-            for bin_sample in bin_samples:
-               yaml.extend(bin_sample.getSubMGYAML(SAMPLE_TYPE_BIN))
-               break
-            if bins:
-               yaml.extend(Bin.getSubMGYAMLFooter())
+
+                primary_bin = bins[0]
+                yaml.extend(primary_bin.getSubMGYAML())
+
+                bin_samples_by_id = {}
+                for sample in bin_samples:
+                    if sample.bin_id:
+                        bin_samples_by_id.setdefault(sample.bin_id, []).append(sample)
+
+                def get_associated_sample(bin_obj):
+                    samples = bin_samples_by_id.get(bin_obj.id)
+                    if not samples:
+                        samples = list(Sample.objects.filter(bin=bin_obj, sample_type=SAMPLE_TYPE_BIN))
+                    if not samples:
+                        return None
+                    for candidate in samples:
+                        if candidate.scientific_name and candidate.tax_id:
+                            return candidate
+                    return samples[0]
+
+                tax_ids = OrderedDict()
+                for bin_obj in bins:
+                    if not bin_obj.file:
+                        continue
+                    key = Path(bin_obj.file).name.replace(".fa", "")
+                    matching_sample = get_associated_sample(bin_obj)
+                    scientific_name_value = (
+                        matching_sample.scientific_name if matching_sample and matching_sample.scientific_name else ""
+                    )
+                    tax_id_value = (
+                        matching_sample.tax_id if matching_sample and matching_sample.tax_id else ""
+                    )
+                    tax_ids[key] = [scientific_name_value, tax_id_value]
+
+                if tax_ids:
+                    yaml.extend(primary_bin.getSubMGYAMLTaxIDYAML())
+                    tax_ids_content = primary_bin.getSubMGYAMLTaxIDContent(tax_ids)
+
+                if bin_samples:
+                    yaml.extend(bin_samples[0].getSubMGYAML(SAMPLE_TYPE_BIN))
+
+                yaml.extend(Bin.getSubMGYAMLFooter())
 
             # if mag_samples:
             #     yaml.extend(Mag.getSubMGYAMLHeader())

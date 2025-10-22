@@ -8,6 +8,7 @@ import xmltodict
 import json
 import importlib
 import logging
+from collections import defaultdict
 
 logger = logging.getLogger(__name__)
 
@@ -42,6 +43,17 @@ def process_mag_result_inner(returncode, id):
 
         run_folder = mag_run_instance.run_folder
 
+        existing_assemblies = {}
+        existing_bins = {}
+        existing_alignments = {}
+        assembly_sample_links = defaultdict(dict)
+        bin_sample_links = defaultdict(dict)
+        used_bin_sample_ids = defaultdict(set)
+        created_assemblies = defaultdict(list)
+        created_bins = defaultdict(list)
+        created_alignments = defaultdict(list)
+        processed_orders = set()
+
         reads = mag_run.reads.all()
         for read in reads:
             # file_name = re.sub(f"_R1.fastq.gz", f"", re.sub(f"_1.fastq.gz", f"", read.file_1.split('/')[-1]))
@@ -49,6 +61,23 @@ def process_mag_result_inner(returncode, id):
             sample = read.sample
             order = sample.order
             project = order.project
+
+            processed_orders.add(order.id)
+            if order.id not in existing_assemblies:
+                existing_assemblies[order.id] = list(order.assembly_set.values_list('id', flat=True))
+                existing_bins[order.id] = list(order.bin_set.values_list('id', flat=True))
+                existing_alignments[order.id] = list(order.alignment_set.values_list('id', flat=True))
+                assembly_map = assembly_sample_links.setdefault(order.id, {})
+                bin_map = bin_sample_links.setdefault(order.id, {})
+                for bin_sample in Sample.objects.filter(order=order, sample_type=SAMPLE_TYPE_BIN).select_related('bin'):
+                    if bin_sample.bin and bin_sample.bin.bin_number:
+                        bin_map.setdefault(bin_sample.bin.bin_number, []).append(bin_sample.id)
+                for existing_assembly in order.assembly_set.all():
+                    sample_ids = list(Sample.objects.filter(assembly=existing_assembly).values_list('id', flat=True))
+                    if sample_ids:
+                        for read_id in existing_assembly.read.values_list('id', flat=True):
+                            assembly_map.setdefault(read_id, set()).update(sample_ids)
+
 
             assembly = None  # Initialize assembly variable
             assembly_file_path = f"{run_folder}/Assembly/MEGAHIT/MEGAHIT-{sample.sample_id}.contigs.fa.gz"
@@ -58,6 +87,10 @@ def process_mag_result_inner(returncode, id):
                     assembly = Assembly(file=str(assembly_file), order=order)
                     assembly.save()
                     assembly.read.add(read)
+                    created_assemblies[order.id].append(assembly.id)
+                    linked_sample_ids = assembly_sample_links.get(order.id, {}).get(read.id)
+                    if linked_sample_ids:
+                        Sample.objects.filter(id__in=linked_sample_ids).update(assembly=assembly)
                 except Exception as e:
                     logger.error(f"Error creating assembly for sample {sample.sample_id}: {str(e)}")
                     mag_run_instance.status = 'partial'
@@ -77,6 +110,35 @@ def process_mag_result_inner(returncode, id):
                         bin.bin_number = bin_number
                         bin.save()
                         bin.read.add(read)
+                        created_bins[order.id].append(bin.id)
+                        linked_bin_samples = bin_sample_links.get(order.id, {}).get(bin.bin_number, [])
+                        if linked_bin_samples:
+                            Sample.objects.filter(id__in=linked_bin_samples).update(bin=bin)
+                            used_bin_sample_ids[order.id].update(linked_bin_samples)
+                        else:
+                            unmatched_samples = list(
+                                Sample.objects.filter(
+                                    order=order, sample_type=SAMPLE_TYPE_BIN
+                                ).exclude(id__in=used_bin_sample_ids[order.id])
+                            )
+                            bin_stem = Path(bin.file or "").stem
+                            matched_bin_ids = [
+                                sample.id for sample in unmatched_samples
+                                if bin_stem and sample.sample_alias and sample.sample_alias in bin_stem
+                            ]
+                            if len(matched_bin_ids) < len(unmatched_samples):
+                                matched_bin_ids.extend([
+                                    sample.id for sample in unmatched_samples
+                                    if sample.bin_id == bin.id and sample.id not in matched_bin_ids
+                                ])
+                            if len(matched_bin_ids) < len(unmatched_samples):
+                                matched_bin_ids.extend([
+                                    sample.id for sample in unmatched_samples
+                                    if sample.bin_id is None and sample.id not in matched_bin_ids
+                                ])
+                            if matched_bin_ids:
+                                Sample.objects.filter(id__in=matched_bin_ids).update(bin=bin)
+                                used_bin_sample_ids[order.id].update(matched_bin_ids)
                     except Exception as e:
                         logger.error(f"Error creating bin from {bin_file}: {str(e)}")
                         mag_run_instance.status = 'partial'
@@ -95,6 +157,7 @@ def process_mag_result_inner(returncode, id):
                         try:
                             alignment = Alignment(file=alignment_file, order=order, assembly=assembly, read=read)
                             alignment.save()
+                            created_alignments[order.id].append(alignment.id)
                         except Exception as e:
                             logger.error(f"Error creating alignment from {alignment_file}: {str(e)}")
                             mag_run_instance.status = 'partial'
@@ -104,6 +167,19 @@ def process_mag_result_inner(returncode, id):
                     mag_run.status = 'partial'
             except Exception as e:
                 logger.error(f"Error processing alignment files: {str(e)}")
+
+        for order_id in processed_orders:
+            if not (created_assemblies.get(order_id) or created_bins.get(order_id) or created_alignments.get(order_id)):
+                continue
+            old_alignment_ids = existing_alignments.get(order_id, [])
+            if old_alignment_ids:
+                Alignment.objects.filter(id__in=old_alignment_ids).delete()
+            old_bin_ids = existing_bins.get(order_id, [])
+            if old_bin_ids:
+                Bin.objects.filter(id__in=old_bin_ids).delete()
+            old_assembly_ids = existing_assemblies.get(order_id, [])
+            if old_assembly_ids:
+                Assembly.objects.filter(id__in=old_assembly_ids).delete()
 
         try:
             mag_run_instance.save()
