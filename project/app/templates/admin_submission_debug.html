@@ -19,11 +19,30 @@ Debug: ProjectSubmission {{ submission.id }}
           <td>{{ submission.id }}</td>
         </tr>
         <tr>
-          <th>Projects:</th>
+          <th>Primary Project:</th>
           <td>
-            {% for project in submission.projects.all %}
-              {{ project.title }} (ID: {{ project.id }})<br>
-            {% endfor %}
+            {% if submission.project %}
+              {{ submission.project.title|default:'(Untitled project)' }} (ID: {{ submission.project.id }})
+            {% else %}
+              <span class="has-text-grey">None</span>
+            {% endif %}
+          </td>
+        </tr>
+        <tr>
+          <th>Associated Projects:</th>
+          <td>
+            {% with extra_projects=submission.projects.all %}
+              {% if extra_projects %}
+                {% for project in extra_projects %}
+                  {% if submission.project and project.id == submission.project.id %}
+                    <span class="tag is-link is-light is-rounded is-size-7">Primary</span>
+                  {% endif %}
+                  {{ project.title|default:'(Untitled project)' }} (ID: {{ project.id }})<br>
+                {% endfor %}
+              {% else %}
+                <span class="has-text-grey">None</span>
+              {% endif %}
+            {% endwith %}
           </td>
         </tr>
         <tr>

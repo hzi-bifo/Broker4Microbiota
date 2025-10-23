@@ -3,12 +3,32 @@ from django_q.tasks import async_task, result
 from .models import MagRun, MagRunInstance, SubMGRunInstance, SubMGRun
 import importlib
 import math
+import logging
 from django.conf import settings
 import os
 import subprocess
 import glob
 
+
+logger = logging.getLogger(__name__)
+
 def run_mag(mag_run, run_folder):
+    project_ids = set(mag_run.reads.values_list('sample__order__project_id', flat=True))
+    project_ids.discard(None)
+
+    if mag_run.project_id:
+        mismatched_projects = project_ids - {mag_run.project_id}
+        if mismatched_projects:
+            raise ValueError(f'MAG run {mag_run.id} includes reads from multiple projects: {sorted(mismatched_projects | {mag_run.project_id})}')
+    else:
+        if len(project_ids) == 1:
+            mag_run.project_id = project_ids.pop()
+            mag_run.save(update_fields=['project'])
+        elif len(project_ids) == 0:
+            logger.warning('MAG run %s has no associated project and no reads to infer project from.', mag_run.id)
+        else:
+            raise ValueError(f'MAG run {mag_run.id} includes reads from multiple projects and cannot determine a single project.')
+
     if settings.MAG_NEXTFLOW_STUB_MODE:
         run_mag_stub(mag_run, run_folder)
     else:
@@ -148,10 +168,7 @@ def run_submg(submg_run, run_folder):
                 f"--staging_dir {staging_dir}",
                 f"--logging_dir {logging_dir}"
             ]
-            if index == 0:
-                submit_command_parts.append("--submit_samples --submit_reads --submit_assembly --submit_bins --skip_checks")
-            else:
-                submit_command_parts.append("--submit_assembly --skip_checks")
+            submit_command_parts.append("--submit_samples --submit_reads --submit_assembly --submit_bins --skip_checks")
             submit_command = " ".join(submit_command_parts)
             print(f'{submit_command} > "{output}" 2> "{error}"', file=file)
             print(f'if [ -e "{staging_with_index}" ]; then rm -rf "{staging_with_index}"; fi', file=file)

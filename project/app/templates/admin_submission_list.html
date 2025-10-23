@@ -182,22 +182,33 @@ ENA Project Submissions - Admin View
               <strong>#{{ submission.id }}</strong>
             </td>
             <td>
-              {% for project in submission.projects.all %}
-                <span class="tag is-light mb-1">
-                  {{ project.title|truncatechars:30 }}
-                </span>
-                {% if not forloop.last %}<br>{% endif %}
-              {% endfor %}
+              {% if submission.primary_project %}
+                <div>
+                  <span class="tag is-link is-light is-rounded is-size-7 mb-1">Primary</span>
+                  <div><strong>{{ submission.primary_project.title|default:'(Untitled project)' }}</strong></div>
+                  {% if submission.primary_project.alias %}
+                    <div class="has-text-grey is-size-7">{{ submission.primary_project.alias }}</div>
+                  {% endif %}
+                </div>
+              {% else %}
+                <span class="has-text-grey">No primary project</span>
+              {% endif %}
+              {% if submission.additional_projects %}
+                <div class="mt-2">
+                  {% for project in submission.additional_projects %}
+                    <span class="tag is-light is-rounded mb-1">+ {{ project.title|default:'(Untitled project)'|truncatechars:30 }}</span>
+                    {% if not forloop.last %}<br>{% endif %}
+                  {% endfor %}
+                </div>
+              {% endif %}
             </td>
             <td>
-              {% with first_project=submission.projects.first %}
-                {% if first_project %}
-                  <strong>{{ first_project.user.username }}</strong>
-                  <br><small class="has-text-grey">{{ first_project.user.email }}</small>
-                {% else %}
-                  <span class="has-text-grey">-</span>
-                {% endif %}
-              {% endwith %}
+              {% if submission.primary_user %}
+                <strong>{{ submission.primary_user.username }}</strong>
+                <br><small class="has-text-grey">{{ submission.primary_user.email }}</small>
+              {% else %}
+                <span class="has-text-grey">-</span>
+              {% endif %}
             </td>
             <td>
               {% if submission.accession_status == "SUCCESSFUL" %}
@@ -231,13 +242,11 @@ ENA Project Submissions - Admin View
               {% endif %}
             </td>
             <td>
-              {% with first_project=submission.projects.first %}
-                {% if first_project and first_project.study_accession_id %}
-                  <code>{{ first_project.study_accession_id }}</code>
-                {% else %}
-                  <span class="has-text-grey">-</span>
-                {% endif %}
-              {% endwith %}
+              {% if submission.primary_project and submission.primary_project.study_accession_id %}
+                <code>{{ submission.primary_project.study_accession_id }}</code>
+              {% else %}
+                <span class="has-text-grey">-</span>
+              {% endif %}
             </td>
             <td>
               <div class="tags">

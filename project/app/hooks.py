@@ -10,7 +10,58 @@ import importlib
 import logging
 from collections import defaultdict
 
+from typing import Optional
+
 logger = logging.getLogger(__name__)
+
+def _suffix_sort_key(path: Path, base_name: str) -> float:
+    suffix = path.name[len(base_name):]
+    if suffix.startswith("_"):
+        suffix = suffix[1:]
+    try:
+        return int(suffix)
+    except ValueError:
+        return float("inf")
+
+
+def _iter_named_directories(run_folder: str, base_name: str):
+    """Yield directories like logging, logging_0, logging_1 in order."""
+    root = Path(run_folder)
+    seen = set()
+    directories = []
+
+    def add(path: Path):
+        if not path.exists():
+            return
+        try:
+            key = path.resolve()
+        except OSError:
+            key = path
+        if key not in seen:
+            directories.append(path)
+            seen.add(key)
+
+    for candidate in sorted(root.glob(f"{base_name}_*"), key=lambda p: _suffix_sort_key(p, base_name)):
+        if candidate.is_dir():
+            add(candidate)
+
+    add(root / base_name)
+    return directories
+
+
+def _find_first_relative(run_folder: str, base_name: str, relative_path: Path) -> Optional[Path]:
+    for directory in _iter_named_directories(run_folder, base_name):
+        candidate = directory / relative_path
+        if candidate.exists():
+            return candidate
+    return None
+
+
+def _glob_relative(run_folder: str, base_name: str, pattern: str):
+    matches = []
+    for directory in _iter_named_directories(run_folder, base_name):
+        matches.extend(sorted(directory.glob(pattern)))
+    return matches
 
 def process_mag_result(task):
     try:
@@ -34,6 +85,21 @@ def process_mag_result_inner(returncode, id):
         logger.error(f"MagRun for MagRunInstance {id} does not exist")
         raise ValueError(f"MagRun for MagRunInstance {id} does not exist")
 
+    project_ids = set(
+        mag_run.reads.values_list('sample__order__project_id', flat=True)
+    )
+    project_ids.discard(None)
+    if project_ids:
+        if mag_run.project_id and mag_run.project_id not in project_ids:
+            logger.warning(
+                'MAG run %s has project %s but includes reads from projects %s',
+                mag_run.id,
+                mag_run.project_id,
+                sorted(project_ids)
+            )
+        elif not mag_run.project_id and len(project_ids) == 1:
+            mag_run.project_id = project_ids.pop()
+    
     if returncode != 0:
         mag_run_instance.status = 'failed'
         mag_run.status = 'failed'
@@ -218,52 +284,72 @@ def process_submg_result_inner(returncode, id):
 
         # Process biological samples
 
-        # Get aliases and accession numbers from the sample file
-        # and update the Sample objects accordingly
-        sample_file_path = f"{run_folder}/logging/biological_samples/sample_preliminary_accessions.txt"
-        with open(sample_file_path) as sample_file:
-            next(sample_file)  # Skip header line
-            for line in sample_file:
-                sample_alias = line.split()[0]
-                sample_accession_id = line.split()[1]
-                sample_external_accession_id = line.split()[2]
+        sample_file_path = _find_first_relative(run_folder, 'logging', Path('biological_samples/sample_preliminary_accessions.txt'))
+        samplesheet_path = _find_first_relative(run_folder, 'staging', Path('biological_samples/samplesheet.xml'))
+        samplesheet_lookup = {}
 
-                # use the alias to look up the alias in staging/biological_samples/samplesheet.xml and get the title
-
-
-                biological_sample_samplesheet_path = f"{run_folder}/staging/biological_samples/samplesheet.xml"
-
-                with open(biological_sample_samplesheet_path) as biological_sample_samplesheet_content:
+        if samplesheet_path and samplesheet_path.exists():
+            try:
+                with open(samplesheet_path) as biological_sample_samplesheet_content:
                     biological_sample_samplesheet_data = biological_sample_samplesheet_content.read()
                     biological_sample_samplesheet_xml = xmltodict.parse(biological_sample_samplesheet_data)
                     biological_sample_samplesheet_json = json.loads(json.dumps(biological_sample_samplesheet_xml))
-                    for sampleset_attribute, sampleset_value in biological_sample_samplesheet_json.items():
-                        for sample_attribute, sample_value in sampleset_value.items():                     
-                            biological_sample_alias = sample_value['@alias']
-                            biological_sample_title = sample_value['TITLE']
+                for sampleset_value in biological_sample_samplesheet_json.values():
+                    if not isinstance(sampleset_value, dict):
+                        continue
+                    for sample_value in sampleset_value.values():
+                        if not sample_value:
+                            continue
+                        sample_entries = sample_value if isinstance(sample_value, list) else [sample_value]
+                        for entry in sample_entries:
+                            alias = entry.get('@alias') if isinstance(entry, dict) else None
+                            if alias:
+                                samplesheet_lookup[alias] = entry
+            except Exception as exc:
+                logger.error('Error parsing biological samplesheet for SubMG run %s: %s', submg_run.id, exc)
+        else:
+            logger.warning('Biological sample samplesheet not found for SubMG run %s', submg_run.id)
 
-                            if biological_sample_alias == sample_alias:
-
-                                try:
-                                    sample=Sample.objects.get(order = order, sample_type=SAMPLE_TYPE_NORMAL, sample_title=biological_sample_title)
-                                    sample.sample_accession_number = sample_accession_id
-                                    sample.sample_biosample_number = sample_external_accession_id
-                                    sample.save()
-                                except Sample.DoesNotExist:
-                                    pass
-                                break
+        if sample_file_path and sample_file_path.exists():
+            with open(sample_file_path) as sample_file:
+                next(sample_file, None)  # Skip header line
+                for line in sample_file:
+                    parts = line.split()
+                    if len(parts) < 3:
+                        continue
+                    sample_alias, sample_accession_id, sample_external_accession_id = parts[:3]
+                    sample_info = samplesheet_lookup.get(sample_alias)
+                    if not sample_info:
+                        continue
+                    biological_sample_title = sample_info.get('TITLE') if isinstance(sample_info, dict) else None
+                    if not biological_sample_title:
+                        continue
+                    try:
+                        sample = Sample.objects.get(order=order, sample_type=SAMPLE_TYPE_NORMAL, sample_title=biological_sample_title)
+                        sample.sample_accession_number = sample_accession_id
+                        sample.sample_biosample_number = sample_external_accession_id
+                        sample.save()
+                    except Sample.DoesNotExist:
+                        pass
+        else:
+            logger.warning('Biological sample accession file not found for SubMG run %s', submg_run.id)
 
 
         # Process reads
 
-        # Get read ID
-        read_file_path = f"{run_folder}/logging/reads/reads_*/webin-cli.report"
-        read_files = glob.glob(read_file_path)
+        read_files = _glob_relative(run_folder, 'logging', 'reads/reads_*/webin-cli.report')
         for read_file in read_files:
-            read_id = read_file.split('/')[-2].replace('reads_', '')
+            read_file_path = Path(read_file)
+            read_directory = read_file_path.parent
+            read_id = read_directory.name.replace('reads_', '')
 
-            # Get read file checksums from the submission file
-            submission_file_path = f"{run_folder}/logging/reads/reads_{read_id}/reads/{read_id}/submit/run.xml"
+            submission_file_path = read_directory / 'reads' / read_id / 'submit' / 'run.xml'
+            if not submission_file_path.exists():
+                logger.warning('Submission file not found for read %s in SubMG run %s', read_id, submg_run.id)
+                continue
+
+            read_file_checksum_1 = None
+            read_file_checksum_2 = None
             with open(submission_file_path) as submission_file:
                 for submission_line in submission_file:
                     if "FILE file" in submission_line:
@@ -272,42 +358,58 @@ def process_submg_result_inner(returncode, id):
                         if read_file_name.endswith('1'):
                             read_file_checksum_1 = checksum
                         if read_file_name.endswith('2'):
-                            read_file_checksum_2 = checksum 
+                            read_file_checksum_2 = checksum
 
-            # Get actual read object using these checksums - was created when actual reads were uploaded
-            read = Read.objects.get(read_file_checksum_1 = read_file_checksum_1, read_file_checksum_2 = read_file_checksum_2)
+            if not (read_file_checksum_1 and read_file_checksum_2):
+                logger.warning('Could not determine read checksum pair for read %s in SubMG run %s', read_id, submg_run.id)
+                continue
 
-            # Update read accession numbers
-            with open(read_file) as read_file_content: 
+            try:
+                read = Read.objects.get(read_file_checksum_1=read_file_checksum_1, read_file_checksum_2=read_file_checksum_2)
+            except Read.DoesNotExist:
+                logger.warning('Read with checksums %s / %s not found for SubMG run %s', read_file_checksum_1, read_file_checksum_2, submg_run.id)
+                continue
+
+            run_accession_id = None
+            experiment_accession_id = None
+            with open(read_file_path) as read_file_content:
                 for line in read_file_content:
-                    if "run accession" in line:
-                        run_accession_id = line.split('submission: ')[1].replace('\n', '')
-                    if "experiment accession" in line:
-                        experiment_accession_id = line.split('submission: ')[1].replace('\n', '')
-            read.run_accession_number = run_accession_id
-            read.experiment_accession_number = experiment_accession_id
+                    if 'run accession' in line:
+                        run_accession_id = line.split('submission: ')[1].strip()
+                    if 'experiment accession' in line:
+                        experiment_accession_id = line.split('submission: ')[1].strip()
+
+            if run_accession_id:
+                read.run_accession_number = run_accession_id
+            if experiment_accession_id:
+                read.experiment_accession_number = experiment_accession_id
             read.save()
+
 
         # Process assemblies
 
-        # Upload (only) assembly for this order with accession id
-        assembly_file_path = f"{run_folder}/logging/assembly_fasta/webin-cli.report"
-        assembly_files = glob.glob(assembly_file_path)
+        assembly_files = _glob_relative(run_folder, 'logging', 'assembly_fasta/webin-cli.report')
         for assembly_file in assembly_files:
+            assembly_path = Path(assembly_file)
             try:
                 assembly = Assembly.objects.get(order=order)
-                with open(assembly_file) as assembly_file_content:
-                    for line in assembly_file_content:
-                        if "analysis accession" in line:
-                            assembly_accession_id = line.split('submission: ')[1].replace('\n', '')
-                assembly.assembly_accession_number = assembly_accession_id
-                assembly.save()
             except Assembly.DoesNotExist:
-                logger.error(f"No assembly found for order {order.id}")
+                logger.error('No assembly found for order %s', order.id)
+                continue
+
+            try:
+                assembly_accession_id = None
+                with open(assembly_path) as assembly_file_content:
+                    for line in assembly_file_content:
+                        if 'analysis accession' in line:
+                            assembly_accession_id = line.split('submission: ')[1].strip()
+                if assembly_accession_id:
+                    assembly.assembly_accession_number = assembly_accession_id
+                    assembly.save()
             except FileNotFoundError:
-                logger.error(f"Assembly file not found: {assembly_file}")
+                logger.error('Assembly file not found: %s', assembly_path)
             except Exception as e:
-                logger.error(f"Error processing assembly file {assembly_file}: {str(e)}")
+                logger.error('Error processing assembly file %s: %s', assembly_path, str(e))
 
 
         # Process assembly samples
@@ -315,9 +417,9 @@ def process_submg_result_inner(returncode, id):
         # Get details of assemly sample constructed by SubMG and convert XML to JSON
 
         # Only present if multiple samples were co-assembled
-        assembly_sample_samplesheet_path = f"{run_folder}/staging/assembly_submission/co_assembly_sample/coassembly_samplesheet.xml"
+        assembly_sample_samplesheet_path = _find_first_relative(run_folder, 'staging', Path('assembly_submission/co_assembly_sample/coassembly_samplesheet.xml'))
 
-        if os.path.exists(assembly_sample_samplesheet_path):
+        if assembly_sample_samplesheet_path and assembly_sample_samplesheet_path.exists():
 
             assembly_sample_title_dict = {}
             assembly_sample_name_dict = {}
@@ -381,8 +483,7 @@ def process_submg_result_inner(returncode, id):
 
             # Update assembly sample accession numbers
 
-            assembly_sample_file_path = f"{run_folder}/logging/co_assembly_sample/assembly_samplesheet_receipt.xml"
-            assembly_sample_files = glob.glob(assembly_sample_file_path)
+            assembly_sample_files = _glob_relative(run_folder, 'logging', 'co_assembly_sample/assembly_samplesheet_receipt.xml')
             for assembly_sample_file in assembly_sample_files:
                 with open(assembly_sample_file) as assembly_sample_file_content:
                     for line in assembly_sample_file_content:
@@ -400,8 +501,7 @@ def process_submg_result_inner(returncode, id):
 
         # Process bins
 
-        bin_file_path = f"{run_folder}/logging/bins/bin_to_preliminary_accession.tsv"
-        bin_files = glob.glob(bin_file_path)
+        bin_files = _glob_relative(run_folder, 'logging', 'bins/bin_to_preliminary_accession.tsv')
         for bin_file in bin_files:
             with open(bin_file) as bin_file_content:
                 for line in bin_file_content:
@@ -415,80 +515,72 @@ def process_submg_result_inner(returncode, id):
 
         # Process bin samples
 
-        # Get details of assemly sample constructed by SubMG and convert XML to JSON
+        bin_sample_samplesheet_path = _find_first_relative(run_folder, 'staging', Path('bins/bin_samplesheet/bins_samplesheet.xml'))
 
-        bin_sample_samplesheet_path = f"{run_folder}/staging/bins/bin_samplesheet/bins_samplesheet.xml"
+        if not bin_sample_samplesheet_path or not bin_sample_samplesheet_path.exists():
+            logger.warning('Bin samplesheet not found for SubMG run %s', submg_run.id)
+        else:
+            bin_sample_title_dict = {}
+            bin_sample_name_dict = {}
+            bin_sample_attributes_dict = {}
 
-        bin_sample_title_dict = {}
-        bin_sample_name_dict = {}
-        bin_sample_attributes_dict = {}
-        
-        with open(bin_sample_samplesheet_path) as bin_sample_samplesheet_content:
-            bin_sample_samplesheet_data = bin_sample_samplesheet_content.read()
-            bin_sample_samplesheet_xml = xmltodict.parse(bin_sample_samplesheet_data)
-            bin_sample_samplesheet_json = json.loads(json.dumps(bin_sample_samplesheet_xml))
-            for samplesheet_attribute, samplesheet_value in bin_sample_samplesheet_json.items():
-                for sample_attribute, sample_value in samplesheet_value.items():
-                    for attribute, value in sample_value.items():
-                        if attribute == '@alias':
-                            # string
-                            bin_sample_alias = value
-                        if attribute == 'TITLE':
-                            # string
-                            bin_sample_title = value
-                        if attribute == 'SAMPLE_NAME':
-                            # dictionary
-                            bin_sample_name = value
-                        if attribute == 'SAMPLE_ATTRIBUTES':
-                            # list of dictionaries (with TAG and VALUE)
-                            bin_sample_attributes = value.items()                                
-            bin_sample_title_dict[bin_sample_alias] = bin_sample_title
-            bin_sample_name_dict[bin_sample_alias] = bin_sample_name
-            bin_sample_attributes_dict[bin_sample_alias] = bin_sample_attributes
+            with open(bin_sample_samplesheet_path) as bin_sample_samplesheet_content:
+                bin_sample_samplesheet_data = bin_sample_samplesheet_content.read()
+                bin_sample_samplesheet_xml = xmltodict.parse(bin_sample_samplesheet_data)
+                bin_sample_samplesheet_json = json.loads(json.dumps(bin_sample_samplesheet_xml))
+                for samplesheet_attribute, samplesheet_value in bin_sample_samplesheet_json.items():
+                    for sample_attribute, sample_value in samplesheet_value.items():
+                        for attribute, value in sample_value.items():
+                            if attribute == '@alias':
+                                bin_sample_alias = value
+                            if attribute == 'TITLE':
+                                bin_sample_title = value
+                            if attribute == 'SAMPLE_NAME':
+                                bin_sample_name = value
+                            if attribute == 'SAMPLE_ATTRIBUTES':
+                                bin_sample_attributes = value.items()
+                bin_sample_title_dict[bin_sample_alias] = bin_sample_title
+                bin_sample_name_dict[bin_sample_alias] = bin_sample_name
+                bin_sample_attributes_dict[bin_sample_alias] = bin_sample_attributes
 
-            bin_sample_full_title = re.sub("_virtual_sample", "", re.sub(".*coasm_bin_MEGAHIT-MaxBin2-", "", bin_sample_title))  
-            bin_sample_title = bin_sample_full_title.split('.')[0]  # Remove the extension if present
-            bin_sample_number = bin_sample_full_title.split('.')[1]
+                bin_sample_full_title = re.sub('_virtual_sample', '', re.sub('.*coasm_bin_MEGAHIT-MaxBin2-', '', bin_sample_title))
+                bin_sample_title = bin_sample_full_title.split('.')[0]
+                bin_sample_number = bin_sample_full_title.split('.')[1]
 
-            bin = Bin.objects.get(order=order, bin_number=bin_sample_number)
+                bin = Bin.objects.get(order=order, bin_number=bin_sample_number)
 
-            # create bin sample objects
-            try:
-                sample = Sample.objects.get(order = order, sample_type=SAMPLE_TYPE_BIN, bin=bin)
-            except Sample.DoesNotExist:
-                sample=Sample(order = order, sample_type=SAMPLE_TYPE_BIN, sample_alias=bin_sample_title, bin=bin)
-            sample.setFieldsFromSubMG(bin_sample_title, bin_sample_title_dict[bin_sample_alias], bin_sample_name_dict[bin_sample_alias], bin_sample_attributes_dict[bin_sample_alias])
-            sample.sampleset = sample_set
-            sample.save()
-
-            checklists = sample_set.checklists
-
-            # create new checklists based on the received data
-
-            for checklist in checklists:
-                checklist_name = checklist
-                checklist_code = Sampleset.checklist_structure[checklist_name]['checklist_code']  
-                checklist_class_name = Sampleset.checklist_structure[checklist_name]['checklist_class_name']
-                checklist_item_class =  getattr(importlib.import_module("app.models"), checklist_class_name)
                 try:
-                    checklist_item_instance = checklist_item_class.objects.get(sampleset = sample_set, sample = sample, sample_type=SAMPLE_TYPE_ASSEMBLY)
-                except checklist_item_class.DoesNotExist:
-                    checklist_item_instance = checklist_item_class(sampleset = sample_set, sample = sample, sample_type=SAMPLE_TYPE_ASSEMBLY)
-                checklist_item_instance.setFieldsFromSubMG(bin_sample_alias, bin_sample_title_dict[bin_sample_alias], bin_sample_name_dict[bin_sample_alias], bin_sample_attributes_dict[bin_sample_alias])
-                checklist_item_instance.save()
-                unitchecklist_class_name = Sampleset.checklist_structure[checklist_name]['unitchecklist_class_name']
-                unitchecklist_item_class =  getattr(importlib.import_module("app.models"), unitchecklist_class_name)
-                try:
-                    unitchecklist_item_instance = unitchecklist_item_class.objects.get(sampleset = sample_set, sample = sample, sample_type=SAMPLE_TYPE_ASSEMBLY)
-                except unitchecklist_item_class.DoesNotExist:
-                    unitchecklist_item_instance = unitchecklist_item_class(sampleset = sample_set, sample = sample, sample_type=SAMPLE_TYPE_ASSEMBLY)
-                # unitchecklist_item_instance.setFieldsFromResponse(sample_info)
-                unitchecklist_item_instance.save()
+                    sample = Sample.objects.get(order=order, sample_type=SAMPLE_TYPE_BIN, bin=bin)
+                except Sample.DoesNotExist:
+                    sample = Sample(order=order, sample_type=SAMPLE_TYPE_BIN, sample_alias=bin_sample_title, bin=bin)
+                sample.setFieldsFromSubMG(bin_sample_title, bin_sample_title_dict[bin_sample_alias], bin_sample_name_dict[bin_sample_alias], bin_sample_attributes_dict[bin_sample_alias])
+                sample.sampleset = sample_set
+                sample.save()
+
+                checklists = sample_set.checklists
+                for checklist in checklists:
+                    checklist_name = checklist
+                    checklist_code = Sampleset.checklist_structure[checklist_name]['checklist_code']
+                    checklist_class_name = Sampleset.checklist_structure[checklist_name]['checklist_class_name']
+                    checklist_item_class = getattr(importlib.import_module('app.models'), checklist_class_name)
+                    try:
+                        checklist_item_instance = checklist_item_class.objects.get(sampleset=sample_set, sample=sample, sample_type=SAMPLE_TYPE_ASSEMBLY)
+                    except checklist_item_class.DoesNotExist:
+                        checklist_item_instance = checklist_item_class(sampleset=sample_set, sample=sample, sample_type=SAMPLE_TYPE_ASSEMBLY)
+                    checklist_item_instance.setFieldsFromSubMG(bin_sample_alias, bin_sample_title_dict[bin_sample_alias], bin_sample_name_dict[bin_sample_alias], bin_sample_attributes_dict[bin_sample_alias])
+                    checklist_item_instance.save()
+                    unitchecklist_class_name = Sampleset.checklist_structure[checklist_name]['unitchecklist_class_name']
+                    unitchecklist_item_class = getattr(importlib.import_module('app.models'), unitchecklist_class_name)
+                    try:
+                        unitchecklist_item_instance = unitchecklist_item_class.objects.get(sampleset=sample_set, sample=sample, sample_type=SAMPLE_TYPE_ASSEMBLY)
+                    except unitchecklist_item_class.DoesNotExist:
+                        unitchecklist_item_instance = unitchecklist_item_class(sampleset=sample_set, sample=sample, sample_type=SAMPLE_TYPE_ASSEMBLY)
+                    unitchecklist_item_instance.save()
+
 
         # Update bin sample accession numbers
 
-        bin_sample_file_path = f"{run_folder}/logging/bins/bin_samplesheet/bins_samplesheet_receipt.xml"
-        bin_sample_files = glob.glob(bin_sample_file_path)
+        bin_sample_files = _glob_relative(run_folder, 'logging', 'bins/bin_samplesheet/bins_samplesheet_receipt.xml')
         for bin_sample_file in bin_sample_files:
             with open(bin_sample_file) as bin_sample_file_content:
                 for line in bin_sample_file_content:

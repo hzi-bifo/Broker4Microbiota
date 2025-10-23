@@ -286,11 +286,13 @@ class ProjectAdmin(admin.ModelAdmin):
 
     def generate_xml_and_create_project_submission(self, request, queryset):
         selected_projects = queryset
+        primary_project = selected_projects.first()
 
-        project_submission = ProjectSubmission.objects.create()
+        project_submission = ProjectSubmission.objects.create(project=primary_project)
+        project_submission.projects.set(selected_projects)
 
         context = {
-            'projects': selected_projects
+            'projects': list(selected_projects)
         }
 
         project_xml_content = render_to_string('admin/app/sample/project_xml_template.xml', context)
@@ -305,7 +307,10 @@ class ProjectAdmin(admin.ModelAdmin):
 
         project_submission.save()
 
-        self.message_user(request, f'Successfully created ProjectSubmission {project_submission.id} with {selected_projects.count()} projects')
+        self.message_user(
+            request,
+            f'Successfully created ProjectSubmission {project_submission.id} with {selected_projects.count()} projects'
+        )
 
     generate_xml_and_create_project_submission.short_description = 'Generate XML and create Project Submission'
 
@@ -932,8 +937,11 @@ admin.site.register(ReadSubmission, ReadSubmissionAdmin)
 
 
 class ProjectSubmissionAdmin(admin.ModelAdmin):
-    list_display = ('id', 'project_object_xml', 'receipt_xml', 'submission_object_xml', 'accession_status')
-    
+    list_display = ('id', 'project', 'project_count', 'project_object_xml', 'receipt_xml', 'submission_object_xml', 'accession_status')
+    list_filter = ('accession_status', 'project')
+    search_fields = ('project__title', 'project__alias', 'project__user__username', 'project__user__email')
+    autocomplete_fields = ('project', 'projects')
+
     actions = ['register_projects']
 
     def project_count(self, obj):
@@ -1024,13 +1032,14 @@ admin.site.register(ProjectSubmission, ProjectSubmissionAdmin)
 
 
 class MagRunAdmin(admin.ModelAdmin):
-    list_display = ('id', 'status', 'get_reads_count', 'get_samplesheet_preview', 'get_cluster_config_preview')
-    list_filter = ('status',)
+    list_display = ('id', 'project', 'status', 'get_reads_count', 'get_samplesheet_preview', 'get_cluster_config_preview')
+    list_filter = ('status', 'project')
     readonly_fields = ('id', 'status', 'get_reads_display', 'samplesheet_content', 'cluster_config')
-    
+    autocomplete_fields = ('project', 'reads')
+
     fieldsets = (
         ('Run Information', {
-            'fields': ('id', 'status')
+            'fields': ('id', 'project', 'status')
         }),
         ('Associated Reads', {
             'fields': ('get_reads_display',)

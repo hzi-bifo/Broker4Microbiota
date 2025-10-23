@@ -968,14 +968,20 @@ class Sample(SelfDescribingModel):
         return headers + ""
 
 class ProjectSubmission(models.Model):
-    projects = models.ManyToManyField(Project)
+    project = models.ForeignKey(Project, on_delete=models.CASCADE, related_name='project_submissions', null=True, blank=True)
+    projects = models.ManyToManyField(Project, blank=True)
     project_object_xml = models.TextField(null=True, blank=True)
     submission_object_xml = models.TextField(null=True, blank=True)
     receipt_xml = models.TextField(null=True, blank=True)
     accession_status = models.CharField(max_length=100, null=True, blank=True)
 
     def __str__(self):
-        return f"Submission for Project" #  {self.project.id}
+        if self.project_id and self.project:
+            project_title = self.project.title or self.project.alias or str(self.project_id)
+            return f"Submission for Project {project_title}"
+        if self.project_id:
+            return f"Submission for Project {self.project_id}"
+        return f"Submission #{self.id}"
 
 class Read(models.Model):
     sample = models.ForeignKey(Sample, on_delete=models.CASCADE)
@@ -1101,6 +1107,7 @@ class Blah_unitchecklist(SelfDescribingModel):
     sample = models.ForeignKey(Sample, on_delete=models.CASCADE) """
 
 class MagRun(models.Model):
+    project = models.ForeignKey(Project, on_delete=models.CASCADE, related_name='mag_runs', null=True, blank=True)
     reads = models.ManyToManyField(Read)
 
     status = models.CharField(max_length=100, null=True, blank=True)

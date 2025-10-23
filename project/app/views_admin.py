@@ -11,7 +11,7 @@ from django.core.paginator import Paginator
 from django.http import JsonResponse, HttpResponse
 from django.apps import apps
 from django.views.decorators.http import require_http_methods
-from collections import OrderedDict
+from collections import OrderedDict, defaultdict
 import csv
 import importlib
 import json
@@ -514,7 +514,7 @@ def admin_user_list(request):
     paginator = Paginator(users, 25)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
-    
+
     context = {
         'page_obj': page_obj,
         'current_filters': {
@@ -712,13 +712,15 @@ def admin_project_list(request):
         latest_order = project.order_set.order_by('-status_updated_at').first()
         
         # Get XML submission info
-        project_submissions = ProjectSubmission.objects.filter(projects=project)
+        project_submissions = ProjectSubmission.objects.filter(
+            Q(project=project) | Q(projects=project)
+        ).distinct()
         submission_count = project_submissions.count()
         has_successful_submission = project_submissions.filter(accession_status='SUCCESSFUL').exists()
         
         # Calculate workflow status
         has_mag_runs = MagRun.objects.filter(
-            reads__sample__order__project=project
+            Q(project=project) | Q(project__isnull=True, reads__sample__order__project=project)
         ).distinct().exists()
         
         has_submg_runs = SubMGRun.objects.filter(
@@ -817,9 +819,9 @@ def admin_project_detail(request, project_id):
     
     # Check for successful ENA registration
     has_successful_ena_submission = ProjectSubmission.objects.filter(
-        projects=project,
+        Q(project=project) | Q(projects=project),
         accession_status='SUCCESSFUL'
-    ).exists()
+    ).distinct().exists()
     
     # Workflow status (all disabled for now)
     workflow_status = {
@@ -839,7 +841,9 @@ def admin_project_detail(request, project_id):
             order_status_counts[status_label] = count
     
     # Get ProjectSubmissions for this project
-    project_submissions = ProjectSubmission.objects.filter(projects=project).order_by('-id')
+    project_submissions = ProjectSubmission.objects.filter(
+        Q(project=project) | Q(projects=project)
+    ).distinct().order_by('-id')
     
     # Get SubMG runs for all orders in this project
     submg_runs = SubMGRun.objects.filter(order__project=project).select_related('order').order_by('-id')
@@ -850,7 +854,7 @@ def admin_project_detail(request, project_id):
     
     # Get MAG runs for this project (through reads)
     mag_runs = MagRun.objects.filter(
-        reads__sample__order__project=project
+        Q(project=project) | Q(project__isnull=True, reads__sample__order__project=project)
     ).distinct().order_by('-id')
     
     # Update workflow status to reflect MAG runs
@@ -1196,7 +1200,7 @@ def admin_generate_project_xml(request, project_id):
     
     try:
         # Create ProjectSubmission object
-        project_submission = ProjectSubmission.objects.create()
+        project_submission = ProjectSubmission.objects.create(project=project)
         project_submission.projects.add(project)
         
         # Generate project XML using template
@@ -1253,11 +1257,15 @@ def admin_submission_list(request):
     date_from = request.GET.get('date_from', '')
     
     # Base queryset
-    submissions = ProjectSubmission.objects.all().prefetch_related('projects', 'projects__user').order_by('-id')
+    submissions = ProjectSubmission.objects.all().select_related('project', 'project__user').prefetch_related('projects', 'projects__user').order_by('-id')
     
     # Apply filters
     if search_query:
         submissions = submissions.filter(
+            Q(project__title__icontains=search_query) |
+            Q(project__user__username__icontains=search_query) |
+            Q(project__user__email__icontains=search_query) |
+            Q(project__study_accession_id__icontains=search_query) |
             Q(projects__title__icontains=search_query) |
             Q(projects__user__username__icontains=search_query) |
             Q(projects__user__email__icontains=search_query) |
@@ -1306,7 +1314,19 @@ def admin_submission_list(request):
     paginator = Paginator(submissions, 20)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
-    
+
+    for submission in page_obj.object_list:
+        project_list = list(submission.projects.all())
+        primary_project = submission.project or (project_list[0] if project_list else None)
+        if primary_project and primary_project not in project_list:
+            project_list.insert(0, primary_project)
+        submission.primary_project = primary_project
+        submission.additional_projects = [
+            project for project in project_list
+            if not primary_project or project.id != primary_project.id
+        ]
+        submission.primary_user = getattr(primary_project, 'user', None) if primary_project else None
+
     context = {
         'page_obj': page_obj,
         'search_query': search_query,
@@ -1330,7 +1350,7 @@ def admin_delete_submission(request, submission_id):
     submission = get_object_or_404(ProjectSubmission, id=submission_id)
     
     # Get project info for redirect
-    project = submission.projects.first()
+    project = submission.project or submission.projects.first()
     
     # Delete the submission
     submission.delete()
@@ -1424,13 +1444,17 @@ def admin_register_project_ena(request, submission_id):
                 success = root.attrib.get('success', 'false')
                 if success == 'true':
                     # Process successful submission
+                    associated_projects = list(submission.projects.all())
+                    primary_project = submission.project
+                    if primary_project and primary_project not in associated_projects:
+                        associated_projects.append(primary_project)
                     for child in root:
                         if child.tag == 'PROJECT':
                             alias = child.attrib.get('alias')
                             accession_number = child.attrib.get('accession')
                             
                             # Update all projects in this submission
-                            for project in submission.projects.all():
+                            for project in associated_projects:
                                 if project.alias == alias:
                                     project.study_accession_id = accession_number
                                     project.submitted = True
@@ -1449,7 +1473,7 @@ def admin_register_project_ena(request, submission_id):
                     
                     # Get the first accession number for the success message
                     first_accession = None
-                    for project in submission.projects.all():
+                    for project in associated_projects:
                         if project.study_accession_id:
                             first_accession = project.study_accession_id
                             break
@@ -1485,7 +1509,7 @@ def admin_register_project_ena(request, submission_id):
     if 'HTTP_REFERER' in request.META:
         referer = request.META['HTTP_REFERER']
         if 'project-detail' in referer:
-            project = submission.projects.first()
+            project = submission.project or submission.projects.first()
             if project:
                 return redirect('admin_project_detail', project_id=project.id)
         elif 'submissions' in referer:
@@ -1651,167 +1675,156 @@ def admin_generate_submg_run(request, project_id):
             elif sample.sample_type == SAMPLE_TYPE_MAG:
                 order_mag_samples.append(sample)
 
-        order_assemblies = list(order.assembly_set.all())
+        order_assemblies = list(order.assembly_set.all().prefetch_related('read'))
         for assembly in order_assemblies:
             for read in assembly.read.all():
                 if read.id not in seen_read_ids:
                     order_reads.append(read)
                     seen_read_ids.add(read.id)
 
-        order_bins = list(order.bin_set.all())
-        order_alignments = list(order.alignment_set.all())
+        order_bins = list(order.bin_set.all().prefetch_related('read'))
+        order_alignments = list(order.alignment_set.all().select_related('read', 'assembly'))
         tax_ids_content = ""
 
-        base_yaml = []
-        base_yaml.extend(project.getSubMGYAML())
-        base_yaml.extend(order.getSubMGYAML(sequencing_platforms))
+        base_common_yaml = []
+        base_common_yaml.extend(project.getSubMGYAML())
+        base_common_yaml.extend(order.getSubMGYAML(sequencing_platforms))
 
         if mag_samples:
             representative = mag_samples[0]
-            base_yaml.extend(representative.getSubMGTaxIdYAML([tax_id]))
-            base_yaml.extend(representative.getSubMGScientificNameYAML([scientific_name]))
+            base_common_yaml.extend(representative.getSubMGTaxIdYAML([tax_id]))
+            base_common_yaml.extend(representative.getSubMGScientificNameYAML([scientific_name]))
 
+        assembly_samples_by_assembly_id = defaultdict(list)
+        for sample in order_assembly_samples:
+            if sample.assembly_id:
+                assembly_samples_by_assembly_id[sample.assembly_id].append(sample)
+
+        bin_samples_by_bin_id = defaultdict(list)
+        for sample in order_bin_samples:
+            if sample.bin_id:
+                bin_samples_by_bin_id[sample.bin_id].append(sample)
+
+        def get_associated_sample(bin_obj):
+            samples = bin_samples_by_bin_id.get(bin_obj.id)
+            if not samples:
+                samples = list(
+                    Sample.objects.filter(bin=bin_obj, sample_type=SAMPLE_TYPE_BIN)
+                )
+            if not samples:
+                return None
+            for candidate in samples:
+                if candidate.scientific_name and candidate.tax_id:
+                    return candidate
+            return samples[0]
+
+        bin_tax_map = OrderedDict()
+        for bin_obj in order_bins:
+            if not bin_obj or not bin_obj.file:
+                continue
+            key = Path(bin_obj.file).name.replace('.fa', '')
+            matching_sample = get_associated_sample(bin_obj)
+            scientific_name_value = (
+                matching_sample.scientific_name if matching_sample and matching_sample.scientific_name else ''
+            )
+            tax_id_value = (
+                matching_sample.tax_id if matching_sample and matching_sample.tax_id else ''
+            )
+            bin_tax_map[key] = [scientific_name_value, tax_id_value]
+
+        if order_bins and bin_tax_map:
+            tax_ids_content = order_bins[0].getSubMGYAMLTaxIDContent(bin_tax_map)
+        else:
+            tax_ids_content = ''
+
+        reads_by_sample = defaultdict(list)
+        for read in order_reads:
+            if read.sample_id:
+                reads_by_sample[read.sample_id].append(read)
+
+        assembly_index = {assembly.id: assembly for assembly in order_assemblies}
+        assemblies_by_sample = defaultdict(list)
+        for sample in order_samples:
+            if sample.assembly_id and sample.assembly_id in assembly_index:
+                assemblies_by_sample[sample.id].append(assembly_index[sample.assembly_id])
+        for assembly in order_assemblies:
+            for read in assembly.read.all():
+                if read.sample_id and assembly not in assemblies_by_sample[read.sample_id]:
+                    assemblies_by_sample[read.sample_id].append(assembly)
+
+        bin_index = {bin_obj.id: bin_obj for bin_obj in order_bins}
+        bins_by_sample = defaultdict(list)
+        for sample in order_samples:
+            if sample.bin_id and sample.bin_id in bin_index:
+                bins_by_sample[sample.id].append(bin_index[sample.bin_id])
+        for bin_obj in order_bins:
+            for read in bin_obj.read.all():
+                if read.sample_id and bin_obj not in bins_by_sample[read.sample_id]:
+                    bins_by_sample[read.sample_id].append(bin_obj)
+
+        alignments_by_sample = defaultdict(list)
+        for alignment in order_alignments:
+            if alignment.read_id and alignment.read and alignment.read.sample_id:
+                alignments_by_sample[alignment.read.sample_id].append(alignment)
+
+        yaml_entries = []
         if order_samples:
-            base_yaml.extend(Sample.getSubMGYAMLHeader())
             for sample in order_samples:
-                base_yaml.extend(sample.getSubMGYAML(SAMPLE_TYPE_NORMAL))
+                yaml_lines = list(base_common_yaml)
+                yaml_lines.extend(Sample.getSubMGYAMLHeader())
+                yaml_lines.extend(sample.getSubMGYAML(SAMPLE_TYPE_NORMAL))
 
-        if order_reads:
-            base_yaml.extend(Read.getSubMGYAMLHeader())
-            for read in order_reads:
-                base_yaml.extend(read.getSubMGYAML())
+                reads_for_sample = reads_by_sample.get(sample.id, [])
+                if reads_for_sample:
+                    yaml_lines.extend(Read.getSubMGYAMLHeader())
+                    for read in reads_for_sample:
+                        yaml_lines.extend(read.getSubMGYAML())
 
-        if order_bins:
-            base_yaml.extend(Bin.getSubMGYAMLHeader())
+                assemblies_for_sample = assemblies_by_sample.get(sample.id, [])
+                for assembly in assemblies_for_sample:
+                    yaml_lines.extend(Assembly.getSubMGYAMLHeader())
+                    yaml_lines.extend(assembly.getSubMGYAML())
+                    for assembly_sample in assembly_samples_by_assembly_id.get(assembly.id, []):
+                        yaml_lines.extend(assembly_sample.getSubMGYAML(SAMPLE_TYPE_ASSEMBLY))
+                    yaml_lines.extend(Assembly.getSubMGYAMLFooter())
 
-            primary_bin = None
-            if order_bin_samples:
-                primary_bin = order_bin_samples[0].bin
-            if not primary_bin and order_bins:
-                primary_bin = order_bins[0]
+                bins_for_sample = bins_by_sample.get(sample.id, [])
+                if bins_for_sample:
+                    yaml_lines.extend(Bin.getSubMGYAMLHeader())
+                    for bin_obj in bins_for_sample:
+                        yaml_lines.extend(bin_obj.getSubMGYAML())
+                    if tax_ids_content:
+                        yaml_lines.extend(bins_for_sample[0].getSubMGYAMLTaxIDYAML())
+                    added_bin_sample_ids = set()
+                    for bin_obj in bins_for_sample:
+                        for bin_sample in bin_samples_by_bin_id.get(bin_obj.id, []):
+                            if bin_sample.id not in added_bin_sample_ids:
+                                yaml_lines.extend(bin_sample.getSubMGYAML(SAMPLE_TYPE_BIN))
+                                added_bin_sample_ids.add(bin_sample.id)
+                    yaml_lines.extend(Bin.getSubMGYAMLFooter())
 
-            if primary_bin:
-                base_yaml.extend(primary_bin.getSubMGYAML())
+                alignments_for_sample = alignments_by_sample.get(sample.id, [])
+                if alignments_for_sample:
+                    yaml_lines.extend(Alignment.getSubMGYAMLHeader())
+                    for alignment in alignments_for_sample:
+                        yaml_lines.extend(alignment.getSubMGYAML())
 
-            bin_samples_by_id = {}
-            for sample in order_bin_samples:
-                if sample.bin_id:
-                    bin_samples_by_id.setdefault(sample.bin_id, []).append(sample)
-
-            def get_associated_sample(bin_obj):
-                samples = bin_samples_by_id.get(bin_obj.id)
-                if not samples:
-                    samples = list(Sample.objects.filter(bin=bin_obj, sample_type=SAMPLE_TYPE_BIN))
-                if not samples:
-                    return None
-                for candidate in samples:
-                    if candidate.scientific_name and candidate.tax_id:
-                        return candidate
-                return samples[0]
-
-            bin_tax_map = OrderedDict()
-            for bin_obj in order_bins:
-                if not bin_obj or not bin_obj.file:
-                    continue
-                key = Path(bin_obj.file).name.replace(".fa", "")
-                matching_sample = get_associated_sample(bin_obj)
-                scientific_name_value = (
-                    matching_sample.scientific_name if matching_sample and matching_sample.scientific_name else ""
-                )
-                tax_id_value = (
-                    matching_sample.tax_id if matching_sample and matching_sample.tax_id else ""
-                )
-                bin_tax_map[key] = [scientific_name_value, tax_id_value]
-
-            if primary_bin and bin_tax_map:
-                base_yaml.extend(primary_bin.getSubMGYAMLTaxIDYAML())
-                tax_ids_content = primary_bin.getSubMGYAMLTaxIDContent(bin_tax_map)
-            else:
-                tax_ids_content = ""
-
-            if order_bin_samples:
-                base_yaml.extend(order_bin_samples[0].getSubMGYAML(SAMPLE_TYPE_BIN))
-
-            base_yaml.extend(Bin.getSubMGYAMLFooter())
-
-        if order_alignments:
-            base_yaml.extend(Alignment.getSubMGYAMLHeader())
-            for alignment in order_alignments:
-                base_yaml.extend(alignment.getSubMGYAML())
-
-        used_assembly_sample_ids = set()
-        def build_assembly_section(assembly):
-            section = []
-            section.extend(Assembly.getSubMGYAMLHeader())
-            section.extend(assembly.getSubMGYAML())
-            related_samples = [
-                sample for sample in order_assembly_samples if sample.assembly_id == assembly.id
-            ]
-            if not related_samples:
-                related_samples = list(
-                    Sample.objects.filter(
-                        order=order,
-                        sample_type=SAMPLE_TYPE_ASSEMBLY,
-                        assembly=assembly
-                    )
-                )
-            assembly_stem = Path(assembly.file or "").stem
-            if not related_samples and assembly_stem:
-                related_samples = [
-                    sample for sample in order_assembly_samples
-                    if sample.sample_alias and sample.sample_alias in assembly_stem
-                ]
-            if not related_samples:
-                remaining_samples = [
-                    sample for sample in order_assembly_samples
-                    if sample.id not in used_assembly_sample_ids
-                ]
-                related_samples = remaining_samples
-            related_samples = [
-                sample for sample in related_samples
-                if sample.id not in used_assembly_sample_ids
-            ]
-            label = assembly.file or f"Assembly {assembly.id}"
-            if related_samples:
-                for assembly_sample in related_samples:
-                    section.extend(assembly_sample.getSubMGYAML(SAMPLE_TYPE_ASSEMBLY))
-                sample_label = related_samples[0].sample_title or related_samples[0].sample_alias
-                if sample_label:
-                    label = sample_label
-                used_assembly_sample_ids.update(sample.id for sample in related_samples)
-            section.extend(Assembly.getSubMGYAMLFooter())
-            return section, label
-        primary_assembly_included = False
-        if order_assemblies:
-            primary_section, _ = build_assembly_section(order_assemblies[0])
-            if primary_section:
-                base_yaml.extend(primary_section)
-                primary_assembly_included = True
-
-        base_yaml_snapshot = list(base_yaml)
-
-        yaml_entries = [
-            {
-                "key": "base",
-                "label": "Submission",
-                "content": '\n'.join(base_yaml_snapshot)
-            }
-        ]
-
-        if order_assemblies:
-            for index, assembly in enumerate(order_assemblies):
-                assembly_section, label = build_assembly_section(assembly)
-                if not assembly_section:
-                    continue
-                if index == 0 and primary_assembly_included:
-                    continue
+                sample_label = sample.sample_title or sample.sample_alias or sample.sample_id or f"Sample {sample.id}"
                 yaml_entries.append(
                     {
-                        "key": f"assembly-{assembly.id}",
-                        "label": label,
-                        "content": '\n'.join(assembly_section)
+                        "key": f"sample-{sample.id}",
+                        "label": sample_label,
+                        "content": "\n".join(yaml_lines)
                     }
                 )
+        else:
+            yaml_entries.append(
+                {
+                    "key": "submission",
+                    "label": "Submission",
+                    "content": "\n".join(base_common_yaml)
+                }
+            )
 
         submg_run = SubMGRun.objects.create(order=order)
         submg_run.yaml = json.dumps(yaml_entries)
@@ -1860,7 +1873,7 @@ def admin_create_mag_run(request, project_id):
         return redirect('admin_project_detail', project_id=project_id)
     
     # Create MAG run
-    mag_run = MagRun.objects.create()
+    mag_run = MagRun.objects.create(project=project)
     mag_run.reads.set(reads)
     
     # Generate samplesheet content
@@ -1896,17 +1909,22 @@ def admin_start_mag_run(request, mag_run_id):
     from . import async_calls
     
     mag_run = get_object_or_404(MagRun, id=mag_run_id)
-    
+    project_id = mag_run.project_id or mag_run.reads.values_list('sample__order__project_id', flat=True).first()
+
     # Check if the MAG run already has reads
     if not mag_run.reads.exists():
         messages.error(request, "Cannot start MAG run: No reads associated with this run.")
-        return redirect('admin_project_detail', project_id=mag_run.reads.first().sample.order.project.id)
-    
+        if project_id:
+            return redirect('admin_project_detail', project_id=project_id)
+        return redirect('admin_dashboard')
+
     # Check if it's already running
     if mag_run.status == 'running':
         messages.warning(request, "MAG run is already running.")
-        return redirect('admin_project_detail', project_id=mag_run.reads.first().sample.order.project.id)
-    
+        if project_id:
+            return redirect('admin_project_detail', project_id=project_id)
+        return redirect('admin_dashboard')
+
     try:
         # Create a new temporary folder for the run
         run_id = random.randint(1000000, 9999999)
@@ -1929,13 +1947,9 @@ def admin_start_mag_run(request, mag_run_id):
         messages.error(request, f"Failed to start MAG pipeline: {str(e)}")
         logger.error(f"Failed to start MAG run {mag_run_id}: {str(e)}")
     
-    # Get project ID for redirect
-    first_read = mag_run.reads.first()
-    if first_read and first_read.sample and first_read.sample.order:
-        project_id = first_read.sample.order.project.id
+    if project_id:
         return redirect('admin_project_detail', project_id=project_id)
-    
-    # Fallback to admin dashboard if we can't find project
+
     return redirect('admin_dashboard')
 
 
