@@ -64,94 +64,12 @@ def _glob_relative(run_folder: str, base_name: str, pattern: str):
     return matches
 
 
-def process_single_assembly_file(assembly, assembly_path, order):
-    """Process a single assembly file and update the assembly object."""
-    try:
-        assembly_accession_id = None
-        logger.info(f"Reading assembly file: {assembly_path}")
-        with open(assembly_path) as assembly_file_content:
-            lines = assembly_file_content.readlines()
-            logger.info(f"Assembly file has {len(lines)} lines")
-            
-            for i, line in enumerate(lines):
-                line = line.strip()
-                logger.debug(f"Line {i}: {line}")
-                
-                # Try multiple patterns for assembly accession
-                if 'analysis accession' in line:
-                    if 'submission:' in line:
-                        assembly_accession_id = line.split('submission: ')[1].strip()
-                    elif 'accession:' in line:
-                        assembly_accession_id = line.split('accession: ')[1].strip()
-                    else:
-                        # Try to extract accession ID from the line
-                        parts = line.split()
-                        for part in parts:
-                            if part.startswith('ERZ') or part.startswith('GCA_') or part.startswith('GCF_'):
-                                assembly_accession_id = part
-                                break
-                    logger.info(f"Found assembly accession ID: {assembly_accession_id}")
-                    break
-                elif 'accession' in line.lower():
-                    logger.debug(f"Line contains 'accession': {line}")
-                    # Try to extract accession ID from lines containing 'accession'
-                    if 'ERZ' in line or 'GCA_' in line or 'GCF_' in line:
-                        parts = line.split()
-                        for part in parts:
-                            if part.startswith('ERZ') or part.startswith('GCA_') or part.startswith('GCF_'):
-                                assembly_accession_id = part
-                                logger.info(f"Extracted assembly accession ID from line: {assembly_accession_id}")
-                                break
-                        if assembly_accession_id:
-                            break
-        
-        if assembly_accession_id:
-            # Debug: Log existing bin accession numbers for this order
-            existing_bin_accessions = list(Bin.objects.filter(order=order).values_list('bin_accession_number', flat=True))
-            logger.info(f"Existing bin accession numbers for order {order.id}: {existing_bin_accessions}")
-            logger.info(f"Processing assembly {assembly.id} with accession ID: {assembly_accession_id}")
-            
-            # Note: We don't check for conflicts with bin accession IDs because:
-            # 1. Assembly accession IDs are analysis accession IDs (ERZ prefix)
-            # 2. Bin accession IDs are preliminary accession IDs (ERS prefix)
-            # 3. They are different types of accession IDs and can legitimately have the same base number
-            
-            logger.info(f"Updating assembly {assembly.id} with accession ID: {assembly_accession_id}")
-            assembly.assembly_accession_number = assembly_accession_id
-            assembly.save()
-            logger.info(f"Successfully updated assembly {assembly.id}")
-        else:
-            logger.warning(f"No assembly accession ID found in {assembly_path}")
-            # Log first few lines for debugging
-            with open(assembly_path) as debug_file:
-                debug_lines = debug_file.readlines()[:10]
-                logger.warning(f"First 10 lines of {assembly_path}:")
-                for i, line in enumerate(debug_lines):
-                    logger.warning(f"  {i}: {line.strip()}")
-    except FileNotFoundError:
-        logger.error('Assembly file not found: %s', assembly_path)
-    except Exception as e:
-        logger.error('Error processing assembly file %s: %s', assembly_path, str(e))
-
-
 def _process_single_logging_directory(logging_dir: Path, order, project, sample_set, submg_run):
     """Process all samples, assemblies, bins etc. for a single logging directory."""
     
-    # Determine the matching staging directory
-    # If logging_dir is something like "logging_0", staging should be "staging_0"
-    # If logging_dir is "logging", staging should be "staging"
-    logging_name = logging_dir.name
-    if logging_name.startswith('logging_'):
-        # Extract the suffix (e.g., "0" from "logging_0")
-        suffix = logging_name[len('logging_'):]
-        staging_dir_name = f'staging_{suffix}'
-        staging_dir = logging_dir.parent / staging_dir_name
-    else:
-        staging_dir = logging_dir.parent / 'staging'
-    
     # Process biological samples for this directory
     sample_file_path = logging_dir / 'biological_samples' / 'sample_preliminary_accessions.txt'
-    samplesheet_path = staging_dir / 'biological_samples' / 'samplesheet.xml'
+    samplesheet_path = logging_dir.parent / 'staging' / 'biological_samples' / 'samplesheet.xml'
     samplesheet_lookup = {}
 
     if samplesheet_path and samplesheet_path.exists():
@@ -196,9 +114,6 @@ def _process_single_logging_directory(logging_dir: Path, order, project, sample_
                 except Sample.DoesNotExist:
                     pass
 
-    # Track reads processed in this directory to filter assemblies later
-    reads_in_this_directory = []
-    
     # Process reads for this directory
     read_files = sorted(logging_dir.glob('reads/reads_*/webin-cli.report'))
     for read_file in read_files:
@@ -233,9 +148,6 @@ def _process_single_logging_directory(logging_dir: Path, order, project, sample_
             logger.warning('Read with checksums %s / %s not found for SubMG run %s', read_file_checksum_1, read_file_checksum_2, submg_run.id)
             continue
 
-        # Track this read as being in this directory
-        reads_in_this_directory.append(read)
-
         run_accession_id = None
         experiment_accession_id = None
         with open(read_file_path) as read_file_content:
@@ -252,109 +164,42 @@ def _process_single_logging_directory(logging_dir: Path, order, project, sample_
         read.save()
 
     # Process assemblies for this directory
-    # Try multiple patterns for assembly files in both logging and staging directories
-    assembly_files = []
-    assembly_patterns = [
-        'assembly_fasta/webin-cli.report',
+    assembly_files = sorted(logging_dir.glob('assembly_fasta/webin-cli.report'))
+    for assembly_file in assembly_files:
+        assembly_path = Path(assembly_file)
+        try:
+            assembly = Assembly.objects.get(order=order)
+        except Assembly.DoesNotExist:
+            logger.error('No assembly found for order %s', order.id)
+            continue
 
-    ]
-    
-
-        #     'assembly_fasta/*/webin-cli.report',
-        # 'assembly_fasta/**/webin-cli.report',
-        # '**/assembly_fasta/webin-cli.report',
-        # '**/webin-cli.report',
-        # 'assembly_submission/**/webin-cli.report',
-        # '**/assembly_submission/**/webin-cli.report'
-        
-    # Search in logging directory
-    for pattern in assembly_patterns:
-        files = sorted(logging_dir.glob(pattern))
-        if files:
-            assembly_files.extend(files)
-            logger.info(f"Found {len(files)} assembly files with pattern '{pattern}' in {logging_dir}")
-    
-    # Also search in staging directory (already determined above)
-    if staging_dir.exists():
-        for pattern in assembly_patterns:
-            files = sorted(staging_dir.glob(pattern))
-            if files:
-                assembly_files.extend(files)
-                logger.info(f"Found {len(files)} assembly files with pattern '{pattern}' in {staging_dir}")
-    
-    # Remove duplicates while preserving order
-    assembly_files = list(dict.fromkeys(assembly_files))
-    logger.info(f"Total assembly files found: {len(assembly_files)}")
-    
-    if not assembly_files:
-        logger.warning(f"No assembly files found in {logging_dir} or {staging_dir}")
-        # List all files in the directories for debugging
-        logger.info(f"Files in {logging_dir}:")
-        for file in sorted(logging_dir.rglob('*')):
-            if file.is_file():
-                logger.info(f"  {file}")
-        if staging_dir.exists():
-            logger.info(f"Files in {staging_dir}:")
-            for file in sorted(staging_dir.rglob('*')):
-                if file.is_file():
-                    logger.info(f"  {file}")
-    
-    # Get assemblies for reads processed in this directory only
-    read_ids_in_this_directory = [read.id for read in reads_in_this_directory]
-    if read_ids_in_this_directory:
-        assemblies = Assembly.objects.filter(order=order, read_id__in=read_ids_in_this_directory)
-        logger.info(f"Found {assemblies.count()} assemblies for {len(read_ids_in_this_directory)} reads in this directory")
-    else:
-        logger.warning('No reads found in this directory, skipping assembly processing')
-        assemblies = Assembly.objects.none()
-    
-    if assemblies.count() == 0:
-        logger.error('No assembly found for reads in this directory (order %s)', order.id)
-    elif assemblies.count() == 1 and len(assembly_files) == 1:
-        # Simple case: one assembly, one file
-        assembly = assemblies.first()
-        assembly_path = Path(assembly_files[0])
-        logger.info(f"Processing single assembly {assembly.id} with single file {assembly_path}")
-        process_single_assembly_file(assembly, assembly_path, order)
-    else:
-        # Multiple assemblies and/or multiple files - need to match them properly
-        logger.warning(f"Multiple assemblies ({assemblies.count()}) and/or files ({len(assembly_files)}) found")
-        logger.warning(f"Assemblies: {[a.id for a in assemblies]}")
-        logger.warning(f"Files: {[str(f) for f in assembly_files]}")
-        
-        # For now, process each assembly with the first available file
-        # This is a temporary solution - ideally we'd match files to assemblies more intelligently
-        for i, assembly in enumerate(assemblies):
-            if i < len(assembly_files):
-                assembly_path = Path(assembly_files[i])
-                logger.info(f"Processing assembly {assembly.id} with file {assembly_path}")
-                process_single_assembly_file(assembly, assembly_path, order)
-            else:
-                logger.warning(f"No file available for assembly {assembly.id}")
+        try:
+            assembly_accession_id = None
+            with open(assembly_path) as assembly_file_content:
+                for line in assembly_file_content:
+                    if 'analysis accession' in line:
+                        assembly_accession_id = line.split('submission: ')[1].strip()
+            if assembly_accession_id:
+                assembly.assembly_accession_number = assembly_accession_id
+                assembly.save()
+        except FileNotFoundError:
+            logger.error('Assembly file not found: %s', assembly_path)
+        except Exception as e:
+            logger.error('Error processing assembly file %s: %s', assembly_path, str(e))
 
     # Process assembly samples for this directory
-    assembly_sample_samplesheet_path = staging_dir / 'assembly_submission' / 'co_assembly_sample' / 'coassembly_samplesheet.xml'
+    assembly_sample_samplesheet_path = logging_dir.parent / 'staging' / 'assembly_submission' / 'co_assembly_sample' / 'coassembly_samplesheet.xml'
     if assembly_sample_samplesheet_path and assembly_sample_samplesheet_path.exists():
         assembly_sample_title_dict = {}
         assembly_sample_name_dict = {}
         assembly_sample_attributes_dict = {}
-
-        # Initialize variables to avoid UnboundLocalError
-        assembly_sample_alias = None
-        assembly_sample_title = None
-        assembly_sample_name = None
-        assembly_sample_attributes = []
         
         with open(assembly_sample_samplesheet_path) as assembly_sample_samplesheet_content:
             assembly_sample_samplesheet_data = assembly_sample_samplesheet_content.read()
             assembly_sample_samplesheet_xml = xmltodict.parse(assembly_sample_samplesheet_data)
             assembly_sample_samplesheet_json = json.loads(json.dumps(assembly_sample_samplesheet_xml))
             for samplesheet_attribute, samplesheet_value in assembly_sample_samplesheet_json.items():
-                if not isinstance(samplesheet_value, dict):
-                    continue
                 for sample_attribute, sample_value in samplesheet_value.items():
-                    if not isinstance(sample_value, dict):
-                        continue
                     for attribute, value in sample_value.items():
                         if attribute == '@alias':
                             assembly_sample_alias = value
@@ -363,21 +208,7 @@ def _process_single_logging_directory(logging_dir: Path, order, project, sample_
                         if attribute == 'SAMPLE_NAME':
                             assembly_sample_name = value
                         if attribute == 'SAMPLE_ATTRIBUTES':
-                            if isinstance(value, dict):
-                                assembly_sample_attributes = value.items()
-                            elif isinstance(value, list):
-                                assembly_sample_attributes = []
-                                for item in value:
-                                    if isinstance(item, dict):
-                                        assembly_sample_attributes.extend(item.items())
-                            else:
-                                assembly_sample_attributes = []                                
-            
-            # Check if we found the required data
-            if not assembly_sample_alias or not assembly_sample_title:
-                logger.warning('Incomplete assembly sample data found in samplesheet for order %s', order.id)
-                return
-                
+                            assembly_sample_attributes = value.items()                                
             assembly_sample_title_dict[assembly_sample_alias] = assembly_sample_title
             assembly_sample_name_dict[assembly_sample_alias] = assembly_sample_name
             assembly_sample_attributes_dict[assembly_sample_alias] = assembly_sample_attributes
@@ -434,228 +265,64 @@ def _process_single_logging_directory(logging_dir: Path, order, project, sample_
 
     # Process bins for this directory
     bin_files = sorted(logging_dir.glob('bins/bin_to_preliminary_accession.tsv'))
-    logger.info(f"Found {len(bin_files)} bin files: {[str(f) for f in bin_files]}")
-    
-    # Process each bin file only once to avoid duplicate processing
-    processed_bins = set()  # Track which bins we've already processed
-    
     for bin_file in bin_files:
-        logger.info(f"Processing bin file: {bin_file}")
         with open(bin_file) as bin_file_content:
             for line in bin_file_content:
-                line = line.strip()
-                if not line:  # Skip empty lines
-                    continue
-                    
-                parts = line.split()
-                if len(parts) < 2:
-                    logger.warning(f"Skipping malformed line in {bin_file}: {line}")
-                    continue
-                    
-                bin_id = parts[0].rstrip(' ')
+                bin_id = line.split()[0].rstrip(' ')
                 bin_number = bin_id.split('.')[1]
-                bin_accession_id = parts[1].lstrip(' ')
-                
-                # Create a unique key for this bin to avoid duplicate processing
-                # Include the file path to distinguish between bins from different assemblies
-                bin_key = f"{order.id}_{bin_number}_{bin_file.name}"
-                if bin_key in processed_bins:
-                    logger.warning(f"Bin {bin_number} from file {bin_file.name} for order {order.id} already processed, skipping")
-                    continue
-                    
-                processed_bins.add(bin_key)
-                logger.info(f"Processing bin {bin_number} with accession ID {bin_accession_id} from file {bin_file.name}")
-                
-                try:
-                    # Debug: Log existing assembly accession numbers for this order
-                    existing_assembly_accessions = list(Assembly.objects.filter(order=order).values_list('assembly_accession_number', flat=True))
-                    logger.info(f"Existing assembly accession numbers for order {order.id}: {existing_assembly_accessions}")
-                    
-                    # Debug: Log existing bin accession numbers for this order
-                    existing_bin_accessions = list(Bin.objects.filter(order=order).values_list('bin_accession_number', flat=True))
-                    logger.info(f"Existing bin accession numbers for order {order.id}: {existing_bin_accessions}")
-                    
-                    # Debug: Log the current bin accession ID being processed
-                    logger.info(f"Processing bin {bin_number} with accession ID: {bin_accession_id}")
-                    
-                    # First check if this accession ID is already assigned to ANY bin
-                    # If it is, this means this bin has already been processed
-                    existing_bin_with_accession = Bin.objects.filter(
-                        order=order,
-                        bin_accession_number=bin_accession_id
-                    ).first()
-                    
-                    if existing_bin_with_accession:
-                        logger.info(f"Bin accession ID {bin_accession_id} is already assigned to bin {existing_bin_with_accession.id} (bin_number: {existing_bin_with_accession.bin_number}). Skipping duplicate processing.")
-                        continue  # Skip this processing - already done
-                    
-                    # Note: We don't check for conflicts with assembly accession IDs because:
-                    # 1. Assembly accession IDs are analysis accession IDs (ERZ prefix)
-                    # 2. Bin accession IDs are preliminary accession IDs (ERS prefix) 
-                    # 3. They are different types of accession IDs and can legitimately have the same base number
-                    
-                    # Find bins that match this bin_number - the suffix alone is not unique
-                    # We need to find the bin that doesn't have an accession number yet
-                    bins = Bin.objects.filter(order=order, bin_number=bin_number)
-                    
-                    if bins.count() > 1:
-                        # Multiple bins with same suffix (001, 002, etc.)
-                        # Find one that doesn't have an accession number yet
-                        target_bin = None
-                        for bin in bins:
-                            if not bin.bin_accession_number:
-                                target_bin = bin
-                                break
-                        
-                        if target_bin:
-                            target_bin.bin_accession_number = bin_accession_id
-                            target_bin.save()
-                            logger.info(f"Updated bin {target_bin.id} with accession ID {bin_accession_id} from file {bin_file.name}")
-                        else:
-                            # All bins with this suffix already have accession numbers assigned
-                            logger.warning('All bins with suffix %s for order %s already have accession numbers. File: %s', bin_number, order.id, bin_file.name)
-                    elif bins.count() == 1:
-                        bin = bins.first()
-                        if not bin.bin_accession_number:
-                            bin.bin_accession_number = bin_accession_id
-                            bin.save()
-                            logger.info(f"Updated bin {bin.id} with accession ID {bin_accession_id} from file {bin_file.name}")
-                        else:
-                            logger.warning('Bin %s for order %s already has accession number %s, skipping. File: %s', bin_number, order.id, bin.bin_accession_number, bin_file.name)
-                    else:
-                        logger.warning('Bin with suffix %s not found for order %s', bin_number, order.id)
-                        continue
-                except Exception as e:
-                    logger.error('Error processing bin %s for order %s: %s', bin_number, order.id, str(e))
-                    continue
+                bin_accession_id = line.split()[1].lstrip(' ')
+                bin = Bin.objects.get(order=order, bin_number=bin_number)
+                bin.bin_accession_number = bin_accession_id
+                bin.save()
 
     # Process bin samples for this directory
-    bin_sample_samplesheet_path = staging_dir / 'bins' / 'bin_samplesheet' / 'bins_samplesheet.xml'
+    bin_sample_samplesheet_path = logging_dir.parent / 'staging' / 'bins' / 'bin_samplesheet' / 'bins_samplesheet.xml'
     if bin_sample_samplesheet_path and bin_sample_samplesheet_path.exists():
         bin_sample_title_dict = {}
         bin_sample_name_dict = {}
         bin_sample_attributes_dict = {}
 
-        # Initialize variables to avoid UnboundLocalError
-        bin_sample_alias = None
-        bin_sample_title = None
-        bin_sample_name = None
-        bin_sample_attributes = []
-
         with open(bin_sample_samplesheet_path) as bin_sample_samplesheet_content:
             bin_sample_samplesheet_data = bin_sample_samplesheet_content.read()
-            logger.info(f"Processing bin samplesheet: {bin_sample_samplesheet_path}")
-            logger.debug(f"XML content length: {len(bin_sample_samplesheet_data)} characters")
-            
             bin_sample_samplesheet_xml = xmltodict.parse(bin_sample_samplesheet_data)
             bin_sample_samplesheet_json = json.loads(json.dumps(bin_sample_samplesheet_xml))
-            
-            logger.info(f"Parsed XML structure keys: {list(bin_sample_samplesheet_json.keys())}")
-            
             for samplesheet_attribute, samplesheet_value in bin_sample_samplesheet_json.items():
-                logger.debug(f"Processing samplesheet attribute: {samplesheet_attribute}")
-                logger.debug(f"Samplesheet value type: {type(samplesheet_value)}")
-                
-                if not isinstance(samplesheet_value, dict):
-                    logger.debug(f"Skipping non-dict samplesheet_value: {samplesheet_value}")
-                    continue
-                    
-                logger.debug(f"Samplesheet value keys: {list(samplesheet_value.keys())}")
-                
                 for sample_attribute, sample_value in samplesheet_value.items():
-                    logger.debug(f"Processing sample attribute: {sample_attribute}")
-                    logger.debug(f"Sample value type: {type(sample_value)}")
-                    
-                    if not isinstance(sample_value, dict):
-                        logger.debug(f"Skipping non-dict sample_value: {sample_value}")
-                        continue
-                        
-                    logger.debug(f"Sample value keys: {list(sample_value.keys())}")
-                    
                     for attribute, value in sample_value.items():
-                        logger.debug(f"Processing attribute: {attribute} = {value}")
                         if attribute == '@alias':
                             bin_sample_alias = value
-                            logger.info(f"Found bin_sample_alias: {bin_sample_alias}")
                         if attribute == 'TITLE':
                             bin_sample_title = value
-                            logger.info(f"Found bin_sample_title: {bin_sample_title}")
                         if attribute == 'SAMPLE_NAME':
                             bin_sample_name = value
-                            logger.info(f"Found bin_sample_name: {bin_sample_name}")
                         if attribute == 'SAMPLE_ATTRIBUTES':
-                            if isinstance(value, dict):
-                                bin_sample_attributes = value.items()
-                            elif isinstance(value, list):
-                                bin_sample_attributes = []
-                                for item in value:
-                                    if isinstance(item, dict):
-                                        bin_sample_attributes.extend(item.items())
-                            else:
-                                bin_sample_attributes = []
-                            logger.info(f"Found bin_sample_attributes: {len(bin_sample_attributes)} items")
-            
-            # Check if we found the required data
-            if not bin_sample_alias or not bin_sample_title:
-                logger.warning('Incomplete bin sample data found in samplesheet for order %s', order.id)
-                return
-                
+                            bin_sample_attributes = value.items()
             bin_sample_title_dict[bin_sample_alias] = bin_sample_title
             bin_sample_name_dict[bin_sample_alias] = bin_sample_name
             bin_sample_attributes_dict[bin_sample_alias] = bin_sample_attributes
 
-            # Extract the bin identifier from the title
-            # Original title might be like "coasm_bin_MEGAHIT-MaxBin2-sample_1.001" or "sample_1.001"
             bin_sample_full_title = re.sub('_virtual_sample', '', re.sub('.*coasm_bin_MEGAHIT-MaxBin2-', '', bin_sample_title))
-            bin_sample_prefix = bin_sample_full_title.split('.')[0]  # e.g., "sample_1"
-            bin_sample_number = bin_sample_full_title.split('.')[1]  # e.g., "001"
-            
-            # bin_sample_title is used later as the sample alias, so use the full title
-            bin_sample_title = bin_sample_full_title
-            
-            logger.info(f"Looking for bin with prefix '{bin_sample_prefix}' and suffix '{bin_sample_number}'")
+            bin_sample_title = bin_sample_full_title.split('.')[0]
+            bin_sample_number = bin_sample_full_title.split('.')[1]
 
-            # Handle multiple bins with same suffix (001, 002, etc.)
-            # The suffix alone is not unique - we need to match based on the sample prefix
-            # by checking if the bin's file path contains the sample prefix
+            # Handle multiple bins with same bin_number (assembly-specific structure)
             bins = Bin.objects.filter(order=order, bin_number=bin_sample_number)
-            
             if bins.count() > 1:
-                # Multiple bins with same suffix - need to match by checking the file path
+                # Multiple bins with same number - need to identify which one
+                # For now, use the first one that doesn't have a sample assigned
                 bin = None
                 for b in bins:
-                    # Check if this bin's file path contains the sample prefix
-                    if b.file and bin_sample_prefix in b.file:
-                        # Also check if it doesn't already have a sample
-                        if not Sample.objects.filter(order=order, sample_type=SAMPLE_TYPE_BIN, bin=b).exists():
-                            bin = b
-                            logger.info(f"Matched bin {b.id} based on file path containing '{bin_sample_prefix}'")
-                            break
-                
-                # If still not found, try any bin that matches the file path
+                    if not Sample.objects.filter(order=order, sample_type=SAMPLE_TYPE_BIN, bin=b).exists():
+                        bin = b
+                        break
                 if not bin:
-                    for b in bins:
-                        if b.file and bin_sample_prefix in b.file:
-                            bin = b
-                            logger.info(f"Matched bin {b.id} based on file path (already has sample)")
-                            break
-                
-                # If still not found, use the first one without a sample
-                if not bin:
-                    for b in bins:
-                        if not Sample.objects.filter(order=order, sample_type=SAMPLE_TYPE_BIN, bin=b).exists():
-                            bin = b
-                            logger.warning(f"Multiple bins found for suffix {bin_sample_number}, using bin {bin.id} without sample")
-                            break
-                
-                # Last resort: use the first one
-                if not bin:
+                    # If all bins already have samples, use the first one
                     bin = bins.first()
-                    logger.warning(f"Multiple bins found for suffix {bin_sample_number}, using first one (bin {bin.id})")
+                    logger.warning(f"Multiple bins found for bin_number {bin_sample_number}, using first one (bin {bin.id})")
             elif bins.count() == 1:
                 bin = bins.first()
             else:
-                logger.error(f"No bins found for suffix {bin_sample_number} in order {order.id}")
+                logger.error(f"No bins found for bin_number {bin_sample_number} in order {order.id}")
                 return
 
             try:
@@ -967,3 +634,5 @@ def process_submg_result_inner(returncode, id):
             submg_run.save()
         except Exception as e:
             logger.error(f"Error saving SubMG run status: {str(e)}")
+
+

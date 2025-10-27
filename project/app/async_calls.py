@@ -60,8 +60,14 @@ def run_mag_real(mag_run, run_folder):
             print(f"assembly_file=$(find {run_folder}Assembly/MEGAHIT -name 'MEGAHIT-{sample.sample_id}.contigs.fa.gz')", file=file)
             print(f"bwa index ${{assembly_file}}", file=file)            
             print(f"bwa mem ${{assembly_file}} {read.file_1} {read.file_2} | samtools sort -o {sample.sample_id}.sorted.bam", file=file)
-        print(f"cd {run_folder}/GenomeBinning/MaxBin2/Maxbin2_bins", file=file)
-        print(f"gunzip *.gz", file=file)
+        # Create assembly-specific directories and move bin files
+        assembly_count = 1
+        for read in mag_run.reads.all():
+            sample = read.sample
+            assembly_specific_dir = f"{run_folder}/GenomeBinning/MaxBin2/Assembly_{assembly_count}/Maxbin2_bins"
+            print(f"mkdir -p {assembly_specific_dir}", file=file)
+            print(f"mv {run_folder}/GenomeBinning/MaxBin2/Maxbin2_bins/MEGAHIT-MaxBin2-{sample.sample_id}.*.fa {assembly_specific_dir}/", file=file)
+            assembly_count += 1
         
     os.chmod(os.path.join(run_folder, 'script.sh'), 0o744)
 
@@ -93,16 +99,27 @@ def run_mag_stub(mag_run, run_folder):
         print(f"cd {run_folder}", file=file)
         print(f"sleep 30", file=file)
         print(f"mkdir -p {run_folder}/Assembly/MEGAHIT", file=file)
-        print(f"mkdir -p {run_folder}/GenomeBinning/MaxBin2/Maxbin2_bins", file=file)
         print(f"mkdir -p {run_folder}/GenomeBinning/QC", file=file) 
-        print(f"cp {run_folder}/../../checkm_summary_HEADER.tsv {run_folder}/GenomeBinning/QC/checkm_summary.tsv", file=file)
+        
+        # Create assembly-specific directories and copy files
         for read in mag_run.reads.all():
             if sample_count > 2:
                 break
             sample = read.sample
+            
+            # Create assembly-specific directory structure
+            assembly_dir = f"{run_folder}/GenomeBinning/MaxBin2/Assembly_{sample_count}"
+            print(f"mkdir -p {assembly_dir}/Maxbin2_bins", file=file)
+            
+            # Copy assembly file
             print(f"cp {run_folder}/../../MEGAHIT-sample_{sample_count}.contigs.fa.gz {run_folder}/Assembly/MEGAHIT/MEGAHIT-{sample.sample_id}.contigs.fa.gz", file=file)    
-            print(f"cp {run_folder}/../../MEGAHIT-MaxBin2-sample_{sample_count}.001.fa {run_folder}/GenomeBinning/MaxBin2/Maxbin2_bins/MEGAHIT-MaxBin2-{sample.sample_id}.001.fa", file=file)
-            print(f"cat {run_folder}/../../checkm_summary_BODY.tsv |sed -e 's/sample_1/{sample.sample_id}.001/g' >> {run_folder}/GenomeBinning/QC/checkm_summary.tsv", file=file)
+            
+            # Copy bin files to assembly-specific directory
+            print(f"cp {run_folder}/../../MEGAHIT-MaxBin2-sample_{sample_count}.001.fa {assembly_dir}/Maxbin2_bins/MEGAHIT-MaxBin2-{sample.sample_id}.001.fa", file=file)
+            
+            # Create assembly-specific quality files
+            print(f"cp {run_folder}/../../checkm_summary_HEADER.tsv {run_folder}/GenomeBinning/QC/checkm_summary_assembly_{sample_count}.tsv", file=file)
+            print(f"cat {run_folder}/../../checkm_summary_BODY.tsv |sed -e 's/sample_1/{sample.sample_id}.001/g' >> {run_folder}/GenomeBinning/QC/checkm_summary_assembly_{sample_count}.tsv", file=file)
             print(f"cp {run_folder}/../../sample_{sample_count}.sorted.bam {run_folder}/{sample.sample_id}.sorted.bam", file=file)      
             sample_count += 1  
 
@@ -151,8 +168,6 @@ def run_submg(submg_run, run_folder):
         print(f"export ENA_USER={settings.ENA_USER}", file=file)
         print(f"export ENA_PASSWORD={settings.ENA_PASSWORD}", file=file)
         print(f"source {settings.CONDA_PATH}/bin/activate submg", file=file)
-        print(f'if [ -L "{staging_dir}" ]; then rm "{staging_dir}"; fi', file=file)
-        print(f'if [ -L "{logging_dir}" ]; then rm "{logging_dir}"; fi', file=file)
         print(f'mkdir -p "{staging_dir}"', file=file)
         print(f'mkdir -p "{logging_dir}"', file=file)
         print(f'rm -f "{output}"', file=file)
@@ -182,11 +197,6 @@ def run_submg(submg_run, run_folder):
             if index < total_yaml_files - 1:
                 print(f'mkdir -p "{staging_dir}"', file=file)
                 print(f'mkdir -p "{logging_dir}"', file=file)
-            else:
-                print(f'if [ -d "{staging_with_index}" ]; then ln -sfn "{staging_with_index}" "{staging_dir}"; fi', file=file)
-                print(f'if [ -d "{logging_with_index}" ]; then ln -sfn "{logging_with_index}" "{logging_dir}"; fi', file=file)
-                print(f'if [ -f "{output_with_index}" ]; then ln -sf "{output_with_index}" "{output}"; fi', file=file)
-                print(f'if [ -f "{error_with_index}" ]; then ln -sf "{error_with_index}" "{error}"; fi', file=file)
     os.chmod(script_location, 0o744)
 
     if settings.USE_SLURM_FOR_SUBMG:

@@ -1171,22 +1171,67 @@ class SubMGRunAdmin(admin.ModelAdmin):
             if not yaml_entries:
                 yaml_entries = [{"label": "Submission", "content": ""}]
 
-            tax_ids_filename = None
+            # Handle assembly-specific tax_ids files
+            tax_ids_filenames = {}
             if submg_run.tax_ids:
-                tax_ids_filename = f"tax_ids_{submg_run.id}.txt"
+                try:
+                    tax_ids_by_assembly = json.loads(submg_run.tax_ids)
+                    for assembly_id, tax_ids_content in tax_ids_by_assembly.items():
+                        if tax_ids_content:
+                            tax_ids_filenames[assembly_id] = f"tax_ids_assembly_{assembly_id}.txt"
+                except (json.JSONDecodeError, TypeError):
+                    # Fallback to old format
+                    tax_ids_filenames['default'] = f"tax_ids_{submg_run.id}.txt"
 
             for index, entry in enumerate(yaml_entries):
                 filename = f"submg_{submg_run.id}.yaml" if index == 0 else f"submg_{submg_run.id}_{index}.yaml"
                 yaml_path = os.path.join(run_folder, filename)
                 yaml_content = entry.get('content', '') or ''
-                if tax_ids_filename:
-                    yaml_content = yaml_content.replace('tax_ids.txt', os.path.join(run_folder, tax_ids_filename))
+                
+                # Replace tax_ids references with appropriate assembly-specific files
+                if tax_ids_filenames:
+                    if 'default' in tax_ids_filenames:
+                        yaml_content = yaml_content.replace('tax_ids.txt', os.path.join(run_folder, tax_ids_filenames['default']))
+                    else:
+                        # Replace assembly-specific tax_ids references with absolute paths
+                        for assembly_id, tax_ids_filename in tax_ids_filenames.items():
+                            # Replace both old format (tax_ids.txt) and new format (tax_ids_assembly_X.txt)
+                            yaml_content = yaml_content.replace('tax_ids.txt', os.path.join(run_folder, tax_ids_filename))
+                            yaml_content = yaml_content.replace(f'tax_ids_assembly_{assembly_id}.txt', os.path.join(run_folder, tax_ids_filename))
+                
                 with open(yaml_path, 'w') as file:
                     file.write(yaml_content)
 
-            if tax_ids_filename:
-                with open(os.path.join(run_folder, tax_ids_filename), 'w') as file:
-                    file.write(submg_run.tax_ids)
+            # Write assembly-specific tax_ids files
+            if submg_run.tax_ids:
+                try:
+                    tax_ids_by_assembly = json.loads(submg_run.tax_ids)
+                    for assembly_id, tax_ids_content in tax_ids_by_assembly.items():
+                        if tax_ids_content and assembly_id in tax_ids_filenames:
+                            with open(os.path.join(run_folder, tax_ids_filenames[assembly_id]), 'w') as file:
+                                file.write(tax_ids_content)
+                except (json.JSONDecodeError, TypeError):
+                    # Fallback to old format
+                    if 'default' in tax_ids_filenames:
+                        with open(os.path.join(run_folder, tax_ids_filenames['default']), 'w') as file:
+                            file.write(submg_run.tax_ids)
+
+            # Write assembly-specific quality files
+            if submg_run.quality_files:
+                try:
+                    quality_files_by_assembly = json.loads(submg_run.quality_files)
+                    for assembly_id, quality_content in quality_files_by_assembly.items():
+                        if quality_content:
+                            # Create QC directory if it doesn't exist
+                            qc_dir = os.path.join(run_folder, 'GenomeBinning', 'QC')
+                            os.makedirs(qc_dir, exist_ok=True)
+                            
+                            quality_filename = f"checkm_summary_assembly_{assembly_id}.tsv"
+                            quality_path = os.path.join(qc_dir, quality_filename)
+                            with open(quality_path, 'w') as file:
+                                file.write(quality_content)
+                except (json.JSONDecodeError, TypeError):
+                    pass  # Skip if quality_files is not valid JSON
 
             # Create a mag run instance
             # completed_process = subprocess.run(f"sleep 30; echo hello", shell=True, capture_output=True)

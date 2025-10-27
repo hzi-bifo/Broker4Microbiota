@@ -1675,14 +1675,13 @@ def admin_generate_submg_run(request, project_id):
             elif sample.sample_type == SAMPLE_TYPE_MAG:
                 order_mag_samples.append(sample)
 
-        order_assemblies = list(order.assembly_set.all().prefetch_related('read'))
+        order_assemblies = list(order.assembly_set.all().select_related('read'))
         for assembly in order_assemblies:
-            for read in assembly.read.all():
-                if read.id not in seen_read_ids:
-                    order_reads.append(read)
-                    seen_read_ids.add(read.id)
+            if assembly.read and assembly.read.id not in seen_read_ids:
+                order_reads.append(assembly.read)
+                seen_read_ids.add(assembly.read.id)
 
-        order_bins = list(order.bin_set.all().prefetch_related('read'))
+        order_bins = list(order.bin_set.all().select_related('assembly', 'assembly__read'))
         order_alignments = list(order.alignment_set.all().select_related('read', 'assembly'))
         tax_ids_content = ""
 
@@ -1718,24 +1717,64 @@ def admin_generate_submg_run(request, project_id):
                     return candidate
             return samples[0]
 
-        bin_tax_map = OrderedDict()
-        for bin_obj in order_bins:
-            if not bin_obj or not bin_obj.file:
-                continue
-            key = Path(bin_obj.file).name.replace('.fa', '')
-            matching_sample = get_associated_sample(bin_obj)
-            scientific_name_value = (
-                matching_sample.scientific_name if matching_sample and matching_sample.scientific_name else ''
-            )
-            tax_id_value = (
-                matching_sample.tax_id if matching_sample and matching_sample.tax_id else ''
-            )
-            bin_tax_map[key] = [scientific_name_value, tax_id_value]
+        # Create tax_ids content per assembly
+        tax_ids_by_assembly = {}
+        for assembly in order_assemblies:
+            assembly_bins = [bin_obj for bin_obj in order_bins if bin_obj.assembly_id == assembly.id]
+            if assembly_bins:
+                bin_tax_map = OrderedDict()
+                for bin_obj in assembly_bins:
+                    if not bin_obj or not bin_obj.file:
+                        continue
+                    key = Path(bin_obj.file).name.replace('.fa', '')
+                    matching_sample = get_associated_sample(bin_obj)
+                    scientific_name_value = (
+                        matching_sample.scientific_name if matching_sample and matching_sample.scientific_name else ''
+                    )
+                    tax_id_value = (
+                        matching_sample.tax_id if matching_sample and matching_sample.tax_id else ''
+                    )
+                    bin_tax_map[key] = [scientific_name_value, tax_id_value]
+                
+                if bin_tax_map:
+                    tax_ids_by_assembly[assembly.id] = assembly_bins[0].getSubMGYAMLTaxIDContent(bin_tax_map)
+                else:
+                    tax_ids_by_assembly[assembly.id] = ''
+            else:
+                tax_ids_by_assembly[assembly.id] = ''
 
-        if order_bins and bin_tax_map:
-            tax_ids_content = order_bins[0].getSubMGYAMLTaxIDContent(bin_tax_map)
-        else:
-            tax_ids_content = ''
+        # Create assembly-specific quality files content
+        quality_files_by_assembly = {}
+        if order_bins:
+            # Get the original quality file path from the first bin
+            original_quality_file = order_bins[0].quality_file
+            if original_quality_file and os.path.exists(original_quality_file):
+                # Read the original quality file
+                with open(original_quality_file, 'r') as f:
+                    quality_lines = f.readlines()
+                
+                # Create assembly-specific quality files
+                for assembly in order_assemblies:
+                    assembly_bins = [bin_obj for bin_obj in order_bins if bin_obj.assembly_id == assembly.id]
+                    if assembly_bins:
+                        # Get bin names for this assembly
+                        assembly_bin_names = set()
+                        for bin_obj in assembly_bins:
+                            if bin_obj.file:
+                                bin_name = Path(bin_obj.file).name.replace('.fa', '')
+                                assembly_bin_names.add(bin_name)
+                        
+                        # Filter quality file to only include bins for this assembly
+                        assembly_quality_lines = [quality_lines[0]]  # Header line
+                        for line in quality_lines[1:]:
+                            if line.strip():
+                                bin_id = line.split('\t')[0]
+                                if bin_id in assembly_bin_names:
+                                    assembly_quality_lines.append(line)
+                        
+                        quality_files_by_assembly[assembly.id] = ''.join(assembly_quality_lines)
+                    else:
+                        quality_files_by_assembly[assembly.id] = ''
 
         reads_by_sample = defaultdict(list)
         for read in order_reads:
@@ -1748,9 +1787,8 @@ def admin_generate_submg_run(request, project_id):
             if sample.assembly_id and sample.assembly_id in assembly_index:
                 assemblies_by_sample[sample.id].append(assembly_index[sample.assembly_id])
         for assembly in order_assemblies:
-            for read in assembly.read.all():
-                if read.sample_id and assembly not in assemblies_by_sample[read.sample_id]:
-                    assemblies_by_sample[read.sample_id].append(assembly)
+            if assembly.read and assembly.read.sample_id and assembly not in assemblies_by_sample[assembly.read.sample_id]:
+                assemblies_by_sample[assembly.read.sample_id].append(assembly)
 
         bin_index = {bin_obj.id: bin_obj for bin_obj in order_bins}
         bins_by_sample = defaultdict(list)
@@ -1758,9 +1796,8 @@ def admin_generate_submg_run(request, project_id):
             if sample.bin_id and sample.bin_id in bin_index:
                 bins_by_sample[sample.id].append(bin_index[sample.bin_id])
         for bin_obj in order_bins:
-            for read in bin_obj.read.all():
-                if read.sample_id and bin_obj not in bins_by_sample[read.sample_id]:
-                    bins_by_sample[read.sample_id].append(bin_obj)
+            if bin_obj.assembly and bin_obj.assembly.read and bin_obj.assembly.read.sample_id and bin_obj not in bins_by_sample[bin_obj.assembly.read.sample_id]:
+                bins_by_sample[bin_obj.assembly.read.sample_id].append(bin_obj)
 
         alignments_by_sample = defaultdict(list)
         for alignment in order_alignments:
@@ -1793,7 +1830,9 @@ def admin_generate_submg_run(request, project_id):
                     yaml_lines.extend(Bin.getSubMGYAMLHeader())
                     for bin_obj in bins_for_sample:
                         yaml_lines.extend(bin_obj.getSubMGYAML())
-                    if tax_ids_content:
+                    # Use assembly-specific tax_ids content
+                    assembly_id = bins_for_sample[0].assembly_id
+                    if assembly_id in tax_ids_by_assembly and tax_ids_by_assembly[assembly_id]:
                         yaml_lines.extend(bins_for_sample[0].getSubMGYAMLTaxIDYAML())
                     added_bin_sample_ids = set()
                     for bin_obj in bins_for_sample:
@@ -1828,8 +1867,12 @@ def admin_generate_submg_run(request, project_id):
 
         submg_run = SubMGRun.objects.create(order=order)
         submg_run.yaml = json.dumps(yaml_entries)
-        if tax_ids_content:
-            submg_run.tax_ids = tax_ids_content
+        # Store assembly-specific tax_ids content as JSON
+        if tax_ids_by_assembly:
+            submg_run.tax_ids = json.dumps(tax_ids_by_assembly)
+        # Store assembly-specific quality files content as JSON
+        if quality_files_by_assembly:
+            submg_run.quality_files = json.dumps(quality_files_by_assembly)
         submg_run.save()
 
         submg_run.projects.set(projects)
@@ -1986,22 +2029,67 @@ def admin_start_submg_run(request, submg_run_id):
         if not yaml_entries:
             yaml_entries = [{"label": "Submission", "content": ""}]
 
-        tax_ids_filename = None
+        # Handle assembly-specific tax_ids files
+        tax_ids_filenames = {}
         if submg_run.tax_ids:
-            tax_ids_filename = f"tax_ids_{submg_run.id}.txt"
+            try:
+                tax_ids_by_assembly = json.loads(submg_run.tax_ids)
+                for assembly_id, tax_ids_content in tax_ids_by_assembly.items():
+                    if tax_ids_content:
+                        tax_ids_filenames[assembly_id] = f"tax_ids_assembly_{assembly_id}.txt"
+            except (json.JSONDecodeError, TypeError):
+                # Fallback to old format
+                tax_ids_filenames['default'] = f"tax_ids_{submg_run.id}.txt"
 
         for index, entry in enumerate(yaml_entries):
             filename = f"submg_{submg_run.id}.yaml" if index == 0 else f"submg_{submg_run.id}_{index}.yaml"
             yaml_path = os.path.join(run_folder, filename)
             yaml_content = entry.get('content', '') or ''
-            if tax_ids_filename:
-                yaml_content = yaml_content.replace('tax_ids.txt', os.path.join(run_folder, tax_ids_filename))
+            
+            # Replace tax_ids references with appropriate assembly-specific files
+            if tax_ids_filenames:
+                if 'default' in tax_ids_filenames:
+                    yaml_content = yaml_content.replace('tax_ids.txt', os.path.join(run_folder, tax_ids_filenames['default']))
+                else:
+                    # Replace assembly-specific tax_ids references with absolute paths
+                    for assembly_id, tax_ids_filename in tax_ids_filenames.items():
+                        # Replace both old format (tax_ids.txt) and new format (tax_ids_assembly_X.txt)
+                        yaml_content = yaml_content.replace('tax_ids.txt', os.path.join(run_folder, tax_ids_filename))
+                        yaml_content = yaml_content.replace(f'tax_ids_assembly_{assembly_id}.txt', os.path.join(run_folder, tax_ids_filename))
+            
             with open(yaml_path, 'w') as file:
                 file.write(yaml_content)
 
-        if tax_ids_filename:
-            with open(os.path.join(run_folder, tax_ids_filename), 'w') as file:
-                file.write(submg_run.tax_ids)
+        # Write assembly-specific tax_ids files
+        if submg_run.tax_ids:
+            try:
+                tax_ids_by_assembly = json.loads(submg_run.tax_ids)
+                for assembly_id, tax_ids_content in tax_ids_by_assembly.items():
+                    if tax_ids_content and assembly_id in tax_ids_filenames:
+                        with open(os.path.join(run_folder, tax_ids_filenames[assembly_id]), 'w') as file:
+                            file.write(tax_ids_content)
+            except (json.JSONDecodeError, TypeError):
+                # Fallback to old format
+                if 'default' in tax_ids_filenames:
+                    with open(os.path.join(run_folder, tax_ids_filenames['default']), 'w') as file:
+                        file.write(submg_run.tax_ids)
+
+        # Write assembly-specific quality files
+        if submg_run.quality_files:
+            try:
+                quality_files_by_assembly = json.loads(submg_run.quality_files)
+                for assembly_id, quality_content in quality_files_by_assembly.items():
+                    if quality_content:
+                        # Create QC directory if it doesn't exist
+                        qc_dir = os.path.join(run_folder, 'GenomeBinning', 'QC')
+                        os.makedirs(qc_dir, exist_ok=True)
+                        
+                        quality_filename = f"checkm_summary_assembly_{assembly_id}.tsv"
+                        quality_path = os.path.join(qc_dir, quality_filename)
+                        with open(quality_path, 'w') as file:
+                            file.write(quality_content)
+            except (json.JSONDecodeError, TypeError):
+                pass  # Skip if quality_files is not valid JSON
 
         # Create SubMG run instance
         submg_run_instance = submg_run.submgruninstance_set.create(

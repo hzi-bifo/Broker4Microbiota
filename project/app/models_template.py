@@ -1108,7 +1108,7 @@ class MagRunInstance(models.Model):
     # Output files
 
 class Assembly(models.Model):
-    read = models.ManyToManyField(Read)
+    read = models.ForeignKey(Read, on_delete=models.CASCADE)
     order = models.ForeignKey(Order, on_delete=models.CASCADE)
 
     assembly_software = models.CharField(max_length=255, null=True, blank=True)
@@ -1150,7 +1150,7 @@ class Assembly(models.Model):
         return yaml
     
 class Bin(models.Model):
-    read = models.ManyToManyField(Read)
+    assembly = models.ForeignKey(Assembly, on_delete=models.CASCADE)
     order = models.ForeignKey(Order, on_delete=models.CASCADE)
 
     bin_number = models.CharField(max_length=255, null=True, blank=True)
@@ -1175,7 +1175,9 @@ class Bin(models.Model):
         indent = f"  "
 
         yaml = []
-        yaml.append(f"{indent}BINS_DIRECTORY: \"{self.file.rsplit('/', 1)[0]}\"")
+        # Use assembly-specific directory structure
+        bins_directory = self.file.rsplit('/', 1)[0]
+        yaml.append(f"{indent}BINS_DIRECTORY: \"{bins_directory}\"")
         yaml.append(f"{indent}COMPLETENESS_SOFTWARE: \"{self.completeness_software}\"")
         yaml.append(f"{indent}QUALITY_FILE: \"{self.quality_file}\"")
         yaml.append(f"{indent}BINNING_SOFTWARE: \"{self.binning_software}\"")
@@ -1190,8 +1192,8 @@ class Bin(models.Model):
 
         indent = f"  "
 
-        # tax_id_path = Path(self.file.split('/', 1)[0] + "/tax_ids.txt")
-        tax_id_path = Path("tax_ids.txt")
+        # Use assembly-specific tax_ids file
+        tax_id_path = Path(f"tax_ids_assembly_{self.assembly.id}.txt")
 
         yaml = []
 

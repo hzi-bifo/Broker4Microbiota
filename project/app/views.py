@@ -995,7 +995,7 @@ def test_submg(request):
     if request.user.is_authenticated and request.user.is_staff:
         # Test endpoint - staff users only
         # select * from app_submgruninstance
-        id = 70  # Default to 48 for backwards compatibility
+        id = 82  # Default to 48 for backwards compatibility
         returncode = 0
         
         try:
