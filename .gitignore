@@ -18,8 +18,8 @@ ENV/
 *.bak
 *.puppet-bak
 *.jar
-local_settings.py
-*.sqlite3
+# settings_LOCAL.py
+db.sqlite3
 db.sqlite3-journal
 media/
 staticfiles/
@@ -48,6 +48,7 @@ media/test/
 
 # Project specific
 project/static_root/
+project/docker/
 *.xlsx
 *.xml
 \!staticfiles/xml/*.xml

@@ -57,7 +57,7 @@ def run_mag_real(mag_run, run_folder):
         print(f"cd {run_folder}", file=file)
         for read in mag_run.reads.all():
             sample = read.sample
-            print(f"assembly_file=$(find {run_folder}Assembly/MEGAHIT -name 'MEGAHIT-{sample.sample_id}.contigs.fa.gz')", file=file)
+            print(f"assembly_file=$(find {run_folder}/Assembly/MEGAHIT -name 'MEGAHIT-{sample.sample_id}.contigs.fa.gz')", file=file)
             print(f"bwa index ${{assembly_file}}", file=file)            
             print(f"bwa mem ${{assembly_file}} {read.file_1} {read.file_2} | samtools sort -o {sample.sample_id}.sorted.bam", file=file)
         # Create assembly-specific directories and move bin files
@@ -66,7 +66,8 @@ def run_mag_real(mag_run, run_folder):
             sample = read.sample
             assembly_specific_dir = f"{run_folder}/GenomeBinning/MaxBin2/Assembly_{assembly_count}/Maxbin2_bins"
             print(f"mkdir -p {assembly_specific_dir}", file=file)
-            print(f"mv {run_folder}/GenomeBinning/MaxBin2/Maxbin2_bins/MEGAHIT-MaxBin2-{sample.sample_id}.*.fa {assembly_specific_dir}/", file=file)
+            print(f"mv {run_folder}/GenomeBinning/MaxBin2/Maxbin2_bins/MEGAHIT-MaxBin2-{sample.sample_id}.*.fa.gz {assembly_specific_dir}/", file=file)
+            print(f"gunzip {assembly_specific_dir}/MEGAHIT-MaxBin2-{sample.sample_id}.*.fa.gz", file=file)
             assembly_count += 1
         
     os.chmod(os.path.join(run_folder, 'script.sh'), 0o744)

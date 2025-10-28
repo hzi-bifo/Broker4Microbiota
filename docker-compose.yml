@@ -4,7 +4,8 @@ services:
       context: .
       args:
         PROJECT_DIR: ${PROJECT_DIR:-project}
-      dockerfile: Dockerfile-web
+      # dockerfile: Dockerfile-web
+    image: web:latest
     environment:
       PROJECT_DIR: ${PROJECT_DIR:-project}
       ROLE: web
@@ -16,7 +17,7 @@ services:
     volumes:
       - ./project/db.sqlite3:/app/project/db.sqlite3
       - ./project/media/test:/app/project/media/test
-      - ./settings_LOCAL.py:/app/project/project/settings.py
+      # - ./settings_LOCAL.py:/app/project/project/settings.py
     ports:
       - "8000:8000"
     entrypoint: ["bash","/usr/local/bin/docker-entrypoint.sh"]
@@ -29,7 +30,8 @@ services:
       context: .
       args:
         PROJECT_DIR: ${PROJECT_DIR:-project}
-      dockerfile: Dockerfile-qworker
+      # dockerfile: Dockerfile-qworker
+    image: qworker:latest
     environment:
       PROJECT_DIR: ${PROJECT_DIR:-project}
       ROLE: worker
@@ -39,7 +41,7 @@ services:
     volumes:
       - ./project/db.sqlite3:/app/project/db.sqlite3
       - ./project/media/test:/app/project/media/test
-      - ./settings_LOCAL.py:/app/project/project/settings.py
+      # - ./settings_LOCAL.py:/app/project/project/settings.py
     depends_on:
       - web
     # entrypoint: ["bash","/usr/local/bin/docker-entrypoint.sh"]
