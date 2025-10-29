@@ -228,9 +228,32 @@ def _process_single_logging_directory(logging_dir: Path, order, project, sample_
             continue
 
         try:
-            read = Read.objects.get(read_file_checksum_1=read_file_checksum_1, read_file_checksum_2=read_file_checksum_2)
-        except Read.DoesNotExist:
-            logger.warning('Read with checksums %s / %s not found for SubMG run %s', read_file_checksum_1, read_file_checksum_2, submg_run.id)
+            # Filter by checksums first, then narrow down to reads associated with this SubMGRun
+            # to handle cases where multiple reads have the same checksum pair
+            read_query = Read.objects.filter(
+                read_file_checksum_1=read_file_checksum_1,
+                read_file_checksum_2=read_file_checksum_2
+            )
+            # If SubMGRun has reads associated, filter by them to get the correct one
+            if submg_run.reads.exists():
+                read_query = read_query.filter(id__in=submg_run.reads.values_list('id', flat=True))
+            
+            # Check count before getting first to avoid multiple queries
+            read_count = read_query.count()
+            if read_count == 0:
+                logger.warning('Read with checksums %s / %s not found for SubMG run %s', 
+                            read_file_checksum_1, read_file_checksum_2, submg_run.id)
+                continue
+            
+            if read_count > 1:
+                logger.warning('Multiple reads (%d) found with checksums %s / %s for SubMG run %s, using first match', 
+                           read_count, read_file_checksum_1, read_file_checksum_2, submg_run.id)
+            
+            read = read_query.first()
+            
+        except Exception as e:
+            logger.error('Error finding read with checksums %s / %s for SubMG run %s: %s', 
+                        read_file_checksum_1, read_file_checksum_2, submg_run.id, str(e))
             continue
 
         # Track this read as being in this directory
@@ -719,16 +742,29 @@ def process_mag_result(task):
 def process_mag_result_inner(returncode, id):
     try:
         mag_run_instance = MagRunInstance.objects.get(id=id)
-        mag_run = MagRun.objects.get(id=mag_run_instance.magRun.id)
+        # Get the mag_run_id from the instance to fetch fresh from DB
+        mag_run_id = mag_run_instance.magRun_id
     except MagRunInstance.DoesNotExist:
         logger.error(f"MagRunInstance with id {id} does not exist")
         raise ValueError(f"MagRunInstance with id {id} does not exist")
+    
+    # Fetch MagRun fresh from database to ensure relationships are properly initialized
+    try:
+        mag_run = MagRun.objects.get(id=mag_run_id)
     except MagRun.DoesNotExist:
         logger.error(f"MagRun for MagRunInstance {id} does not exist")
         raise ValueError(f"MagRun for MagRunInstance {id} does not exist")
 
+    # Query reads directly through the ManyToMany through table to avoid manager issues
+    # This is more reliable than accessing via the manager
+    through_model = MagRun.reads.through
+    # Get the field names from the through model
+    # Django uses <lowercase_model_name>_id for the fields
+    magrun_field = f'{MagRun._meta.model_name}_id'
+    read_field = f'{Read._meta.model_name}_id'
+    read_ids = through_model.objects.filter(**{magrun_field: mag_run.id}).values_list(read_field, flat=True)
     project_ids = set(
-        mag_run.reads.values_list('sample__order__project_id', flat=True)
+        Read.objects.filter(id__in=read_ids).values_list('sample__order__project_id', flat=True)
     )
     project_ids.discard(None)
     if project_ids:
@@ -780,9 +816,10 @@ def process_mag_result_inner(returncode, id):
                         bin_map.setdefault(bin_sample.bin.bin_number, []).append(bin_sample.id)
                 for existing_assembly in order.assembly_set.all():
                     sample_ids = list(Sample.objects.filter(assembly=existing_assembly).values_list('id', flat=True))
-                    if sample_ids:
-                        for read_id in existing_assembly.read.values_list('id', flat=True):
-                            assembly_map.setdefault(read_id, set()).update(sample_ids)
+                    if sample_ids and existing_assembly.read:
+                        # read is a ForeignKey (single Read object), not a ManyToMany
+                        read_id = existing_assembly.read.id
+                        assembly_map.setdefault(read_id, set()).update(sample_ids)
 
             assembly = None  # Initialize assembly variable
             assembly_file_path = f"{run_folder}/Assembly/MEGAHIT/MEGAHIT-{sample.sample_id}.contigs.fa.gz"

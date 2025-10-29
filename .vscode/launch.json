@@ -1,6 +1,10 @@
 {
   "version": "0.2.0",
   "configurations": [
+    
+
+
+
     {
       "name": "Django (no autoreload, subproc, logs)",
       "type": "python",

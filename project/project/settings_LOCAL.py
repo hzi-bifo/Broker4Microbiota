@@ -26,7 +26,7 @@ SECRET_KEY = ')2^y*ng#pqoj5cor8kmk-_*_l#wmx!_&)qp%as2=)emm#b@3+1'
 
 # ALLOWED_HOSTS = ['<%= @broker_frontend_domain_name %>', '<%= @broker_machine_name %>', '<%= @broker_machine_ip %>']
 # ALLOWED_HOSTS = [os.environ.get('DOMAIN_NAME'), os.environ.get('MACHINE_NAME'), os.environ.get('MACHINE_IP')]
-ALLOWED_HOSTS = ['broker-demo.bifo.helmholtz-hzi.de', 'dzif-student-0201', '192.168.8.6']
+ALLOWED_HOSTS = ['broker-dev1.bifo.helmholtz-hzi.de', 'dzif-student-0204', '192.168.8.9']
 
 # Application definition
 
@@ -219,7 +219,7 @@ MAG_NEXTFLOW_EXECUTOR = 'slurm'
 
 # CSRF_TRUSTED_ORIGINS = ["https://<%= @broker_frontend_domain_name %>"]
 # CSRF_TRUSTED_ORIGINS = [os.environ.get('CSRF_TRUSTED_ORIGINS')]
-CSRF_TRUSTED_ORIGINS = ["https://broker-demo.bifo.helmholtz-hzi.de"]
+CSRF_TRUSTED_ORIGINS = ["https://broker-dev1.bifo.helmholtz-hzi.de"]
 
 PIXELS_PER_CHAR = 8
 
@@ -228,7 +228,7 @@ MAG_CHECKLIST = "GSC_MIMAGS"
 
 # USE_SLURM_FOR_SUBMG = <%= @use_slurm_for_submg %>
 # USE_SLURM_FOR_SUBMG = os.environ.get('USE_SLURM_FOR_SUBMG', "False").lower() in ("true", "1", "yes")
-USE_SLURM_FOR_SUBMG = True
+USE_SLURM_FOR_SUBMG = False
 
 # CONDA_PATH = '<%= @conda_path %>'
 # CONDA_PATH = os.environ.get('CONDA_PATH')
