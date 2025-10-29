@@ -26,3 +26,7 @@ Ensure ./project/db.sqlite3, ./project/media/test exist
 export PROJECT_DIR=project
 docker compose up --detach
 docker compose down -v
+
+docker exec -it 401efdce7fc4 /bin/bash
+cd project/
+python manage.py createsuperuser

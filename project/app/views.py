@@ -659,8 +659,8 @@ def samples_view(request, project_id, order_id, sample_type):
                     checklist_class_name = Sampleset.checklist_structure[checklist_name]['checklist_class_name']
                     checklist_item_class =  getattr(importlib.import_module("app.models"), checklist_class_name)
                     
-                    # Always use SAMPLE_TYPE_NORMAL for checklist entries
-                    checklist_sample_type =  sample_type
+                    # Always use SAMPLE_TYPE_NORMAL for checklist entries since they're only created for normal samples
+                    checklist_sample_type = SAMPLE_TYPE_NORMAL if sample_type in [SAMPLE_TYPE_ASSEMBLY, SAMPLE_TYPE_BIN, SAMPLE_TYPE_MAG] else sample_type
                     try:
                         checklist_item_class.objects.filter(sampleset=sample_set, sample_type=checklist_sample_type).delete()
                     except:
@@ -696,8 +696,8 @@ def samples_view(request, project_id, order_id, sample_type):
                             checklist_code = Sampleset.checklist_structure[checklist_name]['checklist_code']  
                             checklist_class_name = Sampleset.checklist_structure[checklist_name]['checklist_class_name']
                             checklist_item_class =  getattr(importlib.import_module("app.models"), checklist_class_name)
-                            # Always use SAMPLE_TYPE_NORMAL for checklist entries
-                            checklist_sample_type = sample_type
+                            # Always use SAMPLE_TYPE_NORMAL for checklist entries since they're only created for normal samples
+                            checklist_sample_type = SAMPLE_TYPE_NORMAL if sample_type in [SAMPLE_TYPE_ASSEMBLY, SAMPLE_TYPE_BIN, SAMPLE_TYPE_MAG] else sample_type
                             checklist_item_instance = checklist_item_class(sampleset = sample_set, sample = sample, sample_type=checklist_sample_type)
                             checklist_item_instance.setFieldsFromResponse(sample_info, inclusions)
                             checklist_item_instance.save()
