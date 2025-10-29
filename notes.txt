@@ -1,17 +1,28 @@
+On dzif-student-0204
+
+Running as root:
+
+docker images
+docker rmi <images>
+docker system prune --all
+sudo rm -r /var/lib/docker
+systemctl restart docker
+
 Running as user which is a member of docker group:
+su - brokerdg
+cd /net/broker/devgary/Broker4Microbiota
+
+docker build -t web:latest -f ./Dockerfile-web .
+docker save -o /net/broker/images/web_latest.tar.gz web:latest
+
+docker build -t qworker:latest -f ./Dockerfile-qworker .
+docker save -o /net/broker/images/qworker_latest.tar.gz qworker:latest
+
+# In other environments
+# docker load -i /net/broker/images/qworker_latest.tar.gz 
+# docker load -i /net/broker/images/web_latest.tar.gz 
 
 Ensure ./project/db.sqlite3, ./project/media/test exist
 export PROJECT_DIR=project
-docker compose down -v
-docker images
-docker rmi <images>
 docker compose up --detach
-
-docker build -t web:latest -f ./Dockerfile-web .
-docker save -o ./web_latest.tar.gz web:latest
-docker load -i ./qworker_latest.tar.gz 
-
-docker system prune --all
-sudo rm -r /var/lib/docker/overlay2/
-systemctl restart docker
-
+docker compose down -v

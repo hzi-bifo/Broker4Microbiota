@@ -15,7 +15,7 @@ RUN /bin/bash /tmp/Miniforge3-Linux-x86_64.sh -b -p /opt/conda && \
     rm /tmp/Miniforge3-Linux-x86_64.sh && \
     echo "export PATH=/opt/conda/bin:$PATH" > /etc/profile.d/conda.sh
 
-ENV PATH /opt/conda/bin:$PATH
+ENV PATH=/opt/conda/bin:$PATH
 
 RUN conda config --env --add channels bioconda && \
     conda config --env --add channels conda-forge && \
@@ -23,7 +23,7 @@ RUN conda config --env --add channels bioconda && \
     conda config --system --add channels conda-forge && \
     conda create -y -n broker python=3 bwa samtools && \
     /opt/conda/bin/activate broker && \
-    pip install Django requests biopython phonenumbers django-widget-tweaks django-phonenumber-field django-clearcache django-q2 xmltodict blessed pillow nextflow jsonschema
+    pip install Django requests biopython phonenumbers django-widget-tweaks django-phonenumber-field django-clearcache django-q2 xmltodict blessed pillow nextflow jsonschema django-environ
 
 # COPY requirements.txt /app/requirements.txt
 # RUN python -m pip install --upgrade pip && python -m pip install -r /app/requirements.txt

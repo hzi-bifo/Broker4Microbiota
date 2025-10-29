@@ -18,10 +18,9 @@ ENV/
 *.bak
 *.puppet-bak
 *.jar
-# settings_LOCAL.py
+settings_LOCAL.py
 db.sqlite3
 db.sqlite3-journal
-media/
 staticfiles/
 
 
@@ -44,7 +43,10 @@ staticfiles/
 .nextflow.log*
 work/
 results/
-media/test/
+project/media/test/
+project/media/broker/
+project/media/old/
+project/media/sample_files/
 
 # Project specific
 project/static_root/
@@ -57,4 +59,5 @@ project/docker/
 nextflow
 checkm_mem_increase.nf
 settings_LOCAL.py
+
 EOF < /dev/null

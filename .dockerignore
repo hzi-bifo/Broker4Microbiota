@@ -1,5 +1,14 @@
-*.sqlite3
-debug.log
+db.sqlite3
+*.log
+*.bak
+*.old
 .git
+.env
+*.puppet-bak
+settings_LOCAL.py
+.vscode
 *.pyc
-test/
+project/media/broker/
+project/media/test/
+project/media/old/
+project/media/sample_files/
