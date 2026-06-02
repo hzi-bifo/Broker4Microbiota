@@ -180,26 +180,20 @@
     <title>{% block title %}{% endblock %} - {{ site_settings.site_name }}</title>
   </head>
   <body class="{% block body_class %}{% endblock %}">
-    {% if demo_mode %}
     <div class="demo-mode-banner" role="alert">
       <span class="icon"><i class="fas fa-exclamation-triangle"></i></span>
       <span>
-        <strong>DEMO MODE</strong> &ndash; This is a public demonstration instance for exploring the user interface only.
+        <strong>DEMO MODE</strong> &ndash; This is a demonstration instance for testing the application only.
         <strong>Do not enter confidential, personal, or real data.</strong>
         Anything you submit is not private, may be visible to others, and can be deleted at any time.
         Use random demo data only.
       </span>
     </div>
-    {% endif %}
     <nav class="navbar" role="navigation" aria-label="main navigation">
       <div class="container">
         <div class="navbar-brand">
-          <a class="navbar-item" href="{% if user.is_authenticated %}{% url 'project_list' %}{% else %}{% url 'login' %}{% endif %}">
-            {% if site_settings.logo_url %}
-              <img src="{{ site_settings.logo_url }}" alt="{{ site_settings.organization_short_name }} Logo" style="max-height: 45px;">
-            {% else %}
-              <img src="{% static 'images/logo.png' %}" alt="{{ site_settings.organization_short_name }} Logo" style="max-height: 45px;">
-            {% endif %}
+          <a class="navbar-item has-text-weight-bold" href="{% if user.is_authenticated %}{% url 'project_list' %}{% else %}{% url 'login' %}{% endif %}">
+            {{ site_settings.site_name }}
           </a>
           <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navbarMain">
             <span aria-hidden="true"></span>
@@ -318,36 +312,9 @@
             {{ site_settings.tagline }}
           </p>
           <div class="is-divider"></div>
-          <div class="columns is-mobile is-centered">
-            <div class="column is-narrow">
-              <p class="has-text-grey-light">
-                <span class="icon-text">
-                  <span class="icon">
-                    <i class="fas fa-envelope"></i>
-                  </span>
-                  <span>{{ site_settings.contact_email }}</span>
-                </span>
-              </p>
-            </div>
-            <div class="column is-narrow">
-              <p class="has-text-grey-light">
-                <span class="icon-text">
-                  <span class="icon">
-                    <i class="fas fa-globe"></i>
-                  </span>
-                  <span><a href="{{ site_settings.website_url }}" target="_blank" class="has-text-grey-light">{{ site_settings.website_url|slice:"8:" }}</a></span>
-                </span>
-              </p>
-            </div>
-          </div>
           <p class="has-text-grey-light">
-            &copy; {% now "Y" %} {{ site_settings.organization_name }}. All rights reserved.
+            Demonstration instance &ndash; for testing purposes only.
           </p>
-          {% if site_settings.footer_text %}
-          <div class="mt-3">
-            {{ site_settings.footer_text|safe }}
-          </div>
-          {% endif %}
         </div>
       </div>
     </footer>

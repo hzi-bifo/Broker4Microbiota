@@ -51,11 +51,11 @@ def site_settings(request):
             # If something goes wrong, provide defaults
             cached_settings = {
                 'site_name': 'Sequencing Order Management',
-                'organization_name': 'Helmholtz Centre for Infection Research',
-                'organization_short_name': 'HZI',
-                'tagline': 'Streamlining sequencing requests and ensuring compliance with MIxS standards',
-                'contact_email': 'sequencing@helmholtz-hzi.de',
-                'website_url': 'https://www.helmholtz-hzi.de',
+                'organization_name': 'Your Organization Name',
+                'organization_short_name': 'ORG',
+                'tagline': 'Demo instance for exploring the application',
+                'contact_email': 'contact@example.com',
+                'website_url': 'https://www.example.com',
                 'primary_color': '#3273dc',
                 'secondary_color': '#2366d1',
                 'footer_text': '',
@@ -70,13 +70,7 @@ def site_settings(request):
                 'favicon_url': None,
             }
     
-    return {
-        'site_settings': cached_settings,
-        # True when the instance is running in demo mode (any new account is
-        # auto-promoted to admin). Used to show a warning banner so users do
-        # not enter confidential or real data on a shared demo instance.
-        'demo_mode': getattr(django_settings, 'AUTO_CREATE_USERS_AS_ADMIN', False),
-    }
+    return {'site_settings': cached_settings}
 
 
 def clear_site_settings_cache():
