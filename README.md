@@ -112,6 +112,39 @@ Copy `TEMPLATE.env` to `.env` and configure:
 - Project paths
 - HPC/Slurm settings (if applicable)
 
+#### `AUTO_CREATE_USERS_AS_ADMIN`
+
+This flag controls whether newly registered accounts are automatically granted
+staff/admin access (Django's `is_staff = True`, which unlocks the admin
+dashboard).
+
+- **Default: `False`** — new users registering through the public registration
+  page become normal users with no elevated access. This is the recommended
+  setting.
+- **`True`** — every account created through the public registration page is
+  automatically promoted to staff/admin and logged in immediately.
+
+> ⚠️ **Testing only — do not enable in production.**
+> This option exists purely as a development/testing convenience, so that
+> accounts created on a throwaway test instance can immediately exercise the
+> full admin UI without manual promotion.
+>
+> On a public or production deployment it is a serious security risk: because
+> the registration page is open and unauthenticated, anyone who signs up would
+> automatically receive admin-dashboard access — including the ability to view
+> and modify other users' projects and to create further privileged accounts.
+> Always leave this set to `False` in production.
+
+#### Deployment environment
+
+This application is designed to run inside a **closed, trusted network** — for
+example behind a VPN or restricted to an internal/institutional intranet — and
+**not** to be exposed directly to the public internet. Access should be limited
+to authorized users on the protected network. The convenience-oriented defaults
+(such as open self-registration) assume this trusted-network context; deploying
+the application on a publicly reachable host is not a supported or secure
+configuration.
+
 ## Documentation
 
 For detailed documentation on:

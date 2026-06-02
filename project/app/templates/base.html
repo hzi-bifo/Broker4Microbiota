@@ -39,6 +39,33 @@
       a:hover {
         color: var(--secondary-color);
       }
+      /* Demo mode warning banner */
+      .demo-mode-banner {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.6rem;
+        background-color: #c0392b;
+        color: #fff;
+        text-align: center;
+        padding: 0.65rem 1.25rem;
+        font-size: 0.95rem;
+        line-height: 1.4;
+        border-bottom: 2px solid #7f1d14;
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+      }
+
+      .demo-mode-banner strong {
+        color: #fff;
+      }
+
+      .demo-mode-banner .icon {
+        flex-shrink: 0;
+        font-size: 1.1rem;
+      }
+
       /* Style the container to have a fixed height and enable scrolling */
       #handsontable-container {
         width: 100%; /* Full width */
@@ -153,6 +180,17 @@
     <title>{% block title %}{% endblock %} - {{ site_settings.site_name }}</title>
   </head>
   <body class="{% block body_class %}{% endblock %}">
+    {% if demo_mode %}
+    <div class="demo-mode-banner" role="alert">
+      <span class="icon"><i class="fas fa-exclamation-triangle"></i></span>
+      <span>
+        <strong>DEMO MODE</strong> &ndash; This is a public demonstration instance for exploring the user interface only.
+        <strong>Do not enter confidential, personal, or real data.</strong>
+        Anything you submit is not private, may be visible to others, and can be deleted at any time.
+        Use random demo data only.
+      </span>
+    </div>
+    {% endif %}
     <nav class="navbar" role="navigation" aria-label="main navigation">
       <div class="container">
         <div class="navbar-brand">

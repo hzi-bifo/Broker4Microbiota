@@ -70,7 +70,13 @@ def site_settings(request):
                 'favicon_url': None,
             }
     
-    return {'site_settings': cached_settings}
+    return {
+        'site_settings': cached_settings,
+        # True when the instance is running in demo mode (any new account is
+        # auto-promoted to admin). Used to show a warning banner so users do
+        # not enter confidential or real data on a shared demo instance.
+        'demo_mode': getattr(django_settings, 'AUTO_CREATE_USERS_AS_ADMIN', False),
+    }
 
 
 def clear_site_settings_cache():
