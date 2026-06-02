@@ -1371,29 +1371,29 @@ class SiteSettings(models.Model):
         help_text="The name of your application"
     )
     organization_name = models.CharField(
-        max_length=200, 
-        default="Helmholtz Centre for Infection Research",
+        max_length=200,
+        default="Your Organization Name",
         help_text="Full name of your organization"
     )
     organization_short_name = models.CharField(
-        max_length=50, 
-        default="HZI",
+        max_length=50,
+        default="ORG",
         help_text="Short name or acronym"
     )
     tagline = models.CharField(
         max_length=500,
-        default="Streamlining sequencing requests and ensuring compliance with MIxS standards",
+        default="Demo instance for exploring the application",
         blank=True,
         help_text="A brief description or tagline for your site"
     )
-    
+
     # Contact Information
     contact_email = models.EmailField(
-        default="sequencing@helmholtz-hzi.de",
+        default="contact@example.com",
         help_text="Primary contact email address"
     )
     website_url = models.URLField(
-        default="https://www.helmholtz-hzi.de",
+        default="https://www.example.com",
         blank=True,
         help_text="Organization's main website URL"
     )
@@ -1482,16 +1482,16 @@ class SiteSettings(models.Model):
 <li><strong>Sample Preparation:</strong> Ensure your samples are properly labeled with the sample IDs you provided.</li>
 <li><strong>Sample Shipping:</strong> Ship your samples to:
     <address>
-    Sequencing Facility<br>
-    Helmholtz Centre for Infection Research<br>
-    Inhoffenstraße 7<br>
-    38124 Braunschweig, Germany
+    Your Sequencing Facility<br>
+    Your Organization Name<br>
+    Street Address<br>
+    City, Country
     </address>
 </li>
 <li><strong>Include Documentation:</strong> Print and include your order confirmation with the samples.</li>
 <li><strong>Tracking:</strong> You will receive email updates on the status of your sequencing order.</li>
 </ol>
-<p>For questions, contact: <a href="mailto:sequencing@helmholtz-hzi.de">sequencing@helmholtz-hzi.de</a></p>""",
+<p>For questions, contact: <a href="mailto:contact@example.com">contact@example.com</a></p>""",
         help_text="Instructions shown after order submission (HTML allowed)",
         blank=True
     )
